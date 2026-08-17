@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('apellidos');
             $table->integer('edad');
             $table->string('correo')->unique();
+            $table->foreignId('id_curso')->contrained('cursos') ->oneDelete('cascade');
             $table->timestamps();
         });
     }

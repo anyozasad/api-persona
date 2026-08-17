@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Curso extends Model
 {
-    protected $primaryKey = 'idCurso';
 
     protected $fillable = [
-        'curso',
-        'horas',
+        'nombre',
+        'descripcion',
         'creditos',
         'idEspecialidad'
     ];
