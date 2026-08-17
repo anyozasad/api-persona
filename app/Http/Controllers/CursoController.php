@@ -7,51 +7,79 @@ use App\Models\Curso;
 
 class CursoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // LISTAR TODOS LOS CURSOS
     public function index()
     {
-            $cursos = Curso::all();
-            return response()->json($cursos);
+        $cursos = Curso::all();
+        return response()->json($cursos);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-  public function store(Request $request)
-{
-    $curso = Curso::create([
-        'curso' => $request->curso,
-        'horas' => $request->horas,
-        'creditos' => $request->creditos,
-        'idEspecialidad' => $request->idEspecialidad
-    ]);
-
-    return response()->json($curso, 201);
-}
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // REGISTRAR CURSO
+    public function store(Request $request)
     {
-        //
+        $curso = Curso::create([
+            'curso' => $request->curso,
+            'horas' => $request->horas,
+            'creditos' => $request->creditos,
+            'idEspecialidad' => $request->idEspecialidad
+        ]);
+
+        return response()->json($curso, 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // BUSCAR CURSO POR ID
+    public function show($id)
+    {
+        $curso = Curso::find($id);
+
+        if (!$curso) {
+            return response()->json([
+                'mensaje' => 'Curso no encontrado'
+            ], 404);
+        }
+
+        return response()->json($curso);
+    }
+
+    // ACTUALIZAR CURSO
     public function update(Request $request, string $id)
     {
-        //
+        $curso = Curso::find($id);
+
+        if (!$curso) {
+            return response()->json([
+                'mensaje' => 'Curso no encontrado'
+            ], 404);
+        }
+
+        $curso->update([
+            'curso' => $request->curso,
+            'horas' => $request->horas,
+            'creditos' => $request->creditos,
+            'idEspecialidad' => $request->idEspecialidad
+        ]);
+
+        return response()->json([
+            'mensaje' => 'Curso actualizado correctamente',
+            'curso' => $curso
+        ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // ELIMINAR CURSO
     public function destroy(string $id)
     {
-        //
+        $curso = Curso::find($id);
+
+        if (!$curso) {
+            return response()->json([
+                'mensaje' => 'Curso no encontrado'
+            ], 404);
+        }
+
+        $curso->delete();
+
+        return response()->json([
+            'mensaje' => 'Curso eliminado correctamente'
+        ]);
     }
 }
