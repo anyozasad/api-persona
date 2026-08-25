@@ -14,7 +14,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
       <section class="login-visual">
         <div class="login-overlay"></div>
         <a routerLink="/" class="login-brand" aria-label="Volver al inicio">
-          <img src="assets/mallqui-logo.png" alt="Mallqui Gym">
+          <img src="/assets/mallqui-logo.svg" alt="Mallqui Gym">
         </a>
         <div class="login-message">
           <span class="login-kicker">MALLQUI GYM</span>
@@ -32,7 +32,9 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
         <a routerLink="/" class="login-back">← Volver al inicio</a>
         <div class="login-card">
           <div class="login-heading">
-            <span class="login-icon">♙</span>
+            <span class="login-icon login-company-logo" aria-hidden="true">
+              <img src="/assets/mallqui-logo.svg" alt="">
+            </span>
             <div>
               <h2>Bienvenido de nuevo</h2>
               <p>Ingresa a tu cuenta de Mallqui Gym</p>
