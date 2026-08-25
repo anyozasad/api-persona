@@ -1,10 +1,35 @@
 /* Sidebar administrador minimizable: solo ajustes visuales, sin cambiar funciones */
 .admin-shell{transition:grid-template-columns .28s ease}
 .admin-shell:not(.admin-sidebar-collapsed){grid-template-columns:215px minmax(0,1fr)}
-.admin-nav{position:relative;transition:padding .28s ease,width .28s ease;overflow:visible}
-.admin-nav nav button,.admin-brand img,.admin-logout{transition:all .24s ease}
+.admin-nav{position:relative;transition:padding .28s ease,width .28s ease;overflow:visible;box-sizing:border-box}
+.admin-nav nav button,.admin-brand,.admin-brand img,.admin-logout{transition:all .24s ease}
 
-/* La flecha NO queda visible todo el tiempo. Aparece al acercar el mouse al menú. */
+/* Logo visible y completo en la parte superior del menú */
+.admin-brand{
+  width:170px;
+  height:120px;
+  margin:0 auto 18px;
+  padding:8px;
+  border-radius:16px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  box-sizing:border-box;
+  box-shadow:0 10px 28px rgba(0,0,0,.18);
+}
+.admin-brand img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+
+/* La flecha no queda visible: aparece solo al acercar el mouse al menú */
 .admin-sidebar-toggle{
   position:absolute;
   right:-15px;
@@ -39,20 +64,30 @@
 .admin-sidebar-toggle:hover{background:#f21f32;color:#fff;box-shadow:8px 0 26px rgba(242,31,50,.24);transform:translateY(-50%) scale(1.04)}
 .admin-sidebar-toggle:active{transform:translateY(-50%) scale(.96)}
 
-/* Solo se hace angosto DESPUÉS de pulsar la flecha. */
-.admin-shell.admin-sidebar-collapsed{grid-template-columns:82px minmax(0,1fr)}
-.admin-shell.admin-sidebar-collapsed .admin-nav{padding-left:10px;padding-right:10px}
-.admin-shell.admin-sidebar-collapsed .admin-brand img{width:54px;margin:4px auto 22px}
-.admin-shell.admin-sidebar-collapsed .admin-nav nav button{font-size:0!important;justify-content:center;padding:13px 8px;min-height:46px}
-.admin-shell.admin-sidebar-collapsed .admin-nav nav button span{font-size:17px!important;margin:0}
+/* Solo se minimiza después de pulsar la flecha; el contenido sigue viéndose completo */
+.admin-shell.admin-sidebar-collapsed{grid-template-columns:96px minmax(0,1fr)}
+.admin-shell.admin-sidebar-collapsed .admin-nav{padding-left:12px;padding-right:12px;min-width:0}
+.admin-shell.admin-sidebar-collapsed .admin-brand{
+  width:68px;
+  height:68px;
+  padding:5px;
+  margin:0 auto 18px;
+  border-radius:13px;
+}
+.admin-shell.admin-sidebar-collapsed .admin-brand img{width:100%!important;height:100%!important;margin:0!important;object-fit:contain!important}
+.admin-shell.admin-sidebar-collapsed .admin-nav nav{gap:6px}
+.admin-shell.admin-sidebar-collapsed .admin-nav nav button{font-size:0!important;justify-content:center;padding:12px 8px;min-height:48px;width:100%;box-sizing:border-box}
+.admin-shell.admin-sidebar-collapsed .admin-nav nav button span{font-size:18px!important;margin:0}
 .admin-shell.admin-sidebar-collapsed .admin-nav nav button:hover{transform:none}
 .admin-shell.admin-sidebar-collapsed .admin-logout{font-size:0;text-align:center;padding:13px 7px}
 .admin-shell.admin-sidebar-collapsed .admin-logout:before{content:'↪';font-size:18px}
 .admin-shell.admin-sidebar-collapsed .admin-content{min-width:0}
 
 @media(max-width:1100px) and (min-width:851px){
-  .admin-shell:not(.admin-sidebar-collapsed){grid-template-columns:180px minmax(0,1fr)}
-  .admin-shell.admin-sidebar-collapsed{grid-template-columns:72px minmax(0,1fr)}
+  .admin-shell:not(.admin-sidebar-collapsed){grid-template-columns:190px minmax(0,1fr)}
+  .admin-brand{width:150px;height:106px}
+  .admin-shell.admin-sidebar-collapsed{grid-template-columns:88px minmax(0,1fr)}
+  .admin-shell.admin-sidebar-collapsed .admin-brand{width:62px;height:62px}
   .admin-content{padding-left:20px;padding-right:18px}
 }
 
