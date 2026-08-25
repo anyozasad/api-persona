@@ -4,13 +4,40 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Mallqui Gym - Frontend Angular
+| Mallqui Gym - Angular integrado en Laravel
 |--------------------------------------------------------------------------
-| Laravel queda como backend/API en el puerto 8000.
-| La interfaz principal se ejecuta con Angular en el puerto 4200.
-| Durante desarrollo, al entrar a Laravel redirigimos automáticamente
-| al frontend para evitar mostrar la pantalla welcome de Laravel.
+| El frontend se compila con: php artisan mallqui:build
+| El resultado queda dentro de public/ y Laravel lo sirve en el puerto 8000.
+| Ya no se necesita ejecutar ng serve ni usar localhost:4200 para presentar
+| el sistema al profesor.
 */
+
 Route::get('/', function () {
-    return redirect()->away('http://localhost:4200');
+    $index = public_path('index.html');
+
+    abort_unless(
+        file_exists($index),
+        503,
+        'Frontend no compilado. Ejecuta: php artisan mallqui:build'
+    );
+
+    return response()->file($index, [
+        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+    ]);
 });
+
+// Permite abrir directamente rutas de Angular como /usuario y /admin.
+// Se excluyen API, Sanctum y la ruta de salud de Laravel.
+Route::get('/{path}', function () {
+    $index = public_path('index.html');
+
+    abort_unless(
+        file_exists($index),
+        503,
+        'Frontend no compilado. Ejecuta: php artisan mallqui:build'
+    );
+
+    return response()->file($index, [
+        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+    ]);
+})->where('path', '^(?!api(?:/|$)|sanctum(?:/|$)|up$).*$');
