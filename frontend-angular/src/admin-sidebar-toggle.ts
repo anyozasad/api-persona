@@ -1,5 +1,3 @@
-const STORAGE_KEY = 'mallqui_admin_sidebar_collapsed';
-
 function applySidebarState(shell: HTMLElement, button: HTMLButtonElement, collapsed: boolean): void {
   shell.classList.toggle('admin-sidebar-collapsed', collapsed);
   button.textContent = collapsed ? '›' : '‹';
@@ -24,13 +22,13 @@ function setupAdminSidebar(): void {
   button.type = 'button';
   button.className = 'admin-sidebar-toggle';
 
-  const saved = localStorage.getItem(STORAGE_KEY) === 'true';
-  applySidebarState(shell, button, saved);
+  // El administrador SIEMPRE inicia con el menú completo.
+  // Solo se minimiza cuando el usuario pulsa la flecha.
+  applySidebarState(shell, button, false);
 
   button.addEventListener('click', () => {
     const collapsed = !shell.classList.contains('admin-sidebar-collapsed');
     applySidebarState(shell, button, collapsed);
-    localStorage.setItem(STORAGE_KEY, String(collapsed));
   });
 
   nav.appendChild(button);
