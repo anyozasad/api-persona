@@ -43,6 +43,19 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
             Plan seleccionado: <strong>{{ planSeleccionado }}</strong>
           </div>
 
+          <div class="login-socials">
+            <button type="button" class="social-button google" (click)="socialLogin('Google')">
+              <span class="social-mark google-mark">G</span>
+              Continuar con Google
+            </button>
+            <button type="button" class="social-button facebook" (click)="socialLogin('Facebook')">
+              <span class="social-mark facebook-mark">f</span>
+              Continuar con Facebook
+            </button>
+          </div>
+
+          <div class="login-divider"><span>o ingresa con tu correo</span></div>
+
           <form (ngSubmit)="ingresar()" #loginForm="ngForm">
             <label>
               Correo electrónico
@@ -77,22 +90,26 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
             <div class="login-options">
               <label class="remember"><input type="checkbox" name="recordar" [(ngModel)]="recordar"> Recordarme</label>
-              <button type="button" class="text-button">¿Olvidaste tu contraseña?</button>
+              <button type="button" class="text-button" (click)="recuperarPassword()">¿Olvidaste tu contraseña?</button>
             </div>
 
             <p *ngIf="error" class="login-error">{{ error }}</p>
+            <p *ngIf="mensaje" class="login-success">{{ mensaje }}</p>
 
             <button class="login-submit" type="submit" [disabled]="loginForm.invalid">
               Iniciar sesión →
             </button>
           </form>
 
-          <div class="login-divider"><span>o</span></div>
-
-          <div class="login-help">
-            <p><strong>¿Eres nuevo?</strong> Acércate a recepción para activar tu membresía.</p>
-            <small>Para la demostración: un correo que contenga <b>admin</b> abre el panel administrador; cualquier otro correo abre el panel del usuario.</small>
+          <div class="login-register-box">
+            <div>
+              <strong>¿Aún no tienes cuenta?</strong>
+              <span>Crea tu perfil y empieza a entrenar con nosotros.</span>
+            </div>
+            <a routerLink="/registro" class="create-account-button">Crear cuenta</a>
           </div>
+
+          <p class="login-demo-note">Para la demostración del sistema: un correo que contenga <b>admin</b> abre el panel administrador; cualquier otro correo abre el panel del usuario.</p>
         </div>
       </section>
     </div>
@@ -104,6 +121,7 @@ export class LoginComponent {
   recordar = false;
   mostrarPassword = false;
   error = '';
+  mensaje = '';
   planSeleccionado = '';
 
   constructor(private router: Router, private route: ActivatedRoute) {
@@ -112,6 +130,7 @@ export class LoginComponent {
 
   ingresar(): void {
     this.error = '';
+    this.mensaje = '';
 
     if (!this.email.trim() || !this.password.trim()) {
       this.error = 'Completa tu correo y contraseña.';
@@ -124,5 +143,18 @@ export class LoginComponent {
     }
 
     this.router.navigate(['/usuario']);
+  }
+
+  socialLogin(proveedor: string): void {
+    this.error = '';
+    this.mensaje = `Ingreso con ${proveedor} listo. Abriendo tu panel...`;
+    setTimeout(() => this.router.navigate(['/usuario']), 650);
+  }
+
+  recuperarPassword(): void {
+    this.error = '';
+    this.mensaje = this.email.trim()
+      ? `Te enviaremos las instrucciones de recuperación a ${this.email}.`
+      : 'Escribe tu correo para recuperar tu contraseña.';
   }
 }
