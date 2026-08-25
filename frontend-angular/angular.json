@@ -16,8 +16,14 @@
             "index": "src/index.html",
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
+            "outputHashing": "none",
             "assets": [{"glob":"**/*","input":"public"}],
-            "styles": ["src/styles.css"]
+            "styles": [
+              "src/styles.css",
+              "src/mallqui-landing.css",
+              "src/mallqui-member.css",
+              "src/mallqui-admin.css"
+            ]
           }
         },
         "serve": {
