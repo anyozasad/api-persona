@@ -1,4 +1,4 @@
-import { access, cp, mkdir, readdir, rm } from 'node:fs/promises';
+import { access, cp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -49,9 +49,28 @@ for (const entry of buildEntries) {
   );
 }
 
-// Validación final para evitar que Laravel sirva una interfaz sin estilos.
-await access(path.join(laravelPublic, 'index.html'));
-await access(path.join(laravelPublic, 'styles.css'));
-await access(path.join(laravelPublic, 'main.js'));
+const indexPath = path.join(laravelPublic, 'index.html');
+const stylesPath = path.join(laravelPublic, 'styles.css');
+const mainPath = path.join(laravelPublic, 'main.js');
 
-console.log('✓ Angular integrado en Laravel con estilos y scripts correctos');
+// Validación final.
+await access(indexPath);
+await access(stylesPath);
+await access(mainPath);
+
+// Para evitar que php artisan serve o el navegador pierdan la hoja de estilos,
+// incrustamos el CSS compilado directamente dentro del index de Angular.
+let html = await readFile(indexPath, 'utf8');
+const css = await readFile(stylesPath, 'utf8');
+const safeCss = css.replace(/<\/style/gi, '<\\/style');
+
+const stylesheetTag = /<link[^>]+rel=["']stylesheet["'][^>]*href=["'][^"']*styles\.css[^"']*["'][^>]*>/i;
+if (stylesheetTag.test(html)) {
+  html = html.replace(stylesheetTag, `<style id="mallqui-angular-styles">${safeCss}</style>`);
+} else if (!html.includes('id="mallqui-angular-styles"')) {
+  html = html.replace('</head>', `<style id="mallqui-angular-styles">${safeCss}</style></head>`);
+}
+
+await writeFile(indexPath, html, 'utf8');
+
+console.log('✓ Angular integrado en Laravel con CSS incrustado y scripts correctos');
