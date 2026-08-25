@@ -1,32 +1,45 @@
-/* Sidebar administrador minimizable: ajuste visual sin cambiar las funciones existentes */
+/* Sidebar administrador minimizable: solo ajustes visuales, sin cambiar funciones */
 .admin-shell{transition:grid-template-columns .28s ease}
+.admin-shell:not(.admin-sidebar-collapsed){grid-template-columns:215px minmax(0,1fr)}
 .admin-nav{position:relative;transition:padding .28s ease,width .28s ease;overflow:visible}
 .admin-nav nav button,.admin-brand img,.admin-logout{transition:all .24s ease}
 
+/* La flecha NO queda visible todo el tiempo. Aparece al acercar el mouse al menú. */
 .admin-sidebar-toggle{
   position:absolute;
-  right:-17px;
+  right:-15px;
   top:50%;
-  transform:translateY(-50%);
+  transform:translateY(-50%) scale(.94);
   z-index:80;
-  width:34px;
-  height:58px;
+  width:30px;
+  height:52px;
   border:1px solid #d8e1eb;
   border-left:0;
-  border-radius:0 15px 15px 0;
+  border-radius:0 14px 14px 0;
   background:#fff;
   color:#0b2344;
-  box-shadow:8px 0 24px rgba(5,24,48,.14);
+  box-shadow:7px 0 20px rgba(5,24,48,.13);
   display:grid;
   place-items:center;
-  font-size:27px;
+  font-size:24px;
   font-weight:500;
   cursor:pointer;
-  transition:background .2s ease,color .2s ease,box-shadow .2s ease,transform .2s ease;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .18s ease,visibility .18s ease,background .2s ease,color .2s ease,box-shadow .2s ease,transform .2s ease;
+}
+.admin-nav:hover .admin-sidebar-toggle,
+.admin-sidebar-toggle:focus-visible{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:translateY(-50%) scale(1);
 }
 .admin-sidebar-toggle:hover{background:#f21f32;color:#fff;box-shadow:8px 0 26px rgba(242,31,50,.24);transform:translateY(-50%) scale(1.04)}
 .admin-sidebar-toggle:active{transform:translateY(-50%) scale(.96)}
 
+/* Solo se hace angosto DESPUÉS de pulsar la flecha. */
 .admin-shell.admin-sidebar-collapsed{grid-template-columns:82px minmax(0,1fr)}
 .admin-shell.admin-sidebar-collapsed .admin-nav{padding-left:10px;padding-right:10px}
 .admin-shell.admin-sidebar-collapsed .admin-brand img{width:54px;margin:4px auto 22px}
@@ -38,7 +51,7 @@
 .admin-shell.admin-sidebar-collapsed .admin-content{min-width:0}
 
 @media(max-width:1100px) and (min-width:851px){
-  .admin-shell{grid-template-columns:180px minmax(0,1fr)}
+  .admin-shell:not(.admin-sidebar-collapsed){grid-template-columns:180px minmax(0,1fr)}
   .admin-shell.admin-sidebar-collapsed{grid-template-columns:72px minmax(0,1fr)}
   .admin-content{padding-left:20px;padding-right:18px}
 }
