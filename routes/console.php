@@ -8,7 +8,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Artisan::command('mallqui:build', function () {
+Artisan::command('frontend:build', function () {
     $frontend = base_path('frontend-angular');
 
     if (! is_dir($frontend)) {
@@ -16,7 +16,7 @@ Artisan::command('mallqui:build', function () {
         return 1;
     }
 
-    $this->info('Compilando la interfaz Angular de Mallqui Gym...');
+    $this->info('Compilando la interfaz Angular...');
 
     if (! is_dir($frontend.DIRECTORY_SEPARATOR.'node_modules')) {
         $this->comment('Instalando dependencias de Angular...');
@@ -44,6 +44,6 @@ Artisan::command('mallqui:build', function () {
     }
 
     $this->newLine();
-    $this->info('Mallqui Gym listo. Ahora ejecuta: php artisan serve');
+    $this->info('Frontend listo. Ahora ejecuta: php artisan serve');
     return 0;
 })->purpose('Compila Angular y lo integra directamente en Laravel/public');
