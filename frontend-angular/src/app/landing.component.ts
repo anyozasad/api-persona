@@ -23,7 +23,7 @@ import { RouterLink } from '@angular/router';
             <a href="#galeria">Galería</a>
             <a href="#contacto">Contacto</a>
           </nav>
-          <a routerLink="/usuario" class="primary-button small">Iniciar sesión</a>
+          <a routerLink="/login" class="primary-button small">Iniciar sesión</a>
         </header>
 
         <div class="hero-layout shell" id="inicio">
@@ -32,7 +32,7 @@ import { RouterLink } from '@angular/router';
             <h1>TU MEJOR VERSIÓN<br>COMIENZA <strong>AQUÍ</strong></h1>
             <p>Entrenamiento profesional, ambiente motivador y resultados reales. Estamos contigo en cada paso de tu transformación.</p>
             <div class="hero-actions">
-              <a routerLink="/usuario" class="primary-button">🏋 Comenzar ahora</a>
+              <a routerLink="/login" class="primary-button">🏋 Comenzar ahora</a>
               <a href="#planes" class="ghost-button">▷ Ver planes</a>
             </div>
           </div>
@@ -69,7 +69,13 @@ import { RouterLink } from '@angular/router';
               <div class="plan-price"><span>S/</span><b>{{ p.precio }}</b><small>/mes</small></div>
               <p class="plan-subtitle">{{ p.subtitulo }}</p>
               <ul><li *ngFor="let item of p.items">✓ {{ item }}</li></ul>
-              <button [class.primary-button]="p.destacado" [class.ghost-button]="!p.destacado">Elegir plan</button>
+              <a
+                [routerLink]="['/login']"
+                [queryParams]="{ plan: p.nombre }"
+                [class.primary-button]="p.destacado"
+                [class.ghost-button]="!p.destacado">
+                Elegir plan
+              </a>
             </article>
           </div>
         </section>
