@@ -4,29 +4,40 @@
 .admin-nav{position:relative;transition:padding .28s ease,width .28s ease;overflow:visible;box-sizing:border-box}
 .admin-nav nav button,.admin-brand,.admin-brand img,.admin-logout{transition:all .24s ease}
 
-/* Logo visible y completo en la parte superior del menú */
+/* Logo de Mallqui Gym: se muestra SOLO el diseño, sin tarjeta/blanco alrededor */
 .admin-brand{
-  width:170px;
-  height:120px;
-  margin:0 auto 18px;
-  padding:8px;
-  border-radius:16px;
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  box-sizing:border-box;
-  box-shadow:0 10px 28px rgba(0,0,0,.18);
+  width:170px!important;
+  height:126px!important;
+  margin:0 auto 18px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:visible!important;
+  box-sizing:border-box!important;
+  text-decoration:none!important;
 }
 .admin-brand img{
   display:block!important;
-  width:100%!important;
-  height:100%!important;
-  max-width:none!important;
-  margin:0!important;
+  width:156px!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:120px!important;
+  margin:0 auto!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
   object-fit:contain!important;
   object-position:center!important;
+  opacity:1!important;
+  visibility:visible!important;
+  filter:none!important;
 }
 
 /* La flecha no queda visible: aparece solo al acercar el mouse al menú */
@@ -64,17 +75,25 @@
 .admin-sidebar-toggle:hover{background:#f21f32;color:#fff;box-shadow:8px 0 26px rgba(242,31,50,.24);transform:translateY(-50%) scale(1.04)}
 .admin-sidebar-toggle:active{transform:translateY(-50%) scale(.96)}
 
-/* Solo se minimiza después de pulsar la flecha; el contenido sigue viéndose completo */
+/* Solo se minimiza después de pulsar la flecha */
 .admin-shell.admin-sidebar-collapsed{grid-template-columns:96px minmax(0,1fr)}
 .admin-shell.admin-sidebar-collapsed .admin-nav{padding-left:12px;padding-right:12px;min-width:0}
 .admin-shell.admin-sidebar-collapsed .admin-brand{
-  width:68px;
-  height:68px;
-  padding:5px;
-  margin:0 auto 18px;
-  border-radius:13px;
+  width:68px!important;
+  height:68px!important;
+  padding:0!important;
+  margin:0 auto 18px!important;
+  background:transparent!important;
+  box-shadow:none!important;
 }
-.admin-shell.admin-sidebar-collapsed .admin-brand img{width:100%!important;height:100%!important;margin:0!important;object-fit:contain!important}
+.admin-shell.admin-sidebar-collapsed .admin-brand img{
+  width:62px!important;
+  height:auto!important;
+  max-height:64px!important;
+  margin:0 auto!important;
+  object-fit:contain!important;
+  background:transparent!important;
+}
 .admin-shell.admin-sidebar-collapsed .admin-nav nav{gap:6px}
 .admin-shell.admin-sidebar-collapsed .admin-nav nav button{font-size:0!important;justify-content:center;padding:12px 8px;min-height:48px;width:100%;box-sizing:border-box}
 .admin-shell.admin-sidebar-collapsed .admin-nav nav button span{font-size:18px!important;margin:0}
@@ -85,9 +104,11 @@
 
 @media(max-width:1100px) and (min-width:851px){
   .admin-shell:not(.admin-sidebar-collapsed){grid-template-columns:190px minmax(0,1fr)}
-  .admin-brand{width:150px;height:106px}
+  .admin-brand{width:150px!important;height:110px!important}
+  .admin-brand img{width:140px!important;max-height:106px!important}
   .admin-shell.admin-sidebar-collapsed{grid-template-columns:88px minmax(0,1fr)}
-  .admin-shell.admin-sidebar-collapsed .admin-brand{width:62px;height:62px}
+  .admin-shell.admin-sidebar-collapsed .admin-brand{width:62px!important;height:62px!important}
+  .admin-shell.admin-sidebar-collapsed .admin-brand img{width:56px!important;max-height:58px!important}
   .admin-content{padding-left:20px;padding-right:18px}
 }
 
