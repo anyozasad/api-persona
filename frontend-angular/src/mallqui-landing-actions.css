@@ -1,0 +1,48 @@
+/* Funciones y estados de la pagina publica. Se agregan sin reemplazar el diseño aprobado. */
+.landing-nav nav a{cursor:pointer}
+.landing-nav nav a.active{color:#fff}
+.class-cards article{cursor:pointer;outline:none}
+.class-cards article:focus-visible,.gallery-card:focus-visible{outline:3px solid rgba(242,31,50,.28);outline-offset:3px}
+.class-cards article .class-photo{overflow:hidden}
+.class-cards article .class-photo:after{content:'Ver detalles';position:absolute;right:10px;top:10px;padding:6px 9px;border-radius:999px;background:rgba(5,20,41,.78);color:#fff;font-size:9px;font-weight:800;opacity:0;transform:translateY(-4px);transition:opacity .2s ease,transform .2s ease;backdrop-filter:blur(7px)}
+.class-cards article:hover .class-photo:after,.class-cards article:focus-visible .class-photo:after{opacity:1;transform:translateY(0)}
+
+/* Secciones que ya estaban en el menu pero no tenian destino real. */
+.landing-about{padding:18px 0 34px}
+.landing-about-panel{background:linear-gradient(135deg,#07162b,#0a2144);color:#fff;border-radius:16px;padding:28px 30px;display:grid;grid-template-columns:1.15fr 1fr;gap:30px;box-shadow:0 18px 42px rgba(6,22,45,.12)}
+.landing-about-copy .eyebrow{display:inline-flex;padding:6px 9px;border:1px solid rgba(242,31,50,.65);border-radius:7px;color:#fff;font-size:10px;font-weight:800;letter-spacing:.04em}
+.landing-about-copy h2{font-size:28px;margin:12px 0 10px}.landing-about-copy h2 strong{color:#f21f32}.landing-about-copy p{color:#cbd5e2;font-size:12px;line-height:1.7;margin:0;max-width:650px}
+.about-points{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-self:center}
+.about-points article{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);border-radius:12px;padding:17px 14px;min-height:118px;transition:transform .22s ease,background .22s ease}
+.about-points article:hover{transform:translateY(-3px);background:rgba(255,255,255,.09)}
+.about-points span{font-size:22px}.about-points b{display:block;margin:9px 0 5px;font-size:11px}.about-points small{color:#b9c6d6;font-size:9.5px;line-height:1.45}
+
+.landing-gallery{padding:8px 0 38px}
+.gallery-grid{display:grid;grid-template-columns:1.3fr .9fr .9fr;grid-auto-rows:160px;gap:12px}
+.gallery-card{position:relative;border:0;border-radius:12px;overflow:hidden;padding:0;background:#07162b;cursor:pointer;box-shadow:0 9px 24px rgba(8,28,55,.08)}
+.gallery-card:first-child{grid-row:span 2}.gallery-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .34s ease,filter .34s ease}.gallery-card:hover img{transform:scale(1.035);filter:brightness(.92)}
+.gallery-card span{position:absolute;left:12px;bottom:11px;padding:6px 9px;border-radius:7px;background:rgba(5,20,41,.76);color:#fff;font-size:10px;font-weight:800;backdrop-filter:blur(7px)}
+
+/* Contacto real desde el footer. */
+.footer-contact-link{color:#c5cfdb!important;font-size:11px!important;line-height:1.6;display:block;width:max-content;max-width:100%}
+.footer-contact-link:hover{color:#fff!important}
+.socials button{width:31px;height:31px;border:0;border-radius:50%;background:#fff;color:#122f55;display:grid;place-items:center;font-weight:900;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}
+.socials button:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(0,0,0,.18)}
+
+/* Modal general reutilizado por clases, planes y galeria. */
+.landing-modal-backdrop{position:fixed;inset:0;z-index:120;background:rgba(2,12,28,.68);backdrop-filter:blur(7px);display:grid;place-items:center;padding:22px;animation:mqFadeIn .2s ease both}
+.landing-modal{width:min(700px,96vw);max-height:min(82vh,760px);overflow:auto;background:#fff;border-radius:18px;box-shadow:0 28px 80px rgba(0,0,0,.28);position:relative;padding:27px;animation:mqScaleIn .25s ease both}
+.landing-modal-close{position:absolute;right:14px;top:14px;width:35px;height:35px;border:1px solid #e3e8ef;border-radius:50%;background:#fff;color:#0b203c;font-size:18px;display:grid;place-items:center;z-index:2}
+.landing-modal-close:hover{background:#fff1f3;color:#f21f32;border-color:#ffd4da}
+.modal-class-hero{height:220px;border-radius:13px;background-size:cover;background-position:center;position:relative;margin-bottom:19px;overflow:hidden}.modal-class-hero:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(4,18,38,.7),transparent 65%)}
+.modal-class-hero span{position:absolute;z-index:1;left:16px;bottom:14px;color:#fff;font-size:27px}
+.landing-modal h2{margin:0 45px 8px 0;font-size:25px}.landing-modal>p{color:#66768a;font-size:12px;line-height:1.65}
+.modal-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}.modal-meta div{border:1px solid #e4e9ef;border-radius:10px;padding:12px;background:#f9fbfd;display:flex;flex-direction:column;gap:4px}.modal-meta b{font-size:10px}.modal-meta span{font-size:10px;color:#69778a}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}.modal-actions .primary-button,.modal-actions .ghost-button{padding:11px 16px;font-size:11px}
+.modal-list{display:grid;gap:9px;margin-top:16px}.modal-list-row{display:grid;grid-template-columns:44px 1fr auto;gap:11px;align-items:center;border:1px solid #e5eaf0;border-radius:11px;padding:11px 12px}.modal-list-icon{width:38px;height:38px;border-radius:10px;background:#fff0f2;color:#f21f32;display:grid;place-items:center;font-size:18px}.modal-list-row p{margin:0;display:flex;flex-direction:column;gap:3px}.modal-list-row b{font-size:11px}.modal-list-row small{font-size:9px;color:#748195}.modal-list-row em{font-style:normal;font-size:9px;color:#17355e;background:#edf3ff;border-radius:999px;padding:5px 8px;white-space:nowrap}
+.plan-compare{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:17px}.plan-compare article{border:1px solid #e1e7ee;border-radius:12px;padding:16px;display:flex;flex-direction:column}.plan-compare article.recommended{border:2px solid #f21f32}.plan-compare h3{margin:0;color:#174c96;font-size:14px}.plan-compare article.recommended h3{color:#f21f32}.plan-compare strong{font-size:28px;margin:7px 0}.plan-compare small{color:#6f7c8e;font-size:9px}.plan-compare ul{padding-left:16px;flex:1;color:#425269;font-size:9px;line-height:1.75}.plan-compare a{margin-top:8px;padding:9px 10px;font-size:10px}
+
+.landing-toast{position:fixed;z-index:140;left:50%;bottom:26px;transform:translateX(-50%);background:#071a33;color:#fff;border:1px solid #294466;border-radius:10px;padding:11px 15px;font-size:10.5px;font-weight:700;box-shadow:0 14px 32px rgba(0,0,0,.22);animation:mqFadeUp .25s ease both}
+
+@media(max-width:900px){.landing-about-panel{grid-template-columns:1fr}.gallery-grid{grid-template-columns:1fr 1fr}.gallery-card:first-child{grid-row:span 1;grid-column:span 2}.plan-compare{grid-template-columns:1fr}.modal-meta{grid-template-columns:1fr}}
+@media(max-width:560px){.landing-about-panel{padding:22px 18px}.about-points{grid-template-columns:1fr}.gallery-grid{grid-template-columns:1fr;grid-auto-rows:190px}.gallery-card:first-child{grid-column:auto}.landing-modal{padding:22px 17px}.modal-list-row{grid-template-columns:40px 1fr}.modal-list-row em{grid-column:2;width:max-content}.modal-actions{flex-direction:column}.modal-actions a,.modal-actions button{width:100%}}
