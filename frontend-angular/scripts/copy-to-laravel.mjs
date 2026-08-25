@@ -27,10 +27,10 @@ if (!buildDir) {
 
 await mkdir(laravelPublic, { recursive: true });
 
-// Elimina únicamente archivos generados por Angular, sin tocar index.php de Laravel.
+// Limpia únicamente archivos generados por Angular, sin tocar index.php de Laravel.
 const current = await readdir(laravelPublic, { withFileTypes: true });
 for (const entry of current) {
-  const generatedFile = /^(index\.html|main(?:-.*)?\.js|polyfills(?:-.*)?\.js|styles(?:-.*)?\.css|runtime(?:-.*)?\.js|chunk(?:-.*)?\.js|main\.css|3rdpartylicenses\.txt)$/i.test(entry.name);
+  const generatedFile = /^(index\.html|main(?:-.*)?\.js|polyfills(?:-.*)?\.js|styles(?:-.*)?\.css|runtime(?:-.*)?\.js|chunk(?:-.*)?\.js|main(?:-.*)?\.css|3rdpartylicenses\.txt)$/i.test(entry.name);
   const generatedDir = entry.isDirectory() && entry.name === 'assets';
 
   if (generatedFile || generatedDir) {
@@ -38,6 +38,7 @@ for (const entry of current) {
   }
 }
 
+// Copia el build completo de Angular hacia public/ de Laravel.
 const buildEntries = await readdir(buildDir, { withFileTypes: true });
 for (const entry of buildEntries) {
   if (entry.name.toLowerCase() === 'index.php') continue;
@@ -50,27 +51,46 @@ for (const entry of buildEntries) {
 }
 
 const indexPath = path.join(laravelPublic, 'index.html');
-const stylesPath = path.join(laravelPublic, 'styles.css');
 const mainPath = path.join(laravelPublic, 'main.js');
 
-// Validación final.
 await access(indexPath);
-await access(stylesPath);
 await access(mainPath);
 
-// Para evitar que php artisan serve o el navegador pierdan la hoja de estilos,
-// incrustamos el CSS compilado directamente dentro del index de Angular.
-let html = await readFile(indexPath, 'utf8');
-const css = await readFile(stylesPath, 'utf8');
-const safeCss = css.replace(/<\/style/gi, '<\\/style');
+// Angular puede generar más de un CSS (por ejemplo styles.css y main.css).
+// Los unimos TODOS dentro del index para que Laravel siempre muestre el diseño completo.
+const publicEntries = await readdir(laravelPublic, { withFileTypes: true });
+const cssFiles = publicEntries
+  .filter(entry => entry.isFile() && entry.name.toLowerCase().endsWith('.css'))
+  .map(entry => entry.name)
+  .sort((a, b) => {
+    if (a === 'styles.css') return -1;
+    if (b === 'styles.css') return 1;
+    return a.localeCompare(b);
+  });
 
-const stylesheetTag = /<link[^>]+rel=["']stylesheet["'][^>]*href=["'][^"']*styles\.css[^"']*["'][^>]*>/i;
-if (stylesheetTag.test(html)) {
-  html = html.replace(stylesheetTag, `<style id="mallqui-angular-styles">${safeCss}</style>`);
-} else if (!html.includes('id="mallqui-angular-styles"')) {
-  html = html.replace('</head>', `<style id="mallqui-angular-styles">${safeCss}</style></head>`);
+if (cssFiles.length === 0) {
+  throw new Error('Angular no generó archivos CSS. Revisa angular.json.');
 }
+
+let combinedCss = '';
+for (const cssFile of cssFiles) {
+  const css = await readFile(path.join(laravelPublic, cssFile), 'utf8');
+  combinedCss += `\n/* ${cssFile} */\n${css}\n`;
+}
+
+const safeCss = combinedCss.replace(/<\/style/gi, '<\\/style');
+let html = await readFile(indexPath, 'utf8');
+
+// Retira links CSS generados por Angular porque ya quedarán incrustados.
+html = html.replace(/<link[^>]+rel=["']stylesheet["'][^>]*>/gi, '');
+
+// Si existía un bloque anterior, lo reemplazamos.
+html = html.replace(/<style id=["']mallqui-angular-styles["']>[\s\S]*?<\/style>/i, '');
+html = html.replace(
+  '</head>',
+  `<style id="mallqui-angular-styles">${safeCss}</style></head>`
+);
 
 await writeFile(indexPath, html, 'utf8');
 
-console.log('✓ Angular integrado en Laravel con CSS incrustado y scripts correctos');
+console.log(`✓ Angular integrado en Laravel con ${cssFiles.length} archivo(s) CSS: ${cssFiles.join(', ')}`);
