@@ -13,6 +13,11 @@ function setupAdminSidebar(): void {
     return;
   }
 
+  // Siempre abrir el panel con el menú COMPLETO.
+  // También borra cualquier preferencia antigua que lo dejaba minimizado.
+  localStorage.removeItem('mallqui_admin_sidebar_collapsed');
+  shell.classList.remove('admin-sidebar-collapsed');
+
   nav.querySelectorAll<HTMLButtonElement>('nav button').forEach((item) => {
     const label = item.textContent?.replace(/\s+/g, ' ').trim();
     if (label) item.setAttribute('title', label);
@@ -21,9 +26,6 @@ function setupAdminSidebar(): void {
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'admin-sidebar-toggle';
-
-  // El administrador SIEMPRE inicia con el menú completo.
-  // Solo se minimiza cuando el usuario pulsa la flecha.
   applySidebarState(shell, button, false);
 
   button.addEventListener('click', () => {
