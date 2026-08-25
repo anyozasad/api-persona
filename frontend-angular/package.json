@@ -2,7 +2,11 @@
   "name": "mallqui-gym-frontend",
   "version": "1.0.0",
   "private": true,
-  "scripts": {"start": "ng serve", "build": "ng build"},
+  "scripts": {
+    "start": "ng serve",
+    "build": "ng build",
+    "build:laravel": "ng build && node scripts/copy-to-laravel.mjs"
+  },
   "dependencies": {
     "@angular/common": "^20.0.0",
     "@angular/compiler": "^20.0.0",
