@@ -13,9 +13,6 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
     <div class="login-page">
       <section class="login-visual">
         <div class="login-overlay"></div>
-        <a routerLink="/" class="login-brand" aria-label="Volver al inicio">
-          <img src="/assets/mallqui-logo.svg" alt="Mallqui Gym">
-        </a>
         <div class="login-message">
           <span class="login-kicker">MALLQUI GYM</span>
           <h1>ENTRENA.<br><strong>SUPÉRATE.</strong><br>AVANZA.</h1>
