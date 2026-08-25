@@ -1,9 +1,86 @@
 @import './mallqui-landing.css';
 @import './mallqui-member.css';
 @import './mallqui-admin.css';
+@import './mallqui-login.css';
+@import './mallqui-register.css';
 
-/* Estilos globales base de Mallqui Gym. Los tres diseños se cargan aquí para
-   que Angular los incluya siempre en el bundle global que luego sirve Laravel. */
+/* Estilos globales base de Mallqui Gym. */
 html, body { margin: 0; min-height: 100%; }
 body { font-family: Inter, Arial, sans-serif; }
 app-root { display: block; min-height: 100vh; }
+
+/* Microinteracciones UI/UX: se agregan sin cambiar la estructura del diseño. */
+.primary-button,
+.ghost-button,
+.plan-cards button,
+.member-actions button,
+.coach-card button,
+.card-heading button,
+.admin-nav a,
+.admin-logout,
+.login-submit,
+.register-submit,
+.social-button,
+.create-account-button {
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease, background-color .2s ease, border-color .2s ease, color .2s ease;
+}
+
+.primary-button:hover,
+.plan-cards .primary-button:hover,
+.login-submit:hover,
+.register-submit:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+}
+
+.ghost-button:hover,
+.plan-cards .ghost-button:hover,
+.member-actions button:hover,
+.coach-card button:hover,
+.card-heading button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(8, 28, 55, .10);
+}
+
+.primary-button:active,
+.ghost-button:active,
+.plan-cards button:active,
+.member-actions button:active,
+.coach-card button:active,
+.social-button:active,
+.create-account-button:active {
+  transform: translateY(0) scale(.98);
+}
+
+.class-cards article,
+.plan-cards article,
+.member-stats article,
+.member-grid article,
+.member-grid aside,
+.admin-kpis article,
+.admin-dashboard-grid article {
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+
+.class-cards article:hover,
+.plan-cards article:hover,
+.member-stats article:hover,
+.member-grid article:hover,
+.member-grid aside:hover,
+.admin-kpis article:hover,
+.admin-dashboard-grid article:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px rgba(8, 28, 55, .10);
+}
+
+.landing-nav nav a,
+.footer-layout a,
+.member-topbar nav a {
+  transition: color .2s ease, opacity .2s ease, transform .2s ease;
+}
+
+.landing-nav nav a:hover,
+.footer-layout a:hover,
+.member-topbar nav a:hover {
+  color: #ff3343;
+}
