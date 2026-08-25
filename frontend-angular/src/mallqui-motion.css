@@ -1,0 +1,83 @@
+/* Animaciones globales Mallqui Gym.
+   Solo movimiento/microinteracciones: no cambia colores, medidas ni estructura. */
+
+@keyframes mqFadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes mqFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes mqSlideLeft{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:translateX(0)}}
+@keyframes mqSlideRight{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
+@keyframes mqScaleIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+@keyframes mqBarGrow{from{transform:scaleY(.08);opacity:.35}to{transform:scaleY(1);opacity:1}}
+@keyframes mqLineReveal{from{opacity:.25;transform:scaleX(.08)}to{opacity:1;transform:scaleX(1)}}
+@keyframes mqSoftPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+
+/* Página pública */
+.landing-nav{animation:mqFadeIn .45s ease both}
+.hero-copy{animation:mqSlideLeft .62s cubic-bezier(.2,.7,.2,1) both}
+.hero-person{animation:mqSlideRight .68s cubic-bezier(.2,.7,.2,1) .05s both}
+.hero-kicker{animation:mqFadeUp .42s ease .08s both}
+.hero-copy h1{animation:mqFadeUp .5s ease .14s both}
+.hero-copy p{animation:mqFadeUp .5s ease .20s both}
+.hero-actions{animation:mqFadeUp .5s ease .26s both}
+.feature-bar{animation:mqFadeUp .55s ease .24s both}
+.feature-bar>div{transition:transform .22s ease,background-color .22s ease}
+.feature-bar>div:hover{transform:translateY(-3px)}
+.section-heading{animation:mqFadeUp .42s ease both}
+.class-cards article,.plan-cards article{animation:mqFadeUp .5s ease both}
+.class-cards article:nth-child(2),.plan-cards article:nth-child(2){animation-delay:.06s}
+.class-cards article:nth-child(3),.plan-cards article:nth-child(3){animation-delay:.12s}
+.class-cards article:nth-child(4){animation-delay:.18s}
+.class-photo{transition:transform .32s ease,filter .32s ease}
+.class-cards article:hover .class-photo{transform:scale(1.025)}
+.landing-footer{animation:mqFadeIn .55s ease both}
+
+/* Login / registro */
+.login-visual{animation:mqFadeIn .5s ease both}
+.login-message{animation:mqSlideLeft .58s cubic-bezier(.2,.7,.2,1) .08s both}
+.login-panel{animation:mqFadeIn .42s ease .05s both}
+.login-card{animation:mqScaleIn .5s cubic-bezier(.2,.7,.2,1) .08s both!important}
+.login-heading{animation:mqFadeUp .42s ease .14s both}
+.login-card form{animation:mqFadeUp .46s ease .19s both}
+.login-socials{animation:mqFadeUp .46s ease .24s both}
+.login-register-box{animation:mqFadeUp .46s ease .29s both}
+.login-company-logo img{transition:transform .25s ease,filter .25s ease}
+.login-heading:hover .login-company-logo img{transform:scale(1.04)}
+
+/* Panel del usuario */
+.member-topbar{animation:mqFadeIn .45s ease both}
+.member-welcome{animation:mqFadeUp .52s ease .05s both}
+.member-stats article{animation:mqFadeUp .48s ease both}
+.member-stats article:nth-child(2){animation-delay:.05s}
+.member-stats article:nth-child(3){animation-delay:.10s}
+.member-stats article:nth-child(4){animation-delay:.15s}
+.member-grid article,.member-grid aside{animation:mqFadeUp .5s ease .12s both}
+.member-actions{animation:mqFadeUp .48s ease .18s both}
+.progress-track i{transform-origin:left center;animation:mqLineReveal .7s cubic-bezier(.2,.7,.2,1) .25s both}
+
+/* Panel administrador */
+.admin-nav{animation:mqSlideLeft .48s cubic-bezier(.2,.7,.2,1) both}
+.admin-header{animation:mqFadeUp .45s ease .03s both}
+.admin-kpis article{animation:mqFadeUp .46s ease both}
+.admin-kpis article:nth-child(2){animation-delay:.04s}
+.admin-kpis article:nth-child(3){animation-delay:.08s}
+.admin-kpis article:nth-child(4){animation-delay:.12s}
+.admin-kpis article:nth-child(5){animation-delay:.16s}
+.admin-kpis article:nth-child(6){animation-delay:.20s}
+.admin-dashboard-grid article{animation:mqFadeUp .5s ease .12s both}
+.admin-donut{animation:mqScaleIn .58s cubic-bezier(.2,.7,.2,1) .18s both}
+.admin-bars i{transform-origin:center bottom;animation:mqBarGrow .65s cubic-bezier(.2,.7,.2,1) both}
+.admin-bars>div:nth-child(2) i{animation-delay:.04s}.admin-bars>div:nth-child(3) i{animation-delay:.08s}.admin-bars>div:nth-child(4) i{animation-delay:.12s}.admin-bars>div:nth-child(5) i{animation-delay:.16s}.admin-bars>div:nth-child(6) i{animation-delay:.20s}.admin-bars>div:nth-child(7) i{animation-delay:.24s}
+.income-chart svg{transform-origin:center;animation:mqScaleIn .58s ease .12s both}
+
+/* Botones y controles: respuesta más natural sin cambiar su diseño */
+button,a,.primary-button,.ghost-button,.social-button,.create-account-button{ -webkit-tap-highlight-color:transparent }
+.primary-button,.ghost-button,.login-submit,.register-submit,.social-button,.create-account-button,.member-actions button,.coach-card button,.card-heading button,.admin-nav nav button,.admin-nav nav a{
+  will-change:transform;
+}
+.primary-button:hover,.ghost-button:hover,.login-submit:hover,.register-submit:hover,.social-button:hover,.create-account-button:hover,.member-actions button:hover,.coach-card button:hover,.card-heading button:hover{transform:translateY(-2px)}
+.primary-button:active,.ghost-button:active,.login-submit:active,.register-submit:active,.social-button:active,.create-account-button:active,.member-actions button:active,.coach-card button:active,.card-heading button:active{transform:translateY(0) scale(.985)}
+.admin-profile>span b,.bell b{animation:mqSoftPulse 2.2s ease-in-out infinite}
+
+/* Respeta accesibilidad del sistema y evita mareos si el usuario reduce movimiento. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
