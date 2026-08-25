@@ -43,19 +43,6 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
             Plan seleccionado: <strong>{{ planSeleccionado }}</strong>
           </div>
 
-          <div class="login-socials">
-            <button type="button" class="social-button google" (click)="socialLogin('Google')">
-              <span class="social-mark google-mark">G</span>
-              Continuar con Google
-            </button>
-            <button type="button" class="social-button facebook" (click)="socialLogin('Facebook')">
-              <span class="social-mark facebook-mark">f</span>
-              Continuar con Facebook
-            </button>
-          </div>
-
-          <div class="login-divider"><span>o ingresa con tu correo</span></div>
-
           <form (ngSubmit)="ingresar()" #loginForm="ngForm">
             <label>
               Correo electrónico
@@ -97,16 +84,31 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
             <p *ngIf="mensaje" class="login-success">{{ mensaje }}</p>
 
             <button class="login-submit" type="submit" [disabled]="loginForm.invalid">
-              Iniciar sesión →
+              <span>Iniciar sesión</span><b>→</b>
             </button>
           </form>
+
+          <div class="login-divider social-divider"><span>o continúa con</span></div>
+
+          <div class="login-socials">
+            <button type="button" class="social-button google" (click)="socialLogin('Google')">
+              <span class="social-mark google-mark">G</span>
+              <span>Continuar con Google</span>
+              <b>→</b>
+            </button>
+            <button type="button" class="social-button facebook" (click)="socialLogin('Facebook')">
+              <span class="social-mark facebook-mark">f</span>
+              <span>Continuar con Facebook</span>
+              <b>→</b>
+            </button>
+          </div>
 
           <div class="login-register-box">
             <div>
               <strong>¿Aún no tienes cuenta?</strong>
               <span>Crea tu perfil y empieza a entrenar con nosotros.</span>
             </div>
-            <a routerLink="/registro" class="create-account-button">Crear cuenta</a>
+            <a routerLink="/registro" class="create-account-button">Crear cuenta →</a>
           </div>
 
           <p class="login-demo-note">Para la demostración del sistema: un correo que contenga <b>admin</b> abre el panel administrador; cualquier otro correo abre el panel del usuario.</p>
