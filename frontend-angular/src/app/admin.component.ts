@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -6,6 +6,8 @@ import { RouterLink } from '@angular/router';
   selector: 'app-admin',
   standalone: true,
   imports: [CommonModule, RouterLink],
+  styleUrls: ['../mallqui-admin.css'],
+  encapsulation: ViewEncapsulation.None,
   template: `
     <div class="admin-shell">
       <aside class="admin-nav">
