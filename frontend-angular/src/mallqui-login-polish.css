@@ -1,0 +1,40 @@
+/* Ajustes visuales del login: mantiene la estructura y mejora jerarquía/contraste. */
+.login-card{animation:loginCardIn .45s ease both}
+@keyframes loginCardIn{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.login-submit{position:relative;overflow:hidden;background:linear-gradient(135deg,#ff2639 0%,#f21f32 48%,#d90f24 100%);box-shadow:0 14px 30px rgba(242,31,50,.28);letter-spacing:.01em}
+.login-submit span{position:relative;z-index:2}
+.login-submit b{position:relative;z-index:2;font-size:18px;margin-left:6px;transition:transform .2s ease}
+.login-submit:hover b{transform:translateX(4px)}
+.login-submit:before{content:'';position:absolute;top:-70%;left:-35%;width:28%;height:240%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.33),transparent);transform:rotate(18deg);transition:left .55s ease}
+.login-submit:hover:before{left:115%}
+.login-submit:disabled{opacity:.78;background:linear-gradient(135deg,#ff5361,#f21f32);box-shadow:0 10px 24px rgba(242,31,50,.20);color:#fff}
+
+.social-divider{margin:17px 0 13px}
+.social-divider span{padding:0 14px;color:#718097;font-weight:700;letter-spacing:.02em}
+.login-socials{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
+.social-button{height:52px;border-radius:12px;padding:0 14px;justify-content:flex-start;position:relative;overflow:hidden;font-size:11px;font-weight:850;letter-spacing:.005em}
+.social-button>span:nth-child(2){flex:1;text-align:left}
+.social-button>b{font-size:15px;margin-left:auto;transition:transform .2s ease}
+.social-button:hover>b{transform:translateX(3px)}
+.social-button:before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s ease;pointer-events:none}
+.social-button:hover:before{opacity:1}
+
+.social-button.google{background:linear-gradient(135deg,#ffffff 0%,#f5f8ff 55%,#edf4ff 100%);border:1px solid #c8d6ea;color:#16365f;box-shadow:0 8px 18px rgba(66,133,244,.10)}
+.social-button.google:before{background:linear-gradient(135deg,rgba(66,133,244,.04),rgba(234,67,53,.035))}
+.social-button.google:hover{border-color:#4285f4;box-shadow:0 13px 26px rgba(66,133,244,.17)}
+.google-mark{background:linear-gradient(135deg,#fff,#f5f8ff);border:2px solid #dbe5f3;color:#4285f4;box-shadow:0 4px 10px rgba(66,133,244,.10)}
+
+.social-button.facebook{background:linear-gradient(135deg,#2584ff 0%,#1877f2 48%,#0d5fcc 100%);border:1px solid #1268d8;color:#fff;box-shadow:0 10px 22px rgba(24,119,242,.24)}
+.social-button.facebook:before{background:linear-gradient(110deg,rgba(255,255,255,.16),transparent 55%)}
+.social-button.facebook:hover{filter:brightness(1.04);box-shadow:0 15px 30px rgba(24,119,242,.31);border-color:#0d5fcc}
+.facebook-mark{background:rgba(255,255,255,.17);color:#fff;border:1px solid rgba(255,255,255,.33);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+
+.login-register-box{margin-top:17px;background:linear-gradient(100deg,#fff7f8 0%,#fff 58%,#f7f9fc 100%);border-color:#f0d9dd;box-shadow:0 8px 22px rgba(24,42,70,.045)}
+.create-account-button{border:0!important;background:linear-gradient(135deg,#f51f32,#df1125)!important;color:#fff!important;box-shadow:0 9px 20px rgba(242,31,50,.20);padding:10px 14px!important}
+.create-account-button:hover{background:linear-gradient(135deg,#ff3042,#e51126)!important;color:#fff!important;box-shadow:0 13px 26px rgba(242,31,50,.28)!important}
+
+.input-wrap{box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}
+.login-options{padding:1px 2px}
+
+@media(max-width:560px){.login-socials{grid-template-columns:1fr}.social-button{height:50px}.social-divider{margin-top:15px}}
