@@ -22,16 +22,17 @@ for (const candidate of candidates) {
 }
 
 if (!buildDir) {
-  throw new Error('No se encontró el build de Angular. Ejecuta primero npm run build.');
+  throw new Error('No se encontró el build de Angular.');
 }
 
 await mkdir(laravelPublic, { recursive: true });
 
-// Limpia únicamente archivos generados por Angular, sin tocar index.php de Laravel.
+// Elimina únicamente archivos generados por Angular, sin tocar index.php de Laravel.
 const current = await readdir(laravelPublic, { withFileTypes: true });
 for (const entry of current) {
-  const generatedFile = /^(index\.html|main-.*\.js|polyfills-.*\.js|styles-.*\.css|runtime-.*\.js|chunk-.*\.js|3rdpartylicenses\.txt)$/i.test(entry.name);
+  const generatedFile = /^(index\.html|main(?:-.*)?\.js|polyfills(?:-.*)?\.js|styles(?:-.*)?\.css|runtime(?:-.*)?\.js|chunk(?:-.*)?\.js|main\.css|3rdpartylicenses\.txt)$/i.test(entry.name);
   const generatedDir = entry.isDirectory() && entry.name === 'assets';
+
   if (generatedFile || generatedDir) {
     await rm(path.join(laravelPublic, entry.name), { recursive: true, force: true });
   }
@@ -39,8 +40,8 @@ for (const entry of current) {
 
 const buildEntries = await readdir(buildDir, { withFileTypes: true });
 for (const entry of buildEntries) {
-  // Nunca reemplazamos el front controller de Laravel.
   if (entry.name.toLowerCase() === 'index.php') continue;
+
   await cp(
     path.join(buildDir, entry.name),
     path.join(laravelPublic, entry.name),
@@ -48,4 +49,9 @@ for (const entry of buildEntries) {
   );
 }
 
-console.log('✓ Angular compilado e integrado en Laravel/public');
+// Validación final para evitar que Laravel sirva una interfaz sin estilos.
+await access(path.join(laravelPublic, 'index.html'));
+await access(path.join(laravelPublic, 'styles.css'));
+await access(path.join(laravelPublic, 'main.js'));
+
+console.log('✓ Angular integrado en Laravel con estilos y scripts correctos');
