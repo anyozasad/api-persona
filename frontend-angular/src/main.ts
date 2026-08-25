@@ -1,3 +1,4 @@
+import 'zone.js';
 import './styles.css';
 import './mallqui-landing.css';
 import './mallqui-member.css';
