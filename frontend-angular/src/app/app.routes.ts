@@ -5,11 +5,11 @@ import { RegisterComponent } from './register.component';
 import { ResetPasswordComponent } from './reset-password.component';
 import { UsuarioComponent } from './usuario.component';
 import { AdminComponent } from './admin.component';
-import { authGuard, roleGuard } from './auth.guard';
+import { authGuard, logoutOnLoginGuard, roleGuard } from './auth.guard';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
-  { path: 'login', component: LoginComponent },
+  { path: 'login', component: LoginComponent, canActivate: [logoutOnLoginGuard] },
   { path: 'registro', component: RegisterComponent },
   { path: 'restablecer', component: ResetPasswordComponent },
   { path: 'usuario', component: UsuarioComponent, canActivate: [authGuard, roleGuard(['Cliente'])] },
