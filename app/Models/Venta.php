@@ -12,7 +12,7 @@ class Venta extends Model
 
     protected $fillable = [
         'id_cliente', 'id_usuario', 'fecha_venta', 'tipo_comprobante',
-        'numero_comprobante', 'subtotal', 'igv', 'total'
+        'numero_comprobante', 'metodo_pago', 'numero_operacion', 'subtotal', 'igv', 'total'
     ];
 
     protected $casts = [
