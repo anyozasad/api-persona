@@ -15,33 +15,23 @@ class GenerarBaseDatos extends Command
     {
         $force = (bool) $this->option('force');
 
-        $codigoBase = Artisan::call('db:generar-interno', [
-            '--force' => $force,
-        ]);
-        $salidaBase = trim(Artisan::output());
-        if ($salidaBase !== '') {
-            $this->line($salidaBase);
-        }
+        foreach (['db:generar-interno', 'db:operacion-interno', 'db:produccion-interno'] as $comando) {
+            $codigo = Artisan::call($comando, ['--force' => $force]);
+            $salida = trim(Artisan::output());
 
-        if ($codigoBase !== 0) {
-            return self::FAILURE;
-        }
+            if ($salida !== '') {
+                $this->line($salida);
+            }
 
-        $codigoOperacion = Artisan::call('db:operacion-interno', [
-            '--force' => $force,
-        ]);
-        $salidaOperacion = trim(Artisan::output());
-        if ($salidaOperacion !== '') {
-            $this->line($salidaOperacion);
-        }
-
-        if ($codigoOperacion !== 0) {
-            return self::FAILURE;
+            if ($codigo !== 0) {
+                $this->error("No se pudo ejecutar {$comando}.");
+                return self::FAILURE;
+            }
         }
 
         $this->newLine();
         $this->info('Todas las migraciones del sistema están preparadas.');
-        $this->comment('Siguiente paso: php artisan migrate');
+        $this->comment('En una base ya existente usa: php artisan db:sincronizar');
 
         return self::SUCCESS;
     }
