@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Asistencia;
+use App\Models\ClienteMembresia;
+use App\Models\PagoMembresia;
+use App\Models\Venta;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ReporteController extends Controller
@@ -25,5 +30,75 @@ class ReporteController extends Controller
         return response()->json(
             DB::table('vista_ventas')->get()
         );
+    }
+
+    public function ingresos(Request $request)
+    {
+        $datos = $request->validate([
+            'desde' => 'nullable|date',
+            'hasta' => 'nullable|date|after_or_equal:desde',
+        ]);
+
+        $desde = isset($datos['desde']) ? now()->parse($datos['desde'])->startOfDay() : now()->startOfMonth();
+        $hasta = isset($datos['hasta']) ? now()->parse($datos['hasta'])->endOfDay() : now()->endOfMonth();
+
+        $pagosMembresia = PagoMembresia::query()
+            ->where('estado_pago', 'Completado')
+            ->whereBetween('fecha_pago', [$desde, $hasta])
+            ->sum('monto');
+
+        $ventas = Venta::query()
+            ->whereBetween('fecha_venta', [$desde, $hasta])
+            ->sum('total');
+
+        return response()->json([
+            'desde' => $desde->toDateString(),
+            'hasta' => $hasta->toDateString(),
+            'membresias' => round((float) $pagosMembresia, 2),
+            'ventas_productos' => round((float) $ventas, 2),
+            'total_ingresos' => round((float) $pagosMembresia + (float) $ventas, 2),
+        ]);
+    }
+
+    public function vencimientos(Request $request)
+    {
+        $datos = $request->validate([
+            'dias' => 'nullable|integer|min:1|max:90',
+        ]);
+
+        $dias = (int) ($datos['dias'] ?? 7);
+
+        return response()->json(
+            ClienteMembresia::with(['cliente', 'membresia'])
+                ->where('estado', 'Activo')
+                ->whereBetween('fecha_fin', [today()->toDateString(), today()->addDays($dias)->toDateString()])
+                ->orderBy('fecha_fin')
+                ->get()
+        );
+    }
+
+    public function asistencias(Request $request)
+    {
+        $datos = $request->validate([
+            'desde' => 'nullable|date',
+            'hasta' => 'nullable|date|after_or_equal:desde',
+        ]);
+
+        $desde = $datos['desde'] ?? now()->startOfMonth()->toDateString();
+        $hasta = $datos['hasta'] ?? now()->endOfMonth()->toDateString();
+
+        $porDia = Asistencia::query()
+            ->selectRaw('DATE(fecha_hora_entrada) as fecha, COUNT(*) as total')
+            ->whereBetween(DB::raw('DATE(fecha_hora_entrada)'), [$desde, $hasta])
+            ->groupBy(DB::raw('DATE(fecha_hora_entrada)'))
+            ->orderBy('fecha')
+            ->get();
+
+        return response()->json([
+            'desde' => $desde,
+            'hasta' => $hasta,
+            'total' => $porDia->sum('total'),
+            'por_dia' => $porDia,
+        ]);
     }
 }
