@@ -18,7 +18,7 @@ class AuthController extends Controller
             'dni' => 'nullable|string|max:15|unique:usuarios,dni',
             'telefono' => 'nullable|string|max:25',
             'correo' => 'required|email|max:150|unique:usuarios,correo',
-            'contrasena' => 'required|string|min:6',
+            'contrasena' => 'required|string|min:8|max:100',
         ]);
 
         $datos['contrasena'] = Hash::make($datos['contrasena']);
@@ -27,7 +27,7 @@ class AuthController extends Controller
         $datos['fecha_registro'] = now();
 
         $usuario = Usuario::create($datos);
-        $token = $usuario->createToken('mallqui-gym')->plainTextToken;
+        $token = $usuario->createToken('sesion-api')->plainTextToken;
 
         return response()->json([
             'mensaje' => 'Usuario registrado correctamente',
@@ -39,14 +39,18 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $login = $request->input('login')
+        $login = trim((string) (
+            $request->input('login')
             ?? $request->input('correo')
-            ?? $request->input('email');
+            ?? $request->input('email')
+        ));
 
-        $contrasena = $request->input('contrasena')
-            ?? $request->input('password');
+        $contrasena = (string) (
+            $request->input('contrasena')
+            ?? $request->input('password')
+        );
 
-        if (!$login || !$contrasena) {
+        if ($login === '' || $contrasena === '') {
             throw ValidationException::withMessages([
                 'login' => ['Ingresa tu correo o nombre de usuario.'],
                 'contrasena' => ['Ingresa tu contraseña.'],
@@ -58,19 +62,20 @@ class AuthController extends Controller
             ->orWhere('nombre_usuario', $login)
             ->first();
 
+        // Se usa el mismo mensaje para usuario inexistente y contraseña incorrecta.
         if (!$usuario || !Hash::check($contrasena, $usuario->contrasena)) {
             throw ValidationException::withMessages([
                 'login' => ['Las credenciales ingresadas no son correctas.'],
             ]);
         }
 
-        if (strtolower((string) $usuario->estado) !== 'activo') {
+        if (mb_strtolower((string) $usuario->estado) !== 'activo') {
             return response()->json([
                 'mensaje' => 'El usuario se encuentra inactivo.',
             ], 403);
         }
 
-        $token = $usuario->createToken('mallqui-gym')->plainTextToken;
+        $token = $usuario->createToken('sesion-api')->plainTextToken;
 
         return response()->json([
             'mensaje' => 'Inicio de sesión correcto',
@@ -94,11 +99,22 @@ class AuthController extends Controller
         ]);
     }
 
+    public function logoutTodos(Request $request)
+    {
+        /** @var Usuario $usuario */
+        $usuario = $request->user();
+        $usuario->tokens()->delete();
+
+        return response()->json([
+            'mensaje' => 'Todas las sesiones fueron cerradas correctamente',
+        ]);
+    }
+
     public function cambiarContrasena(Request $request)
     {
         $datos = $request->validate([
             'contrasena_actual' => 'required|string',
-            'contrasena_nueva' => 'required|string|min:6|different:contrasena_actual',
+            'contrasena_nueva' => 'required|string|min:8|max:100|different:contrasena_actual',
         ]);
 
         /** @var Usuario $usuario */
@@ -114,8 +130,9 @@ class AuthController extends Controller
             'contrasena' => Hash::make($datos['contrasena_nueva']),
         ]);
 
+        // Al cambiar la contraseña se invalidan todas las sesiones anteriores.
         $usuario->tokens()->delete();
-        $token = $usuario->createToken('mallqui-gym')->plainTextToken;
+        $token = $usuario->createToken('sesion-api')->plainTextToken;
 
         return response()->json([
             'mensaje' => 'Contraseña actualizada correctamente',
