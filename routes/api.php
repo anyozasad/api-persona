@@ -60,6 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'rol:Cliente', 'auditoria'])->prefix('mi-cuenta')->group(function () {
     Route::get('/resumen', [PortalClienteController::class, 'resumen']);
     Route::get('/perfil', [PortalClienteController::class, 'perfil']);
+    Route::put('/perfil', [PortalClienteController::class, 'actualizarPerfil']);
     Route::get('/membresia', [PortalClienteController::class, 'membresia']);
     Route::get('/pagos', [PortalClienteController::class, 'pagos']);
     Route::get('/rutinas', [PortalClienteController::class, 'rutinas']);
