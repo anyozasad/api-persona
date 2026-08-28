@@ -5,9 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -17,7 +22,7 @@ class AuthController extends Controller
             'nombre_usuario' => 'required|string|max:80|unique:usuarios,nombre_usuario',
             'nombres' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
-            'dni' => 'required|string|max:15|unique:usuarios,dni',
+            'dni' => 'required|string|max:15|unique:usuarios,dni|unique:clientes,dni',
             'telefono' => 'nullable|string|max:25',
             'correo' => 'required|email|max:150|unique:usuarios,correo',
             'contrasena' => 'required|string|min:8|max:100',
@@ -32,17 +37,15 @@ class AuthController extends Controller
 
             $usuario = Usuario::create($datosUsuario);
 
-            $cliente = Cliente::firstOrCreate(
-                ['dni' => $datos['dni']],
-                [
-                    'nombres' => $datos['nombres'],
-                    'apellidos' => $datos['apellidos'],
-                    'telefono' => $datos['telefono'] ?? null,
-                    'correo' => $datos['correo'],
-                    'fecha_registro' => now(),
-                    'estado' => 'Activo',
-                ]
-            );
+            $cliente = Cliente::create([
+                'dni' => $datos['dni'],
+                'nombres' => $datos['nombres'],
+                'apellidos' => $datos['apellidos'],
+                'telefono' => $datos['telefono'] ?? null,
+                'correo' => $datos['correo'],
+                'fecha_registro' => now(),
+                'estado' => 'Activo',
+            ]);
 
             return [$usuario, $cliente];
         });
@@ -96,7 +99,7 @@ class AuthController extends Controller
         }
 
         $token = $usuario->createToken('sesion-api')->plainTextToken;
-        $cliente = Cliente::where('dni', $usuario->dni)->first();
+        $cliente = $usuario->dni ? Cliente::where('dni', $usuario->dni)->first() : null;
 
         return response()->json([
             'mensaje' => 'Inicio de sesión correcto',
@@ -111,7 +114,7 @@ class AuthController extends Controller
     {
         /** @var Usuario $usuario */
         $usuario = $request->user();
-        $cliente = Cliente::where('dni', $usuario->dni)->first();
+        $cliente = $usuario->dni ? Cliente::where('dni', $usuario->dni)->first() : null;
 
         return response()->json([
             'usuario' => $usuario,
@@ -167,5 +170,90 @@ class AuthController extends Controller
             'token_type' => 'Bearer',
             'access_token' => $token,
         ]);
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $datos = $request->validate([
+            'correo' => 'required|email|max:150',
+        ]);
+
+        $correo = mb_strtolower(trim($datos['correo']));
+        $usuario = Usuario::whereRaw('LOWER(correo) = ?', [$correo])->first();
+
+        if ($usuario && mb_strtolower((string) $usuario->estado) === 'activo') {
+            $token = Str::random(64);
+            $cacheKey = $this->passwordResetKey($correo);
+
+            Cache::put($cacheKey, [
+                'token_hash' => hash('sha256', $token),
+                'usuario_id' => $usuario->id_usuario,
+            ], now()->addMinutes(30));
+
+            $url = url('/restablecer').'?token='.urlencode($token).'&email='.urlencode($correo);
+
+            try {
+                Mail::raw(
+                    "Se solicitó restablecer la contraseña de tu cuenta.\n\nAbre este enlace (válido por 30 minutos):\n{$url}\n\nSi no realizaste esta solicitud, ignora este mensaje.",
+                    function ($message) use ($correo) {
+                        $message->to($correo)->subject('Restablecer contraseña');
+                    }
+                );
+            } catch (Throwable $e) {
+                Log::error('No se pudo enviar correo de recuperación', [
+                    'usuario_id' => $usuario->id_usuario,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        return response()->json([
+            'mensaje' => 'Si el correo está registrado, recibirás un enlace de recuperación válido por 30 minutos.',
+        ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $datos = $request->validate([
+            'correo' => 'required|email|max:150',
+            'token' => 'required|string|min:32|max:255',
+            'contrasena' => 'required|string|min:8|max:100|confirmed',
+        ]);
+
+        $correo = mb_strtolower(trim($datos['correo']));
+        $cacheKey = $this->passwordResetKey($correo);
+        $reset = Cache::get($cacheKey);
+
+        if (!$reset || !hash_equals((string) ($reset['token_hash'] ?? ''), hash('sha256', $datos['token']))) {
+            throw ValidationException::withMessages([
+                'token' => ['El enlace de recuperación no es válido o ya venció.'],
+            ]);
+        }
+
+        $usuario = Usuario::where('id_usuario', $reset['usuario_id'] ?? 0)
+            ->whereRaw('LOWER(correo) = ?', [$correo])
+            ->first();
+
+        if (!$usuario) {
+            Cache::forget($cacheKey);
+            throw ValidationException::withMessages([
+                'token' => ['El enlace de recuperación no es válido o ya venció.'],
+            ]);
+        }
+
+        $usuario->update([
+            'contrasena' => Hash::make($datos['contrasena']),
+        ]);
+        $usuario->tokens()->delete();
+        Cache::forget($cacheKey);
+
+        return response()->json([
+            'mensaje' => 'Contraseña restablecida correctamente. Ya puedes iniciar sesión.',
+        ]);
+    }
+
+    private function passwordResetKey(string $correo): string
+    {
+        return 'password_reset:'.hash('sha256', $correo);
     }
 }
