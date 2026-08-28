@@ -123,8 +123,17 @@ class MembresiaProcesoController extends Controller
             $this->validarOperacionDuplicada($datos['numero_operacion'] ?? null);
 
             $fechaFinActual = Carbon::parse($clienteMembresia->fecha_fin)->startOfDay();
-            $base = $fechaFinActual->greaterThanOrEqualTo(today()) ? $fechaFinActual : today();
-            $nuevaFechaFin = $base->copy()->addMonthsNoOverflow((int) $membresia->duracion_meses);
+
+            if ($fechaFinActual->greaterThanOrEqualTo(today())) {
+                // Si todavía está vigente, el nuevo periodo comienza al día siguiente del vencimiento actual.
+                $nuevaFechaFin = $fechaFinActual->copy()
+                    ->addMonthsNoOverflow((int) $membresia->duracion_meses);
+            } else {
+                // Si ya venció, el nuevo periodo comienza hoy y no regala un día adicional.
+                $nuevaFechaFin = today()
+                    ->addMonthsNoOverflow((int) $membresia->duracion_meses)
+                    ->subDay();
+            }
 
             $clienteMembresia->update([
                 'fecha_fin' => $nuevaFechaFin->toDateString(),
