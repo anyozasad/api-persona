@@ -22,7 +22,7 @@ class UsuarioController extends Controller
             'contrasena' => 'required|string|min:8|max:100',
             'nombres' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
-            'dni' => 'nullable|string|max:15|unique:usuarios,dni',
+            'dni' => 'required|string|max:15|unique:usuarios,dni',
             'telefono' => 'nullable|string|max:25',
             'correo' => 'required|email|max:150|unique:usuarios,correo',
             'rol' => ['required', 'string', Rule::in(['Administrador', 'Cliente', 'Entrenador'])],
@@ -57,7 +57,7 @@ class UsuarioController extends Controller
             'nombres' => 'sometimes|string|max:100',
             'apellidos' => 'sometimes|string|max:100',
             'dni' => [
-                'sometimes', 'nullable', 'string', 'max:15',
+                'sometimes', 'string', 'max:15',
                 Rule::unique('usuarios', 'dni')->ignore($usuario->id_usuario, 'id_usuario'),
             ],
             'telefono' => 'sometimes|nullable|string|max:25',
@@ -97,7 +97,7 @@ class UsuarioController extends Controller
 
         $usuario->update($datos);
 
-        if ($cambioContrasena) {
+        if ($cambioContrasena || ($datos['estado'] ?? null) === 'Inactivo') {
             $usuario->tokens()->delete();
         }
 
@@ -110,13 +110,16 @@ class UsuarioController extends Controller
 
         if ((int) $request->user()->id_usuario === (int) $usuario->id_usuario) {
             throw ValidationException::withMessages([
-                'usuario' => ['No puedes eliminar tu propio usuario administrador.'],
+                'usuario' => ['No puedes desactivar tu propio usuario administrador.'],
             ]);
         }
 
+        $usuario->update(['estado' => 'Inactivo']);
         $usuario->tokens()->delete();
-        $usuario->delete();
 
-        return response()->json(null, 204);
+        return response()->json([
+            'mensaje' => 'Usuario desactivado. Se conservó su historial de operaciones.',
+            'usuario' => $usuario->fresh(),
+        ]);
     }
 }
