@@ -4,46 +4,88 @@ namespace App\Http\Controllers;
 
 use App\Models\Clase;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ClaseController extends Controller
 {
     public function index()
     {
-        return response()->json(Clase::orderBy('hora_inicio')->get());
+        return response()->json(
+            Clase::with('entrenador')
+                ->withCount(['reservas as reservas_activas' => function ($q) {
+                    $q->where('estado', 'Reservada')->whereDate('fecha_clase', '>=', today());
+                }])
+                ->orderBy('dia_semana')
+                ->orderBy('hora_inicio')
+                ->get()
+        );
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $datos = $request->validate([
+            'id_entrenador' => 'nullable|integer|exists:entrenadores,id_entrenador',
             'nombre' => 'required|string|max:100',
-            'descripcion' => 'nullable|string',
-            'hora_inicio' => 'required',
-            'hora_fin' => 'required',
-            'cupo_maximo' => 'required|integer|min:1',
-            'estado' => 'nullable|string|max:30',
-            'entrenador_id' => 'nullable|integer',
+            'descripcion' => 'nullable|string|max:500',
+            'dia_semana' => [
+                'required',
+                Rule::in(['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']),
+            ],
+            'hora_inicio' => 'required|date_format:H:i',
+            'hora_fin' => 'required|date_format:H:i|after:hora_inicio',
+            'cupo_maximo' => 'required|integer|min:1|max:200',
+            'estado' => ['nullable', Rule::in(['Activo', 'Inactivo'])],
         ]);
 
-        return response()->json(Clase::create($data), 201);
+        $datos['estado'] = $datos['estado'] ?? 'Activo';
+
+        return response()->json(Clase::create($datos)->load('entrenador'), 201);
     }
 
-    public function show(Clase $clase)
+    public function show(string $id)
     {
-        return response()->json($clase);
+        return response()->json(
+            Clase::with(['entrenador', 'reservas.cliente'])->findOrFail($id)
+        );
     }
 
-    public function update(Request $request, Clase $clase)
+    public function update(Request $request, string $id)
     {
-        $clase->update($request->only([
-            'nombre','descripcion','hora_inicio','hora_fin','cupo_maximo','estado','entrenador_id'
-        ]));
+        $clase = Clase::findOrFail($id);
 
-        return response()->json($clase);
+        $datos = $request->validate([
+            'id_entrenador' => 'sometimes|nullable|integer|exists:entrenadores,id_entrenador',
+            'nombre' => 'sometimes|string|max:100',
+            'descripcion' => 'sometimes|nullable|string|max:500',
+            'dia_semana' => [
+                'sometimes',
+                Rule::in(['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']),
+            ],
+            'hora_inicio' => 'sometimes|date_format:H:i',
+            'hora_fin' => 'sometimes|date_format:H:i',
+            'cupo_maximo' => 'sometimes|integer|min:1|max:200',
+            'estado' => ['sometimes', Rule::in(['Activo', 'Inactivo'])],
+        ]);
+
+        if (isset($datos['hora_inicio'], $datos['hora_fin']) && $datos['hora_fin'] <= $datos['hora_inicio']) {
+            return response()->json([
+                'mensaje' => 'La hora de fin debe ser posterior a la hora de inicio.',
+            ], 422);
+        }
+
+        $clase->update($datos);
+
+        return response()->json($clase->fresh('entrenador'));
     }
 
-    public function destroy(Clase $clase)
+    public function destroy(string $id)
     {
-        $clase->delete();
-        return response()->json(['mensaje' => 'Clase eliminada correctamente']);
+        $clase = Clase::findOrFail($id);
+        $clase->update(['estado' => 'Inactivo']);
+
+        return response()->json([
+            'mensaje' => 'Clase desactivada correctamente. Se conserva su historial de reservas.',
+            'clase' => $clase->fresh(),
+        ]);
     }
 }
