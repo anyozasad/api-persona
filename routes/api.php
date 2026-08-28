@@ -24,6 +24,7 @@ use App\Http\Controllers\DetalleCompraController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\DetalleVentaController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\ReporteController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -33,7 +34,7 @@ Route::get('/user', function (Request $request) {
 Route::apiResource('/personas', PersonaController::class);
 Route::apiResource('/cursos', CursoController::class);
 
-// Mallqui Gym: rutas que ya existían.
+// Compatibilidad con módulos anteriores de Mallqui Gym.
 Route::apiResource('/miembros', MiembroController::class);
 Route::apiResource('/membresias', MembresiaController::class);
 Route::apiResource('/clases', ClaseController::class);
@@ -64,3 +65,8 @@ Route::apiResource('/detalle-ventas', DetalleVentaController::class);
 
 // 6. ADMINISTRACIÓN
 Route::apiResource('/usuarios', UsuarioController::class);
+
+// VISTAS DEL DIAGRAMA (SOLO CONSULTA)
+Route::get('/vistas/clientes-membresias', [ReporteController::class, 'clientesMembresias']);
+Route::get('/vistas/stock', [ReporteController::class, 'stock']);
+Route::get('/vistas/ventas', [ReporteController::class, 'ventas']);
