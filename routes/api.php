@@ -26,6 +26,7 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PortalClienteController;
+use App\Http\Controllers\ReservaController;
 
 // AUTENTICACIÓN
 Route::prefix('auth')->group(function () {
@@ -59,22 +60,29 @@ Route::middleware(['auth:sanctum', 'rol:Cliente'])->prefix('mi-cuenta')->group(f
     Route::get('/rutinas', [PortalClienteController::class, 'rutinas']);
     Route::get('/asistencias', [PortalClienteController::class, 'asistencias']);
     Route::get('/compras', [PortalClienteController::class, 'compras']);
+
+    Route::get('/reservas', [ReservaController::class, 'misReservas']);
+    Route::post('/reservas', [ReservaController::class, 'reservar']);
+    Route::post('/reservas/{id}/cancelar', [ReservaController::class, 'cancelarMia']);
 });
 
 // OPERACIÓN DEL GIMNASIO: ADMINISTRADOR O ENTRENADOR
 Route::middleware(['auth:sanctum', 'rol:Administrador,Entrenador'])->group(function () {
-    // El entrenador puede consultar clientes, pero no eliminarlos ni cambiar sus datos administrativos.
     Route::apiResource('/clientes', ClienteController::class)->only(['index', 'show']);
 
     // Rutinas y ejercicios.
     Route::apiResource('/rutinas', RutinaController::class);
     Route::apiResource('/detalle-rutinas', DetalleRutinaController::class);
 
-    // Control de ingreso y salida. Solo se permite entrada con membresía vigente.
+    // Control de ingreso y salida.
     Route::apiResource('/asistencias', AsistenciaController::class)->only(['index', 'show']);
     Route::post('/asistencias/entrada', [AsistenciaController::class, 'entrada']);
     Route::post('/asistencias/salida', [AsistenciaController::class, 'salida']);
     Route::get('/clientes/{idCliente}/asistencias', [AsistenciaController::class, 'historial']);
+
+    // Reservas de clases.
+    Route::get('/reservas', [ReservaController::class, 'index']);
+    Route::put('/reservas/{id}/estado', [ReservaController::class, 'cambiarEstado']);
 });
 
 // ADMINISTRACIÓN Y CAJA
@@ -92,7 +100,6 @@ Route::middleware(['auth:sanctum', 'rol:Administrador'])->group(function () {
     Route::apiResource('/clientes', ClienteController::class)->except(['index', 'show']);
 
     // MEMBRESÍAS Y PAGOS
-    // ClienteMembresia y PagoMembresia son de consulta: los cambios pasan por el proceso de caja.
     Route::apiResource('/cliente-membresias', ClienteMembresiaController::class)->only(['index', 'show']);
     Route::apiResource('/pagos-membresia', PagoMembresiaController::class)->only(['index', 'show']);
     Route::post('/membresias/contratar', [MembresiaProcesoController::class, 'contratar']);
@@ -108,12 +115,12 @@ Route::middleware(['auth:sanctum', 'rol:Administrador'])->group(function () {
     Route::apiResource('/categorias', CategoriaController::class);
     Route::apiResource('/productos', ProductoController::class);
 
-    // COMPRAS A PROVEEDORES: actualizan stock automáticamente.
+    // COMPRAS A PROVEEDORES
     Route::apiResource('/proveedores', ProveedorController::class);
     Route::apiResource('/compras', CompraController::class)->only(['index', 'store', 'show']);
     Route::post('/compras/{id}/anular', [CompraController::class, 'anular']);
 
-    // VENTAS: validan stock, calculan totales y descuentan existencias.
+    // VENTAS
     Route::apiResource('/ventas', VentaController::class)->only(['index', 'store', 'show']);
 
     // ADMINISTRACIÓN Y SEGURIDAD
