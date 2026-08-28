@@ -6,6 +6,7 @@ use App\Models\Cliente;
 use App\Models\ClienteMembresia;
 use App\Models\Membresia;
 use App\Models\PagoMembresia;
+use App\Services\CajaService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +17,7 @@ class MembresiaProcesoController extends Controller
 {
     private const METODOS_PAGO = ['Efectivo', 'Yape', 'Plin', 'Transferencia', 'Tarjeta'];
 
-    public function contratar(Request $request)
+    public function contratar(Request $request, CajaService $cajaService)
     {
         $datos = $request->validate([
             'id_cliente' => 'required|integer|exists:clientes,id_cliente',
@@ -27,9 +28,15 @@ class MembresiaProcesoController extends Controller
             'observacion' => 'nullable|string|max:500',
         ]);
 
+        if (!$cajaService->cajaAbierta()) {
+            throw ValidationException::withMessages([
+                'caja' => ['Debes abrir caja antes de cobrar una membresía en recepción.'],
+            ]);
+        }
+
         $this->validarNumeroOperacion($datos['metodo_pago'], $datos['numero_operacion'] ?? null);
 
-        $resultado = DB::transaction(function () use ($datos) {
+        $resultado = DB::transaction(function () use ($datos, $request, $cajaService) {
             $cliente = Cliente::lockForUpdate()->findOrFail($datos['id_cliente']);
             $membresia = Membresia::lockForUpdate()->findOrFail($datos['id_membresia']);
 
@@ -85,6 +92,18 @@ class MembresiaProcesoController extends Controller
                 'estado_pago' => 'Completado',
             ]);
 
+            if ($datos['metodo_pago'] === 'Efectivo') {
+                $cajaService->registrarMovimiento(
+                    $request->user()->id_usuario,
+                    'Ingreso',
+                    'Membresia',
+                    'Pago de membresía '.$membresia->nombre,
+                    (float) $pago->monto,
+                    'PagoMembresia',
+                    $pago->id_pago
+                );
+            }
+
             return compact('clienteMembresia', 'pago');
         });
 
@@ -96,7 +115,7 @@ class MembresiaProcesoController extends Controller
         ], 201);
     }
 
-    public function renovar(Request $request)
+    public function renovar(Request $request, CajaService $cajaService)
     {
         $datos = $request->validate([
             'id_cliente_membresia' => 'required|integer|exists:cliente_membresia,id_cliente_membresia',
@@ -105,9 +124,15 @@ class MembresiaProcesoController extends Controller
             'observacion' => 'nullable|string|max:500',
         ]);
 
+        if (!$cajaService->cajaAbierta()) {
+            throw ValidationException::withMessages([
+                'caja' => ['Debes abrir caja antes de cobrar una renovación en recepción.'],
+            ]);
+        }
+
         $this->validarNumeroOperacion($datos['metodo_pago'], $datos['numero_operacion'] ?? null);
 
-        $resultado = DB::transaction(function () use ($datos) {
+        $resultado = DB::transaction(function () use ($datos, $request, $cajaService) {
             $clienteMembresia = ClienteMembresia::with(['cliente', 'membresia'])
                 ->lockForUpdate()
                 ->findOrFail($datos['id_cliente_membresia']);
@@ -125,11 +150,9 @@ class MembresiaProcesoController extends Controller
             $fechaFinActual = Carbon::parse($clienteMembresia->fecha_fin)->startOfDay();
 
             if ($fechaFinActual->greaterThanOrEqualTo(today())) {
-                // Si todavía está vigente, el nuevo periodo comienza al día siguiente del vencimiento actual.
                 $nuevaFechaFin = $fechaFinActual->copy()
                     ->addMonthsNoOverflow((int) $membresia->duracion_meses);
             } else {
-                // Si ya venció, el nuevo periodo comienza hoy y no regala un día adicional.
                 $nuevaFechaFin = today()
                     ->addMonthsNoOverflow((int) $membresia->duracion_meses)
                     ->subDay();
@@ -149,6 +172,18 @@ class MembresiaProcesoController extends Controller
                 'observacion' => $datos['observacion'] ?? 'Renovación de membresía',
                 'estado_pago' => 'Completado',
             ]);
+
+            if ($datos['metodo_pago'] === 'Efectivo') {
+                $cajaService->registrarMovimiento(
+                    $request->user()->id_usuario,
+                    'Ingreso',
+                    'Membresia',
+                    'Renovación de membresía '.$membresia->nombre,
+                    (float) $pago->monto,
+                    'PagoMembresia',
+                    $pago->id_pago
+                );
+            }
 
             return compact('clienteMembresia', 'pago');
         });
