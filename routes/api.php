@@ -8,7 +8,6 @@ use App\Http\Controllers\CursoController;
 use App\Http\Controllers\MiembroController;
 use App\Http\Controllers\MembresiaController;
 use App\Http\Controllers\ClaseController;
-
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ClienteMembresiaController;
@@ -27,60 +26,71 @@ use App\Http\Controllers\DetalleVentaController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ReporteController;
 
-// AUTENTICACIÓN MALLQUI GYM
+// AUTENTICACIÓN
+// Se limita la cantidad de intentos para reducir ataques de fuerza bruta.
 Route::prefix('auth')->group(function () {
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:3,1');
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
         Route::post('/logout', [AuthController::class, 'logout']);
+        Route::post('/logout-todos', [AuthController::class, 'logoutTodos']);
         Route::put('/cambiar-contrasena', [AuthController::class, 'cambiarContrasena']);
     });
 });
 
-// Alias compatible con Laravel/Sanctum.
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// DATOS DE SOLO LECTURA PARA USUARIOS AUTENTICADOS
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 
-// Rutas de prácticas anteriores.
-Route::apiResource('/personas', PersonaController::class);
-Route::apiResource('/cursos', CursoController::class);
+    Route::apiResource('/membresias', MembresiaController::class)->only(['index', 'show']);
+    Route::apiResource('/clases', ClaseController::class)->only(['index', 'show']);
+});
 
-// Compatibilidad con módulos anteriores de Mallqui Gym.
-Route::apiResource('/miembros', MiembroController::class);
-Route::apiResource('/membresias', MembresiaController::class);
-Route::apiResource('/clases', ClaseController::class);
+// OPERACIONES ADMINISTRATIVAS
+// Toda modificación sensible requiere token válido y rol Administrador.
+Route::middleware(['auth:sanctum', 'rol:Administrador'])->group(function () {
+    // Prácticas anteriores: también quedan protegidas.
+    Route::apiResource('/personas', PersonaController::class);
+    Route::apiResource('/cursos', CursoController::class);
 
-// 1. CLIENTES Y MEMBRESÍAS
-Route::apiResource('/clientes', ClienteController::class);
-Route::apiResource('/cliente-membresias', ClienteMembresiaController::class);
-Route::apiResource('/pagos-membresia', PagoMembresiaController::class);
-Route::apiResource('/asistencias', AsistenciaController::class);
+    // Compatibilidad con módulos anteriores.
+    Route::apiResource('/miembros', MiembroController::class);
+    Route::apiResource('/membresias', MembresiaController::class)->except(['index', 'show']);
+    Route::apiResource('/clases', ClaseController::class)->except(['index', 'show']);
 
-// 2. RUTINAS Y ASISTENCIAS
-Route::apiResource('/entrenadores', EntrenadorController::class);
-Route::apiResource('/rutinas', RutinaController::class);
-Route::apiResource('/detalle-rutinas', DetalleRutinaController::class);
+    // 1. CLIENTES Y MEMBRESÍAS
+    Route::apiResource('/clientes', ClienteController::class);
+    Route::apiResource('/cliente-membresias', ClienteMembresiaController::class);
+    Route::apiResource('/pagos-membresia', PagoMembresiaController::class);
+    Route::apiResource('/asistencias', AsistenciaController::class);
 
-// 3. INVENTARIO Y PRODUCTOS
-Route::apiResource('/categorias', CategoriaController::class);
-Route::apiResource('/productos', ProductoController::class);
+    // 2. RUTINAS Y ASISTENCIAS
+    Route::apiResource('/entrenadores', EntrenadorController::class);
+    Route::apiResource('/rutinas', RutinaController::class);
+    Route::apiResource('/detalle-rutinas', DetalleRutinaController::class);
 
-// 4. COMPRAS
-Route::apiResource('/proveedores', ProveedorController::class);
-Route::apiResource('/compras', CompraController::class);
-Route::apiResource('/detalle-compras', DetalleCompraController::class);
+    // 3. INVENTARIO Y PRODUCTOS
+    Route::apiResource('/categorias', CategoriaController::class);
+    Route::apiResource('/productos', ProductoController::class);
 
-// 5. VENTAS
-Route::apiResource('/ventas', VentaController::class);
-Route::apiResource('/detalle-ventas', DetalleVentaController::class);
+    // 4. COMPRAS
+    Route::apiResource('/proveedores', ProveedorController::class);
+    Route::apiResource('/compras', CompraController::class);
+    Route::apiResource('/detalle-compras', DetalleCompraController::class);
 
-// 6. ADMINISTRACIÓN
-Route::apiResource('/usuarios', UsuarioController::class);
+    // 5. VENTAS
+    Route::apiResource('/ventas', VentaController::class);
+    Route::apiResource('/detalle-ventas', DetalleVentaController::class);
 
-// VISTAS DEL DIAGRAMA (SOLO CONSULTA)
-Route::get('/vistas/clientes-membresias', [ReporteController::class, 'clientesMembresias']);
-Route::get('/vistas/stock', [ReporteController::class, 'stock']);
-Route::get('/vistas/ventas', [ReporteController::class, 'ventas']);
+    // 6. ADMINISTRACIÓN
+    Route::apiResource('/usuarios', UsuarioController::class);
+
+    // VISTAS DEL DIAGRAMA (SOLO CONSULTA)
+    Route::get('/vistas/clientes-membresias', [ReporteController::class, 'clientesMembresias']);
+    Route::get('/vistas/stock', [ReporteController::class, 'stock']);
+    Route::get('/vistas/ventas', [ReporteController::class, 'ventas']);
+});
