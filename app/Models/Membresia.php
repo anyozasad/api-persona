@@ -11,11 +11,12 @@ class Membresia extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nombre',
-        'duracion_meses',
-        'precio',
-        'descripcion',
-        'estado',
+        'nombre', 'duracion_meses', 'precio', 'descripcion', 'estado'
+    ];
+
+    protected $casts = [
+        'duracion_meses' => 'integer',
+        'precio' => 'decimal:2',
     ];
 
     public function clienteMembresias()
