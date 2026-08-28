@@ -24,12 +24,17 @@ class CrearAdminMallqui extends Command
         $nombres = trim((string) $this->ask('Nombres', 'Administrador'));
         $apellidos = trim((string) $this->ask('Apellidos', 'Sistema'));
         $correo = trim((string) $this->ask('Correo'));
-        $dni = trim((string) $this->ask('DNI (opcional)', ''));
+        $dni = trim((string) $this->ask('DNI'));
         $telefono = trim((string) $this->ask('Telefono (opcional)', ''));
         $contrasena = (string) $this->secret('Contrasena (minimo 8 caracteres)');
 
         if ($nombreUsuario === '') {
             $this->error('El nombre de usuario es obligatorio.');
+            return self::FAILURE;
+        }
+
+        if ($dni === '') {
+            $this->error('El DNI es obligatorio.');
             return self::FAILURE;
         }
 
@@ -49,7 +54,7 @@ class CrearAdminMallqui extends Command
                 'contrasena' => Hash::make($contrasena),
                 'nombres' => $nombres,
                 'apellidos' => $apellidos,
-                'dni' => $dni !== '' ? $dni : null,
+                'dni' => $dni,
                 'telefono' => $telefono !== '' ? $telefono : null,
                 'correo' => $correo,
                 'rol' => 'Administrador',
@@ -58,7 +63,6 @@ class CrearAdminMallqui extends Command
             ]
         );
 
-        // Si se cambia la contraseña del administrador se invalidan sesiones anteriores.
         $usuario->tokens()->delete();
 
         $this->info('Administrador preparado correctamente.');
