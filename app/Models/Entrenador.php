@@ -24,4 +24,9 @@ class Entrenador extends Model
     {
         return $this->hasMany(Rutina::class, 'id_entrenador', 'id_entrenador');
     }
+
+    public function clases()
+    {
+        return $this->hasMany(Clase::class, 'id_entrenador', 'id_entrenador');
+    }
 }
