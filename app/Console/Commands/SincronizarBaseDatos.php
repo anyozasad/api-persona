@@ -18,7 +18,7 @@ class SincronizarBaseDatos extends Command
     {
         $this->info('Preparando migraciones pendientes del proyecto...');
 
-        foreach (['db:generar-interno', 'db:operacion-interno'] as $comando) {
+        foreach (['db:generar-interno', 'db:operacion-interno', 'db:produccion-interno'] as $comando) {
             $codigoGenerar = Artisan::call($comando);
             $salidaGenerar = trim(Artisan::output());
 
