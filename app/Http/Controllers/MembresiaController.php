@@ -4,44 +4,66 @@ namespace App\Http\Controllers;
 
 use App\Models\Membresia;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class MembresiaController extends Controller
 {
     public function index()
     {
-        return response()->json(Membresia::withCount('clienteMembresias')->get());
+        return response()->json(
+            Membresia::withCount('clienteMembresias')
+                ->orderBy('precio')
+                ->get()
+        );
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'nombre' => 'required|string|max:100',
-            'duracion_meses' => 'required|integer|min:1',
+        $datos = $request->validate([
+            'nombre' => 'required|string|max:100|unique:membresias,nombre',
+            'duracion_meses' => 'required|integer|min:1|max:36',
             'precio' => 'required|numeric|min:0',
-            'descripcion' => 'nullable|string',
-            'estado' => 'nullable|string|max:30',
+            'descripcion' => 'nullable|string|max:500',
+            'estado' => ['nullable', Rule::in(['Activo', 'Inactivo'])],
         ]);
 
-        return response()->json(Membresia::create($data), 201);
+        $datos['estado'] = $datos['estado'] ?? 'Activo';
+
+        return response()->json(Membresia::create($datos), 201);
     }
 
     public function show(Membresia $membresia)
     {
-        return response()->json($membresia->load('clienteMembresias.cliente'));
+        return response()->json(
+            $membresia->load(['clienteMembresias.cliente', 'clienteMembresias.pagos'])
+        );
     }
 
     public function update(Request $request, Membresia $membresia)
     {
-        $membresia->update($request->only([
-            'nombre', 'duracion_meses', 'precio', 'descripcion', 'estado'
-        ]));
+        $datos = $request->validate([
+            'nombre' => [
+                'sometimes', 'string', 'max:100',
+                Rule::unique('membresias', 'nombre')->ignore($membresia->id_membresia, 'id_membresia'),
+            ],
+            'duracion_meses' => 'sometimes|integer|min:1|max:36',
+            'precio' => 'sometimes|numeric|min:0',
+            'descripcion' => 'sometimes|nullable|string|max:500',
+            'estado' => ['sometimes', Rule::in(['Activo', 'Inactivo'])],
+        ]);
 
-        return response()->json($membresia);
+        $membresia->update($datos);
+
+        return response()->json($membresia->fresh());
     }
 
     public function destroy(Membresia $membresia)
     {
-        $membresia->delete();
-        return response()->json(['mensaje' => 'Membresía eliminada correctamente']);
+        $membresia->update(['estado' => 'Inactivo']);
+
+        return response()->json([
+            'mensaje' => 'Membresía desactivada. Se conserva el historial de clientes y pagos.',
+            'membresia' => $membresia->fresh(),
+        ]);
     }
 }
