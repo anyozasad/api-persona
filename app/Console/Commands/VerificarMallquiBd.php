@@ -11,7 +11,7 @@ class VerificarMallquiBd extends Command
 {
     protected $signature = 'db:verificar';
 
-    protected $description = 'Verifica tablas, columnas y vistas principales de la base de datos';
+    protected $description = 'Verifica tablas, columnas, seguridad y vistas principales de la base de datos';
 
     public function handle(): int
     {
@@ -57,11 +57,11 @@ class VerificarMallquiBd extends Command
         $this->newLine();
 
         if ($errores > 0) {
-            $this->error("Verificacion terminada con {$errores} problema(s).");
+            $this->error("Verificación terminada con {$errores} problema(s).");
             return self::FAILURE;
         }
 
-        $this->info('TODO OK: el esquema principal coincide con el diagrama del proyecto.');
+        $this->info('TODO OK: el esquema principal y los módulos operativos están completos.');
         return self::SUCCESS;
     }
 
@@ -130,6 +130,17 @@ class VerificarMallquiBd extends Command
             'usuarios' => [
                 'id_usuario', 'nombre_usuario', 'contrasena', 'nombres', 'apellidos',
                 'dni', 'telefono', 'correo', 'rol', 'estado', 'fecha_registro',
+            ],
+            'clases' => [
+                'id_clase', 'id_entrenador', 'nombre', 'descripcion', 'dia_semana',
+                'hora_inicio', 'hora_fin', 'cupo_maximo', 'estado',
+            ],
+            'reservas' => [
+                'id_reserva', 'id_cliente', 'id_clase', 'fecha_clase', 'fecha_reserva', 'estado',
+            ],
+            'personal_access_tokens' => [
+                'id', 'tokenable_type', 'tokenable_id', 'name', 'token', 'abilities',
+                'last_used_at', 'expires_at',
             ],
         ];
     }
