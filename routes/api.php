@@ -141,6 +141,11 @@ Route::middleware(['auth:sanctum', 'rol:Administrador'])->group(function () {
     Route::apiResource('/usuarios', UsuarioController::class);
     Route::get('/dashboard/resumen', [DashboardController::class, 'resumen']);
 
+    // REPORTES
+    Route::get('/reportes/ingresos', [ReporteController::class, 'ingresos']);
+    Route::get('/reportes/vencimientos', [ReporteController::class, 'vencimientos']);
+    Route::get('/reportes/asistencias', [ReporteController::class, 'asistencias']);
+
     // VISTAS DEL DIAGRAMA (SOLO CONSULTA)
     Route::get('/vistas/clientes-membresias', [ReporteController::class, 'clientesMembresias']);
     Route::get('/vistas/stock', [ReporteController::class, 'stock']);
