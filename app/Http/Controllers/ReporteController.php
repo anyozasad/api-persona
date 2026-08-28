@@ -6,6 +6,7 @@ use App\Models\Asistencia;
 use App\Models\ClienteMembresia;
 use App\Models\PagoMembresia;
 use App\Models\Venta;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -39,8 +40,8 @@ class ReporteController extends Controller
             'hasta' => 'nullable|date|after_or_equal:desde',
         ]);
 
-        $desde = isset($datos['desde']) ? now()->parse($datos['desde'])->startOfDay() : now()->startOfMonth();
-        $hasta = isset($datos['hasta']) ? now()->parse($datos['hasta'])->endOfDay() : now()->endOfMonth();
+        $desde = isset($datos['desde']) ? Carbon::parse($datos['desde'])->startOfDay() : now()->startOfMonth();
+        $hasta = isset($datos['hasta']) ? Carbon::parse($datos['hasta'])->endOfDay() : now()->endOfMonth();
 
         $pagosMembresia = PagoMembresia::query()
             ->where('estado_pago', 'Completado')
@@ -89,8 +90,8 @@ class ReporteController extends Controller
 
         $porDia = Asistencia::query()
             ->selectRaw('DATE(fecha_hora_entrada) as fecha, COUNT(*) as total')
-            ->whereBetween(DB::raw('DATE(fecha_hora_entrada)'), [$desde, $hasta])
-            ->groupBy(DB::raw('DATE(fecha_hora_entrada)'))
+            ->whereRaw('DATE(fecha_hora_entrada) BETWEEN ? AND ?', [$desde, $hasta])
+            ->groupByRaw('DATE(fecha_hora_entrada)')
             ->orderBy('fecha')
             ->get();
 
