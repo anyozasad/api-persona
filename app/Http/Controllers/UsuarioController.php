@@ -6,6 +6,7 @@ use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class UsuarioController extends Controller
 {
@@ -18,7 +19,7 @@ class UsuarioController extends Controller
     {
         $datos = $request->validate([
             'nombre_usuario' => 'required|string|max:80|unique:usuarios,nombre_usuario',
-            'contrasena' => 'required|string|min:6',
+            'contrasena' => 'required|string|min:8|max:100',
             'nombres' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
             'dni' => 'nullable|string|max:15|unique:usuarios,dni',
@@ -52,7 +53,7 @@ class UsuarioController extends Controller
                 'sometimes', 'string', 'max:80',
                 Rule::unique('usuarios', 'nombre_usuario')->ignore($usuario->id_usuario, 'id_usuario'),
             ],
-            'contrasena' => 'sometimes|nullable|string|min:6',
+            'contrasena' => 'sometimes|nullable|string|min:8|max:100',
             'nombres' => 'sometimes|string|max:100',
             'apellidos' => 'sometimes|string|max:100',
             'dni' => [
@@ -69,9 +70,26 @@ class UsuarioController extends Controller
             'fecha_registro' => 'sometimes|date',
         ]);
 
+        $esMismoUsuario = (int) $request->user()->id_usuario === (int) $usuario->id_usuario;
+
+        if ($esMismoUsuario && isset($datos['rol']) && $datos['rol'] !== 'Administrador') {
+            throw ValidationException::withMessages([
+                'rol' => ['No puedes quitarte tu propio rol de Administrador.'],
+            ]);
+        }
+
+        if ($esMismoUsuario && isset($datos['estado']) && $datos['estado'] !== 'Activo') {
+            throw ValidationException::withMessages([
+                'estado' => ['No puedes desactivar tu propio usuario administrador.'],
+            ]);
+        }
+
+        $cambioContrasena = false;
+
         if (array_key_exists('contrasena', $datos)) {
             if ($datos['contrasena']) {
                 $datos['contrasena'] = Hash::make($datos['contrasena']);
+                $cambioContrasena = true;
             } else {
                 unset($datos['contrasena']);
             }
@@ -79,12 +97,23 @@ class UsuarioController extends Controller
 
         $usuario->update($datos);
 
+        if ($cambioContrasena) {
+            $usuario->tokens()->delete();
+        }
+
         return response()->json($usuario->fresh());
     }
 
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         $usuario = Usuario::findOrFail($id);
+
+        if ((int) $request->user()->id_usuario === (int) $usuario->id_usuario) {
+            throw ValidationException::withMessages([
+                'usuario' => ['No puedes eliminar tu propio usuario administrador.'],
+            ]);
+        }
+
         $usuario->tokens()->delete();
         $usuario->delete();
 
