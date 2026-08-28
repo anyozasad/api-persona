@@ -37,7 +37,7 @@ class VentaController extends Controller
             'numero_comprobante' => 'required|string|max:80',
             'igv_porcentaje' => 'nullable|numeric|min:0|max:100',
             'items' => 'required|array|min:1',
-            'items.*.id_producto' => 'required|integer|exists:productos,id_producto',
+            'items.*.id_producto' => 'required|integer|distinct|exists:productos,id_producto',
             'items.*.cantidad' => 'required|integer|min:1',
         ]);
 
