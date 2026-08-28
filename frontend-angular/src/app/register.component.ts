@@ -2,6 +2,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-register',
@@ -64,19 +65,25 @@ import { Router, RouterLink } from '@angular/router';
               </label>
             </div>
 
-            <label>
-              Correo electrónico
-              <div class="register-input-wrap"><span>✉</span><input type="email" name="email" [(ngModel)]="email" placeholder="correo@ejemplo.com" required></div>
-            </label>
+            <div class="register-row">
+              <label>
+                DNI
+                <div class="register-input-wrap"><span>▣</span><input name="dni" [(ngModel)]="dni" placeholder="Tu DNI" maxlength="15" required></div>
+              </label>
+              <label>
+                Correo electrónico
+                <div class="register-input-wrap"><span>✉</span><input type="email" name="email" [(ngModel)]="email" placeholder="correo@ejemplo.com" required></div>
+              </label>
+            </div>
 
             <div class="register-row">
               <label>
                 Contraseña
-                <div class="register-input-wrap"><span>⌑</span><input [type]="mostrarPassword ? 'text' : 'password'" name="password" [(ngModel)]="password" placeholder="Mínimo 6 caracteres" required minlength="6"></div>
+                <div class="register-input-wrap"><span>⌑</span><input [type]="mostrarPassword ? 'text' : 'password'" name="password" [(ngModel)]="password" placeholder="Mínimo 8 caracteres" required minlength="8"></div>
               </label>
               <label>
                 Confirmar contraseña
-                <div class="register-input-wrap"><span>⌑</span><input [type]="mostrarPassword ? 'text' : 'password'" name="confirmarPassword" [(ngModel)]="confirmarPassword" placeholder="Repite tu contraseña" required></div>
+                <div class="register-input-wrap"><span>⌑</span><input [type]="mostrarPassword ? 'text' : 'password'" name="confirmarPassword" [(ngModel)]="confirmarPassword" placeholder="Repite tu contraseña" required minlength="8"></div>
               </label>
             </div>
 
@@ -88,7 +95,7 @@ import { Router, RouterLink } from '@angular/router';
             <p *ngIf="error" class="register-error">{{ error }}</p>
             <p *ngIf="mensaje" class="register-success">{{ mensaje }}</p>
 
-            <button class="register-submit" type="submit" [disabled]="registerForm.invalid">Crear mi cuenta →</button>
+            <button class="register-submit" type="submit" [disabled]="registerForm.invalid || cargando">{{ cargando ? 'Creando cuenta...' : 'Crear mi cuenta →' }}</button>
           </form>
 
           <p class="register-login-link">¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
@@ -100,22 +107,24 @@ import { Router, RouterLink } from '@angular/router';
 export class RegisterComponent {
   nombre = '';
   apellido = '';
+  dni = '';
   email = '';
   password = '';
   confirmarPassword = '';
   terminos = false;
   mostrarPassword = false;
+  cargando = false;
   error = '';
   mensaje = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private auth: AuthService) {}
 
   registrar(): void {
     this.error = '';
     this.mensaje = '';
 
-    if (this.password.length < 6) {
-      this.error = 'La contraseña debe tener al menos 6 caracteres.';
+    if (this.password.length < 8) {
+      this.error = 'La contraseña debe tener al menos 8 caracteres.';
       return;
     }
 
@@ -124,13 +133,42 @@ export class RegisterComponent {
       return;
     }
 
-    this.mensaje = 'Cuenta creada correctamente. Ingresando a tu panel...';
-    setTimeout(() => this.router.navigate(['/usuario']), 650);
+    const correo = this.email.trim().toLowerCase();
+    const baseUsuario = correo.split('@')[0].replace(/[^a-z0-9._-]/g, '') || 'cliente';
+    const nombreUsuario = `${baseUsuario}-${this.dni.trim()}`.slice(0, 80);
+
+    this.cargando = true;
+    this.auth.register({
+      nombre_usuario: nombreUsuario,
+      nombres: this.nombre.trim(),
+      apellidos: this.apellido.trim(),
+      dni: this.dni.trim(),
+      correo,
+      contrasena: this.password,
+    }).subscribe({
+      next: () => {
+        this.cargando = false;
+        this.mensaje = 'Cuenta creada correctamente. Ingresando a tu panel...';
+        setTimeout(() => void this.router.navigate(['/usuario']), 650);
+      },
+      error: err => {
+        this.cargando = false;
+        this.error = this.extraerError(err, 'No se pudo crear la cuenta. Revisa los datos ingresados.');
+      }
+    });
   }
 
   socialRegistro(proveedor: string): void {
-    this.error = '';
-    this.mensaje = `Registro con ${proveedor} listo. Ingresando...`;
-    setTimeout(() => this.router.navigate(['/usuario']), 650);
+    this.error = `El registro con ${proveedor} requiere configurar las credenciales oficiales del proveedor.`;
+    this.mensaje = '';
+  }
+
+  private extraerError(err: any, fallback: string): string {
+    const errors = err?.error?.errors;
+    if (errors && typeof errors === 'object') {
+      const first = Object.values(errors)[0];
+      if (Array.isArray(first) && first.length) return String(first[0]);
+    }
+    return err?.error?.mensaje ?? err?.error?.message ?? fallback;
   }
 }
