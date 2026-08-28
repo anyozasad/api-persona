@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Schema;
 
 class CrearAdminMallqui extends Command
 {
-    protected $signature = 'mallqui:crear-admin';
+    protected $signature = 'admin:crear';
 
-    protected $description = 'Crea o actualiza el usuario administrador de Mallqui Gym';
+    protected $description = 'Crea o actualiza un usuario administrador del sistema';
 
     public function handle(): int
     {
@@ -22,19 +22,24 @@ class CrearAdminMallqui extends Command
 
         $nombreUsuario = trim((string) $this->ask('Nombre de usuario', 'admin'));
         $nombres = trim((string) $this->ask('Nombres', 'Administrador'));
-        $apellidos = trim((string) $this->ask('Apellidos', 'Mallqui Gym'));
+        $apellidos = trim((string) $this->ask('Apellidos', 'Sistema'));
         $correo = trim((string) $this->ask('Correo'));
         $dni = trim((string) $this->ask('DNI (opcional)', ''));
         $telefono = trim((string) $this->ask('Telefono (opcional)', ''));
-        $contrasena = (string) $this->secret('Contrasena (minimo 6 caracteres)');
+        $contrasena = (string) $this->secret('Contrasena (minimo 8 caracteres)');
+
+        if ($nombreUsuario === '') {
+            $this->error('El nombre de usuario es obligatorio.');
+            return self::FAILURE;
+        }
 
         if ($correo === '' || !filter_var($correo, FILTER_VALIDATE_EMAIL)) {
             $this->error('Ingresa un correo valido.');
             return self::FAILURE;
         }
 
-        if (strlen($contrasena) < 6) {
-            $this->error('La contrasena debe tener al menos 6 caracteres.');
+        if (strlen($contrasena) < 8) {
+            $this->error('La contrasena debe tener al menos 8 caracteres.');
             return self::FAILURE;
         }
 
@@ -53,6 +58,7 @@ class CrearAdminMallqui extends Command
             ]
         );
 
+        // Si se cambia la contraseña del administrador se invalidan sesiones anteriores.
         $usuario->tokens()->delete();
 
         $this->info('Administrador preparado correctamente.');
