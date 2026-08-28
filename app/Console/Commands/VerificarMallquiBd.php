@@ -9,16 +9,16 @@ use Throwable;
 
 class VerificarMallquiBd extends Command
 {
-    protected $signature = 'mallqui:verificar-bd';
+    protected $signature = 'db:verificar';
 
-    protected $description = 'Verifica tablas, columnas y vistas principales del diagrama de Mallqui Gym';
+    protected $description = 'Verifica tablas, columnas y vistas principales de la base de datos';
 
     public function handle(): int
     {
         $tablas = $this->tablas();
         $errores = 0;
 
-        $this->info('Verificando base de datos Mallqui Gym...');
+        $this->info('Verificando base de datos...');
         $this->newLine();
 
         foreach ($tablas as $tabla => $columnas) {
@@ -61,7 +61,7 @@ class VerificarMallquiBd extends Command
             return self::FAILURE;
         }
 
-        $this->info('TODO OK: el esquema principal coincide con el diagrama de Mallqui Gym.');
+        $this->info('TODO OK: el esquema principal coincide con el diagrama del proyecto.');
         return self::SUCCESS;
     }
 
