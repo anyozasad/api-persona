@@ -7,13 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 class Membresia extends Model
 {
     protected $table = 'membresias';
+    protected $primaryKey = 'id_membresia';
+    public $timestamps = false;
 
     protected $fillable = [
-        'nombre', 'precio', 'duracion_dias', 'descripcion', 'estado'
+        'nombre',
+        'duracion_meses',
+        'precio',
+        'descripcion',
+        'estado',
     ];
 
-    public function miembros()
+    public function clienteMembresias()
     {
-        return $this->hasMany(Miembro::class);
+        return $this->hasMany(ClienteMembresia::class, 'id_membresia', 'id_membresia');
     }
 }
