@@ -15,7 +15,10 @@ abstract class CrudController extends Controller
 
     public function store(Request $request)
     {
-        $registro = ($this->modelClass)::create($request->all());
+        $modelo = new ($this->modelClass);
+        $datos = $request->only($modelo->getFillable());
+        $registro = ($this->modelClass)::create($datos);
+
         return response()->json($registro, 201);
     }
 
@@ -27,7 +30,9 @@ abstract class CrudController extends Controller
     public function update(Request $request, string $id)
     {
         $registro = ($this->modelClass)::findOrFail($id);
-        $registro->update($request->all());
+        $datos = $request->only($registro->getFillable());
+        $registro->update($datos);
+
         return response()->json($registro);
     }
 
@@ -35,6 +40,7 @@ abstract class CrudController extends Controller
     {
         $registro = ($this->modelClass)::findOrFail($id);
         $registro->delete();
+
         return response()->json(null, 204);
     }
 }
