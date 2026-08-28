@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 use Symfony\Component\Process\Process;
 
 Artisan::command('inspire', function () {
@@ -47,3 +48,6 @@ Artisan::command('frontend:build', function () {
     $this->info('Frontend listo. Ahora ejecuta: php artisan serve');
     return 0;
 })->purpose('Compila Angular y lo integra directamente en Laravel/public');
+
+// Mantiene los vencimientos de membresías sincronizados todos los días.
+Schedule::command('membresias:actualizar-estados')->dailyAt('00:05');
