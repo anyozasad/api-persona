@@ -13,6 +13,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ClienteMembresiaController;
 use App\Http\Controllers\PagoMembresiaController;
 use App\Http\Controllers\MembresiaProcesoController;
+use App\Http\Controllers\SolicitudPagoMembresiaController;
 use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\EntrenadorController;
 use App\Http\Controllers\RutinaController;
@@ -61,6 +62,11 @@ Route::middleware(['auth:sanctum', 'rol:Cliente'])->prefix('mi-cuenta')->group(f
     Route::get('/asistencias', [PortalClienteController::class, 'asistencias']);
     Route::get('/compras', [PortalClienteController::class, 'compras']);
 
+    // Pago digital de membresía: queda pendiente hasta revisión administrativa.
+    Route::post('/pagos/solicitar', [SolicitudPagoMembresiaController::class, 'solicitar']);
+    Route::post('/pagos/{idPago}/cancelar', [SolicitudPagoMembresiaController::class, 'cancelarPropia']);
+
+    // Reservas de clases.
     Route::get('/reservas', [ReservaController::class, 'misReservas']);
     Route::post('/reservas', [ReservaController::class, 'reservar']);
     Route::post('/reservas/{id}/cancelar', [ReservaController::class, 'cancelarMia']);
@@ -102,8 +108,16 @@ Route::middleware(['auth:sanctum', 'rol:Administrador'])->group(function () {
     // MEMBRESÍAS Y PAGOS
     Route::apiResource('/cliente-membresias', ClienteMembresiaController::class)->only(['index', 'show']);
     Route::apiResource('/pagos-membresia', PagoMembresiaController::class)->only(['index', 'show']);
+
+    // Caja presencial: registra y activa de inmediato.
     Route::post('/membresias/contratar', [MembresiaProcesoController::class, 'contratar']);
     Route::post('/membresias/renovar', [MembresiaProcesoController::class, 'renovar']);
+
+    // Pagos digitales enviados por el cliente: requieren aprobación.
+    Route::get('/pagos-membresia-pendientes', [SolicitudPagoMembresiaController::class, 'pendientes']);
+    Route::post('/pagos-membresia/{idPago}/confirmar', [SolicitudPagoMembresiaController::class, 'confirmar']);
+    Route::post('/pagos-membresia/{idPago}/rechazar', [SolicitudPagoMembresiaController::class, 'rechazar']);
+
     Route::get('/clientes/{idCliente}/estado-membresia', [MembresiaProcesoController::class, 'estadoCliente']);
     Route::get('/clientes/{idCliente}/historial-pagos', [MembresiaProcesoController::class, 'historialPagos']);
     Route::get('/pagos-membresia/{idPago}/comprobante', [MembresiaProcesoController::class, 'comprobante']);
