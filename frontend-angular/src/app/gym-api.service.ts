@@ -9,6 +9,7 @@ export class GymApiService {
   // CLIENTE
   resumenCliente(): Observable<any> { return this.http.get('/api/mi-cuenta/resumen'); }
   perfilCliente(): Observable<any> { return this.http.get('/api/mi-cuenta/perfil'); }
+  actualizarPerfilCliente(datos: any): Observable<any> { return this.http.put('/api/mi-cuenta/perfil', datos); }
   membresiaCliente(): Observable<any> { return this.http.get('/api/mi-cuenta/membresia'); }
   pagosCliente(): Observable<any[]> { return this.http.get<any[]>('/api/mi-cuenta/pagos'); }
   rutinasCliente(): Observable<any[]> { return this.http.get<any[]>('/api/mi-cuenta/rutinas'); }
