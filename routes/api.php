@@ -9,6 +9,7 @@ use App\Http\Controllers\MiembroController;
 use App\Http\Controllers\MembresiaController;
 use App\Http\Controllers\ClaseController;
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ClienteMembresiaController;
 use App\Http\Controllers\PagoMembresiaController;
@@ -26,6 +27,19 @@ use App\Http\Controllers\DetalleVentaController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ReporteController;
 
+// AUTENTICACIÓN MALLQUI GYM
+Route::prefix('auth')->group(function () {
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/me', [AuthController::class, 'me']);
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::put('/cambiar-contrasena', [AuthController::class, 'cambiarContrasena']);
+    });
+});
+
+// Alias compatible con Laravel/Sanctum.
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
