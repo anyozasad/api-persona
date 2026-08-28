@@ -18,7 +18,6 @@ class SincronizarBaseDatos extends Command
     {
         $this->info('Preparando migraciones pendientes del proyecto...');
 
-        // Genera/actualiza las migraciones base y operativas sin ejecutar migrate todavía.
         foreach (['db:generar-interno', 'db:operacion-interno'] as $comando) {
             $codigoGenerar = Artisan::call($comando);
             $salidaGenerar = trim(Artisan::output());
@@ -103,6 +102,10 @@ class SincronizarBaseDatos extends Command
             'create_detalle_venta_table' => 'detalle_venta',
             'create_clases_table' => 'clases',
             'create_reservas_table' => 'reservas',
+            'create_cajas_table' => 'cajas',
+            'create_movimientos_caja_table' => 'movimientos_caja',
+            'create_movimientos_inventario_table' => 'movimientos_inventario',
+            'create_auditorias_table' => 'auditorias',
         ];
 
         foreach ($tablas as $sufijo => $tabla) {
