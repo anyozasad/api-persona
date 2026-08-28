@@ -2,6 +2,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-login',
@@ -82,8 +83,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
             <p *ngIf="error" class="login-error">{{ error }}</p>
             <p *ngIf="mensaje" class="login-success">{{ mensaje }}</p>
 
-            <button class="login-submit" type="submit" [disabled]="loginForm.invalid">
-              <span>Iniciar sesión</span><b>→</b>
+            <button class="login-submit" type="submit" [disabled]="loginForm.invalid || cargando">
+              <span>{{ cargando ? 'Verificando...' : 'Iniciar sesión' }}</span><b>→</b>
             </button>
           </form>
 
@@ -110,7 +111,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
             <a routerLink="/registro" class="create-account-button">Crear cuenta →</a>
           </div>
 
-          <p class="login-demo-note">Para la demostración del sistema: un correo que contenga <b>admin</b> abre el panel administrador; cualquier otro correo abre el panel del usuario.</p>
+          <p class="login-demo-note">Acceso protegido con credenciales reales, sesión segura y permisos según el rol del usuario.</p>
         </div>
       </section>
     </div>
@@ -121,11 +122,16 @@ export class LoginComponent {
   password = '';
   recordar = false;
   mostrarPassword = false;
+  cargando = false;
   error = '';
   mensaje = '';
   planSeleccionado = '';
 
-  constructor(private router: Router, private route: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private auth: AuthService
+  ) {
     this.planSeleccionado = this.route.snapshot.queryParamMap.get('plan') ?? '';
   }
 
@@ -138,24 +144,56 @@ export class LoginComponent {
       return;
     }
 
-    if (this.email.toLowerCase().includes('admin')) {
-      this.router.navigate(['/admin']);
-      return;
-    }
+    this.cargando = true;
+    this.auth.login(this.email.trim(), this.password, this.recordar).subscribe({
+      next: res => {
+        this.cargando = false;
+        if (res.usuario.rol === 'Administrador') {
+          void this.router.navigate(['/admin']);
+          return;
+        }
+        if (res.usuario.rol === 'Cliente') {
+          void this.router.navigate(['/usuario']);
+          return;
+        }
 
-    this.router.navigate(['/usuario']);
+        this.auth.limpiarSesion();
+        this.error = `El rol ${res.usuario.rol} todavía no tiene un panel web asignado.`;
+      },
+      error: err => {
+        this.cargando = false;
+        this.error = this.extraerError(err, 'No se pudo iniciar sesión. Verifica tus credenciales.');
+      }
+    });
   }
 
   socialLogin(proveedor: string): void {
     this.error = '';
-    this.mensaje = `Ingreso con ${proveedor} listo. Abriendo tu panel...`;
-    setTimeout(() => this.router.navigate(['/usuario']), 650);
+    this.mensaje = '';
+    this.error = `El acceso con ${proveedor} requiere configurar las credenciales oficiales del proveedor.`;
   }
 
   recuperarPassword(): void {
     this.error = '';
-    this.mensaje = this.email.trim()
-      ? `Te enviaremos las instrucciones de recuperación a ${this.email}.`
-      : 'Escribe tu correo para recuperar tu contraseña.';
+    this.mensaje = '';
+
+    if (!this.email.trim()) {
+      this.error = 'Escribe tu correo para recuperar tu contraseña.';
+      return;
+    }
+
+    this.auth.solicitarRecuperacion(this.email.trim()).subscribe({
+      next: res => this.mensaje = res.mensaje,
+      error: err => this.error = this.extraerError(err, 'No se pudo procesar la recuperación de contraseña.')
+    });
+  }
+
+  private extraerError(err: any, fallback: string): string {
+    const errors = err?.error?.errors;
+    if (errors && typeof errors === 'object') {
+      const first = Object.values(errors)[0];
+      if (Array.isArray(first) && first.length) return String(first[0]);
+    }
+    return err?.error?.mensaje ?? err?.error?.message ?? fallback;
   }
 }
