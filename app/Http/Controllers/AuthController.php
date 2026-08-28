@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -21,12 +23,33 @@ class AuthController extends Controller
             'contrasena' => 'required|string|min:8|max:100',
         ]);
 
-        $datos['contrasena'] = Hash::make($datos['contrasena']);
-        $datos['rol'] = 'Cliente';
-        $datos['estado'] = 'Activo';
-        $datos['fecha_registro'] = now();
+        [$usuario, $cliente] = DB::transaction(function () use ($datos) {
+            $datosUsuario = $datos;
+            $datosUsuario['contrasena'] = Hash::make($datosUsuario['contrasena']);
+            $datosUsuario['rol'] = 'Cliente';
+            $datosUsuario['estado'] = 'Activo';
+            $datosUsuario['fecha_registro'] = now();
 
-        $usuario = Usuario::create($datos);
+            $usuario = Usuario::create($datosUsuario);
+            $cliente = null;
+
+            if (!blank($datos['dni'] ?? null)) {
+                $cliente = Cliente::firstOrCreate(
+                    ['dni' => $datos['dni']],
+                    [
+                        'nombres' => $datos['nombres'],
+                        'apellidos' => $datos['apellidos'],
+                        'telefono' => $datos['telefono'] ?? null,
+                        'correo' => $datos['correo'],
+                        'fecha_registro' => now(),
+                        'estado' => 'Activo',
+                    ]
+                );
+            }
+
+            return [$usuario, $cliente];
+        });
+
         $token = $usuario->createToken('sesion-api')->plainTextToken;
 
         return response()->json([
@@ -34,6 +57,7 @@ class AuthController extends Controller
             'token_type' => 'Bearer',
             'access_token' => $token,
             'usuario' => $usuario,
+            'cliente' => $cliente,
         ], 201);
     }
 
@@ -62,7 +86,6 @@ class AuthController extends Controller
             ->orWhere('nombre_usuario', $login)
             ->first();
 
-        // Se usa el mismo mensaje para usuario inexistente y contraseña incorrecta.
         if (!$usuario || !Hash::check($contrasena, $usuario->contrasena)) {
             throw ValidationException::withMessages([
                 'login' => ['Las credenciales ingresadas no son correctas.'],
@@ -76,18 +99,27 @@ class AuthController extends Controller
         }
 
         $token = $usuario->createToken('sesion-api')->plainTextToken;
+        $cliente = $usuario->dni ? Cliente::where('dni', $usuario->dni)->first() : null;
 
         return response()->json([
             'mensaje' => 'Inicio de sesión correcto',
             'token_type' => 'Bearer',
             'access_token' => $token,
             'usuario' => $usuario,
+            'cliente' => $cliente,
         ]);
     }
 
     public function me(Request $request)
     {
-        return response()->json($request->user());
+        /** @var Usuario $usuario */
+        $usuario = $request->user();
+        $cliente = $usuario->dni ? Cliente::where('dni', $usuario->dni)->first() : null;
+
+        return response()->json([
+            'usuario' => $usuario,
+            'cliente' => $cliente,
+        ]);
     }
 
     public function logout(Request $request)
@@ -130,7 +162,6 @@ class AuthController extends Controller
             'contrasena' => Hash::make($datos['contrasena_nueva']),
         ]);
 
-        // Al cambiar la contraseña se invalidan todas las sesiones anteriores.
         $usuario->tokens()->delete();
         $token = $usuario->createToken('sesion-api')->plainTextToken;
 
