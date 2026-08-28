@@ -121,7 +121,7 @@ class VerificarMallquiBd extends Command
             ],
             'ventas' => [
                 'id_venta', 'id_cliente', 'id_usuario', 'fecha_venta', 'tipo_comprobante',
-                'numero_comprobante', 'subtotal', 'igv', 'total',
+                'numero_comprobante', 'metodo_pago', 'numero_operacion', 'subtotal', 'igv', 'total',
             ],
             'detalle_venta' => [
                 'id_detalle_venta', 'id_venta', 'id_producto', 'cantidad',
