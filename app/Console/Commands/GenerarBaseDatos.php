@@ -13,7 +13,7 @@ class GenerarBaseDatos extends Command
 
     public function handle(): int
     {
-        $codigo = Artisan::call('mallqui:generar-migraciones', [
+        $codigo = Artisan::call('db:generar-interno', [
             '--force' => (bool) $this->option('force'),
         ]);
 
