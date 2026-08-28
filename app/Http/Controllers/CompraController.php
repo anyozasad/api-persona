@@ -36,7 +36,7 @@ class CompraController extends Controller
             'tipo_comprobante' => 'required|string|max:50',
             'numero_comprobante' => 'required|string|max:80',
             'items' => 'required|array|min:1',
-            'items.*.id_producto' => 'required|integer|exists:productos,id_producto',
+            'items.*.id_producto' => 'required|integer|distinct|exists:productos,id_producto',
             'items.*.cantidad' => 'required|integer|min:1',
             'items.*.precio_compra' => 'required|numeric|min:0.01',
         ]);
