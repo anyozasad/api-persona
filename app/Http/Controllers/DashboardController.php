@@ -7,8 +7,8 @@ use App\Models\Cliente;
 use App\Models\ClienteMembresia;
 use App\Models\PagoMembresia;
 use App\Models\Producto;
+use App\Models\Reserva;
 use App\Models\Venta;
-use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -45,6 +45,17 @@ class DashboardController extends Controller
             ->whereBetween('fecha_venta', [$inicioMes, $finMes])
             ->sum('total');
 
+        $pagosPendientes = PagoMembresia::with(['clienteMembresia.cliente', 'clienteMembresia.membresia'])
+            ->where('estado_pago', 'Pendiente')
+            ->orderBy('fecha_pago')
+            ->get();
+
+        $reservasHoy = Reserva::with(['cliente', 'clase'])
+            ->whereDate('fecha_clase', $hoy)
+            ->where('estado', 'Reservada')
+            ->orderBy('id_clase')
+            ->get();
+
         return response()->json([
             'clientes' => [
                 'total' => Cliente::count(),
@@ -54,10 +65,16 @@ class DashboardController extends Controller
                 'activas' => $membresiasActivas,
                 'por_vencer_7_dias' => $porVencer->count(),
                 'detalle_por_vencer' => $porVencer,
+                'pagos_pendientes' => $pagosPendientes->count(),
+                'detalle_pagos_pendientes' => $pagosPendientes,
             ],
             'asistencias' => [
                 'hoy' => Asistencia::whereDate('fecha_hora_entrada', $hoy)->count(),
                 'dentro_ahora' => Asistencia::whereNull('fecha_hora_salida')->count(),
+            ],
+            'reservas' => [
+                'hoy' => $reservasHoy->count(),
+                'detalle_hoy' => $reservasHoy,
             ],
             'ingresos' => [
                 'membresias_mes' => round((float) $ingresosMembresiasMes, 2),
