@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\PersonaController;
 use App\Http\Controllers\CursoController;
-use App\Http\Controllers\MiembroController;
 use App\Http\Controllers\MembresiaController;
 use App\Http\Controllers\ClaseController;
 use App\Http\Controllers\AuthController;
@@ -53,7 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // PORTAL DEL CLIENTE: SOLO SUS PROPIOS DATOS
-Route::middleware(['auth:sanctum', 'rol:Cliente'])->prefix('mi-cuenta')->group(function () {
+Route::middleware(['auth:sanctum', 'rol:Cliente', 'auditoria'])->prefix('mi-cuenta')->group(function () {
     Route::get('/resumen', [PortalClienteController::class, 'resumen']);
     Route::get('/perfil', [PortalClienteController::class, 'perfil']);
     Route::get('/membresia', [PortalClienteController::class, 'membresia']);
@@ -73,7 +72,7 @@ Route::middleware(['auth:sanctum', 'rol:Cliente'])->prefix('mi-cuenta')->group(f
 });
 
 // OPERACIÓN DEL GIMNASIO: ADMINISTRADOR O ENTRENADOR
-Route::middleware(['auth:sanctum', 'rol:Administrador,Entrenador'])->group(function () {
+Route::middleware(['auth:sanctum', 'rol:Administrador,Entrenador', 'auditoria'])->group(function () {
     Route::apiResource('/clientes', ClienteController::class)->only(['index', 'show']);
 
     // Rutinas y ejercicios.
@@ -92,13 +91,11 @@ Route::middleware(['auth:sanctum', 'rol:Administrador,Entrenador'])->group(funct
 });
 
 // ADMINISTRACIÓN Y CAJA
-Route::middleware(['auth:sanctum', 'rol:Administrador'])->group(function () {
-    // Prácticas anteriores: quedan protegidas.
+Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(function () {
+    // Prácticas anteriores: quedan protegidas pero separadas del dominio del gimnasio.
     Route::apiResource('/personas', PersonaController::class);
     Route::apiResource('/cursos', CursoController::class);
 
-    // Compatibilidad con módulos anteriores.
-    Route::apiResource('/miembros', MiembroController::class);
     Route::apiResource('/membresias', MembresiaController::class)->except(['index', 'show']);
     Route::apiResource('/clases', ClaseController::class)->except(['index', 'show']);
 
