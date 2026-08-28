@@ -8,15 +8,15 @@ use Illuminate\Support\Facades\File;
 
 class GenerarMallquiMigraciones extends Command
 {
-    protected $signature = 'mallqui:generar-migraciones {--force : Sobrescribe el contenido si ya existe una migracion con el mismo nombre}';
+    protected $signature = 'db:generar-interno {--force : Sobrescribe el contenido si ya existe una migracion con el mismo nombre}';
 
-    protected $description = 'Genera con Artisan las migraciones del diagrama entidad-relacion de Mallqui Gym';
+    protected $description = 'Genera con Artisan las migraciones del diagrama entidad-relacion del proyecto';
 
     public function handle(): int
     {
         $migraciones = $this->migraciones();
 
-        $this->info('Generando migraciones de Mallqui Gym con Artisan...');
+        $this->info('Generando migraciones del proyecto con Artisan...');
 
         foreach ($migraciones as $nombre => $contenido) {
             $patron = database_path("migrations/*_{$nombre}.php");
@@ -30,7 +30,7 @@ class GenerarMallquiMigraciones extends Command
             if (!$existentes) {
                 Artisan::call('make:migration', ['name' => $nombre]);
                 $this->line(trim(Artisan::output()));
-                sleep(1); // conserva el orden de dependencias por timestamp
+                sleep(1);
                 $existentes = glob($patron) ?: [];
             }
 
@@ -571,11 +571,6 @@ FROM productos p
 INNER JOIN categorias c ON c.id_categoria = p.id_categoria
 SQL);
 
-        /*
-         * El diagrama incluye metodo_pago en vista_ventas, pero la tabla ventas
-         * no contiene ese campo. Se mantiene el campo de la vista como NULL
-         * para respetar el diagrama sin inventar una columna adicional en ventas.
-         */
         DB::statement(<<<'SQL'
 CREATE VIEW vista_ventas AS
 SELECT
