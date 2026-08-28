@@ -17,7 +17,7 @@ class AuthController extends Controller
             'nombre_usuario' => 'required|string|max:80|unique:usuarios,nombre_usuario',
             'nombres' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
-            'dni' => 'nullable|string|max:15|unique:usuarios,dni',
+            'dni' => 'required|string|max:15|unique:usuarios,dni',
             'telefono' => 'nullable|string|max:25',
             'correo' => 'required|email|max:150|unique:usuarios,correo',
             'contrasena' => 'required|string|min:8|max:100',
@@ -31,21 +31,18 @@ class AuthController extends Controller
             $datosUsuario['fecha_registro'] = now();
 
             $usuario = Usuario::create($datosUsuario);
-            $cliente = null;
 
-            if (!blank($datos['dni'] ?? null)) {
-                $cliente = Cliente::firstOrCreate(
-                    ['dni' => $datos['dni']],
-                    [
-                        'nombres' => $datos['nombres'],
-                        'apellidos' => $datos['apellidos'],
-                        'telefono' => $datos['telefono'] ?? null,
-                        'correo' => $datos['correo'],
-                        'fecha_registro' => now(),
-                        'estado' => 'Activo',
-                    ]
-                );
-            }
+            $cliente = Cliente::firstOrCreate(
+                ['dni' => $datos['dni']],
+                [
+                    'nombres' => $datos['nombres'],
+                    'apellidos' => $datos['apellidos'],
+                    'telefono' => $datos['telefono'] ?? null,
+                    'correo' => $datos['correo'],
+                    'fecha_registro' => now(),
+                    'estado' => 'Activo',
+                ]
+            );
 
             return [$usuario, $cliente];
         });
@@ -99,7 +96,7 @@ class AuthController extends Controller
         }
 
         $token = $usuario->createToken('sesion-api')->plainTextToken;
-        $cliente = $usuario->dni ? Cliente::where('dni', $usuario->dni)->first() : null;
+        $cliente = Cliente::where('dni', $usuario->dni)->first();
 
         return response()->json([
             'mensaje' => 'Inicio de sesión correcto',
@@ -114,7 +111,7 @@ class AuthController extends Controller
     {
         /** @var Usuario $usuario */
         $usuario = $request->user();
-        $cliente = $usuario->dni ? Cliente::where('dni', $usuario->dni)->first() : null;
+        $cliente = Cliente::where('dni', $usuario->dni)->first();
 
         return response()->json([
             'usuario' => $usuario,
