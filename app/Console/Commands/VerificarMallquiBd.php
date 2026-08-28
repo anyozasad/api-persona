@@ -61,7 +61,7 @@ class VerificarMallquiBd extends Command
             return self::FAILURE;
         }
 
-        $this->info('TODO OK: el esquema principal y los módulos operativos están completos.');
+        $this->info('TODO OK: el esquema principal y los módulos empresariales están completos.');
         return self::SUCCESS;
     }
 
@@ -137,6 +137,22 @@ class VerificarMallquiBd extends Command
             ],
             'reservas' => [
                 'id_reserva', 'id_cliente', 'id_clase', 'fecha_clase', 'fecha_reserva', 'estado',
+            ],
+            'cajas' => [
+                'id_caja', 'id_usuario_apertura', 'fecha_apertura', 'monto_inicial',
+                'fecha_cierre', 'monto_esperado', 'monto_real', 'diferencia', 'estado', 'observacion',
+            ],
+            'movimientos_caja' => [
+                'id_movimiento', 'id_caja', 'id_usuario', 'tipo', 'origen', 'referencia_tipo',
+                'referencia_id', 'descripcion', 'monto', 'fecha_movimiento', 'estado',
+            ],
+            'movimientos_inventario' => [
+                'id_movimiento_inventario', 'id_producto', 'id_usuario', 'tipo', 'origen',
+                'referencia_tipo', 'referencia_id', 'cantidad', 'stock_anterior', 'stock_nuevo',
+                'observacion', 'fecha_movimiento',
+            ],
+            'auditorias' => [
+                'id_auditoria', 'id_usuario', 'usuario', 'rol', 'metodo', 'ruta', 'ip', 'status', 'fecha',
             ],
             'personal_access_tokens' => [
                 'id', 'tokenable_type', 'tokenable_id', 'name', 'token', 'abilities',
