@@ -49,5 +49,7 @@ Artisan::command('frontend:build', function () {
     return 0;
 })->purpose('Compila Angular y lo integra directamente en Laravel/public');
 
-// Mantiene los vencimientos de membresías sincronizados todos los días.
-Schedule::command('membresias:actualizar-estados')->dailyAt('00:05');
+// Automatizaciones operativas para produccion.
+Schedule::command('membresias:actualizar-estados')->dailyAt('00:05')->withoutOverlapping();
+Schedule::command('backup:database --keep=30')->dailyAt('02:00')->withoutOverlapping();
+Schedule::command('sanctum:prune-expired --hours=24')->dailyAt('03:00')->withoutOverlapping();
