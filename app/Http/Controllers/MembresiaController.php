@@ -9,15 +9,15 @@ class MembresiaController extends Controller
 {
     public function index()
     {
-        return response()->json(Membresia::withCount('miembros')->get());
+        return response()->json(Membresia::withCount('clienteMembresias')->get());
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
             'nombre' => 'required|string|max:100',
+            'duracion_meses' => 'required|integer|min:1',
             'precio' => 'required|numeric|min:0',
-            'duracion_dias' => 'required|integer|min:1',
             'descripcion' => 'nullable|string',
             'estado' => 'nullable|string|max:30',
         ]);
@@ -27,12 +27,15 @@ class MembresiaController extends Controller
 
     public function show(Membresia $membresia)
     {
-        return response()->json($membresia->load('miembros'));
+        return response()->json($membresia->load('clienteMembresias.cliente'));
     }
 
     public function update(Request $request, Membresia $membresia)
     {
-        $membresia->update($request->only(['nombre','precio','duracion_dias','descripcion','estado']));
+        $membresia->update($request->only([
+            'nombre', 'duracion_meses', 'precio', 'descripcion', 'estado'
+        ]));
+
         return response()->json($membresia);
     }
 
