@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Compra;
 use App\Models\DetalleCompra;
 use App\Models\Producto;
+use App\Services\InventarioService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -28,7 +29,7 @@ class CompraController extends Controller
         );
     }
 
-    public function store(Request $request)
+    public function store(Request $request, InventarioService $inventario)
     {
         $datos = $request->validate([
             'id_proveedor' => 'required|integer|exists:proveedores,id_proveedor',
@@ -47,7 +48,7 @@ class CompraController extends Controller
             ]);
         }
 
-        $compra = DB::transaction(function () use ($datos, $request) {
+        $compra = DB::transaction(function () use ($datos, $request, $inventario) {
             $itemsPreparados = [];
             $total = 0;
 
@@ -86,24 +87,39 @@ class CompraController extends Controller
                     'subtotal' => $item['subtotal'],
                 ]);
 
-                $item['producto']->increment('stock', $item['cantidad']);
+                $anterior = (int) $item['producto']->stock;
+                $nuevo = $anterior + $item['cantidad'];
                 $item['producto']->update([
+                    'stock' => $nuevo,
                     'precio_compra' => $item['precio_compra'],
                 ]);
+
+                $inventario->registrar(
+                    $item['producto'],
+                    $request->user()->id_usuario,
+                    'Entrada',
+                    'Compra',
+                    $item['cantidad'],
+                    $anterior,
+                    $nuevo,
+                    'Compra',
+                    $compra->id_compra,
+                    'Entrada automática por compra'
+                );
             }
 
             return $compra;
         });
 
         return response()->json([
-            'mensaje' => 'Compra registrada y stock actualizado correctamente.',
+            'mensaje' => 'Compra registrada y movimiento de inventario generado.',
             'compra' => $compra->load(['proveedor', 'usuario', 'detalles.producto']),
         ], 201);
     }
 
-    public function anular(string $id)
+    public function anular(Request $request, string $id, InventarioService $inventario)
     {
-        $compra = DB::transaction(function () use ($id) {
+        $compra = DB::transaction(function () use ($id, $request, $inventario) {
             $compra = Compra::with('detalles')->lockForUpdate()->findOrFail($id);
 
             if ($compra->estado === 'Anulado') {
@@ -117,22 +133,34 @@ class CompraController extends Controller
 
                 if ((int) $producto->stock < (int) $detalle->cantidad) {
                     throw ValidationException::withMessages([
-                        'compra' => [
-                            "No se puede anular la compra porque el stock actual de {$producto->nombre_producto} ya fue utilizado."
-                        ],
+                        'compra' => ["No se puede anular la compra porque el stock actual de {$producto->nombre_producto} ya fue utilizado."],
                     ]);
                 }
 
-                $producto->decrement('stock', (int) $detalle->cantidad);
+                $anterior = (int) $producto->stock;
+                $nuevo = $anterior - (int) $detalle->cantidad;
+                $producto->update(['stock' => $nuevo]);
+
+                $inventario->registrar(
+                    $producto,
+                    $request->user()->id_usuario,
+                    'Salida',
+                    'AnulacionCompra',
+                    (int) $detalle->cantidad,
+                    $anterior,
+                    $nuevo,
+                    'Compra',
+                    $compra->id_compra,
+                    'Reversión de stock por anulación de compra'
+                );
             }
 
             $compra->update(['estado' => 'Anulado']);
-
             return $compra;
         });
 
         return response()->json([
-            'mensaje' => 'Compra anulada y stock revertido correctamente.',
+            'mensaje' => 'Compra anulada y Kardex actualizado correctamente.',
             'compra' => $compra->load(['proveedor', 'usuario', 'detalles.producto']),
         ]);
     }
