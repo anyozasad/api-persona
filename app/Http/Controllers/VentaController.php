@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\DetalleVenta;
 use App\Models\Producto;
 use App\Models\Venta;
+use App\Services\CajaService;
+use App\Services\InventarioService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -28,7 +30,7 @@ class VentaController extends Controller
         );
     }
 
-    public function store(Request $request)
+    public function store(Request $request, InventarioService $inventario, CajaService $cajaService)
     {
         $datos = $request->validate([
             'id_cliente' => 'required|integer|exists:clientes,id_cliente',
@@ -41,13 +43,19 @@ class VentaController extends Controller
             'items.*.cantidad' => 'required|integer|min:1',
         ]);
 
+        if (!$cajaService->cajaAbierta()) {
+            throw ValidationException::withMessages([
+                'caja' => ['Debes abrir caja antes de registrar una venta.'],
+            ]);
+        }
+
         if (Venta::where('numero_comprobante', $datos['numero_comprobante'])->exists()) {
             throw ValidationException::withMessages([
                 'numero_comprobante' => ['Ese comprobante de venta ya fue registrado.'],
             ]);
         }
 
-        $venta = DB::transaction(function () use ($datos, $request) {
+        $venta = DB::transaction(function () use ($datos, $request, $inventario, $cajaService) {
             $itemsPreparados = [];
             $subtotal = 0;
 
@@ -64,9 +72,7 @@ class VentaController extends Controller
 
                 if ((int) $producto->stock < (int) $item['cantidad']) {
                     throw ValidationException::withMessages([
-                        'items' => [
-                            "Stock insuficiente para {$producto->nombre_producto}. Disponible: {$producto->stock}."
-                        ],
+                        'items' => ["Stock insuficiente para {$producto->nombre_producto}. Disponible: {$producto->stock}."],
                     ]);
                 }
 
@@ -82,10 +88,7 @@ class VentaController extends Controller
                 ];
             }
 
-            $porcentajeIgv = array_key_exists('igv_porcentaje', $datos)
-                ? (float) $datos['igv_porcentaje']
-                : 18.0;
-
+            $porcentajeIgv = array_key_exists('igv_porcentaje', $datos) ? (float) $datos['igv_porcentaje'] : 18.0;
             $subtotal = round($subtotal, 2);
             $igv = round($subtotal * ($porcentajeIgv / 100), 2);
             $total = round($subtotal + $igv, 2);
@@ -110,14 +113,39 @@ class VentaController extends Controller
                     'subtotal' => $item['subtotal'],
                 ]);
 
-                $item['producto']->decrement('stock', $item['cantidad']);
+                $anterior = (int) $item['producto']->stock;
+                $nuevo = $anterior - $item['cantidad'];
+                $item['producto']->update(['stock' => $nuevo]);
+
+                $inventario->registrar(
+                    $item['producto'],
+                    $request->user()->id_usuario,
+                    'Salida',
+                    'Venta',
+                    $item['cantidad'],
+                    $anterior,
+                    $nuevo,
+                    'Venta',
+                    $venta->id_venta,
+                    'Salida automática por venta'
+                );
             }
+
+            $cajaService->registrarMovimiento(
+                $request->user()->id_usuario,
+                'Ingreso',
+                'Venta',
+                'Venta '.$venta->numero_comprobante,
+                (float) $venta->total,
+                'Venta',
+                $venta->id_venta
+            );
 
             return $venta;
         });
 
         return response()->json([
-            'mensaje' => 'Venta registrada y stock descontado correctamente.',
+            'mensaje' => 'Venta registrada, caja actualizada y movimiento de inventario generado.',
             'venta' => $venta->load(['cliente', 'usuario', 'detalles.producto']),
         ], 201);
     }
