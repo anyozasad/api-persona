@@ -12,10 +12,27 @@ class SincronizarBaseDatos extends Command
 {
     protected $signature = 'db:sincronizar';
 
-    protected $description = 'Sincroniza migraciones con tablas ya existentes y ejecuta solo lo que falta';
+    protected $description = 'Genera lo pendiente, sincroniza migraciones con tablas existentes y ejecuta solo lo que falta';
 
     public function handle(): int
     {
+        $this->info('Preparando migraciones pendientes del proyecto...');
+
+        // Genera/actualiza las migraciones base y operativas sin ejecutar migrate todavía.
+        foreach (['db:generar-interno', 'db:operacion-interno'] as $comando) {
+            $codigoGenerar = Artisan::call($comando);
+            $salidaGenerar = trim(Artisan::output());
+
+            if ($salidaGenerar !== '') {
+                $this->line($salidaGenerar);
+            }
+
+            if ($codigoGenerar !== 0) {
+                $this->error("No se pudo ejecutar {$comando}.");
+                return self::FAILURE;
+            }
+        }
+
         if (!Schema::hasTable('migrations')) {
             Artisan::call('migrate:install');
         }
@@ -32,7 +49,7 @@ class SincronizarBaseDatos extends Command
 
             $objeto = $this->objetoExistentePara($migracion);
 
-            if ($objeto !== null && $objeto === true) {
+            if ($objeto === true) {
                 DB::table('migrations')->insert([
                     'migration' => $migracion,
                     'batch' => $batch,
