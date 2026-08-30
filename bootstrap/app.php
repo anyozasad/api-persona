@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AuditLogMiddleware;
+use App\Http\Middleware\JwtMiddleware;
 use App\Http\Middleware\RolMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'rol' => RolMiddleware::class,
             'auditoria' => AuditLogMiddleware::class,
+            'jwt' => JwtMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
