@@ -8,6 +8,7 @@ use App\Http\Controllers\CursoController;
 use App\Http\Controllers\MembresiaController;
 use App\Http\Controllers\ClaseController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\JwtAuthController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ClienteMembresiaController;
 use App\Http\Controllers\PagoMembresiaController;
@@ -31,7 +32,7 @@ use App\Http\Controllers\CajaController;
 use App\Http\Controllers\KardexController;
 use App\Http\Controllers\AuditoriaController;
 
-// AUTENTICACIÓN
+// AUTENTICACIÓN PRINCIPAL DEL SISTEMA: SANCTUM
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:3,1');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
@@ -43,6 +44,21 @@ Route::prefix('auth')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/logout-todos', [AuthController::class, 'logoutTodos']);
         Route::put('/cambiar-contrasena', [AuthController::class, 'cambiarContrasena']);
+    });
+});
+
+// MÓDULO JWT ACADÉMICO
+// Se mantiene separado de Sanctum para mostrar al profesor:
+// - sub = identificador del usuario
+// - claims adicionales: id_usuario, nombre_usuario, correo y rol
+Route::prefix('jwt')->group(function () {
+    Route::post('/login', [JwtAuthController::class, 'login'])->middleware('throttle:5,1');
+
+    Route::middleware('jwt')->group(function () {
+        Route::get('/me', [JwtAuthController::class, 'me']);
+        Route::get('/claims', [JwtAuthController::class, 'claims']);
+        Route::get('/solo-administrador', [JwtAuthController::class, 'soloAdministrador'])
+            ->middleware('rol:Administrador');
     });
 });
 
