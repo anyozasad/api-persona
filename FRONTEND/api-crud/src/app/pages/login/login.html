@@ -1,0 +1,11 @@
+<div class="min-vh-100 d-flex align-items-center justify-content-center bg-light p-3">
+  <div class="card shadow-sm login-card"><div class="card-body p-4">
+    <h3 class="mb-1">Mallqui Gym</h3><p class="text-secondary mb-4">Angular + API Laravel</p>
+    @if (error) { <div class="alert alert-danger py-2">{{ error }}</div> }
+    <form (ngSubmit)="ingresar()">
+      <div class="mb-3"><label class="form-label">Correo o usuario</label><input class="form-control" name="login" [(ngModel)]="login" required></div>
+      <div class="mb-3"><label class="form-label">Contraseña</label><input type="password" class="form-control" name="contrasena" [(ngModel)]="contrasena" required></div>
+      <button class="btn btn-primary w-100" type="submit" [disabled]="cargando">{{ cargando ? 'Ingresando...' : 'Iniciar sesión' }}</button>
+    </form>
+  </div></div>
+</div>
