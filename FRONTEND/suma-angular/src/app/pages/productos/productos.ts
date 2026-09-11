@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Producto } from '../../models/producto';
 import { Categoria } from '../../models/categoria';
-import { ProductoService } from '../../services/producto';
-import { CategoriaService } from '../../services/categoria';
+import { ProductoService } from '../../core/services/producto.service';
+import { CategoriaService } from '../../core/services/categoria.service';
 import { AuthService } from '../../auth.service';
 
 @Component({

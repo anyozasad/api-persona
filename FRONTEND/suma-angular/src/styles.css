@@ -1,20 +1,15 @@
-@import './mallqui-landing.css';
-@import './mallqui-member.css';
-@import './mallqui-member-actions.css';
-@import './mallqui-admin.css';
-@import './mallqui-admin-actions.css';
-@import './mallqui-admin-sidebar.css';
-@import './mallqui-login.css';
-@import './mallqui-login-polish.css';
-@import './mallqui-register.css';
-@import './mallqui-motion.css';
+@import './styles/member-actions.css';
+@import './styles/admin-actions.css';
+@import './styles/admin-sidebar.css';
+@import './styles/login-polish.css';
+@import './styles/motion.css';
 
 /* Estilos globales base de Mallqui Gym. */
 html, body { margin: 0; min-height: 100%; }
 body { font-family: Inter, Arial, sans-serif; }
 app-root { display: block; min-height: 100vh; }
 
-/* Microinteracciones UI/UX: se agregan sin cambiar la estructura del diseño. */
+/* Microinteracciones UI/UX compartidas. */
 .primary-button,
 .ghost-button,
 .plan-cards button,

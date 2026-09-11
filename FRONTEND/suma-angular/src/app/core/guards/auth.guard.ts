@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { catchError, map, of } from 'rxjs';
-import { AuthService } from './auth.service';
+import { AuthService } from '../../auth.service';
 
 const TOKEN_KEY = 'mallqui_token';
 const USER_KEY = 'mallqui_usuario';
@@ -29,8 +29,6 @@ export const authGuard: CanActivateFn = () => {
   return sesionActual().token ? true : router.createUrlTree(['/login']);
 };
 
-// Cualquier boton existente que regrese a /login funciona como cierre de sesion real:
-// revoca el token en Laravel y despues limpia el navegador.
 export const logoutOnLoginGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   if (!auth.estaAutenticado()) return true;

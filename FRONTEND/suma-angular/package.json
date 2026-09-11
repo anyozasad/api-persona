@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "start": "ng serve",
-    "build": "ng build",
-    "build:laravel": "ng build && node scripts/copy-to-laravel.mjs"
+    "build": "ng build"
   },
   "dependencies": {
     "@angular/common": "^20.0.0",

@@ -1,13 +1,13 @@
 import { Routes } from '@angular/router';
-import { LandingComponent } from './landing.component';
-import { LoginComponent } from './login.component';
-import { RegisterComponent } from './register.component';
-import { ResetPasswordComponent } from './reset-password.component';
-import { UsuarioComponent } from './usuario.component';
-import { AdminComponent } from './admin.component';
-import { AdminIntegradoComponent } from './admin-integrado.component';
+import { LandingComponent } from './pages/landing/landing.component';
+import { LoginComponent } from './pages/login/login.component';
+import { RegisterComponent } from './pages/register/register.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
+import { UsuarioComponent } from './pages/usuario/usuario.component';
+import { AdminComponent } from './pages/admin/admin.component';
+import { AdminIntegradoComponent } from './pages/admin/admin-integrado.component';
 import { ProductosComponent } from './pages/productos/productos';
-import { authGuard, logoutOnLoginGuard, roleGuard } from './auth.guard';
+import { authGuard, logoutOnLoginGuard, roleGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
