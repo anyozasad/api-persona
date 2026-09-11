@@ -1,0 +1,103 @@
+/* Sidebar administrador minimizable: solo ajustes visuales, sin cambiar funciones */
+.admin-shell{transition:grid-template-columns .28s ease}
+.admin-shell:not(.admin-sidebar-collapsed){grid-template-columns:215px minmax(0,1fr)}
+.admin-nav{position:relative;transition:padding .28s ease,width .28s ease;overflow:visible;box-sizing:border-box}
+.admin-nav nav button,.admin-brand,.admin-logout{transition:all .24s ease}
+
+/* Logo de la empresa: más equilibrado, un poco más abajo y sin sobresalir */
+.admin-brand{
+  width:138px!important;
+  height:116px!important;
+  margin:18px auto 20px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  display:block!important;
+  background-color:transparent!important;
+  background-image:url('/assets/mallqui-logo.svg')!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:88% auto!important;
+  text-decoration:none!important;
+  overflow:visible!important;
+  opacity:.88!important;
+  filter:brightness(.94) contrast(.92) saturate(.96)!important;
+  transition:opacity .22s ease,filter .22s ease,transform .22s ease!important;
+}
+.admin-brand:hover{
+  opacity:.94!important;
+  filter:brightness(.97) contrast(.95) saturate(.98)!important;
+  transform:scale(1.01);
+}
+/* Ocultamos el PNG anterior para que no aparezca el fondo blanco */
+.admin-brand img{display:none!important}
+
+/* La flecha no queda visible: aparece solo al acercar el mouse al menú */
+.admin-sidebar-toggle{
+  position:absolute;
+  right:-15px;
+  top:50%;
+  transform:translateY(-50%) scale(.94);
+  z-index:80;
+  width:30px;
+  height:52px;
+  border:1px solid #d8e1eb;
+  border-left:0;
+  border-radius:0 14px 14px 0;
+  background:#fff;
+  color:#0b2344;
+  box-shadow:7px 0 20px rgba(5,24,48,.13);
+  display:grid;
+  place-items:center;
+  font-size:24px;
+  font-weight:500;
+  cursor:pointer;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .18s ease,visibility .18s ease,background .2s ease,color .2s ease,box-shadow .2s ease,transform .2s ease;
+}
+.admin-nav:hover .admin-sidebar-toggle,
+.admin-sidebar-toggle:focus-visible{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:translateY(-50%) scale(1);
+}
+.admin-sidebar-toggle:hover{background:#f21f32;color:#fff;box-shadow:8px 0 26px rgba(242,31,50,.24);transform:translateY(-50%) scale(1.04)}
+.admin-sidebar-toggle:active{transform:translateY(-50%) scale(.96)}
+
+/* Solo se minimiza después de pulsar la flecha */
+.admin-shell.admin-sidebar-collapsed{grid-template-columns:96px minmax(0,1fr)}
+.admin-shell.admin-sidebar-collapsed .admin-nav{padding-left:12px;padding-right:12px;min-width:0}
+.admin-shell.admin-sidebar-collapsed .admin-brand{
+  width:54px!important;
+  height:54px!important;
+  margin:12px auto 18px!important;
+  background-image:url('/assets/mallqui-logo.svg')!important;
+  background-size:88% auto!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  opacity:.88!important;
+  filter:brightness(.94) contrast(.92) saturate(.96)!important;
+}
+.admin-shell.admin-sidebar-collapsed .admin-nav nav{gap:6px}
+.admin-shell.admin-sidebar-collapsed .admin-nav nav button{font-size:0!important;justify-content:center;padding:12px 8px;min-height:48px;width:100%;box-sizing:border-box}
+.admin-shell.admin-sidebar-collapsed .admin-nav nav button span{font-size:18px!important;margin:0}
+.admin-shell.admin-sidebar-collapsed .admin-nav nav button:hover{transform:none}
+.admin-shell.admin-sidebar-collapsed .admin-logout{font-size:0;text-align:center;padding:13px 7px}
+.admin-shell.admin-sidebar-collapsed .admin-logout:before{content:'↪';font-size:18px}
+.admin-shell.admin-sidebar-collapsed .admin-content{min-width:0}
+
+@media(max-width:1100px) and (min-width:851px){
+  .admin-shell:not(.admin-sidebar-collapsed){grid-template-columns:190px minmax(0,1fr)}
+  .admin-brand{width:126px!important;height:106px!important;margin-top:16px!important}
+  .admin-shell.admin-sidebar-collapsed{grid-template-columns:88px minmax(0,1fr)}
+  .admin-shell.admin-sidebar-collapsed .admin-brand{width:50px!important;height:50px!important}
+  .admin-content{padding-left:20px;padding-right:18px}
+}
+
+@media(max-width:850px){
+  .admin-sidebar-toggle{display:none}
+}
