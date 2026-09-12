@@ -22,6 +22,12 @@ export interface AuthResponse {
   cliente?: unknown;
 }
 
+export interface CambioContrasenaResponse {
+  mensaje: string;
+  token_type: string;
+  access_token: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly api = '/api/auth';
@@ -60,6 +66,18 @@ export class AuthService {
 
   logoutTodos(): Observable<unknown> {
     return this.http.post(`${this.api}/logout-todos`, {});
+  }
+
+  cambiarContrasena(contrasenaActual: string, contrasenaNueva: string): Observable<CambioContrasenaResponse> {
+    return this.http.put<CambioContrasenaResponse>(`${this.api}/cambiar-contrasena`, {
+      contrasena_actual: contrasenaActual,
+      contrasena_nueva: contrasenaNueva,
+    }).pipe(
+      tap(res => {
+        const storage = localStorage.getItem(this.tokenKey) ? localStorage : sessionStorage;
+        storage.setItem(this.tokenKey, res.access_token);
+      })
+    );
   }
 
   solicitarRecuperacion(correo: string): Observable<{ mensaje: string }> {
