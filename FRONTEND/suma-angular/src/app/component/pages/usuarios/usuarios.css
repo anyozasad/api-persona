@@ -1,3 +1,1 @@
-.usuarios-page {
-  padding: 24px;
-}
+:host { display: block; }

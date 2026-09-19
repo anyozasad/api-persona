@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
+import { AdminIntegradoComponent } from '../admin/admin-integrado.component';
 
 @Component({
   selector: 'app-auditoria',
-  imports: [],
+  standalone: true,
+  imports: [AdminIntegradoComponent],
   templateUrl: './auditoria.html',
   styleUrl: './auditoria.css'
 })
-export class Auditoria {
-
-}
+export class Auditoria {}

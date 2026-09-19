@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
+import { AdminIntegradoComponent } from '../admin/admin-integrado.component';
 
 @Component({
   selector: 'app-ventas',
-  imports: [],
+  standalone: true,
+  imports: [AdminIntegradoComponent],
   templateUrl: './ventas.html',
   styleUrl: './ventas.css'
 })
-export class Ventas {
-
-}
+export class Ventas {}

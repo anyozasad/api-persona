@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
+import { AdminIntegradoComponent } from '../admin/admin-integrado.component';
 
 @Component({
   selector: 'app-rutinas',
-  imports: [],
+  standalone: true,
+  imports: [AdminIntegradoComponent],
   templateUrl: './rutinas.html',
   styleUrl: './rutinas.css'
 })
-export class Rutinas {
-
-}
+export class Rutinas {}

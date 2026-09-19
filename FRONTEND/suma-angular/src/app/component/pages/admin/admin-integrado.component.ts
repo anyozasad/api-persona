@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -200,6 +200,101 @@ import { ProductosComponent } from './pages/productos/productos';
         </section>
       </ng-container>
 
+
+      <ng-container *ngIf="seccion==='categorias'">
+        <section class="management-grid">
+          <article class="admin-form-card">
+            <div class="management-heading"><div><h2>Nueva categoría</h2><p>Organiza los productos del gimnasio.</p></div><span>▦</span></div>
+            <form (ngSubmit)="crearCategoria()">
+              <label>Nombre<input [(ngModel)]="categoriaForm.nombre_categoria" name="catnombre" required></label>
+              <label>Descripción<input [(ngModel)]="categoriaForm.descripcion" name="catdescripcion"></label>
+              <label>Estado<select [(ngModel)]="categoriaForm.estado" name="catestado"><option>Activo</option><option>Inactivo</option></select></label>
+              <button class="admin-primary" type="submit">Guardar categoría</button>
+            </form>
+          </article>
+          <article class="admin-list-card wide-card">
+            <div class="management-heading"><div><h2>Categorías</h2><p>{{categorias.length}} registradas.</p></div></div>
+            <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Nombre</th><th>Descripción</th><th>Productos</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
+              <tr *ngFor="let c of categorias"><td>{{c.id_categoria}}</td><td><b>{{c.nombre_categoria}}</b></td><td>{{c.descripcion || '-'}}</td><td>{{c.productos_count ?? 0}}</td><td>{{c.estado}}</td><td><button class="table-danger" type="button" (click)="desactivarCategoria(c.id_categoria)">Desactivar</button></td></tr>
+              <tr *ngIf="!categorias.length"><td colspan="6">No hay categorías registradas.</td></tr>
+            </tbody></table></div>
+          </article>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='rutinas'">
+        <section class="management-grid">
+          <article class="admin-form-card">
+            <div class="management-heading"><div><h2>Nueva rutina</h2><p>Asigna una rutina a un cliente y entrenador.</p></div><span>🏋</span></div>
+            <form (ngSubmit)="crearRutina()">
+              <label>Cliente<select [(ngModel)]="rutinaForm.id_cliente" name="rucliente" required><option [ngValue]="0">Seleccionar</option><option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option></select></label>
+              <label>Entrenador<select [(ngModel)]="rutinaForm.id_entrenador" name="ruentrenador" required><option [ngValue]="0">Seleccionar</option><option *ngFor="let e of entrenadores" [ngValue]="e.id_entrenador">{{nombreEntrenador(e)}}</option></select></label>
+              <label>Nombre<input [(ngModel)]="rutinaForm.nombre_rutina" name="runombre" required></label>
+              <label>Objetivo<input [(ngModel)]="rutinaForm.objetivo" name="ruobjetivo"></label>
+              <label>Descripción<input [(ngModel)]="rutinaForm.descripcion" name="rudescripcion"></label>
+              <div class="form-row"><label>Inicio<input type="date" [(ngModel)]="rutinaForm.fecha_inicio" name="ruinicio" required></label><label>Fin<input type="date" [(ngModel)]="rutinaForm.fecha_fin" name="rufin"></label></div>
+              <button class="admin-primary" type="submit">Guardar rutina</button>
+            </form>
+          </article>
+          <article class="admin-list-card wide-card">
+            <div class="management-heading"><div><h2>Rutinas</h2><p>{{rutinas.length}} registradas.</p></div></div>
+            <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Entrenador</th><th>Rutina</th><th>Objetivo</th><th>Periodo</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
+              <tr *ngFor="let r of rutinas"><td>{{r.id_rutina}}</td><td>{{nombreCliente(r.cliente)}}</td><td>{{nombreEntrenador(r.entrenador)}}</td><td><b>{{r.nombre_rutina}}</b></td><td>{{r.objetivo || '-'}}</td><td>{{r.fecha_inicio}} - {{r.fecha_fin || 'Sin fin'}}</td><td>{{r.estado}}</td><td><button class="table-danger" type="button" (click)="desactivarRutina(r.id_rutina)">Desactivar</button></td></tr>
+              <tr *ngIf="!rutinas.length"><td colspan="8">No hay rutinas registradas.</td></tr>
+            </tbody></table></div>
+          </article>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='reservas'">
+        <section class="admin-list-card">
+          <div class="management-heading"><div><h2>Reservas de clases</h2><p>Controla asistencia, ausencias y cancelaciones.</p></div><span class="big-number">{{reservas.length}}</span></div>
+          <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Clase</th><th>Fecha</th><th>Entrenador</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>
+            <tr *ngFor="let r of reservas"><td>{{r.id_reserva}}</td><td>{{nombreCliente(r.cliente)}}</td><td>{{r.clase?.nombre}}</td><td>{{r.fecha_clase}}</td><td>{{nombreEntrenador(r.clase?.entrenador)}}</td><td>{{r.estado}}</td><td><button class="table-action" type="button" (click)="cambiarEstadoReserva(r.id_reserva,'Asistio')">Asistió</button> <button class="admin-secondary" type="button" (click)="cambiarEstadoReserva(r.id_reserva,'NoAsistio')">No asistió</button> <button class="table-danger" type="button" (click)="cambiarEstadoReserva(r.id_reserva,'Cancelada')">Cancelar</button></td></tr>
+            <tr *ngIf="!reservas.length"><td colspan="7">No hay reservas registradas.</td></tr>
+          </tbody></table></div>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='usuarios'">
+        <section class="management-grid">
+          <article class="admin-form-card">
+            <div class="management-heading"><div><h2>Nuevo usuario interno</h2><p>Crea cuentas para administración o entrenadores.</p></div><span>♙</span></div>
+            <form (ngSubmit)="crearUsuario()">
+              <div class="form-row"><label>Usuario<input [(ngModel)]="usuarioForm.nombre_usuario" name="usunombre" required></label><label>Rol<select [(ngModel)]="usuarioForm.rol" name="usurol"><option>Administrador</option><option>Entrenador</option></select></label></div>
+              <div class="form-row"><label>Nombres<input [(ngModel)]="usuarioForm.nombres" name="usunombres" required></label><label>Apellidos<input [(ngModel)]="usuarioForm.apellidos" name="usuapellidos" required></label></div>
+              <div class="form-row"><label>DNI<input [(ngModel)]="usuarioForm.dni" name="usudni" required></label><label>Teléfono<input [(ngModel)]="usuarioForm.telefono" name="usutelefono"></label></div>
+              <label>Correo<input type="email" [(ngModel)]="usuarioForm.correo" name="usucorreo" required></label>
+              <label>Contraseña<input type="password" minlength="8" [(ngModel)]="usuarioForm.contrasena" name="usuclave" required></label>
+              <button class="admin-primary" type="submit">Crear usuario</button>
+            </form>
+          </article>
+          <article class="admin-list-card wide-card">
+            <div class="management-heading"><div><h2>Usuarios</h2><p>{{usuarios.length}} cuentas registradas.</p></div></div>
+            <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Usuario</th><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
+              <tr *ngFor="let u of usuarios"><td>{{u.id_usuario}}</td><td>{{u.nombre_usuario}}</td><td>{{u.nombres}} {{u.apellidos}}</td><td>{{u.correo}}</td><td>{{u.rol}}</td><td>{{u.estado}}</td><td><button class="table-danger" type="button" (click)="desactivarUsuario(u.id_usuario)">Desactivar</button></td></tr>
+              <tr *ngIf="!usuarios.length"><td colspan="7">No hay usuarios registrados.</td></tr>
+            </tbody></table></div>
+          </article>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='auditoria'">
+        <section class="admin-list-card">
+          <div class="management-heading"><div><h2>Auditoría del sistema</h2><p>Consulta las acciones registradas por Laravel.</p></div><button class="admin-secondary" type="button" (click)="exportarAuditoria()">Exportar CSV</button></div>
+          <div class="form-row">
+            <label>Ruta<input [(ngModel)]="auditoriaFiltros.ruta" name="auruta" placeholder="/api/ventas"></label>
+            <label>Desde<input type="date" [(ngModel)]="auditoriaFiltros.desde" name="audesde"></label>
+            <label>Hasta<input type="date" [(ngModel)]="auditoriaFiltros.hasta" name="auhasta"></label>
+            <button class="admin-primary" type="button" (click)="cargarAuditoria()">Filtrar</button>
+          </div>
+          <div class="table-wrap"><table class="management-table"><thead><tr><th>Fecha</th><th>Usuario</th><th>Rol</th><th>Método</th><th>Ruta</th><th>IP</th><th>Estado HTTP</th></tr></thead><tbody>
+            <tr *ngFor="let a of auditorias"><td>{{fecha(a.fecha)}}</td><td>{{a.usuario || a.id_usuario || '-'}}</td><td>{{a.rol || '-'}}</td><td>{{a.metodo}}</td><td>{{a.ruta}}</td><td>{{a.ip || '-'}}</td><td>{{a.status ?? '-'}}</td></tr>
+            <tr *ngIf="!auditorias.length"><td colspan="7">No hay registros para el filtro seleccionado.</td></tr>
+          </tbody></table></div>
+        </section>
+      </ng-container>
+
       <ng-container *ngIf="seccion==='reportes'">
         <section class="report-grid"><article><span>👥</span><p>Clientes registrados</p><h2>{{dashboard?.clientes?.total ?? clientes.length}}</h2></article><article><span>✦</span><p>Membresías activas</p><h2>{{dashboard?.membresias?.activas ?? 0}}</h2></article><article><span>💵</span><p>Ingresos del mes</p><h2>S/ {{reporteIngresos?.total_ingresos ?? dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</h2></article><article><span>▣</span><p>Asistencias del periodo</p><h2>{{reporteAsistencias?.total ?? 0}}</h2></article></section>
         <article class="report-panel"><div class="management-heading"><div><h2>Datos reales para reportes</h2><p>Información calculada por Laravel desde MySQL.</p></div><button class="admin-secondary" type="button" (click)="cargarReportes()">Actualizar reporte</button></div><div class="table-wrap"><table class="management-table"><tbody><tr><th>Membresías</th><td>S/ {{reporteIngresos?.membresias ?? 0 | number:'1.2-2'}}</td></tr><tr><th>Ventas productos</th><td>S/ {{reporteIngresos?.ventas_productos ?? 0 | number:'1.2-2'}}</td></tr><tr><th>Total ingresos</th><td>S/ {{reporteIngresos?.total_ingresos ?? 0 | number:'1.2-2'}}</td></tr></tbody></table></div></article>
@@ -218,6 +313,7 @@ import { ProductosComponent } from './pages/productos/productos';
   `]
 })
 export class AdminIntegradoComponent implements OnInit {
+  @Input() seccionInicial = 'dashboard';
   seccion = 'dashboard';
   toast = '';
   error = '';
@@ -233,6 +329,11 @@ export class AdminIntegradoComponent implements OnInit {
   entrenadores: any[] = [];
   clases: any[] = [];
   asistencias: any[] = [];
+  categorias: any[] = [];
+  rutinas: any[] = [];
+  reservas: any[] = [];
+  usuarios: any[] = [];
+  auditorias: any[] = [];
   productos: any[] = [];
   proveedores: any[] = [];
   compras: any[] = [];
@@ -250,6 +351,9 @@ export class AdminIntegradoComponent implements OnInit {
     {id:'entrenador',icono:'🏋',nombre:'Entrenador'},
     {id:'clases',icono:'◉',nombre:'Clases'},
     {id:'asistencias',icono:'▣',nombre:'Asistencias'},
+    {id:'rutinas',icono:'🏋',nombre:'Rutinas'},
+    {id:'reservas',icono:'◷',nombre:'Reservas'},
+    {id:'categorias',icono:'▦',nombre:'Categorías'},
     {id:'productos',icono:'□',nombre:'Productos'},
     {id:'proveedores',icono:'▤',nombre:'Proveedores'},
     {id:'compras',icono:'↓',nombre:'Compras'},
@@ -257,17 +361,21 @@ export class AdminIntegradoComponent implements OnInit {
     {id:'kardex',icono:'▥',nombre:'Kardex'},
     {id:'caja',icono:'$',nombre:'Caja'},
     {id:'reportes',icono:'▥',nombre:'Reportes'},
+    {id:'usuarios',icono:'♙',nombre:'Usuarios'},
+    {id:'auditoria',icono:'⌕',nombre:'Auditoría'},
     {id:'configuracion',icono:'⚙',nombre:'Configuración'}
   ];
   titulos: Record<string,[string,string]> = {
     dashboard:['Panel Administrador','Datos reales del gimnasio'], clientes:['Clientes','Registro y administración de miembros'],
     membresias:['Membresías','Planes, vigencias y contratación'], pagos:['Pagos','Confirmación e historial de pagos'],
     entrenador:['Entrenador','Gestión del entrenador principal'], clases:['Clases','Programación, horarios y cupos'],
-    asistencias:['Asistencias','Control de entradas y salidas'], productos:['Productos','CRUD de productos conectado a Laravel'],
-    proveedores:['Proveedores','Proveedores de productos'], compras:['Compras','Ingreso de productos e inventario'],
-    ventas:['Ventas','Ventas de productos y stock'], kardex:['Kardex','Movimientos del inventario'],
-    caja:['Caja','Apertura, movimientos y cierre'], reportes:['Reportes','Indicadores calculados desde MySQL'],
-    configuracion:['Configuración','Estado técnico del sistema']
+    asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['Rutinas','Planes de entrenamiento por cliente'],
+    reservas:['Reservas','Control de reservas y asistencia a clases'], categorias:['Categorías','Clasificación de productos'],
+    productos:['Productos','CRUD de productos conectado a Laravel'], proveedores:['Proveedores','Proveedores de productos'],
+    compras:['Compras','Ingreso de productos e inventario'], ventas:['Ventas','Ventas de productos y stock'],
+    kardex:['Kardex','Movimientos del inventario'], caja:['Caja','Apertura, movimientos y cierre'],
+    reportes:['Reportes','Indicadores calculados desde MySQL'], usuarios:['Usuarios','Cuentas internas y permisos'],
+    auditoria:['Auditoría','Trazabilidad de acciones del sistema'], configuracion:['Configuración','Estado técnico del sistema']
   };
 
   clienteForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
@@ -275,6 +383,10 @@ export class AdminIntegradoComponent implements OnInit {
   entrenadorForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',especialidad:'',fecha_contratacion:new Date().toISOString().slice(0,10),salario:0,estado:'Activo'};
   claseForm: any = {id_entrenador:null,nombre:'',descripcion:'',dia_semana:'Lunes',hora_inicio:'08:00',hora_fin:'09:00',cupo_maximo:15,estado:'Activo'};
   asistenciaCliente = 0;
+  categoriaForm: any = {nombre_categoria:'',descripcion:'',estado:'Activo'};
+  rutinaForm: any = {id_cliente:0,id_entrenador:0,nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:new Date().toISOString().slice(0,10),fecha_fin:'',estado:'Activo'};
+  usuarioForm: any = {nombre_usuario:'',contrasena:'',nombres:'',apellidos:'',dni:'',telefono:'',correo:'',rol:'Entrenador',estado:'Activo'};
+  auditoriaFiltros: any = {ruta:'',desde:'',hasta:''};
   proveedorForm: any = {ruc:'',razon_social:'',contacto:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
   compraForm: any = {id_proveedor:0,id_producto:0,cantidad:1,precio_compra:0,tipo_comprobante:'Factura',numero_comprobante:''};
   ventaForm: any = {id_cliente:0,id_producto:0,cantidad:1,tipo_comprobante:'Boleta',numero_comprobante:'',metodo_pago:'Efectivo',numero_operacion:'',igv_porcentaje:18};
@@ -285,7 +397,7 @@ export class AdminIntegradoComponent implements OnInit {
 
   constructor(public auth: AuthService, private api: AdminApiService, private router: Router) {}
 
-  ngOnInit(): void { this.recargarTodo(); }
+  ngOnInit(): void { this.seccion = this.seccionInicial || 'dashboard'; this.recargarTodo(); }
 
   get tituloActual(): string { return this.titulos[this.seccion]?.[0] ?? 'Administrador'; }
   get subtituloActual(): string { return this.titulos[this.seccion]?.[1] ?? ''; }
@@ -294,12 +406,14 @@ export class AdminIntegradoComponent implements OnInit {
     this.seccion = id;
     this.error = '';
     if (id === 'reportes') this.cargarReportes();
+    if (id === 'auditoria') this.cargarAuditoria();
     window.scrollTo({top:0, behavior:'smooth'});
   }
 
   recargarTodo(): void {
     this.cargarDashboard(); this.cargarClientes(); this.cargarMembresias(); this.cargarPagos();
-    this.cargarEntrenadores(); this.cargarClases(); this.cargarAsistencias(); this.cargarProductos();
+    this.cargarEntrenadores(); this.cargarClases(); this.cargarAsistencias(); this.cargarCategorias();
+    this.cargarRutinas(); this.cargarReservas(); this.cargarUsuarios(); this.cargarAuditoria(); this.cargarProductos();
     this.cargarProveedores(); this.cargarCompras(); this.cargarVentas(); this.cargarKardex(); this.cargarCaja(); this.cargarReportes();
   }
 
@@ -316,6 +430,11 @@ export class AdminIntegradoComponent implements OnInit {
   cargarEntrenadores(){ this.api.entrenadores().subscribe({next:r=>{this.entrenadores=r; if(r[0]) this.entrenadorForm={...r[0]};},error:e=>this.mostrarError(e)}); }
   cargarClases(){ this.api.clases().subscribe({next:r=>this.clases=r,error:e=>this.mostrarError(e)}); }
   cargarAsistencias(){ this.api.asistencias().subscribe({next:r=>this.asistencias=r,error:e=>this.mostrarError(e)}); }
+  cargarCategorias(){ this.api.categorias().subscribe({next:r=>this.categorias=r,error:e=>this.mostrarError(e)}); }
+  cargarRutinas(){ this.api.rutinas().subscribe({next:r=>this.rutinas=r,error:e=>this.mostrarError(e)}); }
+  cargarReservas(){ this.api.reservas().subscribe({next:r=>this.reservas=r,error:e=>this.mostrarError(e)}); }
+  cargarUsuarios(){ this.api.usuarios().subscribe({next:r=>this.usuarios=r,error:e=>this.mostrarError(e)}); }
+  cargarAuditoria(){ const f:any={}; if(this.auditoriaFiltros.ruta)f.ruta=this.auditoriaFiltros.ruta; if(this.auditoriaFiltros.desde)f.desde=this.auditoriaFiltros.desde; if(this.auditoriaFiltros.hasta)f.hasta=this.auditoriaFiltros.hasta; this.api.auditorias(f).subscribe({next:r=>this.auditorias=r,error:e=>this.mostrarError(e)}); }
   cargarProductos(){ this.api.productos().subscribe({next:r=>this.productos=r,error:e=>this.mostrarError(e)}); }
   cargarProveedores(){ this.api.proveedores().subscribe({next:r=>this.proveedores=r,error:e=>this.mostrarError(e)}); }
   cargarCompras(){ this.api.compras().subscribe({next:r=>this.compras=r,error:e=>this.mostrarError(e)}); }
@@ -368,6 +487,25 @@ export class AdminIntegradoComponent implements OnInit {
   registrarVenta(){
     const datos={id_cliente:this.ventaForm.id_cliente,tipo_comprobante:this.ventaForm.tipo_comprobante,numero_comprobante:this.ventaForm.numero_comprobante,metodo_pago:this.ventaForm.metodo_pago,numero_operacion:this.ventaForm.metodo_pago==='Efectivo'?null:this.ventaForm.numero_operacion,igv_porcentaje:this.ventaForm.igv_porcentaje,items:[{id_producto:this.ventaForm.id_producto,cantidad:this.ventaForm.cantidad}]};
     this.api.registrarVenta(datos).subscribe({next:r=>{this.ok(r.mensaje||'Venta registrada');this.ventaForm={id_cliente:0,id_producto:0,cantidad:1,tipo_comprobante:'Boleta',numero_comprobante:'',metodo_pago:'Efectivo',numero_operacion:'',igv_porcentaje:18};this.cargarVentas();this.cargarProductos();this.cargarKardex();this.cargarCaja();this.cargarDashboard();},error:e=>this.mostrarError(e)});
+  }
+
+  crearCategoria(){ this.api.crearCategoria(this.categoriaForm).subscribe({next:()=>{this.ok('Categoría registrada');this.categoriaForm={nombre_categoria:'',descripcion:'',estado:'Activo'};this.cargarCategorias();},error:e=>this.mostrarError(e)}); }
+  desactivarCategoria(id:number){ if(!confirm('¿Desactivar esta categoría?')) return; this.api.eliminarCategoria(id).subscribe({next:r=>{this.ok(r.mensaje||'Categoría desactivada');this.cargarCategorias();},error:e=>this.mostrarError(e)}); }
+
+  crearRutina(){ if(!this.rutinaForm.id_cliente || !this.rutinaForm.id_entrenador){this.error='Selecciona cliente y entrenador.';return;} const datos={...this.rutinaForm}; if(!datos.fecha_fin) datos.fecha_fin=null; this.api.crearRutina(datos).subscribe({next:()=>{this.ok('Rutina registrada');this.rutinaForm={id_cliente:0,id_entrenador:0,nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:new Date().toISOString().slice(0,10),fecha_fin:'',estado:'Activo'};this.cargarRutinas();},error:e=>this.mostrarError(e)}); }
+  desactivarRutina(id:number){ if(!confirm('¿Desactivar esta rutina?')) return; this.api.eliminarRutina(id).subscribe({next:r=>{this.ok(r.mensaje||'Rutina desactivada');this.cargarRutinas();},error:e=>this.mostrarError(e)}); }
+
+  cambiarEstadoReserva(id:number,estado:string){ this.api.cambiarEstadoReserva(id,estado).subscribe({next:r=>{this.ok(r.mensaje||'Reserva actualizada');this.cargarReservas();},error:e=>this.mostrarError(e)}); }
+
+  crearUsuario(){ this.api.crearUsuario(this.usuarioForm).subscribe({next:()=>{this.ok('Usuario interno creado');this.usuarioForm={nombre_usuario:'',contrasena:'',nombres:'',apellidos:'',dni:'',telefono:'',correo:'',rol:'Entrenador',estado:'Activo'};this.cargarUsuarios();},error:e=>this.mostrarError(e)}); }
+  desactivarUsuario(id:number){ if(!confirm('¿Desactivar este usuario?')) return; this.api.eliminarUsuario(id).subscribe({next:r=>{this.ok(r.mensaje||'Usuario desactivado');this.cargarUsuarios();},error:e=>this.mostrarError(e)}); }
+
+  exportarAuditoria(){
+    if(!this.auditorias.length){this.error='No hay registros de auditoría para exportar.';return;}
+    const filas=[['Fecha','Usuario','Rol','Metodo','Ruta','IP','Estado'],...this.auditorias.map(a=>[a.fecha,a.usuario??a.id_usuario??'',a.rol??'',a.metodo,a.ruta,a.ip??'',a.status??''])];
+    const csv=filas.map(f=>f.map((v:any)=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');
+    const url=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));
+    const a=document.createElement('a'); a.href=url; a.download='auditoria-mallqui-gym.csv'; a.click(); URL.revokeObjectURL(url);
   }
 
   ajustarStock(){ this.api.ajustarStock(this.ajusteForm).subscribe({next:r=>{this.ok(r.mensaje||'Stock ajustado');this.ajusteForm={id_producto:0,tipo:'Entrada',cantidad:1,motivo:''};this.cargarProductos();this.cargarKardex();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
