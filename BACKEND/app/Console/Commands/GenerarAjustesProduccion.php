@@ -82,6 +82,49 @@ return new class extends Migration {
     }
 };
 PHP,
+            'add_commercial_status_to_ventas' => <<<'PHP'
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::table('ventas', function (Blueprint $table) {
+            if (!Schema::hasColumn('ventas', 'estado')) {
+                $table->string('estado', 30)->default('Registrado')->after('total');
+            }
+            if (!Schema::hasColumn('ventas', 'fecha_anulacion')) {
+                $table->dateTime('fecha_anulacion')->nullable()->after('estado');
+            }
+            if (!Schema::hasColumn('ventas', 'motivo_anulacion')) {
+                $table->text('motivo_anulacion')->nullable()->after('fecha_anulacion');
+            }
+            if (!Schema::hasColumn('ventas', 'id_usuario_anulacion')) {
+                $table->unsignedBigInteger('id_usuario_anulacion')->nullable()->after('motivo_anulacion');
+                $table->foreign('id_usuario_anulacion')->references('id_usuario')->on('usuarios')->nullOnDelete()->cascadeOnUpdate();
+            }
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('ventas', function (Blueprint $table) {
+            if (Schema::hasColumn('ventas', 'id_usuario_anulacion')) {
+                $table->dropForeign(['id_usuario_anulacion']);
+                $table->dropColumn('id_usuario_anulacion');
+            }
+            foreach (['motivo_anulacion', 'fecha_anulacion', 'estado'] as $columna) {
+                if (Schema::hasColumn('ventas', $columna)) {
+                    $table->dropColumn($columna);
+                }
+            }
+        });
+    }
+};
+PHP,
             'update_vista_ventas_payment_method' => <<<'PHP'
 <?php
 

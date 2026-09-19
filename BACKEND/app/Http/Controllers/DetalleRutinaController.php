@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\DetalleRutina;
+use App\Models\Entrenador;
+use App\Models\Rutina;
 use Illuminate\Http\Request;
 
 class DetalleRutinaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DetalleRutina::with('rutina')->orderBy('id_detalle_rutina');
-
-        if ($request->filled('id_rutina')) {
-            $query->where('id_rutina', $request->integer('id_rutina'));
+        $query = DetalleRutina::with('rutina.cliente')->orderBy('id_detalle_rutina');
+        if ($idEntrenador = $this->idEntrenadorActual($request)) {
+            $query->whereHas('rutina', fn ($q) => $q->where('id_entrenador', $idEntrenador));
         }
-
+        if ($request->filled('id_rutina')) $query->where('id_rutina', $request->integer('id_rutina'));
         return response()->json($query->get());
     }
 
@@ -29,19 +30,18 @@ class DetalleRutinaController extends Controller
             'descanso_segundos' => 'nullable|integer|min:0|max:3600',
             'observaciones' => 'nullable|string|max:500',
         ]);
-
+        $this->autorizarRutina($request, (int) $datos['id_rutina']);
         return response()->json(DetalleRutina::create($datos)->load('rutina'), 201);
     }
 
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
-        return response()->json(DetalleRutina::with('rutina')->findOrFail($id));
+        return response()->json($this->detalleAutorizado($request, $id)->load('rutina'));
     }
 
     public function update(Request $request, string $id)
     {
-        $detalle = DetalleRutina::findOrFail($id);
-
+        $detalle = $this->detalleAutorizado($request, $id);
         $datos = $request->validate([
             'id_rutina' => 'sometimes|integer|exists:rutinas,id_rutina',
             'ejercicio' => 'sometimes|string|max:150',
@@ -51,16 +51,36 @@ class DetalleRutinaController extends Controller
             'descanso_segundos' => 'sometimes|nullable|integer|min:0|max:3600',
             'observaciones' => 'sometimes|nullable|string|max:500',
         ]);
-
+        if (isset($datos['id_rutina'])) $this->autorizarRutina($request, (int) $datos['id_rutina']);
         $detalle->update($datos);
-
         return response()->json($detalle->fresh('rutina'));
     }
 
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        DetalleRutina::findOrFail($id)->delete();
-
+        $this->detalleAutorizado($request, $id)->delete();
         return response()->json(null, 204);
+    }
+
+    private function detalleAutorizado(Request $request, string $id): DetalleRutina
+    {
+        $detalle = DetalleRutina::findOrFail($id);
+        $this->autorizarRutina($request, (int) $detalle->id_rutina);
+        return $detalle;
+    }
+
+    private function autorizarRutina(Request $request, int $idRutina): void
+    {
+        if ($idEntrenador = $this->idEntrenadorActual($request)) {
+            abort_unless(Rutina::where('id_rutina', $idRutina)->where('id_entrenador', $idEntrenador)->exists(), 403, 'No puedes modificar una rutina de otro entrenador.');
+        }
+    }
+
+    private function idEntrenadorActual(Request $request): ?int
+    {
+        if (mb_strtolower((string) $request->user()?->rol) !== 'entrenador') return null;
+        $entrenador = Entrenador::where('dni', $request->user()?->dni)->where('estado', 'Activo')->first();
+        abort_unless($entrenador, 403, 'La cuenta no está vinculada a un entrenador activo.');
+        return (int) $entrenador->id_entrenador;
     }
 }

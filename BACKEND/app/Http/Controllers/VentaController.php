@@ -77,9 +77,7 @@ class VentaController extends Controller
             $subtotal = 0;
 
             foreach ($datos['items'] as $item) {
-                $producto = Producto::where('id_producto', $item['id_producto'])
-                    ->lockForUpdate()
-                    ->firstOrFail();
+                $producto = Producto::where('id_producto', $item['id_producto'])->lockForUpdate()->firstOrFail();
 
                 if (mb_strtolower((string) $producto->estado) !== 'activo') {
                     throw ValidationException::withMessages([
@@ -121,6 +119,7 @@ class VentaController extends Controller
                 'subtotal' => $subtotal,
                 'igv' => $igv,
                 'total' => $total,
+                'estado' => 'Registrado',
             ]);
 
             foreach ($itemsPreparados as $item) {
@@ -150,7 +149,6 @@ class VentaController extends Controller
                 );
             }
 
-            // El cierre de caja fisica solo suma dinero en efectivo.
             if ($datos['metodo_pago'] === 'Efectivo') {
                 $cajaService->registrarMovimiento(
                     $request->user()->id_usuario,
@@ -170,5 +168,74 @@ class VentaController extends Controller
             'mensaje' => 'Venta registrada, pago controlado y Kardex actualizado correctamente.',
             'venta' => $venta->load(['cliente', 'usuario', 'detalles.producto']),
         ], 201);
+    }
+
+    public function anular(Request $request, string $id, InventarioService $inventario, CajaService $cajaService)
+    {
+        $datos = $request->validate([
+            'motivo' => 'required|string|min:5|max:500',
+        ]);
+
+        $venta = DB::transaction(function () use ($request, $id, $datos, $inventario, $cajaService) {
+            $venta = Venta::with('detalles')->lockForUpdate()->findOrFail($id);
+
+            if (($venta->estado ?? 'Registrado') === 'Anulado') {
+                throw ValidationException::withMessages([
+                    'venta' => ['La venta ya se encuentra anulada.'],
+                ]);
+            }
+
+            if ($venta->metodo_pago === 'Efectivo' && !$cajaService->cajaAbierta()) {
+                throw ValidationException::withMessages([
+                    'caja' => ['Debes abrir caja para registrar la devolución de efectivo de una venta anulada.'],
+                ]);
+            }
+
+            foreach ($venta->detalles as $detalle) {
+                $producto = Producto::where('id_producto', $detalle->id_producto)->lockForUpdate()->firstOrFail();
+                $anterior = (int) $producto->stock;
+                $nuevo = $anterior + (int) $detalle->cantidad;
+                $producto->update(['stock' => $nuevo]);
+
+                $inventario->registrar(
+                    $producto,
+                    $request->user()->id_usuario,
+                    'Entrada',
+                    'AnulacionVenta',
+                    (int) $detalle->cantidad,
+                    $anterior,
+                    $nuevo,
+                    'Venta',
+                    $venta->id_venta,
+                    'Reposición de stock por anulación de venta'
+                );
+            }
+
+            if ($venta->metodo_pago === 'Efectivo') {
+                $cajaService->registrarMovimiento(
+                    $request->user()->id_usuario,
+                    'Egreso',
+                    'AnulacionVenta',
+                    'Devolución de venta '.$venta->numero_comprobante,
+                    (float) $venta->total,
+                    'Venta',
+                    $venta->id_venta
+                );
+            }
+
+            $venta->update([
+                'estado' => 'Anulado',
+                'fecha_anulacion' => now(),
+                'motivo_anulacion' => $datos['motivo'],
+                'id_usuario_anulacion' => $request->user()->id_usuario,
+            ]);
+
+            return $venta;
+        });
+
+        return response()->json([
+            'mensaje' => 'Venta anulada, stock restaurado y movimientos registrados.',
+            'venta' => $venta->load(['cliente', 'usuario', 'detalles.producto']),
+        ]);
     }
 }

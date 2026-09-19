@@ -12,7 +12,8 @@ class Venta extends Model
 
     protected $fillable = [
         'id_cliente', 'id_usuario', 'fecha_venta', 'tipo_comprobante',
-        'numero_comprobante', 'metodo_pago', 'numero_operacion', 'subtotal', 'igv', 'total'
+        'numero_comprobante', 'metodo_pago', 'numero_operacion', 'subtotal', 'igv', 'total',
+        'estado', 'fecha_anulacion', 'motivo_anulacion', 'id_usuario_anulacion'
     ];
 
     protected $casts = [
@@ -20,6 +21,7 @@ class Venta extends Model
         'subtotal' => 'decimal:2',
         'igv' => 'decimal:2',
         'total' => 'decimal:2',
+        'fecha_anulacion' => 'datetime',
     ];
 
     public function cliente()
@@ -35,5 +37,10 @@ class Venta extends Model
     public function detalles()
     {
         return $this->hasMany(DetalleVenta::class, 'id_venta', 'id_venta');
+    }
+
+    public function usuarioAnulacion()
+    {
+        return $this->belongsTo(Usuario::class, 'id_usuario_anulacion', 'id_usuario');
     }
 }

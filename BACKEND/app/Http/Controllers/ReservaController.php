@@ -21,6 +21,12 @@ class ReservaController extends Controller
             ->orderByDesc('fecha_clase')
             ->orderByDesc('fecha_reserva');
 
+        if (mb_strtolower((string) $request->user()?->rol) === 'entrenador') {
+            $entrenador = \App\Models\Entrenador::where('dni', $request->user()?->dni)->where('estado', 'Activo')->first();
+            abort_unless($entrenador, 403, 'La cuenta no está vinculada a un entrenador activo.');
+            $query->whereHas('clase', fn ($q) => $q->where('id_entrenador', $entrenador->id_entrenador));
+        }
+
         if ($request->filled('fecha')) {
             $query->whereDate('fecha_clase', $request->input('fecha'));
         }
@@ -147,7 +153,13 @@ class ReservaController extends Controller
             'estado' => ['required', Rule::in(['Reservada', 'Asistio', 'NoAsistio', 'Cancelada'])],
         ]);
 
-        $reserva = Reserva::findOrFail($id);
+        $reserva = Reserva::with('clase')->findOrFail($id);
+
+        if (mb_strtolower((string) $request->user()?->rol) === 'entrenador') {
+            $entrenador = \App\Models\Entrenador::where('dni', $request->user()?->dni)->where('estado', 'Activo')->first();
+            abort_unless($entrenador && (int) $reserva->clase?->id_entrenador === (int) $entrenador->id_entrenador, 403, 'No puedes modificar una reserva de otra clase.');
+        }
+
         $reserva->update(['estado' => $datos['estado']]);
 
         return response()->json([

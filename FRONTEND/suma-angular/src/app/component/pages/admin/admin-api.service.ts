@@ -147,6 +147,7 @@ export class AdminApiService {
   ventas(): Observable<any[]> { return this.http.get<any[]>('/api/ventas'); }
   venta(id: number): Observable<any> { return this.http.get(`/api/ventas/${id}`); }
   registrarVenta(datos: any): Observable<any> { return this.http.post('/api/ventas', datos); }
+  anularVenta(id: number, motivo: string): Observable<any> { return this.http.post(`/api/ventas/${id}/anular`, { motivo }); }
 
   // =========================================================
   // KARDEX

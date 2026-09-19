@@ -150,6 +150,7 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
     Route::post('/compras/{id}/anular', [CompraController::class, 'anular']);
 
     Route::apiResource('/ventas', VentaController::class)->only(['index', 'store', 'show']);
+    Route::post('/ventas/{id}/anular', [VentaController::class, 'anular']);
 
     // CAJA EMPRESARIAL
     Route::get('/caja/actual', [CajaController::class, 'actual']);

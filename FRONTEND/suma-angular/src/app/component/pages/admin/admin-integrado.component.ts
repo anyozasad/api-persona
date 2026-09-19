@@ -97,7 +97,21 @@ import { ProductosComponent } from './pages/productos/productos';
       <ng-container *ngIf="seccion==='membresias'">
         <section class="management-grid">
           <article class="admin-form-card">
-            <div class="management-heading"><div><h2>Contratar membresía</h2><p>Registra membresía y pago en la base de datos.</p></div><span>✦</span></div>
+            <div class="management-heading"><div><h2>{{planEditandoId ? 'Editar plan' : 'Nuevo plan'}}</h2><p>Configura precio, duración y estado de las membresías.</p></div><span>✦</span></div>
+            <form (ngSubmit)="guardarPlan()">
+              <label>Nombre<input [(ngModel)]="planForm.nombre" name="pnombre" required></label>
+              <div class="form-row"><label>Duración (meses)<input type="number" min="1" [(ngModel)]="planForm.duracion_meses" name="pduracion" required></label><label>Precio S/<input type="number" min="0" step="0.01" [(ngModel)]="planForm.precio" name="pprecio" required></label></div>
+              <label>Descripción<textarea [(ngModel)]="planForm.descripcion" name="pdescripcion"></textarea></label>
+              <label>Estado<select [(ngModel)]="planForm.estado" name="pestado"><option>Activo</option><option>Inactivo</option></select></label>
+              <div class="form-row"><button class="admin-primary" type="submit">{{planEditandoId ? 'Guardar cambios' : 'Crear plan'}}</button><button *ngIf="planEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionPlan()">Cancelar</button></div>
+            </form>
+          </article>
+          <article class="admin-list-card wide-card">
+            <div class="management-heading"><div><h2>Planes de membresía</h2><p>{{planesMembresia.length}} planes configurados.</p></div></div>
+            <div class="table-wrap"><table class="management-table"><thead><tr><th>Plan</th><th>Duración</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr *ngFor="let p of planesMembresia"><td><b>{{p.nombre}}</b><br><small>{{p.descripcion}}</small></td><td>{{p.duracion_meses}} mes(es)</td><td>S/ {{p.precio}}</td><td>{{p.estado}}</td><td><button class="table-action" type="button" (click)="editarPlan(p)">Editar</button> <button *ngIf="p.estado==='Activo'" class="table-danger" type="button" (click)="desactivarPlan(p.id_membresia)">Desactivar</button></td></tr></tbody></table></div>
+          </article>
+          <article class="admin-form-card">
+            <div class="management-heading"><div><h2>Contratar membresía</h2><p>Registra membresía y pago en la base de datos.</p></div><span>＋</span></div>
             <form (ngSubmit)="contratarMembresia()">
               <label>Cliente<select [(ngModel)]="membresiaForm.id_cliente" name="mcliente" required><option [ngValue]="0">Seleccionar</option><option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option></select></label>
               <label>Plan<select [(ngModel)]="membresiaForm.id_membresia" name="mplan" required><option [ngValue]="0">Seleccionar</option><option *ngFor="let m of membresiasDisponibles" [ngValue]="m.id_membresia">{{m.nombre}} - S/ {{m.precio}}</option></select></label>
@@ -181,11 +195,37 @@ import { ProductosComponent } from './pages/productos/productos';
       </ng-container>
 
       <ng-container *ngIf="seccion==='compras'">
-        <section class="management-grid"><article class="admin-form-card"><div class="management-heading"><div><h2>Registrar compra</h2><p>La compra aumenta stock y genera Kardex.</p></div><span>↓</span></div><form (ngSubmit)="registrarCompra()"><label>Proveedor<select [(ngModel)]="compraForm.id_proveedor" name="coprov"><option [ngValue]="0">Seleccionar</option><option *ngFor="let p of proveedores" [ngValue]="p.id_proveedor">{{p.razon_social}}</option></select></label><label>Producto<select [(ngModel)]="compraForm.id_producto" name="coprod"><option [ngValue]="0">Seleccionar</option><option *ngFor="let p of productos" [ngValue]="p.id_producto">{{p.nombre_producto}}</option></select></label><div class="form-row"><label>Cantidad<input type="number" min="1" [(ngModel)]="compraForm.cantidad" name="cocantidad"></label><label>Precio compra<input type="number" step="0.01" min="0.01" [(ngModel)]="compraForm.precio_compra" name="coprecio"></label></div><div class="form-row"><label>Comprobante<select [(ngModel)]="compraForm.tipo_comprobante" name="cotipo"><option>Factura</option><option>Boleta</option></select></label><label>Número<input [(ngModel)]="compraForm.numero_comprobante" name="conumero" required></label></div><button class="admin-primary">Registrar compra</button></form></article><article class="admin-list-card wide-card"><div class="management-heading"><div><h2>Compras</h2><p>{{compras.length}} registros.</p></div></div><div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Proveedor</th><th>Comprobante</th><th>Fecha</th><th>Total</th><th>Estado</th><th>Acción</th></tr></thead><tbody><tr *ngFor="let c of compras"><td>{{c.id_compra}}</td><td>{{c.proveedor?.razon_social}}</td><td>{{c.tipo_comprobante}} {{c.numero_comprobante}}</td><td>{{fecha(c.fecha_compra)}}</td><td>S/ {{c.total | number:'1.2-2'}}</td><td>{{c.estado}}</td><td><button *ngIf="c.estado!=='Anulado'" class="table-danger" type="button" (click)="anularCompra(c.id_compra)">Anular</button></td></tr></tbody></table></div></article></section>
+        <section class="management-grid">
+          <article class="admin-form-card"><div class="management-heading"><div><h2>Registrar compra</h2><p>Agrega varios productos antes de confirmar.</p></div><span>↓</span></div>
+            <form (ngSubmit)="registrarCompra()">
+              <label>Proveedor<select [(ngModel)]="compraForm.id_proveedor" name="coprov"><option [ngValue]="0">Seleccionar</option><option *ngFor="let p of proveedores" [ngValue]="p.id_proveedor">{{p.razon_social}}</option></select></label>
+              <div class="form-row"><label>Producto<select [(ngModel)]="compraForm.id_producto" name="coprod"><option [ngValue]="0">Seleccionar</option><option *ngFor="let p of productos" [ngValue]="p.id_producto">{{p.nombre_producto}}</option></select></label><label>Cantidad<input type="number" min="1" [(ngModel)]="compraForm.cantidad" name="cocantidad"></label></div>
+              <div class="form-row"><label>Precio compra<input type="number" step="0.01" min="0.01" [(ngModel)]="compraForm.precio_compra" name="coprecio"></label><button class="admin-secondary" type="button" (click)="agregarItemCompra()">+ Agregar producto</button></div>
+              <div class="table-wrap" *ngIf="compraItems.length"><table class="management-table"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th><th></th></tr></thead><tbody><tr *ngFor="let i of compraItems;let ix=index"><td>{{nombreProducto(i.id_producto)}}</td><td>{{i.cantidad}}</td><td>S/ {{i.precio_compra}}</td><td>S/ {{i.cantidad*i.precio_compra | number:'1.2-2'}}</td><td><button class="table-danger" type="button" (click)="quitarItemCompra(ix)">Quitar</button></td></tr></tbody></table></div>
+              <div class="form-row"><label>Comprobante<select [(ngModel)]="compraForm.tipo_comprobante" name="cotipo"><option>Factura</option><option>Boleta</option></select></label><label>Número<input [(ngModel)]="compraForm.numero_comprobante" name="conumero" required></label></div>
+              <button class="admin-primary">Registrar compra ({{compraItems.length}} productos)</button>
+            </form>
+          </article>
+          <article class="admin-list-card wide-card"><div class="management-heading"><div><h2>Compras</h2><p>{{compras.length}} registros.</p></div></div><div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Proveedor</th><th>Comprobante</th><th>Fecha</th><th>Total</th><th>Estado</th><th>Acción</th></tr></thead><tbody><tr *ngFor="let c of compras"><td>{{c.id_compra}}</td><td>{{c.proveedor?.razon_social}}</td><td>{{c.tipo_comprobante}} {{c.numero_comprobante}}</td><td>{{fecha(c.fecha_compra)}}</td><td>S/ {{c.total | number:'1.2-2'}}</td><td>{{c.estado}}</td><td><button *ngIf="c.estado!=='Anulado'" class="table-danger" type="button" (click)="anularCompra(c.id_compra)">Anular</button></td></tr></tbody></table></div></article>
+        </section>
       </ng-container>
 
       <ng-container *ngIf="seccion==='ventas'">
-        <section class="management-grid"><article class="admin-form-card"><div class="management-heading"><div><h2>Registrar venta</h2><p>Descuenta stock y genera Kardex automáticamente.</p></div><span>↑</span></div><form (ngSubmit)="registrarVenta()"><label>Cliente<select [(ngModel)]="ventaForm.id_cliente" name="vcliente"><option [ngValue]="0">Seleccionar</option><option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option></select></label><label>Producto<select [(ngModel)]="ventaForm.id_producto" name="vproducto"><option [ngValue]="0">Seleccionar</option><option *ngFor="let p of productos" [ngValue]="p.id_producto">{{p.nombre_producto}} (Stock {{p.stock}})</option></select></label><label>Cantidad<input type="number" min="1" [(ngModel)]="ventaForm.cantidad" name="vcantidad"></label><div class="form-row"><label>Comprobante<select [(ngModel)]="ventaForm.tipo_comprobante" name="vtipo"><option>Boleta</option><option>Factura</option></select></label><label>Número<input [(ngModel)]="ventaForm.numero_comprobante" name="vnumero" required></label></div><div class="form-row"><label>Método<select [(ngModel)]="ventaForm.metodo_pago" name="vmetodo"><option>Efectivo</option><option>Yape</option><option>Plin</option><option>Transferencia</option><option>Tarjeta</option></select></label><label>N° operación<input [(ngModel)]="ventaForm.numero_operacion" name="voperacion"></label></div><button class="admin-primary">Registrar venta</button></form></article><article class="admin-list-card wide-card"><div class="management-heading"><div><h2>Ventas</h2><p>{{ventas.length}} registros.</p></div></div><div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Comprobante</th><th>Fecha</th><th>Método</th><th>Total</th></tr></thead><tbody><tr *ngFor="let v of ventas"><td>{{v.id_venta}}</td><td>{{nombreCliente(v.cliente)}}</td><td>{{v.tipo_comprobante}} {{v.numero_comprobante}}</td><td>{{fecha(v.fecha_venta)}}</td><td>{{v.metodo_pago}}</td><td>S/ {{v.total | number:'1.2-2'}}</td></tr></tbody></table></div></article></section>
+        <section class="management-grid">
+          <article class="admin-form-card"><div class="management-heading"><div><h2>Punto de venta</h2><p>Carrito con varios productos, IGV, stock y Kardex.</p></div><span>↑</span></div>
+            <form (ngSubmit)="registrarVenta()">
+              <label>Cliente<select [(ngModel)]="ventaForm.id_cliente" name="vcliente"><option [ngValue]="0">Seleccionar</option><option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option></select></label>
+              <div class="form-row"><label>Producto<select [(ngModel)]="ventaForm.id_producto" name="vproducto"><option [ngValue]="0">Seleccionar</option><option *ngFor="let p of productos" [ngValue]="p.id_producto">{{p.nombre_producto}} (Stock {{p.stock}})</option></select></label><label>Cantidad<input type="number" min="1" [(ngModel)]="ventaForm.cantidad" name="vcantidad"></label></div>
+              <button class="admin-secondary" type="button" (click)="agregarItemVenta()">+ Agregar al carrito</button>
+              <div class="table-wrap" *ngIf="ventaItems.length"><table class="management-table"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th><th></th></tr></thead><tbody><tr *ngFor="let i of ventaItems;let ix=index"><td>{{nombreProducto(i.id_producto)}}</td><td>{{i.cantidad}}</td><td>S/ {{precioProducto(i.id_producto) | number:'1.2-2'}}</td><td>S/ {{i.cantidad*precioProducto(i.id_producto) | number:'1.2-2'}}</td><td><button class="table-danger" type="button" (click)="quitarItemVenta(ix)">Quitar</button></td></tr></tbody></table></div>
+              <div class="report-grid"><article><p>Subtotal</p><h2>S/ {{subtotalVentaPreview | number:'1.2-2'}}</h2></article><article><p>IGV {{ventaForm.igv_porcentaje}}%</p><h2>S/ {{igvVentaPreview | number:'1.2-2'}}</h2></article><article><p>Total</p><h2>S/ {{totalVentaPreview | number:'1.2-2'}}</h2></article></div>
+              <div class="form-row"><label>Comprobante<select [(ngModel)]="ventaForm.tipo_comprobante" name="vtipo"><option>Boleta</option><option>Factura</option></select></label><label>Número<input [(ngModel)]="ventaForm.numero_comprobante" name="vnumero" required></label></div>
+              <div class="form-row"><label>Método<select [(ngModel)]="ventaForm.metodo_pago" name="vmetodo"><option>Efectivo</option><option>Yape</option><option>Plin</option><option>Transferencia</option><option>Tarjeta</option></select></label><label>N° operación<input [(ngModel)]="ventaForm.numero_operacion" name="voperacion"></label></div>
+              <button class="admin-primary">Cobrar venta</button>
+            </form>
+          </article>
+          <article class="admin-list-card wide-card"><div class="management-heading"><div><h2>Ventas</h2><p>{{ventas.length}} registros.</p></div></div><div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Comprobante</th><th>Fecha</th><th>Método</th><th>Total</th><th>Estado</th><th>Acción</th></tr></thead><tbody><tr *ngFor="let v of ventas"><td>{{v.id_venta}}</td><td>{{nombreCliente(v.cliente)}}</td><td>{{v.tipo_comprobante}} {{v.numero_comprobante}}</td><td>{{fecha(v.fecha_venta)}}</td><td>{{v.metodo_pago}}</td><td>S/ {{v.total | number:'1.2-2'}}</td><td>{{v.estado || 'Registrado'}}</td><td><button *ngIf="(v.estado||'Registrado')!=='Anulado'" class="table-danger" type="button" (click)="anularVenta(v.id_venta)">Anular</button></td></tr></tbody></table></div></article>
+        </section>
       </ng-container>
 
       <ng-container *ngIf="seccion==='kardex'">
@@ -323,6 +363,7 @@ export class AdminIntegradoComponent implements OnInit {
 
   clientes: any[] = [];
   membresiasDisponibles: any[] = [];
+  planesMembresia: any[] = [];
   membresiasCliente: any[] = [];
   pagos: any[] = [];
   pagosPendientes: any[] = [];
@@ -389,7 +430,11 @@ export class AdminIntegradoComponent implements OnInit {
   auditoriaFiltros: any = {ruta:'',desde:'',hasta:''};
   proveedorForm: any = {ruc:'',razon_social:'',contacto:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
   compraForm: any = {id_proveedor:0,id_producto:0,cantidad:1,precio_compra:0,tipo_comprobante:'Factura',numero_comprobante:''};
+  compraItems: any[] = [];
   ventaForm: any = {id_cliente:0,id_producto:0,cantidad:1,tipo_comprobante:'Boleta',numero_comprobante:'',metodo_pago:'Efectivo',numero_operacion:'',igv_porcentaje:18};
+  ventaItems: any[] = [];
+  planEditandoId = 0;
+  planForm: any = {nombre:'',duracion_meses:1,precio:0,descripcion:'',estado:'Activo'};
   ajusteForm: any = {id_producto:0,tipo:'Entrada',cantidad:1,motivo:''};
   cajaAbrirForm: any = {monto_inicial:0,observacion:''};
   movCajaForm: any = {tipo:'Ingreso',monto:0,descripcion:'',origen:'Manual'};
@@ -420,7 +465,7 @@ export class AdminIntegradoComponent implements OnInit {
   cargarDashboard(){ this.api.dashboard().subscribe({next:r=>this.dashboard=r,error:e=>this.mostrarError(e)}); }
   cargarClientes(){ this.api.clientes().subscribe({next:r=>this.clientes=r,error:e=>this.mostrarError(e)}); }
   cargarMembresias(){
-    this.api.membresiasDisponibles().subscribe({next:r=>this.membresiasDisponibles=r.filter(x=>x.estado==='Activo'),error:e=>this.mostrarError(e)});
+    this.api.membresiasDisponibles().subscribe({next:r=>{this.planesMembresia=r;this.membresiasDisponibles=r.filter(x=>x.estado==='Activo');},error:e=>this.mostrarError(e)});
     this.api.clienteMembresias().subscribe({next:r=>this.membresiasCliente=r,error:e=>this.mostrarError(e)});
   }
   cargarPagos(){
@@ -461,6 +506,11 @@ export class AdminIntegradoComponent implements OnInit {
     this.api.contratarMembresia(datos).subscribe({next:()=>{this.ok('Membresía contratada y pago registrado');this.cargarMembresias();this.cargarPagos();this.cargarDashboard();this.cargarCaja();},error:e=>this.mostrarError(e)});
   }
 
+  guardarPlan(){const datos={...this.planForm};const req=this.planEditandoId?this.api.actualizarMembresia(this.planEditandoId,datos):this.api.crearMembresia(datos);req.subscribe({next:()=>{this.ok(this.planEditandoId?'Plan actualizado':'Plan creado');this.cancelarEdicionPlan();this.cargarMembresias();},error:e=>this.mostrarError(e)});}
+  editarPlan(p:any){this.planEditandoId=p.id_membresia;this.planForm={nombre:p.nombre,duracion_meses:p.duracion_meses,precio:p.precio,descripcion:p.descripcion||'',estado:p.estado};}
+  cancelarEdicionPlan(){this.planEditandoId=0;this.planForm={nombre:'',duracion_meses:1,precio:0,descripcion:'',estado:'Activo'};}
+  desactivarPlan(id:number){if(!confirm('¿Desactivar este plan?'))return;this.api.eliminarMembresia(id).subscribe({next:r=>{this.ok(r.mensaje||'Plan desactivado');this.cargarMembresias();},error:e=>this.mostrarError(e)});}
+
   confirmarPago(id:number){ this.api.confirmarPago(id).subscribe({next:()=>{this.ok('Pago confirmado y membresía activada');this.cargarPagos();this.cargarMembresias();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
   rechazarPago(id:number){ const motivo=prompt('Motivo del rechazo:'); if(!motivo?.trim()) return; this.api.rechazarPago(id,motivo).subscribe({next:()=>{this.ok('Pago rechazado');this.cargarPagos();this.cargarMembresias();},error:e=>this.mostrarError(e)}); }
 
@@ -478,16 +528,28 @@ export class AdminIntegradoComponent implements OnInit {
 
   crearProveedor(){ this.api.crearProveedor(this.proveedorForm).subscribe({next:()=>{this.ok('Proveedor registrado');this.proveedorForm={ruc:'',razon_social:'',contacto:'',telefono:'',correo:'',direccion:'',estado:'Activo'};this.cargarProveedores();},error:e=>this.mostrarError(e)}); }
 
+  agregarItemCompra(){ if(!this.compraForm.id_producto || Number(this.compraForm.cantidad)<1 || Number(this.compraForm.precio_compra)<=0){this.error='Selecciona producto, cantidad y precio de compra.';return;} if(this.compraItems.some(i=>i.id_producto===this.compraForm.id_producto)){this.error='Ese producto ya está en la compra.';return;} this.compraItems.push({id_producto:this.compraForm.id_producto,cantidad:Number(this.compraForm.cantidad),precio_compra:Number(this.compraForm.precio_compra)});this.compraForm.id_producto=0;this.compraForm.cantidad=1;this.compraForm.precio_compra=0; }
+  quitarItemCompra(i:number){this.compraItems.splice(i,1);}
   registrarCompra(){
-    const datos={id_proveedor:this.compraForm.id_proveedor,tipo_comprobante:this.compraForm.tipo_comprobante,numero_comprobante:this.compraForm.numero_comprobante,items:[{id_producto:this.compraForm.id_producto,cantidad:this.compraForm.cantidad,precio_compra:this.compraForm.precio_compra}]};
-    this.api.registrarCompra(datos).subscribe({next:r=>{this.ok(r.mensaje||'Compra registrada');this.compraForm={id_proveedor:0,id_producto:0,cantidad:1,precio_compra:0,tipo_comprobante:'Factura',numero_comprobante:''};this.cargarCompras();this.cargarProductos();this.cargarKardex();this.cargarDashboard();},error:e=>this.mostrarError(e)});
+    if(!this.compraForm.id_proveedor || !this.compraItems.length){this.error='Selecciona proveedor y agrega al menos un producto.';return;}
+    const datos={id_proveedor:this.compraForm.id_proveedor,tipo_comprobante:this.compraForm.tipo_comprobante,numero_comprobante:this.compraForm.numero_comprobante,items:this.compraItems};
+    this.api.registrarCompra(datos).subscribe({next:r=>{this.ok(r.mensaje||'Compra registrada');this.compraForm={id_proveedor:0,id_producto:0,cantidad:1,precio_compra:0,tipo_comprobante:'Factura',numero_comprobante:''};this.compraItems=[];this.cargarCompras();this.cargarProductos();this.cargarKardex();this.cargarDashboard();},error:e=>this.mostrarError(e)});
   }
   anularCompra(id:number){ if(!confirm('¿Anular esta compra?')) return; this.api.anularCompra(id).subscribe({next:r=>{this.ok(r.mensaje||'Compra anulada');this.cargarCompras();this.cargarProductos();this.cargarKardex();},error:e=>this.mostrarError(e)}); }
 
+  agregarItemVenta(){ if(!this.ventaForm.id_producto || Number(this.ventaForm.cantidad)<1){this.error='Selecciona producto y cantidad.';return;} const p=this.productos.find(x=>x.id_producto===this.ventaForm.id_producto); if(!p || Number(p.stock)<Number(this.ventaForm.cantidad)){this.error='Stock insuficiente para agregar ese producto.';return;} if(this.ventaItems.some(i=>i.id_producto===this.ventaForm.id_producto)){this.error='Ese producto ya está en el carrito.';return;} this.ventaItems.push({id_producto:this.ventaForm.id_producto,cantidad:Number(this.ventaForm.cantidad)});this.ventaForm.id_producto=0;this.ventaForm.cantidad=1; }
+  quitarItemVenta(i:number){this.ventaItems.splice(i,1);}
+  get subtotalVentaPreview():number{return this.ventaItems.reduce((s,i)=>s+(Number(i.cantidad)*this.precioProducto(i.id_producto)),0);}
+  get igvVentaPreview():number{return this.subtotalVentaPreview*(Number(this.ventaForm.igv_porcentaje||0)/100);}
+  get totalVentaPreview():number{return this.subtotalVentaPreview+this.igvVentaPreview;}
   registrarVenta(){
-    const datos={id_cliente:this.ventaForm.id_cliente,tipo_comprobante:this.ventaForm.tipo_comprobante,numero_comprobante:this.ventaForm.numero_comprobante,metodo_pago:this.ventaForm.metodo_pago,numero_operacion:this.ventaForm.metodo_pago==='Efectivo'?null:this.ventaForm.numero_operacion,igv_porcentaje:this.ventaForm.igv_porcentaje,items:[{id_producto:this.ventaForm.id_producto,cantidad:this.ventaForm.cantidad}]};
-    this.api.registrarVenta(datos).subscribe({next:r=>{this.ok(r.mensaje||'Venta registrada');this.ventaForm={id_cliente:0,id_producto:0,cantidad:1,tipo_comprobante:'Boleta',numero_comprobante:'',metodo_pago:'Efectivo',numero_operacion:'',igv_porcentaje:18};this.cargarVentas();this.cargarProductos();this.cargarKardex();this.cargarCaja();this.cargarDashboard();},error:e=>this.mostrarError(e)});
+    if(!this.ventaForm.id_cliente || !this.ventaItems.length){this.error='Selecciona cliente y agrega productos al carrito.';return;}
+    const datos={id_cliente:this.ventaForm.id_cliente,tipo_comprobante:this.ventaForm.tipo_comprobante,numero_comprobante:this.ventaForm.numero_comprobante,metodo_pago:this.ventaForm.metodo_pago,numero_operacion:this.ventaForm.metodo_pago==='Efectivo'?null:this.ventaForm.numero_operacion,igv_porcentaje:this.ventaForm.igv_porcentaje,items:this.ventaItems};
+    this.api.registrarVenta(datos).subscribe({next:r=>{this.ok(r.mensaje||'Venta registrada');this.ventaForm={id_cliente:0,id_producto:0,cantidad:1,tipo_comprobante:'Boleta',numero_comprobante:'',metodo_pago:'Efectivo',numero_operacion:'',igv_porcentaje:18};this.ventaItems=[];this.cargarVentas();this.cargarProductos();this.cargarKardex();this.cargarCaja();this.cargarDashboard();},error:e=>this.mostrarError(e)});
   }
+  anularVenta(id:number){const motivo=prompt('Motivo de la anulación (mínimo 5 caracteres):');if(!motivo||motivo.trim().length<5)return;this.api.anularVenta(id,motivo.trim()).subscribe({next:r=>{this.ok(r.mensaje||'Venta anulada');this.cargarVentas();this.cargarProductos();this.cargarKardex();this.cargarCaja();this.cargarDashboard();},error:e=>this.mostrarError(e)});}
+  nombreProducto(id:number):string{return this.productos.find(p=>p.id_producto===id)?.nombre_producto||'Producto';}
+  precioProducto(id:number):number{return Number(this.productos.find(p=>p.id_producto===id)?.precio_venta||0);}
 
   crearCategoria(){ this.api.crearCategoria(this.categoriaForm).subscribe({next:()=>{this.ok('Categoría registrada');this.categoriaForm={nombre_categoria:'',descripcion:'',estado:'Activo'};this.cargarCategorias();},error:e=>this.mostrarError(e)}); }
   desactivarCategoria(id:number){ if(!confirm('¿Desactivar esta categoría?')) return; this.api.eliminarCategoria(id).subscribe({next:r=>{this.ok(r.mensaje||'Categoría desactivada');this.cargarCategorias();},error:e=>this.mostrarError(e)}); }
