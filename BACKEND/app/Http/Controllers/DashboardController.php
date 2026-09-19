@@ -43,6 +43,7 @@ class DashboardController extends Controller
 
         $ventasMes = Venta::query()
             ->whereBetween('fecha_venta', [$inicioMes, $finMes])
+            ->where(fn ($q) => $q->whereNull('estado')->orWhere('estado', '!=', 'Anulado'))
             ->sum('total');
 
         $pagosPendientes = PagoMembresia::with(['clienteMembresia.cliente', 'clienteMembresia.membresia'])

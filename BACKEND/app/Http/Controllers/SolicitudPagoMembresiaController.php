@@ -31,34 +31,7 @@ class SolicitudPagoMembresiaController extends Controller
 
         $resultado = DB::transaction(function () use ($datos, $cliente) {
             if (PagoMembresia::where('numero_operacion', $datos['numero_operacion'])->exists()) {
-                throw ValidationException::withMessages([
-                    'numero_operacion' => ['Ese número de operación ya fue registrado.'],
-                ]);
-            }
-
-            $membresia = Membresia::where('id_membresia', $datos['id_membresia'])
-                ->lockForUpdate()
-                ->firstOrFail();
-
-            if (mb_strtolower((string) $membresia->estado) !== 'activo') {
-                throw ValidationException::withMessages([
-                    'id_membresia' => ['La membresía seleccionada no está disponible.'],
-                ]);
-            }
-
-            $fechaInicio = Carbon::parse($datos['fecha_inicio'] ?? now())->startOfDay();
-
-            $vigente = ClienteMembresia::query()
-                ->where('id_cliente', $cliente->id_cliente)
-                ->where('estado', 'Activo')
-                ->whereDate('fecha_inicio', '<=', $fechaInicio)
-                ->whereDate('fecha_fin', '>=', $fechaInicio)
-                ->exists();
-
-            if ($vigente) {
-                throw ValidationException::withMessages([
-                    'id_membresia' => ['Ya tienes una membresía vigente. La renovación debe procesarse desde caja.'],
-                ]);
+                throw ValidationException::withMessages(['numero_operacion' => ['Ese número de operación ya fue registrado.']]);
             }
 
             $pendiente = ClienteMembresia::query()
@@ -67,9 +40,32 @@ class SolicitudPagoMembresiaController extends Controller
                 ->exists();
 
             if ($pendiente) {
-                throw ValidationException::withMessages([
-                    'id_membresia' => ['Ya tienes una solicitud de pago pendiente de revisión.'],
-                ]);
+                throw ValidationException::withMessages(['id_membresia' => ['Ya tienes una solicitud de pago pendiente de revisión.']]);
+            }
+
+            $membresia = Membresia::where('id_membresia', $datos['id_membresia'])->lockForUpdate()->firstOrFail();
+
+            if (mb_strtolower((string) $membresia->estado) !== 'activo') {
+                throw ValidationException::withMessages(['id_membresia' => ['La membresía seleccionada no está disponible.']]);
+            }
+
+            $fechaInicio = Carbon::parse($datos['fecha_inicio'] ?? now())->startOfDay();
+
+            // Si ya existe una membresía vigente, esta solicitud se programa como RENOVACIÓN
+            // para el día siguiente a su vencimiento, evitando solapamientos.
+            $vigente = ClienteMembresia::query()
+                ->where('id_cliente', $cliente->id_cliente)
+                ->where('estado', 'Activo')
+                ->whereDate('fecha_fin', '>=', today())
+                ->orderByDesc('fecha_fin')
+                ->lockForUpdate()
+                ->first();
+
+            if ($vigente) {
+                $diaSiguiente = Carbon::parse($vigente->fecha_fin)->addDay()->startOfDay();
+                if ($fechaInicio->lt($diaSiguiente)) {
+                    $fechaInicio = $diaSiguiente;
+                }
             }
 
             $fechaFin = $fechaInicio->copy()
@@ -90,15 +86,17 @@ class SolicitudPagoMembresiaController extends Controller
                 'monto' => $membresia->precio,
                 'metodo_pago' => $datos['metodo_pago'],
                 'numero_operacion' => $datos['numero_operacion'],
-                'observacion' => $datos['observacion'] ?? null,
+                'observacion' => $datos['observacion'] ?? ($vigente ? 'Renovación solicitada por el cliente' : null),
                 'estado_pago' => 'Pendiente',
             ]);
 
-            return compact('relacion', 'pago');
+            return compact('relacion', 'pago', 'vigente');
         });
 
         return response()->json([
-            'mensaje' => 'Solicitud enviada. El pago debe ser confirmado por administración antes de activar la membresía.',
+            'mensaje' => $resultado['vigente']
+                ? 'Renovación enviada. Se activará después de la membresía actual cuando administración confirme el pago.'
+                : 'Solicitud enviada. El pago debe ser confirmado por administración antes de activar la membresía.',
             'membresia_cliente' => $resultado['relacion']->load('membresia'),
             'pago' => $resultado['pago'],
         ], 201);
@@ -117,38 +115,30 @@ class SolicitudPagoMembresiaController extends Controller
     public function confirmar(string $idPago)
     {
         $pago = DB::transaction(function () use ($idPago) {
-            $pago = PagoMembresia::with('clienteMembresia.membresia')
-                ->lockForUpdate()
-                ->findOrFail($idPago);
+            $pago = PagoMembresia::with('clienteMembresia.membresia')->lockForUpdate()->findOrFail($idPago);
 
             if ($pago->estado_pago !== 'Pendiente') {
-                throw ValidationException::withMessages([
-                    'pago' => ['Este pago ya fue procesado.'],
-                ]);
+                throw ValidationException::withMessages(['pago' => ['Este pago ya fue procesado.']]);
             }
 
-            $relacion = ClienteMembresia::lockForUpdate()
-                ->findOrFail($pago->id_cliente_membresia);
-
+            $relacion = ClienteMembresia::lockForUpdate()->findOrFail($pago->id_cliente_membresia);
             $membresia = Membresia::findOrFail($relacion->id_membresia);
 
-            $otraVigente = ClienteMembresia::query()
+            $inicio = Carbon::parse($relacion->fecha_inicio)->startOfDay();
+            if ($inicio->lt(today())) $inicio = today();
+
+            $otra = ClienteMembresia::query()
                 ->where('id_cliente', $relacion->id_cliente)
                 ->where('id_cliente_membresia', '!=', $relacion->id_cliente_membresia)
                 ->where('estado', 'Activo')
-                ->whereDate('fecha_inicio', '<=', today())
                 ->whereDate('fecha_fin', '>=', today())
-                ->exists();
+                ->orderByDesc('fecha_fin')
+                ->lockForUpdate()
+                ->first();
 
-            if ($otraVigente) {
-                throw ValidationException::withMessages([
-                    'pago' => ['El cliente ya tiene otra membresía vigente. Revisa el caso antes de confirmar.'],
-                ]);
-            }
-
-            $inicio = Carbon::parse($relacion->fecha_inicio);
-            if ($inicio->lt(today())) {
-                $inicio = today();
+            if ($otra) {
+                $siguiente = Carbon::parse($otra->fecha_fin)->addDay()->startOfDay();
+                if ($inicio->lt($siguiente)) $inicio = $siguiente;
             }
 
             $fin = $inicio->copy()
@@ -161,32 +151,26 @@ class SolicitudPagoMembresiaController extends Controller
                 'estado' => 'Activo',
             ]);
 
-            $pago->update([
-                'estado_pago' => 'Completado',
-            ]);
+            $pago->update(['estado_pago' => 'Completado']);
 
             return $pago;
         });
 
         return response()->json([
-            'mensaje' => 'Pago confirmado y membresía activada correctamente.',
+            'mensaje' => 'Pago confirmado y membresía/renovación programada correctamente.',
             'pago' => $pago->fresh(['clienteMembresia.cliente', 'clienteMembresia.membresia']),
         ]);
     }
 
     public function rechazar(Request $request, string $idPago)
     {
-        $datos = $request->validate([
-            'motivo' => 'required|string|max:500',
-        ]);
+        $datos = $request->validate(['motivo' => 'required|string|max:500']);
 
         $pago = DB::transaction(function () use ($idPago, $datos) {
             $pago = PagoMembresia::lockForUpdate()->findOrFail($idPago);
 
             if ($pago->estado_pago !== 'Pendiente') {
-                throw ValidationException::withMessages([
-                    'pago' => ['Este pago ya fue procesado.'],
-                ]);
+                throw ValidationException::withMessages(['pago' => ['Este pago ya fue procesado.']]);
             }
 
             $pago->update([
@@ -226,18 +210,23 @@ class SolicitudPagoMembresiaController extends Controller
                 ->update(['estado' => 'Cancelado']);
         });
 
-        return response()->json([
-            'mensaje' => 'Solicitud de pago cancelada.',
-        ]);
+        return response()->json(['mensaje' => 'Solicitud de pago cancelada.']);
     }
 
     private function clienteDelUsuario(Request $request): Cliente
     {
-        $dni = trim((string) ($request->user()?->dni ?? ''));
-        $cliente = $dni !== '' ? Cliente::where('dni', $dni)->first() : null;
+        $usuario = $request->user();
+        $cliente = $usuario?->id_cliente ? Cliente::find($usuario->id_cliente) : null;
+
+        if (!$cliente && $usuario?->dni) {
+            $cliente = Cliente::where('dni', trim((string) $usuario->dni))->first();
+        }
 
         if (!$cliente) {
             throw new NotFoundHttpException('No existe un cliente asociado a tu cuenta.');
+        }
+        if (mb_strtolower((string) $cliente->estado) !== 'activo') {
+            abort(403, 'El cliente se encuentra inactivo.');
         }
 
         return $cliente;

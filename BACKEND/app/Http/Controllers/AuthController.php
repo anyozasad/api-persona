@@ -24,19 +24,11 @@ class AuthController extends Controller
             'apellidos' => 'required|string|max:100',
             'dni' => 'required|string|max:15|unique:usuarios,dni|unique:clientes,dni',
             'telefono' => 'nullable|string|max:25',
-            'correo' => 'required|email|max:150|unique:usuarios,correo',
+            'correo' => 'required|email|max:150|unique:usuarios,correo|unique:clientes,correo',
             'contrasena' => 'required|string|min:8|max:100',
         ]);
 
         [$usuario, $cliente] = DB::transaction(function () use ($datos) {
-            $datosUsuario = $datos;
-            $datosUsuario['contrasena'] = Hash::make($datosUsuario['contrasena']);
-            $datosUsuario['rol'] = 'Cliente';
-            $datosUsuario['estado'] = 'Activo';
-            $datosUsuario['fecha_registro'] = now();
-
-            $usuario = Usuario::create($datosUsuario);
-
             $cliente = Cliente::create([
                 'dni' => $datos['dni'],
                 'nombres' => $datos['nombres'],
@@ -46,6 +38,15 @@ class AuthController extends Controller
                 'fecha_registro' => now(),
                 'estado' => 'Activo',
             ]);
+
+            $datosUsuario = $datos;
+            $datosUsuario['contrasena'] = Hash::make($datosUsuario['contrasena']);
+            $datosUsuario['rol'] = 'Cliente';
+            $datosUsuario['estado'] = 'Activo';
+            $datosUsuario['fecha_registro'] = now();
+            $datosUsuario['id_cliente'] = $cliente->id_cliente;
+
+            $usuario = Usuario::create($datosUsuario);
 
             return [$usuario, $cliente];
         });

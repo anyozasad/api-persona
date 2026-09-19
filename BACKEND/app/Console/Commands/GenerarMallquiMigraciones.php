@@ -369,9 +369,14 @@ return new class extends Migration {
             $table->string('dni', 15)->unique();
             $table->string('telefono', 25)->nullable();
             $table->string('correo', 150)->nullable();
+            $table->unsignedBigInteger('id_cliente')->nullable()->index();
+            $table->unsignedBigInteger('id_entrenador')->nullable()->index();
             $table->string('rol', 50);
             $table->string('estado', 30)->default('Activo');
             $table->dateTime('fecha_registro')->useCurrent();
+
+            $table->foreign('id_cliente')->references('id_cliente')->on('clientes')->nullOnDelete()->cascadeOnUpdate();
+            $table->foreign('id_entrenador')->references('id_entrenador')->on('entrenadores')->nullOnDelete()->cascadeOnUpdate();
         });
     }
 

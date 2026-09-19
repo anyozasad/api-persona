@@ -119,10 +119,7 @@ class PortalClienteController extends Controller
             ->firstOrFail();
 
         return response()->json([
-            'empresa' => [
-                'nombre' => 'Mallqui Gym',
-                'moneda' => 'PEN',
-            ],
+            'empresa' => ['nombre' => 'Mallqui Gym', 'moneda' => 'PEN'],
             'comprobante' => [
                 'id_pago' => $pago->id_pago,
                 'fecha' => optional($pago->fecha_pago)->toDateTimeString(),
@@ -179,16 +176,22 @@ class PortalClienteController extends Controller
     private function clienteDelUsuario(Request $request): Cliente
     {
         $usuario = $request->user();
-        $dni = trim((string) ($usuario?->dni ?? ''));
 
-        if ($dni === '') {
-            throw new NotFoundHttpException('Tu cuenta todavía no está vinculada a un cliente mediante DNI.');
+        $cliente = $usuario?->id_cliente
+            ? Cliente::find($usuario->id_cliente)
+            : null;
+
+        // Compatibilidad con cuentas creadas antes de la relación directa.
+        if (!$cliente && $usuario?->dni) {
+            $cliente = Cliente::where('dni', trim((string) $usuario->dni))->first();
         }
 
-        $cliente = Cliente::where('dni', $dni)->first();
-
         if (!$cliente) {
-            throw new NotFoundHttpException('No se encontró el registro de cliente asociado a tu cuenta.');
+            throw new NotFoundHttpException('No se encontró el cliente asociado a tu cuenta.');
+        }
+
+        if (mb_strtolower((string) $cliente->estado) !== 'activo') {
+            abort(403, 'El cliente se encuentra inactivo.');
         }
 
         return $cliente;

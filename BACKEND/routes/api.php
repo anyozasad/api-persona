@@ -103,9 +103,9 @@ Route::middleware(['auth:sanctum', 'rol:Entrenador', 'auditoria'])->prefix('mi-e
 });
 
 // OPERACIÓN DEL GIMNASIO: ADMINISTRADOR O ENTRENADOR
+// El entrenador NO recibe el CRUD general de clientes; usa /mi-entrenador/clientes,
+// que entrega solamente los datos mínimos necesarios para asignar rutinas.
 Route::middleware(['auth:sanctum', 'rol:Administrador,Entrenador', 'auditoria'])->group(function () {
-    Route::apiResource('/clientes', ClienteController::class)->only(['index', 'show']);
-
     Route::apiResource('/rutinas', RutinaController::class);
     Route::apiResource('/detalle-rutinas', DetalleRutinaController::class);
 
@@ -125,7 +125,7 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
 
     Route::apiResource('/membresias', MembresiaController::class)->except(['index', 'show']);
     Route::apiResource('/clases', ClaseController::class)->except(['index', 'show']);
-    Route::apiResource('/clientes', ClienteController::class)->except(['index', 'show']);
+    Route::apiResource('/clientes', ClienteController::class);
 
     Route::apiResource('/cliente-membresias', ClienteMembresiaController::class)->only(['index', 'show']);
     Route::apiResource('/pagos-membresia', PagoMembresiaController::class)->only(['index', 'show']);

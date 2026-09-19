@@ -145,17 +145,26 @@ import { ProductosComponent } from './pages/productos/productos';
       </ng-container>
 
       <ng-container *ngIf="seccion==='entrenador'">
-        <section class="trainer-layout">
-          <article class="trainer-card" *ngIf="entrenadores[0] as e"><div class="trainer-photo"></div><div><span class="status-active">{{e.estado}}</span><h2>{{nombreEntrenador(e)}}</h2><p>{{e.especialidad}}</p><small>{{e.correo}} · {{e.telefono}}</small><div class="trainer-stats"><span><b>{{entrenadores.length}}</b><small>Entrenador</small></span><span><b>{{e.clases_count ?? clases.length}}</b><small>Clases</small></span></div></div></article>
+        <section class="management-grid">
           <article class="admin-form-card">
-            <div class="management-heading"><div><h2>{{entrenadores.length ? 'Actualizar entrenador' : 'Registrar entrenador'}}</h2><p>Mallqui Gym trabaja con un entrenador principal.</p></div><span>🏋</span></div>
+            <div class="management-heading"><div><h2>{{entrenadorEditandoId ? 'Editar entrenador' : 'Registrar entrenador'}}</h2><p>Administra varios entrenadores y crea su acceso al sistema.</p></div><span>🏋</span></div>
             <form (ngSubmit)="guardarEntrenador()">
               <div class="form-row"><label>DNI<input [(ngModel)]="entrenadorForm.dni" name="edni" required></label><label>Especialidad<input [(ngModel)]="entrenadorForm.especialidad" name="eespecialidad"></label></div>
               <div class="form-row"><label>Nombres<input [(ngModel)]="entrenadorForm.nombres" name="enombres" required></label><label>Apellidos<input [(ngModel)]="entrenadorForm.apellidos" name="eapellidos" required></label></div>
-              <div class="form-row"><label>Correo<input [(ngModel)]="entrenadorForm.correo" name="ecorreo"></label><label>Teléfono<input [(ngModel)]="entrenadorForm.telefono" name="etelefono"></label></div>
+              <div class="form-row"><label>Correo<input type="email" [(ngModel)]="entrenadorForm.correo" name="ecorreo"></label><label>Teléfono<input [(ngModel)]="entrenadorForm.telefono" name="etelefono"></label></div>
               <div class="form-row"><label>Fecha contratación<input type="date" [(ngModel)]="entrenadorForm.fecha_contratacion" name="efecha" required></label><label>Salario<input type="number" min="0" [(ngModel)]="entrenadorForm.salario" name="esalario" required></label></div>
-              <button class="admin-primary" type="submit">Guardar entrenador</button>
+              <ng-container *ngIf="!entrenadorEditandoId">
+                <label><input type="checkbox" [(ngModel)]="entrenadorForm.crear_acceso" name="eacceso"> Crear cuenta de acceso para el entrenador</label>
+                <div class="form-row" *ngIf="entrenadorForm.crear_acceso"><label>Usuario<input [(ngModel)]="entrenadorForm.nombre_usuario" name="eusuario"></label><label>Contraseña<input type="password" minlength="8" [(ngModel)]="entrenadorForm.contrasena" name="eclave"></label></div>
+              </ng-container>
+              <div class="form-row"><button class="admin-primary" type="submit">{{entrenadorEditandoId ? 'Guardar cambios' : 'Crear entrenador'}}</button><button *ngIf="entrenadorEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionEntrenador()">Cancelar</button></div>
             </form>
+          </article>
+          <article class="admin-list-card wide-card">
+            <div class="management-heading"><div><h2>Entrenadores</h2><p>{{entrenadores.length}} registrados.</p></div></div>
+            <div class="table-wrap"><table class="management-table"><thead><tr><th>DNI</th><th>Entrenador</th><th>Especialidad</th><th>Clases</th><th>Rutinas</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>
+              <tr *ngFor="let e of entrenadores"><td>{{e.dni}}</td><td><b>{{nombreEntrenador(e)}}</b><br><small>{{e.correo}}</small></td><td>{{e.especialidad || '-'}}</td><td>{{e.clases_count || 0}}</td><td>{{e.rutinas_count || 0}}</td><td>{{e.estado}}</td><td><button class="table-action" type="button" (click)="editarEntrenador(e)">Editar</button> <button *ngIf="e.estado==='Activo'" class="table-danger" type="button" (click)="desactivarEntrenador(e.id_entrenador)">Desactivar</button></td></tr>
+            </tbody></table></div>
           </article>
         </section>
       </ng-container>
@@ -218,7 +227,7 @@ import { ProductosComponent } from './pages/productos/productos';
               <div class="form-row"><label>Producto<select [(ngModel)]="ventaForm.id_producto" name="vproducto"><option [ngValue]="0">Seleccionar</option><option *ngFor="let p of productos" [ngValue]="p.id_producto">{{p.nombre_producto}} (Stock {{p.stock}})</option></select></label><label>Cantidad<input type="number" min="1" [(ngModel)]="ventaForm.cantidad" name="vcantidad"></label></div>
               <button class="admin-secondary" type="button" (click)="agregarItemVenta()">+ Agregar al carrito</button>
               <div class="table-wrap" *ngIf="ventaItems.length"><table class="management-table"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th><th></th></tr></thead><tbody><tr *ngFor="let i of ventaItems;let ix=index"><td>{{nombreProducto(i.id_producto)}}</td><td>{{i.cantidad}}</td><td>S/ {{precioProducto(i.id_producto) | number:'1.2-2'}}</td><td>S/ {{i.cantidad*precioProducto(i.id_producto) | number:'1.2-2'}}</td><td><button class="table-danger" type="button" (click)="quitarItemVenta(ix)">Quitar</button></td></tr></tbody></table></div>
-              <div class="report-grid"><article><p>Subtotal</p><h2>S/ {{subtotalVentaPreview | number:'1.2-2'}}</h2></article><article><p>IGV {{ventaForm.igv_porcentaje}}%</p><h2>S/ {{igvVentaPreview | number:'1.2-2'}}</h2></article><article><p>Total</p><h2>S/ {{totalVentaPreview | number:'1.2-2'}}</h2></article></div>
+              <div class="report-grid"><article><p>Subtotal sin IGV</p><h2>S/ {{subtotalVentaPreview | number:'1.2-2'}}</h2></article><article><p>IGV incluido {{ventaForm.igv_porcentaje}}%</p><h2>S/ {{igvVentaPreview | number:'1.2-2'}}</h2></article><article><p>Total a cobrar</p><h2>S/ {{totalVentaPreview | number:'1.2-2'}}</h2></article></div>
               <div class="form-row"><label>Comprobante<select [(ngModel)]="ventaForm.tipo_comprobante" name="vtipo"><option>Boleta</option><option>Factura</option></select></label><label>Número<input [(ngModel)]="ventaForm.numero_comprobante" name="vnumero" required></label></div>
               <div class="form-row"><label>Método<select [(ngModel)]="ventaForm.metodo_pago" name="vmetodo"><option>Efectivo</option><option>Yape</option><option>Plin</option><option>Transferencia</option><option>Tarjeta</option></select></label><label>N° operación<input [(ngModel)]="ventaForm.numero_operacion" name="voperacion"></label></div>
               <button class="admin-primary">Cobrar venta</button>
@@ -421,7 +430,8 @@ export class AdminIntegradoComponent implements OnInit {
 
   clienteForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
   membresiaForm: any = {id_cliente:0,id_membresia:0,metodo_pago:'Efectivo',numero_operacion:''};
-  entrenadorForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',especialidad:'',fecha_contratacion:new Date().toISOString().slice(0,10),salario:0,estado:'Activo'};
+  entrenadorEditandoId = 0;
+  entrenadorForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',especialidad:'',fecha_contratacion:new Date().toISOString().slice(0,10),salario:0,estado:'Activo',crear_acceso:true,nombre_usuario:'',contrasena:''};
   claseForm: any = {id_entrenador:null,nombre:'',descripcion:'',dia_semana:'Lunes',hora_inicio:'08:00',hora_fin:'09:00',cupo_maximo:15,estado:'Activo'};
   asistenciaCliente = 0;
   categoriaForm: any = {nombre_categoria:'',descripcion:'',estado:'Activo'};
@@ -472,7 +482,7 @@ export class AdminIntegradoComponent implements OnInit {
     this.api.pagos().subscribe({next:r=>this.pagos=r,error:e=>this.mostrarError(e)});
     this.api.pagosPendientes().subscribe({next:r=>this.pagosPendientes=r,error:e=>this.mostrarError(e)});
   }
-  cargarEntrenadores(){ this.api.entrenadores().subscribe({next:r=>{this.entrenadores=r; if(r[0]) this.entrenadorForm={...r[0]};},error:e=>this.mostrarError(e)}); }
+  cargarEntrenadores(){ this.api.entrenadores().subscribe({next:r=>this.entrenadores=r,error:e=>this.mostrarError(e)}); }
   cargarClases(){ this.api.clases().subscribe({next:r=>this.clases=r,error:e=>this.mostrarError(e)}); }
   cargarAsistencias(){ this.api.asistencias().subscribe({next:r=>this.asistencias=r,error:e=>this.mostrarError(e)}); }
   cargarCategorias(){ this.api.categorias().subscribe({next:r=>this.categorias=r,error:e=>this.mostrarError(e)}); }
@@ -515,10 +525,14 @@ export class AdminIntegradoComponent implements OnInit {
   rechazarPago(id:number){ const motivo=prompt('Motivo del rechazo:'); if(!motivo?.trim()) return; this.api.rechazarPago(id,motivo).subscribe({next:()=>{this.ok('Pago rechazado');this.cargarPagos();this.cargarMembresias();},error:e=>this.mostrarError(e)}); }
 
   guardarEntrenador(){
-    const id=this.entrenadores[0]?.id_entrenador;
-    const req=id?this.api.actualizarEntrenador(id,this.entrenadorForm):this.api.crearEntrenador(this.entrenadorForm);
-    req.subscribe({next:()=>{this.ok('Entrenador guardado en MySQL');this.cargarEntrenadores();},error:e=>this.mostrarError(e)});
+    const datos={...this.entrenadorForm};
+    if(this.entrenadorEditandoId){delete datos.crear_acceso;delete datos.nombre_usuario;delete datos.contrasena;}
+    const req=this.entrenadorEditandoId?this.api.actualizarEntrenador(this.entrenadorEditandoId,datos):this.api.crearEntrenador(datos);
+    req.subscribe({next:r=>{this.ok(r.mensaje||'Entrenador guardado');this.cancelarEdicionEntrenador();this.cargarEntrenadores();this.cargarUsuarios();},error:e=>this.mostrarError(e)});
   }
+  editarEntrenador(e:any){this.entrenadorEditandoId=e.id_entrenador;this.entrenadorForm={...e,crear_acceso:false,nombre_usuario:'',contrasena:''};}
+  cancelarEdicionEntrenador(){this.entrenadorEditandoId=0;this.entrenadorForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',especialidad:'',fecha_contratacion:new Date().toISOString().slice(0,10),salario:0,estado:'Activo',crear_acceso:true,nombre_usuario:'',contrasena:''};}
+  desactivarEntrenador(id:number){if(!confirm('¿Desactivar este entrenador y su acceso?'))return;this.api.eliminarEntrenador(id).subscribe({next:r=>{this.ok(r.mensaje||'Entrenador desactivado');this.cargarEntrenadores();this.cargarUsuarios();},error:e=>this.mostrarError(e)});}
 
   crearClase(){ this.api.crearClase(this.claseForm).subscribe({next:()=>{this.ok('Clase registrada');this.claseForm={id_entrenador:this.entrenadores[0]?.id_entrenador??null,nombre:'',descripcion:'',dia_semana:'Lunes',hora_inicio:'08:00',hora_fin:'09:00',cupo_maximo:15,estado:'Activo'};this.cargarClases();},error:e=>this.mostrarError(e)}); }
   desactivarClase(id:number){ if(!confirm('¿Desactivar esta clase?')) return; this.api.desactivarClase(id).subscribe({next:()=>{this.ok('Clase desactivada');this.cargarClases();},error:e=>this.mostrarError(e)}); }
@@ -539,9 +553,9 @@ export class AdminIntegradoComponent implements OnInit {
 
   agregarItemVenta(){ if(!this.ventaForm.id_producto || Number(this.ventaForm.cantidad)<1){this.error='Selecciona producto y cantidad.';return;} const p=this.productos.find(x=>x.id_producto===this.ventaForm.id_producto); if(!p || Number(p.stock)<Number(this.ventaForm.cantidad)){this.error='Stock insuficiente para agregar ese producto.';return;} if(this.ventaItems.some(i=>i.id_producto===this.ventaForm.id_producto)){this.error='Ese producto ya está en el carrito.';return;} this.ventaItems.push({id_producto:this.ventaForm.id_producto,cantidad:Number(this.ventaForm.cantidad)});this.ventaForm.id_producto=0;this.ventaForm.cantidad=1; }
   quitarItemVenta(i:number){this.ventaItems.splice(i,1);}
-  get subtotalVentaPreview():number{return this.ventaItems.reduce((s,i)=>s+(Number(i.cantidad)*this.precioProducto(i.id_producto)),0);}
-  get igvVentaPreview():number{return this.subtotalVentaPreview*(Number(this.ventaForm.igv_porcentaje||0)/100);}
-  get totalVentaPreview():number{return this.subtotalVentaPreview+this.igvVentaPreview;}
+  get totalVentaPreview():number{return this.ventaItems.reduce((s,i)=>s+(Number(i.cantidad)*this.precioProducto(i.id_producto)),0);}
+  get subtotalVentaPreview():number{const f=1+(Number(this.ventaForm.igv_porcentaje||0)/100);return f>0?this.totalVentaPreview/f:this.totalVentaPreview;}
+  get igvVentaPreview():number{return this.totalVentaPreview-this.subtotalVentaPreview;}
   registrarVenta(){
     if(!this.ventaForm.id_cliente || !this.ventaItems.length){this.error='Selecciona cliente y agrega productos al carrito.';return;}
     const datos={id_cliente:this.ventaForm.id_cliente,tipo_comprobante:this.ventaForm.tipo_comprobante,numero_comprobante:this.ventaForm.numero_comprobante,metodo_pago:this.ventaForm.metodo_pago,numero_operacion:this.ventaForm.metodo_pago==='Efectivo'?null:this.ventaForm.numero_operacion,igv_porcentaje:this.ventaForm.igv_porcentaje,items:this.ventaItems};

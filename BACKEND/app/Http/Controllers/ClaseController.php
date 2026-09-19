@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Clase;
+use App\Models\Reserva;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class ClaseController extends Controller
 {
@@ -38,6 +41,7 @@ class ClaseController extends Controller
         ]);
 
         $datos['estado'] = $datos['estado'] ?? 'Activo';
+        $this->validarChoqueHorario($datos);
 
         return response()->json(Clase::create($datos)->load('entrenador'), 201);
     }
@@ -67,12 +71,18 @@ class ClaseController extends Controller
             'estado' => ['sometimes', Rule::in(['Activo', 'Inactivo'])],
         ]);
 
-        if (isset($datos['hora_inicio'], $datos['hora_fin']) && $datos['hora_fin'] <= $datos['hora_inicio']) {
-            return response()->json([
-                'mensaje' => 'La hora de fin debe ser posterior a la hora de inicio.',
-            ], 422);
+        $final = array_merge($clase->only([
+            'id_entrenador', 'nombre', 'descripcion', 'dia_semana',
+            'hora_inicio', 'hora_fin', 'cupo_maximo', 'estado',
+        ]), $datos);
+
+        if ($final['hora_fin'] <= $final['hora_inicio']) {
+            throw ValidationException::withMessages([
+                'hora_fin' => ['La hora de fin debe ser posterior a la hora de inicio.'],
+            ]);
         }
 
+        $this->validarChoqueHorario($final, (int) $clase->id_clase);
         $clase->update($datos);
 
         return response()->json($clase->fresh('entrenador'));
@@ -80,12 +90,47 @@ class ClaseController extends Controller
 
     public function destroy(string $id)
     {
-        $clase = Clase::findOrFail($id);
-        $clase->update(['estado' => 'Inactivo']);
+        $clase = DB::transaction(function () use ($id) {
+            $clase = Clase::lockForUpdate()->findOrFail($id);
+            $clase->update(['estado' => 'Inactivo']);
+
+            $canceladas = Reserva::where('id_clase', $clase->id_clase)
+                ->where('estado', 'Reservada')
+                ->whereDate('fecha_clase', '>=', today())
+                ->update(['estado' => 'Cancelada']);
+
+            $clase->setAttribute('reservas_canceladas', $canceladas);
+            return $clase;
+        });
 
         return response()->json([
-            'mensaje' => 'Clase desactivada correctamente. Se conserva su historial de reservas.',
-            'clase' => $clase->fresh(),
+            'mensaje' => 'Clase desactivada y reservas futuras activas canceladas.',
+            'clase' => $clase,
+            'reservas_canceladas' => $clase->reservas_canceladas ?? 0,
         ]);
+    }
+
+    private function validarChoqueHorario(array $datos, ?int $idExcluir = null): void
+    {
+        if (empty($datos['id_entrenador']) || ($datos['estado'] ?? 'Activo') !== 'Activo') {
+            return;
+        }
+
+        $query = Clase::query()
+            ->where('id_entrenador', $datos['id_entrenador'])
+            ->where('dia_semana', $datos['dia_semana'])
+            ->where('estado', 'Activo')
+            ->where('hora_inicio', '<', $datos['hora_fin'])
+            ->where('hora_fin', '>', $datos['hora_inicio']);
+
+        if ($idExcluir) {
+            $query->where('id_clase', '!=', $idExcluir);
+        }
+
+        if ($query->exists()) {
+            throw ValidationException::withMessages([
+                'hora_inicio' => ['El entrenador ya tiene otra clase que se cruza con ese horario.'],
+            ]);
+        }
     }
 }

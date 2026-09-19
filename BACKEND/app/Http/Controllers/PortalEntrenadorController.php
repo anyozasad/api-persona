@@ -21,25 +21,15 @@ class PortalEntrenadorController extends Controller
             ->distinct('clientes.id_cliente')
             ->count('clientes.id_cliente');
 
-        $rutinasActivas = Rutina::where('id_entrenador', $entrenador->id_entrenador)
-            ->where('estado', 'Activo')
-            ->count();
-
-        $clasesActivas = Clase::where('id_entrenador', $entrenador->id_entrenador)
-            ->where('estado', 'Activo')
-            ->count();
-
-        $reservasHoy = Reserva::whereDate('fecha_clase', today())
-            ->whereHas('clase', fn ($q) => $q->where('id_entrenador', $entrenador->id_entrenador))
-            ->whereIn('estado', ['Reservada', 'Asistio'])
-            ->count();
-
         return response()->json([
             'entrenador' => $entrenador,
             'clientes' => $clientes,
-            'rutinas_activas' => $rutinasActivas,
-            'clases_activas' => $clasesActivas,
-            'reservas_hoy' => $reservasHoy,
+            'rutinas_activas' => Rutina::where('id_entrenador', $entrenador->id_entrenador)->where('estado', 'Activo')->count(),
+            'clases_activas' => Clase::where('id_entrenador', $entrenador->id_entrenador)->where('estado', 'Activo')->count(),
+            'reservas_hoy' => Reserva::whereDate('fecha_clase', today())
+                ->whereHas('clase', fn ($q) => $q->where('id_entrenador', $entrenador->id_entrenador))
+                ->whereIn('estado', ['Reservada', 'Asistio'])
+                ->count(),
         ]);
     }
 
@@ -47,10 +37,19 @@ class PortalEntrenadorController extends Controller
     {
         $entrenador = $this->entrenadorDelUsuario($request);
 
+        // Lista mínima de clientes activos para poder asignar la PRIMERA rutina.
+        // No se exponen correo, teléfono, dirección, pagos ni otra información sensible.
         return response()->json(
             Cliente::query()
-                ->with(['rutinas' => fn ($q) => $q->where('id_entrenador', $entrenador->id_entrenador)->orderByDesc('fecha_inicio')])
-                ->whereHas('rutinas', fn ($q) => $q->where('id_entrenador', $entrenador->id_entrenador))
+                ->select(['id_cliente', 'dni', 'nombres', 'apellidos', 'estado'])
+                ->where('estado', 'Activo')
+                ->with(['rutinas' => function ($q) use ($entrenador) {
+                    $q->select([
+                        'id_rutina', 'id_cliente', 'id_entrenador',
+                        'nombre_rutina', 'objetivo', 'fecha_inicio', 'fecha_fin', 'estado',
+                    ])->where('id_entrenador', $entrenador->id_entrenador)
+                      ->orderByDesc('fecha_inicio');
+                }])
                 ->orderBy('nombres')
                 ->orderBy('apellidos')
                 ->get()
@@ -62,7 +61,7 @@ class PortalEntrenadorController extends Controller
         $entrenador = $this->entrenadorDelUsuario($request);
 
         return response()->json(
-            Rutina::with(['cliente', 'detalles'])
+            Rutina::with(['cliente:id_cliente,dni,nombres,apellidos,estado', 'detalles'])
                 ->where('id_entrenador', $entrenador->id_entrenador)
                 ->orderByDesc('fecha_inicio')
                 ->get()
@@ -89,7 +88,10 @@ class PortalEntrenadorController extends Controller
         $entrenador = $this->entrenadorDelUsuario($request);
 
         return response()->json(
-            Reserva::with(['cliente', 'clase'])
+            Reserva::with([
+                'cliente:id_cliente,dni,nombres,apellidos,estado',
+                'clase',
+            ])
                 ->whereHas('clase', fn ($q) => $q->where('id_entrenador', $entrenador->id_entrenador))
                 ->orderByDesc('fecha_clase')
                 ->orderByDesc('fecha_reserva')
@@ -99,13 +101,16 @@ class PortalEntrenadorController extends Controller
 
     private function entrenadorDelUsuario(Request $request): Entrenador
     {
-        $dni = trim((string) ($request->user()?->dni ?? ''));
+        $usuario = $request->user();
 
-        if ($dni === '') {
-            throw new NotFoundHttpException('La cuenta del entrenador no tiene DNI asociado.');
+        $entrenador = $usuario?->id_entrenador
+            ? Entrenador::find($usuario->id_entrenador)
+            : null;
+
+        // Compatibilidad con cuentas antiguas creadas antes de la relación directa.
+        if (!$entrenador && $usuario?->dni) {
+            $entrenador = Entrenador::where('dni', trim((string) $usuario->dni))->first();
         }
-
-        $entrenador = Entrenador::where('dni', $dni)->first();
 
         if (!$entrenador) {
             throw new NotFoundHttpException('No existe un entrenador asociado a esta cuenta.');

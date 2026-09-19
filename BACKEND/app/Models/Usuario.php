@@ -16,7 +16,8 @@ class Usuario extends Authenticatable
 
     protected $fillable = [
         'nombre_usuario', 'contrasena', 'nombres', 'apellidos', 'dni',
-        'telefono', 'correo', 'rol', 'estado', 'fecha_registro'
+        'telefono', 'correo', 'rol', 'estado', 'fecha_registro',
+        'id_cliente', 'id_entrenador',
     ];
 
     protected $hidden = [
@@ -31,6 +32,16 @@ class Usuario extends Authenticatable
     public function getAuthPassword(): string
     {
         return (string) $this->contrasena;
+    }
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'id_cliente', 'id_cliente');
+    }
+
+    public function entrenador()
+    {
+        return $this->belongsTo(Entrenador::class, 'id_entrenador', 'id_entrenador');
     }
 
     public function compras()

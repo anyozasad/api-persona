@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Clase;
 use App\Models\Cliente;
 use App\Models\ClienteMembresia;
+use App\Models\Entrenador;
 use App\Models\Reserva;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -22,8 +23,7 @@ class ReservaController extends Controller
             ->orderByDesc('fecha_reserva');
 
         if (mb_strtolower((string) $request->user()?->rol) === 'entrenador') {
-            $entrenador = \App\Models\Entrenador::where('dni', $request->user()?->dni)->where('estado', 'Activo')->first();
-            abort_unless($entrenador, 403, 'La cuenta no está vinculada a un entrenador activo.');
+            $entrenador = $this->entrenadorDelUsuario($request);
             $query->whereHas('clase', fn ($q) => $q->where('id_entrenador', $entrenador->id_entrenador));
         }
 
@@ -48,18 +48,19 @@ class ReservaController extends Controller
         $cliente = $this->clienteDelUsuario($request);
 
         $reserva = DB::transaction(function () use ($datos, $cliente) {
-            $clase = Clase::where('id_clase', $datos['id_clase'])
-                ->lockForUpdate()
-                ->firstOrFail();
+            $clase = Clase::where('id_clase', $datos['id_clase'])->lockForUpdate()->firstOrFail();
 
             if (mb_strtolower((string) $clase->estado) !== 'activo') {
-                throw ValidationException::withMessages([
-                    'id_clase' => ['La clase seleccionada no está disponible.'],
-                ]);
+                throw ValidationException::withMessages(['id_clase' => ['La clase seleccionada no está disponible.']]);
             }
 
             $fechaClase = Carbon::parse($datos['fecha_clase'])->startOfDay();
             $this->validarDiaClase($clase, $fechaClase);
+
+            $inicioClase = Carbon::parse($fechaClase->toDateString().' '.$clase->hora_inicio);
+            if ($inicioClase->isPast()) {
+                throw ValidationException::withMessages(['fecha_clase' => ['No puedes reservar una clase que ya comenzó.']]);
+            }
 
             $tieneMembresia = ClienteMembresia::query()
                 ->where('id_cliente', $cliente->id_cliente)
@@ -69,9 +70,7 @@ class ReservaController extends Controller
                 ->exists();
 
             if (!$tieneMembresia) {
-                throw ValidationException::withMessages([
-                    'fecha_clase' => ['Necesitas una membresía vigente para la fecha de la clase.'],
-                ]);
+                throw ValidationException::withMessages(['fecha_clase' => ['Necesitas una membresía vigente para la fecha de la clase.']]);
             }
 
             $duplicada = Reserva::query()
@@ -82,9 +81,7 @@ class ReservaController extends Controller
                 ->exists();
 
             if ($duplicada) {
-                throw ValidationException::withMessages([
-                    'id_clase' => ['Ya tienes una reserva para esta clase y fecha.'],
-                ]);
+                throw ValidationException::withMessages(['id_clase' => ['Ya tienes una reserva para esta clase y fecha.']]);
             }
 
             $ocupados = Reserva::query()
@@ -94,9 +91,7 @@ class ReservaController extends Controller
                 ->count();
 
             if ($ocupados >= (int) $clase->cupo_maximo) {
-                throw ValidationException::withMessages([
-                    'id_clase' => ['La clase ya alcanzó su cupo máximo.'],
-                ]);
+                throw ValidationException::withMessages(['id_clase' => ['La clase ya alcanzó su cupo máximo.']]);
             }
 
             return Reserva::create([
@@ -129,13 +124,20 @@ class ReservaController extends Controller
     public function cancelarMia(Request $request, string $id)
     {
         $cliente = $this->clienteDelUsuario($request);
-        $reserva = Reserva::where('id_reserva', $id)
+
+        $reserva = Reserva::with('clase')
+            ->where('id_reserva', $id)
             ->where('id_cliente', $cliente->id_cliente)
             ->firstOrFail();
 
         if ($reserva->estado !== 'Reservada') {
+            throw ValidationException::withMessages(['reserva' => ['Solo se pueden cancelar reservas activas.']]);
+        }
+
+        $inicio = Carbon::parse($reserva->fecha_clase->toDateString().' '.$reserva->clase->hora_inicio);
+        if (now()->greaterThan($inicio->copy()->subHours(2))) {
             throw ValidationException::withMessages([
-                'reserva' => ['Solo se pueden cancelar reservas que todavía están activas.'],
+                'reserva' => ['La reserva solo puede cancelarse hasta 2 horas antes de la clase.'],
             ]);
         }
 
@@ -156,8 +158,12 @@ class ReservaController extends Controller
         $reserva = Reserva::with('clase')->findOrFail($id);
 
         if (mb_strtolower((string) $request->user()?->rol) === 'entrenador') {
-            $entrenador = \App\Models\Entrenador::where('dni', $request->user()?->dni)->where('estado', 'Activo')->first();
-            abort_unless($entrenador && (int) $reserva->clase?->id_entrenador === (int) $entrenador->id_entrenador, 403, 'No puedes modificar una reserva de otra clase.');
+            $entrenador = $this->entrenadorDelUsuario($request);
+            abort_unless(
+                (int) $reserva->clase?->id_entrenador === (int) $entrenador->id_entrenador,
+                403,
+                'No puedes modificar una reserva de otra clase.'
+            );
         }
 
         $reserva->update(['estado' => $datos['estado']]);
@@ -170,35 +176,43 @@ class ReservaController extends Controller
 
     private function clienteDelUsuario(Request $request): Cliente
     {
-        $dni = trim((string) ($request->user()?->dni ?? ''));
+        $usuario = $request->user();
+        $cliente = $usuario?->id_cliente ? Cliente::find($usuario->id_cliente) : null;
 
-        if ($dni === '') {
-            throw new NotFoundHttpException('Tu cuenta no tiene DNI para vincularla con un cliente.');
+        if (!$cliente && $usuario?->dni) {
+            $cliente = Cliente::where('dni', trim((string) $usuario->dni))->first();
         }
-
-        $cliente = Cliente::where('dni', $dni)->first();
 
         if (!$cliente) {
             throw new NotFoundHttpException('No existe un cliente asociado a tu cuenta.');
+        }
+        if (mb_strtolower((string) $cliente->estado) !== 'activo') {
+            abort(403, 'El cliente se encuentra inactivo.');
         }
 
         return $cliente;
     }
 
-    private function validarDiaClase(Clase $clase, Carbon $fechaClase): void
+    private function entrenadorDelUsuario(Request $request): Entrenador
     {
-        if (blank($clase->dia_semana)) {
-            return;
+        $usuario = $request->user();
+        $entrenador = $usuario?->id_entrenador ? Entrenador::find($usuario->id_entrenador) : null;
+
+        if (!$entrenador && $usuario?->dni) {
+            $entrenador = Entrenador::where('dni', trim((string) $usuario->dni))->first();
         }
 
+        abort_unless($entrenador && mb_strtolower((string) $entrenador->estado) === 'activo', 403, 'La cuenta no está vinculada a un entrenador activo.');
+        return $entrenador;
+    }
+
+    private function validarDiaClase(Clase $clase, Carbon $fechaClase): void
+    {
+        if (blank($clase->dia_semana)) return;
+
         $dias = [
-            1 => 'Lunes',
-            2 => 'Martes',
-            3 => 'Miércoles',
-            4 => 'Jueves',
-            5 => 'Viernes',
-            6 => 'Sábado',
-            7 => 'Domingo',
+            1 => 'Lunes', 2 => 'Martes', 3 => 'Miércoles', 4 => 'Jueves',
+            5 => 'Viernes', 6 => 'Sábado', 7 => 'Domingo',
         ];
 
         $diaFecha = $dias[$fechaClase->dayOfWeekIso] ?? null;

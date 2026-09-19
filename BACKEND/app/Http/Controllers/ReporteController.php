@@ -14,23 +14,17 @@ class ReporteController extends Controller
 {
     public function clientesMembresias()
     {
-        return response()->json(
-            DB::table('vista_clientes_membresias')->get()
-        );
+        return response()->json(DB::table('vista_clientes_membresias')->get());
     }
 
     public function stock()
     {
-        return response()->json(
-            DB::table('vista_stock')->get()
-        );
+        return response()->json(DB::table('vista_stock')->get());
     }
 
     public function ventas()
     {
-        return response()->json(
-            DB::table('vista_ventas')->get()
-        );
+        return response()->json(DB::table('vista_ventas')->get());
     }
 
     public function ingresos(Request $request)
@@ -50,6 +44,7 @@ class ReporteController extends Controller
 
         $ventas = Venta::query()
             ->whereBetween('fecha_venta', [$desde, $hasta])
+            ->where(fn ($q) => $q->whereNull('estado')->orWhere('estado', '!=', 'Anulado'))
             ->sum('total');
 
         return response()->json([
@@ -63,16 +58,13 @@ class ReporteController extends Controller
 
     public function vencimientos(Request $request)
     {
-        $datos = $request->validate([
-            'dias' => 'nullable|integer|min:1|max:90',
-        ]);
-
+        $datos = $request->validate(['dias' => 'nullable|integer|min:1|max:90']);
         $dias = (int) ($datos['dias'] ?? 7);
 
         return response()->json(
             ClienteMembresia::with(['cliente', 'membresia'])
                 ->where('estado', 'Activo')
-                ->whereBetween('fecha_fin', [today()->toDateString(), today()->addDays($dias)->toDateString()])
+                ->whereBetween('fecha_fin', [today()->toDateString(), today()->copy()->addDays($dias)->toDateString()])
                 ->orderBy('fecha_fin')
                 ->get()
         );

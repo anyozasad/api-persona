@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class ClienteController extends Controller
@@ -23,7 +25,7 @@ class ClienteController extends Controller
             'apellidos' => 'required|string|max:100',
             'sexo' => 'nullable|string|max:20',
             'telefono' => 'nullable|string|max:25',
-            'correo' => 'nullable|email|max:150',
+            'correo' => 'nullable|email|max:150|unique:clientes,correo',
             'direccion' => 'nullable|string|max:255',
             'fecha_nacimiento' => 'nullable|date|before:today',
             'fecha_registro' => 'nullable|date',
@@ -52,23 +54,43 @@ class ClienteController extends Controller
     public function update(Request $request, string $id)
     {
         $cliente = Cliente::findOrFail($id);
+        $usuario = Usuario::where('id_cliente', $cliente->id_cliente)->first();
 
         $datos = $request->validate([
             'dni' => [
                 'sometimes', 'string', 'max:15',
                 Rule::unique('clientes', 'dni')->ignore($cliente->id_cliente, 'id_cliente'),
+                Rule::unique('usuarios', 'dni')->ignore($usuario?->id_usuario ?? 0, 'id_usuario'),
             ],
             'nombres' => 'sometimes|string|max:100',
             'apellidos' => 'sometimes|string|max:100',
             'sexo' => 'sometimes|nullable|string|max:20',
             'telefono' => 'sometimes|nullable|string|max:25',
-            'correo' => 'sometimes|nullable|email|max:150',
+            'correo' => [
+                'sometimes', 'nullable', 'email', 'max:150',
+                Rule::unique('clientes', 'correo')->ignore($cliente->id_cliente, 'id_cliente'),
+                Rule::unique('usuarios', 'correo')->ignore($usuario?->id_usuario ?? 0, 'id_usuario'),
+            ],
             'direccion' => 'sometimes|nullable|string|max:255',
             'fecha_nacimiento' => 'sometimes|nullable|date|before:today',
             'estado' => ['sometimes', Rule::in(['Activo', 'Inactivo'])],
         ]);
 
-        $cliente->update($datos);
+        DB::transaction(function () use ($cliente, $usuario, $datos) {
+            $cliente->update($datos);
+
+            if ($usuario) {
+                $sincronizar = array_intersect_key($datos, array_flip([
+                    'dni', 'nombres', 'apellidos', 'telefono', 'correo', 'estado',
+                ]));
+                if ($sincronizar) {
+                    $usuario->update($sincronizar);
+                    if (($sincronizar['estado'] ?? null) === 'Inactivo') {
+                        $usuario->tokens()->delete();
+                    }
+                }
+            }
+        });
 
         return response()->json($cliente->fresh());
     }
@@ -77,11 +99,22 @@ class ClienteController extends Controller
     {
         $cliente = Cliente::findOrFail($id);
 
-        // Se conserva el historial financiero y de asistencias.
-        $cliente->update(['estado' => 'Inactivo']);
+        DB::transaction(function () use ($cliente) {
+            $cliente->update(['estado' => 'Inactivo']);
+
+            Usuario::where(function ($q) use ($cliente) {
+                $q->where('id_cliente', $cliente->id_cliente)
+                  ->orWhere(function ($q2) use ($cliente) {
+                      $q2->whereNull('id_cliente')->where('dni', $cliente->dni)->where('rol', 'Cliente');
+                  });
+            })->get()->each(function (Usuario $usuario) {
+                $usuario->update(['estado' => 'Inactivo']);
+                $usuario->tokens()->delete();
+            });
+        });
 
         return response()->json([
-            'mensaje' => 'Cliente dado de baja correctamente. Su historial fue conservado.',
+            'mensaje' => 'Cliente y acceso asociados fueron desactivados. El historial fue conservado.',
             'cliente' => $cliente->fresh(),
         ]);
     }

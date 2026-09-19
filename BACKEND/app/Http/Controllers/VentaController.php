@@ -28,8 +28,7 @@ class VentaController extends Controller
     public function show(string $id)
     {
         return response()->json(
-            Venta::with(['cliente', 'usuario', 'detalles.producto'])
-                ->findOrFail($id)
+            Venta::with(['cliente', 'usuario', 'detalles.producto'])->findOrFail($id)
         );
     }
 
@@ -49,64 +48,54 @@ class VentaController extends Controller
         ]);
 
         if (!$cajaService->cajaAbierta()) {
-            throw ValidationException::withMessages([
-                'caja' => ['Debes abrir caja antes de registrar una venta.'],
-            ]);
+            throw ValidationException::withMessages(['caja' => ['Debes abrir caja antes de registrar una venta.']]);
         }
 
         if ($datos['metodo_pago'] !== 'Efectivo' && blank($datos['numero_operacion'] ?? null)) {
-            throw ValidationException::withMessages([
-                'numero_operacion' => ['El número de operación es obligatorio para pagos que no son en efectivo.'],
-            ]);
+            throw ValidationException::withMessages(['numero_operacion' => ['El número de operación es obligatorio para pagos que no son en efectivo.']]);
         }
 
         if (Venta::where('numero_comprobante', $datos['numero_comprobante'])->exists()) {
-            throw ValidationException::withMessages([
-                'numero_comprobante' => ['Ese comprobante de venta ya fue registrado.'],
-            ]);
+            throw ValidationException::withMessages(['numero_comprobante' => ['Ese comprobante de venta ya fue registrado.']]);
         }
 
         if (!blank($datos['numero_operacion'] ?? null) && Venta::where('numero_operacion', $datos['numero_operacion'])->exists()) {
-            throw ValidationException::withMessages([
-                'numero_operacion' => ['Ese número de operación ya fue utilizado en otra venta.'],
-            ]);
+            throw ValidationException::withMessages(['numero_operacion' => ['Ese número de operación ya fue utilizado en otra venta.']]);
         }
 
         $venta = DB::transaction(function () use ($datos, $request, $inventario, $cajaService) {
             $itemsPreparados = [];
-            $subtotal = 0;
+            $totalPrecioFinal = 0;
 
             foreach ($datos['items'] as $item) {
                 $producto = Producto::where('id_producto', $item['id_producto'])->lockForUpdate()->firstOrFail();
 
                 if (mb_strtolower((string) $producto->estado) !== 'activo') {
-                    throw ValidationException::withMessages([
-                        'items' => ["El producto {$producto->nombre_producto} no se encuentra activo."],
-                    ]);
+                    throw ValidationException::withMessages(['items' => ["El producto {$producto->nombre_producto} no se encuentra activo."]]);
                 }
 
                 if ((int) $producto->stock < (int) $item['cantidad']) {
-                    throw ValidationException::withMessages([
-                        'items' => ["Stock insuficiente para {$producto->nombre_producto}. Disponible: {$producto->stock}."],
-                    ]);
+                    throw ValidationException::withMessages(['items' => ["Stock insuficiente para {$producto->nombre_producto}. Disponible: {$producto->stock}."]]);
                 }
 
-                $precio = (float) $producto->precio_venta;
-                $subtotalItem = round((float) $item['cantidad'] * $precio, 2);
-                $subtotal += $subtotalItem;
+                // precio_venta se trata como PRECIO FINAL AL PÚBLICO (IGV incluido).
+                $precioFinalUnitario = (float) $producto->precio_venta;
+                $totalLinea = round((float) $item['cantidad'] * $precioFinalUnitario, 2);
+                $totalPrecioFinal += $totalLinea;
 
                 $itemsPreparados[] = [
                     'producto' => $producto,
                     'cantidad' => (int) $item['cantidad'],
-                    'precio_unitario' => $precio,
-                    'subtotal' => $subtotalItem,
+                    'precio_unitario' => $precioFinalUnitario,
+                    'subtotal' => $totalLinea,
                 ];
             }
 
             $porcentajeIgv = array_key_exists('igv_porcentaje', $datos) ? (float) $datos['igv_porcentaje'] : 18.0;
-            $subtotal = round($subtotal, 2);
-            $igv = round($subtotal * ($porcentajeIgv / 100), 2);
-            $total = round($subtotal + $igv, 2);
+            $total = round($totalPrecioFinal, 2);
+            $factor = 1 + ($porcentajeIgv / 100);
+            $subtotal = $factor > 0 ? round($total / $factor, 2) : $total;
+            $igv = round($total - $subtotal, 2);
 
             $venta = Venta::create([
                 'id_cliente' => $datos['id_cliente'],
@@ -165,30 +154,24 @@ class VentaController extends Controller
         });
 
         return response()->json([
-            'mensaje' => 'Venta registrada, pago controlado y Kardex actualizado correctamente.',
+            'mensaje' => 'Venta registrada; el precio final ya incluye IGV, y stock/Kardex fueron actualizados.',
             'venta' => $venta->load(['cliente', 'usuario', 'detalles.producto']),
         ], 201);
     }
 
     public function anular(Request $request, string $id, InventarioService $inventario, CajaService $cajaService)
     {
-        $datos = $request->validate([
-            'motivo' => 'required|string|min:5|max:500',
-        ]);
+        $datos = $request->validate(['motivo' => 'required|string|min:5|max:500']);
 
         $venta = DB::transaction(function () use ($request, $id, $datos, $inventario, $cajaService) {
             $venta = Venta::with('detalles')->lockForUpdate()->findOrFail($id);
 
             if (($venta->estado ?? 'Registrado') === 'Anulado') {
-                throw ValidationException::withMessages([
-                    'venta' => ['La venta ya se encuentra anulada.'],
-                ]);
+                throw ValidationException::withMessages(['venta' => ['La venta ya se encuentra anulada.']]);
             }
 
             if ($venta->metodo_pago === 'Efectivo' && !$cajaService->cajaAbierta()) {
-                throw ValidationException::withMessages([
-                    'caja' => ['Debes abrir caja para registrar la devolución de efectivo de una venta anulada.'],
-                ]);
+                throw ValidationException::withMessages(['caja' => ['Debes abrir caja para registrar la devolución de efectivo de una venta anulada.']]);
             }
 
             foreach ($venta->detalles as $detalle) {
