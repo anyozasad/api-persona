@@ -100,7 +100,9 @@ class AuthController extends Controller
         }
 
         $token = $usuario->createToken('sesion-api')->plainTextToken;
-        $cliente = $usuario->dni ? Cliente::where('dni', $usuario->dni)->first() : null;
+        $cliente = $usuario->id_cliente
+            ? Cliente::find($usuario->id_cliente)
+            : ($usuario->dni ? Cliente::where('dni', $usuario->dni)->first() : null);
 
         return response()->json([
             'mensaje' => 'Inicio de sesión correcto',
@@ -115,7 +117,9 @@ class AuthController extends Controller
     {
         /** @var Usuario $usuario */
         $usuario = $request->user();
-        $cliente = $usuario->dni ? Cliente::where('dni', $usuario->dni)->first() : null;
+        $cliente = $usuario->id_cliente
+            ? Cliente::find($usuario->id_cliente)
+            : ($usuario->dni ? Cliente::where('dni', $usuario->dni)->first() : null);
 
         return response()->json([
             'usuario' => $usuario,

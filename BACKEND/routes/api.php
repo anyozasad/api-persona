@@ -109,11 +109,6 @@ Route::middleware(['auth:sanctum', 'rol:Administrador,Entrenador', 'auditoria'])
     Route::apiResource('/rutinas', RutinaController::class);
     Route::apiResource('/detalle-rutinas', DetalleRutinaController::class);
 
-    Route::apiResource('/asistencias', AsistenciaController::class)->only(['index', 'show']);
-    Route::post('/asistencias/entrada', [AsistenciaController::class, 'entrada']);
-    Route::post('/asistencias/salida', [AsistenciaController::class, 'salida']);
-    Route::get('/clientes/{idCliente}/asistencias', [AsistenciaController::class, 'historial']);
-
     Route::get('/reservas', [ReservaController::class, 'index']);
     Route::put('/reservas/{id}/estado', [ReservaController::class, 'cambiarEstado']);
 });
@@ -126,6 +121,11 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
     Route::apiResource('/membresias', MembresiaController::class)->except(['index', 'show']);
     Route::apiResource('/clases', ClaseController::class)->except(['index', 'show']);
     Route::apiResource('/clientes', ClienteController::class);
+
+    Route::apiResource('/asistencias', AsistenciaController::class)->only(['index', 'show']);
+    Route::post('/asistencias/entrada', [AsistenciaController::class, 'entrada']);
+    Route::post('/asistencias/salida', [AsistenciaController::class, 'salida']);
+    Route::get('/clientes/{idCliente}/asistencias', [AsistenciaController::class, 'historial']);
 
     Route::apiResource('/cliente-membresias', ClienteMembresiaController::class)->only(['index', 'show']);
     Route::apiResource('/pagos-membresia', PagoMembresiaController::class)->only(['index', 'show']);

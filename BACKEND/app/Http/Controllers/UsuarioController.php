@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
+use App\Models\Entrenador;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -12,7 +14,7 @@ class UsuarioController extends Controller
 {
     public function index()
     {
-        return response()->json(Usuario::orderBy('id_usuario', 'desc')->get());
+        return response()->json(Usuario::with(['cliente', 'entrenador'])->orderBy('id_usuario', 'desc')->get());
     }
 
     public function store(Request $request)
@@ -34,13 +36,29 @@ class UsuarioController extends Controller
         $datos['estado'] = $datos['estado'] ?? 'Activo';
         $datos['fecha_registro'] = $datos['fecha_registro'] ?? now();
 
-        return response()->json(Usuario::create($datos), 201);
+        if ($datos['rol'] === 'Cliente') {
+            $cliente = Cliente::where('dni', $datos['dni'])->first();
+            if (!$cliente) {
+                throw ValidationException::withMessages(['dni' => ['No existe un cliente con ese DNI.']]);
+            }
+            $datos['id_cliente'] = $cliente->id_cliente;
+        }
+
+        if ($datos['rol'] === 'Entrenador') {
+            $entrenador = Entrenador::where('dni', $datos['dni'])->first();
+            if (!$entrenador) {
+                throw ValidationException::withMessages(['dni' => ['No existe un entrenador con ese DNI.']]);
+            }
+            $datos['id_entrenador'] = $entrenador->id_entrenador;
+        }
+
+        return response()->json(Usuario::create($datos)->load(['cliente', 'entrenador']), 201);
     }
 
     public function show(string $id)
     {
         return response()->json(
-            Usuario::with(['compras', 'ventas'])->findOrFail($id)
+            Usuario::with(['compras', 'ventas', 'cliente', 'entrenador'])->findOrFail($id)
         );
     }
 
@@ -73,19 +91,36 @@ class UsuarioController extends Controller
         $esMismoUsuario = (int) $request->user()->id_usuario === (int) $usuario->id_usuario;
 
         if ($esMismoUsuario && isset($datos['rol']) && $datos['rol'] !== 'Administrador') {
-            throw ValidationException::withMessages([
-                'rol' => ['No puedes quitarte tu propio rol de Administrador.'],
-            ]);
+            throw ValidationException::withMessages(['rol' => ['No puedes quitarte tu propio rol de Administrador.']]);
         }
 
         if ($esMismoUsuario && isset($datos['estado']) && $datos['estado'] !== 'Activo') {
-            throw ValidationException::withMessages([
-                'estado' => ['No puedes desactivar tu propio usuario administrador.'],
-            ]);
+            throw ValidationException::withMessages(['estado' => ['No puedes desactivar tu propio usuario administrador.']]);
+        }
+
+        $rolFinal = $datos['rol'] ?? $usuario->rol;
+        $dniFinal = $datos['dni'] ?? $usuario->dni;
+
+        $datos['id_cliente'] = null;
+        $datos['id_entrenador'] = null;
+
+        if ($rolFinal === 'Cliente') {
+            $cliente = Cliente::where('dni', $dniFinal)->first();
+            if (!$cliente) {
+                throw ValidationException::withMessages(['dni' => ['No existe un cliente con ese DNI.']]);
+            }
+            $datos['id_cliente'] = $cliente->id_cliente;
+        }
+
+        if ($rolFinal === 'Entrenador') {
+            $entrenador = Entrenador::where('dni', $dniFinal)->first();
+            if (!$entrenador) {
+                throw ValidationException::withMessages(['dni' => ['No existe un entrenador con ese DNI.']]);
+            }
+            $datos['id_entrenador'] = $entrenador->id_entrenador;
         }
 
         $cambioContrasena = false;
-
         if (array_key_exists('contrasena', $datos)) {
             if ($datos['contrasena']) {
                 $datos['contrasena'] = Hash::make($datos['contrasena']);
@@ -101,7 +136,7 @@ class UsuarioController extends Controller
             $usuario->tokens()->delete();
         }
 
-        return response()->json($usuario->fresh());
+        return response()->json($usuario->fresh(['cliente', 'entrenador']));
     }
 
     public function destroy(Request $request, string $id)
@@ -109,9 +144,7 @@ class UsuarioController extends Controller
         $usuario = Usuario::findOrFail($id);
 
         if ((int) $request->user()->id_usuario === (int) $usuario->id_usuario) {
-            throw ValidationException::withMessages([
-                'usuario' => ['No puedes desactivar tu propio usuario administrador.'],
-            ]);
+            throw ValidationException::withMessages(['usuario' => ['No puedes desactivar tu propio usuario administrador.']]);
         }
 
         $usuario->update(['estado' => 'Inactivo']);

@@ -90,8 +90,12 @@ class RutinaController extends Controller
     private function idEntrenadorActual(Request $request): ?int
     {
         if (mb_strtolower((string) $request->user()?->rol) !== 'entrenador') return null;
-        $entrenador = Entrenador::where('dni', $request->user()?->dni)->where('estado', 'Activo')->first();
-        abort_unless($entrenador, 403, 'La cuenta no está vinculada a un entrenador activo.');
+        $usuario = $request->user();
+        $entrenador = $usuario?->id_entrenador ? Entrenador::find($usuario->id_entrenador) : null;
+        if (!$entrenador && $usuario?->dni) {
+            $entrenador = Entrenador::where('dni', $usuario->dni)->first();
+        }
+        abort_unless($entrenador && mb_strtolower((string) $entrenador->estado) === 'activo', 403, 'La cuenta no está vinculada a un entrenador activo.');
         return (int) $entrenador->id_entrenador;
     }
 }
