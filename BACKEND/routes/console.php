@@ -27,7 +27,8 @@ Artisan::command('frontend:build', function () {
 
     if (! is_dir($frontend.DIRECTORY_SEPARATOR.'node_modules')) {
         $this->comment('Instalando dependencias de Angular...');
-        $install = Process::fromShellCommandline('npm install', $frontend);
+        $npm = PHP_OS_FAMILY === 'Windows' ? 'npm.cmd' : 'npm';
+        $install = new Process([$npm, 'install'], $frontend);
         $install->setTimeout(null);
         $install->run(function ($type, $buffer) {
             $this->output->write($buffer);
@@ -39,7 +40,8 @@ Artisan::command('frontend:build', function () {
         }
     }
 
-    $build = Process::fromShellCommandline('npm run build', $frontend);
+    $npm = $npm ?? (PHP_OS_FAMILY === 'Windows' ? 'npm.cmd' : 'npm');
+    $build = new Process([$npm, 'run', 'build'], $frontend);
     $build->setTimeout(null);
     $build->run(function ($type, $buffer) {
         $this->output->write($buffer);
