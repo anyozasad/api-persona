@@ -1,0 +1,35 @@
+<div class="trainer-page">
+  <aside class="trainer-sidebar">
+    <a routerLink="/" class="brand"><img src="assets/mallqui-logo.png" alt="Mallqui Gym"></a>
+    <button [class.active]="seccion==='resumen'" (click)="cambiar('resumen')">▦ Resumen</button>
+    <button [class.active]="seccion==='clientes'" (click)="cambiar('clientes')">♙ Mis clientes</button>
+    <button [class.active]="seccion==='rutinas'" (click)="cambiar('rutinas')">🏋 Rutinas</button>
+    <button [class.active]="seccion==='clases'" (click)="cambiar('clases')">◉ Mis clases</button>
+    <button [class.active]="seccion==='reservas'" (click)="cambiar('reservas')">◷ Reservas</button>
+    <button class="logout" (click)="cerrarSesion()">↪ Cerrar sesión</button>
+  </aside>
+  <main class="trainer-content">
+    <header><div><h1>Panel del Entrenador</h1><p>{{nombre(resumen?.entrenador)}} · {{resumen?.entrenador?.especialidad}}</p></div><button (click)="cargar()">↻ Actualizar</button></header>
+    <div *ngIf="error" class="alert">{{error}}</div><div *ngIf="toast" class="toast">{{toast}}</div>
+    <section *ngIf="cargando" class="card"><h2>Cargando datos...</h2></section>
+
+    <ng-container *ngIf="!cargando && seccion==='resumen'">
+      <section class="kpis"><article><span>Clientes</span><b>{{resumen?.clientes||0}}</b></article><article><span>Rutinas activas</span><b>{{resumen?.rutinas_activas||0}}</b></article><article><span>Clases activas</span><b>{{resumen?.clases_activas||0}}</b></article><article><span>Reservas hoy</span><b>{{resumen?.reservas_hoy||0}}</b></article></section>
+      <section class="card"><h2>Próximas clases</h2><div class="row" *ngFor="let c of clases.slice(0,6)"><b>{{c.nombre}}</b><span>{{c.dia_semana}} {{c.hora_inicio}} - {{c.hora_fin}}</span><em>{{c.reservas_activas||0}} reservas</em></div></section>
+    </ng-container>
+
+    <section *ngIf="!cargando && seccion==='clientes'" class="card"><h2>Mis clientes</h2><table><thead><tr><th>Cliente</th><th>DNI</th><th>Correo</th><th>Estado</th></tr></thead><tbody><tr *ngFor="let c of clientes"><td>{{nombre(c)}}</td><td>{{c.dni}}</td><td>{{c.correo}}</td><td>{{c.estado}}</td></tr></tbody></table></section>
+
+    <ng-container *ngIf="!cargando && seccion==='rutinas'">
+      <section class="grid">
+        <article class="card"><h2>Nueva rutina</h2><form (ngSubmit)="crearRutina()"><label>Cliente<select [(ngModel)]="rutinaForm.id_cliente" name="rc"><option [ngValue]="0">Seleccionar</option><option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombre(c)}}</option></select></label><label>Nombre<input [(ngModel)]="rutinaForm.nombre_rutina" name="rn" required></label><label>Objetivo<input [(ngModel)]="rutinaForm.objetivo" name="ro"></label><label>Descripción<textarea [(ngModel)]="rutinaForm.descripcion" name="rd"></textarea></label><div class="two"><label>Inicio<input type="date" [(ngModel)]="rutinaForm.fecha_inicio" name="ri"></label><label>Fin<input type="date" [(ngModel)]="rutinaForm.fecha_fin" name="rf"></label></div><button class="primary">Guardar rutina</button></form></article>
+        <article class="card"><h2>Agregar ejercicio</h2><form (ngSubmit)="agregarEjercicio()"><label>Rutina<select [(ngModel)]="detalleForm.id_rutina" name="dr"><option [ngValue]="0">Seleccionar</option><option *ngFor="let r of rutinas" [ngValue]="r.id_rutina">{{r.nombre_rutina}} - {{nombre(r.cliente)}}</option></select></label><label>Ejercicio<input [(ngModel)]="detalleForm.ejercicio" name="de" required></label><div class="two"><label>Series<input type="number" min="1" [(ngModel)]="detalleForm.series" name="ds"></label><label>Repeticiones<input type="number" min="1" [(ngModel)]="detalleForm.repeticiones" name="dp"></label></div><div class="two"><label>Peso recomendado<input type="number" min="0" step="0.5" [(ngModel)]="detalleForm.peso_recomendado" name="dw"></label><label>Descanso (s)<input type="number" min="0" [(ngModel)]="detalleForm.descanso_segundos" name="dd"></label></div><button class="primary">Agregar ejercicio</button></form></article>
+      </section>
+      <section class="card"><h2>Rutinas asignadas</h2><div class="routine" *ngFor="let r of rutinas"><div><b>{{r.nombre_rutina}}</b><span>{{nombre(r.cliente)}} · {{r.objetivo}}</span></div><small>{{r.estado}}</small><ul><li *ngFor="let d of r.detalles">{{d.ejercicio}} — {{d.series}}×{{d.repeticiones}}</li></ul></div></section>
+    </ng-container>
+
+    <section *ngIf="!cargando && seccion==='clases'" class="card"><h2>Mis clases</h2><table><thead><tr><th>Clase</th><th>Día</th><th>Horario</th><th>Cupo</th><th>Reservas</th></tr></thead><tbody><tr *ngFor="let c of clases"><td>{{c.nombre}}</td><td>{{c.dia_semana}}</td><td>{{c.hora_inicio}} - {{c.hora_fin}}</td><td>{{c.cupo_maximo}}</td><td>{{c.reservas_activas||0}}</td></tr></tbody></table></section>
+
+    <section *ngIf="!cargando && seccion==='reservas'" class="card"><h2>Reservas de mis clases</h2><table><thead><tr><th>Cliente</th><th>Clase</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr *ngFor="let r of reservas"><td>{{nombre(r.cliente)}}</td><td>{{r.clase?.nombre}}</td><td>{{r.fecha_clase}}</td><td>{{r.estado}}</td><td><button (click)="estadoReserva(r.id_reserva,'Asistio')">Asistió</button><button (click)="estadoReserva(r.id_reserva,'NoAsistio')">No asistió</button></td></tr></tbody></table></section>
+  </main>
+</div>

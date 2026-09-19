@@ -27,6 +27,7 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PortalClienteController;
+use App\Http\Controllers\PortalEntrenadorController;
 use App\Http\Controllers\ReservaController;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\KardexController;
@@ -79,6 +80,7 @@ Route::middleware(['auth:sanctum', 'rol:Cliente', 'auditoria'])->prefix('mi-cuen
     Route::put('/perfil', [PortalClienteController::class, 'actualizarPerfil']);
     Route::get('/membresia', [PortalClienteController::class, 'membresia']);
     Route::get('/pagos', [PortalClienteController::class, 'pagos']);
+    Route::get('/pagos/{idPago}/comprobante', [PortalClienteController::class, 'comprobante']);
     Route::get('/rutinas', [PortalClienteController::class, 'rutinas']);
     Route::get('/asistencias', [PortalClienteController::class, 'asistencias']);
     Route::get('/compras', [PortalClienteController::class, 'compras']);
@@ -89,6 +91,15 @@ Route::middleware(['auth:sanctum', 'rol:Cliente', 'auditoria'])->prefix('mi-cuen
     Route::get('/reservas', [ReservaController::class, 'misReservas']);
     Route::post('/reservas', [ReservaController::class, 'reservar']);
     Route::post('/reservas/{id}/cancelar', [ReservaController::class, 'cancelarMia']);
+});
+
+// PORTAL DEL ENTRENADOR: INFORMACION LIMITADA A SU PROPIA OPERACION
+Route::middleware(['auth:sanctum', 'rol:Entrenador', 'auditoria'])->prefix('mi-entrenador')->group(function () {
+    Route::get('/resumen', [PortalEntrenadorController::class, 'resumen']);
+    Route::get('/clientes', [PortalEntrenadorController::class, 'clientes']);
+    Route::get('/rutinas', [PortalEntrenadorController::class, 'rutinas']);
+    Route::get('/clases', [PortalEntrenadorController::class, 'clases']);
+    Route::get('/reservas', [PortalEntrenadorController::class, 'reservas']);
 });
 
 // OPERACIÓN DEL GIMNASIO: ADMINISTRADOR O ENTRENADOR

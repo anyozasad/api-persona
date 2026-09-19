@@ -4,6 +4,7 @@ import { LoginComponent } from './component/pages/login/login.component';
 import { RegisterComponent } from './component/pages/register/register.component';
 import { ResetPasswordComponent } from './component/pages/reset-password/reset-password.component';
 import { UsuarioComponent } from './component/pages/usuario/usuario.component';
+import { EntrenadorPanelComponent } from './component/pages/panel-entrenador/entrenador-panel.component';
 import { AdminComponent } from './component/pages/admin/admin.component';
 import { AdminIntegradoComponent } from './component/pages/admin/admin-integrado.component';
 import { ProductosComponent } from './component/pages/productos/productos';
@@ -32,6 +33,7 @@ export const routes: Routes = [
   { path: 'registro', component: RegisterComponent },
   { path: 'restablecer', component: ResetPasswordComponent },
   { path: 'usuario', component: UsuarioComponent, canActivate: [authGuard, roleGuard(['Cliente'])] },
+  { path: 'entrenador', component: EntrenadorPanelComponent, canActivate: [authGuard, roleGuard(['Entrenador'])] },
   { path: 'admin', component: AdminIntegradoComponent, canActivate: [authGuard, roleGuard(['Administrador'])] },
   { path: 'admin-diseno', component: AdminComponent, canActivate: [authGuard, roleGuard(['Administrador'])] },
   { path: 'productos', component: ProductosComponent, canActivate: [authGuard, roleGuard(['Administrador'])] },

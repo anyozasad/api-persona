@@ -156,6 +156,10 @@ export class LoginComponent {
           void this.router.navigate(['/usuario']);
           return;
         }
+        if (res.usuario.rol === 'Entrenador') {
+          void this.router.navigate(['/entrenador']);
+          return;
+        }
 
         this.auth.limpiarSesion();
         this.error = `El rol ${res.usuario.rol} todavía no tiene un panel web asignado.`;

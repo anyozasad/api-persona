@@ -109,6 +109,38 @@ class PortalClienteController extends Controller
         );
     }
 
+    public function comprobante(Request $request, string $idPago)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+
+        $pago = PagoMembresia::with(['clienteMembresia.membresia', 'clienteMembresia.cliente'])
+            ->where('id_pago', $idPago)
+            ->whereHas('clienteMembresia', fn ($q) => $q->where('id_cliente', $cliente->id_cliente))
+            ->firstOrFail();
+
+        return response()->json([
+            'empresa' => [
+                'nombre' => 'Mallqui Gym',
+                'moneda' => 'PEN',
+            ],
+            'comprobante' => [
+                'id_pago' => $pago->id_pago,
+                'fecha' => optional($pago->fecha_pago)->toDateTimeString(),
+                'cliente' => trim($cliente->nombres.' '.$cliente->apellidos),
+                'dni' => $cliente->dni,
+                'membresia' => $pago->clienteMembresia?->membresia?->nombre,
+                'periodo' => [
+                    'inicio' => optional($pago->clienteMembresia?->fecha_inicio)->toDateString(),
+                    'fin' => optional($pago->clienteMembresia?->fecha_fin)->toDateString(),
+                ],
+                'monto' => $pago->monto,
+                'metodo_pago' => $pago->metodo_pago,
+                'numero_operacion' => $pago->numero_operacion,
+                'estado' => $pago->estado_pago,
+            ],
+        ]);
+    }
+
     public function rutinas(Request $request)
     {
         $cliente = $this->clienteDelUsuario($request);

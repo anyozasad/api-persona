@@ -55,6 +55,7 @@ export function roleGuard(rolesPermitidos: string[]): CanActivateFn {
 
     if (sesion.rol === 'Administrador') return router.createUrlTree(['/admin']);
     if (sesion.rol === 'Cliente') return router.createUrlTree(['/usuario']);
+    if (sesion.rol === 'Entrenador') return router.createUrlTree(['/entrenador']);
     return router.createUrlTree(['/']);
   };
 }

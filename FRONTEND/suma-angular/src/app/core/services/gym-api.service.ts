@@ -56,6 +56,29 @@ export class GymApiService {
     return this.http.post(`/api/mi-cuenta/pagos/${id_pago}/cancelar`, {});
   }
 
+  comprobantePagoCliente(id_pago: number): Observable<any> {
+    return this.http.get(`/api/mi-cuenta/pagos/${id_pago}/comprobante`);
+  }
+
+  // =========================================================
+  // PORTAL DEL ENTRENADOR
+  // =========================================================
+  resumenEntrenador(): Observable<any> { return this.http.get('/api/mi-entrenador/resumen'); }
+  clientesEntrenador(): Observable<any[]> { return this.http.get<any[]>('/api/mi-entrenador/clientes'); }
+  rutinasEntrenador(): Observable<any[]> { return this.http.get<any[]>('/api/mi-entrenador/rutinas'); }
+  clasesEntrenador(): Observable<any[]> { return this.http.get<any[]>('/api/mi-entrenador/clases'); }
+  reservasEntrenador(): Observable<any[]> { return this.http.get<any[]>('/api/mi-entrenador/reservas'); }
+
+  cargarPortalEntrenador(): Observable<any> {
+    return forkJoin({
+      resumen: this.resumenEntrenador(),
+      clientes: this.clientesEntrenador(),
+      rutinas: this.rutinasEntrenador(),
+      clases: this.clasesEntrenador(),
+      reservas: this.reservasEntrenador(),
+    });
+  }
+
   // =========================================================
   // INFORMACION GENERAL AUTENTICADA
   // =========================================================
