@@ -16,6 +16,16 @@ class SecuritySmokeTest extends TestCase
         $this->getJson('/api/mi-cuenta/resumen')->assertUnauthorized();
     }
 
+    public function test_trainer_portal_requires_authentication(): void
+    {
+        $this->getJson('/api/mi-entrenador/resumen')->assertUnauthorized();
+    }
+
+    public function test_sales_cancellation_requires_authentication(): void
+    {
+        $this->postJson('/api/ventas/1/anular', ['motivo' => 'Prueba de seguridad'])->assertUnauthorized();
+    }
+
     public function test_cash_module_requires_authentication(): void
     {
         $this->getJson('/api/caja/actual')->assertUnauthorized();
