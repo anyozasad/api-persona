@@ -1,8 +1,3 @@
-/* Compatibilidad del sidebar.
-   El panel usa ahora un sidebar fijo y estable definido en mallqui-admin.css.
-   Se eliminó el colapsado automático porque generaba huecos y recortes visuales. */
-.admin-sidebar-toggle{display:none!important}
-.admin-shell.admin-sidebar-collapsed{grid-template-columns:236px minmax(0,1fr)!important}
-.admin-shell.admin-sidebar-collapsed .admin-nav{padding-left:14px!important;padding-right:14px!important}
-.admin-shell.admin-sidebar-collapsed .admin-menu-text,
-.admin-shell.admin-sidebar-collapsed .admin-brand-copy{display:flex!important}
+/* El comportamiento del sidebar se controla desde mallqui-admin.css y el componente Angular.
+   Este archivo queda solo como compatibilidad global para evitar reglas antiguas en conflicto. */
+.admin-shell{transition:grid-template-columns .28s ease}

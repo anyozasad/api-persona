@@ -13,12 +13,12 @@ import { ProductosComponent } from './pages/productos/productos';
   styleUrls: ['../mallqui-admin.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
-  <div class="admin-shell">
+  <div class="admin-shell" [class.admin-sidebar-collapsed]="sidebarCerrado">
     <aside class="admin-nav">
       <div class="admin-nav-top">
         <a routerLink="/" class="admin-brand">
           <span class="brand-glow"></span>
-          <img src="assets/mallqui-logo.png" alt="Mallqui Gym">
+          <img src="assets/mallqui-logo.svg" alt="Mallqui Gym">
         </a>
         <div class="admin-brand-copy">
           <strong>MALLQUI GYM</strong>
@@ -41,6 +41,16 @@ import { ProductosComponent } from './pages/productos/productos';
       </div>
       <button type="button" class="admin-logout" (click)="cerrarSesion()"><span>↪</span> Cerrar sesión</button>
     </aside>
+
+    <button
+      type="button"
+      class="admin-sidebar-toggle"
+      [class.is-collapsed]="sidebarCerrado"
+      (click)="toggleSidebar()"
+      [attr.aria-label]="sidebarCerrado ? 'Abrir menú lateral' : 'Cerrar menú lateral'"
+      [attr.title]="sidebarCerrado ? 'Abrir menú' : 'Cerrar menú'">
+      {{sidebarCerrado ? '›' : '‹'}}
+    </button>
 
     <main class="admin-content">
       <header class="admin-header">
@@ -595,6 +605,8 @@ export class AdminIntegradoComponent implements OnInit {
     auditoria:['Auditoría','Trazabilidad de acciones del sistema'], configuracion:['Configuración','Estado técnico del sistema']
   };
 
+  sidebarCerrado = false;
+
   clienteForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
   membresiaForm: any = {id_cliente:0,id_membresia:0,metodo_pago:'Efectivo',numero_operacion:''};
   entrenadorEditandoId = 0;
@@ -619,7 +631,16 @@ export class AdminIntegradoComponent implements OnInit {
 
   constructor(public auth: AuthService, private api: AdminApiService, private router: Router) {}
 
-  ngOnInit(): void { this.seccion = this.seccionInicial || 'dashboard'; this.recargarTodo(); }
+  ngOnInit(): void {
+    this.seccion = this.seccionInicial || 'dashboard';
+    this.sidebarCerrado = localStorage.getItem('mallqui_admin_sidebar_closed') === '1';
+    this.recargarTodo();
+  }
+
+  toggleSidebar(): void {
+    this.sidebarCerrado = !this.sidebarCerrado;
+    localStorage.setItem('mallqui_admin_sidebar_closed', this.sidebarCerrado ? '1' : '0');
+  }
 
   get tituloActual(): string { return this.titulos[this.seccion]?.[0] ?? 'Administrador'; }
   get subtituloActual(): string { return this.titulos[this.seccion]?.[1] ?? ''; }

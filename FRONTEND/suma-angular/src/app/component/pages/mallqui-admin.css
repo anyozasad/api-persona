@@ -78,10 +78,12 @@
 @media(max-width:850px){.admin-shell{grid-template-columns:1fr}.admin-nav{display:none}.admin-content{padding:18px 14px 32px}.admin-content:before,.admin-content:after{display:none}.admin-header{grid-template-columns:1fr auto}.admin-refresh-top{display:none}.admin-profile-wrap{grid-column:2}.admin-profile{min-width:auto}.admin-profile p{display:none}}
 
 
-/* FIX DE ESTRUCTURA DEL PANEL - evita conflictos y barras laterales fantasma */
+/* SIDEBAR FINAL: se cierra completo y la flecha siempre queda disponible */
 .admin-shell{
+  position:relative;
   grid-template-columns:236px minmax(0,1fr)!important;
   align-items:stretch;
+  transition:grid-template-columns .28s ease;
 }
 .admin-nav{
   width:auto!important;
@@ -89,48 +91,113 @@
   max-width:none!important;
   overflow:hidden!important;
   justify-self:stretch!important;
+  transition:opacity .22s ease,transform .28s ease,padding .28s ease;
 }
-.admin-nav-top{min-width:0}
 .admin-brand{
-  width:64px!important;
-  height:64px!important;
+  width:66px!important;
+  height:66px!important;
   margin:0!important;
   background:none!important;
   opacity:1!important;
   filter:none!important;
   display:block!important;
-  flex:0 0 64px!important;
+  flex:0 0 66px!important;
 }
 .admin-brand img{
   display:block!important;
-  width:64px!important;
-  height:64px!important;
+  width:66px!important;
+  height:66px!important;
   margin:0!important;
   object-fit:contain!important;
 }
-.admin-brand-copy{display:flex!important}
-.admin-menu-text{display:block!important}
-.admin-sidebar-toggle{display:none!important}
 .admin-content:before,.admin-content:after{display:none!important;content:none!important}
 .admin-content{
   width:auto!important;
   max-width:none!important;
+  min-width:0!important;
   margin:0!important;
   padding:22px 24px 42px!important;
+  transition:padding .28s ease;
 }
 .admin-content>*{
   max-width:1380px!important;
   width:100%;
   box-sizing:border-box;
 }
+
+/* Flecha del menú: fuera del sidebar para que no desaparezca al cerrarlo */
+.admin-sidebar-toggle{
+  position:fixed!important;
+  left:222px!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  z-index:150!important;
+  width:30px!important;
+  height:56px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid #d9e1ea!important;
+  border-left:0!important;
+  border-radius:0 14px 14px 0!important;
+  background:#fff!important;
+  color:#0b2344!important;
+  box-shadow:7px 0 18px rgba(5,24,48,.12)!important;
+  font-size:22px!important;
+  line-height:1!important;
+  font-weight:700!important;
+  cursor:pointer!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  transition:left .28s ease,background .18s ease,color .18s ease,transform .18s ease!important;
+}
+.admin-sidebar-toggle:hover{
+  background:#ef233c!important;
+  color:#fff!important;
+}
+.admin-sidebar-toggle:active{
+  transform:translateY(-50%) scale(.96)!important;
+}
+
+/* CERRADO = desaparece TODO el lateral; el contenido ocupa el espacio */
+.admin-shell.admin-sidebar-collapsed{
+  grid-template-columns:0 minmax(0,1fr)!important;
+}
+.admin-shell.admin-sidebar-collapsed .admin-nav{
+  width:0!important;
+  min-width:0!important;
+  padding-left:0!important;
+  padding-right:0!important;
+  border:0!important;
+  opacity:0!important;
+  transform:translateX(-100%)!important;
+  pointer-events:none!important;
+}
+.admin-shell.admin-sidebar-collapsed .admin-nav-top,
+.admin-shell.admin-sidebar-collapsed .admin-menu-label,
+.admin-shell.admin-sidebar-collapsed .admin-nav nav,
+.admin-shell.admin-sidebar-collapsed .admin-system-card,
+.admin-shell.admin-sidebar-collapsed .admin-logout{
+  visibility:hidden!important;
+}
+.admin-shell.admin-sidebar-collapsed .admin-sidebar-toggle{
+  left:0!important;
+}
+.admin-shell.admin-sidebar-collapsed .admin-content{
+  grid-column:2!important;
+}
+
+/* En pantallas medianas sigue funcionando, en móvil el sidebar se oculta */
 @media(max-width:1180px) and (min-width:851px){
   .admin-shell{grid-template-columns:214px minmax(0,1fr)!important}
-  .admin-nav{padding-left:12px!important;padding-right:12px!important}
-  .admin-brand-copy small{display:none}
+  .admin-sidebar-toggle{left:200px!important}
+  .admin-shell.admin-sidebar-collapsed{grid-template-columns:0 minmax(0,1fr)!important}
+  .admin-shell.admin-sidebar-collapsed .admin-sidebar-toggle{left:0!important}
   .admin-content{padding:20px 18px 36px!important}
 }
 @media(max-width:850px){
   .admin-shell{grid-template-columns:1fr!important}
   .admin-nav{display:none!important}
+  .admin-sidebar-toggle{display:none!important}
   .admin-content{padding:16px 12px 30px!important}
 }
