@@ -1,4 +1,4 @@
-import { Component, HostListener, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -10,6 +10,7 @@ import { RouterLink } from '@angular/router';
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="landing-page">
+      <div class="landing-scroll-progress" [style.width.%]="progresoScroll" aria-hidden="true"></div>
       <section class="landing-hero">
         <header class="landing-nav shell">
           <a routerLink="/" class="landing-logo" aria-label="Mallqui Gym">
@@ -27,7 +28,7 @@ import { RouterLink } from '@angular/router';
         </header>
 
         <div class="hero-layout shell" id="inicio">
-          <div class="hero-copy">
+          <div class="hero-copy hero-enter">
             <span class="hero-kicker">◉ BIENVENIDO A MALLQUI GYM</span>
             <h1>TU MEJOR VERSIÓN<br>COMIENZA <strong>AQUÍ</strong></h1>
             <p>Entrenamiento profesional, ambiente motivador y resultados reales. Estamos contigo en cada paso de tu transformación.</p>
@@ -36,10 +37,10 @@ import { RouterLink } from '@angular/router';
               <a href="#planes" class="ghost-button" (click)="irA('planes', $event)">▷ Ver planes</a>
             </div>
           </div>
-          <div class="hero-person" role="img" aria-label="Persona entrenando con mancuerna"></div>
+          <div class="hero-person hero-image-enter" role="img" aria-label="Persona entrenando con mancuerna"></div>
         </div>
 
-        <div class="feature-bar shell">
+        <div class="feature-bar shell mq-reveal">
           <div><span>◯</span><p><b>Rutinas personalizadas</b><small>Según tu objetivo</small></p></div>
           <div><span>★</span><p><b>1 entrenador dedicado</b><small>Acompañamiento personal</small></p></div>
           <div><span>▣</span><p><b>Equipamiento de calidad</b><small>Instalaciones de primer nivel</small></p></div>
@@ -48,7 +49,7 @@ import { RouterLink } from '@angular/router';
       </section>
 
       <section id="nosotros" class="landing-about shell">
-        <div class="landing-about-panel">
+        <div class="landing-about-panel mq-reveal">
           <div class="landing-about-copy">
             <span class="eyebrow">CONOCE MALLQUI GYM</span>
             <h2>Un gimnasio pensado para <strong>acompañarte de verdad</strong></h2>
@@ -63,7 +64,7 @@ import { RouterLink } from '@angular/router';
       </section>
 
       <main class="landing-content shell">
-        <section id="clases" class="landing-section">
+        <section id="clases" class="landing-section mq-reveal">
           <div class="section-heading">
             <div><span></span><h2>NUESTRAS CLASES</h2></div>
             <a href="#clases" (click)="abrirListadoClases($event)">Ver todas las clases →</a>
@@ -84,7 +85,7 @@ import { RouterLink } from '@angular/router';
           </div>
         </section>
 
-        <section id="planes" class="landing-section plans-section">
+        <section id="planes" class="landing-section plans-section mq-reveal">
           <div class="section-heading">
             <div><span></span><h2>PLANES QUE SE ADAPTAN A TI</h2></div>
             <a href="#planes" (click)="abrirComparadorPlanes($event)">Ver todos los planes →</a>
@@ -108,7 +109,7 @@ import { RouterLink } from '@angular/router';
         </section>
       </main>
 
-      <section id="galeria" class="landing-gallery shell">
+      <section id="galeria" class="landing-gallery shell mq-reveal">
         <div class="section-heading">
           <div><span></span><h2>GALERÍA MALLQUI GYM</h2></div>
           <a href="#contacto" (click)="irA('contacto', $event)">¿Quieres conocernos? →</a>
@@ -126,7 +127,7 @@ import { RouterLink } from '@angular/router';
         </div>
       </section>
 
-      <footer id="contacto" class="landing-footer">
+      <footer id="contacto" class="landing-footer mq-reveal">
         <div class="shell footer-layout">
           <div class="footer-brand"><img src="assets/mallqui-logo.png" alt="Mallqui Gym"><p>Más que un gimnasio, somos tu aliado en cada paso de tu transformación.</p></div>
           <div>
@@ -206,15 +207,26 @@ import { RouterLink } from '@angular/router';
         </section>
       </div>
 
+      <button
+        *ngIf="mostrarSubir"
+        type="button"
+        class="landing-back-top"
+        aria-label="Volver al inicio"
+        title="Volver al inicio"
+        (click)="irA('inicio')">↑</button>
+
       <div *ngIf="toast" class="landing-toast" role="status">{{toast}}</div>
     </div>
   `
 })
-export class LandingComponent {
+export class LandingComponent implements AfterViewInit, OnDestroy {
   seccionActiva = 'inicio';
   modal: { tipo: 'clase' | 'clases' | 'planes'; data?: any } | null = null;
   toast = '';
+  progresoScroll = 0;
+  mostrarSubir = false;
   private toastTimer?: ReturnType<typeof setTimeout>;
+  private revealObserver?: IntersectionObserver;
 
   clases = [
     { nombre: 'MUSCULACIÓN', desc: 'Fuerza, hipertrofia y mejor rendimiento.', icon: '🏋', color: 'red', dias: 'Lun · Mié · Vie', hora: '6:00 AM – 10:00 PM', nivel: 'Todos los niveles', cupo: 12, img: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=700&q=85' },
@@ -228,6 +240,45 @@ export class LandingComponent {
     { nombre: 'PREMIUM', precio: 129, subtitulo: 'Para mejores resultados', destacado: true, items: ['Acceso total', 'Clases ilimitadas', 'Rutinas personalizadas', 'Evaluación mensual'] },
     { nombre: 'PRO', precio: 179, subtitulo: 'Experiencia completa', destacado: false, items: ['Todo Premium', 'Asesoría 1 a 1', 'Plan nutricional'] }
   ];
+
+  ngAfterViewInit(): void {
+    const elementos = Array.from(document.querySelectorAll<HTMLElement>('.mq-reveal'));
+
+    if (!('IntersectionObserver' in window)) {
+      elementos.forEach(el => el.classList.add('is-visible'));
+      return;
+    }
+
+    this.revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          (entry.target as HTMLElement).classList.add('is-visible');
+          this.revealObserver?.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -40px 0px' });
+
+    elementos.forEach((el, index) => {
+      el.style.setProperty('--reveal-delay', `${Math.min(index * 55, 220)}ms`);
+      this.revealObserver?.observe(el);
+    });
+
+    this.actualizarScroll();
+  }
+
+  ngOnDestroy(): void {
+    this.revealObserver?.disconnect();
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    document.body.style.overflow = '';
+  }
+
+  @HostListener('window:scroll')
+  actualizarScroll(): void {
+    const doc = document.documentElement;
+    const total = Math.max(doc.scrollHeight - window.innerHeight, 1);
+    this.progresoScroll = Math.min(100, Math.max(0, (window.scrollY / total) * 100));
+    this.mostrarSubir = window.scrollY > 520;
+  }
 
   irA(id: string, event?: Event): void {
     event?.preventDefault();
