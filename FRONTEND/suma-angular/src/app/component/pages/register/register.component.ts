@@ -71,8 +71,8 @@ import { AuthService } from '../../../auth.service';
                 <div class="register-input-wrap"><span>▣</span><input name="dni" [(ngModel)]="dni" placeholder="Tu DNI" maxlength="15" required></div>
               </label>
               <label>
-                Correo electrónico
-                <div class="register-input-wrap"><span>✉</span><input type="email" name="email" [(ngModel)]="email" placeholder="correo@ejemplo.com" required></div>
+                Gmail
+                <div class="register-input-wrap"><span>✉</span><input type="email" name="email" [(ngModel)]="email" placeholder="usuario@gmail.com" pattern="^[A-Za-z0-9._%+-]+@gmail\\.com$" required></div>
               </label>
             </div>
 
@@ -134,6 +134,12 @@ export class RegisterComponent {
     }
 
     const correo = this.email.trim().toLowerCase();
+
+    if (!/^[a-z0-9._%+-]+@gmail\.com$/.test(correo)) {
+      this.error = 'Ingresa un Gmail válido, por ejemplo: usuario@gmail.com';
+      return;
+    }
+
     const baseUsuario = correo.split('@')[0].replace(/[^a-z0-9._-]/g, '') || 'cliente';
     const nombreUsuario = `${baseUsuario}-${this.dni.trim()}`.slice(0, 80);
 

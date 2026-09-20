@@ -45,15 +45,16 @@ import { AuthService } from '../../../auth.service';
 
           <form (ngSubmit)="ingresar()" #loginForm="ngForm">
             <label>
-              Correo electrónico
+              Gmail
               <div class="input-wrap">
                 <span>✉</span>
                 <input
                   type="email"
                   name="email"
                   [(ngModel)]="email"
-                  placeholder="correo@ejemplo.com"
+                  placeholder="usuario@gmail.com"
                   autocomplete="email"
+                  pattern="^[A-Za-z0-9._%+-]+@gmail\\.com$"
                   required>
               </div>
             </label>
@@ -140,12 +141,18 @@ export class LoginComponent {
     this.mensaje = '';
 
     if (!this.email.trim() || !this.password.trim()) {
-      this.error = 'Completa tu correo y contraseña.';
+      this.error = 'Completa tu Gmail y contraseña.';
+      return;
+    }
+
+    const gmail = this.email.trim().toLowerCase();
+    if (!/^[a-z0-9._%+-]+@gmail\.com$/.test(gmail)) {
+      this.error = 'Ingresa un Gmail válido, por ejemplo: usuario@gmail.com';
       return;
     }
 
     this.cargando = true;
-    this.auth.login(this.email.trim(), this.password, this.recordar).subscribe({
+    this.auth.login(gmail, this.password, this.recordar).subscribe({
       next: res => {
         this.cargando = false;
         if (res.usuario.rol === 'Administrador') {
@@ -182,11 +189,17 @@ export class LoginComponent {
     this.mensaje = '';
 
     if (!this.email.trim()) {
-      this.error = 'Escribe tu correo para recuperar tu contraseña.';
+      this.error = 'Escribe tu Gmail para recuperar tu contraseña.';
       return;
     }
 
-    this.auth.solicitarRecuperacion(this.email.trim()).subscribe({
+    const gmail = this.email.trim().toLowerCase();
+    if (!/^[a-z0-9._%+-]+@gmail\.com$/.test(gmail)) {
+      this.error = 'Ingresa un Gmail válido, por ejemplo: usuario@gmail.com';
+      return;
+    }
+
+    this.auth.solicitarRecuperacion(gmail).subscribe({
       next: res => this.mensaje = res.mensaje,
       error: err => this.error = this.extraerError(err, 'No se pudo procesar la recuperación de contraseña.')
     });
