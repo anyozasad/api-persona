@@ -82,8 +82,10 @@ class AuthController extends Controller
             ]);
         }
 
+        $loginNormalizado = mb_strtolower($login);
+
         $usuario = Usuario::query()
-            ->where('correo', $login)
+            ->whereRaw('LOWER(correo) = ?', [$loginNormalizado])
             ->orWhere('nombre_usuario', $login)
             ->first();
 
