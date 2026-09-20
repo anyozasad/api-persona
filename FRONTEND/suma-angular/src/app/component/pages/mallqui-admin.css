@@ -76,3 +76,61 @@
 .admin-profile:hover{border-color:#c9d5e1}.admin-avatar{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#0a2544,#173f70);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:900}.admin-profile p{display:flex;flex-direction:column;min-width:0}.admin-profile strong{font-size:10px;color:#1c2e43}.admin-profile small{font-size:8px;color:#8491a0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.admin-profile i{font-style:normal;color:#7f8b99;font-size:10px}
 @media(max-width:1200px){.admin-shell{grid-template-columns:218px minmax(0,1fr)}.admin-content{padding:20px 22px 38px}.admin-content:before{left:228px}}
 @media(max-width:850px){.admin-shell{grid-template-columns:1fr}.admin-nav{display:none}.admin-content{padding:18px 14px 32px}.admin-content:before,.admin-content:after{display:none}.admin-header{grid-template-columns:1fr auto}.admin-refresh-top{display:none}.admin-profile-wrap{grid-column:2}.admin-profile{min-width:auto}.admin-profile p{display:none}}
+
+
+/* FIX DE ESTRUCTURA DEL PANEL - evita conflictos y barras laterales fantasma */
+.admin-shell{
+  grid-template-columns:236px minmax(0,1fr)!important;
+  align-items:stretch;
+}
+.admin-nav{
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
+  overflow:hidden!important;
+  justify-self:stretch!important;
+}
+.admin-nav-top{min-width:0}
+.admin-brand{
+  width:64px!important;
+  height:64px!important;
+  margin:0!important;
+  background:none!important;
+  opacity:1!important;
+  filter:none!important;
+  display:block!important;
+  flex:0 0 64px!important;
+}
+.admin-brand img{
+  display:block!important;
+  width:64px!important;
+  height:64px!important;
+  margin:0!important;
+  object-fit:contain!important;
+}
+.admin-brand-copy{display:flex!important}
+.admin-menu-text{display:block!important}
+.admin-sidebar-toggle{display:none!important}
+.admin-content:before,.admin-content:after{display:none!important;content:none!important}
+.admin-content{
+  width:auto!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:22px 24px 42px!important;
+}
+.admin-content>*{
+  max-width:1380px!important;
+  width:100%;
+  box-sizing:border-box;
+}
+@media(max-width:1180px) and (min-width:851px){
+  .admin-shell{grid-template-columns:214px minmax(0,1fr)!important}
+  .admin-nav{padding-left:12px!important;padding-right:12px!important}
+  .admin-brand-copy small{display:none}
+  .admin-content{padding:20px 18px 36px!important}
+}
+@media(max-width:850px){
+  .admin-shell{grid-template-columns:1fr!important}
+  .admin-nav{display:none!important}
+  .admin-content{padding:16px 12px 30px!important}
+}
