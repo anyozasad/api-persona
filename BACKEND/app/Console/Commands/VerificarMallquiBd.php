@@ -122,6 +122,7 @@ class VerificarMallquiBd extends Command
             'ventas' => [
                 'id_venta', 'id_cliente', 'id_usuario', 'fecha_venta', 'tipo_comprobante',
                 'numero_comprobante', 'metodo_pago', 'numero_operacion', 'subtotal', 'igv', 'total',
+                'estado', 'fecha_anulacion', 'motivo_anulacion', 'id_usuario_anulacion',
             ],
             'detalle_venta' => [
                 'id_detalle_venta', 'id_venta', 'id_producto', 'cantidad',
@@ -129,7 +130,8 @@ class VerificarMallquiBd extends Command
             ],
             'usuarios' => [
                 'id_usuario', 'nombre_usuario', 'contrasena', 'nombres', 'apellidos',
-                'dni', 'telefono', 'correo', 'rol', 'estado', 'fecha_registro',
+                'dni', 'telefono', 'correo', 'id_cliente', 'id_entrenador',
+                'rol', 'estado', 'fecha_registro',
             ],
             'clases' => [
                 'id_clase', 'id_entrenador', 'nombre', 'descripcion', 'dia_semana',

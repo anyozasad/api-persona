@@ -74,6 +74,22 @@ class SincronizarBaseDatos extends Command
             return self::FAILURE;
         }
 
+        // Reparación defensiva para instalaciones antiguas donde ventas ya existía
+        // pero faltaban columnas comerciales o la vista quedó inválida.
+        if (Schema::hasTable('ventas') && Schema::hasTable('detalle_venta')) {
+            $codigoReparacion = Artisan::call('db:reparar-ventas');
+            $salidaReparacion = trim(Artisan::output());
+
+            if ($salidaReparacion !== '') {
+                $this->line($salidaReparacion);
+            }
+
+            if ($codigoReparacion !== 0) {
+                $this->error('La base se migró, pero no se pudo reparar vista_ventas.');
+                return self::FAILURE;
+            }
+        }
+
         $this->newLine();
         $this->info('Base de datos sincronizada correctamente.');
         $this->comment('Ahora ejecuta: php artisan db:verificar');
