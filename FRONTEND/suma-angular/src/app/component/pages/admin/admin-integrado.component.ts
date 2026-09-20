@@ -151,7 +151,7 @@ import { ProductosComponent } from './pages/productos/productos';
               <div><span class="ux-section-label">TENDENCIA</span><h3>Ingresos de los últimos 6 meses</h3><p>Membresías y productos, sin ventas anuladas.</p></div>
               <div class="chart-legend"><span><i class="legend-membership"></i>Membresías</span><span><i class="legend-sales"></i>Productos</span></div>
             </div>
-            <div class="revenue-chart ux-revenue-chart" *ngIf="dashboard?.tendencias?.ingresos_6_meses?.length; else sinIngresosGrafica">
+            <div class="revenue-chart ux-revenue-chart" *ngIf="hayIngresosGrafica; else sinIngresosGrafica">
               <div class="chart-y-label"><span>Mayor</span><span>Menor</span></div>
               <div class="revenue-columns">
                 <div class="revenue-column" *ngFor="let m of dashboard?.tendencias?.ingresos_6_meses">
@@ -164,7 +164,14 @@ import { ProductosComponent } from './pages/productos/productos';
                 </div>
               </div>
             </div>
-            <ng-template #sinIngresosGrafica><div class="dashboard-empty">Aún no hay ingresos suficientes para mostrar una tendencia.</div></ng-template>
+            <ng-template #sinIngresosGrafica>
+              <div class="ux-empty-state">
+                <span>↗</span>
+                <h4>Aún no hay movimientos para graficar</h4>
+                <p>Cuando registres ventas o pagos de membresías, aquí verás la evolución de los ingresos.</p>
+                <button type="button" (click)="cambiarSeccion('ventas')">Registrar una venta</button>
+              </div>
+            </ng-template>
           </article>
 
           <aside class="ux-side-stack">
@@ -180,13 +187,21 @@ import { ProductosComponent } from './pages/productos/productos';
 
             <article class="ux-card">
               <div class="ux-card-head compact"><div><span class="ux-section-label">HOY</span><h3>Asistencias</h3></div><strong class="ux-card-total">{{totalAsistenciasSemana}} / 7 días</strong></div>
-              <div class="attendance-bars-real ux-attendance-chart" *ngIf="dashboard?.tendencias?.asistencias_7_dias?.length">
+              <div class="attendance-bars-real ux-attendance-chart" *ngIf="hayAsistenciasGrafica; else sinAsistenciasGrafica">
                 <div class="attendance-day" *ngFor="let d of dashboard?.tendencias?.asistencias_7_dias">
                   <span>{{d.total}}</span>
                   <div class="attendance-track"><i [style.height.%]="alturaAsistencia(d.total)"></i></div>
                   <b>{{d.dia}}</b>
                 </div>
               </div>
+              <ng-template #sinAsistenciasGrafica>
+                <div class="ux-empty-state compact">
+                  <span>✓</span>
+                  <h4>Sin asistencias registradas</h4>
+                  <p>Registra la primera entrada para empezar a medir la afluencia.</p>
+                  <button type="button" (click)="cambiarSeccion('asistencias')">Registrar asistencia</button>
+                </div>
+              </ng-template>
             </article>
           </aside>
         </section>
@@ -807,6 +822,14 @@ export class AdminIntegradoComponent implements OnInit {
 
   get totalAsistenciasSemana(): number {
     return (this.dashboard?.tendencias?.asistencias_7_dias || []).reduce((s:number,d:any)=>s+(Number(d.total)||0),0);
+  }
+
+  get hayIngresosGrafica(): boolean {
+    return (this.dashboard?.tendencias?.ingresos_6_meses || []).some((m:any) => Number(m.total) > 0);
+  }
+
+  get hayAsistenciasGrafica(): boolean {
+    return this.totalAsistenciasSemana > 0;
   }
 
   ok(mensaje:string){ this.error=''; this.toast='✓ '+mensaje; setTimeout(()=>this.toast='',2600); }
