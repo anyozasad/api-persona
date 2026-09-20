@@ -40,35 +40,108 @@ import { ProductosComponent } from './pages/productos/productos';
       <div *ngIf="error" class="admin-toast">⚠ {{error}}</div>
 
       <ng-container *ngIf="seccion==='dashboard'">
-        <section class="admin-kpis">
-          <article><span class="kpi-icon red">♙</span><p>Total clientes</p><h2>{{dashboard?.clientes?.total ?? clientes.length}}</h2><small class="positive">{{dashboard?.clientes?.activos ?? 0}} activos</small></article>
-          <article><span class="kpi-icon">✦</span><p>Membresías activas</p><h2>{{dashboard?.membresias?.activas ?? membresiasCliente.length}}</h2><small>{{dashboard?.membresias?.por_vencer_7_dias ?? 0}} por vencer</small></article>
-          <article><span class="kpi-icon green">$</span><p>Ingresos del mes</p><h2>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</h2><small class="positive">Membresías + productos</small></article>
-          <article><span class="kpi-icon">▣</span><p>Asistencias hoy</p><h2>{{dashboard?.asistencias?.hoy ?? 0}}</h2><small>{{dashboard?.asistencias?.dentro_ahora ?? 0}} dentro ahora</small></article>
-          <article><span class="kpi-icon red">▤</span><p>Pagos pendientes</p><h2>{{pagosPendientes.length}}</h2><small>Requieren revisión</small></article>
-          <article><span class="kpi-icon">□</span><p>Stock bajo</p><h2>{{dashboard?.inventario?.productos_stock_bajo ?? 0}}</h2><small>Productos por reponer</small></article>
+        <section class="dashboard-hero">
+          <div>
+            <span class="dashboard-eyebrow">PANEL DE CONTROL · {{dashboard?.periodo?.mes || 'MES ACTUAL'}}</span>
+            <h2>Resumen general de Mallqui Gym</h2>
+            <p>Ventas, membresías, caja, reservas e inventario en una sola vista.</p>
+          </div>
+          <div class="dashboard-health">
+            <span [class.ok]="dashboard?.caja?.abierta" [class.warn]="!dashboard?.caja?.abierta">
+              {{dashboard?.caja?.abierta ? '● Caja abierta' : '● Caja cerrada'}}
+            </span>
+            <small>{{dashboard?.periodo?.fecha || ''}}</small>
+          </div>
         </section>
 
-        <section class="admin-dashboard-grid">
-          <article class="income-chart">
-            <div class="card-heading"><h2>Ingresos reales del mes</h2><button type="button" (click)="cambiarSeccion('reportes')">Ver reporte</button></div>
-            <div class="report-grid">
-              <article><p>Membresías</p><h2>S/ {{dashboard?.ingresos?.membresias_mes ?? 0 | number:'1.2-2'}}</h2></article>
-              <article><p>Ventas de productos</p><h2>S/ {{dashboard?.ingresos?.ventas_mes ?? 0 | number:'1.2-2'}}</h2></article>
-              <article><p>Total</p><h2>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</h2></article>
+        <section class="dashboard-actions">
+          <button type="button" (click)="cambiarSeccion('ventas')"><b>＋</b><span>Nueva venta<small>Registrar productos</small></span></button>
+          <button type="button" (click)="cambiarSeccion('clientes')"><b>♙</b><span>Nuevo cliente<small>Registrar socio</small></span></button>
+          <button type="button" (click)="cambiarSeccion('membresias')"><b>✦</b><span>Membresía<small>Contratar o renovar</small></span></button>
+          <button type="button" (click)="cambiarSeccion('asistencias')"><b>✓</b><span>Asistencia<small>Entrada / salida</small></span></button>
+          <button type="button" (click)="cambiarSeccion('caja')"><b>S/</b><span>Caja<small>Apertura y cierre</small></span></button>
+        </section>
+
+        <section class="admin-kpis dashboard-kpis">
+          <article><span class="kpi-icon green">S/</span><p>Ventas de hoy</p><h2>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</h2><small>{{dashboard?.ventas?.hoy_cantidad ?? 0}} operaciones válidas</small></article>
+          <article><span class="kpi-icon green">↗</span><p>Ingresos del mes</p><h2>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</h2><small [class.positive]="(dashboard?.ingresos?.variacion_mes ?? 0) >= 0">{{dashboard?.ingresos?.variacion_mes ?? 0 | number:'1.1-1'}}% vs. mes anterior</small></article>
+          <article><span class="kpi-icon red">♙</span><p>Clientes</p><h2>{{dashboard?.clientes?.total ?? clientes.length}}</h2><small>{{dashboard?.clientes?.activos ?? 0}} activos · {{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos</small></article>
+          <article><span class="kpi-icon">✦</span><p>Membresías activas</p><h2>{{dashboard?.membresias?.activas ?? 0}}</h2><small>{{dashboard?.membresias?.por_vencer_7_dias ?? 0}} vencen en 7 días</small></article>
+          <article><span class="kpi-icon">◷</span><p>Reservas de hoy</p><h2>{{dashboard?.reservas?.hoy ?? 0}}</h2><small>Clases reservadas</small></article>
+          <article><span class="kpi-icon">▣</span><p>Asistencias hoy</p><h2>{{dashboard?.asistencias?.hoy ?? 0}}</h2><small>{{dashboard?.asistencias?.dentro_ahora ?? 0}} dentro ahora</small></article>
+          <article><span class="kpi-icon red">▤</span><p>Pagos pendientes</p><h2>{{dashboard?.membresias?.pagos_pendientes ?? pagosPendientes.length}}</h2><small>Requieren validación</small></article>
+          <article><span class="kpi-icon red">!</span><p>Alertas operativas</p><h2>{{dashboard?.alertas?.total ?? 0}}</h2><small>{{dashboard?.inventario?.productos_stock_bajo ?? 0}} productos con stock bajo</small></article>
+        </section>
+
+        <section class="dashboard-main-grid">
+          <article class="dashboard-card income-panel">
+            <div class="card-heading"><div><h2>Rendimiento del mes</h2><small>Ingresos confirmados, sin ventas anuladas</small></div><button type="button" class="text-action" (click)="cambiarSeccion('reportes')">Ver reportes →</button></div>
+            <div class="dashboard-income-total">
+              <p>Total acumulado</p>
+              <h3>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</h3>
+              <span>{{dashboard?.ingresos?.variacion_mes ?? 0 | number:'1.1-1'}}% frente al mes anterior</span>
+            </div>
+            <div class="dashboard-income-split">
+              <div><span>Membresías</span><b>S/ {{dashboard?.ingresos?.membresias_mes ?? 0 | number:'1.2-2'}}</b></div>
+              <div><span>Productos</span><b>S/ {{dashboard?.ingresos?.ventas_mes ?? 0 | number:'1.2-2'}}</b></div>
+              <div><span>Mes anterior</span><b>S/ {{dashboard?.ingresos?.mes_anterior ?? 0 | number:'1.2-2'}}</b></div>
             </div>
           </article>
 
-          <article class="payments-table">
-            <div class="card-heading"><h2>Pagos recientes</h2><button class="text-action" type="button" (click)="cambiarSeccion('pagos')">Ver todos →</button></div>
-            <div class="table-wrap"><table><thead><tr><th>ID</th><th>Cliente</th><th>Plan</th><th>Monto</th><th>Método</th><th>Estado</th></tr></thead><tbody>
-              <tr *ngFor="let p of pagos.slice(0,5)"><td>{{p.id_pago}}</td><td>{{clientePago(p)}}</td><td>{{planPago(p)}}</td><td>S/ {{p.monto | number:'1.2-2'}}</td><td>{{p.metodo_pago}}</td><td>{{p.estado_pago}}</td></tr>
+          <article class="dashboard-card cash-panel">
+            <div class="card-heading"><div><h2>Estado de caja</h2><small>Situación actual</small></div><button type="button" class="text-action" (click)="cambiarSeccion('caja')">Ir a caja →</button></div>
+            <div class="cash-state" [class.open]="dashboard?.caja?.abierta">
+              <span>{{dashboard?.caja?.abierta ? 'ABIERTA' : 'CERRADA'}}</span>
+              <h3 *ngIf="dashboard?.caja?.abierta">S/ {{dashboard?.caja?.detalle?.monto_esperado ?? dashboard?.caja?.detalle?.monto_inicial ?? 0 | number:'1.2-2'}}</h3>
+              <h3 *ngIf="!dashboard?.caja?.abierta">Sin caja activa</h3>
+              <small *ngIf="dashboard?.caja?.detalle">Desde {{fecha(dashboard?.caja?.detalle?.fecha_apertura)}}</small>
+            </div>
+          </article>
+
+          <article class="dashboard-card alerts-panel">
+            <div class="card-heading"><div><h2>Alertas importantes</h2><small>Prioridades para hoy</small></div><span class="alert-count">{{dashboard?.alertas?.total ?? 0}}</span></div>
+            <button type="button" class="dashboard-alert" *ngIf="(dashboard?.membresias?.pagos_pendientes ?? 0) > 0" (click)="cambiarSeccion('pagos')"><span>▤</span><div><b>{{dashboard?.membresias?.pagos_pendientes}} pagos pendientes</b><small>Validar operaciones de membresía</small></div><i>→</i></button>
+            <button type="button" class="dashboard-alert" *ngIf="(dashboard?.membresias?.por_vencer_7_dias ?? 0) > 0" (click)="cambiarSeccion('membresias')"><span>✦</span><div><b>{{dashboard?.membresias?.por_vencer_7_dias}} membresías por vencer</b><small>Vencen dentro de los próximos 7 días</small></div><i>→</i></button>
+            <button type="button" class="dashboard-alert" *ngIf="(dashboard?.inventario?.productos_stock_bajo ?? 0) > 0" (click)="cambiarSeccion('productos')"><span>□</span><div><b>{{dashboard?.inventario?.productos_stock_bajo}} productos con stock bajo</b><small>Revisar reposición de inventario</small></div><i>→</i></button>
+            <div class="dashboard-empty" *ngIf="(dashboard?.alertas?.total ?? 0) === 0">✓ No hay alertas críticas pendientes.</div>
+          </article>
+        </section>
+
+        <section class="dashboard-secondary-grid">
+          <article class="dashboard-card recent-sales">
+            <div class="card-heading"><div><h2>Últimas ventas</h2><small>Operaciones válidas más recientes</small></div><button type="button" class="text-action" (click)="cambiarSeccion('ventas')">Ver todas →</button></div>
+            <div class="table-wrap"><table class="management-table"><thead><tr><th>Comprobante</th><th>Cliente</th><th>Fecha</th><th>Método</th><th>Total</th></tr></thead><tbody>
+              <tr *ngFor="let v of dashboard?.ventas?.recientes || []"><td><b>{{v.numero_comprobante}}</b></td><td>{{nombreCliente(v.cliente)}}</td><td>{{fecha(v.fecha_venta)}}</td><td>{{v.metodo_pago}}</td><td><b>S/ {{v.total | number:'1.2-2'}}</b></td></tr>
+              <tr *ngIf="!(dashboard?.ventas?.recientes?.length)"><td colspan="5">Todavía no hay ventas registradas.</td></tr>
             </tbody></table></div>
           </article>
 
-          <article class="next-admin-classes">
-            <div class="card-heading"><h2>Clases programadas</h2><button class="text-action" type="button" (click)="cambiarSeccion('clases')">Administrar →</button></div>
-            <div *ngFor="let c of clases.slice(0,5)"><span class="class-symbol">◉</span><p><b>{{c.nombre}}</b><small>{{c.dia_semana}}</small></p><div><b>{{c.hora_inicio}}</b><small>{{nombreEntrenador(c.entrenador)}}</small></div><em>{{c.reservas_activas ?? 0}} reservas</em></div>
+          <article class="dashboard-card top-products">
+            <div class="card-heading"><div><h2>Productos más vendidos</h2><small>Este mes</small></div></div>
+            <div class="top-product-row" *ngFor="let p of dashboard?.ventas?.top_productos || []; let i=index">
+              <span class="top-position">{{i+1}}</span>
+              <div><b>{{p.nombre_producto}}</b><small>{{p.cantidad}} unidades</small></div>
+              <strong>S/ {{p.importe | number:'1.2-2'}}</strong>
+            </div>
+            <div class="dashboard-empty" *ngIf="!(dashboard?.ventas?.top_productos?.length)">Sin ventas de productos este mes.</div>
+          </article>
+        </section>
+
+        <section class="dashboard-secondary-grid">
+          <article class="dashboard-card">
+            <div class="card-heading"><div><h2>Membresías próximas a vencer</h2><small>Próximos 7 días</small></div><button type="button" class="text-action" (click)="cambiarSeccion('membresias')">Administrar →</button></div>
+            <div class="dashboard-list-row" *ngFor="let m of (dashboard?.membresias?.detalle_por_vencer || []).slice(0,5)">
+              <div><b>{{nombreCliente(m.cliente)}}</b><small>{{m.membresia?.nombre}}</small></div><span>{{m.fecha_fin}}</span>
+            </div>
+            <div class="dashboard-empty" *ngIf="!(dashboard?.membresias?.detalle_por_vencer?.length)">No hay membresías próximas a vencer.</div>
+          </article>
+
+          <article class="dashboard-card">
+            <div class="card-heading"><div><h2>Reservas de hoy</h2><small>Agenda operativa</small></div><button type="button" class="text-action" (click)="cambiarSeccion('reservas')">Ver reservas →</button></div>
+            <div class="dashboard-list-row" *ngFor="let r of (dashboard?.reservas?.detalle_hoy || []).slice(0,5)">
+              <div><b>{{r.clase?.nombre || 'Clase'}}</b><small>{{nombreCliente(r.cliente)}}</small></div><span>{{r.clase?.hora_inicio || ''}}</span>
+            </div>
+            <div class="dashboard-empty" *ngIf="!(dashboard?.reservas?.detalle_hoy?.length)">No hay reservas para hoy.</div>
           </article>
         </section>
       </ng-container>

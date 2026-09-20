@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asistencia;
+use App\Models\Caja;
 use App\Models\Cliente;
 use App\Models\ClienteMembresia;
+use App\Models\DetalleVenta;
 use App\Models\PagoMembresia;
 use App\Models\Producto;
 use App\Models\Reserva;
@@ -17,6 +19,12 @@ class DashboardController extends Controller
         $hoy = today();
         $inicioMes = now()->startOfMonth();
         $finMes = now()->endOfMonth();
+        $inicioMesAnterior = now()->subMonthNoOverflow()->startOfMonth();
+        $finMesAnterior = now()->subMonthNoOverflow()->endOfMonth();
+
+        $ventasValidas = fn ($query) => $query->where(function ($q) {
+            $q->whereNull('estado')->orWhere('estado', '!=', 'Anulado');
+        });
 
         $membresiasActivas = ClienteMembresia::query()
             ->where('estado', 'Activo')
@@ -41,26 +49,80 @@ class DashboardController extends Controller
             ->whereBetween('fecha_pago', [$inicioMes, $finMes])
             ->sum('monto');
 
-        $ventasMes = Venta::query()
-            ->whereBetween('fecha_venta', [$inicioMes, $finMes])
-            ->where(fn ($q) => $q->whereNull('estado')->orWhere('estado', '!=', 'Anulado'))
-            ->sum('total');
+        $ingresosMembresiasMesAnterior = PagoMembresia::query()
+            ->where('estado_pago', 'Completado')
+            ->whereBetween('fecha_pago', [$inicioMesAnterior, $finMesAnterior])
+            ->sum('monto');
+
+        $ventasMesQuery = Venta::query()->whereBetween('fecha_venta', [$inicioMes, $finMes]);
+        $ventasValidas($ventasMesQuery);
+        $ventasMes = (float) $ventasMesQuery->sum('total');
+
+        $ventasMesAnteriorQuery = Venta::query()->whereBetween('fecha_venta', [$inicioMesAnterior, $finMesAnterior]);
+        $ventasValidas($ventasMesAnteriorQuery);
+        $ventasMesAnterior = (float) $ventasMesAnteriorQuery->sum('total');
+
+        $ventasHoyQuery = Venta::query()->whereDate('fecha_venta', $hoy);
+        $ventasValidas($ventasHoyQuery);
+        $ventasHoyTotal = (float) (clone $ventasHoyQuery)->sum('total');
+        $ventasHoyCantidad = (clone $ventasHoyQuery)->count();
+
+        $totalMes = (float) $ingresosMembresiasMes + $ventasMes;
+        $totalMesAnterior = (float) $ingresosMembresiasMesAnterior + $ventasMesAnterior;
+        $variacion = $totalMesAnterior > 0
+            ? (($totalMes - $totalMesAnterior) / $totalMesAnterior) * 100
+            : ($totalMes > 0 ? 100 : 0);
 
         $pagosPendientes = PagoMembresia::with(['clienteMembresia.cliente', 'clienteMembresia.membresia'])
             ->where('estado_pago', 'Pendiente')
             ->orderBy('fecha_pago')
             ->get();
 
-        $reservasHoy = Reserva::with(['cliente', 'clase'])
+        $reservasHoy = Reserva::with(['cliente', 'clase.entrenador'])
             ->whereDate('fecha_clase', $hoy)
             ->where('estado', 'Reservada')
             ->orderBy('id_clase')
             ->get();
 
+        $ventasRecientes = Venta::with('cliente')
+            ->where(function ($q) {
+                $q->whereNull('estado')->orWhere('estado', '!=', 'Anulado');
+            })
+            ->orderByDesc('fecha_venta')
+            ->limit(6)
+            ->get();
+
+        $topProductos = DetalleVenta::query()
+            ->select('productos.id_producto', 'productos.nombre_producto')
+            ->selectRaw('SUM(detalle_venta.cantidad) as cantidad')
+            ->selectRaw('SUM(detalle_venta.subtotal) as importe')
+            ->join('productos', 'productos.id_producto', '=', 'detalle_venta.id_producto')
+            ->join('ventas', 'ventas.id_venta', '=', 'detalle_venta.id_venta')
+            ->whereBetween('ventas.fecha_venta', [$inicioMes, $finMes])
+            ->where(function ($q) {
+                $q->whereNull('ventas.estado')->orWhere('ventas.estado', '!=', 'Anulado');
+            })
+            ->groupBy('productos.id_producto', 'productos.nombre_producto')
+            ->orderByDesc('cantidad')
+            ->limit(5)
+            ->get();
+
+        $cajaActual = Caja::with('usuarioApertura')
+            ->where('estado', 'Abierta')
+            ->orderByDesc('fecha_apertura')
+            ->first();
+
+        $alertasTotal = $porVencer->count() + $stockBajo->count() + $pagosPendientes->count();
+
         return response()->json([
+            'periodo' => [
+                'fecha' => $hoy->format('d/m/Y'),
+                'mes' => now()->translatedFormat('F Y'),
+            ],
             'clientes' => [
                 'total' => Cliente::count(),
                 'activos' => Cliente::where('estado', 'Activo')->count(),
+                'nuevos_mes' => Cliente::whereBetween('fecha_registro', [$inicioMes, $finMes])->count(),
             ],
             'membresias' => [
                 'activas' => $membresiasActivas,
@@ -77,10 +139,22 @@ class DashboardController extends Controller
                 'hoy' => $reservasHoy->count(),
                 'detalle_hoy' => $reservasHoy,
             ],
+            'ventas' => [
+                'hoy_total' => round($ventasHoyTotal, 2),
+                'hoy_cantidad' => $ventasHoyCantidad,
+                'mes_cantidad' => Venta::whereBetween('fecha_venta', [$inicioMes, $finMes])
+                    ->where(function ($q) {
+                        $q->whereNull('estado')->orWhere('estado', '!=', 'Anulado');
+                    })->count(),
+                'recientes' => $ventasRecientes,
+                'top_productos' => $topProductos,
+            ],
             'ingresos' => [
                 'membresias_mes' => round((float) $ingresosMembresiasMes, 2),
-                'ventas_mes' => round((float) $ventasMes, 2),
-                'total_mes' => round((float) $ingresosMembresiasMes + (float) $ventasMes, 2),
+                'ventas_mes' => round($ventasMes, 2),
+                'total_mes' => round($totalMes, 2),
+                'mes_anterior' => round($totalMesAnterior, 2),
+                'variacion_mes' => round($variacion, 1),
             ],
             'inventario' => [
                 'productos_stock_bajo' => $stockBajo->count(),
@@ -88,6 +162,13 @@ class DashboardController extends Controller
                 'valor_stock_compra' => round((float) Producto::query()
                     ->selectRaw('SUM(stock * precio_compra) as total')
                     ->value('total'), 2),
+            ],
+            'caja' => [
+                'abierta' => (bool) $cajaActual,
+                'detalle' => $cajaActual,
+            ],
+            'alertas' => [
+                'total' => $alertasTotal,
             ],
         ]);
     }
