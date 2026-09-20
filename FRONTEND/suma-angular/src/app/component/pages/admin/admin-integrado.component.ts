@@ -16,14 +16,14 @@ import { ProductosComponent } from './pages/productos/productos';
   <div class="admin-shell" [class.admin-sidebar-collapsed]="sidebarCerrado">
     <aside class="admin-nav">
       <div class="admin-nav-top">
-        <a routerLink="/" class="admin-brand">
+        <button type="button" class="admin-brand" (click)="cambiarSeccion('dashboard')" aria-label="Volver al dashboard principal" title="Volver al dashboard">
           <span class="brand-glow"></span>
           <img src="assets/mallqui-logo.svg" alt="Mallqui Gym">
-        </a>
-        <div class="admin-brand-copy">
+        </button>
+        <button type="button" class="admin-brand-copy" (click)="cambiarSeccion('dashboard')" aria-label="Volver al dashboard principal">
           <strong>MALLQUI GYM</strong>
           <small>Centro de administración</small>
-        </div>
+        </button>
       </div>
 
       <div class="admin-menu-label">NAVEGACIÓN</div>

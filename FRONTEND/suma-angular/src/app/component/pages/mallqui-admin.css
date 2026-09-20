@@ -201,3 +201,19 @@
   .admin-sidebar-toggle{display:none!important}
   .admin-content{padding:16px 12px 30px!important}
 }
+
+
+/* Logo del administrador: vuelve al dashboard, no al login/landing */
+.admin-brand,.admin-brand-copy{
+  border:0;
+  background:transparent;
+  padding:0;
+  cursor:pointer;
+  text-align:left;
+}
+.admin-brand:focus-visible,.admin-brand-copy:focus-visible{
+  outline:2px solid rgba(255,255,255,.7);
+  outline-offset:3px;
+  border-radius:8px;
+}
+.admin-brand-copy:hover strong{color:#fff}
