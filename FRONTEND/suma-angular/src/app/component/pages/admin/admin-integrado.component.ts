@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AdminApiService } from './admin-api.service';
 import { AuthService } from './auth.service';
 import { ProductosComponent } from './pages/productos/productos';
@@ -9,7 +9,7 @@ import { ProductosComponent } from './pages/productos/productos';
 @Component({
   selector: 'app-admin-integrado',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, ProductosComponent],
+  imports: [CommonModule, FormsModule, ProductosComponent],
   styleUrls: ['../mallqui-admin.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
