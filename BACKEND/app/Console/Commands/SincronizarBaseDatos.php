@@ -36,6 +36,26 @@ class SincronizarBaseDatos extends Command
             Artisan::call('migrate:install');
         }
 
+        // Repara primero instalaciones antiguas para que las migraciones posteriores no fallen.
+        if (Schema::hasTable('ventas') && Schema::hasTable('detalle_venta')) {
+            $codigoReparacion = Artisan::call('db:reparar-ventas');
+            $salidaReparacion = trim(Artisan::output());
+
+            if ($salidaReparacion !== '') {
+                $this->line($salidaReparacion);
+            }
+
+            if ($codigoReparacion !== 0) {
+                $this->error('No se pudo preparar la tabla ventas antes de migrar.');
+                return self::FAILURE;
+            }
+        }
+
+        // Completa solo índices faltantes y evita errores por nombres duplicados.
+        if (!$this->asegurarIndicesIntegridad()) {
+            return self::FAILURE;
+        }
+
         $batch = ((int) DB::table('migrations')->max('batch')) + 1;
         $marcadas = 0;
 
@@ -134,7 +154,76 @@ class SincronizarBaseDatos extends Command
             return $this->vistasExisten();
         }
 
+        if (str_ends_with($migracion, 'add_integrity_indexes_to_business_tables')) {
+            return $this->indicesIntegridadExisten();
+        }
+
         return null;
+    }
+
+    private function asegurarIndicesIntegridad(): bool
+    {
+        $indices = [
+            ['tabla' => 'pagos_membresia', 'columna' => 'numero_operacion', 'nombre' => 'pagos_membresia_numero_operacion_unique'],
+            ['tabla' => 'compras', 'columna' => 'numero_comprobante', 'nombre' => 'compras_numero_comprobante_unique'],
+            ['tabla' => 'ventas', 'columna' => 'numero_comprobante', 'nombre' => 'ventas_numero_comprobante_unique'],
+            ['tabla' => 'usuarios', 'columna' => 'correo', 'nombre' => 'usuarios_correo_unique'],
+        ];
+
+        foreach ($indices as $indice) {
+            if (!Schema::hasTable($indice['tabla']) || !Schema::hasColumn($indice['tabla'], $indice['columna'])) {
+                continue;
+            }
+
+            if ($this->indiceExiste($indice['tabla'], $indice['nombre'])) {
+                continue;
+            }
+
+            try {
+                DB::statement(sprintf(
+                    'ALTER TABLE %s ADD UNIQUE %s (%s)',
+                    $indice['tabla'],
+                    $indice['nombre'],
+                    $indice['columna']
+                ));
+                $this->info('Índice preparado: '.$indice['nombre']);
+            } catch (Throwable $e) {
+                $this->error('No se pudo crear '.$indice['nombre'].': '.$e->getMessage());
+                $this->comment('Revisa si existen datos duplicados en '.$indice['tabla'].'.'.$indice['columna'].'.');
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function indicesIntegridadExisten(): bool
+    {
+        $indices = [
+            ['pagos_membresia', 'pagos_membresia_numero_operacion_unique'],
+            ['compras', 'compras_numero_comprobante_unique'],
+            ['ventas', 'ventas_numero_comprobante_unique'],
+            ['usuarios', 'usuarios_correo_unique'],
+        ];
+
+        foreach ($indices as [$tabla, $nombre]) {
+            if (!Schema::hasTable($tabla) || !$this->indiceExiste($tabla, $nombre)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function indiceExiste(string $tabla, string $nombre): bool
+    {
+        $base = DB::getDatabaseName();
+
+        return DB::table('information_schema.statistics')
+            ->where('table_schema', $base)
+            ->where('table_name', $tabla)
+            ->where('index_name', $nombre)
+            ->exists();
     }
 
     private function vistasExisten(): bool
