@@ -15,23 +15,46 @@ import { ProductosComponent } from './pages/productos/productos';
   template: `
   <div class="admin-shell">
     <aside class="admin-nav">
-      <a routerLink="/" class="admin-brand"><img src="assets/mallqui-logo.png" alt="Mallqui Gym"></a>
+      <div class="admin-nav-top">
+        <a routerLink="/" class="admin-brand">
+          <span class="brand-glow"></span>
+          <img src="assets/mallqui-logo.png" alt="Mallqui Gym">
+        </a>
+        <div class="admin-brand-copy">
+          <strong>MALLQUI GYM</strong>
+          <small>Centro de administración</small>
+        </div>
+      </div>
+
+      <div class="admin-menu-label">NAVEGACIÓN</div>
       <nav>
         <button *ngFor="let item of menu" type="button" [class.active]="seccion===item.id" (click)="cambiarSeccion(item.id)">
-          <span>{{item.icono}}</span>{{item.nombre}}
+          <span class="admin-menu-icon">{{item.icono}}</span>
+          <span class="admin-menu-text">{{item.nombre}}</span>
+          <i *ngIf="seccion===item.id">›</i>
         </button>
       </nav>
-      <button type="button" class="admin-logout" (click)="cerrarSesion()">↪ Cerrar sesión</button>
+
+      <div class="admin-system-card">
+        <div class="system-live-dot"></div>
+        <div><b>Sistema conectado</b><small>Laravel + Angular + MySQL</small></div>
+      </div>
+      <button type="button" class="admin-logout" (click)="cerrarSesion()"><span>↪</span> Cerrar sesión</button>
     </aside>
 
     <main class="admin-content">
       <header class="admin-header">
-        <div><h1>{{tituloActual}}</h1><p>{{subtituloActual}}</p></div>
-        <button class="admin-secondary" type="button" (click)="recargarTodo()">↻ Actualizar datos</button>
+        <div class="admin-title-block">
+          <span class="admin-title-kicker">MALLQUI GYM · ADMIN</span>
+          <h1>{{tituloActual}}</h1>
+          <p>{{subtituloActual}}</p>
+        </div>
+        <button class="admin-secondary admin-refresh-top" type="button" (click)="recargarTodo()">↻ Actualizar datos</button>
         <div class="admin-profile-wrap">
           <button type="button" class="admin-profile">
-            <span>♙</span>
+            <span class="admin-avatar">A</span>
             <p><strong>{{auth.usuario?.nombre_usuario || 'Administrador'}}</strong><small>{{auth.usuario?.correo || ''}}</small></p>
+            <i>⌄</i>
           </button>
         </div>
       </header>
