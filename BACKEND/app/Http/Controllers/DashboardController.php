@@ -11,6 +11,7 @@ use App\Models\PagoMembresia;
 use App\Models\Producto;
 use App\Models\Reserva;
 use App\Models\Venta;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -112,6 +113,52 @@ class DashboardController extends Controller
             ->orderByDesc('fecha_apertura')
             ->first();
 
+        // Datos históricos para gráficas del dashboard.
+        $ingresosSeisMeses = collect();
+        for ($i = 5; $i >= 0; $i--) {
+            $mes = now()->copy()->subMonthsNoOverflow($i);
+            $desde = $mes->copy()->startOfMonth();
+            $hasta = $mes->copy()->endOfMonth();
+
+            $membresias = (float) PagoMembresia::query()
+                ->where('estado_pago', 'Completado')
+                ->whereBetween('fecha_pago', [$desde, $hasta])
+                ->sum('monto');
+
+            $ventasQuery = Venta::query()->whereBetween('fecha_venta', [$desde, $hasta]);
+            $ventasValidas($ventasQuery);
+            $ventas = (float) $ventasQuery->sum('total');
+
+            $ingresosSeisMeses->push([
+                'mes' => ucfirst($mes->locale('es')->translatedFormat('M')),
+                'anio' => $mes->format('Y'),
+                'membresias' => round($membresias, 2),
+                'ventas' => round($ventas, 2),
+                'total' => round($membresias + $ventas, 2),
+            ]);
+        }
+
+        $asistenciasSieteDias = collect();
+        for ($i = 6; $i >= 0; $i--) {
+            $dia = today()->copy()->subDays($i);
+            $asistenciasSieteDias->push([
+                'dia' => ucfirst($dia->locale('es')->translatedFormat('D')),
+                'fecha' => $dia->format('d/m'),
+                'total' => Asistencia::whereDate('fecha_hora_entrada', $dia)->count(),
+            ]);
+        }
+
+        $membresiasPorPlan = ClienteMembresia::query()
+            ->select('membresias.nombre')
+            ->selectRaw('COUNT(*) as total')
+            ->join('membresias', 'membresias.id_membresia', '=', 'cliente_membresia.id_membresia')
+            ->where('cliente_membresia.estado', 'Activo')
+            ->whereDate('cliente_membresia.fecha_inicio', '<=', $hoy)
+            ->whereDate('cliente_membresia.fecha_fin', '>=', $hoy)
+            ->groupBy('membresias.nombre')
+            ->orderByDesc('total')
+            ->get();
+
         $alertasTotal = $porVencer->count() + $stockBajo->count() + $pagosPendientes->count();
 
         return response()->json([
@@ -166,6 +213,11 @@ class DashboardController extends Controller
             'caja' => [
                 'abierta' => (bool) $cajaActual,
                 'detalle' => $cajaActual,
+            ],
+            'tendencias' => [
+                'ingresos_6_meses' => $ingresosSeisMeses,
+                'asistencias_7_dias' => $asistenciasSieteDias,
+                'membresias_por_plan' => $membresiasPorPlan,
             ],
             'alertas' => [
                 'total' => $alertasTotal,

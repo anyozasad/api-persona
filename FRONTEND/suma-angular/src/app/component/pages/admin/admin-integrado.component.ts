@@ -107,6 +107,52 @@ import { ProductosComponent } from './pages/productos/productos';
           </article>
         </section>
 
+        <section class="dashboard-charts-grid">
+          <article class="dashboard-card dashboard-chart-card">
+            <div class="card-heading">
+              <div><h2>Ingresos de los últimos 6 meses</h2><small>Comparación entre membresías y venta de productos</small></div>
+              <div class="chart-legend"><span><i class="legend-membership"></i>Membresías</span><span><i class="legend-sales"></i>Productos</span></div>
+            </div>
+            <div class="revenue-chart" *ngIf="dashboard?.tendencias?.ingresos_6_meses?.length; else sinIngresosGrafica">
+              <div class="chart-y-label"><span>Mayor</span><span>Menor</span></div>
+              <div class="revenue-columns">
+                <div class="revenue-column" *ngFor="let m of dashboard?.tendencias?.ingresos_6_meses">
+                  <div class="revenue-value">S/ {{m.total | number:'1.0-0'}}</div>
+                  <div class="revenue-bars">
+                    <i class="bar-membership" [style.height.%]="alturaIngreso(m.membresias)" [attr.title]="'Membresías: S/ '+m.membresias"></i>
+                    <i class="bar-sales" [style.height.%]="alturaIngreso(m.ventas)" [attr.title]="'Productos: S/ '+m.ventas"></i>
+                  </div>
+                  <b>{{m.mes}}</b><small>{{m.anio}}</small>
+                </div>
+              </div>
+            </div>
+            <ng-template #sinIngresosGrafica><div class="dashboard-empty">Aún no hay datos suficientes para mostrar ingresos.</div></ng-template>
+          </article>
+
+          <article class="dashboard-card dashboard-chart-card">
+            <div class="card-heading"><div><h2>Asistencias de los últimos 7 días</h2><small>Flujo diario de clientes al gimnasio</small></div><strong class="chart-total">{{totalAsistenciasSemana}} visitas</strong></div>
+            <div class="attendance-bars-real" *ngIf="dashboard?.tendencias?.asistencias_7_dias?.length; else sinAsistenciasGrafica">
+              <div class="attendance-day" *ngFor="let d of dashboard?.tendencias?.asistencias_7_dias">
+                <span>{{d.total}}</span>
+                <div class="attendance-track"><i [style.height.%]="alturaAsistencia(d.total)" [attr.title]="d.total+' asistencias'"></i></div>
+                <b>{{d.dia}}</b><small>{{d.fecha}}</small>
+              </div>
+            </div>
+            <ng-template #sinAsistenciasGrafica><div class="dashboard-empty">Aún no hay asistencias para graficar.</div></ng-template>
+          </article>
+
+          <article class="dashboard-card membership-chart-card">
+            <div class="card-heading"><div><h2>Membresías por plan</h2><small>Distribución de membresías activas</small></div><strong class="chart-total">{{dashboard?.membresias?.activas ?? 0}} activas</strong></div>
+            <div class="membership-progress-list">
+              <div *ngFor="let p of dashboard?.tendencias?.membresias_por_plan">
+                <div><b>{{p.nombre}}</b><span>{{p.total}} clientes</span></div>
+                <div class="membership-progress"><i [style.width.%]="porcentajePlan(p.total)"></i></div>
+              </div>
+              <div class="dashboard-empty" *ngIf="!(dashboard?.tendencias?.membresias_por_plan?.length)">Todavía no hay membresías activas.</div>
+            </div>
+          </article>
+        </section>
+
         <section class="dashboard-secondary-grid">
           <article class="dashboard-card recent-sales">
             <div class="card-heading"><div><h2>Últimas ventas</h2><small>Operaciones válidas más recientes</small></div><button type="button" class="text-action" (click)="cambiarSeccion('ventas')">Ver todas →</button></div>
@@ -670,6 +716,29 @@ export class AdminIntegradoComponent implements OnInit {
   clientePago(p:any): string { return this.nombreCliente(p?.cliente_membresia?.cliente ?? p?.clienteMembresia?.cliente); }
   planPago(p:any): string { return p?.cliente_membresia?.membresia?.nombre ?? p?.clienteMembresia?.membresia?.nombre ?? '-'; }
   fecha(v:any): string { if(!v) return '-'; const d=new Date(v); return isNaN(d.getTime())?String(v):d.toLocaleString('es-PE'); }
+
+  alturaIngreso(valor:any): number {
+    const datos=this.dashboard?.tendencias?.ingresos_6_meses || [];
+    const max=Math.max(...datos.map((x:any)=>Number(x.total)||0),1);
+    const n=Number(valor)||0;
+    return n<=0?0:Math.max(5,Math.min(100,(n/max)*100));
+  }
+
+  alturaAsistencia(valor:any): number {
+    const datos=this.dashboard?.tendencias?.asistencias_7_dias || [];
+    const max=Math.max(...datos.map((x:any)=>Number(x.total)||0),1);
+    const n=Number(valor)||0;
+    return n<=0?0:Math.max(6,Math.min(100,(n/max)*100));
+  }
+
+  porcentajePlan(valor:any): number {
+    const total=Number(this.dashboard?.membresias?.activas||0);
+    return total<=0?0:Math.min(100,(Number(valor)||0)*100/total);
+  }
+
+  get totalAsistenciasSemana(): number {
+    return (this.dashboard?.tendencias?.asistencias_7_dias || []).reduce((s:number,d:any)=>s+(Number(d.total)||0),0);
+  }
 
   ok(mensaje:string){ this.error=''; this.toast='✓ '+mensaje; setTimeout(()=>this.toast='',2600); }
   mostrarError(e:any){
