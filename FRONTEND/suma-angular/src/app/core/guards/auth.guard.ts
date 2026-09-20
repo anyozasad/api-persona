@@ -1,6 +1,5 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { catchError, map, of } from 'rxjs';
 import { AuthService } from '../../auth.service';
 
 const TOKEN_KEY = 'mallqui_token';
@@ -31,18 +30,16 @@ export const authGuard: CanActivateFn = () => {
 
 export const logoutOnLoginGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
+  const router = inject(Router);
+
   if (!auth.estaAutenticado()) return true;
 
-  return auth.logout().pipe(
-    map(() => {
-      auth.limpiarSesion();
-      return true;
-    }),
-    catchError(() => {
-      auth.limpiarSesion();
-      return of(true);
-    })
-  );
+  if (auth.rol === 'Administrador') return router.createUrlTree(['/admin']);
+  if (auth.rol === 'Cliente') return router.createUrlTree(['/usuario']);
+  if (auth.rol === 'Entrenador') return router.createUrlTree(['/entrenador']);
+
+  auth.limpiarSesion();
+  return true;
 };
 
 export function roleGuard(rolesPermitidos: string[]): CanActivateFn {
