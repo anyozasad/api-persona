@@ -217,3 +217,157 @@
   border-radius:8px;
 }
 .admin-brand-copy:hover strong{color:#fff}
+
+
+/* FRONTEND UX/UI PREMIUM - basado en jerarquía visual, escaneo rápido y acciones obvias */
+.ux-dashboard-head{
+  position:relative;
+  overflow:hidden;
+  min-height:132px;
+  padding:26px 28px;
+  border:0;
+  background:
+    radial-gradient(circle at 85% 20%,rgba(239,35,60,.28),transparent 20%),
+    radial-gradient(circle at 72% 120%,rgba(61,139,253,.24),transparent 28%),
+    linear-gradient(125deg,#071a33 0%,#0b2b50 58%,#102f53 100%);
+  box-shadow:0 18px 38px rgba(8,31,60,.16);
+}
+.ux-dashboard-head:after{
+  content:'';
+  position:absolute;
+  width:220px;height:220px;
+  right:-70px;top:-95px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:50%;
+  box-shadow:0 0 0 32px rgba(255,255,255,.025),0 0 0 64px rgba(255,255,255,.018);
+  pointer-events:none;
+}
+.ux-dashboard-head>div{position:relative;z-index:1}
+.ux-overline{color:#9fb7d0;font-size:9px;letter-spacing:1.45px}
+.ux-dashboard-head h2{color:#fff;font-size:28px;letter-spacing:-.45px;margin-top:7px}
+.ux-dashboard-head p{color:#c9d6e3;font-size:11px;max-width:620px}
+.ux-head-actions{position:relative;z-index:2}
+.ux-cash-status{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.10);color:#fff;backdrop-filter:blur(8px)}
+.ux-cash-status.is-open{background:rgba(35,171,102,.16);color:#bff3d5;border-color:rgba(84,225,147,.22)}
+.ux-refresh{background:#fff;color:#0b2546;border:0;box-shadow:0 8px 18px rgba(0,0,0,.12);padding:11px 15px}
+.ux-refresh:hover{background:#f5f8fb;transform:translateY(-1px)}
+
+.ux-quick-actions{gap:12px;margin:16px 0 16px}
+.ux-action{
+  min-height:74px;
+  border-color:#e2e8f0;
+  border-radius:15px;
+  box-shadow:0 8px 22px rgba(15,35,60,.045);
+}
+.ux-action:not(.primary-action){background:linear-gradient(145deg,#fff,#fbfdff)}
+.ux-action:not(.primary-action):hover{border-color:#a9bad0;box-shadow:0 12px 26px rgba(15,35,60,.09)}
+.ux-action.primary-action{
+  background:linear-gradient(135deg,#f21f3a,#d8172f);
+  box-shadow:0 12px 28px rgba(239,35,60,.24);
+}
+.ux-action.primary-action:hover{box-shadow:0 15px 32px rgba(239,35,60,.30)}
+.ux-action>span{width:40px;height:40px;border-radius:12px;font-size:16px}
+.ux-action b{font-size:11px}.ux-action small{font-size:9px}
+
+.ux-primary-kpis{gap:14px;margin-bottom:14px}
+.ux-kpi{
+  position:relative;
+  overflow:hidden;
+  min-height:132px;
+  padding:18px 18px 16px;
+  border-color:#e4eaf1;
+  border-radius:16px;
+  box-shadow:0 10px 26px rgba(14,34,58,.055);
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.ux-kpi:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#2f6fd0}
+.ux-kpi:nth-child(1):before{background:#1c9b5c}
+.ux-kpi:nth-child(2):before{background:#2f6fd0}
+.ux-kpi:nth-child(3):before{background:#7b61d1}
+.ux-kpi:nth-child(4):before{background:#f0a21b}
+.ux-kpi:hover{transform:translateY(-2px);box-shadow:0 15px 30px rgba(14,34,58,.085)}
+.ux-kpi-icon{width:36px;height:36px;border-radius:11px}
+.ux-kpi p{margin-top:14px;font-size:10px;font-weight:700;color:#68798d}
+.ux-kpi h3{font-size:27px;letter-spacing:-.35px}
+.ux-kpi>span{font-size:9px}
+
+.ux-status-strip{gap:10px;margin-bottom:16px}
+.ux-status-strip button{
+  min-height:52px;
+  border-radius:13px;
+  background:#fff;
+  box-shadow:0 5px 14px rgba(15,35,60,.035);
+  transition:.17s ease;
+}
+.ux-status-strip button:hover{transform:translateY(-1px);border-color:#c8d5e2;box-shadow:0 8px 18px rgba(15,35,60,.06)}
+.ux-status-strip button.needs-attention{background:linear-gradient(145deg,#fff,#fff5f6);border-color:#ffd0d6}
+.ux-status-strip button>span{width:32px;height:32px;border-radius:10px}
+
+.ux-card{
+  border-color:#e2e8ef;
+  border-radius:16px;
+  box-shadow:0 10px 28px rgba(14,34,58,.055);
+}
+.ux-card-head{padding-bottom:12px;border-bottom:1px solid #eef2f6}
+.ux-card-head h3{font-size:15px}.ux-card-head p{font-size:9px}
+.ux-section-label{color:#6e8095;letter-spacing:1.2px}
+.ux-link{padding:6px 8px;border-radius:8px}.ux-link:hover{background:#edf3ff}
+
+.ux-chart-layout{gap:16px;margin-bottom:16px}
+.ux-revenue-card{background:linear-gradient(180deg,#fff,#fcfdff)}
+.revenue-columns{border-color:#dfe6ee;background:repeating-linear-gradient(to top,transparent 0,transparent 49px,#edf2f7 50px)}
+.revenue-bars i{width:15px;box-shadow:0 5px 10px rgba(18,42,72,.10)}
+.bar-membership{background:linear-gradient(180deg,#3c79dc,#235ebd)}
+.bar-sales{background:linear-gradient(180deg,#ff5064,#e51f39)}
+.attendance-track{background:#edf2f7}
+.attendance-track i{background:linear-gradient(180deg,#ef233c,#0b2a4f)}
+
+.ux-cash-block{border:1px solid #ffdadd;background:linear-gradient(145deg,#fff7f8,#fff0f2)}
+.ux-cash-block.is-open{border-color:#c5efd8;background:linear-gradient(145deg,#f0fbf5,#e4f7ed)}
+
+.ux-content-grid,.ux-bottom-grid{gap:16px;margin-bottom:16px}
+.ux-table thead{background:#f6f8fb}
+.ux-table tbody tr{transition:background .15s ease}
+.ux-table tbody tr:hover{background:#f8fbff}
+.ux-ranking-row:hover,.ux-list-row:hover{background:#fafcff}
+
+.ux-empty-state{
+  min-height:220px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:28px 18px;
+  color:#718196;
+  background:
+    radial-gradient(circle at 50% 20%,rgba(47,111,208,.08),transparent 28%),
+    linear-gradient(180deg,#fbfdff,#f7f9fc);
+  border:1px dashed #d9e3ee;
+  border-radius:14px;
+  margin-top:16px;
+}
+.ux-empty-state.compact{min-height:145px;padding:20px 16px}
+.ux-empty-state>span{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#eaf1fb;color:#285eb4;font-size:18px;font-weight:900;margin-bottom:10px}
+.ux-empty-state h4{font-size:13px;color:#19304d;margin:0 0 5px}
+.ux-empty-state p{font-size:9px;line-height:1.55;max-width:360px;margin:0 0 12px}
+.ux-empty-state button{border:0;border-radius:9px;background:#0b2a4f;color:#fff;padding:9px 13px;font-size:9px;font-weight:800;cursor:pointer}
+.ux-empty-state button:hover{background:#ef233c}
+
+.admin-header{
+  padding:8px 2px 12px;
+  border-bottom:1px solid rgba(207,218,230,.65);
+  margin-bottom:14px;
+}
+.admin-header h1{font-size:24px;letter-spacing:-.35px}
+.admin-secondary{background:#fff;border-color:#d9e2ec;box-shadow:0 5px 14px rgba(14,34,58,.035)}
+.admin-profile{box-shadow:0 7px 18px rgba(14,34,58,.055);border-color:#dfe7ef}
+
+.admin-nav nav button{min-height:42px}
+.admin-nav nav button.active{box-shadow:0 10px 22px rgba(239,35,60,.28)}
+.admin-system-card{background:rgba(255,255,255,.045)}
+
+@media(max-width:900px){
+  .ux-dashboard-head{min-height:auto;padding:22px}
+  .ux-dashboard-head h2{font-size:24px}
+}
