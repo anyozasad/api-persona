@@ -54,7 +54,6 @@ import { AuthService } from '../../../auth.service';
                   [(ngModel)]="email"
                   placeholder="usuario@gmail.com"
                   autocomplete="email"
-                  pattern="^[A-Za-z0-9._%+-]+@gmail\\.com$"
                   required>
               </div>
             </label>
@@ -145,14 +144,10 @@ export class LoginComponent {
       return;
     }
 
-    const gmail = this.email.trim().toLowerCase();
-    if (!/^[a-z0-9._%+-]+@gmail\.com$/.test(gmail)) {
-      this.error = 'Ingresa un Gmail válido, por ejemplo: usuario@gmail.com';
-      return;
-    }
+    const login = this.email.trim().toLowerCase();
 
     this.cargando = true;
-    this.auth.login(gmail, this.password, this.recordar).subscribe({
+    this.auth.login(login, this.password, this.recordar).subscribe({
       next: res => {
         this.cargando = false;
         if (res.usuario.rol === 'Administrador') {
@@ -193,13 +188,13 @@ export class LoginComponent {
       return;
     }
 
-    const gmail = this.email.trim().toLowerCase();
-    if (!/^[a-z0-9._%+-]+@gmail\.com$/.test(gmail)) {
-      this.error = 'Ingresa un Gmail válido, por ejemplo: usuario@gmail.com';
+    const correo = this.email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+      this.error = 'Ingresa un correo válido.';
       return;
     }
 
-    this.auth.solicitarRecuperacion(gmail).subscribe({
+    this.auth.solicitarRecuperacion(correo).subscribe({
       next: res => this.mensaje = res.mensaje,
       error: err => this.error = this.extraerError(err, 'No se pudo procesar la recuperación de contraseña.')
     });
