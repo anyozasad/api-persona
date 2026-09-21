@@ -598,7 +598,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const actual=this.ejercicioCasaActual;
     const duracion=this.faseCasa==='ejercicio'?Number(actual?.segundos||1):Number(actual?.descanso||1);
     const parcial=duracion>0?Math.min(1,Math.max(0,(duracion-this.segundosCasa)/duracion)):0;
-    const pesoFase=this.faseCasa==='ejercicio'?.72:.28;
+    const pesoFase=this.faseCasa==='ejercicio' ? .72 : .28;
     return Math.min(100,Math.round(base+(parcial*pesoFase*(100/total))));
   }
 
