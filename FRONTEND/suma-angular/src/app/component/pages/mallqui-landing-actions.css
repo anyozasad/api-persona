@@ -333,3 +333,83 @@
   .gallery-grid{grid-template-columns:1fr}
   .footer-layout{grid-template-columns:1fr}
 }
+
+
+/* HOME TYPOGRAPHY + MOTION POLISH */
+.landing-nav nav a{
+  letter-spacing:.01em;
+  text-shadow:0 1px 10px rgba(0,0,0,.08);
+}
+.landing-nav nav a:hover{
+  transform:translateY(-2px);
+}
+.hero-copy h1{
+  text-shadow:0 14px 34px rgba(0,0,0,.24);
+}
+.hero-copy h1 strong{
+  display:inline-block;
+  background:linear-gradient(90deg,#f21f32,#ff7280,#f21f32);
+  background-size:220% auto;
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  animation:mqHomeAccent 5s linear infinite;
+  filter:drop-shadow(0 7px 16px rgba(242,31,50,.18));
+}
+.hero-kicker{
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 8px 20px rgba(242,31,50,.10);
+}
+.hero-kicker:after{
+  content:'';
+  position:absolute;
+  top:-80%;
+  bottom:-80%;
+  left:-35%;
+  width:22%;
+  transform:rotate(18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.38),transparent);
+  animation:mqKickerSweep 5.8s ease-in-out 1.4s infinite;
+}
+.section-heading h2{
+  position:relative;
+}
+.section-heading h2:after{
+  content:'';
+  display:block;
+  width:34px;
+  height:2px;
+  margin-top:8px;
+  border-radius:99px;
+  background:linear-gradient(90deg,#f21f32,#ff7e8b);
+  box-shadow:0 5px 12px rgba(242,31,50,.16);
+  transition:width .22s ease;
+}
+.landing-section:hover .section-heading h2:after,
+.landing-gallery:hover .section-heading h2:after{
+  width:62px;
+}
+.class-text h3,.plan-cards h3{
+  letter-spacing:.01em;
+  transition:color .18s ease,transform .18s ease;
+}
+.class-cards article:hover .class-text h3{
+  color:#ef233c;
+  transform:translateX(2px);
+}
+.plan-cards article:hover h3{
+  transform:translateY(-2px);
+}
+.footer-layout h4{
+  letter-spacing:.08em;
+}
+@keyframes mqHomeAccent{
+  from{background-position:0% center}
+  to{background-position:220% center}
+}
+@keyframes mqKickerSweep{
+  0%,72%{left:-35%;opacity:0}
+  78%{opacity:1}
+  100%{left:130%;opacity:0}
+}
