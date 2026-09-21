@@ -6,7 +6,9 @@ use App\Models\Asistencia;
 use App\Models\Cliente;
 use App\Models\ClienteMembresia;
 use App\Models\PagoMembresia;
+use App\Models\PlanEntrenamientoCasa;
 use App\Models\Rutina;
+use App\Models\SesionEntrenamientoCasa;
 use App\Models\Venta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -171,6 +173,290 @@ class PortalClienteController extends Controller
                 ->orderByDesc('fecha_venta')
                 ->get()
         );
+    }
+
+    public function entrenamientoCasa(Request $request)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+
+        $plan = PlanEntrenamientoCasa::firstOrCreate(
+            ['id_cliente' => $cliente->id_cliente],
+            [
+                'dias' => ['Lunes', 'Miércoles', 'Viernes'],
+                'zonas' => ['piernas', 'brazos', 'core'],
+                'activo' => true,
+            ]
+        );
+
+        return response()->json([
+            'plan' => $plan,
+            'catalogo' => $this->catalogoEntrenamientoCasa(),
+            'historial' => SesionEntrenamientoCasa::query()
+                ->where('id_cliente', $cliente->id_cliente)
+                ->orderByDesc('fecha')
+                ->limit(12)
+                ->get(),
+            'reglas' => [
+                'max_dias_semana' => 4,
+                'mensaje' => 'Sesiones cortas y moderadas. Detente si sientes dolor o mareo.',
+            ],
+        ]);
+    }
+
+    public function guardarPlanEntrenamientoCasa(Request $request)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+
+        $datos = $request->validate([
+            'dias' => 'required|array|min:1|max:4',
+            'dias.*' => ['required', 'string', Rule::in([
+                'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo',
+            ])],
+            'zonas' => 'required|array|min:1|max:3',
+            'zonas.*' => ['required', 'string', Rule::in(['piernas', 'brazos', 'core'])],
+        ], [
+            'dias.max' => 'Puedes programar hasta 4 días de entrenamiento en casa por semana.',
+            'zonas.required' => 'Selecciona al menos una zona de entrenamiento.',
+        ]);
+
+        $plan = PlanEntrenamientoCasa::updateOrCreate(
+            ['id_cliente' => $cliente->id_cliente],
+            [
+                'dias' => array_values(array_unique($datos['dias'])),
+                'zonas' => array_values(array_unique($datos['zonas'])),
+                'activo' => true,
+            ]
+        );
+
+        return response()->json([
+            'mensaje' => 'Plan semanal guardado correctamente.',
+            'plan' => $plan->fresh(),
+        ]);
+    }
+
+    public function registrarSesionEntrenamientoCasa(Request $request)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+
+        $datos = $request->validate([
+            'zona' => ['required', 'string', Rule::in(['piernas', 'brazos', 'core'])],
+            'duracion_segundos' => 'required|integer|min:1|max:7200',
+            'ejercicios_total' => 'required|integer|min:1|max:20',
+            'ejercicios_completados' => 'required|integer|min:1|max:20',
+        ]);
+
+        if ($datos['ejercicios_completados'] > $datos['ejercicios_total']) {
+            return response()->json([
+                'mensaje' => 'Los ejercicios completados no pueden superar el total.',
+            ], 422);
+        }
+
+        $sesion = SesionEntrenamientoCasa::create([
+            'id_cliente' => $cliente->id_cliente,
+            'zona' => $datos['zona'],
+            'fecha' => now(),
+            'duracion_segundos' => $datos['duracion_segundos'],
+            'ejercicios_total' => $datos['ejercicios_total'],
+            'ejercicios_completados' => $datos['ejercicios_completados'],
+            'estado' => 'Completada',
+        ]);
+
+        return response()->json([
+            'mensaje' => 'Entrenamiento completado y guardado.',
+            'sesion' => $sesion,
+        ], 201);
+    }
+
+    private function catalogoEntrenamientoCasa(): array
+    {
+        return [
+            'piernas' => [
+                [
+                    'id' => 'sentadilla_silla',
+                    'nombre' => 'Sentadilla a silla',
+                    'segundos' => 40,
+                    'descanso' => 20,
+                    'icono' => '🦵',
+                    'instrucciones' => [
+                        'Coloca una silla estable detrás de ti y separa los pies al ancho de los hombros.',
+                        'Baja despacio llevando la cadera hacia atrás hasta tocar suavemente la silla.',
+                        'Vuelve a subir con control y mantén las rodillas alineadas con los pies.',
+                    ],
+                ],
+                [
+                    'id' => 'puente_gluteos',
+                    'nombre' => 'Puente de cadera',
+                    'segundos' => 40,
+                    'descanso' => 20,
+                    'icono' => '↥',
+                    'instrucciones' => [
+                        'Acuéstate boca arriba con las rodillas flexionadas y los pies apoyados.',
+                        'Eleva la cadera con control hasta formar una línea cómoda entre hombros y rodillas.',
+                        'Baja despacio sin dejarte caer.',
+                    ],
+                ],
+                [
+                    'id' => 'zancada_asistida',
+                    'nombre' => 'Zancada asistida',
+                    'segundos' => 30,
+                    'descanso' => 25,
+                    'icono' => '⇅',
+                    'instrucciones' => [
+                        'Apóyate ligeramente en una pared o silla estable.',
+                        'Da un paso hacia atrás y baja solo hasta donde puedas mantener el equilibrio.',
+                        'Regresa al centro y alterna la pierna.',
+                    ],
+                ],
+                [
+                    'id' => 'talones',
+                    'nombre' => 'Elevación de talones',
+                    'segundos' => 40,
+                    'descanso' => 20,
+                    'icono' => '↑',
+                    'instrucciones' => [
+                        'Párate derecho cerca de una pared por seguridad.',
+                        'Eleva los talones lentamente y mantén un segundo arriba.',
+                        'Baja con control y repite.',
+                    ],
+                ],
+                [
+                    'id' => 'marcha',
+                    'nombre' => 'Marcha activa',
+                    'segundos' => 40,
+                    'descanso' => 20,
+                    'icono' => '◉',
+                    'instrucciones' => [
+                        'Marcha en el sitio a un ritmo cómodo.',
+                        'Mantén el torso erguido y mueve los brazos de forma natural.',
+                        'No necesitas elevar demasiado las rodillas.',
+                    ],
+                ],
+            ],
+            'brazos' => [
+                [
+                    'id' => 'flexion_pared',
+                    'nombre' => 'Flexiones en pared',
+                    'segundos' => 40,
+                    'descanso' => 20,
+                    'icono' => '💪',
+                    'instrucciones' => [
+                        'Coloca las manos en una pared a la altura del pecho.',
+                        'Acerca el pecho a la pared manteniendo el cuerpo alineado.',
+                        'Empuja suavemente para volver a la posición inicial.',
+                    ],
+                ],
+                [
+                    'id' => 'circulos_brazos',
+                    'nombre' => 'Círculos de brazos',
+                    'segundos' => 35,
+                    'descanso' => 20,
+                    'icono' => '↻',
+                    'instrucciones' => [
+                        'Extiende los brazos hacia los lados sin bloquear los codos.',
+                        'Haz círculos pequeños y controlados hacia adelante.',
+                        'Cambia el sentido a la mitad del tiempo.',
+                    ],
+                ],
+                [
+                    'id' => 'empuje_palmas',
+                    'nombre' => 'Presión de palmas',
+                    'segundos' => 35,
+                    'descanso' => 20,
+                    'icono' => '◇',
+                    'instrucciones' => [
+                        'Junta las palmas delante del pecho.',
+                        'Presiona una contra otra de forma firme pero cómoda.',
+                        'Mantén hombros relajados y respira normalmente.',
+                    ],
+                ],
+                [
+                    'id' => 'elevacion_lateral',
+                    'nombre' => 'Elevación lateral sin peso',
+                    'segundos' => 35,
+                    'descanso' => 20,
+                    'icono' => '↔',
+                    'instrucciones' => [
+                        'De pie, deja los brazos a los lados.',
+                        'Eleva los brazos hasta una altura cómoda, sin superar los hombros.',
+                        'Baja lentamente y repite con control.',
+                    ],
+                ],
+                [
+                    'id' => 'plancha_pared',
+                    'nombre' => 'Plancha en pared',
+                    'segundos' => 35,
+                    'descanso' => 20,
+                    'icono' => '▰',
+                    'instrucciones' => [
+                        'Apoya los antebrazos en una pared y da un pequeño paso hacia atrás.',
+                        'Mantén el cuerpo alineado sin contener la respiración.',
+                        'Sostén la posición sin forzar hombros ni espalda.',
+                    ],
+                ],
+            ],
+            'core' => [
+                [
+                    'id' => 'dead_bug',
+                    'nombre' => 'Dead bug básico',
+                    'segundos' => 35,
+                    'descanso' => 20,
+                    'icono' => '◎',
+                    'instrucciones' => [
+                        'Acuéstate boca arriba con rodillas flexionadas y brazos arriba.',
+                        'Baja lentamente un brazo y la pierna contraria sin despegar la espalda del suelo.',
+                        'Regresa y alterna el lado.',
+                    ],
+                ],
+                [
+                    'id' => 'bird_dog',
+                    'nombre' => 'Bird-dog',
+                    'segundos' => 40,
+                    'descanso' => 20,
+                    'icono' => '✦',
+                    'instrucciones' => [
+                        'Colócate en cuatro apoyos con manos debajo de hombros.',
+                        'Extiende un brazo y la pierna contraria sin arquear la espalda.',
+                        'Vuelve al centro y cambia de lado.',
+                    ],
+                ],
+                [
+                    'id' => 'puente_core',
+                    'nombre' => 'Puente controlado',
+                    'segundos' => 40,
+                    'descanso' => 20,
+                    'icono' => '⌒',
+                    'instrucciones' => [
+                        'Acuéstate boca arriba con pies apoyados.',
+                        'Eleva la cadera de forma suave manteniendo el abdomen estable.',
+                        'Baja lentamente y repite.',
+                    ],
+                ],
+                [
+                    'id' => 'rodilla_mano',
+                    'nombre' => 'Rodilla a mano de pie',
+                    'segundos' => 35,
+                    'descanso' => 20,
+                    'icono' => '↗',
+                    'instrucciones' => [
+                        'Párate derecho y lleva una rodilla hacia la mano contraria.',
+                        'Vuelve al centro y alterna el lado.',
+                        'Mantén un ritmo cómodo y estable.',
+                    ],
+                ],
+                [
+                    'id' => 'respiracion_core',
+                    'nombre' => 'Respiración y estabilidad',
+                    'segundos' => 40,
+                    'descanso' => 15,
+                    'icono' => '◌',
+                    'instrucciones' => [
+                        'Acuéstate o siéntate en una posición cómoda.',
+                        'Inhala de forma tranquila y activa suavemente el abdomen al exhalar.',
+                        'Mantén hombros y cuello relajados.',
+                    ],
+                ],
+            ],
+        ];
     }
 
     private function clienteDelUsuario(Request $request): Cliente
