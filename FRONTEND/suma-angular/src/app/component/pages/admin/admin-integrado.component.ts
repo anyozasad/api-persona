@@ -521,18 +521,110 @@ import { ProductosComponent } from './pages/productos/productos';
       </ng-container>
 
       <ng-container *ngIf="seccion==='auditoria'">
-        <section class="admin-list-card">
-          <div class="management-heading"><div><h2>Auditoría del sistema</h2><p>Consulta las acciones registradas por Laravel.</p></div><button class="admin-secondary" type="button" (click)="exportarAuditoria()">Exportar CSV</button></div>
-          <div class="form-row">
-            <label>Ruta<input [(ngModel)]="auditoriaFiltros.ruta" name="auruta" placeholder="/api/ventas"></label>
-            <label>Desde<input type="date" [(ngModel)]="auditoriaFiltros.desde" name="audesde"></label>
-            <label>Hasta<input type="date" [(ngModel)]="auditoriaFiltros.hasta" name="auhasta"></label>
-            <button class="admin-primary" type="button" (click)="cargarAuditoria()">Filtrar</button>
+        <section class="audit-page">
+          <div class="audit-hero">
+            <div>
+              <span class="audit-eyebrow">TRAZABILIDAD Y SEGURIDAD</span>
+              <h2>Auditoría del sistema</h2>
+              <p>Consulta quién realizó cada acción, cuándo ocurrió y cuál fue la respuesta del servidor.</p>
+            </div>
+            <button class="audit-export" type="button" (click)="exportarAuditoria()">⇩ Exportar CSV</button>
           </div>
-          <div class="table-wrap"><table class="management-table"><thead><tr><th>Fecha</th><th>Usuario</th><th>Rol</th><th>Método</th><th>Ruta</th><th>IP</th><th>Estado HTTP</th></tr></thead><tbody>
-            <tr *ngFor="let a of auditorias"><td>{{fecha(a.fecha)}}</td><td>{{a.usuario || a.id_usuario || '-'}}</td><td>{{a.rol || '-'}}</td><td>{{a.metodo}}</td><td>{{a.ruta}}</td><td>{{a.ip || '-'}}</td><td>{{a.status ?? '-'}}</td></tr>
-            <tr *ngIf="!auditorias.length"><td colspan="7">No hay registros para el filtro seleccionado.</td></tr>
-          </tbody></table></div>
+
+          <section class="audit-kpis">
+            <article><span class="audit-kpi-icon blue">▦</span><div><small>EVENTOS HOY</small><b>{{auditoriaEventosHoy}}</b><p>registros del día</p></div></article>
+            <article><span class="audit-kpi-icon violet">♙</span><div><small>USUARIOS</small><b>{{auditoriaUsuariosUnicos}}</b><p>usuarios identificados</p></div></article>
+            <article><span class="audit-kpi-icon amber">!</span><div><small>ACCIONES CRÍTICAS</small><b>{{auditoriaAccionesCriticas}}</b><p>POST, PUT, PATCH o DELETE</p></div></article>
+            <article><span class="audit-kpi-icon red">×</span><div><small>ERRORES HTTP</small><b>{{auditoriaErrores}}</b><p>respuestas 4xx / 5xx</p></div></article>
+          </section>
+
+          <section class="audit-filter-card">
+            <div class="audit-filter-head">
+              <div><h3>Buscar eventos</h3><p>Filtra los registros sin perder la vista general.</p></div>
+              <button type="button" class="audit-mode" [class.active]="auditoriaSoloImportantes" (click)="auditoriaSoloImportantes=!auditoriaSoloImportantes; auditoriaPagina=1">
+                {{auditoriaSoloImportantes ? '✓ Acciones importantes' : 'Todos los eventos'}}
+              </button>
+            </div>
+
+            <div class="audit-filters">
+              <label class="audit-search-field">
+                <span>⌕</span>
+                <input [(ngModel)]="auditoriaBusqueda" name="audit_busqueda" (ngModelChange)="auditoriaPagina=1" placeholder="Buscar usuario, ruta, rol o IP...">
+              </label>
+              <label>
+                <span>Método</span>
+                <select [(ngModel)]="auditoriaMetodo" name="audit_metodo" (ngModelChange)="auditoriaPagina=1">
+                  <option value="">Todos</option><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option>
+                </select>
+              </label>
+              <label>
+                <span>Estado</span>
+                <select [(ngModel)]="auditoriaEstado" name="audit_estado" (ngModelChange)="auditoriaPagina=1">
+                  <option value="">Todos</option><option value="ok">Correctos</option><option value="error">Errores</option>
+                </select>
+              </label>
+              <label><span>Desde</span><input type="date" [(ngModel)]="auditoriaFiltros.desde" name="audesde"></label>
+              <label><span>Hasta</span><input type="date" [(ngModel)]="auditoriaFiltros.hasta" name="auhasta"></label>
+              <label class="audit-route-field"><span>Ruta</span><input [(ngModel)]="auditoriaFiltros.ruta" name="auruta" placeholder="/api/ventas"></label>
+              <div class="audit-filter-actions">
+                <button type="button" class="audit-clear" (click)="limpiarFiltrosAuditoria()">Limpiar</button>
+                <button type="button" class="audit-apply" (click)="aplicarFiltrosAuditoria()">Filtrar</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="audit-table-card">
+            <div class="audit-table-head">
+              <div><h3>Registro de actividad</h3><p>{{auditoriasFiltradas.length}} resultados encontrados</p></div>
+              <span class="audit-page-info">Página {{auditoriaPagina}} de {{auditoriaTotalPaginas}}</span>
+            </div>
+
+            <div class="table-wrap">
+              <table class="audit-table">
+                <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Método</th><th>Ruta</th><th>IP</th><th>Estado</th><th></th></tr></thead>
+                <tbody>
+                  <tr *ngFor="let a of auditoriasPaginadas">
+                    <td><div class="audit-date"><b>{{fechaCortaAuditoria(a.fecha)}}</b><small>{{horaAuditoria(a.fecha)}}</small></div></td>
+                    <td><div class="audit-user"><span>{{inicialAuditoria(a)}}</span><div><b>{{a.usuario || a.id_usuario || 'Sistema'}}</b><small>{{a.rol || 'Sin rol'}}</small></div></div></td>
+                    <td><span class="audit-action-label">{{accionAuditoria(a.metodo)}}</span></td>
+                    <td><span class="audit-method" [ngClass]="'method-'+String(a.metodo || '').toLowerCase()">{{a.metodo || '-'}}</span></td>
+                    <td><span class="audit-route" [title]="a.ruta">{{a.ruta}}</span></td>
+                    <td><span class="audit-ip">{{a.ip || '-'}}</span></td>
+                    <td><span class="audit-status" [class.error]="Number(a.status)>=400"><i></i>{{estadoAuditoria(a.status)}}</span></td>
+                    <td><button class="audit-detail-btn" type="button" (click)="auditoriaDetalle=a">Ver detalle</button></td>
+                  </tr>
+                  <tr *ngIf="!auditoriasPaginadas.length"><td colspan="8">
+                    <div class="audit-empty"><span>⌕</span><b>No encontramos eventos</b><p>Cambia los filtros o limpia la búsqueda para ver más registros.</p></div>
+                  </td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="audit-pagination" *ngIf="auditoriaTotalPaginas>1">
+              <button type="button" (click)="auditoriaPaginaAnterior()" [disabled]="auditoriaPagina===1">‹ Anterior</button>
+              <div>
+                <button *ngFor="let p of auditoriaPaginasVisibles" type="button" [class.active]="p===auditoriaPagina" (click)="auditoriaPagina=p">{{p}}</button>
+              </div>
+              <button type="button" (click)="auditoriaPaginaSiguiente()" [disabled]="auditoriaPagina===auditoriaTotalPaginas">Siguiente ›</button>
+            </div>
+          </section>
+
+          <div class="audit-detail-overlay" *ngIf="auditoriaDetalle" (click)="auditoriaDetalle=null">
+            <aside class="audit-detail-panel" (click)="$event.stopPropagation()">
+              <div class="audit-detail-head"><div><span>DETALLE DEL EVENTO</span><h3>{{accionAuditoria(auditoriaDetalle.metodo)}} · {{auditoriaDetalle.metodo}}</h3></div><button type="button" (click)="auditoriaDetalle=null">×</button></div>
+              <div class="audit-detail-grid">
+                <div><small>Fecha y hora</small><b>{{fecha(auditoriaDetalle.fecha)}}</b></div>
+                <div><small>Usuario</small><b>{{auditoriaDetalle.usuario || auditoriaDetalle.id_usuario || 'Sistema'}}</b></div>
+                <div><small>Rol</small><b>{{auditoriaDetalle.rol || '-'}}</b></div>
+                <div><small>Dirección IP</small><b>{{auditoriaDetalle.ip || '-'}}</b></div>
+                <div class="span-2"><small>Ruta solicitada</small><code>{{auditoriaDetalle.ruta}}</code></div>
+                <div><small>Método HTTP</small><span class="audit-method" [ngClass]="'method-'+String(auditoriaDetalle.metodo || '').toLowerCase()">{{auditoriaDetalle.metodo}}</span></div>
+                <div><small>Respuesta</small><span class="audit-status" [class.error]="Number(auditoriaDetalle.status)>=400"><i></i>{{auditoriaDetalle.status || '-'}} · {{estadoAuditoria(auditoriaDetalle.status)}}</span></div>
+              </div>
+              <div class="audit-detail-note"><b>Registro de auditoría</b><p>Este evento forma parte de la trazabilidad del sistema y permite revisar acciones realizadas por los usuarios.</p></div>
+              <button type="button" class="audit-close-detail" (click)="auditoriaDetalle=null">Cerrar detalle</button>
+            </aside>
+          </div>
         </section>
       </ng-container>
 
@@ -708,6 +800,13 @@ export class AdminIntegradoComponent implements OnInit {
   reservas: any[] = [];
   usuarios: any[] = [];
   auditorias: any[] = [];
+  auditoriaBusqueda = '';
+  auditoriaMetodo = '';
+  auditoriaEstado = '';
+  auditoriaSoloImportantes = false;
+  auditoriaPagina = 1;
+  auditoriaPorPagina = 12;
+  auditoriaDetalle: any = null;
   productos: any[] = [];
   proveedores: any[] = [];
   compras: any[] = [];
@@ -840,7 +939,13 @@ export class AdminIntegradoComponent implements OnInit {
   cargarRutinas(){ this.api.rutinas().subscribe({next:r=>this.rutinas=r,error:e=>this.mostrarError(e)}); }
   cargarReservas(){ this.api.reservas().subscribe({next:r=>this.reservas=r,error:e=>this.mostrarError(e)}); }
   cargarUsuarios(){ this.api.usuarios().subscribe({next:r=>this.usuarios=r,error:e=>this.mostrarError(e)}); }
-  cargarAuditoria(){ const f:any={}; if(this.auditoriaFiltros.ruta)f.ruta=this.auditoriaFiltros.ruta; if(this.auditoriaFiltros.desde)f.desde=this.auditoriaFiltros.desde; if(this.auditoriaFiltros.hasta)f.hasta=this.auditoriaFiltros.hasta; this.api.auditorias(f).subscribe({next:r=>this.auditorias=r,error:e=>this.mostrarError(e)}); }
+  cargarAuditoria(){
+    const f:any={};
+    if(this.auditoriaFiltros.ruta)f.ruta=this.auditoriaFiltros.ruta;
+    if(this.auditoriaFiltros.desde)f.desde=this.auditoriaFiltros.desde;
+    if(this.auditoriaFiltros.hasta)f.hasta=this.auditoriaFiltros.hasta;
+    this.api.auditorias(f).subscribe({next:r=>{this.auditorias=r;this.auditoriaPagina=1;},error:e=>this.mostrarError(e)});
+  }
   cargarProductos(){ this.api.productos().subscribe({next:r=>this.productos=r,error:e=>this.mostrarError(e)}); }
   cargarProveedores(){ this.api.proveedores().subscribe({next:r=>this.proveedores=r,error:e=>this.mostrarError(e)}); }
   cargarCompras(){ this.api.compras().subscribe({next:r=>this.compras=r,error:e=>this.mostrarError(e)}); }
@@ -927,9 +1032,80 @@ export class AdminIntegradoComponent implements OnInit {
   crearUsuario(){ this.api.crearUsuario(this.usuarioForm).subscribe({next:()=>{this.ok('Usuario interno creado');this.usuarioForm={nombre_usuario:'',contrasena:'',nombres:'',apellidos:'',dni:'',telefono:'',correo:'',rol:'Entrenador',estado:'Activo'};this.cargarUsuarios();},error:e=>this.mostrarError(e)}); }
   desactivarUsuario(id:number){ if(!confirm('¿Desactivar este usuario?')) return; this.api.eliminarUsuario(id).subscribe({next:r=>{this.ok(r.mensaje||'Usuario desactivado');this.cargarUsuarios();},error:e=>this.mostrarError(e)}); }
 
+  get auditoriasFiltradas(): any[] {
+    const texto=this.auditoriaBusqueda.trim().toLowerCase();
+    const metodo=this.auditoriaMetodo.trim().toUpperCase();
+    return this.auditorias.filter((a:any)=>{
+      const status=Number(a.status)||0;
+      const m=String(a.metodo||'').toUpperCase();
+      if(metodo && m!==metodo) return false;
+      if(this.auditoriaEstado==='ok' && status>=400) return false;
+      if(this.auditoriaEstado==='error' && status<400) return false;
+      if(this.auditoriaSoloImportantes && !['POST','PUT','PATCH','DELETE'].includes(m)) return false;
+      if(texto){
+        const bolsa=[a.usuario,a.id_usuario,a.rol,a.ruta,a.ip,a.metodo,a.status].map(v=>String(v??'').toLowerCase()).join(' ');
+        if(!bolsa.includes(texto)) return false;
+      }
+      return true;
+    });
+  }
+
+  get auditoriasPaginadas(): any[] {
+    const inicio=(this.auditoriaPagina-1)*this.auditoriaPorPagina;
+    return this.auditoriasFiltradas.slice(inicio,inicio+this.auditoriaPorPagina);
+  }
+
+  get auditoriaTotalPaginas(): number { return Math.max(1,Math.ceil(this.auditoriasFiltradas.length/this.auditoriaPorPagina)); }
+  get auditoriaPaginasVisibles(): number[] {
+    const total=this.auditoriaTotalPaginas;
+    const desde=Math.max(1,Math.min(this.auditoriaPagina-2,total-4));
+    const hasta=Math.min(total,desde+4);
+    const paginas:number[]=[];
+    for(let i=desde;i<=hasta;i++) paginas.push(i);
+    return paginas;
+  }
+  get auditoriaEventosHoy(): number {
+    const hoy=new Date(); const clave=hoy.toISOString().slice(0,10);
+    return this.auditorias.filter((a:any)=>{const d=new Date(a.fecha);return !isNaN(d.getTime())&&d.toISOString().slice(0,10)===clave;}).length;
+  }
+  get auditoriaUsuariosUnicos(): number {
+    return new Set(this.auditorias.map((a:any)=>String(a.usuario||a.id_usuario||'')).filter(Boolean)).size;
+  }
+  get auditoriaAccionesCriticas(): number {
+    return this.auditorias.filter((a:any)=>['POST','PUT','PATCH','DELETE'].includes(String(a.metodo||'').toUpperCase())).length;
+  }
+  get auditoriaErrores(): number { return this.auditorias.filter((a:any)=>Number(a.status)>=400).length; }
+
+  aplicarFiltrosAuditoria(){ this.auditoriaPagina=1; this.cargarAuditoria(); }
+  limpiarFiltrosAuditoria(){
+    this.auditoriaFiltros={ruta:'',desde:'',hasta:''};
+    this.auditoriaBusqueda=''; this.auditoriaMetodo=''; this.auditoriaEstado=''; this.auditoriaSoloImportantes=false; this.auditoriaPagina=1;
+    this.cargarAuditoria();
+  }
+  auditoriaPaginaAnterior(){ if(this.auditoriaPagina>1)this.auditoriaPagina--; }
+  auditoriaPaginaSiguiente(){ if(this.auditoriaPagina<this.auditoriaTotalPaginas)this.auditoriaPagina++; }
+  accionAuditoria(metodo:any): string {
+    const m=String(metodo||'').toUpperCase();
+    if(m==='POST')return 'Registro'; if(m==='PUT'||m==='PATCH')return 'Cambio'; if(m==='DELETE')return 'Eliminación'; return 'Consulta';
+  }
+  estadoAuditoria(status:any): string {
+    const s=Number(status)||0;
+    if(s>=500)return 'Error servidor'; if(s===401)return 'No autorizado'; if(s===403)return 'Prohibido'; if(s===404)return 'No encontrado'; if(s>=400)return 'Error'; if(s>=200&&s<300)return 'Correcto'; return s?String(s):'Sin estado';
+  }
+  fechaCortaAuditoria(v:any): string {
+    if(!v)return '-'; const d=new Date(v); return isNaN(d.getTime())?String(v):d.toLocaleDateString('es-PE',{day:'2-digit',month:'2-digit',year:'numeric'});
+  }
+  horaAuditoria(v:any): string {
+    if(!v)return ''; const d=new Date(v); return isNaN(d.getTime())?'':d.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
+  }
+  inicialAuditoria(a:any): string {
+    const valor=String(a?.usuario||a?.rol||'S').trim(); return valor.charAt(0).toUpperCase()||'S';
+  }
+
   exportarAuditoria(){
-    if(!this.auditorias.length){this.error='No hay registros de auditoría para exportar.';return;}
-    const filas=[['Fecha','Usuario','Rol','Metodo','Ruta','IP','Estado'],...this.auditorias.map(a=>[a.fecha,a.usuario??a.id_usuario??'',a.rol??'',a.metodo,a.ruta,a.ip??'',a.status??''])];
+    const datos=this.auditoriasFiltradas;
+    if(!datos.length){this.error='No hay registros de auditoría para exportar.';return;}
+    const filas=[['Fecha','Usuario','Rol','Accion','Metodo','Ruta','IP','Estado'],...datos.map(a=>[a.fecha,a.usuario??a.id_usuario??'',a.rol??'',this.accionAuditoria(a.metodo),a.metodo,a.ruta,a.ip??'',a.status??''])];
     const csv=filas.map(f=>f.map((v:any)=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');
     const url=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));
     const a=document.createElement('a'); a.href=url; a.download='auditoria-mallqui-gym.csv'; a.click(); URL.revokeObjectURL(url);
