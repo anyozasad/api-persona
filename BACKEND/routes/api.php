@@ -40,6 +40,8 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:3,5');
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:5,5');
+    Route::post('/recovery-dni', [AuthController::class, 'recoveryByDni'])->middleware('throttle:3,5');
+    Route::post('/recovery-dni/reset', [AuthController::class, 'resetPasswordByDni'])->middleware('throttle:5,5');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
