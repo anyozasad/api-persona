@@ -60,6 +60,23 @@ export class GymApiService {
     return this.http.get(`/api/mi-cuenta/pagos/${id_pago}/comprobante`);
   }
 
+  entrenamientoCasaCliente(): Observable<any> {
+    return this.http.get('/api/mi-cuenta/entrenamiento-casa');
+  }
+
+  guardarPlanCasaCliente(datos: { dias: string[]; zonas: string[] }): Observable<any> {
+    return this.http.put('/api/mi-cuenta/entrenamiento-casa/plan', datos);
+  }
+
+  registrarSesionCasaCliente(datos: {
+    zona: string;
+    duracion_segundos: number;
+    ejercicios_total: number;
+    ejercicios_completados: number;
+  }): Observable<any> {
+    return this.http.post('/api/mi-cuenta/entrenamiento-casa/sesiones', datos);
+  }
+
   // =========================================================
   // PORTAL DEL ENTRENADOR
   // =========================================================
