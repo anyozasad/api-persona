@@ -84,6 +84,31 @@ export class AuthService {
     return this.http.post<{ mensaje: string }>(`${this.api}/forgot-password`, { correo });
   }
 
+  buscarRecuperacionPorDni(dni: string): Observable<{
+    mensaje: string;
+    correo: string;
+    challenge: string;
+    expira_en_minutos: number;
+    codigo_desarrollo?: string;
+  }> {
+    return this.http.post<{
+      mensaje: string;
+      correo: string;
+      challenge: string;
+      expira_en_minutos: number;
+      codigo_desarrollo?: string;
+    }>(`${this.api}/recovery-dni`, { dni });
+  }
+
+  restablecerConDni(challenge: string, codigo: string, contrasena: string): Observable<{ mensaje: string }> {
+    return this.http.post<{ mensaje: string }>(`${this.api}/recovery-dni/reset`, {
+      challenge,
+      codigo,
+      contrasena,
+      contrasena_confirmation: contrasena,
+    });
+  }
+
   restablecerContrasena(correo: string, token: string, contrasena: string): Observable<{ mensaje: string }> {
     return this.http.post<{ mensaje: string }>(`${this.api}/reset-password`, {
       correo,
