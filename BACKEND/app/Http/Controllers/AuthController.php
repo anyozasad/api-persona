@@ -26,6 +26,15 @@ class AuthController extends Controller
             'telefono' => 'nullable|string|max:25',
             'correo' => 'required|email|max:150|unique:usuarios,correo|unique:clientes,correo',
             'contrasena' => 'required|string|min:8|max:100',
+        ], [
+            'nombre_usuario.unique' => 'Ya existe una cuenta asociada a estos datos.',
+            'dni.required' => 'Ingresa tu DNI.',
+            'dni.unique' => 'Este DNI ya está registrado. Si ya tienes una cuenta, inicia sesión.',
+            'correo.required' => 'Ingresa tu correo.',
+            'correo.email' => 'Ingresa un correo válido.',
+            'correo.unique' => 'Este correo ya está registrado. Si ya tienes una cuenta, inicia sesión.',
+            'contrasena.required' => 'Ingresa una contraseña.',
+            'contrasena.min' => 'La contraseña debe tener al menos 8 caracteres.',
         ]);
 
         [$usuario, $cliente] = DB::transaction(function () use ($datos) {
