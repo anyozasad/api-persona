@@ -587,10 +587,10 @@ import { ProductosComponent } from './pages/productos/productos';
                     <td><div class="audit-date"><b>{{fechaCortaAuditoria(a.fecha)}}</b><small>{{horaAuditoria(a.fecha)}}</small></div></td>
                     <td><div class="audit-user"><span>{{inicialAuditoria(a)}}</span><div><b>{{a.usuario || a.id_usuario || 'Sistema'}}</b><small>{{a.rol || 'Sin rol'}}</small></div></div></td>
                     <td><span class="audit-action-label">{{accionAuditoria(a.metodo)}}</span></td>
-                    <td><span class="audit-method" [ngClass]="'method-'+String(a.metodo || '').toLowerCase()">{{a.metodo || '-'}}</span></td>
+                    <td><span class="audit-method" [ngClass]="claseMetodoAuditoria(a.metodo)">{{a.metodo || '-'}}</span></td>
                     <td><span class="audit-route" [title]="a.ruta">{{a.ruta}}</span></td>
                     <td><span class="audit-ip">{{a.ip || '-'}}</span></td>
-                    <td><span class="audit-status" [class.error]="Number(a.status)>=400"><i></i>{{estadoAuditoria(a.status)}}</span></td>
+                    <td><span class="audit-status" [class.error]="esErrorAuditoria(a.status)"><i></i>{{estadoAuditoria(a.status)}}</span></td>
                     <td><button class="audit-detail-btn" type="button" (click)="auditoriaDetalle=a">Ver detalle</button></td>
                   </tr>
                   <tr *ngIf="!auditoriasPaginadas.length"><td colspan="8">
@@ -618,8 +618,8 @@ import { ProductosComponent } from './pages/productos/productos';
                 <div><small>Rol</small><b>{{auditoriaDetalle.rol || '-'}}</b></div>
                 <div><small>Dirección IP</small><b>{{auditoriaDetalle.ip || '-'}}</b></div>
                 <div class="span-2"><small>Ruta solicitada</small><code>{{auditoriaDetalle.ruta}}</code></div>
-                <div><small>Método HTTP</small><span class="audit-method" [ngClass]="'method-'+String(auditoriaDetalle.metodo || '').toLowerCase()">{{auditoriaDetalle.metodo}}</span></div>
-                <div><small>Respuesta</small><span class="audit-status" [class.error]="Number(auditoriaDetalle.status)>=400"><i></i>{{auditoriaDetalle.status || '-'}} · {{estadoAuditoria(auditoriaDetalle.status)}}</span></div>
+                <div><small>Método HTTP</small><span class="audit-method" [ngClass]="claseMetodoAuditoria(auditoriaDetalle.metodo)">{{auditoriaDetalle.metodo}}</span></div>
+                <div><small>Respuesta</small><span class="audit-status" [class.error]="esErrorAuditoria(auditoriaDetalle.status)"><i></i>{{auditoriaDetalle.status || '-'}} · {{estadoAuditoria(auditoriaDetalle.status)}}</span></div>
               </div>
               <div class="audit-detail-note"><b>Registro de auditoría</b><p>Este evento forma parte de la trazabilidad del sistema y permite revisar acciones realizadas por los usuarios.</p></div>
               <button type="button" class="audit-close-detail" (click)="auditoriaDetalle=null">Cerrar detalle</button>
@@ -1088,6 +1088,8 @@ export class AdminIntegradoComponent implements OnInit {
     const m=String(metodo||'').toUpperCase();
     if(m==='POST')return 'Registro'; if(m==='PUT'||m==='PATCH')return 'Cambio'; if(m==='DELETE')return 'Eliminación'; return 'Consulta';
   }
+  claseMetodoAuditoria(metodo:any): string { return 'method-'+String(metodo||'').toLowerCase(); }
+  esErrorAuditoria(status:any): boolean { return Number(status)>=400; }
   estadoAuditoria(status:any): string {
     const s=Number(status)||0;
     if(s>=500)return 'Error servidor'; if(s===401)return 'No autorizado'; if(s===403)return 'Prohibido'; if(s===404)return 'No encontrado'; if(s>=400)return 'Error'; if(s>=200&&s<300)return 'Correcto'; return s?String(s):'Sin estado';
