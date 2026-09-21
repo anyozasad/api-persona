@@ -63,9 +63,19 @@ Artisan::command('frontend:build', function () {
 
     $public = public_path();
 
-    // Limpia únicamente artefactos anteriores de Angular.
-    foreach (['index.html', 'main.js', 'polyfills.js', 'styles.css'] as $archivo) {
-        File::delete($public.DIRECTORY_SEPARATOR.$archivo);
+    // Limpia artefactos anteriores de Angular para evitar servir bundles viejos.
+    File::delete($public.DIRECTORY_SEPARATOR.'index.html');
+
+    foreach ([
+        'main*.js',
+        'polyfills*.js',
+        'styles*.css',
+        'chunk*.js',
+        'runtime*.js',
+    ] as $patron) {
+        foreach (glob($public.DIRECTORY_SEPARATOR.$patron) ?: [] as $archivo) {
+            File::delete($archivo);
+        }
     }
 
     foreach (File::directories($dist) as $directorio) {
