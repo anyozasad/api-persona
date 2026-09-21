@@ -13,146 +13,355 @@ import { GymApiService } from '../../../core/services/gym-api.service';
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="member-page">
-      <header class="member-topbar">
-        <a routerLink="/" class="member-logo"><img src="assets/mallqui-logo.png" alt="Mallqui Gym"></a>
-        <nav>
-          <a role="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')">⌂ Inicio</a>
-          <a role="button" [class.active]="moduloActivo==='rutinas'" (click)="abrirModulo('rutinas')">🏋 Rutinas</a>
-          <a role="button" [class.active]="moduloActivo==='clases'" (click)="abrirModulo('clases')">▣ Clases</a>
-          <a role="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')">◷ Reservas</a>
-          <a role="button" [class.active]="moduloActivo==='asistencias'" (click)="abrirModulo('asistencias')">✓ Asistencias</a>
-          <a role="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')">▤ Pagos</a>
-          <a role="button" [class.active]="moduloActivo==='perfil'" (click)="abrirModulo('perfil')">♙ Perfil</a>
+      <header class="member-topbar member-enter-down">
+        <button type="button" class="member-brand" (click)="abrirModulo('inicio')" aria-label="Ir al inicio del portal">
+          <img src="assets/mallqui-logo.svg" alt="Mallqui Gym">
+          <span><b>MALLQUI GYM</b><small>Portal del cliente</small></span>
+        </button>
+
+        <nav class="member-nav" aria-label="Navegación del cliente">
+          <button type="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')"><i>⌂</i><span>Inicio</span></button>
+          <button type="button" [class.active]="moduloActivo==='rutinas'" (click)="abrirModulo('rutinas')"><i>🏋</i><span>Rutinas</span></button>
+          <button type="button" [class.active]="moduloActivo==='clases'" (click)="abrirModulo('clases')"><i>▣</i><span>Clases</span></button>
+          <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')"><i>◷</i><span>Reservas</span></button>
+          <button type="button" [class.active]="moduloActivo==='asistencias'" (click)="abrirModulo('asistencias')"><i>✓</i><span>Asistencias</span></button>
+          <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')"><i>▤</i><span>Pagos</span></button>
+          <button type="button" [class.active]="moduloActivo==='perfil'" (click)="abrirModulo('perfil')"><i>♙</i><span>Perfil</span></button>
         </nav>
-        <button class="primary-button small" type="button" (click)="cerrarSesion()">Cerrar sesión</button>
+
+        <div class="member-user-actions">
+          <div class="member-mini-profile">
+            <span>{{nombreCorto.charAt(0).toUpperCase()}}</span>
+            <div><b>{{nombreCorto}}</b><small>Cliente Mallqui</small></div>
+          </div>
+          <button class="member-logout" type="button" (click)="cerrarSesion()">Cerrar sesión</button>
+        </div>
       </header>
 
       <main class="member-main" *ngIf="!cargando; else cargandoTpl">
-        <div *ngIf="error" class="member-toast">{{error}}</div>
-        <div *ngIf="toast" class="member-toast">{{toast}}</div>
+        <div *ngIf="error" class="member-toast error-toast">{{error}}</div>
+        <div *ngIf="toast" class="member-toast success-toast">{{toast}}</div>
 
-        <section *ngIf="moduloActivo==='inicio'">
-          <section class="member-welcome">
-            <div>
-              <span class="eyebrow">PORTAL DEL CLIENTE</span>
-              <h1>Hola, {{nombreCorto}}</h1>
-              <p>Tu información se carga directamente desde Laravel y MySQL.</p>
+        <section *ngIf="moduloActivo==='inicio'" class="member-dashboard">
+          <section class="member-hero member-enter-up">
+            <div class="member-hero-copy">
+              <span class="member-kicker">PORTAL DEL CLIENTE</span>
+              <h1>Hola, <strong>{{nombreCorto}}</strong></h1>
+              <p>Tu espacio personal para revisar membresía, rutinas, clases, reservas, asistencias y pagos en un solo lugar.</p>
+
+              <div class="member-hero-actions">
+                <button type="button" class="member-primary-action" (click)="abrirModulo('rutinas')">Ver mis rutinas <span>→</span></button>
+                <button type="button" class="member-secondary-action" (click)="abrirModulo('clases')">Explorar clases</button>
+              </div>
+
+              <div class="member-trust-row">
+                <span>✓ Datos sincronizados</span>
+                <span>✓ Acceso seguro</span>
+                <span>✓ Información en tiempo real</span>
+              </div>
             </div>
-            <aside class="coach-card">
-              <span class="coach-title">Entrenador asignado</span>
-              <div class="coach-body"><div><h3>{{nombreEntrenador}}</h3><p>{{rutinaActual?.objetivo || 'Sin objetivo registrado'}}</p></div></div>
+
+            <aside class="member-coach-card">
+              <div class="coach-glow"></div>
+              <span class="coach-badge">ENTRENADOR ASIGNADO</span>
+              <div class="coach-avatar-large">{{nombreEntrenador.charAt(0).toUpperCase()}}</div>
+              <h3>{{nombreEntrenador}}</h3>
+              <p>{{rutinaActual?.objetivo || 'Aún no tienes un objetivo de entrenamiento registrado.'}}</p>
+              <div class="coach-tags">
+                <span>Seguimiento</span><span>Progreso</span><span>Constancia</span>
+              </div>
             </aside>
           </section>
 
-          <section class="member-stats">
-            <article><span>✦ Membresía</span><h2>{{membresiaActual?.membresia?.nombre || 'Sin plan activo'}}</h2><p *ngIf="membresiaActual">Vence: {{membresiaActual.fecha_fin}}</p></article>
-            <article><span>▣ Asistencias este mes</span><h2>{{resumen?.asistencias_mes || 0}}</h2><p>Registros reales del sistema</p></article>
-            <article><span>🏋 Rutinas</span><h2>{{rutinas.length}}</h2><p>{{rutinaActual?.nombre_rutina || 'Sin rutina activa'}}</p></article>
-            <article><span>◷ Reservas activas</span><h2>{{reservasActivas.length}}</h2><p>Clases reservadas</p></article>
+          <section class="member-stats premium-stats">
+            <article class="member-stat-card stat-plan">
+              <div class="stat-top"><span class="stat-icon">✦</span><small>MEMBRESÍA</small></div>
+              <h2>{{membresiaActual?.membresia?.nombre || 'Sin plan activo'}}</h2>
+              <p *ngIf="membresiaActual">Vence: {{fecha(membresiaActual.fecha_fin)}}</p>
+              <p *ngIf="!membresiaActual">Elige un plan para comenzar.</p>
+              <button type="button" (click)="abrirModulo('pagos')">Ver membresía →</button>
+            </article>
+
+            <article class="member-stat-card stat-attendance">
+              <div class="stat-top"><span class="stat-icon">✓</span><small>ASISTENCIAS</small></div>
+              <h2>{{resumen?.asistencias_mes || 0}}</h2>
+              <p>Registros durante este mes</p>
+              <div class="mini-progress"><i [style.width.%]="(resumen?.asistencias_mes || 0) > 20 ? 100 : (resumen?.asistencias_mes || 0) * 5"></i></div>
+            </article>
+
+            <article class="member-stat-card stat-routine">
+              <div class="stat-top"><span class="stat-icon">🏋</span><small>RUTINAS</small></div>
+              <h2>{{rutinas.length}}</h2>
+              <p>{{rutinaActual?.nombre_rutina || 'Sin rutina activa'}}</p>
+              <button type="button" (click)="abrirModulo('rutinas')">Abrir rutinas →</button>
+            </article>
+
+            <article class="member-stat-card stat-booking">
+              <div class="stat-top"><span class="stat-icon">◷</span><small>RESERVAS</small></div>
+              <h2>{{reservasActivas.length}}</h2>
+              <p>Clases reservadas actualmente</p>
+              <button type="button" (click)="abrirModulo('reservas')">Ver reservas →</button>
+            </article>
           </section>
 
-          <section class="member-grid">
-            <article class="module-card">
-              <h2>Próxima rutina</h2>
+          <section class="member-quick-section">
+            <div class="section-heading-member">
+              <div><span>ACCESOS RÁPIDOS</span><h2>¿Qué quieres hacer hoy?</h2></div>
+            </div>
+            <div class="member-quick-actions">
+              <button type="button" (click)="abrirModulo('rutinas')"><i>🏋</i><b>Mis rutinas</b><small>Revisa tu plan de ejercicios</small><em>→</em></button>
+              <button type="button" (click)="abrirModulo('clases')"><i>▣</i><b>Clases</b><small>Explora horarios disponibles</small><em>→</em></button>
+              <button type="button" (click)="abrirModulo('reservas')"><i>◷</i><b>Reservas</b><small>Administra tus clases</small><em>→</em></button>
+              <button type="button" (click)="abrirModulo('pagos')"><i>▤</i><b>Pagos</b><small>Consulta tus movimientos</small><em>→</em></button>
+              <button type="button" (click)="abrirModulo('perfil')"><i>♙</i><b>Mi perfil</b><small>Actualiza tus datos</small><em>→</em></button>
+            </div>
+          </section>
+
+          <section class="member-home-grid">
+            <article class="member-panel-card routine-highlight">
+              <div class="panel-head">
+                <div><span>PRÓXIMA RUTINA</span><h2>Tu entrenamiento</h2></div>
+                <button type="button" (click)="abrirModulo('rutinas')">Ver todas →</button>
+              </div>
+
               <ng-container *ngIf="rutinaActual; else sinRutina">
-                <h3>{{rutinaActual.nombre_rutina}}</h3>
-                <p>{{rutinaActual.descripcion || rutinaActual.objetivo}}</p>
-                <div class="card-actions"><button class="primary" (click)="abrirModulo('rutinas')">Ver ejercicios</button></div>
+                <div class="routine-feature">
+                  <div class="routine-visual"><span>🏋</span></div>
+                  <div class="routine-info">
+                    <span class="routine-status">RUTINA ACTIVA</span>
+                    <h3>{{rutinaActual.nombre_rutina}}</h3>
+                    <p>{{rutinaActual.descripcion || rutinaActual.objetivo}}</p>
+                    <button type="button" (click)="abrirModulo('rutinas')">Ver ejercicios</button>
+                  </div>
+                </div>
               </ng-container>
-              <ng-template #sinRutina><p>Tu entrenador todavía no ha asignado una rutina activa.</p></ng-template>
+
+              <ng-template #sinRutina>
+                <div class="member-empty-state">
+                  <span>🏋</span>
+                  <h3>Aún no tienes una rutina asignada</h3>
+                  <p>Cuando tu entrenador cree una rutina para ti, aparecerá aquí automáticamente.</p>
+                </div>
+              </ng-template>
             </article>
-            <article class="module-card">
-              <h2>Últimos pagos</h2>
-              <p *ngIf="!pagos.length">Todavía no hay pagos registrados.</p>
-              <div *ngFor="let p of pagos.slice(0,3)" class="payment-row">
+
+            <aside class="member-side-stack">
+              <article class="member-panel-card progress-card">
+                <div class="panel-head compact"><div><span>PROGRESO</span><h2>Tu actividad</h2></div></div>
+                <div class="progress-metric">
+                  <div><span>Asistencias del mes</span><b>{{resumen?.asistencias_mes || 0}}</b></div>
+                  <div class="progress-line"><i [style.width.%]="(resumen?.asistencias_mes || 0) > 20 ? 100 : (resumen?.asistencias_mes || 0) * 5"></i></div>
+                </div>
+                <div class="progress-metric">
+                  <div><span>Rutinas activas</span><b>{{rutinas.length}}</b></div>
+                  <div class="progress-line red"><i [style.width.%]="rutinas.length > 5 ? 100 : rutinas.length * 20"></i></div>
+                </div>
+                <div class="progress-metric">
+                  <div><span>Reservas activas</span><b>{{reservasActivas.length}}</b></div>
+                  <div class="progress-line green"><i [style.width.%]="reservasActivas.length > 5 ? 100 : reservasActivas.length * 20"></i></div>
+                </div>
+              </article>
+
+              <article class="member-panel-card account-health-card">
+                <div class="account-health-icon">✓</div>
+                <div><span>ESTADO DE CUENTA</span><h3>Todo listo para entrenar</h3><p>Tu cuenta está activa y sincronizada con Mallqui Gym.</p></div>
+              </article>
+            </aside>
+          </section>
+
+          <section class="member-panel-card member-payments-home">
+            <div class="panel-head">
+              <div><span>MOVIMIENTOS</span><h2>Últimos pagos</h2></div>
+              <button type="button" (click)="abrirModulo('pagos')">Ver historial →</button>
+            </div>
+
+            <div *ngIf="pagos.length; else sinPagosHome" class="member-payment-list">
+              <div *ngFor="let p of pagos.slice(0,4)" class="member-payment-item">
+                <span class="payment-icon">▤</span>
                 <p><b>{{p.cliente_membresia?.membresia?.nombre || 'Membresía'}}</b><small>{{fecha(p.fecha_pago)}}</small></p>
-                <span>S/ {{p.monto}}</span><span>{{p.estado_pago}}</span>
+                <strong>S/ {{p.monto}}</strong>
+                <em [class.pending]="p.estado_pago!=='Pagado'">{{p.estado_pago}}</em>
               </div>
-            </article>
+            </div>
+
+            <ng-template #sinPagosHome>
+              <div class="member-empty-state compact-empty">
+                <span>▤</span><h3>Todavía no hay pagos registrados</h3><p>Cuando tengas movimientos aparecerán en este espacio.</p>
+              </div>
+            </ng-template>
           </section>
         </section>
 
-        <section *ngIf="moduloActivo==='rutinas'" class="member-module">
-          <div class="member-module-head"><div><h1>Mis rutinas</h1><p>Rutinas asignadas por tu entrenador.</p></div></div>
-          <div class="module-grid">
-            <article class="module-card" *ngFor="let r of rutinas">
-              <h2>{{r.nombre_rutina}}</h2><p>{{r.objetivo}}</p><small>{{r.fecha_inicio}} - {{r.fecha_fin || 'Sin fecha final'}}</small>
+        <section *ngIf="moduloActivo==='rutinas'" class="member-module member-enter-up">
+          <div class="member-module-hero">
+            <div><span>ENTRENAMIENTO</span><h1>Mis rutinas</h1><p>Consulta los ejercicios que tu entrenador preparó para ti.</p></div>
+            <div class="module-hero-icon">🏋</div>
+          </div>
+
+          <div class="module-grid routine-grid">
+            <article class="member-module-card routine-card" *ngFor="let r of rutinas">
+              <div class="routine-card-head"><div><span>RUTINA</span><h2>{{r.nombre_rutina}}</h2></div><i>🏋</i></div>
+              <p>{{r.objetivo}}</p>
+              <small class="routine-period">{{fecha(r.fecha_inicio)}} — {{r.fecha_fin ? fecha(r.fecha_fin) : 'Sin fecha final'}}</small>
               <div class="routine-exercises">
-                <div *ngFor="let e of r.detalles"><p><b>{{e.ejercicio}}</b><small>{{e.series}} series × {{e.repeticiones}} reps · descanso {{e.descanso_segundos || 0}} s</small></p></div>
+                <div *ngFor="let e of r.detalles"><span>✓</span><p><b>{{e.ejercicio}}</b><small>{{e.series}} series × {{e.repeticiones}} reps · descanso {{e.descanso_segundos || 0}} s</small></p></div>
               </div>
             </article>
-            <article class="module-card" *ngIf="!rutinas.length"><p>No tienes rutinas registradas.</p></article>
+
+            <article class="member-empty-card" *ngIf="!rutinas.length">
+              <span>🏋</span><h3>No tienes rutinas registradas</h3><p>Cuando tu entrenador te asigne una, aparecerá aquí.</p>
+            </article>
           </div>
         </section>
 
-        <section *ngIf="moduloActivo==='clases'" class="member-module">
-          <div class="member-module-head"><div><h1>Clases disponibles</h1><p>Selecciona una fecha válida para reservar.</p></div></div>
-          <div class="class-list">
-            <div class="class-row" *ngFor="let c of clases">
-              <p><b>{{c.nombre}}</b><small>{{c.dia_semana}} · {{c.hora_inicio}} - {{c.hora_fin}}</small><small>Entrenador: {{nombrePersona(c.entrenador)}}</small></p>
-              <input type="date" [(ngModel)]="fechasReserva[c.id_clase]" [name]="'fecha'+c.id_clase">
-              <button type="button" (click)="reservar(c)">Reservar</button>
-            </div>
+        <section *ngIf="moduloActivo==='clases'" class="member-module member-enter-up">
+          <div class="member-module-hero">
+            <div><span>AGENDA</span><h1>Clases disponibles</h1><p>Elige una clase, selecciona una fecha válida y reserva tu lugar.</p></div>
+            <div class="module-hero-icon">▣</div>
+          </div>
+
+          <div class="member-class-grid">
+            <article class="member-class-card" *ngFor="let c of clases">
+              <div class="class-card-top"><span>CLASE DISPONIBLE</span><i>▣</i></div>
+              <h2>{{c.nombre}}</h2>
+              <div class="class-meta">
+                <span><b>Día</b>{{c.dia_semana}}</span>
+                <span><b>Horario</b>{{c.hora_inicio}} - {{c.hora_fin}}</span>
+                <span><b>Entrenador</b>{{nombrePersona(c.entrenador)}}</span>
+              </div>
+              <label>Fecha de reserva<input type="date" [(ngModel)]="fechasReserva[c.id_clase]" [name]="'fecha'+c.id_clase"></label>
+              <button type="button" (click)="reservar(c)">Reservar clase <span>→</span></button>
+            </article>
+
+            <article class="member-empty-card" *ngIf="!clases.length">
+              <span>▣</span><h3>No hay clases disponibles</h3><p>Vuelve a revisar más tarde.</p>
+            </article>
           </div>
         </section>
 
-        <section *ngIf="moduloActivo==='reservas'" class="member-module">
-          <div class="member-module-head"><div><h1>Mis reservas</h1><p>Reservas almacenadas en MySQL.</p></div></div>
-          <div class="class-list">
-            <div class="class-row" *ngFor="let r of reservas">
-              <p><b>{{r.clase?.nombre}}</b><small>{{r.fecha_clase}} · {{r.clase?.hora_inicio}}</small><small>Estado: {{r.estado}}</small></p>
-              <button *ngIf="r.estado==='Reservada'" class="reserved" type="button" (click)="cancelarReserva(r)">Cancelar</button>
-            </div>
+        <section *ngIf="moduloActivo==='reservas'" class="member-module member-enter-up">
+          <div class="member-module-hero">
+            <div><span>AGENDA PERSONAL</span><h1>Mis reservas</h1><p>Consulta y administra las clases que reservaste.</p></div>
+            <div class="module-hero-icon">◷</div>
+          </div>
+
+          <div class="member-reservation-list">
+            <article *ngFor="let r of reservas">
+              <span class="reservation-mark">◷</span>
+              <div><small>CLASE</small><h3>{{r.clase?.nombre || 'Clase'}}</h3><p>{{fecha(r.fecha_clase)}} · {{r.clase?.hora_inicio}}</p></div>
+              <em [class.cancelled]="r.estado!=='Reservada'">{{r.estado}}</em>
+              <button *ngIf="r.estado==='Reservada'" type="button" (click)="cancelarReserva(r)">Cancelar reserva</button>
+            </article>
+
+            <article class="member-empty-card" *ngIf="!reservas.length">
+              <span>◷</span><h3>No tienes reservas</h3><p>Explora las clases disponibles y reserva tu próxima sesión.</p><button type="button" (click)="abrirModulo('clases')">Ver clases</button>
+            </article>
           </div>
         </section>
 
-        <section *ngIf="moduloActivo==='asistencias'" class="member-module">
-          <div class="member-module-head"><div><h1>Mis asistencias</h1><p>Historial de entradas y salidas.</p></div></div>
-          <div class="payment-list">
-            <div class="payment-row" *ngFor="let a of asistencias"><p><b>{{fecha(a.fecha_hora_entrada)}}</b><small>Salida: {{fecha(a.fecha_hora_salida)}}</small></p><span>{{a.estado}}</span></div>
+        <section *ngIf="moduloActivo==='asistencias'" class="member-module member-enter-up">
+          <div class="member-module-hero">
+            <div><span>HISTORIAL</span><h1>Mis asistencias</h1><p>Consulta tus entradas y salidas registradas en el gimnasio.</p></div>
+            <div class="module-hero-icon">✓</div>
+          </div>
+
+          <div class="attendance-timeline">
+            <article *ngFor="let a of asistencias">
+              <span class="timeline-dot"></span>
+              <div><small>ENTRADA</small><h3>{{fecha(a.fecha_hora_entrada)}}</h3><p>Salida: {{fecha(a.fecha_hora_salida)}}</p></div>
+              <em>{{a.estado}}</em>
+            </article>
+
+            <article class="member-empty-card" *ngIf="!asistencias.length">
+              <span>✓</span><h3>Sin asistencias registradas</h3><p>Tus entradas aparecerán aquí cuando empieces a asistir.</p>
+            </article>
           </div>
         </section>
 
-        <section *ngIf="moduloActivo==='pagos'" class="member-module">
-          <div class="member-module-head"><div><h1>Membresía y pagos</h1><p>Solicita una renovación y consulta comprobantes reales.</p></div></div>
-          <section class="management-grid">
-            <article class="module-card">
-              <h2>Solicitar renovación</h2>
-              <form class="profile-form" (ngSubmit)="solicitarRenovacion()">
-                <label>Plan<select [(ngModel)]="pagoForm.id_membresia" name="planPago" required><option [ngValue]="0">Seleccionar</option><option *ngFor="let m of membresiasDisponibles" [ngValue]="m.id_membresia">{{m.nombre}} - S/ {{m.precio}}</option></select></label>
+        <section *ngIf="moduloActivo==='pagos'" class="member-module member-enter-up">
+          <div class="member-module-hero">
+            <div><span>MEMBRESÍA</span><h1>Pagos y renovación</h1><p>Solicita una renovación y consulta tus comprobantes.</p></div>
+            <div class="module-hero-icon">▤</div>
+          </div>
+
+          <section class="member-payment-layout">
+            <article class="member-module-card renewal-card">
+              <div class="card-title-block"><span>NUEVA SOLICITUD</span><h2>Solicitar renovación</h2><p>Completa los datos de tu pago.</p></div>
+              <form class="member-form" (ngSubmit)="solicitarRenovacion()">
+                <label>Plan
+                  <select [(ngModel)]="pagoForm.id_membresia" name="planPago" required>
+                    <option [ngValue]="0">Seleccionar plan</option>
+                    <option *ngFor="let m of membresiasDisponibles" [ngValue]="m.id_membresia">{{m.nombre}} - S/ {{m.precio}}</option>
+                  </select>
+                </label>
                 <label>Inicio<input type="date" [(ngModel)]="pagoForm.fecha_inicio" name="fechaPago"></label>
-                <label>Método<select [(ngModel)]="pagoForm.metodo_pago" name="metodoPago"><option>Yape</option><option>Plin</option><option>Transferencia</option><option>Tarjeta</option></select></label>
-                <label>N° operación<input [(ngModel)]="pagoForm.numero_operacion" name="operacionPago" required></label>
-                <button class="save-profile" type="submit">Enviar solicitud</button>
+                <label>Método
+                  <select [(ngModel)]="pagoForm.metodo_pago" name="metodoPago"><option>Yape</option><option>Plin</option><option>Transferencia</option><option>Tarjeta</option></select>
+                </label>
+                <label>N° operación<input [(ngModel)]="pagoForm.numero_operacion" name="operacionPago" placeholder="Número de operación" required></label>
+                <button class="member-form-submit" type="submit">Enviar solicitud <span>→</span></button>
               </form>
             </article>
-            <article class="module-card">
-              <h2>Historial</h2>
-              <div class="payment-list"><div class="payment-row" *ngFor="let p of pagos"><p><b>{{p.cliente_membresia?.membresia?.nombre || 'Membresía'}}</b><small>{{fecha(p.fecha_pago)}}</small></p><span>S/ {{p.monto}}</span><span>{{p.metodo_pago}}</span><div><span class="status">{{p.estado_pago}}</span><button type="button" (click)="comprobante(p)">Comprobante</button></div></div></div>
+
+            <article class="member-module-card">
+              <div class="card-title-block"><span>HISTORIAL</span><h2>Mis pagos</h2><p>Movimientos registrados en tu cuenta.</p></div>
+              <div class="member-payment-list full-list">
+                <div *ngFor="let p of pagos" class="member-payment-item">
+                  <span class="payment-icon">▤</span>
+                  <p><b>{{p.cliente_membresia?.membresia?.nombre || 'Membresía'}}</b><small>{{fecha(p.fecha_pago)}} · {{p.metodo_pago}}</small></p>
+                  <strong>S/ {{p.monto}}</strong>
+                  <em [class.pending]="p.estado_pago!=='Pagado'">{{p.estado_pago}}</em>
+                  <button type="button" (click)="comprobante(p)">Comprobante</button>
+                </div>
+                <div class="member-empty-state compact-empty" *ngIf="!pagos.length"><span>▤</span><h3>Sin pagos registrados</h3><p>Tus movimientos aparecerán aquí.</p></div>
+              </div>
             </article>
           </section>
         </section>
 
-        <section *ngIf="moduloActivo==='perfil'" class="member-module">
-          <div class="member-module-head"><div><h1>Mi perfil</h1><p>Actualiza tus datos personales.</p></div></div>
-          <article class="module-card">
-            <form class="profile-form" (ngSubmit)="guardarPerfil()">
-              <label>Nombres<input [(ngModel)]="perfil.nombres" name="nombres" required></label>
-              <label>Apellidos<input [(ngModel)]="perfil.apellidos" name="apellidos" required></label>
-              <label>Correo<input type="email" [(ngModel)]="perfil.correo" name="correo" required></label>
-              <label>Teléfono<input [(ngModel)]="perfil.telefono" name="telefono"></label>
-              <label class="full">Dirección<input [(ngModel)]="perfil.direccion" name="direccion"></label>
-              <button class="save-profile" type="submit">Guardar cambios</button>
-            </form>
-          </article>
+        <section *ngIf="moduloActivo==='perfil'" class="member-module member-enter-up">
+          <div class="member-module-hero">
+            <div><span>CUENTA PERSONAL</span><h1>Mi perfil</h1><p>Mantén actualizada tu información de contacto.</p></div>
+            <div class="module-hero-icon">♙</div>
+          </div>
+
+          <section class="profile-layout">
+            <aside class="profile-summary-card">
+              <div class="profile-avatar">{{nombreCorto.charAt(0).toUpperCase()}}</div>
+              <h2>{{nombreCorto}}</h2>
+              <p>{{perfil?.correo || auth.usuario?.correo || 'Cliente Mallqui Gym'}}</p>
+              <span>CLIENTE ACTIVO</span>
+              <ul><li>✓ Acceso al portal</li><li>✓ Datos sincronizados</li><li>✓ Cuenta protegida</li></ul>
+            </aside>
+
+            <article class="member-module-card profile-edit-card">
+              <div class="card-title-block"><span>DATOS PERSONALES</span><h2>Actualizar información</h2><p>Modifica tus datos y guarda los cambios.</p></div>
+              <form class="member-form profile-form-grid" (ngSubmit)="guardarPerfil()">
+                <label>Nombres<input [(ngModel)]="perfil.nombres" name="nombres" required></label>
+                <label>Apellidos<input [(ngModel)]="perfil.apellidos" name="apellidos" required></label>
+                <label>Correo<input type="email" [(ngModel)]="perfil.correo" name="correo" required></label>
+                <label>Teléfono<input [(ngModel)]="perfil.telefono" name="telefono"></label>
+                <label class="full">Dirección<input [(ngModel)]="perfil.direccion" name="direccion"></label>
+                <button class="member-form-submit full" type="submit">Guardar cambios <span>→</span></button>
+              </form>
+            </article>
+          </section>
         </section>
       </main>
 
-      <ng-template #cargandoTpl><main class="member-main"><article class="module-card"><h2>Cargando información real...</h2></article></main></ng-template>
+      <ng-template #cargandoTpl>
+        <main class="member-main">
+          <div class="member-loading-card">
+            <span class="loading-ring"></span>
+            <h2>Preparando tu portal...</h2>
+            <p>Estamos cargando tu información de Mallqui Gym.</p>
+          </div>
+        </main>
+      </ng-template>
     </div>
   `,
   styles: [`
-    .member-main,.member-module{padding-bottom:40px}.member-module{padding:34px}.class-row input{max-width:170px;padding:10px;border:1px solid #ddd;border-radius:8px}.management-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:22px}.routine-exercises{margin-top:14px}.routine-exercises>div{padding:10px 0;border-top:1px solid #eee}@media(max-width:900px){.management-grid{grid-template-columns:1fr}.member-topbar nav{overflow:auto}.member-module{padding:20px}}
+    :host{display:block}
   `]
 })
 export class UsuarioComponent implements OnInit {
