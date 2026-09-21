@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../auth.service';
 import { GymApiService } from '../../../core/services/gym-api.service';
 
 @Component({
   selector: 'app-usuario',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   styleUrls: ['../mallqui-member.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
@@ -329,7 +329,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             <aside class="profile-summary-card">
               <div class="profile-avatar">{{nombreCorto.charAt(0).toUpperCase()}}</div>
               <h2>{{nombreCorto}}</h2>
-              <p>{{perfil?.correo || auth.usuario?.correo || 'Cliente Mallqui Gym'}}</p>
+              <p>{{perfil?.correo || 'Cliente Mallqui Gym'}}</p>
               <span>CLIENTE ACTIVO</span>
               <ul><li>✓ Acceso al portal</li><li>✓ Datos sincronizados</li><li>✓ Cuenta protegida</li></ul>
             </aside>
