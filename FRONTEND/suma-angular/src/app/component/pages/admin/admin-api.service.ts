@@ -213,6 +213,15 @@ export class AdminApiService {
   vistaStock(): Observable<any[]> { return this.http.get<any[]>('/api/vistas/stock'); }
   vistaVentas(): Observable<any[]> { return this.http.get<any[]>('/api/vistas/ventas'); }
 
+  // =========================================================
+  // CONFIGURACIÓN DEL SISTEMA
+  // =========================================================
+  configuracion(): Observable<any> { return this.http.get('/api/configuracion'); }
+  guardarConfiguracion(datos: any): Observable<any> { return this.http.put('/api/configuracion', datos); }
+  estadoSistema(): Observable<any> { return this.http.get('/api/configuracion/estado'); }
+  crearRespaldo(): Observable<any> { return this.http.post('/api/configuracion/respaldo', {}); }
+  limpiarCacheSistema(): Observable<any> { return this.http.post('/api/configuracion/limpiar-cache', {}); }
+
   private rangoFechas(desde?: string, hasta?: string): HttpParams {
     let params = new HttpParams();
     if (desde) params = params.set('desde', desde);
