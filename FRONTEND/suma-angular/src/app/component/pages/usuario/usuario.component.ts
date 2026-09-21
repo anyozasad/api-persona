@@ -423,6 +423,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.catalogoCasa=r?.catalogo||{piernas:[],brazos:[],core:[]};
         this.historialCasa=r?.historial||[];
         this.zonaCasaSeleccionada=this.planCasa.zonas?.[0]||'piernas';
+        const tocaHoy=this.agendaCasaSemanal.find((x:any)=>x.hoy&&x.activo);
+        if(tocaHoy?.zona?.id)this.zonaCasaSeleccionada=tocaHoy.zona.id;
         this.casaCargado=true;
         this.errorCasa='';
       },
