@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
@@ -7,7 +8,7 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
 @Component({
   selector: 'app-public-page',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink],
   styleUrls: ['./public-page.component.css'],
   template: `
   <div class="public-page">
