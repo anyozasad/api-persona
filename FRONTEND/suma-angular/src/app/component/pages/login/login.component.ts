@@ -182,25 +182,13 @@ export class LoginComponent {
   recuperarPassword(): void {
     this.error = '';
     this.mensaje = '';
-
-    if (!this.email.trim()) {
-      this.error = 'Escribe tu Gmail para recuperar tu contraseña.';
-      return;
-    }
-
-    const correo = this.email.trim().toLowerCase();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
-      this.error = 'Ingresa un correo válido.';
-      return;
-    }
-
-    this.auth.solicitarRecuperacion(correo).subscribe({
-      next: res => this.mensaje = res.mensaje,
-      error: err => this.error = this.extraerError(err, 'No se pudo procesar la recuperación de contraseña.')
-    });
+    void this.router.navigate(['/restablecer']);
   }
 
   private extraerError(err: any, fallback: string): string {
+    if (err?.status === 429) {
+      return 'Hiciste demasiados intentos. Espera un minuto y vuelve a intentarlo.';
+    }
     const errors = err?.error?.errors;
     if (errors && typeof errors === 'object') {
       const first = Object.values(errors)[0];
