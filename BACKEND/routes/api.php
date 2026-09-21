@@ -32,6 +32,7 @@ use App\Http\Controllers\ReservaController;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\KardexController;
 use App\Http\Controllers\AuditoriaController;
+use App\Http\Controllers\ConfiguracionSistemaController;
 
 // AUTENTICACIÓN PRINCIPAL DEL SISTEMA: SANCTUM
 Route::prefix('auth')->group(function () {
@@ -162,6 +163,12 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
     Route::apiResource('/usuarios', UsuarioController::class);
     Route::get('/dashboard/resumen', [DashboardController::class, 'resumen']);
     Route::get('/auditorias', [AuditoriaController::class, 'index']);
+
+    Route::get('/configuracion', [ConfiguracionSistemaController::class, 'show']);
+    Route::put('/configuracion', [ConfiguracionSistemaController::class, 'update']);
+    Route::get('/configuracion/estado', [ConfiguracionSistemaController::class, 'estado']);
+    Route::post('/configuracion/respaldo', [ConfiguracionSistemaController::class, 'respaldo']);
+    Route::post('/configuracion/limpiar-cache', [ConfiguracionSistemaController::class, 'limpiarCache']);
 
     Route::get('/reportes/ingresos', [ReporteController::class, 'ingresos']);
     Route::get('/reportes/vencimientos', [ReporteController::class, 'vencimientos']);
