@@ -17,12 +17,12 @@ import { RouterLink } from '@angular/router';
             <img src="assets/mallqui-logo.png" alt="Mallqui Gym">
           </a>
           <nav aria-label="Navegación principal">
-            <a [class.active]="seccionActiva==='inicio'" href="#inicio" (click)="irA('inicio', $event)">Inicio</a>
-            <a [class.active]="seccionActiva==='nosotros'" href="#nosotros" (click)="irA('nosotros', $event)">Nosotros</a>
-            <a [class.active]="seccionActiva==='clases'" href="#clases" (click)="irA('clases', $event)">Clases</a>
-            <a [class.active]="seccionActiva==='planes'" href="#planes" (click)="irA('planes', $event)">Planes</a>
-            <a [class.active]="seccionActiva==='galeria'" href="#galeria" (click)="irA('galeria', $event)">Galería</a>
-            <a [class.active]="seccionActiva==='contacto'" href="#contacto" (click)="irA('contacto', $event)">Contacto</a>
+            <a routerLink="/" class="active">Inicio</a>
+            <a routerLink="/nosotros">Nosotros</a>
+            <a routerLink="/clases-gym">Clases</a>
+            <a routerLink="/planes">Planes</a>
+            <a routerLink="/galeria">Galería</a>
+            <a routerLink="/contacto">Contacto</a>
           </nav>
           <a routerLink="/login" class="primary-button small">Iniciar sesión</a>
         </header>
@@ -34,7 +34,7 @@ import { RouterLink } from '@angular/router';
             <p>Entrenamiento profesional, ambiente motivador y resultados reales. Estamos contigo en cada paso de tu transformación.</p>
             <div class="hero-actions">
               <a routerLink="/login" class="primary-button">🏋 Comenzar ahora</a>
-              <a href="#planes" class="ghost-button" (click)="irA('planes', $event)">▷ Ver planes</a>
+              <a routerLink="/planes" class="ghost-button">▷ Ver planes</a>
             </div>
           </div>
           <div class="hero-person hero-image-enter" role="img" aria-label="Persona entrenando con mancuerna"></div>
@@ -67,7 +67,7 @@ import { RouterLink } from '@angular/router';
         <section id="clases" class="landing-section mq-reveal">
           <div class="section-heading">
             <div><span></span><h2>NUESTRAS CLASES</h2></div>
-            <a href="#clases" (click)="abrirListadoClases($event)">Ver todas las clases →</a>
+            <a routerLink="/clases-gym">Ver todas las clases →</a>
           </div>
           <div class="class-cards">
             <article
@@ -88,7 +88,7 @@ import { RouterLink } from '@angular/router';
         <section id="planes" class="landing-section plans-section mq-reveal">
           <div class="section-heading">
             <div><span></span><h2>PLANES QUE SE ADAPTAN A TI</h2></div>
-            <a href="#planes" (click)="abrirComparadorPlanes($event)">Ver todos los planes →</a>
+            <a routerLink="/planes">Ver todos los planes →</a>
           </div>
           <div class="plan-cards">
             <article *ngFor="let p of planes" [class.recommended]="p.destacado">
@@ -112,7 +112,7 @@ import { RouterLink } from '@angular/router';
       <section id="galeria" class="landing-gallery shell mq-reveal">
         <div class="section-heading">
           <div><span></span><h2>GALERÍA MALLQUI GYM</h2></div>
-          <a href="#contacto" (click)="irA('contacto', $event)">¿Quieres conocernos? →</a>
+          <a routerLink="/contacto">¿Quieres conocernos? →</a>
         </div>
         <div class="gallery-grid">
           <button
@@ -132,11 +132,11 @@ import { RouterLink } from '@angular/router';
           <div class="footer-brand"><img src="assets/mallqui-logo.png" alt="Mallqui Gym"><p>Más que un gimnasio, somos tu aliado en cada paso de tu transformación.</p></div>
           <div>
             <h4>ENLACES</h4>
-            <a href="#inicio" (click)="irA('inicio', $event)">Inicio</a>
-            <a href="#nosotros" (click)="irA('nosotros', $event)">Nosotros</a>
-            <a href="#clases" (click)="irA('clases', $event)">Clases</a>
-            <a href="#planes" (click)="irA('planes', $event)">Planes</a>
-            <a href="#galeria" (click)="irA('galeria', $event)">Galería</a>
+            <a routerLink="/">Inicio</a>
+            <a routerLink="/nosotros">Nosotros</a>
+            <a routerLink="/clases-gym">Clases</a>
+            <a routerLink="/planes">Planes</a>
+            <a routerLink="/galeria">Galería</a>
           </div>
           <div>
             <h4>SÍGUENOS</h4>
