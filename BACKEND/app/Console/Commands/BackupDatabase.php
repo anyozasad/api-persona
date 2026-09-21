@@ -35,7 +35,12 @@ class BackupDatabase extends Command
         File::ensureDirectoryExists($directorio);
         $archivo = $directorio.DIRECTORY_SEPARATOR.$database.'_'.now()->format('Ymd_His').'.sql';
 
-        $binario = (string) env('MYSQLDUMP_PATH', 'mysqldump');
+        $binario = (string) env('MYSQLDUMP_PATH', '');
+        if ($binario === '') {
+            $xampp = 'C:\\xampp\\mysql\\bin\\mysqldump.exe';
+            $binario = PHP_OS_FAMILY === 'Windows' && File::exists($xampp) ? $xampp : 'mysqldump';
+        }
+
         $process = new Process([
             $binario,
             '--host='.$host,
