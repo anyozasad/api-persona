@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -22,6 +22,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         <nav class="member-nav" aria-label="Navegación del cliente">
           <button type="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')"><i>⌂</i><span>Inicio</span></button>
           <button type="button" [class.active]="moduloActivo==='rutinas'" (click)="abrirModulo('rutinas')"><i>🏋</i><span>Rutinas</span></button>
+          <button type="button" [class.active]="moduloActivo==='casa'" (click)="abrirModulo('casa')"><i>⚡</i><span>En casa</span></button>
           <button type="button" [class.active]="moduloActivo==='clases'" (click)="abrirModulo('clases')"><i>▣</i><span>Clases</span></button>
           <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')"><i>◷</i><span>Reservas</span></button>
           <button type="button" [class.active]="moduloActivo==='asistencias'" (click)="abrirModulo('asistencias')"><i>✓</i><span>Asistencias</span></button>
@@ -50,7 +51,8 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               <p>Tu espacio personal para revisar membresía, rutinas, clases, reservas, asistencias y pagos en un solo lugar.</p>
 
               <div class="member-hero-actions">
-                <button type="button" class="member-primary-action" (click)="abrirModulo('rutinas')">Ver mis rutinas <span>→</span></button>
+                <button type="button" class="member-primary-action" (click)="abrirModulo('casa')">Entrenar en casa <span>→</span></button>
+                <button type="button" class="member-secondary-action" (click)="abrirModulo('rutinas')">Ver mis rutinas</button>
                 <button type="button" class="member-secondary-action" (click)="abrirModulo('clases')">Explorar clases</button>
               </div>
 
@@ -109,6 +111,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               <div><span>ACCESOS RÁPIDOS</span><h2>¿Qué quieres hacer hoy?</h2></div>
             </div>
             <div class="member-quick-actions">
+              <button type="button" class="home-training-quick" (click)="abrirModulo('casa')"><i>⚡</i><b>Entrenar en casa</b><small>Temporizador y guía paso a paso</small><em>→</em></button>
               <button type="button" (click)="abrirModulo('rutinas')"><i>🏋</i><b>Mis rutinas</b><small>Revisa tu plan de ejercicios</small><em>→</em></button>
               <button type="button" (click)="abrirModulo('clases')"><i>▣</i><b>Clases</b><small>Explora horarios disponibles</small><em>→</em></button>
               <button type="button" (click)="abrirModulo('reservas')"><i>◷</i><b>Reservas</b><small>Administra tus clases</small><em>→</em></button>
@@ -364,31 +367,248 @@ import { GymApiService } from '../../../core/services/gym-api.service';
     :host{display:block}
   `]
 })
-export class UsuarioComponent implements OnInit {
+export class UsuarioComponent implements OnInit, OnDestroy {
   moduloActivo='inicio'; cargando=true; error=''; toast='';
   resumen:any=null; perfil:any={}; membresiaActual:any=null; membresiasDisponibles:any[]=[];
   pagos:any[]=[]; rutinas:any[]=[]; asistencias:any[]=[]; reservas:any[]=[]; clases:any[]=[]; compras:any[]=[];
   fechasReserva:Record<number,string>={};
   pagoForm:any={id_membresia:0,fecha_inicio:new Date().toISOString().slice(0,10),metodo_pago:'Yape',numero_operacion:''};
 
+  diasSemanaCasa=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+  zonasCasaMeta=[
+    {id:'piernas',nombre:'Piernas',icono:'🦵',subtitulo:'FUERZA Y ESTABILIDAD',enfoque:'Piernas y equilibrio',descripcion:'Movimientos sencillos de piernas, cadera y pantorrillas.'},
+    {id:'brazos',nombre:'Brazos',icono:'💪',subtitulo:'TREN SUPERIOR',enfoque:'Brazos y hombros',descripcion:'Trabajo moderado de brazos y hombros sin equipo especial.'},
+    {id:'core',nombre:'Abdomen / Core',icono:'◎',subtitulo:'ESTABILIDAD CENTRAL',enfoque:'Core y postura',descripcion:'Ejercicios de estabilidad del tronco y control corporal.'},
+  ];
+  planCasa:any={dias:['Lunes','Miércoles','Viernes'],zonas:['piernas','brazos','core']};
+  catalogoCasa:Record<string,any[]>={piernas:[],brazos:[],core:[]};
+  historialCasa:any[]=[];
+  zonaCasaSeleccionada='piernas';
+  casaCargado=false;
+  errorCasa='';
+  verEjercicioCasa='';
+  sesionCasaActiva=false;
+  sesionCasaPausada=false;
+  sesionCasaTerminada=false;
+  indiceEjercicioCasa=0;
+  faseCasa:'ejercicio'|'descanso'='ejercicio';
+  segundosCasa=0;
+  segundosTranscurridosCasa=0;
+  private timerCasa:any=null;
+
   constructor(private api:GymApiService, private auth:AuthService, private router:Router){}
 
   ngOnInit():void{ this.cargar(); }
+  ngOnDestroy():void{ this.detenerTimerCasa(); }
 
   cargar():void{
     this.cargando=true; this.error='';
     this.api.cargarPortalCliente().subscribe({
-      next:r=>{this.resumen=r.resumen;this.perfil={...r.perfil};this.membresiaActual=r.membresia?.actual;this.membresiasDisponibles=r.membresiasDisponibles||[];this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.cargando=false;},
+      next:r=>{this.resumen=r.resumen;this.perfil={...r.perfil};this.membresiaActual=r.membresia?.actual;this.membresiasDisponibles=r.membresiasDisponibles||[];this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.cargando=false;this.cargarEntrenamientoCasa();},
       error:e=>{this.error=this.errorApi(e);this.cargando=false;}
     });
   }
-  abrirModulo(m:string){this.moduloActivo=m;window.scrollTo({top:0,behavior:'smooth'});}
+  abrirModulo(m:string){this.moduloActivo=m;if(m==='casa'&&!this.casaCargado)this.cargarEntrenamientoCasa();window.scrollTo({top:0,behavior:'smooth'});}
   get nombreCorto():string{return this.perfil?.nombres || this.auth.usuario?.nombres || 'Miembro';}
   get rutinaActual():any{return this.resumen?.rutina_actual || this.rutinas.find(r=>r.estado==='Activo') || null;}
   get nombreEntrenador():string{return this.nombrePersona(this.rutinaActual?.entrenador) || 'Sin entrenador asignado';}
   get reservasActivas():any[]{return this.reservas.filter(r=>r.estado==='Reservada');}
   nombrePersona(p:any):string{return p?[`${p.nombres||''}`,`${p.apellidos||''}`].join(' ').trim():'-';}
   fecha(v:any):string{if(!v)return '-';const d=new Date(v);return isNaN(d.getTime())?String(v):d.toLocaleString('es-PE');}
+
+  cargarEntrenamientoCasa():void{
+    this.api.entrenamientoCasaCliente().subscribe({
+      next:r=>{
+        this.planCasa={dias:r?.plan?.dias||['Lunes','Miércoles','Viernes'],zonas:r?.plan?.zonas||['piernas','brazos','core']};
+        this.catalogoCasa=r?.catalogo||{piernas:[],brazos:[],core:[]};
+        this.historialCasa=r?.historial||[];
+        this.zonaCasaSeleccionada=this.planCasa.zonas?.[0]||'piernas';
+        this.casaCargado=true;
+        this.errorCasa='';
+      },
+      error:e=>{this.errorCasa=this.errorApi(e);this.casaCargado=false;}
+    });
+  }
+
+  toggleDiaCasa(dia:string):void{
+    const dias=[...(this.planCasa.dias||[])];
+    const i=dias.indexOf(dia);
+    if(i>=0){
+      if(dias.length===1){this.errorCasa='Mantén al menos un día de entrenamiento en casa.';return;}
+      dias.splice(i,1);
+    }else{
+      if(dias.length>=4){this.errorCasa='Puedes programar hasta 4 días por semana para estas sesiones.';return;}
+      dias.push(dia);
+      dias.sort((a:string,b:string)=>this.diasSemanaCasa.indexOf(a)-this.diasSemanaCasa.indexOf(b));
+    }
+    this.planCasa={...this.planCasa,dias};
+    this.errorCasa='';
+  }
+
+  toggleZonaCasa(zona:string):void{
+    const zonas=[...(this.planCasa.zonas||[])];
+    const i=zonas.indexOf(zona);
+    if(i>=0){
+      if(zonas.length===1){this.errorCasa='Selecciona al menos una zona de entrenamiento.';return;}
+      zonas.splice(i,1);
+    }else{
+      zonas.push(zona);
+    }
+    this.planCasa={...this.planCasa,zonas};
+    if(!zonas.includes(this.zonaCasaSeleccionada))this.zonaCasaSeleccionada=zonas[0];
+    this.errorCasa='';
+  }
+
+  guardarPlanCasa():void{
+    this.errorCasa='';
+    this.api.guardarPlanCasaCliente({dias:this.planCasa.dias,zonas:this.planCasa.zonas}).subscribe({
+      next:r=>{this.planCasa={...r.plan};this.ok(r.mensaje||'Plan semanal guardado');},
+      error:e=>this.errorCasa=this.errorApi(e)
+    });
+  }
+
+  seleccionarZonaCasa(zona:string):void{
+    if(this.sesionCasaActiva)return;
+    this.zonaCasaSeleccionada=zona;
+    this.verEjercicioCasa='';
+  }
+
+  ejerciciosZonaCasa(zona:string):any[]{return this.catalogoCasa?.[zona]||[];}
+  get ejerciciosCasaActuales():any[]{return this.ejerciciosZonaCasa(this.zonaCasaSeleccionada);}
+  get ejercicioCasaActual():any{return this.ejerciciosCasaActuales[this.indiceEjercicioCasa]||null;}
+  get siguienteEjercicioCasa():any{return this.ejerciciosCasaActuales[Math.min(this.indiceEjercicioCasa+1,this.ejerciciosCasaActuales.length-1)]||null;}
+
+  metaZonaCasa(zona:string):any{
+    return this.zonasCasaMeta.find((z:any)=>z.id===zona)||this.zonasCasaMeta[0];
+  }
+
+  duracionEstimadaCasa(zona:string):number{
+    const total=this.ejerciciosZonaCasa(zona).reduce((s:number,e:any)=>s+Number(e.segundos||0)+Number(e.descanso||0),0);
+    return Math.max(1,Math.ceil(total/60));
+  }
+
+  get agendaCasaSemanal():any[]{
+    let indiceZona=0;
+    const zonas=(this.planCasa.zonas||[]).length?this.planCasa.zonas:['piernas'];
+    const hoy=this.diasSemanaCasa[(new Date().getDay()+6)%7];
+    return this.diasSemanaCasa.map((dia:string)=>{
+      const activo=(this.planCasa.dias||[]).includes(dia);
+      const zonaId=activo?zonas[indiceZona++%zonas.length]:'';
+      return {
+        dia,
+        hoy:dia===hoy,
+        activo,
+        zona:activo?this.metaZonaCasa(zonaId):null,
+        ejercicios:activo?this.ejerciciosZonaCasa(zonaId).length:0,
+        minutos:activo?this.duracionEstimadaCasa(zonaId):0,
+      };
+    });
+  }
+
+  iniciarEntrenamientoCasa():void{
+    if(!this.ejerciciosCasaActuales.length){this.errorCasa='Todavía no hay ejercicios disponibles para esta zona.';return;}
+    this.detenerTimerCasa();
+    this.indiceEjercicioCasa=0;
+    this.faseCasa='ejercicio';
+    this.segundosCasa=Number(this.ejercicioCasaActual?.segundos||30);
+    this.segundosTranscurridosCasa=0;
+    this.sesionCasaActiva=true;
+    this.sesionCasaPausada=false;
+    this.sesionCasaTerminada=false;
+    this.errorCasa='';
+    this.timerCasa=setInterval(()=>this.tickCasa(),1000);
+  }
+
+  private tickCasa():void{
+    if(!this.sesionCasaActiva||this.sesionCasaPausada)return;
+    this.segundosTranscurridosCasa++;
+    this.segundosCasa=Math.max(0,this.segundosCasa-1);
+    if(this.segundosCasa<=0)this.siguienteFaseCasa();
+  }
+
+  siguienteFaseCasa():void{
+    if(!this.sesionCasaActiva)return;
+    if(this.faseCasa==='ejercicio'){
+      if(this.indiceEjercicioCasa>=this.ejerciciosCasaActuales.length-1){
+        this.completarSesionCasa();
+        return;
+      }
+      this.faseCasa='descanso';
+      this.segundosCasa=Math.max(10,Number(this.ejercicioCasaActual?.descanso||20));
+      return;
+    }
+    this.indiceEjercicioCasa++;
+    this.faseCasa='ejercicio';
+    this.segundosCasa=Math.max(15,Number(this.ejercicioCasaActual?.segundos||30));
+  }
+
+  togglePausaCasa():void{this.sesionCasaPausada=!this.sesionCasaPausada;}
+
+  cancelarSesionCasa():void{
+    if(!confirm('¿Terminar esta sesión antes de completarla?'))return;
+    this.detenerTimerCasa();
+    this.sesionCasaActiva=false;
+    this.sesionCasaPausada=false;
+    this.sesionCasaTerminada=false;
+    this.indiceEjercicioCasa=0;
+    this.segundosCasa=0;
+  }
+
+  private completarSesionCasa():void{
+    this.detenerTimerCasa();
+    this.sesionCasaActiva=false;
+    this.sesionCasaPausada=false;
+    this.sesionCasaTerminada=true;
+    const total=this.ejerciciosCasaActuales.length;
+    const duracion=Math.max(1,this.segundosTranscurridosCasa);
+    this.api.registrarSesionCasaCliente({
+      zona:this.zonaCasaSeleccionada,
+      duracion_segundos:duracion,
+      ejercicios_total:total,
+      ejercicios_completados:total,
+    }).subscribe({
+      next:r=>{if(r?.sesion)this.historialCasa=[r.sesion,...this.historialCasa];this.ok(r?.mensaje||'Entrenamiento guardado');},
+      error:e=>{this.errorCasa='Terminaste la sesión, pero no se pudo guardar el historial: '+this.errorApi(e);}
+    });
+  }
+
+  reiniciarSesionCasa():void{
+    this.sesionCasaTerminada=false;
+    this.indiceEjercicioCasa=0;
+    this.segundosCasa=0;
+    this.segundosTranscurridosCasa=0;
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  private detenerTimerCasa():void{
+    if(this.timerCasa){clearInterval(this.timerCasa);this.timerCasa=null;}
+  }
+
+  formatoTiempoCasa(segundos:any):string{
+    const s=Math.max(0,Number(segundos)||0);
+    const min=Math.floor(s/60);
+    const sec=Math.floor(s%60);
+    return String(min).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+  }
+
+  get progresoCasa():number{
+    const total=this.ejerciciosCasaActuales.length;
+    if(!total)return 0;
+    const base=(this.indiceEjercicioCasa/total)*100;
+    const actual=this.ejercicioCasaActual;
+    const duracion=this.faseCasa==='ejercicio'?Number(actual?.segundos||1):Number(actual?.descanso||1);
+    const parcial=duracion>0?Math.min(1,Math.max(0,(duracion-this.segundosCasa)/duracion)):0;
+    const pesoFase=this.faseCasa==='ejercicio'?.72:.28;
+    return Math.min(100,Math.round(base+(parcial*pesoFase*(100/total))));
+  }
+
+  get temporizadorFondoCasa():string{
+    const actual=this.ejercicioCasaActual;
+    const total=this.faseCasa==='ejercicio'?Number(actual?.segundos||1):Number(actual?.descanso||1);
+    const pct=Math.max(0,Math.min(100,((total-this.segundosCasa)/Math.max(1,total))*100));
+    const color=this.faseCasa==='ejercicio'?'#ef233c':'#2f78c8';
+    return 'conic-gradient('+color+' '+pct+'%, #e7edf3 '+pct+'%)';
+  }
 
   guardarPerfil(){this.api.actualizarPerfilCliente(this.perfil).subscribe({next:r=>{this.perfil={...r.cliente};this.ok('Perfil actualizado');},error:e=>this.error=this.errorApi(e)});}
   reservar(c:any){const f=this.fechasReserva[c.id_clase];if(!f){this.error='Selecciona una fecha para la clase.';return;}this.api.reservarClase(c.id_clase,f).subscribe({next:r=>{this.ok(r.mensaje||'Reserva creada');this.cargarReservas();},error:e=>this.error=this.errorApi(e)});}
