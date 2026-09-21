@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LandingComponent } from './component/pages/landing/landing.component';
+import { PublicPageComponent } from './component/pages/public/public-page.component';
 import { LoginComponent } from './component/pages/login/login.component';
 import { RegisterComponent } from './component/pages/register/register.component';
 import { ResetPasswordComponent } from './component/pages/reset-password/reset-password.component';
@@ -29,6 +30,11 @@ import { authGuard, logoutOnLoginGuard, roleGuard } from './core/guards/auth.gua
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
+  { path: 'nosotros', component: PublicPageComponent, data: { pagina: 'nosotros' } },
+  { path: 'clases-gym', component: PublicPageComponent, data: { pagina: 'clases' } },
+  { path: 'planes', component: PublicPageComponent, data: { pagina: 'planes' } },
+  { path: 'galeria', component: PublicPageComponent, data: { pagina: 'galeria' } },
+  { path: 'contacto', component: PublicPageComponent, data: { pagina: 'contacto' } },
   { path: 'login', component: LoginComponent, canActivate: [logoutOnLoginGuard] },
   { path: 'registro', component: RegisterComponent },
   { path: 'restablecer', component: ResetPasswordComponent },
