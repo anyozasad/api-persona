@@ -88,6 +88,10 @@ Route::middleware(['auth:sanctum', 'rol:Cliente', 'auditoria'])->prefix('mi-cuen
     Route::get('/asistencias', [PortalClienteController::class, 'asistencias']);
     Route::get('/compras', [PortalClienteController::class, 'compras']);
 
+    Route::get('/entrenamiento-casa', [PortalClienteController::class, 'entrenamientoCasa']);
+    Route::put('/entrenamiento-casa/plan', [PortalClienteController::class, 'guardarPlanEntrenamientoCasa']);
+    Route::post('/entrenamiento-casa/sesiones', [PortalClienteController::class, 'registrarSesionEntrenamientoCasa']);
+
     Route::post('/pagos/solicitar', [SolicitudPagoMembresiaController::class, 'solicitar']);
     Route::post('/pagos/{idPago}/cancelar', [SolicitudPagoMembresiaController::class, 'cancelarPropia']);
 
