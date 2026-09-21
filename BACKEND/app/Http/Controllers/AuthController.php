@@ -22,33 +22,61 @@ class AuthController extends Controller
             'nombre_usuario' => 'required|string|max:80|unique:usuarios,nombre_usuario',
             'nombres' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
-            'dni' => 'required|string|max:15|unique:usuarios,dni|unique:clientes,dni',
+            'dni' => 'required|string|max:15|unique:usuarios,dni',
             'telefono' => 'nullable|string|max:25',
-            'correo' => 'required|email|max:150|unique:usuarios,correo|unique:clientes,correo',
+            'correo' => 'required|email|max:150|unique:usuarios,correo',
             'contrasena' => 'required|string|min:8|max:100',
         ], [
             'nombre_usuario.unique' => 'Ya existe una cuenta asociada a estos datos.',
             'dni.required' => 'Ingresa tu DNI.',
-            'dni.unique' => 'Este DNI ya está registrado. Si ya tienes una cuenta, inicia sesión.',
+            'dni.unique' => 'Este DNI ya tiene una cuenta de acceso. Inicia sesión o recupera tu contraseña.',
             'correo.required' => 'Ingresa tu correo.',
             'correo.email' => 'Ingresa un correo válido.',
-            'correo.unique' => 'Este correo ya está registrado. Si ya tienes una cuenta, inicia sesión.',
+            'correo.unique' => 'Este correo ya tiene una cuenta. Inicia sesión o recupera tu contraseña.',
             'contrasena.required' => 'Ingresa una contraseña.',
             'contrasena.min' => 'La contraseña debe tener al menos 8 caracteres.',
         ]);
 
         [$usuario, $cliente] = DB::transaction(function () use ($datos) {
-            $cliente = Cliente::create([
-                'dni' => $datos['dni'],
-                'nombres' => $datos['nombres'],
-                'apellidos' => $datos['apellidos'],
-                'telefono' => $datos['telefono'] ?? null,
-                'correo' => $datos['correo'],
-                'fecha_registro' => now(),
-                'estado' => 'Activo',
-            ]);
+            $correo = mb_strtolower(trim($datos['correo']));
+            $cliente = Cliente::where('dni', $datos['dni'])->lockForUpdate()->first();
+
+            if ($cliente) {
+                $correoCliente = mb_strtolower(trim((string) $cliente->correo));
+
+                if ($correoCliente !== '' && $correoCliente !== $correo) {
+                    throw ValidationException::withMessages([
+                        'dni' => ['Este DNI ya pertenece a un cliente registrado con otro correo. Usa el correo registrado o solicita ayuda al administrador.'],
+                    ]);
+                }
+
+                if (Usuario::where('id_cliente', $cliente->id_cliente)->exists()) {
+                    throw ValidationException::withMessages([
+                        'dni' => ['Este cliente ya tiene una cuenta de acceso. Inicia sesión o recupera tu contraseña.'],
+                    ]);
+                }
+
+                $cliente->update([
+                    'nombres' => $datos['nombres'],
+                    'apellidos' => $datos['apellidos'],
+                    'telefono' => $datos['telefono'] ?? $cliente->telefono,
+                    'correo' => $correo,
+                    'estado' => 'Activo',
+                ]);
+            } else {
+                $cliente = Cliente::create([
+                    'dni' => $datos['dni'],
+                    'nombres' => $datos['nombres'],
+                    'apellidos' => $datos['apellidos'],
+                    'telefono' => $datos['telefono'] ?? null,
+                    'correo' => $correo,
+                    'fecha_registro' => now(),
+                    'estado' => 'Activo',
+                ]);
+            }
 
             $datosUsuario = $datos;
+            $datosUsuario['correo'] = $correo;
             $datosUsuario['contrasena'] = Hash::make($datosUsuario['contrasena']);
             $datosUsuario['rol'] = 'Cliente';
             $datosUsuario['estado'] = 'Activo';
