@@ -73,13 +73,25 @@ import { ProductosComponent } from './pages/productos/productos';
       <div *ngIf="error" class="admin-toast">⚠ {{error}}</div>
 
       <ng-container *ngIf="seccion==='dashboard'">
-        <section class="ux-dashboard-head">
-          <div>
+        <section class="ux-dashboard-head premium-dashboard-hero">
+          <div class="dashboard-hero-copy">
+            <span class="dashboard-live-pill"><i></i> SISTEMA EN TIEMPO REAL</span>
             <span class="ux-overline">PANEL ADMINISTRATIVO · {{dashboard?.periodo?.mes || 'MES ACTUAL'}}</span>
-            <h2>Todo lo importante, sin buscar de más.</h2>
-            <p>Revisa el estado del gimnasio y entra directo a la acción que necesitas.</p>
+            <h2>Todo lo importante, <strong>sin buscar de más.</strong></h2>
+            <p>Controla ventas, clientes, membresías, caja e inventario desde un solo lugar.</p>
+            <div class="dashboard-hero-trust">
+              <span>✓ Datos reales</span>
+              <span>✓ Laravel + Angular</span>
+              <span>✓ MySQL conectado</span>
+            </div>
           </div>
-          <div class="ux-head-actions">
+          <div class="ux-head-actions premium-head-actions">
+            <div class="dashboard-hero-decoration" aria-hidden="true">
+              <span class="hero-ring one"></span>
+              <span class="hero-ring two"></span>
+              <span class="hero-ring three"></span>
+              <span class="hero-core">MG</span>
+            </div>
             <div class="ux-cash-status" [class.is-open]="dashboard?.caja?.abierta">
               <span class="ux-status-dot"></span>
               <div>
