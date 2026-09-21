@@ -542,7 +542,139 @@ import { ProductosComponent } from './pages/productos/productos';
       </ng-container>
 
       <ng-container *ngIf="seccion==='configuracion'">
-        <section class="settings-grid"><article class="admin-form-card"><div class="management-heading"><div><h2>Mallqui Gym</h2><p>Estado de integración del sistema.</p></div><span>⚙</span></div><p><b>Frontend:</b> Angular</p><p><b>Backend:</b> Laravel API</p><p><b>Base de datos:</b> MySQL</p><p><b>Autenticación principal:</b> Sanctum</p><p><b>Módulo académico:</b> JWT</p><p><b>Conexión API:</b> /api mediante proxy</p></article><article class="settings-preview"><img src="assets/mallqui-logo.png"><h2>Mallqui Gym</h2><div class="security-note"><b>Datos reales</b><p>Clientes, membresías, pagos, entrenador, clases, asistencias, productos, proveedores, compras, ventas, Kardex y caja trabajan mediante la API Laravel.</p></div></article></section>
+        <section class="config-page">
+          <div class="config-hero">
+            <div>
+              <span class="config-eyebrow">CONFIGURACIÓN GENERAL</span>
+              <h2>Administra Mallqui Gym desde un solo lugar</h2>
+              <p>Datos del gimnasio, horarios, reglas operativas, seguridad, respaldos y estado del sistema.</p>
+            </div>
+            <div class="config-health" [class.ok]="configEstado?.mysql">
+              <span></span>
+              <div><b>{{configEstado?.mysql ? 'Sistema operativo' : 'Revisar conexión'}}</b><small>Laravel API + MySQL</small></div>
+            </div>
+          </div>
+
+          <div class="config-main-grid">
+            <article class="config-card config-business">
+              <div class="config-card-head">
+                <div><span>01</span><div><h3>Datos del gimnasio</h3><p>Información principal que identifica al negocio.</p></div></div>
+                <img src="assets/mallqui-logo.svg" alt="Mallqui Gym">
+              </div>
+
+              <div class="config-form-grid">
+                <label class="span-2">Nombre del gimnasio
+                  <input [(ngModel)]="configuracionForm.nombre_gimnasio" name="cfg_nombre" placeholder="Mallqui Gym">
+                </label>
+                <label>RUC
+                  <input [(ngModel)]="configuracionForm.ruc" name="cfg_ruc" placeholder="Opcional">
+                </label>
+                <label>Teléfono
+                  <input [(ngModel)]="configuracionForm.telefono" name="cfg_telefono" placeholder="+51 ...">
+                </label>
+                <label>Correo de contacto
+                  <input type="email" [(ngModel)]="configuracionForm.correo" name="cfg_correo" placeholder="contacto@...">
+                </label>
+                <label>Dirección
+                  <input [(ngModel)]="configuracionForm.direccion" name="cfg_direccion" placeholder="Dirección del gimnasio">
+                </label>
+              </div>
+            </article>
+
+            <article class="config-card">
+              <div class="config-card-head simple">
+                <div><span>02</span><div><h3>Horario de atención</h3><p>Define cuándo atiende el gimnasio.</p></div></div>
+              </div>
+              <div class="config-time-grid">
+                <label>Apertura<input type="time" [(ngModel)]="configuracionForm.hora_apertura" name="cfg_apertura"></label>
+                <label>Cierre<input type="time" [(ngModel)]="configuracionForm.hora_cierre" name="cfg_cierre"></label>
+              </div>
+              <div class="config-days">
+                <button type="button" *ngFor="let dia of diasSemana"
+                  [class.active]="configuracionForm.dias_atencion?.includes(dia)"
+                  (click)="toggleDiaConfiguracion(dia)">
+                  {{dia.substring(0,3)}}
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <div class="config-secondary-grid">
+            <article class="config-card">
+              <div class="config-card-head simple">
+                <div><span>03</span><div><h3>Reglas operativas</h3><p>Automatiza controles que el personal usa todos los días.</p></div></div>
+              </div>
+              <div class="config-rules">
+                <label><div><b>Aviso de vencimiento</b><small>Días antes de vencer una membresía</small></div><input type="number" min="1" max="60" [(ngModel)]="configuracionForm.dias_aviso_vencimiento" name="cfg_aviso"></label>
+                <label><div><b>Cancelación de reserva</b><small>Minutos mínimos de anticipación</small></div><input type="number" min="0" max="1440" [(ngModel)]="configuracionForm.minutos_cancelacion_reserva" name="cfg_cancelacion"></label>
+                <label><div><b>Reserva anticipada</b><small>Días máximos para reservar una clase</small></div><input type="number" min="0" max="60" [(ngModel)]="configuracionForm.dias_anticipacion_reserva" name="cfg_anticipacion"></label>
+                <label><div><b>Alerta de inventario</b><small>Stock mínimo por defecto</small></div><input type="number" min="0" max="9999" [(ngModel)]="configuracionForm.stock_minimo_default" name="cfg_stock"></label>
+              </div>
+            </article>
+
+            <article class="config-card">
+              <div class="config-card-head simple">
+                <div><span>04</span><div><h3>Notificaciones internas</h3><p>Elige qué situaciones deben generar alertas.</p></div></div>
+              </div>
+              <div class="config-switches">
+                <label><div><b>Membresías por vencer</b><small>Mostrar alertas antes del vencimiento.</small></div><input type="checkbox" [(ngModel)]="configuracionForm.notificar_vencimientos" name="cfg_not_venc"><i></i></label>
+                <label><div><b>Stock bajo</b><small>Avisar cuando un producto llegue al mínimo.</small></div><input type="checkbox" [(ngModel)]="configuracionForm.notificar_stock_bajo" name="cfg_not_stock"><i></i></label>
+                <label><div><b>Pagos pendientes</b><small>Recordar validaciones pendientes.</small></div><input type="checkbox" [(ngModel)]="configuracionForm.notificar_pagos_pendientes" name="cfg_not_pagos"><i></i></label>
+              </div>
+            </article>
+          </div>
+
+          <div class="config-secondary-grid">
+            <article class="config-card">
+              <div class="config-card-head simple">
+                <div><span>05</span><div><h3>Seguridad del administrador</h3><p>Cambia tu contraseña sin salir del panel.</p></div></div>
+              </div>
+              <div class="config-password">
+                <label>Contraseña actual<input type="password" [(ngModel)]="configPassword.actual" name="cfg_pass_actual" autocomplete="current-password"></label>
+                <label>Nueva contraseña<input type="password" [(ngModel)]="configPassword.nueva" name="cfg_pass_nueva" autocomplete="new-password"></label>
+                <label>Confirmar nueva<input type="password" [(ngModel)]="configPassword.confirmacion" name="cfg_pass_confirmar" autocomplete="new-password"></label>
+                <button type="button" class="config-secondary-button" (click)="cambiarContrasenaConfiguracion()">Actualizar contraseña</button>
+              </div>
+            </article>
+
+            <article class="config-card">
+              <div class="config-card-head simple">
+                <div><span>06</span><div><h3>Respaldo y mantenimiento</h3><p>Herramientas para cuidar la información del sistema.</p></div></div>
+              </div>
+              <div class="config-backup-status">
+                <span>▣</span>
+                <div>
+                  <b>{{ultimoRespaldo ? 'Último respaldo' : 'Sin respaldos registrados'}}</b>
+                  <small *ngIf="ultimoRespaldo">{{fecha(ultimoRespaldo.fecha)}} · {{ultimoRespaldo.tamano_kb}} KB</small>
+                  <small *ngIf="!ultimoRespaldo">Crea la primera copia de seguridad de MySQL.</small>
+                </div>
+              </div>
+              <div class="config-action-grid">
+                <button type="button" (click)="crearRespaldoConfiguracion()" [disabled]="configAccion==='respaldo'">▣ {{configAccion==='respaldo' ? 'Generando...' : 'Crear respaldo'}}</button>
+                <button type="button" (click)="verificarSistemaConfiguracion()" [disabled]="configAccion==='estado'">✓ Verificar sistema</button>
+                <button type="button" (click)="limpiarCacheConfiguracion()" [disabled]="configAccion==='cache'">↻ Limpiar caché</button>
+              </div>
+            </article>
+          </div>
+
+          <article class="config-card config-system-info">
+            <div class="config-card-head simple">
+              <div><span>07</span><div><h3>Información del sistema</h3><p>Datos técnicos para soporte y diagnóstico.</p></div></div>
+              <small *ngIf="configEstado?.fecha_revision">Revisado: {{fecha(configEstado.fecha_revision)}}</small>
+            </div>
+            <div class="config-tech-grid">
+              <div><span class="tech-dot ok"></span><p><b>Frontend</b><small>Angular</small></p><em>ACTIVO</em></div>
+              <div><span class="tech-dot" [class.ok]="configEstado?.api"></span><p><b>API</b><small>Laravel {{configEstado?.laravel || ''}}</small></p><em>{{configEstado?.api ? 'CONECTADA' : 'ERROR'}}</em></div>
+              <div><span class="tech-dot" [class.ok]="configEstado?.mysql"></span><p><b>Base de datos</b><small>MySQL</small></p><em>{{configEstado?.mysql ? 'CONECTADA' : 'ERROR'}}</em></div>
+              <div><span class="tech-dot" [class.ok]="configEstado?.sanctum"></span><p><b>Seguridad</b><small>Laravel Sanctum</small></p><em>{{configEstado?.sanctum ? 'ACTIVA' : 'REVISAR'}}</em></div>
+            </div>
+          </article>
+
+          <div class="config-save-bar">
+            <div><b>Cambios de configuración</b><small>Los datos se guardan en MySQL y se mantienen al reiniciar el sistema.</small></div>
+            <button type="button" (click)="guardarConfiguracion()" [disabled]="configGuardando">{{configGuardando ? 'Guardando...' : 'Guardar configuración'}}</button>
+          </div>
+        </section>
       </ng-container>
     </main>
   </div>
@@ -617,10 +749,25 @@ export class AdminIntegradoComponent implements OnInit {
     compras:['Compras','Ingreso de productos e inventario'], ventas:['Ventas','Ventas de productos y stock'],
     kardex:['Kardex','Movimientos del inventario'], caja:['Caja','Apertura, movimientos y cierre'],
     reportes:['Reportes','Indicadores calculados desde MySQL'], usuarios:['Usuarios','Cuentas internas y permisos'],
-    auditoria:['Auditoría','Trazabilidad de acciones del sistema'], configuracion:['Configuración','Estado técnico del sistema']
+    auditoria:['Auditoría','Trazabilidad de acciones del sistema'], configuracion:['Configuración','Ajustes generales y mantenimiento del sistema']
   };
 
   sidebarCerrado = false;
+
+  diasSemana = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+  configuracionForm: any = {
+    nombre_gimnasio:'Mallqui Gym', ruc:'', telefono:'', correo:'', direccion:'',
+    hora_apertura:'06:00', hora_cierre:'22:00',
+    dias_atencion:['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+    dias_aviso_vencimiento:7, minutos_cancelacion_reserva:120,
+    dias_anticipacion_reserva:7, stock_minimo_default:5,
+    notificar_vencimientos:true, notificar_stock_bajo:true, notificar_pagos_pendientes:true
+  };
+  configEstado: any = null;
+  ultimoRespaldo: any = null;
+  configPassword: any = {actual:'',nueva:'',confirmacion:''};
+  configGuardando = false;
+  configAccion = '';
 
   clienteForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
   membresiaForm: any = {id_cliente:0,id_membresia:0,metodo_pago:'Efectivo',numero_operacion:''};
@@ -665,6 +812,7 @@ export class AdminIntegradoComponent implements OnInit {
     this.error = '';
     if (id === 'reportes') this.cargarReportes();
     if (id === 'auditoria') this.cargarAuditoria();
+    if (id === 'configuracion') this.cargarConfiguracion();
     window.scrollTo({top:0, behavior:'smooth'});
   }
 
@@ -792,6 +940,77 @@ export class AdminIntegradoComponent implements OnInit {
   abrirCaja(){ this.api.abrirCaja(Number(this.cajaAbrirForm.monto_inicial),this.cajaAbrirForm.observacion).subscribe({next:r=>{this.ok(r.mensaje||'Caja abierta');this.cargarCaja();},error:e=>this.mostrarError(e)}); }
   movimientoCaja(){ this.api.movimientoCaja(this.movCajaForm.tipo,'Manual',this.movCajaForm.descripcion,Number(this.movCajaForm.monto)).subscribe({next:r=>{this.ok(r.mensaje||'Movimiento registrado');this.movCajaForm={tipo:'Ingreso',monto:0,descripcion:'',origen:'Manual'};this.cargarCaja();},error:e=>this.mostrarError(e)}); }
   cerrarCaja(){ if(!confirm('¿Cerrar la caja actual?')) return; this.api.cerrarCaja(Number(this.cajaCerrarForm.monto_real),this.cajaCerrarForm.observacion).subscribe({next:r=>{this.ok(r.mensaje||'Caja cerrada');this.cajaCerrarForm={monto_real:0,observacion:''};this.cargarCaja();},error:e=>this.mostrarError(e)}); }
+
+  cargarConfiguracion(){
+    this.api.configuracion().subscribe({
+      next:r=>{
+        const cfg=r?.configuracion || {};
+        this.configuracionForm={
+          ...this.configuracionForm,
+          ...cfg,
+          hora_apertura:String(cfg.hora_apertura || '06:00').slice(0,5),
+          hora_cierre:String(cfg.hora_cierre || '22:00').slice(0,5),
+          dias_atencion:Array.isArray(cfg.dias_atencion)?cfg.dias_atencion:this.configuracionForm.dias_atencion
+        };
+        this.configEstado=r?.estado || null;
+        this.ultimoRespaldo=r?.ultimo_respaldo || null;
+      },
+      error:e=>this.mostrarError(e)
+    });
+  }
+
+  toggleDiaConfiguracion(dia:string){
+    const actuales=Array.isArray(this.configuracionForm.dias_atencion)?[...this.configuracionForm.dias_atencion]:[];
+    const existe=actuales.includes(dia);
+    if(existe && actuales.length===1){this.error='Debe existir al menos un día de atención.';return;}
+    this.error='';
+    this.configuracionForm.dias_atencion=existe?actuales.filter((d:string)=>d!==dia):[...actuales,dia];
+  }
+
+  guardarConfiguracion(){
+    if(!this.configuracionForm.nombre_gimnasio?.trim()){this.error='Ingresa el nombre del gimnasio.';return;}
+    this.configGuardando=true;
+    const datos={...this.configuracionForm,hora_apertura:String(this.configuracionForm.hora_apertura).slice(0,5),hora_cierre:String(this.configuracionForm.hora_cierre).slice(0,5)};
+    this.api.guardarConfiguracion(datos).subscribe({
+      next:r=>{this.configGuardando=false;this.configuracionForm={...this.configuracionForm,...r.configuracion,hora_apertura:String(r.configuracion?.hora_apertura||datos.hora_apertura).slice(0,5),hora_cierre:String(r.configuracion?.hora_cierre||datos.hora_cierre).slice(0,5)};this.ok(r.mensaje||'Configuración guardada');},
+      error:e=>{this.configGuardando=false;this.mostrarError(e);}
+    });
+  }
+
+  verificarSistemaConfiguracion(){
+    this.configAccion='estado';
+    this.api.estadoSistema().subscribe({
+      next:r=>{this.configAccion='';this.configEstado=r;this.ok(r.mysql?'Sistema verificado: API y MySQL conectados.':'La API responde, pero MySQL requiere revisión.');},
+      error:e=>{this.configAccion='';this.mostrarError(e);}
+    });
+  }
+
+  crearRespaldoConfiguracion(){
+    if(!confirm('¿Crear una copia de seguridad de la base de datos ahora?')) return;
+    this.configAccion='respaldo';
+    this.api.crearRespaldo().subscribe({
+      next:r=>{this.configAccion='';this.ultimoRespaldo=r.respaldo||null;this.ok(r.mensaje||'Respaldo creado');},
+      error:e=>{this.configAccion='';this.mostrarError(e);}
+    });
+  }
+
+  limpiarCacheConfiguracion(){
+    this.configAccion='cache';
+    this.api.limpiarCacheSistema().subscribe({
+      next:r=>{this.configAccion='';this.ok(r.mensaje||'Caché limpiada');},
+      error:e=>{this.configAccion='';this.mostrarError(e);}
+    });
+  }
+
+  cambiarContrasenaConfiguracion(){
+    if(!this.configPassword.actual || !this.configPassword.nueva){this.error='Completa la contraseña actual y la nueva.';return;}
+    if(this.configPassword.nueva.length<8){this.error='La nueva contraseña debe tener mínimo 8 caracteres.';return;}
+    if(this.configPassword.nueva!==this.configPassword.confirmacion){this.error='La confirmación de la contraseña no coincide.';return;}
+    this.auth.cambiarContrasena(this.configPassword.actual,this.configPassword.nueva).subscribe({
+      next:r=>{this.configPassword={actual:'',nueva:'',confirmacion:''};this.ok(r.mensaje||'Contraseña actualizada');},
+      error:e=>this.mostrarError(e)
+    });
+  }
 
   cerrarSesion(){ this.auth.logout().subscribe({next:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);},error:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);}}); }
 
