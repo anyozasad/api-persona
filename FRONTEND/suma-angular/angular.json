@@ -16,7 +16,7 @@
             "index": "src/index.html",
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
-            "outputHashing": "none",
+            "outputHashing": "all",
             "assets": [{ "glob": "**/*", "input": "public" }],
             "styles": ["src/styles.css"]
           }
