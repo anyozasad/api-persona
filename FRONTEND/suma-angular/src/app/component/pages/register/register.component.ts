@@ -92,7 +92,11 @@ import { AuthService } from '../../../auth.service';
               <button type="button" class="show-register-password" (click)="mostrarPassword = !mostrarPassword">{{ mostrarPassword ? 'Ocultar contraseñas' : 'Mostrar contraseñas' }}</button>
             </div>
 
-            <p *ngIf="error" class="register-error">{{ error }}</p>
+            <div *ngIf="error" class="register-error register-error-help">
+              <b>No pudimos crear la cuenta</b>
+              <span>{{ error }}</span>
+              <a *ngIf="error.toLowerCase().includes('registrado')" routerLink="/login">Ir a iniciar sesión →</a>
+            </div>
             <p *ngIf="mensaje" class="register-success">{{ mensaje }}</p>
 
             <button class="register-submit" type="submit" [disabled]="registerForm.invalid || cargando">{{ cargando ? 'Creando cuenta...' : 'Crear mi cuenta →' }}</button>
