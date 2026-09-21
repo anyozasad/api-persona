@@ -256,6 +256,148 @@ class AuthController extends Controller
         ]);
     }
 
+    public function recoveryByDni(Request $request)
+    {
+        $datos = $request->validate([
+            'dni' => ['required', 'string', 'min:8', 'max:15', 'regex:/^[0-9]+$/'],
+        ], [
+            'dni.required' => 'Ingresa tu DNI.',
+            'dni.regex' => 'El DNI solo debe contener números.',
+            'dni.min' => 'El DNI ingresado no es válido.',
+        ]);
+
+        $dni = trim($datos['dni']);
+
+        $usuario = Usuario::where('dni', $dni)->first();
+
+        if (!$usuario) {
+            $cliente = Cliente::where('dni', $dni)->first();
+            if ($cliente) {
+                $usuario = Usuario::where('id_cliente', $cliente->id_cliente)->first();
+            }
+        }
+
+        if (!$usuario || mb_strtolower((string) $usuario->estado) !== 'activo') {
+            return response()->json([
+                'mensaje' => 'No encontramos una cuenta activa asociada a ese DNI.',
+            ], 404);
+        }
+
+        $correo = mb_strtolower(trim((string) $usuario->correo));
+
+        if ($correo === '') {
+            return response()->json([
+                'mensaje' => 'La cuenta no tiene un correo registrado. Comunícate con el administrador.',
+            ], 422);
+        }
+
+        $codigo = (string) random_int(100000, 999999);
+        $challenge = Str::random(64);
+        $cacheKey = $this->passwordRecoveryDniKey($challenge);
+
+        Cache::put($cacheKey, [
+            'usuario_id' => $usuario->id_usuario,
+            'correo' => $correo,
+            'codigo_hash' => hash('sha256', $codigo),
+            'intentos' => 0,
+        ], now()->addMinutes(10));
+
+        try {
+            Mail::raw(
+                "Mallqui Gym\n\nTu código para recuperar la contraseña es: {$codigo}\n\nEste código vence en 10 minutos.\n\nSi no realizaste esta solicitud, ignora este mensaje.",
+                function ($message) use ($correo) {
+                    $message->to($correo)->subject('Código de recuperación - Mallqui Gym');
+                }
+            );
+        } catch (Throwable $e) {
+            Cache::forget($cacheKey);
+
+            Log::error('No se pudo enviar código de recuperación por DNI', [
+                'usuario_id' => $usuario->id_usuario,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'mensaje' => 'No se pudo enviar el código de recuperación. Revisa la configuración de correo del sistema.',
+            ], 503);
+        }
+
+        $respuesta = [
+            'mensaje' => 'Encontramos tu cuenta. Enviamos un código de 6 dígitos al correo registrado.',
+            'correo' => $this->maskEmail($correo),
+            'challenge' => $challenge,
+            'expira_en_minutos' => 10,
+        ];
+
+        if (app()->environment('local') && config('mail.default') === 'log') {
+            $respuesta['codigo_desarrollo'] = $codigo;
+        }
+
+        return response()->json($respuesta);
+    }
+
+    public function resetPasswordByDni(Request $request)
+    {
+        $datos = $request->validate([
+            'challenge' => 'required|string|min:32|max:255',
+            'codigo' => ['required', 'string', 'regex:/^[0-9]{6}$/'],
+            'contrasena' => 'required|string|min:8|max:100|confirmed',
+        ], [
+            'codigo.required' => 'Ingresa el código de recuperación.',
+            'codigo.regex' => 'El código debe tener 6 dígitos.',
+            'contrasena.required' => 'Ingresa la nueva contraseña.',
+            'contrasena.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
+            'contrasena.confirmed' => 'Las contraseñas no coinciden.',
+        ]);
+
+        $cacheKey = $this->passwordRecoveryDniKey($datos['challenge']);
+        $reset = Cache::get($cacheKey);
+
+        if (!$reset) {
+            throw ValidationException::withMessages([
+                'codigo' => ['La solicitud de recuperación venció. Vuelve a ingresar tu DNI.'],
+            ]);
+        }
+
+        $intentos = (int) ($reset['intentos'] ?? 0);
+
+        if ($intentos >= 5) {
+            Cache::forget($cacheKey);
+            throw ValidationException::withMessages([
+                'codigo' => ['Se superó el número de intentos. Solicita un nuevo código.'],
+            ]);
+        }
+
+        if (!hash_equals((string) ($reset['codigo_hash'] ?? ''), hash('sha256', $datos['codigo']))) {
+            $reset['intentos'] = $intentos + 1;
+            Cache::put($cacheKey, $reset, now()->addMinutes(10));
+
+            throw ValidationException::withMessages([
+                'codigo' => ['El código ingresado no es correcto.'],
+            ]);
+        }
+
+        $usuario = Usuario::find($reset['usuario_id'] ?? 0);
+
+        if (!$usuario || mb_strtolower((string) $usuario->estado) !== 'activo') {
+            Cache::forget($cacheKey);
+            throw ValidationException::withMessages([
+                'codigo' => ['La cuenta ya no está disponible para recuperación.'],
+            ]);
+        }
+
+        $usuario->update([
+            'contrasena' => Hash::make($datos['contrasena']),
+        ]);
+
+        $usuario->tokens()->delete();
+        Cache::forget($cacheKey);
+
+        return response()->json([
+            'mensaje' => 'Contraseña actualizada correctamente. Ya puedes iniciar sesión con tu nueva contraseña.',
+        ]);
+    }
+
     public function resetPassword(Request $request)
     {
         $datos = $request->validate([
@@ -294,6 +436,25 @@ class AuthController extends Controller
         return response()->json([
             'mensaje' => 'Contraseña restablecida correctamente. Ya puedes iniciar sesión.',
         ]);
+    }
+
+    private function passwordRecoveryDniKey(string $challenge): string
+    {
+        return 'password_recovery_dni:'.hash('sha256', $challenge);
+    }
+
+    private function maskEmail(string $correo): string
+    {
+        [$usuario, $dominio] = array_pad(explode('@', $correo, 2), 2, '');
+
+        if ($usuario === '' || $dominio === '') {
+            return 'correo registrado';
+        }
+
+        $visible = mb_substr($usuario, 0, min(2, mb_strlen($usuario)));
+        $ocultos = str_repeat('*', max(3, mb_strlen($usuario) - mb_strlen($visible)));
+
+        return $visible.$ocultos.'@'.$dominio;
     }
 
     private function passwordResetKey(string $correo): string
