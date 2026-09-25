@@ -1327,3 +1327,5 @@
 @media(max-width:680px){
   .ux-quick-actions,.ux-status-strip{grid-template-columns:1fr!important}
 }
+
+.report-actions{display:flex;gap:8px;flex-wrap:wrap}
