@@ -242,7 +242,7 @@ class PortalClienteController extends Controller
         $cliente = $this->clienteDelUsuario($request);
 
         $datos = $request->validate([
-            'zona' => ['required', 'string', Rule::in(['piernas', 'brazos', 'core'])],
+            'zona' => ['required', 'string', Rule::in(['piernas', 'brazos', 'pecho', 'espalda', 'hombros', 'gluteos', 'core'])],
             'duracion_segundos' => 'required|integer|min:1|max:7200',
             'ejercicios_total' => 'required|integer|min:1|max:20',
             'ejercicios_completados' => 'required|integer|min:1|max:20',
