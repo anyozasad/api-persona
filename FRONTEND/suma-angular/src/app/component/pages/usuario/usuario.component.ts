@@ -29,6 +29,7 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
           <button type="button" [class.active]="moduloActivo==='asistencias'" (click)="abrirModulo('asistencias')"><i>✓</i><span>Asistencias</span></button>
           <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')"><i>◎</i><span>Progreso</span></button>
           <button type="button" [class.active]="moduloActivo==='calendario'" (click)="abrirModulo('calendario')"><i>◫</i><span>Calendario</span></button>
+          <button type="button" [class.active]="moduloActivo==='club'" (click)="abrirModulo('club')"><i>★</i><span>Mi club</span></button>
           <button type="button" class="member-nav-notice" [class.active]="moduloActivo==='avisos'" (click)="abrirModulo('avisos')"><i>●</i><span>Avisos</span><b *ngIf="avisosNoLeidos>0">{{avisosNoLeidos>9 ? '9+' : avisosNoLeidos}}</b></button>
           <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')"><i>▤</i><span>Pagos</span></button>
           <button type="button" [class.active]="moduloActivo==='soporte'" (click)="abrirModulo('soporte')"><i>?</i><span>Soporte</span></button>
@@ -218,6 +219,7 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
               <button type="button" (click)="abrirModulo('reservas')"><i>◷</i><b>Reservas</b><small>Administra tus clases</small><em>→</em></button>
               <button type="button" (click)="abrirModulo('progreso')"><i>◎</i><b>Mi progreso</b><small>Actividad e historial</small><em>→</em></button>
               <button type="button" (click)="abrirModulo('calendario')"><i>◫</i><b>Calendario</b><small>Próximas actividades</small><em>→</em></button>
+              <button type="button" (click)="abrirModulo('club')"><i>★</i><b>Mi club</b><small>Credencial, favoritos y opinión</small><em>→</em></button>
               <button type="button" (click)="abrirModulo('avisos')"><i>●</i><b>Avisos</b><small>Mensajes y recordatorios</small><em>→</em></button>
               <button type="button" (click)="abrirModulo('pagos')"><i>▤</i><b>Pagos</b><small>Consulta tus movimientos</small><em>→</em></button>
               <button type="button" (click)="abrirModulo('soporte')"><i>?</i><b>Soporte</b><small>Consulta al gimnasio</small><em>→</em></button>
@@ -796,7 +798,7 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
           </section>
         </section>
         <app-cliente-experiencia
-          *ngIf="moduloActivo==='progreso' || moduloActivo==='calendario' || moduloActivo==='avisos' || moduloActivo==='soporte'"
+          *ngIf="moduloActivo==='progreso' || moduloActivo==='calendario' || moduloActivo==='club' || moduloActivo==='avisos' || moduloActivo==='soporte'"
           [modulo]="moduloActivo"
           (notificacionesCambio)="avisosNoLeidos=$event">
         </app-cliente-experiencia>
