@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { forkJoin, Observable } from 'rxjs';
+import { catchError, forkJoin, Observable, of, throwError } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class GymApiService {
@@ -20,17 +20,27 @@ export class GymApiService {
   reservasCliente(): Observable<any[]> { return this.http.get<any[]>('/api/mi-cuenta/reservas'); }
 
   cargarPortalCliente(): Observable<any> {
+    const seguro = <T>(obs: Observable<T>, fallback: T): Observable<T> =>
+      obs.pipe(
+        catchError((error: any) => {
+          if (error?.status === 401 || error?.status === 403) {
+            return throwError(() => error);
+          }
+          return of(fallback);
+        })
+      );
+
     return forkJoin({
-      resumen: this.resumenCliente(),
-      perfil: this.perfilCliente(),
-      membresia: this.membresiaCliente(),
-      pagos: this.pagosCliente(),
-      rutinas: this.rutinasCliente(),
-      asistencias: this.asistenciasCliente(),
-      compras: this.comprasCliente(),
-      reservas: this.reservasCliente(),
-      clases: this.clases(),
-      membresiasDisponibles: this.membresias(),
+      resumen: seguro(this.resumenCliente(), null),
+      perfil: seguro(this.perfilCliente(), {}),
+      membresia: seguro(this.membresiaCliente(), { actual: null, historial: [] }),
+      pagos: seguro(this.pagosCliente(), []),
+      rutinas: seguro(this.rutinasCliente(), []),
+      asistencias: seguro(this.asistenciasCliente(), []),
+      compras: seguro(this.comprasCliente(), []),
+      reservas: seguro(this.reservasCliente(), []),
+      clases: seguro(this.clases(), []),
+      membresiasDisponibles: seguro(this.membresias(), []),
     });
   }
 
