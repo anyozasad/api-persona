@@ -16,7 +16,21 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const request = esApi ? req.clone({ setHeaders: headers }) : req;
+  let request = esApi ? req.clone({ setHeaders: headers }) : req;
+
+  // Las pantallas administrativas y del cliente siempre deben leer datos frescos.
+  // Evita que el navegador reutilice respuestas GET antiguas mientras se está trabajando.
+  if (esApi && req.method === 'GET') {
+    request = request.clone({
+      setHeaders: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        Pragma: 'no-cache'
+      },
+      setParams: {
+        _ts: String(Date.now())
+      }
+    });
+  }
 
   return next(request).pipe(
     catchError((error: HttpErrorResponse) => {
