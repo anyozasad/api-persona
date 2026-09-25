@@ -13,6 +13,7 @@ class PlanEntrenamientoCasa extends Model
         'id_cliente',
         'dias',
         'zonas',
+        'objetivo',
         'activo',
     ];
 
