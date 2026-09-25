@@ -106,6 +106,45 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             </article>
           </section>
 
+          <section *ngIf="casaCargado" class="member-home-today-card member-enter-up">
+            <div class="home-today-copy">
+              <span class="home-today-kicker"><i></i> ENTRENAMIENTO EN CASA · HOY</span>
+
+              <ng-container *ngIf="entrenamientoCasaHoy?.activo; else hoyDescanso">
+                <h2>{{entrenamientoCasaHoy?.zona?.icono}} Hoy toca {{entrenamientoCasaHoy?.zona?.nombre}}</h2>
+                <p>
+                  {{entrenamientoCasaHoy?.ejercicios}} ejercicios ·
+                  {{entrenamientoCasaHoy?.minutos}} min aprox. ·
+                  objetivo {{metaObjetivoCasa(planCasa.objetivo).nombre.toLowerCase()}}.
+                </p>
+                <div class="home-today-tags">
+                  <span>Guía paso a paso</span>
+                  <span>Repeticiones por lado</span>
+                  <span>Descansos automáticos</span>
+                </div>
+              </ng-container>
+
+              <ng-template #hoyDescanso>
+                <h2>Hoy no tienes sesión programada</h2>
+                <p>Puedes mantener tu día de recuperación o elegir una sesión moderada si deseas entrenar en casa.</p>
+                <div class="home-today-tags">
+                  <span>Plan semanal</span>
+                  <span>Sesiones moderadas</span>
+                  <span>Historial guardado</span>
+                </div>
+              </ng-template>
+            </div>
+
+            <button type="button" class="home-today-start" (click)="prepararEntrenamientoCasaHoy()">
+              <span>{{entrenamientoCasaHoy?.activo ? '▶' : '⚡'}}</span>
+              <div>
+                <b>{{entrenamientoCasaHoy?.activo ? 'Empezar sesión de hoy' : 'Elegir entrenamiento'}}</b>
+                <small>{{entrenamientoCasaHoy?.activo ? 'Ver ejercicios y comenzar' : 'Piernas, brazos, core y más'}}</small>
+              </div>
+              <em>→</em>
+            </button>
+          </section>
+
           <section class="member-quick-section">
             <div class="section-heading-member">
               <div><span>ACCESOS RÁPIDOS</span><h2>¿Qué quieres hacer hoy?</h2></div>
@@ -368,8 +407,10 @@ import { GymApiService } from '../../../core/services/gym-api.service';
                     <small *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'">REPETICIONES</small>
 
                     <strong *ngIf="faseCasa==='descanso' || ejercicioCasaActual?.modo==='tiempo'">{{formatoTiempoCasa(segundosCasa)}}</strong>
-                    <strong class="reps-display" *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'">
-                      {{ejercicioCasaActual?.repeticiones}}<small>{{ejercicioCasaActual?.por_lado ? 'POR LADO' : 'REPS'}}</small>
+                    <strong class="reps-display reps-counter-live" *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'">
+                      {{repsCasaHechas}}<small>DE {{objetivoRepsCasa}}</small>
+                      <em *ngIf="ejercicioCasaActual?.por_lado">{{ladoCasa==='derecho' ? 'LADO DERECHO' : 'LADO IZQUIERDO'}}</em>
+                      <em *ngIf="!ejercicioCasaActual?.por_lado">REPETICIONES</em>
                     </strong>
 
                     <span>{{sesionCasaPausada ? 'PAUSADO' : (ejercicioCasaActual?.modo==='repeticiones' && faseCasa==='ejercicio' ? 'A TU RITMO' : 'EN CURSO')}}</span>
@@ -381,7 +422,12 @@ import { GymApiService } from '../../../core/services/gym-api.service';
                   <div class="current-instructions">
                     <span>CÓMO HACERLO</span>
                     <h3>{{prescripcionEjercicioCasa(ejercicioCasaActual)}}</h3>
-                    <p *ngIf="ejercicioCasaActual.por_lado" class="live-side-message"><b>↔</b>Primero {{ejercicioCasaActual.repeticiones}} del lado derecho; después {{ejercicioCasaActual.repeticiones}} del izquierdo.</p>
+                    <p *ngIf="ejercicioCasaActual.por_lado" class="live-side-message active-side-message">
+                      <b>{{ladoCasa==='derecho' ? 'D' : 'I'}}</b>
+                      Ahora: {{objetivoRepsCasa}} repeticiones con el lado {{ladoCasa}}.
+                      <span *ngIf="ladoCasa==='derecho'">Después el sistema te pedirá cambiar al lado izquierdo.</span>
+                      <span *ngIf="ladoCasa==='izquierdo'">Al terminar, pasarás al descanso.</span>
+                    </p>
                     <p *ngFor="let paso of ejercicioCasaActual.instrucciones; let p=index"><b>{{p+1}}</b>{{paso}}</p>
                   </div>
                 </div>
@@ -401,11 +447,36 @@ import { GymApiService } from '../../../core/services/gym-api.service';
                 <div class="session-progress-track"><i [style.width.%]="progresoCasa"></i></div>
               </div>
 
+              <div class="home-rep-counter-panel"
+                   *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'">
+                <div>
+                  <span>CONTADOR DE REPETICIONES</span>
+                  <b>{{repsCasaHechas}} / {{objetivoRepsCasa}}</b>
+                  <small *ngIf="ejercicioCasaActual?.por_lado">Lado {{ladoCasa}}</small>
+                  <small *ngIf="!ejercicioCasaActual?.por_lado">Completa el objetivo con control</small>
+                </div>
+                <button type="button"
+                        (click)="sumarRepeticionCasa()"
+                        [disabled]="repsCasaHechas>=objetivoRepsCasa || sesionCasaPausada">
+                  + 1 repetición
+                </button>
+              </div>
+
               <div class="home-session-controls">
                 <button type="button" class="control-secondary" (click)="togglePausaCasa()">{{sesionCasaPausada ? '▶ Continuar' : 'Ⅱ Pausar'}}</button>
-                <button type="button" class="control-primary" (click)="siguienteFaseCasa()">
-                  {{faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones' ? '✓ Ya terminé las repeticiones' : 'Siguiente →'}}
+
+                <button type="button"
+                        class="control-primary"
+                        (click)="avanzarEjercicioCasa()"
+                        [disabled]="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones' && repsCasaHechas<objetivoRepsCasa">
+                  <ng-container *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'; else siguienteNormal">
+                    {{ejercicioCasaActual?.por_lado && ladoCasa==='derecho'
+                      ? 'Cambiar al lado izquierdo →'
+                      : '✓ Terminé · ir al descanso'}}
+                  </ng-container>
+                  <ng-template #siguienteNormal>Siguiente →</ng-template>
                 </button>
+
                 <button type="button" class="control-danger" (click)="cancelarSesionCasa()">Terminar sesión</button>
               </div>
             </article>
@@ -661,6 +732,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   faseCasa:'ejercicio'|'descanso'='ejercicio';
   segundosCasa=0;
   segundosTranscurridosCasa=0;
+  repsCasaHechas=0;
+  ladoCasa:'derecho'|'izquierdo'='derecho';
   private timerCasa:any=null;
 
   constructor(private api:GymApiService, private auth:AuthService, private router:Router){}
@@ -808,6 +881,61 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     });
   }
 
+  get entrenamientoCasaHoy():any{
+    return this.agendaCasaSemanal.find((x:any)=>x.hoy) || null;
+  }
+
+  prepararEntrenamientoCasaHoy():void{
+    const hoy=this.entrenamientoCasaHoy;
+    if(hoy?.activo && hoy?.zona?.id){
+      this.zonaCasaSeleccionada=hoy.zona.id;
+    }
+    this.abrirModulo('casa');
+  }
+
+  get objetivoRepsCasa():number{
+    return this.ejercicioCasaActual?.modo==='repeticiones'
+      ? this.repeticionesObjetivoCasa(this.ejercicioCasaActual)
+      : 0;
+  }
+
+  sumarRepeticionCasa():void{
+    if(!this.sesionCasaActiva || this.sesionCasaPausada || this.faseCasa!=='ejercicio')return;
+    if(this.ejercicioCasaActual?.modo!=='repeticiones')return;
+    this.repsCasaHechas=Math.min(this.objetivoRepsCasa,this.repsCasaHechas+1);
+  }
+
+  avanzarEjercicioCasa():void{
+    if(!this.sesionCasaActiva)return;
+
+    if(this.faseCasa==='descanso'){
+      this.siguienteFaseCasa();
+      return;
+    }
+
+    const ejercicio=this.ejercicioCasaActual;
+
+    if(ejercicio?.modo==='repeticiones'){
+      if(this.repsCasaHechas<this.objetivoRepsCasa){
+        this.errorCasa='Completa las '+this.objetivoRepsCasa+' repeticiones antes de continuar.';
+        return;
+      }
+
+      if(ejercicio?.por_lado && this.ladoCasa==='derecho'){
+        this.ladoCasa='izquierdo';
+        this.repsCasaHechas=0;
+        this.errorCasa='';
+        return;
+      }
+
+      this.ladoCasa='derecho';
+      this.repsCasaHechas=0;
+    }
+
+    this.errorCasa='';
+    this.siguienteFaseCasa();
+  }
+
   iniciarEntrenamientoCasa():void{
     if(!this.ejerciciosCasaActuales.length){
       this.errorCasa='Todavía no hay ejercicios disponibles para esta zona.';
@@ -819,6 +947,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.faseCasa='ejercicio';
     this.segundosCasa=this.ejercicioCasaActual?.modo==='tiempo' ? this.segundosObjetivoCasa(this.ejercicioCasaActual) : 0;
     this.segundosTranscurridosCasa=0;
+    this.repsCasaHechas=0;
+    this.ladoCasa='derecho';
     this.sesionCasaActiva=true;
     this.sesionCasaPausada=false;
     this.sesionCasaTerminada=false;
@@ -859,6 +989,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
     this.indiceEjercicioCasa++;
     this.faseCasa='ejercicio';
+    this.repsCasaHechas=0;
+    this.ladoCasa='derecho';
     this.segundosCasa=this.ejercicioCasaActual?.modo==='tiempo' ? this.segundosObjetivoCasa(this.ejercicioCasaActual) : 0;
   }
 
@@ -871,6 +1003,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.sesionCasaPausada=false;
     this.sesionCasaTerminada=false;
     this.indiceEjercicioCasa=0;
+    this.repsCasaHechas=0;
+    this.ladoCasa='derecho';
     this.segundosCasa=0;
   }
 
@@ -902,6 +1036,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   reiniciarSesionCasa():void{
     this.sesionCasaTerminada=false;
     this.indiceEjercicioCasa=0;
+    this.repsCasaHechas=0;
+    this.ladoCasa='derecho';
     this.segundosCasa=0;
     this.segundosTranscurridosCasa=0;
     window.scrollTo({top:0,behavior:'smooth'});
@@ -929,7 +1065,11 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const actual=this.ejercicioCasaActual;
 
     if(this.faseCasa==='ejercicio' && actual?.modo==='repeticiones'){
-      return Math.min(100,Math.round(base));
+      const objetivo=Math.max(1,this.objetivoRepsCasa);
+      const ladoBase=actual?.por_lado && this.ladoCasa==='izquierdo' ? .5 : 0;
+      const divisor=actual?.por_lado ? 2 : 1;
+      const fraccion=Math.min(1,ladoBase+(this.repsCasaHechas/objetivo)/divisor);
+      return Math.min(100,Math.round(base+(fraccion*.72*(100/total))));
     }
 
     const duracion=this.faseCasa==='ejercicio'
@@ -948,7 +1088,10 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const actual=this.ejercicioCasaActual;
 
     if(this.faseCasa==='ejercicio' && actual?.modo==='repeticiones'){
-      return 'conic-gradient(#ef233c 100%, #e7edf3 0%)';
+      const objetivo=Math.max(1,this.objetivoRepsCasa);
+      const ladoBase=actual?.por_lado && this.ladoCasa==='izquierdo' ? 50 : 0;
+      const pct=Math.max(0,Math.min(100,ladoBase+(this.repsCasaHechas/objetivo)*(actual?.por_lado?50:100)));
+      return 'conic-gradient(#ef233c '+pct+'%, #e7edf3 '+pct+'%)';
     }
 
     const total=this.faseCasa==='ejercicio'
