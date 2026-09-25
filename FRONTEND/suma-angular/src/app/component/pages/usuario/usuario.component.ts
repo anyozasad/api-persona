@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../auth.service';
 import { GymApiService } from '../../../core/services/gym-api.service';
+import { ClienteExperienciaComponent } from './cliente-experiencia.component';
 
 @Component({
   selector: 'app-usuario',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ClienteExperienciaComponent],
   styleUrls: ['../mallqui-member.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
@@ -26,7 +27,11 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           <button type="button" [class.active]="moduloActivo==='clases'" (click)="abrirModulo('clases')"><i>▣</i><span>Clases</span></button>
           <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')"><i>◷</i><span>Reservas</span></button>
           <button type="button" [class.active]="moduloActivo==='asistencias'" (click)="abrirModulo('asistencias')"><i>✓</i><span>Asistencias</span></button>
+          <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')"><i>◎</i><span>Progreso</span></button>
+          <button type="button" [class.active]="moduloActivo==='calendario'" (click)="abrirModulo('calendario')"><i>◫</i><span>Calendario</span></button>
+          <button type="button" [class.active]="moduloActivo==='avisos'" (click)="abrirModulo('avisos')"><i>●</i><span>Avisos</span></button>
           <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')"><i>▤</i><span>Pagos</span></button>
+          <button type="button" [class.active]="moduloActivo==='soporte'" (click)="abrirModulo('soporte')"><i>?</i><span>Soporte</span></button>
           <button type="button" [class.active]="moduloActivo==='perfil'" (click)="abrirModulo('perfil')"><i>♙</i><span>Perfil</span></button>
         </nav>
 
@@ -764,6 +769,10 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             </article>
           </section>
         </section>
+        <app-cliente-experiencia
+          *ngIf="moduloActivo==='progreso' || moduloActivo==='calendario' || moduloActivo==='avisos' || moduloActivo==='soporte'"
+          [modulo]="moduloActivo">
+        </app-cliente-experiencia>
       </main>
 
       <ng-template #cargandoTpl>
