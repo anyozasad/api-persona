@@ -232,6 +232,95 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         </section>
       </ng-container>
 
+
+      <ng-container *ngIf="modulo==='club'">
+        <header class="client-extra-hero club-hero">
+          <div>
+            <span>MI CLUB</span>
+            <h1>Tu espacio dentro de Mallqui Gym</h1>
+            <p>Consulta tu credencial digital, guarda clases favoritas y comparte una opinión sobre tu experiencia.</p>
+          </div>
+          <button type="button" (click)="cargarClub()">↻ Actualizar</button>
+        </header>
+
+        <section class="client-club-grid">
+          <article class="client-digital-card">
+            <div class="client-card-brand">
+              <span>MALLQUI GYM</span>
+              <small>CREDENCIAL DIGITAL</small>
+            </div>
+            <div class="client-card-person">
+              <span>{{inicialSocio}}</span>
+              <div>
+                <small>SOCIO</small>
+                <h2>{{nombreSocio}}</h2>
+                <p>{{credencial?.codigo_socio || 'MG------'}}</p>
+              </div>
+            </div>
+            <div class="client-card-plan">
+              <div><small>PLAN</small><b>{{credencial?.membresia?.membresia?.nombre || 'Sin membresía activa'}}</b></div>
+              <div><small>VIGENCIA</small><b>{{credencial?.membresia ? fechaCorta(credencial.membresia.fecha_fin) : '-'}}</b></div>
+              <div><small>DÍAS RESTANTES</small><b>{{credencial?.dias_restantes || 0}}</b></div>
+            </div>
+            <div class="client-card-footer">
+              <span [class.inactive]="credencial?.cliente?.estado!=='Activo'">{{credencial?.cliente?.estado || 'Sin estado'}}</span>
+              <small>Presenta tu código de socio en recepción.</small>
+            </div>
+          </article>
+
+          <article class="client-extra-card">
+            <div class="client-card-head">
+              <div><span>CLASES FAVORITAS</span><h2>Guarda tus preferidas</h2><p>{{favoritasCount}} favoritas</p></div>
+            </div>
+            <div class="client-favorite-list">
+              <article *ngFor="let c of clasesClub">
+                <button type="button" [class.active]="c.favorita" (click)="toggleFavorita(c)" [attr.aria-label]="c.favorita ? 'Quitar de favoritos' : 'Agregar a favoritos'">★</button>
+                <div><b>{{c.nombre}}</b><small>{{c.dia_semana}} · {{hora(c.hora_inicio)}} - {{hora(c.hora_fin)}}</small></div>
+                <span>{{c.entrenador ? (c.entrenador.nombres+' '+c.entrenador.apellidos) : 'Sin entrenador'}}</span>
+              </article>
+              <div class="client-empty-block" *ngIf="!clasesClub.length"><b>No hay clases disponibles</b><p>Las clases activas aparecerán aquí.</p></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="client-extra-grid two">
+          <article class="client-extra-card">
+            <div class="client-card-head"><div><span>TU OPINIÓN</span><h2>Ayúdanos a mejorar</h2><p>Evalúa el servicio sin compartir información sensible.</p></div></div>
+            <form class="client-feedback-form" (ngSubmit)="enviarOpinion()">
+              <label>Categoría
+                <select [(ngModel)]="opinionForm.categoria" name="op_categoria">
+                  <option>Servicio</option>
+                  <option>Instalaciones</option>
+                  <option>Clases</option>
+                  <option>Aplicacion</option>
+                </select>
+              </label>
+              <label>Calificación
+                <div class="client-rating">
+                  <button *ngFor="let n of [1,2,3,4,5]" type="button" [class.active]="opinionForm.calificacion>=n" (click)="opinionForm.calificacion=n">★</button>
+                </div>
+              </label>
+              <label>Comentario
+                <textarea [(ngModel)]="opinionForm.comentario" name="op_comentario" minlength="5" maxlength="1000" required placeholder="Cuéntanos qué funcionó bien o qué podemos mejorar..."></textarea>
+              </label>
+              <button type="submit" [disabled]="guardandoOpinion">{{guardandoOpinion ? 'Enviando...' : 'Enviar opinión'}}</button>
+            </form>
+          </article>
+
+          <article class="client-extra-card">
+            <div class="client-card-head"><div><span>HISTORIAL</span><h2>Mis opiniones</h2></div></div>
+            <div class="client-opinion-list">
+              <article *ngFor="let o of opiniones">
+                <div><b>{{o.categoria}}</b><span>{{estrellas(o.calificacion)}}</span></div>
+                <p>{{o.comentario}}</p>
+                <small>{{fecha(o.fecha)}} · {{o.estado}}</small>
+              </article>
+              <div class="client-empty-block" *ngIf="!opiniones.length"><b>Aún no enviaste opiniones</b><p>Cuando quieras, puedes compartir tu experiencia desde este espacio.</p></div>
+            </div>
+          </article>
+        </section>
+      </ng-container>
+
       <ng-container *ngIf="modulo==='soporte'">
         <header class="client-extra-hero support-hero">
           <div>
@@ -287,6 +376,11 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
   meta: any = { sesiones_semanales: 3, recordatorios: true };
   guardandoMeta = false;
   calendario: any[] = [];
+  credencial: any = null;
+  clasesClub: any[] = [];
+  opiniones: any[] = [];
+  opinionForm: any = { categoria: 'Servicio', calificacion: 5, comentario: '' };
+  guardandoOpinion = false;
   notificaciones: any = { no_leidas: 0, items: [] };
   entrenadorInfo: any = null;
   historial: any = null;
@@ -316,6 +410,7 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
       this.cargarHistorial();
     }
     if (this.modulo === 'calendario') this.cargarCalendario();
+    if (this.modulo === 'club') this.cargarClub();
     if (this.modulo === 'avisos') this.cargarNotificaciones();
     if (this.modulo === 'soporte') this.cargarSoporte();
   }
@@ -365,6 +460,100 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
       next: r => { this.calendario = r || []; this.cargando = false; },
       error: e => { this.error = this.mensajeError(e); this.cargando = false; }
     });
+  }
+
+  cargarClub(): void {
+    this.cargando = true;
+    this.error = '';
+    let pendientes = 3;
+    const terminar = () => { pendientes--; if (pendientes <= 0) this.cargando = false; };
+
+    this.api.credencialCliente().subscribe({
+      next: r => { this.credencial = r; terminar(); },
+      error: e => { this.error = this.mensajeError(e); terminar(); }
+    });
+
+    this.api.clasesFavoritasCliente().subscribe({
+      next: r => { this.clasesClub = r || []; terminar(); },
+      error: e => { this.error = this.mensajeError(e); terminar(); }
+    });
+
+    this.api.opinionesCliente().subscribe({
+      next: r => { this.opiniones = r || []; terminar(); },
+      error: e => { this.error = this.mensajeError(e); terminar(); }
+    });
+  }
+
+  toggleFavorita(clase: any): void {
+    const id = Number(clase?.id_clase || 0);
+    if (!id) return;
+
+    const req = clase.favorita
+      ? this.api.quitarClaseFavorita(id)
+      : this.api.agregarClaseFavorita(id);
+
+    req.subscribe({
+      next: r => {
+        clase.favorita = !clase.favorita;
+        this.mostrarToast(r?.mensaje || 'Favoritos actualizados.');
+      },
+      error: e => this.error = this.mensajeError(e)
+    });
+  }
+
+  enviarOpinion(): void {
+    if (String(this.opinionForm?.comentario || '').trim().length < 5) {
+      this.error = 'Escribe un comentario de al menos 5 caracteres.';
+      return;
+    }
+
+    this.guardandoOpinion = true;
+    this.error = '';
+
+    this.api.guardarOpinionCliente({
+      categoria: this.opinionForm.categoria,
+      calificacion: Number(this.opinionForm.calificacion || 5),
+      comentario: String(this.opinionForm.comentario || '').trim()
+    }).subscribe({
+      next: r => {
+        this.guardandoOpinion = false;
+        this.opinionForm = { categoria: 'Servicio', calificacion: 5, comentario: '' };
+        this.mostrarToast(r?.mensaje || 'Opinión registrada.');
+        this.api.opinionesCliente().subscribe(x => this.opiniones = x || []);
+      },
+      error: e => {
+        this.guardandoOpinion = false;
+        this.error = this.mensajeError(e);
+      }
+    });
+  }
+
+  get favoritasCount(): number {
+    return this.clasesClub.filter((x: any) => x.favorita).length;
+  }
+
+  get nombreSocio(): string {
+    const x = this.credencial?.cliente;
+    return x ? `${x.nombres || ''} ${x.apellidos || ''}`.trim() || 'Socio Mallqui' : 'Socio Mallqui';
+  }
+
+  get inicialSocio(): string {
+    return this.nombreSocio.charAt(0).toUpperCase() || 'M';
+  }
+
+  fechaCorta(valor: any): string {
+    if (!valor) return '-';
+    const d = new Date(valor);
+    return Number.isNaN(d.getTime()) ? String(valor) : d.toLocaleDateString('es-PE');
+  }
+
+  hora(valor: any): string {
+    return String(valor || '').slice(0,5);
+  }
+
+  estrellas(valor: any): string {
+    const n = Math.max(0, Math.min(5, Number(valor || 0)));
+    return '★'.repeat(n) + '☆'.repeat(5 - n);
   }
 
   cargarNotificaciones(): void {
