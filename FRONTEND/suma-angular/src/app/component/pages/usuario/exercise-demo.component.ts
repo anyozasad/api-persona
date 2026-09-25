@@ -22,7 +22,13 @@ import { Component, Input } from '@angular/core';
           {{lado === 'derecho' ? 'LADO DERECHO' : 'LADO IZQUIERDO'}}
         </span>
 
-        <svg viewBox="0 0 360 250" role="img" [attr.aria-label]="'Persona demostrando '+(ejercicio?.nombre || 'ejercicio')">
+        <img
+          *ngIf="modo==='deadbug'"
+          class="exercise-human-image"
+          src="/assets/exercises/deadbug_human.webp"
+          [alt]="'Persona realizando '+(ejercicio?.nombre || 'Dead bug básico')">
+
+        <svg *ngIf="modo!=='deadbug'" viewBox="0 0 360 250" role="img" [attr.aria-label]="'Persona demostrando '+(ejercicio?.nombre || 'ejercicio')">
           <defs>
             <linearGradient id="skinFill" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stop-color="#f2c39f"></stop>
@@ -231,6 +237,17 @@ import { Component, Input } from '@angular/core';
     }
     .exercise-demo-stage:before{content:'';position:absolute;width:220px;height:220px;right:-70px;top:-80px;border-radius:50%;background:radial-gradient(circle,rgba(239,35,60,.18),transparent 68%)}
     .exercise-demo-stage svg{position:relative;z-index:2;display:block;width:100%;height:280px;padding:18px 26px 0;box-sizing:border-box}
+    .exercise-human-image{
+      position:absolute;
+      z-index:2;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center;
+      display:block;
+      filter:saturate(.96) contrast(1.03)
+    }
     .demo-floor{stroke:rgba(255,255,255,.18);stroke-width:5;stroke-linecap:round}
     .body-head{
       fill:url(#skinFill);
