@@ -64,6 +64,11 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
             <span class="eyebrow">ENTRENA A TU MANERA</span>
             <h1>Clases para cada objetivo</h1>
             <p>Elige la actividad que mejor se adapte a tu ritmo y revisa horarios antes de reservar.</p>
+            <div class="classes-hero-facts">
+              <span><b>{{clases.length}}</b><small>modalidades</small></span>
+              <span><b>06:00–22:00</b><small>horario amplio</small></span>
+              <span><b>Online</b><small>reserva desde tu cuenta</small></span>
+            </div>
           </div>
         </section>
 
