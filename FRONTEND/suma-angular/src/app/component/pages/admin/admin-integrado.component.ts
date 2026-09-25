@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { AdminApiService } from './admin-api.service';
 import { AuthService } from './auth.service';
 import { ProductosComponent } from './pages/productos/productos';
+import { AdminComunicacionComponent } from './admin-comunicacion.component';
 
 @Component({
   selector: 'app-admin-integrado',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductosComponent],
+  imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent],
   styleUrls: ['../mallqui-admin.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
@@ -715,6 +716,10 @@ import { ProductosComponent } from './pages/productos/productos';
           </div>
         </section>
       </ng-container>
+      <ng-container *ngIf="seccion==='comunicacion' || seccion==='soporte'">
+        <app-admin-comunicacion [modo]="seccion==='soporte' ? 'soporte' : 'comunicacion'"></app-admin-comunicacion>
+      </ng-container>
+
     </main>
   </div>
   `,
@@ -781,6 +786,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     {id:'caja',icono:'$',nombre:'Caja'},
     {id:'reportes',icono:'▥',nombre:'Reportes'},
     {id:'usuarios',icono:'♙',nombre:'Usuarios'},
+    {id:'comunicacion',icono:'●',nombre:'Notificaciones'},
+    {id:'soporte',icono:'?',nombre:'Soporte'},
     {id:'configuracion',icono:'⚙',nombre:'Configuración'}
   ];
   titulos: Record<string,[string,string]> = {
@@ -793,6 +800,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     compras:['Compras','Ingreso de productos e inventario'], ventas:['Ventas','Ventas de productos y stock'],
     caja:['Caja','Apertura, movimientos y cierre'],
     reportes:['Reportes','Indicadores calculados desde MySQL'], usuarios:['Usuarios','Cuentas internas y permisos'],
+    comunicacion:['Notificaciones','Avisos y comunicación con clientes'], soporte:['Soporte','Consultas y respuestas a clientes'],
     configuracion:['Configuración','Ajustes generales y mantenimiento del sistema']
   };
 
@@ -973,6 +981,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         break;
       case 'usuarios':
         this.cargarUsuarios();
+        break;
+      case 'comunicacion':
+      case 'soporte':
         break;
       case 'configuracion':
         this.cargarConfiguracion();
