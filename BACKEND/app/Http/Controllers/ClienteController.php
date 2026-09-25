@@ -75,12 +75,30 @@ class ClienteController extends Controller
                     'fecha_registro' => now(),
                     'id_cliente' => $cliente->id_cliente,
                 ]);
+            } else {
+                // Compatibilidad con cuentas cliente creadas antes del vínculo id_cliente.
+                $usuarioExistente = Usuario::where('rol', 'Cliente')
+                    ->whereNull('id_cliente')
+                    ->where(function ($q) use ($cliente) {
+                        $q->where('dni', $cliente->dni);
+                        if ($cliente->correo) {
+                            $q->orWhereRaw('LOWER(correo) = ?', [mb_strtolower((string) $cliente->correo)]);
+                        }
+                    })
+                    ->first();
+
+                if ($usuarioExistente) {
+                    $usuarioExistente->update(['id_cliente' => $cliente->id_cliente]);
+                }
             }
 
             return $cliente;
         });
 
-        return response()->json($cliente, 201);
+        return response()->json([
+            'mensaje' => 'Cliente registrado correctamente.',
+            'cliente' => $cliente->fresh(),
+        ], 201);
     }
 
     public function show(string $id)
@@ -99,7 +117,21 @@ class ClienteController extends Controller
     public function update(Request $request, string $id)
     {
         $cliente = Cliente::findOrFail($id);
-        $usuario = Usuario::where('id_cliente', $cliente->id_cliente)->first();
+
+        // Algunas cuentas antiguas se crearon antes de guardar id_cliente.
+        // Se intenta localizar la cuenta por vínculo, DNI o correo para que editar
+        // un cliente no falle por una falsa validación de "dato duplicado".
+        $usuario = Usuario::where('rol', 'Cliente')
+            ->where(function ($q) use ($cliente) {
+                $q->where('id_cliente', $cliente->id_cliente)
+                  ->orWhere('dni', $cliente->dni);
+
+                if ($cliente->correo) {
+                    $q->orWhereRaw('LOWER(correo) = ?', [mb_strtolower((string) $cliente->correo)]);
+                }
+            })
+            ->orderByRaw('CASE WHEN id_cliente = ? THEN 0 ELSE 1 END', [$cliente->id_cliente])
+            ->first();
 
         $datos = $request->validate([
             'dni' => [
@@ -128,16 +160,22 @@ class ClienteController extends Controller
                 $sincronizar = array_intersect_key($datos, array_flip([
                     'dni', 'nombres', 'apellidos', 'telefono', 'correo', 'estado',
                 ]));
-                if ($sincronizar) {
-                    $usuario->update($sincronizar);
-                    if (($sincronizar['estado'] ?? null) === 'Inactivo') {
-                        $usuario->tokens()->delete();
-                    }
+
+                // Repara automáticamente cuentas antiguas sin relación explícita.
+                $sincronizar['id_cliente'] = $cliente->id_cliente;
+
+                $usuario->update($sincronizar);
+
+                if (($sincronizar['estado'] ?? null) === 'Inactivo') {
+                    $usuario->tokens()->delete();
                 }
             }
         });
 
-        return response()->json($cliente->fresh());
+        return response()->json([
+            'mensaje' => 'Cambios del cliente guardados correctamente.',
+            'cliente' => $cliente->fresh(),
+        ]);
     }
 
     public function destroy(string $id)
