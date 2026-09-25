@@ -743,8 +743,38 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     return this.zonasCasaMeta.find((z:any)=>z.id===zona)||this.zonasCasaMeta[0];
   }
 
+  metaObjetivoCasa(objetivo:string):any{
+    return this.objetivosCasaMeta.find((o:any)=>o.id===objetivo)||this.objetivosCasaMeta[0];
+  }
+
+  repeticionesObjetivoCasa(e:any):number{
+    const base=Math.max(1,Number(e?.repeticiones||8));
+    if((this.planCasa?.objetivo||'fuerza')==='resistencia')return Math.min(14,base+2);
+    if((this.planCasa?.objetivo||'fuerza')==='movilidad')return Math.min(8,base);
+    return base;
+  }
+
+  segundosObjetivoCasa(e:any):number{
+    const base=Math.max(15,Number(e?.segundos||30));
+    if((this.planCasa?.objetivo||'fuerza')==='resistencia')return Math.min(45,base+5);
+    if((this.planCasa?.objetivo||'fuerza')==='movilidad')return Math.min(35,base);
+    return base;
+  }
+
+  prescripcionEjercicioCasa(e:any):string{
+    if(!e)return '-';
+    if(e.modo==='repeticiones'){
+      const reps=this.repeticionesObjetivoCasa(e);
+      return e.por_lado ? (reps+' por cada lado') : (reps+' repeticiones');
+    }
+    return this.segundosObjetivoCasa(e)+' segundos';
+  }
+
   duracionEstimadaCasa(zona:string):number{
-    const total=this.ejerciciosZonaCasa(zona).reduce((s:number,e:any)=>s+Number(e.segundos||0)+Number(e.descanso||0),0);
+    const total=this.ejerciciosZonaCasa(zona).reduce((s:number,e:any)=>{
+      const trabajo=e?.modo==='repeticiones' ? Math.max(30,this.repeticionesObjetivoCasa(e)*(e?.por_lado?4:3)) : this.segundosObjetivoCasa(e);
+      return s+trabajo+Number(e?.descanso||0);
+    },0);
     return Math.max(1,Math.ceil(total/60));
   }
 
@@ -767,11 +797,15 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   iniciarEntrenamientoCasa():void{
-    if(!this.ejerciciosCasaActuales.length){this.errorCasa='Todavía no hay ejercicios disponibles para esta zona.';return;}
+    if(!this.ejerciciosCasaActuales.length){
+      this.errorCasa='Todavía no hay ejercicios disponibles para esta zona.';
+      return;
+    }
+
     this.detenerTimerCasa();
     this.indiceEjercicioCasa=0;
     this.faseCasa='ejercicio';
-    this.segundosCasa=Number(this.ejercicioCasaActual?.segundos||30);
+    this.segundosCasa=this.ejercicioCasaActual?.modo==='tiempo' ? this.segundosObjetivoCasa(this.ejercicioCasaActual) : 0;
     this.segundosTranscurridosCasa=0;
     this.sesionCasaActiva=true;
     this.sesionCasaPausada=false;
@@ -782,25 +816,38 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   private tickCasa():void{
     if(!this.sesionCasaActiva||this.sesionCasaPausada)return;
+
     this.segundosTranscurridosCasa++;
-    this.segundosCasa=Math.max(0,this.segundosCasa-1);
-    if(this.segundosCasa<=0)this.siguienteFaseCasa();
+
+    if(this.faseCasa==='descanso'){
+      this.segundosCasa=Math.max(0,this.segundosCasa-1);
+      if(this.segundosCasa<=0)this.siguienteFaseCasa();
+      return;
+    }
+
+    if(this.ejercicioCasaActual?.modo==='tiempo'){
+      this.segundosCasa=Math.max(0,this.segundosCasa-1);
+      if(this.segundosCasa<=0)this.siguienteFaseCasa();
+    }
   }
 
   siguienteFaseCasa():void{
     if(!this.sesionCasaActiva)return;
+
     if(this.faseCasa==='ejercicio'){
       if(this.indiceEjercicioCasa>=this.ejerciciosCasaActuales.length-1){
         this.completarSesionCasa();
         return;
       }
+
       this.faseCasa='descanso';
       this.segundosCasa=Math.max(10,Number(this.ejercicioCasaActual?.descanso||20));
       return;
     }
+
     this.indiceEjercicioCasa++;
     this.faseCasa='ejercicio';
-    this.segundosCasa=Math.max(15,Number(this.ejercicioCasaActual?.segundos||30));
+    this.segundosCasa=this.ejercicioCasaActual?.modo==='tiempo' ? this.segundosObjetivoCasa(this.ejercicioCasaActual) : 0;
   }
 
   togglePausaCasa():void{this.sesionCasaPausada=!this.sesionCasaPausada;}
@@ -820,16 +867,23 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.sesionCasaActiva=false;
     this.sesionCasaPausada=false;
     this.sesionCasaTerminada=true;
+
     const total=this.ejerciciosCasaActuales.length;
     const duracion=Math.max(1,this.segundosTranscurridosCasa);
+
     this.api.registrarSesionCasaCliente({
       zona:this.zonaCasaSeleccionada,
       duracion_segundos:duracion,
       ejercicios_total:total,
       ejercicios_completados:total,
     }).subscribe({
-      next:r=>{if(r?.sesion)this.historialCasa=[r.sesion,...this.historialCasa];this.ok(r?.mensaje||'Entrenamiento guardado');},
-      error:e=>{this.errorCasa='Terminaste la sesión, pero no se pudo guardar el historial: '+this.errorApi(e);}
+      next:r=>{
+        if(r?.sesion)this.historialCasa=[r.sesion,...this.historialCasa];
+        this.ok(r?.mensaje||'Entrenamiento guardado');
+      },
+      error:e=>{
+        this.errorCasa='Terminaste la sesión, pero no se pudo guardar el historial: '+this.errorApi(e);
+      }
     });
   }
 
@@ -842,7 +896,10 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   private detenerTimerCasa():void{
-    if(this.timerCasa){clearInterval(this.timerCasa);this.timerCasa=null;}
+    if(this.timerCasa){
+      clearInterval(this.timerCasa);
+      this.timerCasa=null;
+    }
   }
 
   formatoTiempoCasa(segundos:any):string{
@@ -855,19 +912,40 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   get progresoCasa():number{
     const total=this.ejerciciosCasaActuales.length;
     if(!total)return 0;
+
     const base=(this.indiceEjercicioCasa/total)*100;
     const actual=this.ejercicioCasaActual;
-    const duracion=this.faseCasa==='ejercicio'?Number(actual?.segundos||1):Number(actual?.descanso||1);
-    const parcial=duracion>0?Math.min(1,Math.max(0,(duracion-this.segundosCasa)/duracion)):0;
+
+    if(this.faseCasa==='ejercicio' && actual?.modo==='repeticiones'){
+      return Math.min(100,Math.round(base));
+    }
+
+    const duracion=this.faseCasa==='ejercicio'
+      ? this.segundosObjetivoCasa(actual)
+      : Math.max(1,Number(actual?.descanso||1));
+
+    const parcial=duracion>0
+      ? Math.min(1,Math.max(0,(duracion-this.segundosCasa)/duracion))
+      : 0;
+
     const pesoFase=this.faseCasa==='ejercicio' ? .72 : .28;
     return Math.min(100,Math.round(base+(parcial*pesoFase*(100/total))));
   }
 
   get temporizadorFondoCasa():string{
     const actual=this.ejercicioCasaActual;
-    const total=this.faseCasa==='ejercicio'?Number(actual?.segundos||1):Number(actual?.descanso||1);
+
+    if(this.faseCasa==='ejercicio' && actual?.modo==='repeticiones'){
+      return 'conic-gradient(#ef233c 100%, #e7edf3 0%)';
+    }
+
+    const total=this.faseCasa==='ejercicio'
+      ? this.segundosObjetivoCasa(actual)
+      : Math.max(1,Number(actual?.descanso||1));
+
     const pct=Math.max(0,Math.min(100,((total-this.segundosCasa)/Math.max(1,total))*100));
     const color=this.faseCasa==='ejercicio'?'#ef233c':'#2f78c8';
+
     return 'conic-gradient('+color+' '+pct+'%, #e7edf3 '+pct+'%)';
   }
 
