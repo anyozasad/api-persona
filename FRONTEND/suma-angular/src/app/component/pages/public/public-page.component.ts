@@ -16,6 +16,7 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
       <div class="public-shell nav-inner">
         <a routerLink="/" class="public-logo" aria-label="Mallqui Gym">
           <img src="assets/mallqui-logo.svg" alt="Mallqui Gym">
+          <span><b>MALLQUI GYM</b><small>PUCALLPA · PERÚ</small></span>
         </a>
 
         <nav aria-label="Navegación principal">
@@ -37,14 +38,26 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
           <div class="public-shell hero-grid">
             <div class="hero-copy">
               <span class="eyebrow">CONOCE MALLQUI GYM</span>
-              <h1>Más que entrenar, queremos acompañarte.</h1>
-              <p>Un espacio pensado para personas que buscan entrenar con orientación, constancia y una comunidad que motive.</p>
+              <h1>Más que entrenar, queremos <strong>acompañarte.</strong></h1>
+              <p>Un espacio pensado para entrenar con orientación, constancia y una experiencia digital que te ayuda a organizar tu progreso.</p>
               <div class="hero-actions">
-                <a routerLink="/planes" class="primary">Conocer nuestros planes</a>
-                <a routerLink="/contacto" class="secondary">Hablar con nosotros</a>
+                <a routerLink="/planes" class="primary">Conocer nuestros planes <b>→</b></a>
+                <a routerLink="/contacto" class="secondary">Hablar con nosotros <b>↗</b></a>
+              </div>
+              <div class="about-hero-stats">
+                <div><b>4</b><span>modalidades</span></div>
+                <div><b>06–22h</b><span>horario amplio</span></div>
+                <div><b>1 portal</b><span>todo conectado</span></div>
               </div>
             </div>
-            <div class="hero-photo photo-nosotros"><span>DISCIPLINA · PROGRESO · COMUNIDAD</span></div>
+            <div class="hero-photo photo-nosotros">
+              <div class="about-photo-overlay"></div>
+              <span>DISCIPLINA · PROGRESO · COMUNIDAD</span>
+              <div class="about-photo-card">
+                <small>NUESTRA FORMA DE ENTRENAR</small>
+                <b>Constancia, guía y una experiencia que te acompaña.</b>
+              </div>
+            </div>
           </div>
         </section>
 
