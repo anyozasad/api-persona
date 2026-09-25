@@ -123,6 +123,30 @@ export class GymApiService {
     return this.http.get('/api/mi-cuenta/historial');
   }
 
+  credencialCliente(): Observable<any> {
+    return this.http.get('/api/mi-cuenta/credencial');
+  }
+
+  clasesFavoritasCliente(): Observable<any[]> {
+    return this.http.get<any[]>('/api/mi-cuenta/favoritos/clases');
+  }
+
+  agregarClaseFavorita(id_clase: number): Observable<any> {
+    return this.http.post('/api/mi-cuenta/favoritos/clases', { id_clase });
+  }
+
+  quitarClaseFavorita(id_clase: number): Observable<any> {
+    return this.http.delete(`/api/mi-cuenta/favoritos/clases/${id_clase}`);
+  }
+
+  opinionesCliente(): Observable<any[]> {
+    return this.http.get<any[]>('/api/mi-cuenta/opiniones');
+  }
+
+  guardarOpinionCliente(datos: { categoria: string; calificacion: number; comentario: string }): Observable<any> {
+    return this.http.post('/api/mi-cuenta/opiniones', datos);
+  }
+
   soporteCliente(): Observable<any[]> {
     return this.http.get<any[]>('/api/mi-cuenta/soporte');
   }
