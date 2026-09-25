@@ -6,6 +6,8 @@ use App\Models\Cliente;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 
 class ClienteController extends Controller
@@ -25,17 +27,60 @@ class ClienteController extends Controller
             'apellidos' => 'required|string|max:100',
             'sexo' => 'nullable|string|max:20',
             'telefono' => 'nullable|string|max:25',
-            'correo' => 'nullable|email|max:150|unique:clientes,correo',
+            'correo' => 'nullable|required_if:crear_acceso,true|email|max:150|unique:clientes,correo',
             'direccion' => 'nullable|string|max:255',
             'fecha_nacimiento' => 'nullable|date|before:today',
             'fecha_registro' => 'nullable|date',
             'estado' => ['nullable', Rule::in(['Activo', 'Inactivo'])],
+            'crear_acceso' => 'nullable|boolean',
+            'nombre_usuario' => 'nullable|required_if:crear_acceso,true|string|max:80|unique:usuarios,nombre_usuario',
+            'contrasena' => 'nullable|required_if:crear_acceso,true|string|min:8|max:100',
         ]);
+
+        if (!empty($datos['crear_acceso']) && Usuario::where('dni', $datos['dni'])->exists()) {
+            throw ValidationException::withMessages([
+                'dni' => ['Este DNI ya tiene una cuenta de acceso.'],
+            ]);
+        }
+
+        if (!empty($datos['crear_acceso']) && Usuario::whereRaw('LOWER(correo) = ?', [mb_strtolower((string) $datos['correo'])])->exists()) {
+            throw ValidationException::withMessages([
+                'correo' => ['Este correo ya tiene una cuenta de acceso.'],
+            ]);
+        }
+
+        $crearAcceso = (bool) ($datos['crear_acceso'] ?? false);
+        $nombreUsuario = $datos['nombre_usuario'] ?? null;
+        $contrasena = $datos['contrasena'] ?? null;
+
+        unset($datos['crear_acceso'], $datos['nombre_usuario'], $datos['contrasena']);
 
         $datos['fecha_registro'] = $datos['fecha_registro'] ?? now();
         $datos['estado'] = $datos['estado'] ?? 'Activo';
 
-        return response()->json(Cliente::create($datos), 201);
+        $cliente = DB::transaction(function () use ($datos, $crearAcceso, $nombreUsuario, $contrasena) {
+            $cliente = Cliente::create($datos);
+
+            if ($crearAcceso) {
+                Usuario::create([
+                    'nombre_usuario' => $nombreUsuario,
+                    'contrasena' => Hash::make((string) $contrasena),
+                    'nombres' => $cliente->nombres,
+                    'apellidos' => $cliente->apellidos,
+                    'dni' => $cliente->dni,
+                    'telefono' => $cliente->telefono,
+                    'correo' => mb_strtolower((string) $cliente->correo),
+                    'rol' => 'Cliente',
+                    'estado' => 'Activo',
+                    'fecha_registro' => now(),
+                    'id_cliente' => $cliente->id_cliente,
+                ]);
+            }
+
+            return $cliente;
+        });
+
+        return response()->json($cliente, 201);
     }
 
     public function show(string $id)
