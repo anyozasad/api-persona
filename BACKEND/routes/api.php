@@ -33,6 +33,8 @@ use App\Http\Controllers\CajaController;
 use App\Http\Controllers\KardexController;
 use App\Http\Controllers\AuditoriaController;
 use App\Http\Controllers\ConfiguracionSistemaController;
+use App\Http\Controllers\ExperienciaClienteController;
+use App\Http\Controllers\ComunicacionAdminController;
 
 // AUTENTICACIÓN PRINCIPAL DEL SISTEMA: SANCTUM
 Route::prefix('auth')->group(function () {
@@ -98,6 +100,16 @@ Route::middleware(['auth:sanctum', 'rol:Cliente', 'auditoria'])->prefix('mi-cuen
     Route::get('/reservas', [ReservaController::class, 'misReservas']);
     Route::post('/reservas', [ReservaController::class, 'reservar']);
     Route::post('/reservas/{id}/cancelar', [ReservaController::class, 'cancelarMia']);
+
+    Route::get('/progreso', [ExperienciaClienteController::class, 'progreso']);
+    Route::get('/calendario', [ExperienciaClienteController::class, 'calendario']);
+    Route::get('/notificaciones', [ExperienciaClienteController::class, 'notificaciones']);
+    Route::post('/notificaciones/{id}/leer', [ExperienciaClienteController::class, 'leerNotificacion']);
+    Route::post('/notificaciones/leer-todas', [ExperienciaClienteController::class, 'leerTodas']);
+    Route::get('/entrenador', [ExperienciaClienteController::class, 'entrenador']);
+    Route::get('/historial', [ExperienciaClienteController::class, 'historial']);
+    Route::get('/soporte', [ExperienciaClienteController::class, 'soporte']);
+    Route::post('/soporte', [ExperienciaClienteController::class, 'crearSoporte']);
 });
 
 // PORTAL DEL ENTRENADOR: INFORMACION LIMITADA A SU PROPIA OPERACION
@@ -175,6 +187,13 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
     Route::get('/configuracion/estado', [ConfiguracionSistemaController::class, 'estado']);
     Route::post('/configuracion/respaldo', [ConfiguracionSistemaController::class, 'respaldo']);
     Route::post('/configuracion/limpiar-cache', [ConfiguracionSistemaController::class, 'limpiarCache']);
+
+    Route::get('/notificaciones-clientes', [ComunicacionAdminController::class, 'notificaciones']);
+    Route::post('/notificaciones-clientes', [ComunicacionAdminController::class, 'enviarNotificacion']);
+    Route::delete('/notificaciones-clientes/{id}', [ComunicacionAdminController::class, 'eliminarNotificacion']);
+    Route::get('/soporte-clientes', [ComunicacionAdminController::class, 'soporte']);
+    Route::put('/soporte-clientes/{id}/responder', [ComunicacionAdminController::class, 'responderSoporte']);
+    Route::put('/soporte-clientes/{id}/cerrar', [ComunicacionAdminController::class, 'cerrarSoporte']);
 
     Route::get('/reportes/ingresos', [ReporteController::class, 'ingresos']);
     Route::get('/reportes/vencimientos', [ReporteController::class, 'vencimientos']);
