@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\Api\PersonaController;
 use App\Http\Controllers\CursoController;
@@ -36,6 +37,27 @@ use App\Http\Controllers\ConfiguracionSistemaController;
 use App\Http\Controllers\ExperienciaClienteController;
 use App\Http\Controllers\ComunicacionAdminController;
 use App\Http\Controllers\ClienteFichaController;
+
+// ESTADO REAL DEL SISTEMA: permite verificar API + conexión con MySQL sin exponer credenciales.
+Route::get('/estado-sistema', function () {
+    try {
+        DB::connection()->getPdo();
+
+        return response()->json([
+            'api' => true,
+            'database' => true,
+            'motor' => DB::connection()->getDriverName(),
+            'mensaje' => 'Sistema y base de datos conectados.',
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'api' => true,
+            'database' => false,
+            'motor' => config('database.default'),
+            'mensaje' => 'La API responde, pero la base de datos no está disponible.',
+        ], 503);
+    }
+});
 
 // AUTENTICACIÓN PRINCIPAL DEL SISTEMA: SANCTUM
 Route::prefix('auth')->group(function () {
