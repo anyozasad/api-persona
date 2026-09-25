@@ -91,6 +91,14 @@ export class GymApiService {
     return this.http.get('/api/mi-cuenta/progreso');
   }
 
+  metaCliente(): Observable<any> {
+    return this.http.get('/api/mi-cuenta/meta');
+  }
+
+  guardarMetaCliente(datos: { sesiones_semanales: number; recordatorios: boolean }): Observable<any> {
+    return this.http.put('/api/mi-cuenta/meta', datos);
+  }
+
   calendarioCliente(): Observable<any[]> {
     return this.http.get<any[]>('/api/mi-cuenta/calendario');
   }
