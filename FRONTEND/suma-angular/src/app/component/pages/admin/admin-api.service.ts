@@ -222,6 +222,38 @@ export class AdminApiService {
   crearRespaldo(): Observable<any> { return this.http.post('/api/configuracion/respaldo', {}); }
   limpiarCacheSistema(): Observable<any> { return this.http.post('/api/configuracion/limpiar-cache', {}); }
 
+  // =========================================================
+  // COMUNICACIÓN CON CLIENTES
+  // =========================================================
+  notificacionesClientes(): Observable<any[]> {
+    return this.http.get<any[]>('/api/notificaciones-clientes');
+  }
+
+  enviarNotificacionCliente(datos: {
+    id_cliente?: number | null;
+    titulo: string;
+    mensaje: string;
+    tipo?: string;
+  }): Observable<any> {
+    return this.http.post('/api/notificaciones-clientes', datos);
+  }
+
+  eliminarNotificacionCliente(id: number): Observable<any> {
+    return this.http.delete(`/api/notificaciones-clientes/${id}`);
+  }
+
+  solicitudesSoporte(): Observable<any[]> {
+    return this.http.get<any[]>('/api/soporte-clientes');
+  }
+
+  responderSoporte(id: number, respuesta: string, estado: 'Respondido' | 'Cerrado' = 'Respondido'): Observable<any> {
+    return this.http.put(`/api/soporte-clientes/${id}/responder`, { respuesta, estado });
+  }
+
+  cerrarSoporte(id: number): Observable<any> {
+    return this.http.put(`/api/soporte-clientes/${id}/cerrar`, {});
+  }
+
   private rangoFechas(desde?: string, hasta?: string): HttpParams {
     let params = new HttpParams();
     if (desde) params = params.set('desde', desde);
