@@ -184,6 +184,7 @@ class PortalClienteController extends Controller
             [
                 'dias' => ['Lunes', 'Miércoles', 'Viernes'],
                 'zonas' => ['piernas', 'brazos', 'core'],
+                'objetivo' => 'fuerza',
                 'activo' => true,
             ]
         );
@@ -212,8 +213,9 @@ class PortalClienteController extends Controller
             'dias.*' => ['required', 'string', Rule::in([
                 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo',
             ])],
-            'zonas' => 'required|array|min:1|max:3',
-            'zonas.*' => ['required', 'string', Rule::in(['piernas', 'brazos', 'core'])],
+            'zonas' => 'required|array|min:1|max:7',
+            'zonas.*' => ['required', 'string', Rule::in(['piernas', 'brazos', 'pecho', 'espalda', 'hombros', 'gluteos', 'core'])],
+            'objetivo' => ['required', 'string', Rule::in(['fuerza', 'resistencia', 'movilidad'])],
         ], [
             'dias.max' => 'Puedes programar hasta 4 días de entrenamiento en casa por semana.',
             'zonas.required' => 'Selecciona al menos una zona de entrenamiento.',
@@ -224,6 +226,7 @@ class PortalClienteController extends Controller
             [
                 'dias' => array_values(array_unique($datos['dias'])),
                 'zonas' => array_values(array_unique($datos['zonas'])),
+                'objetivo' => $datos['objetivo'],
                 'activo' => true,
             ]
         );
