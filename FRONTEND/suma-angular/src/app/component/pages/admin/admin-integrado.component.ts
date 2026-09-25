@@ -300,6 +300,14 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
               <label>Correo<input type="email" [(ngModel)]="clienteForm.correo" name="correo"></label>
               <label>Dirección<input [(ngModel)]="clienteForm.direccion" name="direccion"></label>
               <label>Estado<select [(ngModel)]="clienteForm.estado" name="clienteEstado"><option>Activo</option><option>Inactivo</option></select></label>
+              <label *ngIf="!clienteEditandoId" class="client-access-toggle">
+                <input type="checkbox" [(ngModel)]="clienteForm.crear_acceso" name="crear_acceso">
+                <span>Crear también una cuenta para ingresar al portal del cliente</span>
+              </label>
+              <div *ngIf="!clienteEditandoId && clienteForm.crear_acceso" class="client-access-fields">
+                <label>Usuario<input [(ngModel)]="clienteForm.nombre_usuario" name="cliente_usuario" required placeholder="Ejemplo: cesar123"></label>
+                <label>Contraseña<input type="password" minlength="8" [(ngModel)]="clienteForm.contrasena" name="cliente_clave" required placeholder="Mínimo 8 caracteres"></label>
+              </div>
               <div class="form-row">
                 <button class="admin-primary" type="submit">{{clienteEditandoId ? 'Guardar cambios' : 'Guardar cliente'}}</button>
                 <button *ngIf="clienteEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionCliente()">Cancelar</button>
@@ -856,7 +864,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   clientesEstadoFiltro = '';
   clientesPagina = 1;
   clientesPorPagina = 8;
-  clienteForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
+  clienteForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:false,nombre_usuario:'',contrasena:''};
   membresiaForm: any = {id_cliente:0,id_membresia:0,metodo_pago:'Efectivo',numero_operacion:''};
   entrenadorEditandoId = 0;
   entrenadorForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',especialidad:'',fecha_contratacion:new Date().toISOString().slice(0,10),salario:0,estado:'Activo',crear_acceso:true,nombre_usuario:'',contrasena:''};
@@ -1117,6 +1125,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   guardarCliente(){
     const datos={...this.clienteForm};
+    if(this.clienteEditandoId){
+      delete datos.crear_acceso;
+      delete datos.nombre_usuario;
+      delete datos.contrasena;
+    }
     const req=this.clienteEditandoId
       ? this.api.actualizarCliente(this.clienteEditandoId,datos)
       : this.api.crearCliente(datos);
@@ -1136,13 +1149,14 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.clienteEditandoId=c.id_cliente;
     this.clienteForm={
       dni:c.dni||'',nombres:c.nombres||'',apellidos:c.apellidos||'',telefono:c.telefono||'',
-      correo:c.correo||'',direccion:c.direccion||'',estado:c.estado||'Activo'
+      correo:c.correo||'',direccion:c.direccion||'',estado:c.estado||'Activo',
+      crear_acceso:false,nombre_usuario:'',contrasena:''
     };
     window.scrollTo({top:0,behavior:'smooth'});
   }
   cancelarEdicionCliente(){
     this.clienteEditandoId=0;
-    this.clienteForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
+    this.clienteForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:false,nombre_usuario:'',contrasena:''};
   }
   desactivarCliente(id:number){ if(!confirm('¿Desactivar este cliente?')) return; this.api.desactivarCliente(id).subscribe({next:()=>{this.ok('Cliente desactivado');this.cancelarEdicionCliente();this.cargarClientes();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
 
