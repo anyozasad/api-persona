@@ -216,8 +216,12 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
               <button type="button" (click)="abrirModulo('rutinas')"><i>🏋</i><b>Mis rutinas</b><small>Revisa tu plan de ejercicios</small><em>→</em></button>
               <button type="button" (click)="abrirModulo('clases')"><i>▣</i><b>Clases</b><small>Explora horarios disponibles</small><em>→</em></button>
               <button type="button" (click)="abrirModulo('reservas')"><i>◷</i><b>Reservas</b><small>Administra tus clases</small><em>→</em></button>
+              <button type="button" (click)="abrirModulo('progreso')"><i>◎</i><b>Mi progreso</b><small>Actividad e historial</small><em>→</em></button>
+              <button type="button" (click)="abrirModulo('calendario')"><i>◫</i><b>Calendario</b><small>Próximas actividades</small><em>→</em></button>
+              <button type="button" (click)="abrirModulo('avisos')"><i>●</i><b>Avisos</b><small>Mensajes y recordatorios</small><em>→</em></button>
               <button type="button" (click)="abrirModulo('pagos')"><i>▤</i><b>Pagos</b><small>Consulta tus movimientos</small><em>→</em></button>
-              <button type="button" (click)="abrirModulo('perfil')"><i>♙</i><b>Mi perfil</b><small>Actualiza tus datos</small><em>→</em></button>
+              <button type="button" (click)="abrirModulo('soporte')"><i>?</i><b>Soporte</b><small>Consulta al gimnasio</small><em>→</em></button>
+              <button type="button" (click)="abrirModulo('perfil')"><i>♙</i><b>Mi perfil</b><small>Datos y seguridad</small><em>→</em></button>
             </div>
           </section>
 
