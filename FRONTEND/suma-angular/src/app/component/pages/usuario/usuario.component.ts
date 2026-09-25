@@ -21,20 +21,34 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
         </button>
 
         <nav class="member-nav" aria-label="Navegación del cliente">
+          <span class="member-nav-group">PRINCIPAL</span>
           <button type="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')"><i>⌂</i><span>Inicio</span></button>
-          <button type="button" [class.active]="moduloActivo==='rutinas'" (click)="abrirModulo('rutinas')"><i>🏋</i><span>Rutinas</span></button>
-          <button type="button" [class.active]="moduloActivo==='casa'" (click)="abrirModulo('casa')"><i>⚡</i><span>En casa</span></button>
+          <button type="button" [class.active]="moduloActivo==='casa'" (click)="abrirModulo('casa')"><i>⚡</i><span>Entrenar en casa</span></button>
+          <button type="button" [class.active]="moduloActivo==='rutinas'" (click)="abrirModulo('rutinas')"><i>🏋</i><span>Mis rutinas</span></button>
           <button type="button" [class.active]="moduloActivo==='clases'" (click)="abrirModulo('clases')"><i>▣</i><span>Clases</span></button>
+
+          <span class="member-nav-group">MI ACTIVIDAD</span>
+          <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')"><i>◎</i><span>Mi progreso</span></button>
+          <button type="button" [class.active]="moduloActivo==='calendario'" (click)="abrirModulo('calendario')"><i>◫</i><span>Calendario</span></button>
           <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')"><i>◷</i><span>Reservas</span></button>
           <button type="button" [class.active]="moduloActivo==='asistencias'" (click)="abrirModulo('asistencias')"><i>✓</i><span>Asistencias</span></button>
-          <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')"><i>◎</i><span>Progreso</span></button>
-          <button type="button" [class.active]="moduloActivo==='calendario'" (click)="abrirModulo('calendario')"><i>◫</i><span>Calendario</span></button>
+
+          <span class="member-nav-group">MI CUENTA</span>
           <button type="button" [class.active]="moduloActivo==='club'" (click)="abrirModulo('club')"><i>★</i><span>Mi club</span></button>
+          <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')"><i>▤</i><span>Membresía y pagos</span></button>
           <button type="button" class="member-nav-notice" [class.active]="moduloActivo==='avisos'" (click)="abrirModulo('avisos')"><i>●</i><span>Avisos</span><b *ngIf="avisosNoLeidos>0">{{avisosNoLeidos>9 ? '9+' : avisosNoLeidos}}</b></button>
-          <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')"><i>▤</i><span>Pagos</span></button>
-          <button type="button" [class.active]="moduloActivo==='soporte'" (click)="abrirModulo('soporte')"><i>?</i><span>Soporte</span></button>
-          <button type="button" [class.active]="moduloActivo==='perfil'" (click)="abrirModulo('perfil')"><i>♙</i><span>Perfil</span></button>
+          <button type="button" [class.active]="moduloActivo==='soporte'" (click)="abrirModulo('soporte')"><i>?</i><span>Ayuda</span></button>
+          <button type="button" [class.active]="moduloActivo==='perfil'" (click)="abrirModulo('perfil')"><i>♙</i><span>Mi perfil</span></button>
         </nav>
+
+        <div class="member-sidebar-status">
+          <span class="member-sidebar-status-icon">{{membresiaActual ? '✓' : '!'}}</span>
+          <div>
+            <small>{{membresiaActual ? 'MEMBRESÍA ACTIVA' : 'MEMBRESÍA'}}</small>
+            <b>{{membresiaActual?.membresia?.nombre || 'Sin plan activo'}}</b>
+            <button type="button" (click)="abrirModulo('pagos')">{{membresiaActual ? 'Ver detalles' : 'Activar ahora'}} →</button>
+          </div>
+        </div>
 
         <div class="member-user-actions">
           <div class="member-mini-profile">
@@ -48,6 +62,15 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
       <main class="member-main" *ngIf="!cargando; else cargandoTpl">
         <div *ngIf="error" class="member-toast error-toast">{{error}}</div>
         <div *ngIf="toast" class="member-toast success-toast">{{toast}}</div>
+
+        <section *ngIf="moduloActivo!=='inicio'" class="member-page-context">
+          <div>
+            <span>MI ESPACIO · MALLQUI GYM</span>
+            <h2>{{tituloModuloActual}}</h2>
+            <p>{{subtituloModuloActual}}</p>
+          </div>
+          <button type="button" (click)="abrirModulo('inicio')">⌂ Volver al inicio</button>
+        </section>
 
         <section *ngIf="moduloActivo==='inicio'" class="member-dashboard">
           <section class="member-hero member-enter-up">
@@ -324,6 +347,14 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
               <p>Tu sesión te indica el grupo muscular, las repeticiones, cuándo cambiar de lado, el descanso y qué ejercicio continúa.</p>
             </div>
             <div class="module-hero-icon home-training-icon">⚡</div>
+          </div>
+
+          <div class="home-flow-stepper" *ngIf="!sesionCasaActiva && !sesionCasaTerminada">
+            <div class="active"><span>1</span><div><b>Planifica</b><small>Objetivo, días y grupos</small></div></div>
+            <i>→</i>
+            <div><span>2</span><div><b>Elige tu sesión</b><small>Zona y ejercicios</small></div></div>
+            <i>→</i>
+            <div><span>3</span><div><b>Entrena</b><small>Guía, repeticiones y descanso</small></div></div>
           </div>
 
           <div *ngIf="errorCasa" class="home-training-alert">{{errorCasa}}</div>
@@ -889,6 +920,33 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const valor=String(this.perfil?.nombres || this.auth.usuario?.nombres || 'Miembro').trim();
     return valor.split(/\s+/).filter(Boolean).map((p:string)=>p.charAt(0).toUpperCase()+p.slice(1).toLowerCase()).join(' ');
   }
+  get tituloModuloActual():string{
+    const titulos:Record<string,string>={
+      casa:'Entrenamiento en casa',rutinas:'Mis rutinas',clases:'Clases del gimnasio',
+      reservas:'Mis reservas',asistencias:'Mis asistencias',progreso:'Mi progreso',
+      calendario:'Mi calendario',club:'Mi club',avisos:'Avisos',pagos:'Membresía y pagos',
+      soporte:'Ayuda y soporte',perfil:'Mi perfil'
+    };
+    return titulos[this.moduloActivo] || 'Mi espacio';
+  }
+  get subtituloModuloActual():string{
+    const textos:Record<string,string>={
+      casa:'Planifica una sesión sencilla y sigue cada ejercicio paso a paso.',
+      rutinas:'Consulta las rutinas asignadas por tu entrenador.',
+      clases:'Encuentra horarios disponibles y reserva sin complicaciones.',
+      reservas:'Revisa tus próximas clases y administra tus reservas.',
+      asistencias:'Consulta tus ingresos registrados en el gimnasio.',
+      progreso:'Mira tu actividad, constancia e historial reciente.',
+      calendario:'Ten tus próximas actividades y fechas importantes en un solo lugar.',
+      club:'Tu credencial, clases favoritas y opinión sobre el servicio.',
+      avisos:'Mensajes importantes del gimnasio y recordatorios.',
+      pagos:'Revisa tu membresía, solicitudes y comprobantes.',
+      soporte:'Escríbenos cuando necesites ayuda y revisa nuestras respuestas.',
+      perfil:'Actualiza tus datos y protege tu cuenta.'
+    };
+    return textos[this.moduloActivo] || '';
+  }
+
   get siguientePasoModulo():string{
     if(!this.perfilCompleto)return 'perfil';
     if(!this.membresiaActual)return 'pagos';
