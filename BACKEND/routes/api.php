@@ -111,6 +111,13 @@ Route::middleware(['auth:sanctum', 'rol:Cliente', 'auditoria'])->prefix('mi-cuen
     Route::post('/notificaciones/leer-todas', [ExperienciaClienteController::class, 'leerTodas']);
     Route::get('/entrenador', [ExperienciaClienteController::class, 'entrenador']);
     Route::get('/historial', [ExperienciaClienteController::class, 'historial']);
+    Route::get('/credencial', [ExperienciaClienteController::class, 'credencial']);
+    Route::get('/favoritos/clases', [ExperienciaClienteController::class, 'clasesFavoritas']);
+    Route::post('/favoritos/clases', [ExperienciaClienteController::class, 'agregarClaseFavorita']);
+    Route::delete('/favoritos/clases/{idClase}', [ExperienciaClienteController::class, 'quitarClaseFavorita']);
+    Route::get('/opiniones', [ExperienciaClienteController::class, 'opiniones']);
+    Route::post('/opiniones', [ExperienciaClienteController::class, 'guardarOpinion']);
+
     Route::get('/soporte', [ExperienciaClienteController::class, 'soporte']);
     Route::post('/soporte', [ExperienciaClienteController::class, 'crearSoporte']);
 });
