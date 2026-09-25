@@ -768,6 +768,27 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
               </form>
             </article>
           </section>
+
+          <section class="profile-security-grid">
+            <article class="member-module-card">
+              <div class="card-title-block"><span>SEGURIDAD</span><h2>Cambiar contraseña</h2><p>Actualiza tu contraseña desde tu cuenta.</p></div>
+              <form class="member-form" (ngSubmit)="cambiarContrasenaCliente()">
+                <label>Contraseña actual<input type="password" [(ngModel)]="seguridadForm.actual" name="seg_actual" autocomplete="current-password" required></label>
+                <label>Nueva contraseña<input type="password" [(ngModel)]="seguridadForm.nueva" name="seg_nueva" minlength="8" autocomplete="new-password" required></label>
+                <label>Confirmar contraseña<input type="password" [(ngModel)]="seguridadForm.confirmacion" name="seg_confirmacion" minlength="8" autocomplete="new-password" required></label>
+                <button class="member-form-submit" type="submit">Actualizar contraseña <span>→</span></button>
+              </form>
+            </article>
+
+            <article class="member-module-card session-security-card">
+              <div class="card-title-block"><span>SESIONES</span><h2>Proteger mi cuenta</h2><p>Si usaste tu cuenta en otro equipo, puedes cerrar todas las sesiones activas.</p></div>
+              <div class="session-security-info">
+                <span>✓</span>
+                <div><b>Sesión protegida con Laravel Sanctum</b><p>Al cerrar todas las sesiones tendrás que iniciar sesión nuevamente.</p></div>
+              </div>
+              <button class="member-danger-action" type="button" (click)="cerrarTodasSesiones()">Cerrar todas las sesiones</button>
+            </article>
+          </section>
         </section>
         <app-cliente-experiencia
           *ngIf="moduloActivo==='progreso' || moduloActivo==='calendario' || moduloActivo==='avisos' || moduloActivo==='soporte'"
@@ -796,6 +817,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   pagos:any[]=[]; rutinas:any[]=[]; asistencias:any[]=[]; reservas:any[]=[]; clases:any[]=[]; compras:any[]=[];
   fechasReserva:Record<number,string>={};
   pagoForm:any={id_membresia:0,fecha_inicio:new Date().toISOString().slice(0,10),metodo_pago:'Yape',numero_operacion:''};
+  seguridadForm:any={actual:'',nueva:'',confirmacion:''};
 
   diasSemanaCasa=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
   objetivosCasaMeta=[
@@ -1292,6 +1314,22 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   guardarPerfil(){this.api.actualizarPerfilCliente(this.perfil).subscribe({next:r=>{this.perfil={...r.cliente};this.ok('Perfil actualizado');},error:e=>this.error=this.errorApi(e)});}
+  cambiarContrasenaCliente(){
+    if(!this.seguridadForm.actual||!this.seguridadForm.nueva){this.error='Completa la contraseña actual y la nueva.';return;}
+    if(String(this.seguridadForm.nueva).length<8){this.error='La nueva contraseña debe tener mínimo 8 caracteres.';return;}
+    if(this.seguridadForm.nueva!==this.seguridadForm.confirmacion){this.error='Las contraseñas nuevas no coinciden.';return;}
+    this.auth.cambiarContrasena(this.seguridadForm.actual,this.seguridadForm.nueva).subscribe({
+      next:r=>{this.seguridadForm={actual:'',nueva:'',confirmacion:''};this.ok(r.mensaje||'Contraseña actualizada');},
+      error:e=>this.error=this.errorApi(e)
+    });
+  }
+  cerrarTodasSesiones(){
+    if(!confirm('¿Cerrar todas las sesiones activas de tu cuenta?'))return;
+    this.auth.logoutTodos().subscribe({
+      next:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);},
+      error:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);}
+    });
+  }
   reservar(c:any){const f=this.fechasReserva[c.id_clase];if(!f){this.error='Selecciona una fecha para la clase.';return;}this.api.reservarClase(c.id_clase,f).subscribe({next:r=>{this.ok(r.mensaje||'Reserva creada');this.cargarReservas();},error:e=>this.error=this.errorApi(e)});}
   cancelarReserva(r:any){if(!confirm('¿Cancelar esta reserva?'))return;this.api.cancelarReserva(r.id_reserva).subscribe({next:x=>{this.ok(x.mensaje||'Reserva cancelada');this.cargarReservas();},error:e=>this.error=this.errorApi(e)});}
   cargarReservas(){this.api.reservasCliente().subscribe({next:r=>this.reservas=r,error:e=>this.error=this.errorApi(e)});}
