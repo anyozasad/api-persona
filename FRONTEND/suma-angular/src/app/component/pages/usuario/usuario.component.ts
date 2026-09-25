@@ -622,8 +622,8 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                     <b>{{ladoCasa==='derecho' ? 'D' : 'I'}}</b>
                     <span>
                       {{ladoCasa==='derecho'
-                        ? 'Completa este lado. Después cambiaremos al lado izquierdo.'
-                        : 'Último lado. Al terminar pasarás al descanso.'}}
+                        ? 'Completa este lado. Al llegar a la meta cambiaremos automáticamente al lado izquierdo.'
+                        : 'Último lado. Al completar la meta comenzará el descanso automáticamente.'}}
                     </span>
                   </div>
                 </aside>
@@ -682,9 +682,9 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                         (click)="avanzarEjercicioCasa()"
                         [disabled]="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones' && repsCasaHechas<objetivoRepsCasa">
                   <ng-container *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'; else siguienteNormal">
-                    {{ejercicioCasaActual?.por_lado && ladoCasa==='derecho'
-                      ? 'Cambiar al lado izquierdo →'
-                      : '✓ Terminé · ir al descanso'}}
+                    {{repsCasaHechas<objetivoRepsCasa
+                      ? 'Completa la meta · avance automático'
+                      : 'Cambiando automáticamente…'}}
                   </ng-container>
                   <ng-template #siguienteNormal>Siguiente →</ng-template>
                 </button>
@@ -1279,7 +1279,12 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   ejerciciosZonaCasa(zona:string):any[]{return this.catalogoCasa?.[zona]||[];}
   get ejerciciosCasaActuales():any[]{return this.ejerciciosZonaCasa(this.zonaCasaSeleccionada);}
   get ejercicioCasaActual():any{return this.ejerciciosCasaActuales[this.indiceEjercicioCasa]||null;}
-  get siguienteEjercicioCasa():any{return this.ejerciciosCasaActuales[Math.min(this.indiceEjercicioCasa+1,this.ejerciciosCasaActuales.length-1)]||null;}
+  get siguienteEjercicioCasa():any{
+    const siguienteIndice=this.indiceEjercicioCasa+1;
+    return siguienteIndice<this.ejerciciosCasaActuales.length
+      ? this.ejerciciosCasaActuales[siguienteIndice]
+      : null;
+  }
 
   metaZonaCasa(zona:string):any{
     return this.zonasCasaMeta.find((z:any)=>z.id===zona)||this.zonasCasaMeta[0];
@@ -1359,7 +1364,35 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   sumarRepeticionCasa():void{
     if(!this.sesionCasaActiva || this.sesionCasaPausada || this.faseCasa!=='ejercicio')return;
     if(this.ejercicioCasaActual?.modo!=='repeticiones')return;
-    this.repsCasaHechas=Math.min(this.objetivoRepsCasa,this.repsCasaHechas+1);
+
+    const indiceActual=this.indiceEjercicioCasa;
+    const ladoActual=this.ladoCasa;
+    const objetivo=Math.max(1,this.objetivoRepsCasa);
+    const nuevasReps=Math.min(objetivo,this.repsCasaHechas+1);
+
+    this.repsCasaHechas=nuevasReps;
+    this.errorCasa='';
+
+    // Al completar la meta, el flujo continúa solo:
+    // derecho -> izquierdo -> descanso -> siguiente ejercicio.
+    if(nuevasReps>=objetivo){
+      setTimeout(()=>{
+        if(!this.sesionCasaActiva || this.sesionCasaPausada || this.faseCasa!=='ejercicio')return;
+        if(this.indiceEjercicioCasa!==indiceActual || this.ladoCasa!==ladoActual)return;
+
+        const ejercicio=this.ejercicioCasaActual;
+
+        if(ejercicio?.por_lado && this.ladoCasa==='derecho'){
+          this.ladoCasa='izquierdo';
+          this.repsCasaHechas=0;
+          return;
+        }
+
+        this.ladoCasa='derecho';
+        this.repsCasaHechas=0;
+        this.siguienteFaseCasa();
+      },650);
+    }
   }
 
   avanzarEjercicioCasa():void{
