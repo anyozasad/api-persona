@@ -15,6 +15,7 @@ import { RouterLink } from '@angular/router';
         <header class="landing-nav shell">
           <a routerLink="/" class="landing-logo" aria-label="Mallqui Gym">
             <img src="assets/mallqui-logo.png" alt="Mallqui Gym">
+            <span><b>MALLQUI GYM</b><small>PUCALLPA · PERÚ</small></span>
           </a>
           <nav aria-label="Navegación principal">
             <a routerLink="/" class="active">Inicio</a>
@@ -29,21 +30,32 @@ import { RouterLink } from '@angular/router';
 
         <div class="hero-layout shell" id="inicio">
           <div class="hero-copy hero-enter">
-            <span class="hero-kicker">◉ BIENVENIDO A MALLQUI GYM</span>
+            <span class="hero-kicker"><i></i> BIENVENIDO A MALLQUI GYM</span>
             <h1>TU MEJOR VERSIÓN<br>COMIENZA <strong>AQUÍ</strong></h1>
-            <p>Entrenamiento profesional, ambiente motivador y resultados reales. Estamos contigo en cada paso de tu transformación.</p>
+            <p>Entrena con una experiencia clara, moderna y acompañada. Rutinas, clases y seguimiento para que cada visita tenga un propósito.</p>
             <div class="hero-actions">
-              <a routerLink="/login" class="primary-button">🏋 Comenzar ahora</a>
-              <a routerLink="/planes" class="ghost-button">▷ Ver planes</a>
+              <a routerLink="/login" class="primary-button"><span>Comenzar ahora</span><b>→</b></a>
+              <a routerLink="/planes" class="ghost-button"><span>Ver planes</span><b>↗</b></a>
+            </div>
+            <div class="hero-trust">
+              <span><i>✓</i> Entrenamiento guiado</span>
+              <span><i>✓</i> Reserva desde tu cuenta</span>
+              <span><i>✓</i> Seguimiento personal</span>
             </div>
           </div>
           <div class="hero-person hero-image-enter" role="img" aria-label="Persona entrenando con mancuerna">
-            <div class="hero-photo-info">
+            <div class="hero-image-shade"></div>
+            <div class="hero-photo-badge">
               <span><i></i> MALLQUI GYM · PUCALLPA</span>
-              <div>
-                <article><small>HORARIO</small><b>06:00 - 22:00</b></article>
-                <article><small>CLASES</small><b>{{clases.length}} modalidades</b></article>
-              </div>
+            </div>
+            <div class="hero-photo-message">
+              <small>ENTRENA CON PROPÓSITO</small>
+              <b>Disciplina hoy.<br>Resultados mañana.</b>
+            </div>
+            <div class="hero-photo-info">
+              <article><small>HORARIO</small><b>06:00 - 22:00</b></article>
+              <article><small>CLASES</small><b>{{clases.length}} modalidades</b></article>
+              <article><small>ACCESO</small><b>Todos los días</b></article>
             </div>
           </div>
         </div>
