@@ -621,13 +621,22 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   pagoForm:any={id_membresia:0,fecha_inicio:new Date().toISOString().slice(0,10),metodo_pago:'Yape',numero_operacion:''};
 
   diasSemanaCasa=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+  objetivosCasaMeta=[
+    {id:'fuerza',nombre:'Fuerza',icono:'⚡',descripcion:'Fortalecer músculos de forma gradual y controlada.'},
+    {id:'resistencia',nombre:'Resistencia',icono:'◷',descripcion:'Mantener el esfuerzo moderado durante más tiempo.'},
+    {id:'movilidad',nombre:'Movilidad',icono:'↔',descripcion:'Mejorar control, postura y amplitud cómoda de movimiento.'},
+  ];
   zonasCasaMeta=[
-    {id:'piernas',nombre:'Piernas',icono:'🦵',subtitulo:'FUERZA Y ESTABILIDAD',enfoque:'Piernas y equilibrio',descripcion:'Movimientos sencillos de piernas, cadera y pantorrillas.'},
-    {id:'brazos',nombre:'Brazos',icono:'💪',subtitulo:'TREN SUPERIOR',enfoque:'Brazos y hombros',descripcion:'Trabajo moderado de brazos y hombros sin equipo especial.'},
+    {id:'piernas',nombre:'Piernas',icono:'🦵',subtitulo:'TREN INFERIOR',enfoque:'Piernas y equilibrio',descripcion:'Sentadillas, zancadas y pantorrillas con control.'},
+    {id:'gluteos',nombre:'Glúteos',icono:'↥',subtitulo:'CADERA Y ESTABILIDAD',enfoque:'Glúteos y cadera',descripcion:'Puentes y movimientos de cadera sin equipo especial.'},
+    {id:'brazos',nombre:'Brazos',icono:'💪',subtitulo:'TREN SUPERIOR',enfoque:'Brazos y tríceps',descripcion:'Trabajo moderado de brazos usando el propio peso.'},
+    {id:'pecho',nombre:'Pecho',icono:'◆',subtitulo:'EMPUJE',enfoque:'Pecho y control',descripcion:'Flexiones en pared y ejercicios de empuje suaves.'},
+    {id:'espalda',nombre:'Espalda',icono:'✦',subtitulo:'POSTURA Y CONTROL',enfoque:'Espalda y postura',descripcion:'Movimientos de espalda y escápulas de forma controlada.'},
+    {id:'hombros',nombre:'Hombros',icono:'↻',subtitulo:'MOVILIDAD Y FUERZA',enfoque:'Hombros y estabilidad',descripcion:'Elevaciones y movilidad sin cargas externas.'},
     {id:'core',nombre:'Abdomen / Core',icono:'◎',subtitulo:'ESTABILIDAD CENTRAL',enfoque:'Core y postura',descripcion:'Ejercicios de estabilidad del tronco y control corporal.'},
   ];
-  planCasa:any={dias:['Lunes','Miércoles','Viernes'],zonas:['piernas','brazos','core']};
-  catalogoCasa:Record<string,any[]>={piernas:[],brazos:[],core:[]};
+  planCasa:any={dias:['Lunes','Miércoles','Viernes'],zonas:['piernas','brazos','core'],objetivo:'fuerza'};
+  catalogoCasa:Record<string,any[]>={piernas:[],gluteos:[],brazos:[],pecho:[],espalda:[],hombros:[],core:[]};
   historialCasa:any[]=[];
   zonaCasaSeleccionada='piernas';
   casaCargado=false;
@@ -665,8 +674,12 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargarEntrenamientoCasa():void{
     this.api.entrenamientoCasaCliente().subscribe({
       next:r=>{
-        this.planCasa={dias:r?.plan?.dias||['Lunes','Miércoles','Viernes'],zonas:r?.plan?.zonas||['piernas','brazos','core']};
-        this.catalogoCasa=r?.catalogo||{piernas:[],brazos:[],core:[]};
+        this.planCasa={
+          dias:r?.plan?.dias||['Lunes','Miércoles','Viernes'],
+          zonas:r?.plan?.zonas||['piernas','brazos','core'],
+          objetivo:r?.plan?.objetivo||'fuerza'
+        };
+        this.catalogoCasa=r?.catalogo||{piernas:[],gluteos:[],brazos:[],pecho:[],espalda:[],hombros:[],core:[]};
         this.historialCasa=r?.historial||[];
         this.zonaCasaSeleccionada=this.planCasa.zonas?.[0]||'piernas';
         const tocaHoy=this.agendaCasaSemanal.find((x:any)=>x.hoy&&x.activo);
@@ -709,7 +722,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   guardarPlanCasa():void{
     this.errorCasa='';
-    this.api.guardarPlanCasaCliente({dias:this.planCasa.dias,zonas:this.planCasa.zonas}).subscribe({
+    this.api.guardarPlanCasaCliente({dias:this.planCasa.dias,zonas:this.planCasa.zonas,objetivo:this.planCasa.objetivo||'fuerza'}).subscribe({
       next:r=>{this.planCasa={...r.plan};this.ok(r.mensaje||'Plan semanal guardado');},
       error:e=>this.errorCasa=this.errorApi(e)
     });
