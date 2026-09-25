@@ -31,6 +31,10 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
           </nav>
 
           <div class="member-user-actions">
+            <div class="member-system-status" [class.offline]="!dbConectada" [title]="dbConectada ? 'Angular conectado con Laravel y '+dbMotor : 'Sin conexión con la base de datos'">
+              <i></i>
+              <span>{{dbConectada ? 'Datos en línea' : 'Sin conexión'}}</span>
+            </div>
             <button type="button" class="member-alert-button" [class.active]="moduloActivo==='avisos'" (click)="abrirModulo('avisos')" aria-label="Abrir avisos">
               <span>●</span>
               <b *ngIf="avisosNoLeidos>0">{{avisosNoLeidos>9 ? '9+' : avisosNoLeidos}}</b>
@@ -61,6 +65,33 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
           </button>
         </div>
       </header>
+
+      <div *ngIf="mobileMenuAbierto" class="member-mobile-menu-backdrop" (click)="mobileMenuAbierto=false">
+        <aside class="member-mobile-menu-sheet" (click)="$event.stopPropagation()">
+          <div class="member-mobile-menu-head">
+            <div>
+              <span>MALLQUI GYM</span>
+              <h3>Más opciones</h3>
+            </div>
+            <button type="button" (click)="mobileMenuAbierto=false" aria-label="Cerrar menú">×</button>
+          </div>
+          <div class="member-mobile-menu-grid">
+            <button type="button" (click)="abrirModulo('rutinas')"><i>🏋</i><span>Rutinas</span></button>
+            <button type="button" (click)="abrirModulo('calendario')"><i>◫</i><span>Calendario</span></button>
+            <button type="button" (click)="abrirModulo('reservas')"><i>◷</i><span>Reservas</span></button>
+            <button type="button" (click)="abrirModulo('asistencias')"><i>✓</i><span>Asistencias</span></button>
+            <button type="button" (click)="abrirModulo('club')"><i>★</i><span>Mi club</span></button>
+            <button type="button" (click)="abrirModulo('pagos')"><i>▤</i><span>Membresía</span></button>
+            <button type="button" (click)="abrirModulo('avisos')"><i>●</i><span>Avisos</span></button>
+            <button type="button" (click)="abrirModulo('soporte')"><i>?</i><span>Ayuda</span></button>
+            <button type="button" (click)="abrirModulo('perfil')"><i>♙</i><span>Perfil</span></button>
+          </div>
+          <div class="member-mobile-system" [class.offline]="!dbConectada">
+            <i></i>
+            <div><b>{{dbConectada ? 'Sistema conectado' : 'Sin conexión a datos'}}</b><small>{{dbConectada ? ('Laravel + '+dbMotor) : 'Revisa Laravel y MySQL'}}</small></div>
+          </div>
+        </aside>
+      </div>
 
       <main class="member-main" *ngIf="!cargando; else cargandoTpl">
         <div *ngIf="error" class="member-toast error-toast">{{error}}</div>
@@ -912,6 +943,14 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         </app-cliente-experiencia>
       </main>
 
+      <nav class="member-mobile-bottom-nav" aria-label="Navegación móvil">
+        <button type="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')"><i>⌂</i><span>Inicio</span></button>
+        <button type="button" [class.active]="moduloActivo==='casa'" (click)="abrirModulo('casa')"><i>⚡</i><span>Entrenar</span></button>
+        <button type="button" [class.active]="moduloActivo==='clases'" (click)="abrirModulo('clases')"><i>▣</i><span>Clases</span></button>
+        <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')"><i>◎</i><span>Progreso</span></button>
+        <button type="button" [class.active]="mobileMenuAbierto" (click)="mobileMenuAbierto=!mobileMenuAbierto"><i>•••</i><span>Más</span></button>
+      </nav>
+
       <ng-template #cargandoTpl>
         <main class="member-main">
           <div class="member-loading-card">
@@ -930,6 +969,10 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
 export class UsuarioComponent implements OnInit, OnDestroy {
   moduloActivo='inicio'; cargando=true; error=''; toast='';
   avisosNoLeidos=0;
+  mobileMenuAbierto=false;
+  apiConectada=false;
+  dbConectada=false;
+  dbMotor='MySQL';
   resumen:any=null; perfil:any={}; membresiaActual:any=null; membresiasDisponibles:any[]=[];
   pagos:any[]=[]; rutinas:any[]=[]; asistencias:any[]=[]; reservas:any[]=[]; clases:any[]=[]; compras:any[]=[];
   fechasReserva:Record<number,string>={};
@@ -971,8 +1014,23 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   constructor(private api:GymApiService, private auth:AuthService, private router:Router){}
 
-  ngOnInit():void{ this.cargar(); }
+  ngOnInit():void{ this.cargarEstadoSistema(); this.cargar(); }
   ngOnDestroy():void{ this.detenerTimerCasa(); }
+
+  cargarEstadoSistema():void{
+    this.api.estadoSistema().subscribe({
+      next:r=>{
+        this.apiConectada=Boolean(r?.api);
+        this.dbConectada=Boolean(r?.database);
+        this.dbMotor=String(r?.motor || 'MySQL').toUpperCase();
+      },
+      error:e=>{
+        this.apiConectada=Boolean(e?.error?.api);
+        this.dbConectada=false;
+        this.dbMotor=String(e?.error?.motor || 'MySQL').toUpperCase();
+      }
+    });
+  }
 
   cargar():void{
     this.cargando=true; this.error='';
@@ -981,7 +1039,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       error:e=>{this.error=this.errorApi(e);this.cargando=false;}
     });
   }
-  abrirModulo(m:string){this.moduloActivo=m;if(m==='casa'&&!this.casaCargado)this.cargarEntrenamientoCasa();if(m==='avisos')this.cargarContadorAvisos();window.scrollTo({top:0,behavior:'smooth'});}
+  abrirModulo(m:string){this.mobileMenuAbierto=false;this.moduloActivo=m;if(m==='casa'&&!this.casaCargado)this.cargarEntrenamientoCasa();if(m==='avisos')this.cargarContadorAvisos();window.scrollTo({top:0,behavior:'smooth'});}
   cargarContadorAvisos(){this.api.notificacionesCliente().subscribe({next:r=>this.avisosNoLeidos=Number(r?.no_leidas||0),error:()=>{}});}
   get nombreCorto():string{
     const valor=String(this.perfil?.nombres || this.auth.usuario?.nombres || 'Miembro').trim();
