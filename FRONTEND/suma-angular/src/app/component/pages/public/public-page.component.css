@@ -1136,3 +1136,114 @@
     animation:none!important;
   }
 }
+
+
+/* =========================================================
+   PUBLIC V5 · NAV SIN RAYAS + PLANES PULIDOS
+   ========================================================= */
+.public-nav nav a,
+.public-nav nav a:link,
+.public-nav nav a:visited,
+.public-nav nav a:hover,
+.public-nav nav a:active{
+  text-decoration:none!important;
+  border-bottom:0!important;
+}
+.public-nav nav a::before,
+.public-nav nav a::after{
+  content:none!important;
+  display:none!important;
+}
+.public-nav nav a{
+  min-height:42px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 15px!important;
+  border-radius:11px!important;
+  background:transparent!important;
+  color:#c8d5e2!important;
+  box-shadow:none!important;
+  transition:background .18s ease,color .18s ease,transform .18s ease,box-shadow .18s ease!important;
+}
+.public-nav nav a:hover{
+  color:#fff!important;
+  background:rgba(255,255,255,.065)!important;
+  transform:translateY(-1px)!important;
+}
+.public-nav nav a.active{
+  color:#fff!important;
+  background:linear-gradient(135deg,rgba(239,35,60,.28),rgba(239,35,60,.12))!important;
+  box-shadow:inset 0 0 0 1px rgba(255,93,108,.20),0 8px 22px rgba(239,35,60,.10)!important;
+}
+
+/* Planes: el distintivo ya no cruza ni toca la línea de la tarjeta */
+.plans-page-grid{
+  max-width:1240px!important;
+  gap:22px!important;
+}
+.plans-page-grid article{
+  min-height:430px!important;
+  padding:30px 26px 26px!important;
+  border:1px solid #e0e7ee!important;
+  border-radius:21px!important;
+  overflow:hidden!important;
+  background:
+    linear-gradient(180deg,#fff 0%,#fff 70%,#fbfcfe 100%)!important;
+  box-shadow:0 14px 36px rgba(8,28,50,.065)!important;
+}
+.plans-page-grid article.featured{
+  border:1px solid rgba(239,35,60,.36)!important;
+  background:
+    radial-gradient(circle at 82% 4%,rgba(239,35,60,.08),transparent 24%),
+    linear-gradient(180deg,#fff 0%,#fff 70%,#fff8f9 100%)!important;
+  box-shadow:0 18px 44px rgba(239,35,60,.12)!important;
+}
+.plans-page-grid article.featured::before{
+  display:none!important;
+  content:none!important;
+}
+.recommended{
+  position:static!important;
+  align-self:flex-start!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:28px!important;
+  margin:0 0 16px!important;
+  padding:0 10px!important;
+  border:1px solid rgba(239,35,60,.18)!important;
+  border-radius:999px!important;
+  background:#fff0f2!important;
+  color:#c51c31!important;
+  font-size:8px!important;
+  font-weight:900!important;
+  letter-spacing:.8px!important;
+  box-shadow:none!important;
+}
+.plans-page-grid h3{
+  margin:0 0 6px!important;
+  font-size:21px!important;
+}
+.plans-page-grid>article:not(.featured) h3{
+  margin-top:44px!important;
+}
+.plans-page-grid>article>p{
+  font-size:11px!important;
+  line-height:1.5!important;
+}
+.price{
+  margin:24px 0 20px!important;
+}
+.price b{
+  font-size:50px!important;
+}
+.plans-page-grid li{
+  font-size:11px!important;
+  margin:12px 0!important;
+}
+.plans-page-grid article>a{
+  min-height:48px!important;
+  margin-top:auto!important;
+  border-radius:11px!important;
+  text-decoration:none!important;
+}
