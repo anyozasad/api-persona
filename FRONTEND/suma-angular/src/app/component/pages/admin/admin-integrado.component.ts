@@ -124,6 +124,9 @@ import { AdminComunicacionComponent } from './admin-comunicacion.component';
           <button type="button" class="ux-action" (click)="cambiarSeccion('asistencias')">
             <span>✓</span><div><b>Registrar asistencia</b><small>Entrada o salida</small></div>
           </button>
+          <button type="button" class="ux-action" (click)="cambiarSeccion('comunicacion')">
+            <span>●</span><div><b>Enviar aviso</b><small>Notificar clientes</small></div>
+          </button>
         </section>
 
         <section class="ux-primary-kpis" aria-label="Indicadores principales">
@@ -158,11 +161,12 @@ import { AdminComunicacionComponent } from './admin-comunicacion.component';
           <button type="button" (click)="cambiarSeccion('asistencias')"><span>▣</span><div><b>{{dashboard?.asistencias?.hoy ?? 0}}</b><small>Asistencias hoy</small></div></button>
           <button type="button" [class.needs-attention]="(dashboard?.membresias?.pagos_pendientes ?? 0)>0" (click)="cambiarSeccion('pagos')"><span>▤</span><div><b>{{dashboard?.membresias?.pagos_pendientes ?? 0}}</b><small>Pagos pendientes</small></div></button>
           <button type="button" [class.needs-attention]="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0" (click)="cambiarSeccion('productos')"><span>!</span><div><b>{{dashboard?.inventario?.productos_stock_bajo ?? 0}}</b><small>Stock bajo</small></div></button>
+          <button type="button" [class.needs-attention]="(dashboard?.alertas?.soporte_pendiente ?? 0)>0" (click)="cambiarSeccion('soporte')"><span>?</span><div><b>{{dashboard?.alertas?.soporte_pendiente ?? 0}}</b><small>Soporte pendiente</small></div></button>
         </section>
 
         <section class="ux-alert-banner" *ngIf="(dashboard?.alertas?.total ?? 0) > 0">
-          <div><span>!</span><div><b>Hay {{dashboard?.alertas?.total}} pendientes que requieren atención.</b><small>Prioriza pagos pendientes, membresías por vencer y productos con stock bajo.</small></div></div>
-          <button type="button" (click)="cambiarSeccion('reportes')">Revisar detalles →</button>
+          <div><span>!</span><div><b>Hay {{dashboard?.alertas?.total}} pendientes que requieren atención.</b><small>Revisa pagos, membresías por vencer, stock bajo y consultas de soporte.</small></div></div>
+          <button type="button" (click)="(dashboard?.alertas?.soporte_pendiente ?? 0)>0 ? cambiarSeccion('soporte') : cambiarSeccion('reportes')">Revisar pendientes →</button>
         </section>
 
         <section class="ux-chart-layout">
