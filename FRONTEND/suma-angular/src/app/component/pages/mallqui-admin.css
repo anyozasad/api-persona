@@ -2359,3 +2359,13 @@
   .client-editor-form{padding:16px 14px 0}
   .client-editor-footer{grid-template-columns:1fr}
 }
+
+
+.admin-toast.success{
+  background:#0e5d43!important;
+  border-color:rgba(102,226,174,.22)!important;
+}
+.admin-toast.error{
+  background:#8f2130!important;
+  border-color:rgba(255,166,178,.24)!important;
+}
