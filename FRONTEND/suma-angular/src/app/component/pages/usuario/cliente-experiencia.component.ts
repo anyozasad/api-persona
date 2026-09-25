@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GymApiService } from '../../../core/services/gym-api.service';
 
@@ -278,6 +278,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
 })
 export class ClienteExperienciaComponent implements OnInit, OnChanges {
   @Input() modulo = 'progreso';
+  @Output() notificacionesCambio = new EventEmitter<number>();
 
   cargando = false;
   error = '';
@@ -369,7 +370,11 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
   cargarNotificaciones(): void {
     this.cargando = true;
     this.api.notificacionesCliente().subscribe({
-      next: r => { this.notificaciones = r || { no_leidas: 0, items: [] }; this.cargando = false; },
+      next: r => {
+        this.notificaciones = r || { no_leidas: 0, items: [] };
+        this.notificacionesCambio.emit(Number(this.notificaciones?.no_leidas || 0));
+        this.cargando = false;
+      },
       error: e => { this.error = this.mensajeError(e); this.cargando = false; }
     });
   }
@@ -427,6 +432,7 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
       next: () => {
         n.leida = true;
         this.notificaciones.no_leidas = Math.max(0, Number(this.notificaciones.no_leidas || 0) - 1);
+        this.notificacionesCambio.emit(Number(this.notificaciones.no_leidas || 0));
       },
       error: e => this.error = this.mensajeError(e)
     });
@@ -439,6 +445,7 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
           if (n.origen === 'admin') n.leida = true;
         });
         this.notificaciones.no_leidas = (this.notificaciones.items || []).filter((n: any) => n.origen === 'sistema').length;
+        this.notificacionesCambio.emit(Number(this.notificaciones.no_leidas || 0));
         this.mostrarToast('Notificaciones actualizadas.');
       },
       error: e => this.error = this.mensajeError(e)
