@@ -236,6 +236,18 @@ import { GymApiService } from '../../../core/services/gym-api.service';
                 </button>
               </div>
 
+              <div class="home-plan-zones">
+                <span>GRUPOS PARA TU SEMANA</span>
+                <div>
+                  <button *ngFor="let zona of zonasCasaMeta"
+                          type="button"
+                          [class.active]="planCasa.zonas.includes(zona.id)"
+                          (click)="toggleZonaCasa(zona.id)">
+                    <i>{{zona.icono}}</i>{{zona.nombre}}
+                  </button>
+                </div>
+              </div>
+
               <button type="button" class="home-save-plan" (click)="guardarPlanCasa()">Guardar plan semanal</button>
             </article>
 
