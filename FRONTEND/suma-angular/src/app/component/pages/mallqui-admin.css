@@ -944,3 +944,24 @@
     animation-duration:.01ms!important;animation-iteration-count:1!important
   }
 }
+
+
+/* ADMIN LIVE REFRESH */
+.admin-refresh-box{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:4px;
+}
+.admin-refresh-box small{
+  font-size:7px;
+  color:#8190a0;
+  white-space:nowrap;
+}
+.admin-refresh-top:disabled,
+.ux-refresh:disabled{
+  opacity:.6;
+  cursor:wait;
+  transform:none!important;
+  box-shadow:none!important;
+}
