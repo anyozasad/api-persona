@@ -6,6 +6,7 @@ use App\Models\Asistencia;
 use App\Models\Cliente;
 use App\Models\ClienteMembresia;
 use App\Models\NotificacionCliente;
+use App\Models\MetaCliente;
 use App\Models\PagoMembresia;
 use App\Models\PlanEntrenamientoCasa;
 use App\Models\Reserva;
@@ -28,7 +29,12 @@ class ExperienciaClienteController extends Controller
             ->where('activo', true)
             ->first();
 
-        $metaSemanal = max(1, min(4, count($plan?->dias ?? ['Lunes', 'Miércoles', 'Viernes'])));
+        $meta = MetaCliente::firstOrCreate(
+            ['id_cliente' => $cliente->id_cliente],
+            ['sesiones_semanales' => max(1, min(4, count($plan?->dias ?? ['Lunes', 'Miércoles', 'Viernes']))), 'recordatorios' => true]
+        );
+
+        $metaSemanal = max(1, min(4, (int) $meta->sesiones_semanales));
 
         $sesionesSemana = SesionEntrenamientoCasa::where('id_cliente', $cliente->id_cliente)
             ->whereBetween('fecha', [$inicioSemana, $finSemana])
@@ -112,6 +118,38 @@ class ExperienciaClienteController extends Controller
                 ->sortByDesc('fecha')
                 ->take(8)
                 ->values(),
+        ]);
+    }
+
+    public function meta(Request $request)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+
+        $meta = MetaCliente::firstOrCreate(
+            ['id_cliente' => $cliente->id_cliente],
+            ['sesiones_semanales' => 3, 'recordatorios' => true]
+        );
+
+        return response()->json($meta);
+    }
+
+    public function guardarMeta(Request $request)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+
+        $datos = $request->validate([
+            'sesiones_semanales' => 'required|integer|min:1|max:4',
+            'recordatorios' => 'required|boolean',
+        ]);
+
+        $meta = MetaCliente::updateOrCreate(
+            ['id_cliente' => $cliente->id_cliente],
+            $datos
+        );
+
+        return response()->json([
+            'mensaje' => 'Meta semanal actualizada.',
+            'meta' => $meta,
         ]);
     }
 
