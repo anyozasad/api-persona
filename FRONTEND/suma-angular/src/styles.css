@@ -84,3 +84,17 @@ app-root { display: block; min-height: 100vh; }
 .member-topbar nav a:hover {
   color: #ff3343;
 }
+
+
+/* Páginas públicas: conserva el desplazamiento pero oculta la barra lateral visual. */
+html.mallqui-public-scroll,
+html.mallqui-public-scroll body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html.mallqui-public-scroll::-webkit-scrollbar,
+html.mallqui-public-scroll body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
