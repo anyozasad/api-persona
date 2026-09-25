@@ -680,9 +680,9 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                 <button type="button"
                         class="control-primary"
                         (click)="avanzarEjercicioCasa()"
-                        [disabled]="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones' && repsCasaHechas<objetivoRepsCasa">
+                        [disabled]="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones' && repsCasaHechas !== objetivoRepsCasa">
                   <ng-container *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'; else siguienteNormal">
-                    {{repsCasaHechas<objetivoRepsCasa
+                    {{repsCasaHechas !== objetivoRepsCasa
                       ? 'Completa la meta · avance automático'
                       : 'Cambiando automáticamente…'}}
                   </ng-container>
