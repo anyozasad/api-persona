@@ -6,6 +6,11 @@ import { catchError, forkJoin, Observable, of, throwError } from 'rxjs';
 export class GymApiService {
   constructor(private http: HttpClient) {}
 
+  // Estado técnico visible para demostrar que Angular -> Laravel -> MySQL está operativo.
+  estadoSistema(): Observable<any> {
+    return this.http.get('/api/estado-sistema');
+  }
+
   // =========================================================
   // PORTAL DEL CLIENTE
   // =========================================================
