@@ -22,11 +22,17 @@ import { Component, Input } from '@angular/core';
           {{lado === 'derecho' ? 'LADO DERECHO' : 'LADO IZQUIERDO'}}
         </span>
 
-        <img
+        <div
           *ngIf="modo==='deadbug'"
-          class="exercise-human-image"
-          src="/assets/exercises/deadbug_human.webp"
-          [alt]="'Persona realizando '+(ejercicio?.nombre || 'Dead bug básico')">
+          class="exercise-human-motion"
+          [class.mirror]="lado==='izquierdo'">
+          <img
+            class="exercise-human-image"
+            src="/assets/exercises/deadbug_human.webp"
+            [alt]="'Persona realizando '+(ejercicio?.nombre || 'Dead bug básico')">
+          <span class="human-motion-cue cue-arm" aria-hidden="true"></span>
+          <span class="human-motion-cue cue-leg" aria-hidden="true"></span>
+        </div>
 
         <svg *ngIf="modo!=='deadbug'" viewBox="0 0 360 250" role="img" [attr.aria-label]="'Persona demostrando '+(ejercicio?.nombre || 'ejercicio')">
           <defs>
@@ -237,16 +243,48 @@ import { Component, Input } from '@angular/core';
     }
     .exercise-demo-stage:before{content:'';position:absolute;width:220px;height:220px;right:-70px;top:-80px;border-radius:50%;background:radial-gradient(circle,rgba(239,35,60,.18),transparent 68%)}
     .exercise-demo-stage svg{position:relative;z-index:2;display:block;width:100%;height:280px;padding:18px 26px 0;box-sizing:border-box}
-    .exercise-human-image{
+    .exercise-human-motion{
       position:absolute;
       z-index:2;
       inset:0;
-      width:100%;
-      height:100%;
+      overflow:hidden;
+      transform-origin:center;
+      animation:deadbugCoachMove 2.6s ease-in-out infinite
+    }
+    .exercise-human-motion.mirror{
+      transform:scaleX(-1)
+    }
+    .exercise-human-image{
+      position:absolute;
+      inset:-2%;
+      width:104%;
+      height:104%;
       object-fit:cover;
       object-position:center;
       display:block;
-      filter:saturate(.96) contrast(1.03)
+      filter:saturate(.98) contrast(1.05);
+      transform-origin:50% 74%;
+      animation:deadbugHumanImage 2.6s ease-in-out infinite
+    }
+    .human-motion-cue{
+      position:absolute;
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      border:2px solid rgba(255,255,255,.85);
+      box-shadow:0 0 0 0 rgba(255,255,255,.38);
+      opacity:0;
+      pointer-events:none
+    }
+    .cue-arm{
+      left:31%;
+      top:26%;
+      animation:humanCueArm 2.6s ease-in-out infinite
+    }
+    .cue-leg{
+      right:23%;
+      top:49%;
+      animation:humanCueLeg 2.6s ease-in-out infinite
     }
     .demo-floor{stroke:rgba(255,255,255,.18);stroke-width:5;stroke-linecap:round}
     .body-head{
@@ -286,7 +324,10 @@ import { Component, Input } from '@angular/core';
     .exercise-demo-foot span{display:inline-flex;align-items:center;gap:6px;font-size:9px;color:#6e8194}
     .exercise-demo-foot i{width:7px;height:7px;border-radius:50%;background:#36b884}
 
-    .is-paused .pose *{animation-play-state:paused!important}
+    .is-paused .pose *,
+    .is-paused .exercise-human-motion,
+    .is-paused .exercise-human-image,
+    .is-paused .human-motion-cue{animation-play-state:paused!important}
 
     /* Standing animation families */
     [data-demo="standing"] .pose-standing{animation:floatBody 2.4s ease-in-out infinite}
@@ -320,6 +361,36 @@ import { Component, Input } from '@angular/core';
     .breath-ring.one{animation:breatheRing 3.8s ease-out infinite}
     .breath-ring.two{animation:breatheRing 3.8s 1.9s ease-out infinite}
 
+    @keyframes deadbugCoachMove{
+      0%,100%{transform:translate3d(0,0,0)}
+      25%{transform:translate3d(-5px,-2px,0)}
+      50%{transform:translate3d(4px,2px,0)}
+      75%{transform:translate3d(-2px,1px,0)}
+    }
+    .exercise-human-motion.mirror{
+      animation-name:deadbugCoachMoveMirror
+    }
+    @keyframes deadbugCoachMoveMirror{
+      0%,100%{transform:scaleX(-1) translate3d(0,0,0)}
+      25%{transform:scaleX(-1) translate3d(-5px,-2px,0)}
+      50%{transform:scaleX(-1) translate3d(4px,2px,0)}
+      75%{transform:scaleX(-1) translate3d(-2px,1px,0)}
+    }
+    @keyframes deadbugHumanImage{
+      0%,100%{transform:scale(1) rotate(0deg)}
+      35%{transform:scale(1.025) rotate(-.8deg)}
+      70%{transform:scale(1.012) rotate(.6deg)}
+    }
+    @keyframes humanCueArm{
+      0%,15%,100%{opacity:0;transform:translate(0,0) scale(.7);box-shadow:0 0 0 0 rgba(255,255,255,.32)}
+      35%{opacity:.95;transform:translate(-18px,16px) scale(1);box-shadow:0 0 0 13px rgba(255,255,255,0)}
+      60%{opacity:.28;transform:translate(-34px,28px) scale(.82)}
+    }
+    @keyframes humanCueLeg{
+      0%,35%,100%{opacity:0;transform:translate(0,0) scale(.7);box-shadow:0 0 0 0 rgba(255,255,255,.28)}
+      58%{opacity:.95;transform:translate(20px,13px) scale(1);box-shadow:0 0 0 13px rgba(255,255,255,0)}
+      82%{opacity:.24;transform:translate(38px,24px) scale(.82)}
+    }
     @keyframes floatBody{50%{transform:translateY(-4px)}}
     @keyframes calfRaise{50%{transform:translateY(-11px)}}
     @keyframes marchLeft{50%{transform:rotate(-23deg) translateY(-8px)}}
@@ -357,7 +428,7 @@ import { Component, Input } from '@angular/core';
       .demo-caption b{text-align:left}
     }
     @media(prefers-reduced-motion:reduce){
-      .pose *,.pose,.breath-ring{animation:none!important}
+      .pose *,.pose,.breath-ring,.exercise-human-motion,.exercise-human-image,.human-motion-cue{animation:none!important}
     }
   `]
 })
