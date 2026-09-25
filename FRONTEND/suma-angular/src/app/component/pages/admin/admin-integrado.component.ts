@@ -291,52 +291,223 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
       </ng-container>
 
       <ng-container *ngIf="seccion==='clientes'">
-        <section class="management-grid">
-          <article class="admin-form-card">
-            <div class="management-heading"><div><h2>{{clienteEditandoId ? 'Editar cliente' : 'Registrar cliente'}}</h2><p>{{clienteEditandoId ? 'Modifica los datos y guarda los cambios en MySQL.' : 'Se guarda directamente en MySQL.'}}</p></div><span>{{clienteEditandoId ? '✎' : '＋'}}</span></div>
-            <form (ngSubmit)="guardarCliente()">
-              <div class="form-row"><label>DNI<input [(ngModel)]="clienteForm.dni" name="dni" required></label><label>Teléfono<input [(ngModel)]="clienteForm.telefono" name="telefono"></label></div>
-              <div class="form-row"><label>Nombres<input [(ngModel)]="clienteForm.nombres" name="nombres" required></label><label>Apellidos<input [(ngModel)]="clienteForm.apellidos" name="apellidos" required></label></div>
-              <label>Correo<input type="email" [(ngModel)]="clienteForm.correo" name="correo" [required]="!clienteEditandoId && clienteForm.crear_acceso"></label>
-              <label>Dirección<input [(ngModel)]="clienteForm.direccion" name="direccion"></label>
-              <label>Estado<select [(ngModel)]="clienteForm.estado" name="clienteEstado"><option>Activo</option><option>Inactivo</option></select></label>
-              <label *ngIf="!clienteEditandoId" class="client-access-toggle">
-                <input type="checkbox" [(ngModel)]="clienteForm.crear_acceso" name="crear_acceso">
-                <span>Crear también una cuenta para ingresar al portal del cliente</span>
-              </label>
-              <div *ngIf="!clienteEditandoId && clienteForm.crear_acceso" class="client-access-fields">
-                <label>Usuario<input [(ngModel)]="clienteForm.nombre_usuario" name="cliente_usuario" required placeholder="Ejemplo: cesar123"></label>
-                <label>Contraseña<input type="password" minlength="8" [(ngModel)]="clienteForm.contrasena" name="cliente_clave" required placeholder="Mínimo 8 caracteres"></label>
-              </div>
-              <div class="form-row">
-                <button class="admin-primary" type="submit">{{clienteEditandoId ? 'Guardar cambios' : 'Guardar cliente'}}</button>
-                <button *ngIf="clienteEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionCliente()">Cancelar</button>
-              </div>
-            </form>
-          </article>
-          <article class="admin-list-card wide-card">
-            <div class="management-heading client-list-heading">
-              <div><h2>Clientes</h2><p>{{clientesFiltrados.length}} de {{clientes.length}} registros.</p></div>
-              <div class="client-list-tools">
-                <input [(ngModel)]="clientesBusqueda" (ngModelChange)="clientesPagina=1" placeholder="Buscar por DNI, nombre, correo o teléfono">
-                <select [(ngModel)]="clientesEstadoFiltro" (ngModelChange)="clientesPagina=1">
-                  <option value="">Todos</option>
-                  <option value="Activo">Activos</option>
-                  <option value="Inactivo">Inactivos</option>
-                </select>
-              </div>
+        <section class="clients-v3-shell">
+          <header class="clients-v3-hero">
+            <div class="clients-v3-hero-copy">
+              <span>GESTIÓN DE MIEMBROS</span>
+              <h2>Clientes</h2>
+              <p>Administra los datos, accesos y estado de tus miembros desde un solo lugar.</p>
             </div>
-            <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>DNI</th><th>Cliente</th><th>Correo</th><th>Teléfono</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
-              <tr *ngFor="let c of clientesPaginados"><td>{{c.id_cliente}}</td><td>{{c.dni}}</td><td><b>{{nombreCliente(c)}}</b></td><td>{{c.correo}}</td><td>{{c.telefono}}</td><td>{{c.estado}}</td><td><button class="table-action" type="button" (click)="abrirFichaCliente(c.id_cliente)">Ficha 360</button> <button class="table-action" type="button" (click)="editarCliente(c)">Editar</button> <button *ngIf="c.estado==='Activo'" class="table-danger" type="button" (click)="desactivarCliente(c.id_cliente)">Desactivar</button></td></tr>
-              <tr *ngIf="!clientesPaginados.length"><td colspan="7">No se encontraron clientes con esos filtros.</td></tr>
-            </tbody></table></div>
-            <div class="client-pagination" *ngIf="clientesPaginasTotal>1">
-              <button type="button" [disabled]="clientesPagina<=1" (click)="clientesPagina=clientesPagina-1">← Anterior</button>
-              <span>Página {{clientesPagina}} de {{clientesPaginasTotal}}</span>
-              <button type="button" [disabled]="clientesPagina>=clientesPaginasTotal" (click)="clientesPagina=clientesPagina+1">Siguiente →</button>
+            <button type="button" class="clients-v3-new" (click)="nuevoCliente()">
+              <span>＋</span>
+              Nuevo cliente
+            </button>
+          </header>
+
+          <section class="clients-v3-stats">
+            <article>
+              <span class="clients-v3-stat-icon">♙</span>
+              <div><small>TOTAL CLIENTES</small><b>{{clientes.length}}</b><p>registros en el sistema</p></div>
+            </article>
+            <article>
+              <span class="clients-v3-stat-icon success">✓</span>
+              <div><small>ACTIVOS</small><b>{{clientesActivos}}</b><p>pueden usar el servicio</p></div>
+            </article>
+            <article>
+              <span class="clients-v3-stat-icon muted">–</span>
+              <div><small>INACTIVOS</small><b>{{clientesInactivos}}</b><p>historial conservado</p></div>
+            </article>
+          </section>
+
+          <article class="clients-v3-card">
+            <div class="clients-v3-toolbar">
+              <div class="clients-v3-search">
+                <span>⌕</span>
+                <input
+                  [(ngModel)]="clientesBusqueda"
+                  (ngModelChange)="clientesPagina=1"
+                  placeholder="Buscar por DNI, nombre, correo o teléfono">
+              </div>
+
+              <select
+                class="clients-v3-filter"
+                [(ngModel)]="clientesEstadoFiltro"
+                (ngModelChange)="clientesPagina=1">
+                <option value="">Todos los estados</option>
+                <option value="Activo">Solo activos</option>
+                <option value="Inactivo">Solo inactivos</option>
+              </select>
+
+              <button type="button" class="clients-v3-refresh" (click)="cargarClientes()">
+                ↻ Actualizar
+              </button>
             </div>
+
+            <div class="clients-v3-table-wrap">
+              <table class="clients-v3-table">
+                <thead>
+                  <tr>
+                    <th>CLIENTE</th>
+                    <th>DNI</th>
+                    <th>CONTACTO</th>
+                    <th>ESTADO</th>
+                    <th>ACCIONES</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let c of clientesPaginados">
+                    <td>
+                      <div class="clients-v3-person">
+                        <span>{{inicialesCliente(c)}}</span>
+                        <div>
+                          <b>{{nombreCliente(c)}}</b>
+                          <small>Cliente #{{c.id_cliente}}</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="clients-v3-dni">{{c.dni || 'Sin DNI'}}</span></td>
+                    <td>
+                      <div class="clients-v3-contact">
+                        <b>{{c.correo || 'Sin correo'}}</b>
+                        <small>{{c.telefono || 'Sin teléfono'}}</small>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="clients-v3-status" [class.inactive]="c.estado!=='Activo'">
+                        <i></i>{{c.estado}}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="clients-v3-actions">
+                        <button type="button" class="view" (click)="abrirFichaCliente(c.id_cliente)">Ver ficha</button>
+                        <button type="button" class="edit" (click)="editarCliente(c)">Editar</button>
+                        <button *ngIf="c.estado==='Activo'" type="button" class="danger" (click)="desactivarCliente(c.id_cliente)">Desactivar</button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr *ngIf="!clientesPaginados.length">
+                    <td colspan="5">
+                      <div class="clients-v3-empty">
+                        <span>⌕</span>
+                        <b>No encontramos clientes</b>
+                        <p>Prueba otra búsqueda o registra un nuevo miembro.</p>
+                        <button type="button" (click)="nuevoCliente()">＋ Registrar cliente</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <footer class="clients-v3-footer">
+              <span>Mostrando {{clientesPaginados.length}} de {{clientesFiltrados.length}} clientes</span>
+              <div *ngIf="clientesPaginasTotal>1">
+                <button type="button" [disabled]="clientesPagina<=1" (click)="clientesPagina=clientesPagina-1">←</button>
+                <b>{{clientesPagina}} / {{clientesPaginasTotal}}</b>
+                <button type="button" [disabled]="clientesPagina>=clientesPaginasTotal" (click)="clientesPagina=clientesPagina+1">→</button>
+              </div>
+            </footer>
           </article>
         </section>
+
+        <div *ngIf="clienteFormularioAbierto" class="client-editor-backdrop" (click)="cerrarFormularioCliente()">
+          <aside class="client-editor-panel" (click)="$event.stopPropagation()">
+            <header class="client-editor-head">
+              <div>
+                <span>{{clienteEditandoId ? 'EDITAR MIEMBRO' : 'NUEVO MIEMBRO'}}</span>
+                <h2>{{clienteEditandoId ? 'Actualizar cliente' : 'Registrar cliente'}}</h2>
+                <p>{{clienteEditandoId ? 'Modifica la información y guarda los cambios.' : 'Completa los datos principales del nuevo miembro.'}}</p>
+              </div>
+              <button type="button" (click)="cerrarFormularioCliente()" aria-label="Cerrar">×</button>
+            </header>
+
+            <form #clienteNgForm="ngForm" class="client-editor-form" (ngSubmit)="guardarCliente()">
+              <section class="client-editor-section">
+                <div class="client-editor-section-title">
+                  <span>1</span>
+                  <div><b>Datos personales</b><small>Información principal del miembro</small></div>
+                </div>
+
+                <div class="client-editor-grid two">
+                  <label>DNI
+                    <input [(ngModel)]="clienteForm.dni" name="dni" required maxlength="15" placeholder="Ej. 74257012">
+                  </label>
+                  <label>Estado
+                    <select [(ngModel)]="clienteForm.estado" name="clienteEstado">
+                      <option>Activo</option>
+                      <option>Inactivo</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="client-editor-grid two">
+                  <label>Nombres
+                    <input [(ngModel)]="clienteForm.nombres" name="nombres" required placeholder="Nombres">
+                  </label>
+                  <label>Apellidos
+                    <input [(ngModel)]="clienteForm.apellidos" name="apellidos" required placeholder="Apellidos">
+                  </label>
+                </div>
+              </section>
+
+              <section class="client-editor-section">
+                <div class="client-editor-section-title">
+                  <span>2</span>
+                  <div><b>Contacto</b><small>Datos para comunicación con el cliente</small></div>
+                </div>
+
+                <div class="client-editor-grid two">
+                  <label>Teléfono
+                    <input [(ngModel)]="clienteForm.telefono" name="telefono" placeholder="Ej. 999 999 999">
+                  </label>
+                  <label>Correo
+                    <input type="email" [(ngModel)]="clienteForm.correo" name="correo"
+                      [required]="!clienteEditandoId && clienteForm.crear_acceso"
+                      placeholder="cliente@gmail.com">
+                  </label>
+                </div>
+
+                <label>Dirección
+                  <input [(ngModel)]="clienteForm.direccion" name="direccion" placeholder="Dirección del cliente">
+                </label>
+              </section>
+
+              <section *ngIf="!clienteEditandoId" class="client-editor-section access-section">
+                <div class="client-editor-section-title">
+                  <span>3</span>
+                  <div><b>Acceso al portal</b><small>Opcional: crea su cuenta de cliente ahora</small></div>
+                </div>
+
+                <label class="client-editor-switch">
+                  <input type="checkbox" [(ngModel)]="clienteForm.crear_acceso" name="crear_acceso">
+                  <span class="switch-ui"><i></i></span>
+                  <div>
+                    <b>Crear cuenta de acceso</b>
+                    <small>El cliente podrá iniciar sesión en su portal personal.</small>
+                  </div>
+                </label>
+
+                <div *ngIf="clienteForm.crear_acceso" class="client-editor-access-fields">
+                  <label>Usuario
+                    <input [(ngModel)]="clienteForm.nombre_usuario" name="cliente_usuario" required placeholder="Ej. german7425">
+                  </label>
+                  <label>Contraseña temporal
+                    <input type="password" minlength="8" [(ngModel)]="clienteForm.contrasena" name="cliente_clave" required placeholder="Mínimo 8 caracteres">
+                  </label>
+                </div>
+              </section>
+
+              <footer class="client-editor-footer">
+                <button type="button" class="cancel" (click)="cerrarFormularioCliente()">Cancelar</button>
+                <button type="submit" class="save" [disabled]="clienteNgForm.invalid || guardandoCliente">
+                  <span>{{guardandoCliente ? 'Guardando...' : (clienteEditandoId ? 'Guardar cambios' : 'Registrar cliente')}}</span>
+                  <b>{{guardandoCliente ? '•••' : '→'}}</b>
+                </button>
+              </footer>
+            </form>
+          </aside>
+        </div>
       </ng-container>
 
       <ng-container *ngIf="seccion==='membresias'">
@@ -860,6 +1031,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   clienteEditandoId = 0;
   clienteFichaId = 0;
+  clienteFormularioAbierto = false;
+  guardandoCliente = false;
   clientesBusqueda = '';
   clientesEstadoFiltro = '';
   clientesPagina = 1;
@@ -922,6 +1095,20 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   get tituloActual(): string { return this.titulos[this.seccion]?.[0] ?? 'Administrador'; }
   get subtituloActual(): string { return this.titulos[this.seccion]?.[1] ?? ''; }
+
+  get clientesActivos(): number {
+    return this.clientes.filter((c:any)=>c.estado==='Activo').length;
+  }
+
+  get clientesInactivos(): number {
+    return this.clientes.filter((c:any)=>c.estado!=='Activo').length;
+  }
+
+  inicialesCliente(c:any): string {
+    const nombres=String(c?.nombres||'').trim();
+    const apellidos=String(c?.apellidos||'').trim();
+    return ((nombres.charAt(0)||'C')+(apellidos.charAt(0)||'')).toUpperCase();
+  }
 
   get clientesFiltrados(): any[] {
     const q=this.clientesBusqueda.trim().toLowerCase();
@@ -1123,26 +1310,46 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.ok('Reporte CSV generado');
   }
 
+  nuevoCliente(){
+    this.clienteEditandoId=0;
+    this.clienteForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:false,nombre_usuario:'',contrasena:''};
+    this.error='';
+    this.clienteFormularioAbierto=true;
+  }
+
   guardarCliente(){
+    if(this.guardandoCliente)return;
+
     const datos={...this.clienteForm};
     if(this.clienteEditandoId){
       delete datos.crear_acceso;
       delete datos.nombre_usuario;
       delete datos.contrasena;
     }
-    const req=this.clienteEditandoId
+
+    this.guardandoCliente=true;
+    this.error='';
+
+    const eraEdicion=Boolean(this.clienteEditandoId);
+    const req=eraEdicion
       ? this.api.actualizarCliente(this.clienteEditandoId,datos)
       : this.api.crearCliente(datos);
+
     req.subscribe({
-      next:()=>{
-        this.ok(this.clienteEditandoId?'Cliente actualizado correctamente':'Cliente registrado en MySQL');
+      next:(r:any)=>{
+        this.guardandoCliente=false;
+        this.ok(r?.mensaje || (eraEdicion?'Cliente actualizado correctamente':'Cliente registrado correctamente'));
         this.cancelarEdicionCliente();
         this.cargarClientes();
         this.cargarDashboard();
       },
-      error:e=>this.mostrarError(e)
+      error:e=>{
+        this.guardandoCliente=false;
+        this.mostrarError(e);
+      }
     });
   }
+
   abrirFichaCliente(id:number){this.clienteFichaId=id;}
 
   editarCliente(c:any){
@@ -1152,10 +1359,18 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       correo:c.correo||'',direccion:c.direccion||'',estado:c.estado||'Activo',
       crear_acceso:false,nombre_usuario:'',contrasena:''
     };
-    window.scrollTo({top:0,behavior:'smooth'});
+    this.error='';
+    this.clienteFormularioAbierto=true;
   }
+
+  cerrarFormularioCliente(){
+    this.cancelarEdicionCliente();
+  }
+
   cancelarEdicionCliente(){
     this.clienteEditandoId=0;
+    this.clienteFormularioAbierto=false;
+    this.guardandoCliente=false;
     this.clienteForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:false,nombre_usuario:'',contrasena:''};
   }
   desactivarCliente(id:number){ if(!confirm('¿Desactivar este cliente?')) return; this.api.desactivarCliente(id).subscribe({next:()=>{this.ok('Cliente desactivado');this.cancelarEdicionCliente();this.cargarClientes();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
