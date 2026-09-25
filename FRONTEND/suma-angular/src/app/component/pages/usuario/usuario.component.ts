@@ -29,7 +29,7 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
           <button type="button" [class.active]="moduloActivo==='asistencias'" (click)="abrirModulo('asistencias')"><i>✓</i><span>Asistencias</span></button>
           <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')"><i>◎</i><span>Progreso</span></button>
           <button type="button" [class.active]="moduloActivo==='calendario'" (click)="abrirModulo('calendario')"><i>◫</i><span>Calendario</span></button>
-          <button type="button" [class.active]="moduloActivo==='avisos'" (click)="abrirModulo('avisos')"><i>●</i><span>Avisos</span></button>
+          <button type="button" class="member-nav-notice" [class.active]="moduloActivo==='avisos'" (click)="abrirModulo('avisos')"><i>●</i><span>Avisos</span><b *ngIf="avisosNoLeidos>0">{{avisosNoLeidos>9 ? '9+' : avisosNoLeidos}}</b></button>
           <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')"><i>▤</i><span>Pagos</span></button>
           <button type="button" [class.active]="moduloActivo==='soporte'" (click)="abrirModulo('soporte')"><i>?</i><span>Soporte</span></button>
           <button type="button" [class.active]="moduloActivo==='perfil'" (click)="abrirModulo('perfil')"><i>♙</i><span>Perfil</span></button>
@@ -796,7 +796,8 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
         </section>
         <app-cliente-experiencia
           *ngIf="moduloActivo==='progreso' || moduloActivo==='calendario' || moduloActivo==='avisos' || moduloActivo==='soporte'"
-          [modulo]="moduloActivo">
+          [modulo]="moduloActivo"
+          (notificacionesCambio)="avisosNoLeidos=$event">
         </app-cliente-experiencia>
       </main>
 
@@ -817,6 +818,7 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
 })
 export class UsuarioComponent implements OnInit, OnDestroy {
   moduloActivo='inicio'; cargando=true; error=''; toast='';
+  avisosNoLeidos=0;
   resumen:any=null; perfil:any={}; membresiaActual:any=null; membresiasDisponibles:any[]=[];
   pagos:any[]=[]; rutinas:any[]=[]; asistencias:any[]=[]; reservas:any[]=[]; clases:any[]=[]; compras:any[]=[];
   fechasReserva:Record<number,string>={};
@@ -864,11 +866,12 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargar():void{
     this.cargando=true; this.error='';
     this.api.cargarPortalCliente().subscribe({
-      next:r=>{this.resumen=r.resumen;this.perfil={...r.perfil};this.membresiaActual=r.membresia?.actual;this.membresiasDisponibles=r.membresiasDisponibles||[];this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.cargando=false;this.cargarEntrenamientoCasa();},
+      next:r=>{this.resumen=r.resumen;this.perfil={...r.perfil};this.membresiaActual=r.membresia?.actual;this.membresiasDisponibles=r.membresiasDisponibles||[];this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.cargando=false;this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
       error:e=>{this.error=this.errorApi(e);this.cargando=false;}
     });
   }
-  abrirModulo(m:string){this.moduloActivo=m;if(m==='casa'&&!this.casaCargado)this.cargarEntrenamientoCasa();window.scrollTo({top:0,behavior:'smooth'});}
+  abrirModulo(m:string){this.moduloActivo=m;if(m==='casa'&&!this.casaCargado)this.cargarEntrenamientoCasa();if(m==='avisos')this.cargarContadorAvisos();window.scrollTo({top:0,behavior:'smooth'});}
+  cargarContadorAvisos(){this.api.notificacionesCliente().subscribe({next:r=>this.avisosNoLeidos=Number(r?.no_leidas||0),error:()=>{}});}
   get nombreCorto():string{return this.perfil?.nombres || this.auth.usuario?.nombres || 'Miembro';}
   get rutinaActual():any{return this.resumen?.rutina_actual || this.rutinas.find(r=>r.estado==='Activo') || null;}
   get nombreEntrenador():string{return this.nombrePersona(this.rutinaActual?.entrenador) || 'Sin entrenador asignado';}
