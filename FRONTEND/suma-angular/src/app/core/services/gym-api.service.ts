@@ -64,7 +64,7 @@ export class GymApiService {
     return this.http.get('/api/mi-cuenta/entrenamiento-casa');
   }
 
-  guardarPlanCasaCliente(datos: { dias: string[]; zonas: string[] }): Observable<any> {
+  guardarPlanCasaCliente(datos: { dias: string[]; zonas: string[]; objetivo: string }): Observable<any> {
     return this.http.put('/api/mi-cuenta/entrenamiento-casa/plan', datos);
   }
 
