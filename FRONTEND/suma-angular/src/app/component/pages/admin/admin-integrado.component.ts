@@ -297,7 +297,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
             <form (ngSubmit)="guardarCliente()">
               <div class="form-row"><label>DNI<input [(ngModel)]="clienteForm.dni" name="dni" required></label><label>Teléfono<input [(ngModel)]="clienteForm.telefono" name="telefono"></label></div>
               <div class="form-row"><label>Nombres<input [(ngModel)]="clienteForm.nombres" name="nombres" required></label><label>Apellidos<input [(ngModel)]="clienteForm.apellidos" name="apellidos" required></label></div>
-              <label>Correo<input type="email" [(ngModel)]="clienteForm.correo" name="correo"></label>
+              <label>Correo<input type="email" [(ngModel)]="clienteForm.correo" name="correo" [required]="!clienteEditandoId && clienteForm.crear_acceso"></label>
               <label>Dirección<input [(ngModel)]="clienteForm.direccion" name="direccion"></label>
               <label>Estado<select [(ngModel)]="clienteForm.estado" name="clienteEstado"><option>Activo</option><option>Inactivo</option></select></label>
               <label *ngIf="!clienteEditandoId" class="client-access-toggle">
@@ -937,8 +937,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   get clientesPaginados(): any[] {
-    if(this.clientesPagina>this.clientesPaginasTotal)this.clientesPagina=this.clientesPaginasTotal;
-    const inicio=(this.clientesPagina-1)*this.clientesPorPagina;
+    const pagina=Math.min(Math.max(1,this.clientesPagina),this.clientesPaginasTotal);
+    const inicio=(pagina-1)*this.clientesPorPagina;
     return this.clientesFiltrados.slice(inicio,inicio+this.clientesPorPagina);
   }
 
