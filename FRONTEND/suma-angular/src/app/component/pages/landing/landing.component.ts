@@ -262,6 +262,7 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
   ];
 
   ngAfterViewInit(): void {
+    document.documentElement.classList.add('mallqui-public-scroll');
     const elementos = Array.from(document.querySelectorAll<HTMLElement>('.mq-reveal'));
 
     if (!('IntersectionObserver' in window)) {
@@ -287,6 +288,7 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    document.documentElement.classList.remove('mallqui-public-scroll');
     this.revealObserver?.disconnect();
     if (this.toastTimer) clearTimeout(this.toastTimer);
     document.body.style.overflow = '';
