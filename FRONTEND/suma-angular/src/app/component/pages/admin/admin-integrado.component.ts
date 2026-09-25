@@ -307,10 +307,26 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
             </form>
           </article>
           <article class="admin-list-card wide-card">
-            <div class="management-heading"><div><h2>Clientes</h2><p>{{clientes.length}} registros desde Laravel.</p></div></div>
+            <div class="management-heading client-list-heading">
+              <div><h2>Clientes</h2><p>{{clientesFiltrados.length}} de {{clientes.length}} registros.</p></div>
+              <div class="client-list-tools">
+                <input [(ngModel)]="clientesBusqueda" (ngModelChange)="clientesPagina=1" placeholder="Buscar por DNI, nombre, correo o teléfono">
+                <select [(ngModel)]="clientesEstadoFiltro" (ngModelChange)="clientesPagina=1">
+                  <option value="">Todos</option>
+                  <option value="Activo">Activos</option>
+                  <option value="Inactivo">Inactivos</option>
+                </select>
+              </div>
+            </div>
             <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>DNI</th><th>Cliente</th><th>Correo</th><th>Teléfono</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
-              <tr *ngFor="let c of clientes"><td>{{c.id_cliente}}</td><td>{{c.dni}}</td><td><b>{{nombreCliente(c)}}</b></td><td>{{c.correo}}</td><td>{{c.telefono}}</td><td>{{c.estado}}</td><td><button class="table-action" type="button" (click)="abrirFichaCliente(c.id_cliente)">Ficha 360</button> <button class="table-action" type="button" (click)="editarCliente(c)">Editar</button> <button *ngIf="c.estado==='Activo'" class="table-danger" type="button" (click)="desactivarCliente(c.id_cliente)">Desactivar</button></td></tr>
+              <tr *ngFor="let c of clientesPaginados"><td>{{c.id_cliente}}</td><td>{{c.dni}}</td><td><b>{{nombreCliente(c)}}</b></td><td>{{c.correo}}</td><td>{{c.telefono}}</td><td>{{c.estado}}</td><td><button class="table-action" type="button" (click)="abrirFichaCliente(c.id_cliente)">Ficha 360</button> <button class="table-action" type="button" (click)="editarCliente(c)">Editar</button> <button *ngIf="c.estado==='Activo'" class="table-danger" type="button" (click)="desactivarCliente(c.id_cliente)">Desactivar</button></td></tr>
+              <tr *ngIf="!clientesPaginados.length"><td colspan="7">No se encontraron clientes con esos filtros.</td></tr>
             </tbody></table></div>
+            <div class="client-pagination" *ngIf="clientesPaginasTotal>1">
+              <button type="button" [disabled]="clientesPagina<=1" (click)="clientesPagina=clientesPagina-1">← Anterior</button>
+              <span>Página {{clientesPagina}} de {{clientesPaginasTotal}}</span>
+              <button type="button" [disabled]="clientesPagina>=clientesPaginasTotal" (click)="clientesPagina=clientesPagina+1">Siguiente →</button>
+            </div>
           </article>
         </section>
       </ng-container>
@@ -836,6 +852,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   clienteEditandoId = 0;
   clienteFichaId = 0;
+  clientesBusqueda = '';
+  clientesEstadoFiltro = '';
+  clientesPagina = 1;
+  clientesPorPagina = 8;
   clienteForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
   membresiaForm: any = {id_cliente:0,id_membresia:0,metodo_pago:'Efectivo',numero_operacion:''};
   entrenadorEditandoId = 0;
@@ -894,6 +914,25 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   get tituloActual(): string { return this.titulos[this.seccion]?.[0] ?? 'Administrador'; }
   get subtituloActual(): string { return this.titulos[this.seccion]?.[1] ?? ''; }
+
+  get clientesFiltrados(): any[] {
+    const q=this.clientesBusqueda.trim().toLowerCase();
+    return this.clientes.filter((c:any)=>{
+      const coincideEstado=!this.clientesEstadoFiltro || c.estado===this.clientesEstadoFiltro;
+      const texto=[c.dni,c.nombres,c.apellidos,c.correo,c.telefono].filter(Boolean).join(' ').toLowerCase();
+      return coincideEstado && (!q || texto.includes(q));
+    });
+  }
+
+  get clientesPaginasTotal(): number {
+    return Math.max(1,Math.ceil(this.clientesFiltrados.length/this.clientesPorPagina));
+  }
+
+  get clientesPaginados(): any[] {
+    if(this.clientesPagina>this.clientesPaginasTotal)this.clientesPagina=this.clientesPaginasTotal;
+    const inicio=(this.clientesPagina-1)*this.clientesPorPagina;
+    return this.clientesFiltrados.slice(inicio,inicio+this.clientesPorPagina);
+  }
 
   cambiarSeccion(id: string): void {
     this.seccion = id;
