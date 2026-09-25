@@ -90,6 +90,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
             <i></i>
             <div><b>{{dbConectada ? 'Sistema conectado' : 'Sin conexión a datos'}}</b><small>{{dbConectada ? ('Laravel + '+dbMotor) : 'Revisa Laravel y MySQL'}}</small></div>
           </div>
+          <button type="button" class="member-mobile-logout" (click)="cerrarSesion()">Cerrar sesión</button>
         </aside>
       </div>
 
