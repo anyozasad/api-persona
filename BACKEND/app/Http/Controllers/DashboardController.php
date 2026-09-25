@@ -11,6 +11,7 @@ use App\Models\PagoMembresia;
 use App\Models\Producto;
 use App\Models\Reserva;
 use App\Models\Venta;
+use App\Models\SolicitudSoporte;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -159,7 +160,8 @@ class DashboardController extends Controller
             ->orderByDesc('total')
             ->get();
 
-        $alertasTotal = $porVencer->count() + $stockBajo->count() + $pagosPendientes->count();
+        $soportePendiente = SolicitudSoporte::where('estado', 'Pendiente')->count();
+        $alertasTotal = $porVencer->count() + $stockBajo->count() + $pagosPendientes->count() + $soportePendiente;
 
         return response()->json([
             'periodo' => [
@@ -221,6 +223,7 @@ class DashboardController extends Controller
             ],
             'alertas' => [
                 'total' => $alertasTotal,
+                'soporte_pendiente' => $soportePendiente,
             ],
         ]);
     }
