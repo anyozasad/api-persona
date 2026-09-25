@@ -49,6 +49,29 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           </article>
         </section>
 
+        <section class="client-goal-card">
+          <div>
+            <span>META SEMANAL PERSONAL</span>
+            <h2>Configura una meta realista</h2>
+            <p>Elige entre 1 y 4 sesiones por semana. La meta sirve para organizar tu constancia, no para entrenar en exceso.</p>
+          </div>
+          <form (ngSubmit)="guardarMeta()">
+            <label>Sesiones por semana
+              <select [(ngModel)]="meta.sesiones_semanales" name="meta_sesiones">
+                <option [ngValue]="1">1 sesión</option>
+                <option [ngValue]="2">2 sesiones</option>
+                <option [ngValue]="3">3 sesiones</option>
+                <option [ngValue]="4">4 sesiones</option>
+              </select>
+            </label>
+            <label class="client-reminder-toggle">
+              <input type="checkbox" [(ngModel)]="meta.recordatorios" name="meta_recordatorios">
+              <span>Mostrar recordatorios de entrenamiento</span>
+            </label>
+            <button type="submit" [disabled]="guardandoMeta">{{guardandoMeta ? 'Guardando...' : 'Guardar meta'}}</button>
+          </form>
+        </section>
+
         <section class="client-extra-grid two">
           <article class="client-extra-card">
             <div class="client-card-head">
@@ -260,6 +283,8 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
   error = '';
   toast = '';
   progreso: any = null;
+  meta: any = { sesiones_semanales: 3, recordatorios: true };
+  guardandoMeta = false;
   calendario: any[] = [];
   notificaciones: any = { no_leidas: 0, items: [] };
   entrenadorInfo: any = null;
@@ -285,6 +310,7 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
     this.error = '';
     if (this.modulo === 'progreso') {
       this.cargarProgreso();
+      this.cargarMeta();
       this.cargarEntrenador();
       this.cargarHistorial();
     }
@@ -298,6 +324,37 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
     this.api.progresoCliente().subscribe({
       next: r => { this.progreso = r; this.cargando = false; },
       error: e => { this.error = this.mensajeError(e); this.cargando = false; }
+    });
+  }
+
+  cargarMeta(): void {
+    this.api.metaCliente().subscribe({
+      next: r => this.meta = {
+        sesiones_semanales: Number(r?.sesiones_semanales || 3),
+        recordatorios: r?.recordatorios !== false
+      },
+      error: () => this.meta = { sesiones_semanales: 3, recordatorios: true }
+    });
+  }
+
+  guardarMeta(): void {
+    const sesiones = Math.max(1, Math.min(4, Number(this.meta?.sesiones_semanales || 3)));
+    this.guardandoMeta = true;
+    this.error = '';
+    this.api.guardarMetaCliente({
+      sesiones_semanales: sesiones,
+      recordatorios: Boolean(this.meta?.recordatorios)
+    }).subscribe({
+      next: r => {
+        this.guardandoMeta = false;
+        this.meta = r?.meta || this.meta;
+        this.mostrarToast(r?.mensaje || 'Meta semanal actualizada.');
+        this.cargarProgreso();
+      },
+      error: e => {
+        this.guardandoMeta = false;
+        this.error = this.mensajeError(e);
+      }
     });
   }
 
