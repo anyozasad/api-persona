@@ -76,8 +76,8 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         </div>
       </header>
 
-      <div *ngIf="toast" class="admin-toast">{{toast}}</div>
-      <div *ngIf="error" class="admin-toast">⚠ {{error}}</div>
+      <div *ngIf="toast" class="admin-toast success">{{toast}}</div>
+      <div *ngIf="error" class="admin-toast error">⚠ {{error}}</div>
 
       <ng-container *ngIf="seccion==='dashboard'">
         <section class="ux-dashboard-head premium-dashboard-hero">
