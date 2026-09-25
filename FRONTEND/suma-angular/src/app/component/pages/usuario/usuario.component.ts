@@ -92,6 +92,16 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
             </aside>
           </section>
 
+          <section class="member-next-step member-enter-up">
+            <div class="member-next-step-icon">{{siguientePasoIcono}}</div>
+            <div class="member-next-step-copy">
+              <span>TU SIGUIENTE PASO</span>
+              <h2>{{siguientePasoTitulo}}</h2>
+              <p>{{siguientePasoDescripcion}}</p>
+            </div>
+            <button type="button" (click)="irSiguientePaso()">{{siguientePasoBoton}} <span>→</span></button>
+          </section>
+
           <section class="member-stats premium-stats">
             <article class="member-stat-card stat-plan">
               <div class="stat-top"><span class="stat-icon">✦</span><small>MEMBRESÍA</small></div>
@@ -875,7 +885,51 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
   abrirModulo(m:string){this.moduloActivo=m;if(m==='casa'&&!this.casaCargado)this.cargarEntrenamientoCasa();if(m==='avisos')this.cargarContadorAvisos();window.scrollTo({top:0,behavior:'smooth'});}
   cargarContadorAvisos(){this.api.notificacionesCliente().subscribe({next:r=>this.avisosNoLeidos=Number(r?.no_leidas||0),error:()=>{}});}
-  get nombreCorto():string{return this.perfil?.nombres || this.auth.usuario?.nombres || 'Miembro';}
+  get nombreCorto():string{
+    const valor=String(this.perfil?.nombres || this.auth.usuario?.nombres || 'Miembro').trim();
+    return valor.split(/\s+/).filter(Boolean).map((p:string)=>p.charAt(0).toUpperCase()+p.slice(1).toLowerCase()).join(' ');
+  }
+  get siguientePasoModulo():string{
+    if(!this.perfilCompleto)return 'perfil';
+    if(!this.membresiaActual)return 'pagos';
+    if(!this.planCasaConfigurado)return 'casa';
+    if(!this.reservasActivas.length)return 'clases';
+    return 'progreso';
+  }
+  get siguientePasoTitulo():string{
+    const m=this.siguientePasoModulo;
+    if(m==='perfil')return 'Completa tus datos';
+    if(m==='pagos')return 'Activa tu membresía';
+    if(m==='casa')return 'Configura tu entrenamiento en casa';
+    if(m==='clases')return 'Reserva tu próxima clase';
+    return 'Revisa tu progreso';
+  }
+  get siguientePasoDescripcion():string{
+    const m=this.siguientePasoModulo;
+    if(m==='perfil')return 'Agrega teléfono y dirección para dejar tu cuenta lista.';
+    if(m==='pagos')return 'Elige un plan y registra tu pago para comenzar a usar el gimnasio.';
+    if(m==='casa')return 'Elige días y zonas para tener sesiones guiadas listas cuando las necesites.';
+    if(m==='clases')return 'Explora horarios disponibles y reserva una clase que te convenga.';
+    return 'Mira tus sesiones, asistencias, calendario y actividad reciente.';
+  }
+  get siguientePasoBoton():string{
+    const m=this.siguientePasoModulo;
+    if(m==='perfil')return 'Completar perfil';
+    if(m==='pagos')return 'Ver membresías';
+    if(m==='casa')return 'Configurar ahora';
+    if(m==='clases')return 'Explorar clases';
+    return 'Ver progreso';
+  }
+  get siguientePasoIcono():string{
+    const m=this.siguientePasoModulo;
+    if(m==='perfil')return '♙';
+    if(m==='pagos')return '✦';
+    if(m==='casa')return '⚡';
+    if(m==='clases')return '▣';
+    return '◎';
+  }
+  irSiguientePaso(){this.abrirModulo(this.siguientePasoModulo);}
+
   get rutinaActual():any{return this.resumen?.rutina_actual || this.rutinas.find(r=>r.estado==='Activo') || null;}
   get nombreEntrenador():string{return this.nombrePersona(this.rutinaActual?.entrenador) || 'Sin entrenador asignado';}
   get reservasActivas():any[]{return this.reservas.filter(r=>r.estado==='Reservada');}
