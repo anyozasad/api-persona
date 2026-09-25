@@ -6,11 +6,12 @@ import { AdminApiService } from './admin-api.service';
 import { AuthService } from './auth.service';
 import { ProductosComponent } from './pages/productos/productos';
 import { AdminComunicacionComponent } from './admin-comunicacion.component';
+import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
 
 @Component({
   selector: 'app-admin-integrado',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent],
+  imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent],
   styleUrls: ['../mallqui-admin.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
@@ -308,7 +309,7 @@ import { AdminComunicacionComponent } from './admin-comunicacion.component';
           <article class="admin-list-card wide-card">
             <div class="management-heading"><div><h2>Clientes</h2><p>{{clientes.length}} registros desde Laravel.</p></div></div>
             <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>DNI</th><th>Cliente</th><th>Correo</th><th>Teléfono</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
-              <tr *ngFor="let c of clientes"><td>{{c.id_cliente}}</td><td>{{c.dni}}</td><td><b>{{nombreCliente(c)}}</b></td><td>{{c.correo}}</td><td>{{c.telefono}}</td><td>{{c.estado}}</td><td><button class="table-action" type="button" (click)="editarCliente(c)">Editar</button> <button *ngIf="c.estado==='Activo'" class="table-danger" type="button" (click)="desactivarCliente(c.id_cliente)">Desactivar</button></td></tr>
+              <tr *ngFor="let c of clientes"><td>{{c.id_cliente}}</td><td>{{c.dni}}</td><td><b>{{nombreCliente(c)}}</b></td><td>{{c.correo}}</td><td>{{c.telefono}}</td><td>{{c.estado}}</td><td><button class="table-action" type="button" (click)="abrirFichaCliente(c.id_cliente)">Ficha 360</button> <button class="table-action" type="button" (click)="editarCliente(c)">Editar</button> <button *ngIf="c.estado==='Activo'" class="table-danger" type="button" (click)="desactivarCliente(c.id_cliente)">Desactivar</button></td></tr>
             </tbody></table></div>
           </article>
         </section>
@@ -724,6 +725,11 @@ import { AdminComunicacionComponent } from './admin-comunicacion.component';
         <app-admin-comunicacion [modo]="seccion==='soporte' ? 'soporte' : 'comunicacion'"></app-admin-comunicacion>
       </ng-container>
 
+      <app-admin-cliente-ficha
+        *ngIf="clienteFichaId"
+        [clienteId]="clienteFichaId"
+        (cerrar)="clienteFichaId=0">
+      </app-admin-cliente-ficha>
     </main>
   </div>
   `,
@@ -829,6 +835,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   configAccion = '';
 
   clienteEditandoId = 0;
+  clienteFichaId = 0;
   clienteForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
   membresiaForm: any = {id_cliente:0,id_membresia:0,metodo_pago:'Efectivo',numero_operacion:''};
   entrenadorEditandoId = 0;
@@ -1084,6 +1091,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       error:e=>this.mostrarError(e)
     });
   }
+  abrirFichaCliente(id:number){this.clienteFichaId=id;}
+
   editarCliente(c:any){
     this.clienteEditandoId=c.id_cliente;
     this.clienteForm={
