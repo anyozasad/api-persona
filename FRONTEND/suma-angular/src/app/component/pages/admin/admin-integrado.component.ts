@@ -477,10 +477,6 @@ import { ProductosComponent } from './pages/productos/productos';
         </section>
       </ng-container>
 
-      <ng-container *ngIf="seccion==='kardex'">
-        <section class="management-grid"><article class="admin-form-card"><div class="management-heading"><div><h2>Ajustar inventario</h2><p>Cada ajuste queda registrado en Kardex.</p></div><span>▥</span></div><form (ngSubmit)="ajustarStock()"><label>Producto<select [(ngModel)]="ajusteForm.id_producto" name="kid"><option [ngValue]="0">Seleccionar</option><option *ngFor="let p of productos" [ngValue]="p.id_producto">{{p.nombre_producto}}</option></select></label><div class="form-row"><label>Tipo<select [(ngModel)]="ajusteForm.tipo" name="ktipo"><option>Entrada</option><option>Salida</option></select></label><label>Cantidad<input type="number" min="1" [(ngModel)]="ajusteForm.cantidad" name="kcantidad"></label></div><label>Motivo<input [(ngModel)]="ajusteForm.motivo" name="kmotivo" required></label><button class="admin-primary">Registrar ajuste</button></form></article><article class="admin-list-card wide-card"><div class="management-heading"><div><h2>Kardex</h2><p>{{kardex.length}} movimientos.</p></div></div><div class="table-wrap"><table class="management-table"><thead><tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th>Origen</th><th>Cantidad</th><th>Anterior</th><th>Nuevo</th></tr></thead><tbody><tr *ngFor="let k of kardex"><td>{{fecha(k.fecha_movimiento)}}</td><td>{{k.producto?.nombre_producto}}</td><td>{{k.tipo}}</td><td>{{k.origen}}</td><td>{{k.cantidad}}</td><td>{{k.stock_anterior}}</td><td>{{k.stock_nuevo}}</td></tr></tbody></table></div></article></section>
-      </ng-container>
-
       <ng-container *ngIf="seccion==='caja'">
         <section class="management-grid">
           <article class="admin-form-card" *ngIf="!caja?.caja_abierta"><div class="management-heading"><div><h2>Abrir caja</h2><p>Necesaria para cobrar en efectivo.</p></div><span>$</span></div><form (ngSubmit)="abrirCaja()"><label>Monto inicial<input type="number" min="0" step="0.01" [(ngModel)]="cajaAbrirForm.monto_inicial" name="camonto"></label><label>Observación<input [(ngModel)]="cajaAbrirForm.observacion" name="caobs"></label><button class="admin-primary">Abrir caja</button></form></article>
@@ -576,114 +572,6 @@ import { ProductosComponent } from './pages/productos/productos';
               <tr *ngIf="!usuarios.length"><td colspan="7">No hay usuarios registrados.</td></tr>
             </tbody></table></div>
           </article>
-        </section>
-      </ng-container>
-
-      <ng-container *ngIf="seccion==='auditoria'">
-        <section class="audit-page">
-          <div class="audit-hero">
-            <div>
-              <span class="audit-eyebrow">TRAZABILIDAD Y SEGURIDAD</span>
-              <h2>Auditoría del sistema</h2>
-              <p>Consulta quién realizó cada acción, cuándo ocurrió y cuál fue la respuesta del servidor.</p>
-            </div>
-            <button class="audit-export" type="button" (click)="exportarAuditoria()">⇩ Exportar CSV</button>
-          </div>
-
-          <section class="audit-kpis">
-            <article><span class="audit-kpi-icon blue">▦</span><div><small>EVENTOS HOY</small><b>{{auditoriaEventosHoy}}</b><p>registros del día</p></div></article>
-            <article><span class="audit-kpi-icon violet">♙</span><div><small>USUARIOS</small><b>{{auditoriaUsuariosUnicos}}</b><p>usuarios identificados</p></div></article>
-            <article><span class="audit-kpi-icon amber">!</span><div><small>ACCIONES CRÍTICAS</small><b>{{auditoriaAccionesCriticas}}</b><p>POST, PUT, PATCH o DELETE</p></div></article>
-            <article><span class="audit-kpi-icon red">×</span><div><small>ERRORES HTTP</small><b>{{auditoriaErrores}}</b><p>respuestas 4xx / 5xx</p></div></article>
-          </section>
-
-          <section class="audit-filter-card">
-            <div class="audit-filter-head">
-              <div><h3>Buscar eventos</h3><p>Filtra los registros sin perder la vista general.</p></div>
-              <button type="button" class="audit-mode" [class.active]="auditoriaSoloImportantes" (click)="auditoriaSoloImportantes=!auditoriaSoloImportantes; auditoriaPagina=1">
-                {{auditoriaSoloImportantes ? '✓ Acciones importantes' : 'Todos los eventos'}}
-              </button>
-            </div>
-
-            <div class="audit-filters">
-              <label class="audit-search-field">
-                <span>⌕</span>
-                <input [(ngModel)]="auditoriaBusqueda" name="audit_busqueda" (ngModelChange)="auditoriaPagina=1" placeholder="Buscar usuario, ruta, rol o IP...">
-              </label>
-              <label>
-                <span>Método</span>
-                <select [(ngModel)]="auditoriaMetodo" name="audit_metodo" (ngModelChange)="auditoriaPagina=1">
-                  <option value="">Todos</option><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option>
-                </select>
-              </label>
-              <label>
-                <span>Estado</span>
-                <select [(ngModel)]="auditoriaEstado" name="audit_estado" (ngModelChange)="auditoriaPagina=1">
-                  <option value="">Todos</option><option value="ok">Correctos</option><option value="error">Errores</option>
-                </select>
-              </label>
-              <label><span>Desde</span><input type="date" [(ngModel)]="auditoriaFiltros.desde" name="audesde"></label>
-              <label><span>Hasta</span><input type="date" [(ngModel)]="auditoriaFiltros.hasta" name="auhasta"></label>
-              <label class="audit-route-field"><span>Ruta</span><input [(ngModel)]="auditoriaFiltros.ruta" name="auruta" placeholder="/api/ventas"></label>
-              <div class="audit-filter-actions">
-                <button type="button" class="audit-clear" (click)="limpiarFiltrosAuditoria()">Limpiar</button>
-                <button type="button" class="audit-apply" (click)="aplicarFiltrosAuditoria()">Filtrar</button>
-              </div>
-            </div>
-          </section>
-
-          <section class="audit-table-card">
-            <div class="audit-table-head">
-              <div><h3>Registro de actividad</h3><p>{{auditoriasFiltradas.length}} resultados encontrados</p></div>
-              <span class="audit-page-info">Página {{auditoriaPagina}} de {{auditoriaTotalPaginas}}</span>
-            </div>
-
-            <div class="table-wrap">
-              <table class="audit-table">
-                <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Método</th><th>Ruta</th><th>IP</th><th>Estado</th><th></th></tr></thead>
-                <tbody>
-                  <tr *ngFor="let a of auditoriasPaginadas">
-                    <td><div class="audit-date"><b>{{fechaCortaAuditoria(a.fecha)}}</b><small>{{horaAuditoria(a.fecha)}}</small></div></td>
-                    <td><div class="audit-user"><span>{{inicialAuditoria(a)}}</span><div><b>{{a.usuario || a.id_usuario || 'Sistema'}}</b><small>{{a.rol || 'Sin rol'}}</small></div></div></td>
-                    <td><span class="audit-action-label">{{accionAuditoria(a.metodo)}}</span></td>
-                    <td><span class="audit-method" [ngClass]="claseMetodoAuditoria(a.metodo)">{{a.metodo || '-'}}</span></td>
-                    <td><span class="audit-route" [title]="a.ruta">{{a.ruta}}</span></td>
-                    <td><span class="audit-ip">{{a.ip || '-'}}</span></td>
-                    <td><span class="audit-status" [class.error]="esErrorAuditoria(a.status)"><i></i>{{estadoAuditoria(a.status)}}</span></td>
-                    <td><button class="audit-detail-btn" type="button" (click)="auditoriaDetalle=a">Ver detalle</button></td>
-                  </tr>
-                  <tr *ngIf="!auditoriasPaginadas.length"><td colspan="8">
-                    <div class="audit-empty"><span>⌕</span><b>No encontramos eventos</b><p>Cambia los filtros o limpia la búsqueda para ver más registros.</p></div>
-                  </td></tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div class="audit-pagination" *ngIf="auditoriaTotalPaginas>1">
-              <button type="button" (click)="auditoriaPaginaAnterior()" [disabled]="auditoriaPagina===1">‹ Anterior</button>
-              <div>
-                <button *ngFor="let p of auditoriaPaginasVisibles" type="button" [class.active]="p===auditoriaPagina" (click)="auditoriaPagina=p">{{p}}</button>
-              </div>
-              <button type="button" (click)="auditoriaPaginaSiguiente()" [disabled]="auditoriaPagina===auditoriaTotalPaginas">Siguiente ›</button>
-            </div>
-          </section>
-
-          <div class="audit-detail-overlay" *ngIf="auditoriaDetalle" (click)="auditoriaDetalle=null">
-            <aside class="audit-detail-panel" (click)="$event.stopPropagation()">
-              <div class="audit-detail-head"><div><span>DETALLE DEL EVENTO</span><h3>{{accionAuditoria(auditoriaDetalle.metodo)}} · {{auditoriaDetalle.metodo}}</h3></div><button type="button" (click)="auditoriaDetalle=null">×</button></div>
-              <div class="audit-detail-grid">
-                <div><small>Fecha y hora</small><b>{{fecha(auditoriaDetalle.fecha)}}</b></div>
-                <div><small>Usuario</small><b>{{auditoriaDetalle.usuario || auditoriaDetalle.id_usuario || 'Sistema'}}</b></div>
-                <div><small>Rol</small><b>{{auditoriaDetalle.rol || '-'}}</b></div>
-                <div><small>Dirección IP</small><b>{{auditoriaDetalle.ip || '-'}}</b></div>
-                <div class="span-2"><small>Ruta solicitada</small><code>{{auditoriaDetalle.ruta}}</code></div>
-                <div><small>Método HTTP</small><span class="audit-method" [ngClass]="claseMetodoAuditoria(auditoriaDetalle.metodo)">{{auditoriaDetalle.metodo}}</span></div>
-                <div><small>Respuesta</small><span class="audit-status" [class.error]="esErrorAuditoria(auditoriaDetalle.status)"><i></i>{{auditoriaDetalle.status || '-'}} · {{estadoAuditoria(auditoriaDetalle.status)}}</span></div>
-              </div>
-              <div class="audit-detail-note"><b>Registro de auditoría</b><p>Este evento forma parte de la trazabilidad del sistema y permite revisar acciones realizadas por los usuarios.</p></div>
-              <button type="button" class="audit-close-detail" (click)="auditoriaDetalle=null">Cerrar detalle</button>
-            </aside>
-          </div>
         </section>
       </ng-container>
 
@@ -890,11 +778,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     {id:'proveedores',icono:'▤',nombre:'Proveedores'},
     {id:'compras',icono:'↓',nombre:'Compras'},
     {id:'ventas',icono:'↑',nombre:'Ventas'},
-    {id:'kardex',icono:'▥',nombre:'Kardex'},
     {id:'caja',icono:'$',nombre:'Caja'},
     {id:'reportes',icono:'▥',nombre:'Reportes'},
     {id:'usuarios',icono:'♙',nombre:'Usuarios'},
-    {id:'auditoria',icono:'⌕',nombre:'Auditoría'},
     {id:'configuracion',icono:'⚙',nombre:'Configuración'}
   ];
   titulos: Record<string,[string,string]> = {
@@ -905,9 +791,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     reservas:['Reservas','Control de reservas y asistencia a clases'], categorias:['Categorías','Clasificación de productos'],
     productos:['Productos','CRUD de productos conectado a Laravel'], proveedores:['Proveedores','Proveedores de productos'],
     compras:['Compras','Ingreso de productos e inventario'], ventas:['Ventas','Ventas de productos y stock'],
-    kardex:['Kardex','Movimientos del inventario'], caja:['Caja','Apertura, movimientos y cierre'],
+    caja:['Caja','Apertura, movimientos y cierre'],
     reportes:['Reportes','Indicadores calculados desde MySQL'], usuarios:['Usuarios','Cuentas internas y permisos'],
-    auditoria:['Auditoría','Trazabilidad de acciones del sistema'], configuracion:['Configuración','Ajustes generales y mantenimiento del sistema']
+    configuracion:['Configuración','Ajustes generales y mantenimiento del sistema']
   };
 
   sidebarCerrado = false;
@@ -961,7 +847,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   constructor(public auth: AuthService, private api: AdminApiService, private router: Router) {}
 
   ngOnInit(): void {
-    this.seccion = this.seccionInicial || 'dashboard';
+    this.seccion = ['kardex','auditoria'].includes(this.seccionInicial) ? 'dashboard' : (this.seccionInicial || 'dashboard');
     this.sidebarCerrado = localStorage.getItem('mallqui_admin_sidebar_closed') === '1';
     this.cargarDashboard();
     if (this.seccion !== 'dashboard') this.cargarSeccion(this.seccion);
@@ -1079,10 +965,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.cargarProductos();
         this.cargarCaja();
         break;
-      case 'kardex':
-        this.cargarKardex();
-        this.cargarProductos();
-        break;
       case 'caja':
         this.cargarCaja();
         break;
@@ -1091,9 +973,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         break;
       case 'usuarios':
         this.cargarUsuarios();
-        break;
-      case 'auditoria':
-        this.cargarAuditoria();
         break;
       case 'configuracion':
         this.cargarConfiguracion();
