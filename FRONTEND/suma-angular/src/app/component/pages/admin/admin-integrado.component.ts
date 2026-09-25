@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -59,7 +59,12 @@ import { ProductosComponent } from './pages/productos/productos';
           <h1>{{tituloActual}}</h1>
           <p>{{subtituloActual}}</p>
         </div>
-        <button class="admin-secondary admin-refresh-top" type="button" (click)="recargarTodo()">↻ Actualizar datos</button>
+        <div class="admin-refresh-box">
+          <button class="admin-secondary admin-refresh-top" type="button" [disabled]="actualizandoDatos" (click)="actualizarSeccionActual()">
+            {{actualizandoDatos ? '↻ Actualizando...' : '↻ Actualizar datos'}}
+          </button>
+          <small *ngIf="ultimaActualizacion">Última actualización: {{ultimaActualizacion}}</small>
+        </div>
         <div class="admin-profile-wrap">
           <button type="button" class="admin-profile">
             <span class="admin-avatar">A</span>
@@ -99,7 +104,9 @@ import { ProductosComponent } from './pages/productos/productos';
                 <small>{{dashboard?.periodo?.fecha || ''}}</small>
               </div>
             </div>
-            <button type="button" class="ux-refresh" (click)="cargarDashboard()">↻ Actualizar</button>
+            <button type="button" class="ux-refresh" [disabled]="actualizandoDatos" (click)="actualizarSeccionActual()">
+              {{actualizandoDatos ? '↻ Actualizando...' : '↻ Actualizar'}}
+            </button>
           </div>
         </section>
 
@@ -789,7 +796,7 @@ import { ProductosComponent } from './pages/productos/productos';
     .admin-logout{width:calc(100% - 28px);margin:14px;background:none;border:0;text-align:left;cursor:pointer}
   `]
 })
-export class AdminIntegradoComponent implements OnInit {
+export class AdminIntegradoComponent implements OnInit, OnDestroy {
   @Input() seccionInicial = 'dashboard';
   seccion = 'dashboard';
   toast = '';
@@ -864,6 +871,9 @@ export class AdminIntegradoComponent implements OnInit {
   };
 
   sidebarCerrado = false;
+  actualizandoDatos = false;
+  ultimaActualizacion = '';
+  private autoRefreshId: any = null;
 
   diasSemana = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
   configuracionForm: any = {
@@ -908,6 +918,18 @@ export class AdminIntegradoComponent implements OnInit {
     this.seccion = this.seccionInicial || 'dashboard';
     this.sidebarCerrado = localStorage.getItem('mallqui_admin_sidebar_closed') === '1';
     this.recargarTodo();
+
+    // Actualiza el módulo visible cada 30 segundos sin recargar la página.
+    this.autoRefreshId = setInterval(() => {
+      this.actualizarSeccionActual(true);
+    }, 30000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.autoRefreshId) {
+      clearInterval(this.autoRefreshId);
+      this.autoRefreshId = null;
+    }
   }
 
   toggleSidebar(): void {
@@ -921,10 +943,54 @@ export class AdminIntegradoComponent implements OnInit {
   cambiarSeccion(id: string): void {
     this.seccion = id;
     this.error = '';
-    if (id === 'reportes') this.cargarReportes();
-    if (id === 'auditoria') this.cargarAuditoria();
-    if (id === 'configuracion') this.cargarConfiguracion();
+    this.cargarSeccion(id);
     window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  actualizarSeccionActual(silencioso = false): void {
+    if (this.actualizandoDatos && !silencioso) return;
+
+    if (!silencioso) {
+      this.actualizandoDatos = true;
+      this.error = '';
+    }
+
+    this.cargarDashboard();
+    if (this.seccion !== 'dashboard') {
+      this.cargarSeccion(this.seccion);
+    }
+
+    if (!silencioso) {
+      setTimeout(() => {
+        this.actualizandoDatos = false;
+        this.ultimaActualizacion = new Date().toLocaleTimeString('es-PE');
+      }, 900);
+    }
+  }
+
+  private cargarSeccion(id: string): void {
+    switch (id) {
+      case 'dashboard': this.cargarDashboard(); break;
+      case 'clientes': this.cargarClientes(); break;
+      case 'membresias': this.cargarMembresias(); break;
+      case 'pagos': this.cargarPagos(); break;
+      case 'entrenador': this.cargarEntrenadores(); break;
+      case 'clases': this.cargarClases(); break;
+      case 'asistencias': this.cargarAsistencias(); break;
+      case 'rutinas': this.cargarRutinas(); break;
+      case 'reservas': this.cargarReservas(); break;
+      case 'categorias': this.cargarCategorias(); break;
+      case 'productos': this.cargarProductos(); break;
+      case 'proveedores': this.cargarProveedores(); break;
+      case 'compras': this.cargarCompras(); break;
+      case 'ventas': this.cargarVentas(); break;
+      case 'kardex': this.cargarKardex(); break;
+      case 'caja': this.cargarCaja(); break;
+      case 'reportes': this.cargarReportes(); break;
+      case 'usuarios': this.cargarUsuarios(); break;
+      case 'auditoria': this.cargarAuditoria(); break;
+      case 'configuracion': this.cargarConfiguracion(); break;
+    }
   }
 
   recargarTodo(): void {
@@ -934,7 +1000,15 @@ export class AdminIntegradoComponent implements OnInit {
     this.cargarProveedores(); this.cargarCompras(); this.cargarVentas(); this.cargarKardex(); this.cargarCaja(); this.cargarReportes();
   }
 
-  cargarDashboard(){ this.api.dashboard().subscribe({next:r=>this.dashboard=r,error:e=>this.mostrarError(e)}); }
+  cargarDashboard(){
+    this.api.dashboard().subscribe({
+      next:r=>{
+        this.dashboard=r;
+        this.ultimaActualizacion=new Date().toLocaleTimeString('es-PE');
+      },
+      error:e=>this.mostrarError(e)
+    });
+  }
   cargarClientes(){ this.api.clientes().subscribe({next:r=>this.clientes=r,error:e=>this.mostrarError(e)}); }
   cargarMembresias(){
     this.api.membresiasDisponibles().subscribe({next:r=>{this.planesMembresia=r;this.membresiasDisponibles=r.filter(x=>x.estado==='Activo');},error:e=>this.mostrarError(e)});
