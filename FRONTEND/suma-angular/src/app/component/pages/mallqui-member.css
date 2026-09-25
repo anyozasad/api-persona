@@ -947,3 +947,15 @@
   .muscle-area-grid{grid-template-columns:1fr!important}
   .home-goal-selector{grid-template-columns:1fr}
 }
+
+
+.home-plan-zones{margin-top:14px}
+.home-plan-zones>span{display:block;font-size:7px;letter-spacing:.95px;font-weight:900;color:#8391a0;margin-bottom:8px}
+.home-plan-zones>div{display:flex;gap:7px;flex-wrap:wrap}
+.home-plan-zones button{
+  min-height:34px;border:1px solid #dfe6ed;border-radius:999px;background:#fff;color:#61758a;
+  padding:0 10px;display:inline-flex;align-items:center;gap:6px;font-size:7px;font-weight:800;cursor:pointer;transition:.18s ease
+}
+.home-plan-zones button i{font-style:normal}
+.home-plan-zones button:hover{transform:translateY(-2px);border-color:#c9d5e1}
+.home-plan-zones button.active{background:#0b2b51;border-color:#0b2b51;color:#fff;box-shadow:0 7px 16px rgba(11,43,81,.13)}
