@@ -1329,3 +1329,131 @@
 }
 
 .report-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+
+/* =========================================================
+   ADMIN · FICHA 360 DEL CLIENTE
+   ========================================================= */
+.client360-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:2000;
+  display:flex;
+  justify-content:flex-end;
+  background:rgba(5,16,30,.46);
+  backdrop-filter:blur(4px);
+}
+.client360-panel{
+  width:min(920px,96vw);
+  height:100%;
+  overflow:auto;
+  background:#f6f9fc;
+  box-shadow:-20px 0 60px rgba(4,18,34,.22);
+  padding:24px;
+  animation:client360In .24s ease both;
+}
+@keyframes client360In{
+  from{opacity:0;transform:translateX(28px)}
+  to{opacity:1;transform:none}
+}
+.client360-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  padding:24px;
+  border-radius:20px;
+  color:#fff;
+  background:
+    radial-gradient(circle at 88% 18%,rgba(239,35,60,.22),transparent 25%),
+    linear-gradient(135deg,#06172d,#103b67);
+}
+.client360-head span{font-size:7px;font-weight:900;letter-spacing:1.2px;color:#ff9daa}
+.client360-head h2{margin:5px 0 4px;font-size:25px}
+.client360-head p{margin:0;font-size:9px;color:#cfdae5}
+.client360-head>button{
+  width:36px;height:36px;border:0;border-radius:10px;
+  background:rgba(255,255,255,.10);color:#fff;font-size:20px;cursor:pointer
+}
+.client360-kpis{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-top:16px;
+}
+.client360-kpis article{
+  background:#fff;
+  border:1px solid #e5ecf2;
+  border-radius:15px;
+  padding:15px;
+  box-shadow:0 8px 22px rgba(13,34,56,.04);
+}
+.client360-kpis article>span{
+  width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
+  background:#eef4f9;color:#2c5e8c;font-size:11px;font-weight:900
+}
+.client360-kpis small{display:block;margin-top:10px;font-size:6px;letter-spacing:.8px;color:#85929f;font-weight:900}
+.client360-kpis b{display:block;margin-top:3px;font-size:15px;color:#173451}
+.client360-kpis p{margin:3px 0 0;font-size:8px;color:#7c8996}
+.client360-profile{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin-top:12px;
+}
+.client360-profile>article{
+  background:#fff;border:1px solid #e5ecf2;border-radius:15px;padding:16px
+}
+.client360-profile>article>span{
+  display:block;margin-bottom:10px;font-size:6px;font-weight:900;letter-spacing:1px;color:#8794a0
+}
+.client360-profile>article>div{
+  display:grid;grid-template-columns:130px 1fr;gap:10px;padding:7px 0;border-bottom:1px solid #eef2f5
+}
+.client360-profile>article>div:last-child{border-bottom:0}
+.client360-profile b{font-size:8px;color:#43596d}
+.client360-profile p{margin:0;font-size:8px;color:#71808f}
+.client360-tabs{
+  display:flex;flex-wrap:wrap;gap:7px;margin:14px 0
+}
+.client360-tabs button{
+  border:1px solid #dce5ed;background:#fff;color:#607285;border-radius:9px;
+  padding:8px 10px;font-size:7px;font-weight:900;cursor:pointer
+}
+.client360-tabs button.active{background:#0f5fa8;border-color:#0f5fa8;color:#fff}
+.client360-history{
+  background:#fff;border:1px solid #e5ecf2;border-radius:16px;padding:15px
+}
+.client360-history>div{
+  display:grid;
+  grid-template-columns:minmax(0,1.25fr) minmax(180px,.8fr) auto;
+  gap:14px;
+  align-items:center;
+  padding:11px 0;
+  border-bottom:1px solid #edf2f5
+}
+.client360-history>div:last-child{border-bottom:0}
+.client360-history b{display:block;font-size:9px;color:#173451}
+.client360-history small{display:block;margin-top:2px;font-size:7px;color:#8a96a2}
+.client360-history span{font-size:8px;color:#647687}
+.client360-history em{
+  font-style:normal;padding:5px 7px;border-radius:999px;background:#eef4fa;
+  color:#35688f;font-size:7px;font-weight:900
+}
+.client360-history>p{
+  margin:0;padding:25px;text-align:center;font-size:9px;color:#8995a0
+}
+.client360-loading,.client360-error{
+  margin-top:14px;border-radius:11px;padding:13px;font-size:9px
+}
+.client360-loading{background:#fff;border:1px solid #e4ebf1;color:#66788a}
+.client360-error{background:#fff1f2;border:1px solid #ffd0d6;color:#ad293b}
+@media(max-width:760px){
+  .client360-panel{width:100%;padding:14px}
+  .client360-kpis{grid-template-columns:1fr 1fr}
+  .client360-profile{grid-template-columns:1fr}
+  .client360-history>div{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .client360-kpis{grid-template-columns:1fr}
+}
