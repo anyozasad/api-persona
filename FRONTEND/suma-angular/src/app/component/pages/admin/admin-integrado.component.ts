@@ -917,7 +917,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.seccion = this.seccionInicial || 'dashboard';
     this.sidebarCerrado = localStorage.getItem('mallqui_admin_sidebar_closed') === '1';
-    this.recargarTodo();
+    this.cargarDashboard();
+    if (this.seccion !== 'dashboard') this.cargarSeccion(this.seccion);
 
     // Actualiza el módulo visible cada 30 segundos sin recargar la página.
     this.autoRefreshId = setInterval(() => {
@@ -970,34 +971,90 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   private cargarSeccion(id: string): void {
     switch (id) {
-      case 'dashboard': this.cargarDashboard(); break;
-      case 'clientes': this.cargarClientes(); break;
-      case 'membresias': this.cargarMembresias(); break;
-      case 'pagos': this.cargarPagos(); break;
-      case 'entrenador': this.cargarEntrenadores(); break;
-      case 'clases': this.cargarClases(); break;
-      case 'asistencias': this.cargarAsistencias(); break;
-      case 'rutinas': this.cargarRutinas(); break;
-      case 'reservas': this.cargarReservas(); break;
-      case 'categorias': this.cargarCategorias(); break;
-      case 'productos': this.cargarProductos(); break;
-      case 'proveedores': this.cargarProveedores(); break;
-      case 'compras': this.cargarCompras(); break;
-      case 'ventas': this.cargarVentas(); break;
-      case 'kardex': this.cargarKardex(); break;
-      case 'caja': this.cargarCaja(); break;
-      case 'reportes': this.cargarReportes(); break;
-      case 'usuarios': this.cargarUsuarios(); break;
-      case 'auditoria': this.cargarAuditoria(); break;
-      case 'configuracion': this.cargarConfiguracion(); break;
+      case 'dashboard':
+        this.cargarDashboard();
+        break;
+      case 'clientes':
+        this.cargarClientes();
+        break;
+      case 'membresias':
+        this.cargarClientes();
+        this.cargarMembresias();
+        this.cargarPagos();
+        break;
+      case 'pagos':
+        this.cargarClientes();
+        this.cargarMembresias();
+        this.cargarPagos();
+        break;
+      case 'entrenador':
+        this.cargarEntrenadores();
+        this.cargarUsuarios();
+        break;
+      case 'clases':
+        this.cargarClases();
+        this.cargarEntrenadores();
+        break;
+      case 'asistencias':
+        this.cargarAsistencias();
+        this.cargarClientes();
+        break;
+      case 'rutinas':
+        this.cargarRutinas();
+        this.cargarClientes();
+        this.cargarEntrenadores();
+        break;
+      case 'reservas':
+        this.cargarReservas();
+        this.cargarClases();
+        this.cargarClientes();
+        break;
+      case 'categorias':
+        this.cargarCategorias();
+        break;
+      case 'productos':
+        this.cargarProductos();
+        this.cargarCategorias();
+        break;
+      case 'proveedores':
+        this.cargarProveedores();
+        break;
+      case 'compras':
+        this.cargarCompras();
+        this.cargarProveedores();
+        this.cargarProductos();
+        break;
+      case 'ventas':
+        this.cargarVentas();
+        this.cargarClientes();
+        this.cargarProductos();
+        this.cargarCaja();
+        break;
+      case 'kardex':
+        this.cargarKardex();
+        this.cargarProductos();
+        break;
+      case 'caja':
+        this.cargarCaja();
+        break;
+      case 'reportes':
+        this.cargarReportes();
+        break;
+      case 'usuarios':
+        this.cargarUsuarios();
+        break;
+      case 'auditoria':
+        this.cargarAuditoria();
+        break;
+      case 'configuracion':
+        this.cargarConfiguracion();
+        break;
     }
   }
 
   recargarTodo(): void {
-    this.cargarDashboard(); this.cargarClientes(); this.cargarMembresias(); this.cargarPagos();
-    this.cargarEntrenadores(); this.cargarClases(); this.cargarAsistencias(); this.cargarCategorias();
-    this.cargarRutinas(); this.cargarReservas(); this.cargarUsuarios(); this.cargarAuditoria(); this.cargarProductos();
-    this.cargarProveedores(); this.cargarCompras(); this.cargarVentas(); this.cargarKardex(); this.cargarCaja(); this.cargarReportes();
+    this.cargarDashboard();
+    if (this.seccion !== 'dashboard') this.cargarSeccion(this.seccion);
   }
 
   cargarDashboard(){
