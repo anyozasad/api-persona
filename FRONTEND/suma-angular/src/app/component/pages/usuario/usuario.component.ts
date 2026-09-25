@@ -16,47 +16,49 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
   template: `
     <div class="member-page">
       <header class="member-topbar member-enter-down">
-        <button type="button" class="member-brand" (click)="abrirModulo('inicio')" aria-label="Ir al inicio del portal">
-          <img src="assets/mallqui-logo.svg" alt="Mallqui Gym">
-          <span><b>MALLQUI GYM</b><small>Portal del cliente</small></span>
-        </button>
+        <div class="member-top-row">
+          <button type="button" class="member-brand" (click)="abrirModulo('inicio')" aria-label="Ir al inicio del portal">
+            <img src="assets/mallqui-logo.svg" alt="Mallqui Gym">
+            <span><b>MALLQUI GYM</b><small>Tu espacio de entrenamiento</small></span>
+          </button>
 
-        <nav class="member-nav" aria-label="Navegación del cliente">
-          <span class="member-nav-group">PRINCIPAL</span>
-          <button type="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')"><i>⌂</i><span>Inicio</span></button>
-          <button type="button" [class.active]="moduloActivo==='casa'" (click)="abrirModulo('casa')"><i>⚡</i><span>Entrenar en casa</span></button>
-          <button type="button" [class.active]="moduloActivo==='rutinas'" (click)="abrirModulo('rutinas')"><i>🏋</i><span>Mis rutinas</span></button>
-          <button type="button" [class.active]="moduloActivo==='clases'" (click)="abrirModulo('clases')"><i>▣</i><span>Clases</span></button>
+          <nav class="member-nav member-nav-primary" aria-label="Navegación principal del cliente">
+            <button type="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')"><i>⌂</i><span>Inicio</span></button>
+            <button type="button" [class.active]="moduloActivo==='casa'" (click)="abrirModulo('casa')"><i>⚡</i><span>Entrenar</span></button>
+            <button type="button" [class.active]="moduloActivo==='rutinas'" (click)="abrirModulo('rutinas')"><i>🏋</i><span>Rutinas</span></button>
+            <button type="button" [class.active]="moduloActivo==='clases'" (click)="abrirModulo('clases')"><i>▣</i><span>Clases</span></button>
+            <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')"><i>◎</i><span>Progreso</span></button>
+          </nav>
 
-          <span class="member-nav-group">MI ACTIVIDAD</span>
-          <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')"><i>◎</i><span>Mi progreso</span></button>
-          <button type="button" [class.active]="moduloActivo==='calendario'" (click)="abrirModulo('calendario')"><i>◫</i><span>Calendario</span></button>
-          <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')"><i>◷</i><span>Reservas</span></button>
-          <button type="button" [class.active]="moduloActivo==='asistencias'" (click)="abrirModulo('asistencias')"><i>✓</i><span>Asistencias</span></button>
-
-          <span class="member-nav-group">MI CUENTA</span>
-          <button type="button" [class.active]="moduloActivo==='club'" (click)="abrirModulo('club')"><i>★</i><span>Mi club</span></button>
-          <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')"><i>▤</i><span>Membresía y pagos</span></button>
-          <button type="button" class="member-nav-notice" [class.active]="moduloActivo==='avisos'" (click)="abrirModulo('avisos')"><i>●</i><span>Avisos</span><b *ngIf="avisosNoLeidos>0">{{avisosNoLeidos>9 ? '9+' : avisosNoLeidos}}</b></button>
-          <button type="button" [class.active]="moduloActivo==='soporte'" (click)="abrirModulo('soporte')"><i>?</i><span>Ayuda</span></button>
-          <button type="button" [class.active]="moduloActivo==='perfil'" (click)="abrirModulo('perfil')"><i>♙</i><span>Mi perfil</span></button>
-        </nav>
-
-        <div class="member-sidebar-status">
-          <span class="member-sidebar-status-icon">{{membresiaActual ? '✓' : '!'}}</span>
-          <div>
-            <small>{{membresiaActual ? 'MEMBRESÍA ACTIVA' : 'MEMBRESÍA'}}</small>
-            <b>{{membresiaActual?.membresia?.nombre || 'Sin plan activo'}}</b>
-            <button type="button" (click)="abrirModulo('pagos')">{{membresiaActual ? 'Ver detalles' : 'Activar ahora'}} →</button>
+          <div class="member-user-actions">
+            <button type="button" class="member-alert-button" [class.active]="moduloActivo==='avisos'" (click)="abrirModulo('avisos')" aria-label="Abrir avisos">
+              <span>●</span>
+              <b *ngIf="avisosNoLeidos>0">{{avisosNoLeidos>9 ? '9+' : avisosNoLeidos}}</b>
+            </button>
+            <div class="member-mini-profile">
+              <span>{{nombreCorto.charAt(0).toUpperCase()}}</span>
+              <div><b>{{nombreCorto}}</b><small>{{membresiaActual?.membresia?.nombre || 'Cliente Mallqui'}}</small></div>
+            </div>
+            <button class="member-logout" type="button" (click)="cerrarSesion()">Salir</button>
           </div>
         </div>
 
-        <div class="member-user-actions">
-          <div class="member-mini-profile">
-            <span>{{nombreCorto.charAt(0).toUpperCase()}}</span>
-            <div><b>{{nombreCorto}}</b><small>Cliente Mallqui</small></div>
+        <div class="member-subnav">
+          <div class="member-subnav-scroll">
+            <button type="button" [class.active]="moduloActivo==='calendario'" (click)="abrirModulo('calendario')"><i>◫</i> Calendario</button>
+            <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')"><i>◷</i> Reservas</button>
+            <button type="button" [class.active]="moduloActivo==='asistencias'" (click)="abrirModulo('asistencias')"><i>✓</i> Asistencias</button>
+            <button type="button" [class.active]="moduloActivo==='club'" (click)="abrirModulo('club')"><i>★</i> Mi club</button>
+            <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')"><i>▤</i> Membresía</button>
+            <button type="button" [class.active]="moduloActivo==='soporte'" (click)="abrirModulo('soporte')"><i>?</i> Ayuda</button>
+            <button type="button" [class.active]="moduloActivo==='perfil'" (click)="abrirModulo('perfil')"><i>♙</i> Perfil</button>
           </div>
-          <button class="member-logout" type="button" (click)="cerrarSesion()">Cerrar sesión</button>
+
+          <button type="button" class="member-membership-chip" (click)="abrirModulo('pagos')">
+            <span>{{membresiaActual ? '✓' : '!'}}</span>
+            <div><small>{{membresiaActual ? 'PLAN ACTIVO' : 'MEMBRESÍA'}}</small><b>{{membresiaActual?.membresia?.nombre || 'Activar plan'}}</b></div>
+            <em>→</em>
+          </button>
         </div>
       </header>
 
@@ -64,7 +66,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         <div *ngIf="error" class="member-toast error-toast">{{error}}</div>
         <div *ngIf="toast" class="member-toast success-toast">{{toast}}</div>
 
-        <section *ngIf="moduloActivo!=='inicio'" class="member-page-context">
+        <section *ngIf="moduloActivo!=='inicio' && moduloActivo!=='casa'" class="member-page-context">
           <div>
             <span>MI ESPACIO · MALLQUI GYM</span>
             <h2>{{tituloModuloActual}}</h2>
@@ -465,6 +467,25 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                 <span class="home-no-equipment">Sin equipo especial</span>
               </div>
 
+              <div class="home-first-demo" *ngIf="ejerciciosCasaActuales[0]">
+                <div class="home-first-demo-copy">
+                  <span>VISTA PREVIA ANIMADA</span>
+                  <h3>Así comienza tu sesión</h3>
+                  <p>Mira el movimiento antes de iniciar. Durante la sesión la guía cambia automáticamente con cada ejercicio.</p>
+                  <div>
+                    <b>{{ejerciciosCasaActuales[0].nombre}}</b>
+                    <small>{{prescripcionEjercicioCasa(ejerciciosCasaActuales[0])}}</small>
+                  </div>
+                </div>
+                <div class="home-first-demo-visual">
+                  <app-exercise-demo
+                    [ejercicio]="ejerciciosCasaActuales[0]"
+                    [pausado]="false"
+                    [lado]="'derecho'">
+                  </app-exercise-demo>
+                </div>
+              </div>
+
               <div class="home-exercise-list">
                 <article *ngFor="let ejercicio of ejerciciosCasaActuales; let i=index">
                   <span class="exercise-number">{{i+1}}</span>
@@ -499,7 +520,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
             </div>
           </section>
 
-          <section *ngIf="sesionCasaActiva" class="home-session-live">
+          <section id="sesion-entrenamiento-casa" *ngIf="sesionCasaActiva" class="home-session-live">
             <article class="home-session-main">
               <div class="home-session-top">
                 <div>
@@ -1333,7 +1354,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.timerCasa=setInterval(()=>this.tickCasa(),1000);
 
     setTimeout(()=>{
-      document.querySelector('.home-session-live')?.scrollIntoView({behavior:'smooth',block:'start'});
+      document.querySelector('#sesion-entrenamiento-casa')?.scrollIntoView({behavior:'smooth',block:'start'});
     },80);
   }
 
