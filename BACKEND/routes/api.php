@@ -35,6 +35,7 @@ use App\Http\Controllers\AuditoriaController;
 use App\Http\Controllers\ConfiguracionSistemaController;
 use App\Http\Controllers\ExperienciaClienteController;
 use App\Http\Controllers\ComunicacionAdminController;
+use App\Http\Controllers\ClienteFichaController;
 
 // AUTENTICACIÓN PRINCIPAL DEL SISTEMA: SANCTUM
 Route::prefix('auth')->group(function () {
@@ -102,6 +103,8 @@ Route::middleware(['auth:sanctum', 'rol:Cliente', 'auditoria'])->prefix('mi-cuen
     Route::post('/reservas/{id}/cancelar', [ReservaController::class, 'cancelarMia']);
 
     Route::get('/progreso', [ExperienciaClienteController::class, 'progreso']);
+    Route::get('/meta', [ExperienciaClienteController::class, 'meta']);
+    Route::put('/meta', [ExperienciaClienteController::class, 'guardarMeta']);
     Route::get('/calendario', [ExperienciaClienteController::class, 'calendario']);
     Route::get('/notificaciones', [ExperienciaClienteController::class, 'notificaciones']);
     Route::post('/notificaciones/{id}/leer', [ExperienciaClienteController::class, 'leerNotificacion']);
@@ -140,6 +143,7 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
     Route::apiResource('/membresias', MembresiaController::class)->except(['index', 'show']);
     Route::apiResource('/clases', ClaseController::class)->except(['index', 'show']);
     Route::apiResource('/clientes', ClienteController::class);
+    Route::get('/clientes/{id}/ficha', [ClienteFichaController::class, 'show']);
 
     Route::apiResource('/asistencias', AsistenciaController::class)->only(['index', 'show']);
     Route::post('/asistencias/entrada', [AsistenciaController::class, 'entrada']);
