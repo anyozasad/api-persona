@@ -2485,3 +2485,14 @@
   box-shadow:0 0 0 2px #08233f;
 }
 .member-nav-notice.active>b{box-shadow:0 0 0 2px #d81730}
+
+
+/* Acciones de pago del cliente */
+.member-payment-item .payment-cancel{
+  border:1px solid #f1cbd1!important;
+  background:#fff6f7!important;
+  color:#b82d3f!important;
+}
+.member-payment-item .payment-cancel:hover{
+  background:#ffecef!important;
+}
