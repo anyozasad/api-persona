@@ -22,16 +22,23 @@ import { Component, Input } from '@angular/core';
           {{lado === 'derecho' ? 'LADO DERECHO' : 'LADO IZQUIERDO'}}
         </span>
 
-        <svg viewBox="0 0 360 250" role="img" [attr.aria-label]="'Demostración animada de '+(ejercicio?.nombre || 'ejercicio')">
+        <svg viewBox="0 0 360 250" role="img" [attr.aria-label]="'Persona demostrando '+(ejercicio?.nombre || 'ejercicio')">
           <defs>
-            <linearGradient id="bodyFill" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#ffffff"></stop>
-              <stop offset="100%" stop-color="#cfe0f0"></stop>
+            <linearGradient id="skinFill" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#f2c39f"></stop>
+              <stop offset="100%" stop-color="#c9875f"></stop>
             </linearGradient>
-            <linearGradient id="accentFill" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#ff6678"></stop>
-              <stop offset="100%" stop-color="#ef233c"></stop>
+            <linearGradient id="shirtStroke" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#8995a3"></stop>
+              <stop offset="100%" stop-color="#4d5968"></stop>
             </linearGradient>
+            <linearGradient id="pantsStroke" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#303948"></stop>
+              <stop offset="100%" stop-color="#151d29"></stop>
+            </linearGradient>
+            <filter id="personShadow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#00101f" flood-opacity=".32"></feDropShadow>
+            </filter>
           </defs>
 
           <line class="demo-floor" x1="34" y1="220" x2="326" y2="220"></line>
@@ -205,13 +212,52 @@ import { Component, Input } from '@angular/core';
     .exercise-demo-head em{font-style:normal;padding:6px 9px;border-radius:999px;background:#eaf8f1;color:#257458;font-size:8px;font-weight:900}
     .exercise-demo.is-paused .exercise-demo-head em{background:#fff4df;color:#a66d14}
     .exercise-demo-stage{position:relative;min-height:330px;overflow:hidden;border-radius:20px;background:linear-gradient(145deg,#071a32,#0b3159);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-    .demo-grid{position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:30px 30px;mask-image:linear-gradient(to bottom,transparent,black 22%,black 85%,transparent)}
+    .demo-grid{position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:30px 30px;mask-image:linear-gradient(to bottom,transparent,black 22%,black 85%,transparent)}
+    .exercise-demo-stage:after{
+      content:'PERSONA · GUÍA DE MOVIMIENTO';
+      position:absolute;
+      z-index:4;
+      right:18px;
+      top:18px;
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.10);
+      color:#dbe7f2;
+      font-size:7px;
+      font-weight:900;
+      letter-spacing:.75px;
+      backdrop-filter:blur(8px)
+    }
     .exercise-demo-stage:before{content:'';position:absolute;width:220px;height:220px;right:-70px;top:-80px;border-radius:50%;background:radial-gradient(circle,rgba(239,35,60,.18),transparent 68%)}
     .exercise-demo-stage svg{position:relative;z-index:2;display:block;width:100%;height:280px;padding:18px 26px 0;box-sizing:border-box}
-    .demo-floor{stroke:rgba(255,255,255,.16);stroke-width:3;stroke-linecap:round}
-    .body-head{fill:url(#bodyFill);stroke:#fff;stroke-width:2}
-    .body-torso,.body-limb{fill:none;stroke:#f5f9fd;stroke-width:11;stroke-linecap:round;stroke-linejoin:round}
-    .body-leg{stroke:#cfe0ef}
+    .demo-floor{stroke:rgba(255,255,255,.18);stroke-width:5;stroke-linecap:round}
+    .body-head{
+      fill:url(#skinFill);
+      stroke:#7b4d35;
+      stroke-width:2;
+      filter:url(#personShadow)
+    }
+    .body-torso{
+      fill:none;
+      stroke:url(#shirtStroke);
+      stroke-width:30;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      filter:url(#personShadow)
+    }
+    .body-limb{
+      fill:none;
+      stroke:#d99b72;
+      stroke-width:15;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      filter:url(#personShadow)
+    }
+    .body-leg{
+      stroke:url(#pantsStroke);
+      stroke-width:19
+    }
     .demo-prop{fill:rgba(255,255,255,.14);stroke:rgba(255,255,255,.24)}
     .demo-prop-line,.demo-wall{stroke:rgba(255,255,255,.28);stroke-width:5;stroke-linecap:round}
     .pose g,.pose line,.pose polyline,.pose circle{transform-box:fill-box}
