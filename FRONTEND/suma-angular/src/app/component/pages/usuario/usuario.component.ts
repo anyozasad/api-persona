@@ -65,13 +65,24 @@ import { GymApiService } from '../../../core/services/gym-api.service';
 
             <aside class="member-coach-card">
               <div class="coach-glow"></div>
-              <span class="coach-badge">ENTRENADOR ASIGNADO</span>
-              <div class="coach-avatar-large">{{nombreEntrenador.charAt(0).toUpperCase()}}</div>
-              <h3>{{nombreEntrenador}}</h3>
-              <p>{{rutinaActual?.objetivo || 'Aún no tienes un objetivo de entrenamiento registrado.'}}</p>
-              <div class="coach-tags">
-                <span>Seguimiento</span><span>Progreso</span><span>Constancia</span>
-              </div>
+
+              <ng-container *ngIf="rutinaActual?.entrenador; else sinEntrenador">
+                <span class="coach-badge">ENTRENADOR ASIGNADO</span>
+                <div class="coach-avatar-large">{{nombreEntrenador.charAt(0).toUpperCase()}}</div>
+                <h3>{{nombreEntrenador}}</h3>
+                <p>{{rutinaActual?.objetivo || 'Tu entrenador todavía no registró un objetivo para esta rutina.'}}</p>
+                <div class="coach-tags">
+                  <span>Seguimiento</span><span>Progreso</span><span>Constancia</span>
+                </div>
+              </ng-container>
+
+              <ng-template #sinEntrenador>
+                <span class="coach-badge">ENTRENADOR</span>
+                <div class="coach-avatar-large coach-avatar-empty">?</div>
+                <h3>Pendiente de asignación</h3>
+                <p>Tu cuenta está activa. Mientras te asignan un entrenador puedes configurar y realizar sesiones guiadas en casa.</p>
+                <button type="button" class="coach-home-button" (click)="abrirModulo('casa')">⚡ Entrenar en casa</button>
+              </ng-template>
             </aside>
           </section>
 
@@ -225,10 +236,14 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               </ng-container>
 
               <ng-template #sinRutina>
-                <div class="member-empty-state">
+                <div class="member-empty-state member-empty-action">
                   <span>🏋</span>
-                  <h3>Aún no tienes una rutina asignada</h3>
-                  <p>Cuando tu entrenador cree una rutina para ti, aparecerá aquí automáticamente.</p>
+                  <h3>Aún no tienes una rutina del entrenador</h3>
+                  <p>Cuando te asignen una aparecerá aquí. Mientras tanto puedes comenzar una sesión guiada en casa con temporizador y ejercicios paso a paso.</p>
+                  <div class="empty-action-row">
+                    <button type="button" class="member-empty-primary" (click)="abrirModulo('casa')">⚡ Entrenar en casa</button>
+                    <button type="button" class="member-empty-secondary" (click)="abrirModulo('clases')">Ver clases</button>
+                  </div>
                 </div>
               </ng-template>
             </article>
@@ -820,6 +835,76 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   get rutinaActual():any{return this.resumen?.rutina_actual || this.rutinas.find(r=>r.estado==='Activo') || null;}
   get nombreEntrenador():string{return this.nombrePersona(this.rutinaActual?.entrenador) || 'Sin entrenador asignado';}
   get reservasActivas():any[]{return this.reservas.filter(r=>r.estado==='Reservada');}
+
+  get perfilCompleto():boolean{
+    return Boolean(
+      String(this.perfil?.nombres||'').trim() &&
+      String(this.perfil?.apellidos||'').trim() &&
+      String(this.perfil?.correo||'').trim()
+    );
+  }
+
+  get planCasaConfigurado():boolean{
+    return Boolean(
+      this.casaCargado &&
+      Array.isArray(this.planCasa?.dias) && this.planCasa.dias.length > 0 &&
+      Array.isArray(this.planCasa?.zonas) && this.planCasa.zonas.length > 0
+    );
+  }
+
+  get primeraActividadRegistrada():boolean{
+    return Boolean(
+      this.historialCasa.length ||
+      this.reservas.length ||
+      this.asistencias.length ||
+      this.rutinas.length
+    );
+  }
+
+  get onboardingPasos():any[]{
+    return [
+      {
+        titulo:'Completar perfil',
+        descripcion:'Confirma tus datos personales y de contacto.',
+        icono:'♙',
+        modulo:'perfil',
+        done:this.perfilCompleto,
+      },
+      {
+        titulo:'Elegir membresía',
+        descripcion:'Selecciona el plan con el que usarás el gimnasio.',
+        icono:'✦',
+        modulo:'pagos',
+        done:Boolean(this.membresiaActual),
+      },
+      {
+        titulo:'Configurar entrenamiento en casa',
+        descripcion:'Elige días, objetivo y zonas para tus sesiones guiadas.',
+        icono:'⚡',
+        modulo:'casa',
+        done:this.planCasaConfigurado,
+      },
+      {
+        titulo:'Registrar tu primera actividad',
+        descripcion:'Entrena en casa, reserva una clase o registra una asistencia.',
+        icono:'✓',
+        modulo:'casa',
+        done:this.primeraActividadRegistrada,
+      },
+    ];
+  }
+
+  get onboardingCompletados():number{
+    return this.onboardingPasos.filter((p:any)=>p.done).length;
+  }
+
+  get onboardingProgreso():number{
+    return Math.round((this.onboardingCompletados / Math.max(1,this.onboardingPasos.length))*100);
+  }
+
+  irPasoOnboarding(paso:any):void{
+    this.abrirModulo(paso?.modulo || 'inicio');
+  }
   get perfilCompleto():boolean{
     return !!(this.perfil?.nombres && this.perfil?.apellidos && this.perfil?.correo && this.perfil?.telefono && this.perfil?.direccion);
   }
