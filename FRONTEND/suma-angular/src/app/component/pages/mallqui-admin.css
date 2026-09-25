@@ -1316,3 +1316,14 @@
   .admin-support-kpis{grid-template-columns:1fr}
   .admin-support-actions{grid-template-columns:1fr}
 }
+
+
+/* Dashboard con comunicación y soporte */
+.ux-quick-actions{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.ux-status-strip{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+@media(max-width:1180px){
+  .ux-quick-actions,.ux-status-strip{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:680px){
+  .ux-quick-actions,.ux-status-strip{grid-template-columns:1fr!important}
+}
