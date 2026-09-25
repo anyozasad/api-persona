@@ -1513,3 +1513,36 @@
   .client-list-tools input,.client-list-tools select{width:100%;min-width:0}
   .client-pagination{justify-content:center}
 }
+
+
+/* Creación de acceso del cliente */
+.client-access-toggle{
+  display:flex!important;
+  align-items:center;
+  gap:8px!important;
+  padding:11px 12px;
+  border:1px solid #dfe7ee;
+  border-radius:10px;
+  background:#f8fbfd;
+  color:#44596c;
+}
+.client-access-toggle input{
+  width:15px;height:15px;
+  accent-color:#0f5fa8;
+}
+.client-access-toggle span{
+  font-size:8px;
+  font-weight:800;
+}
+.client-access-fields{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  padding:12px;
+  border:1px dashed #cfdce7;
+  border-radius:11px;
+  background:#fbfdff;
+}
+@media(max-width:650px){
+  .client-access-fields{grid-template-columns:1fr}
+}
