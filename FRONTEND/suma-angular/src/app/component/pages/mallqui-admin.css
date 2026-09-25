@@ -1457,3 +1457,59 @@
 @media(max-width:480px){
   .client360-kpis{grid-template-columns:1fr}
 }
+
+
+/* Búsqueda, filtros y paginación de clientes */
+.client-list-heading{
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+}
+.client-list-tools{
+  display:flex;
+  gap:8px;
+  margin-left:auto;
+  flex-wrap:wrap;
+}
+.client-list-tools input,
+.client-list-tools select{
+  min-height:36px;
+  border:1px solid #dce5ed;
+  border-radius:9px;
+  background:#fbfcfe;
+  color:#173451;
+  padding:0 10px;
+  font-size:8px;
+  outline:none;
+}
+.client-list-tools input{min-width:245px}
+.client-list-tools input:focus,
+.client-list-tools select:focus{
+  border-color:#79a7cf;
+  box-shadow:0 0 0 3px rgba(63,123,182,.07);
+}
+.client-pagination{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:10px;
+  margin-top:12px;
+}
+.client-pagination button{
+  min-height:33px;
+  border:1px solid #dce5ed;
+  border-radius:8px;
+  background:#fff;
+  color:#38536d;
+  padding:0 10px;
+  font-size:7px;
+  font-weight:900;
+  cursor:pointer;
+}
+.client-pagination button:disabled{opacity:.45;cursor:not-allowed}
+.client-pagination span{font-size:8px;color:#778694}
+@media(max-width:720px){
+  .client-list-tools{width:100%;margin-left:0}
+  .client-list-tools input,.client-list-tools select{width:100%;min-width:0}
+  .client-pagination{justify-content:center}
+}
