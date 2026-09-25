@@ -946,6 +946,14 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     });
   }
 
+  seleccionarObjetivoCasa(objetivo:string):void{
+    if(this.sesionCasaActiva)return;
+    const existe=this.objetivosCasaMeta.some((o:any)=>o.id===objetivo);
+    if(!existe)return;
+    this.planCasa={...this.planCasa,objetivo};
+    this.errorCasa='';
+  }
+
   toggleDiaCasa(dia:string):void{
     const dias=[...(this.planCasa.dias||[])];
     const i=dias.indexOf(dia);
