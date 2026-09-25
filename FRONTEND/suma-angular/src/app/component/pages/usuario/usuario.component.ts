@@ -195,6 +195,252 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           </section>
         </section>
 
+        <section *ngIf="moduloActivo==='casa'" class="member-module home-training-module member-enter-up">
+          <div class="member-module-hero home-training-hero">
+            <div>
+              <span>ENTRENAMIENTO EN CASA</span>
+              <h1>Elige qué quieres fortalecer hoy</h1>
+              <p>Tu sesión te indica el grupo muscular, las repeticiones, cuándo cambiar de lado, el descanso y qué ejercicio continúa.</p>
+            </div>
+            <div class="module-hero-icon home-training-icon">⚡</div>
+          </div>
+
+          <div *ngIf="errorCasa" class="home-training-alert">{{errorCasa}}</div>
+
+          <section class="home-plan-layout">
+            <article class="member-module-card home-plan-card">
+              <div class="card-title-block">
+                <span>OBJETIVO Y DÍAS</span>
+                <h2>Configura tu entrenamiento</h2>
+                <p>Elige un objetivo general y hasta 4 días por semana. Las sesiones son moderadas y guiadas.</p>
+              </div>
+
+              <div class="home-goal-selector">
+                <button *ngFor="let objetivo of objetivosCasaMeta"
+                        type="button"
+                        [class.active]="planCasa.objetivo===objetivo.id"
+                        (click)="seleccionarObjetivoCasa(objetivo.id)">
+                  <span>{{objetivo.icono}}</span>
+                  <div><b>{{objetivo.nombre}}</b><small>{{objetivo.descripcion}}</small></div>
+                  <i>{{planCasa.objetivo===objetivo.id ? '✓' : ''}}</i>
+                </button>
+              </div>
+
+              <div class="home-days-selector">
+                <button *ngFor="let dia of diasSemanaCasa"
+                        type="button"
+                        [class.active]="planCasa.dias.includes(dia)"
+                        (click)="toggleDiaCasa(dia)">
+                  <b>{{dia.slice(0,3)}}</b>
+                  <small>{{planCasa.dias.includes(dia) ? 'Entreno' : 'Descanso'}}</small>
+                </button>
+              </div>
+
+              <button type="button" class="home-save-plan" (click)="guardarPlanCasa()">Guardar plan semanal</button>
+            </article>
+
+            <article class="member-module-card home-week-card">
+              <div class="card-title-block">
+                <span>ESTA SEMANA</span>
+                <h2>Tu agenda en casa</h2>
+                <p>{{planCasa.dias.length}} días programados</p>
+              </div>
+
+              <div class="home-week-list">
+                <div *ngFor="let item of agendaCasaSemanal" [class.active]="item.activo" [class.today]="item.hoy">
+                  <span class="week-day">{{item.dia.slice(0,3)}}</span>
+                  <div *ngIf="item.activo; else descansoCasa">
+                    <b>{{item.zona?.icono}} {{item.zona?.nombre}}</b>
+                    <small>{{item.ejercicios}} ejercicios · {{item.minutos}} min aprox.</small>
+                  </div>
+                  <ng-template #descansoCasa>
+                    <div><b>Recuperación</b><small>Sin sesión programada</small></div>
+                  </ng-template>
+                  <em *ngIf="item.hoy">HOY</em>
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <section *ngIf="!sesionCasaActiva && !sesionCasaTerminada" class="home-workout-picker">
+            <div class="home-picker-head">
+              <div>
+                <span>GRUPO MUSCULAR</span>
+                <h2>¿Qué quieres entrenar?</h2>
+                <p>Selecciona una zona. El sistema te mostrará el orden y las repeticiones exactas.</p>
+              </div>
+              <div class="home-picker-summary">
+                <b>{{ejerciciosCasaActuales.length}}</b>
+                <span>ejercicios</span>
+                <small>{{duracionEstimadaCasa(zonaCasaSeleccionada)}} min aprox.</small>
+              </div>
+            </div>
+
+            <div class="home-area-cards muscle-area-grid">
+              <button *ngFor="let zona of zonasCasaMeta"
+                      type="button"
+                      [class.active]="zonaCasaSeleccionada===zona.id"
+                      (click)="seleccionarZonaCasa(zona.id)">
+                <span>{{zona.icono}}</span>
+                <div>
+                  <small>{{zona.subtitulo}}</small>
+                  <h3>{{zona.nombre}}</h3>
+                  <p>{{zona.descripcion}}</p>
+                </div>
+                <em>{{ejerciciosZonaCasa(zona.id).length}} ejercicios</em>
+              </button>
+            </div>
+
+            <div class="home-exercise-preview">
+              <div class="home-exercise-preview-head">
+                <div>
+                  <span>SESIÓN GUIADA</span>
+                  <h3>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</h3>
+                </div>
+                <span class="home-no-equipment">Sin equipo especial</span>
+              </div>
+
+              <div class="home-exercise-list">
+                <article *ngFor="let ejercicio of ejerciciosCasaActuales; let i=index">
+                  <span class="exercise-number">{{i+1}}</span>
+                  <span class="exercise-icon">{{ejercicio.icono}}</span>
+                  <div>
+                    <b>{{ejercicio.nombre}}</b>
+                    <small>{{prescripcionEjercicioCasa(ejercicio)}} · descanso {{ejercicio.descanso}} s</small>
+                  </div>
+                  <button type="button" (click)="verEjercicioCasa=verEjercicioCasa===ejercicio.id?'':ejercicio.id">
+                    {{verEjercicioCasa===ejercicio.id ? 'Ocultar' : 'Cómo hacerlo'}}
+                  </button>
+                  <div class="exercise-howto" *ngIf="verEjercicioCasa===ejercicio.id">
+                    <p *ngIf="ejercicio.por_lado" class="side-instruction"><span>↔</span><b>Haz {{ejercicio.repeticiones}} con el lado derecho y luego {{ejercicio.repeticiones}} con el izquierdo.</b></p>
+                    <p *ngFor="let paso of ejercicio.instrucciones; let p=index"><span>{{p+1}}</span>{{paso}}</p>
+                  </div>
+                </article>
+              </div>
+
+              <div class="home-safety-note">
+                <span>✓</span>
+                <p>Haz cada movimiento con control. Si aparece dolor o mareo, detén la sesión y descansa.</p>
+              </div>
+
+              <button type="button" class="home-start-session" (click)="iniciarEntrenamientoCasa()">
+                <span>▶</span>
+                <div>
+                  <b>Comenzar {{metaZonaCasa(zonaCasaSeleccionada).nombre}}</b>
+                  <small>{{ejerciciosCasaActuales.length}} ejercicios con guía, repeticiones y descansos</small>
+                </div>
+                <em>Empezar →</em>
+              </button>
+            </div>
+          </section>
+
+          <section *ngIf="sesionCasaActiva" class="home-session-live">
+            <article class="home-session-main">
+              <div class="home-session-top">
+                <div>
+                  <span class="session-live"><i></i> SESIÓN EN CURSO</span>
+                  <h2 *ngIf="faseCasa==='ejercicio'">{{ejercicioCasaActual?.nombre}}</h2>
+                  <h2 *ngIf="faseCasa==='descanso'">Descanso</h2>
+                  <p>{{faseCasa==='ejercicio'
+                    ? ('Ejercicio '+(indiceEjercicioCasa+1)+' de '+ejerciciosCasaActuales.length)
+                    : 'Respira y prepárate para continuar'}}</p>
+                </div>
+                <span class="session-zone-badge">{{metaZonaCasa(zonaCasaSeleccionada).icono}} {{metaZonaCasa(zonaCasaSeleccionada).nombre}}</span>
+              </div>
+
+              <div class="home-timer-stage">
+                <div class="home-timer-ring" [style.background]="temporizadorFondoCasa">
+                  <div>
+                    <small *ngIf="faseCasa==='descanso'">DESCANSO</small>
+                    <small *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='tiempo'">TIEMPO</small>
+                    <small *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'">REPETICIONES</small>
+
+                    <strong *ngIf="faseCasa==='descanso' || ejercicioCasaActual?.modo==='tiempo'">{{formatoTiempoCasa(segundosCasa)}}</strong>
+                    <strong class="reps-display" *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'">
+                      {{ejercicioCasaActual?.repeticiones}}<small>{{ejercicioCasaActual?.por_lado ? 'POR LADO' : 'REPS'}}</small>
+                    </strong>
+
+                    <span>{{sesionCasaPausada ? 'PAUSADO' : (ejercicioCasaActual?.modo==='repeticiones' && faseCasa==='ejercicio' ? 'A TU RITMO' : 'EN CURSO')}}</span>
+                  </div>
+                </div>
+
+                <div class="home-current-guide" *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual">
+                  <span class="current-exercise-icon">{{ejercicioCasaActual.icono}}</span>
+                  <div class="current-instructions">
+                    <span>CÓMO HACERLO</span>
+                    <h3>{{prescripcionEjercicioCasa(ejercicioCasaActual)}}</h3>
+                    <p *ngIf="ejercicioCasaActual.por_lado" class="live-side-message"><b>↔</b>Primero {{ejercicioCasaActual.repeticiones}} del lado derecho; después {{ejercicioCasaActual.repeticiones}} del izquierdo.</p>
+                    <p *ngFor="let paso of ejercicioCasaActual.instrucciones; let p=index"><b>{{p+1}}</b>{{paso}}</p>
+                  </div>
+                </div>
+
+                <div class="home-current-guide rest-guide" *ngIf="faseCasa==='descanso'">
+                  <span class="current-exercise-icon">◷</span>
+                  <div class="current-instructions">
+                    <span>SIGUE DESPUÉS</span>
+                    <h3>{{siguienteEjercicioCasa?.nombre}}</h3>
+                    <p>{{prescripcionEjercicioCasa(siguienteEjercicioCasa)}}. Prepárate y continúa cuando termine el descanso.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="home-session-progress">
+                <div><span>Progreso de la sesión</span><b>{{progresoCasa}}%</b></div>
+                <div class="session-progress-track"><i [style.width.%]="progresoCasa"></i></div>
+              </div>
+
+              <div class="home-session-controls">
+                <button type="button" class="control-secondary" (click)="togglePausaCasa()">{{sesionCasaPausada ? '▶ Continuar' : 'Ⅱ Pausar'}}</button>
+                <button type="button" class="control-primary" (click)="siguienteFaseCasa()">
+                  {{faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones' ? '✓ Ya terminé las repeticiones' : 'Siguiente →'}}
+                </button>
+                <button type="button" class="control-danger" (click)="cancelarSesionCasa()">Terminar sesión</button>
+              </div>
+            </article>
+
+            <aside class="home-session-queue">
+              <div class="card-title-block">
+                <span>SESIÓN DE HOY</span>
+                <h2>{{ejerciciosCasaActuales.length}} ejercicios</h2>
+                <p>Mira qué sigue antes de llegar a cada ejercicio.</p>
+              </div>
+
+              <div class="session-queue-list">
+                <div *ngFor="let e of ejerciciosCasaActuales; let i=index"
+                     [class.current]="i===indiceEjercicioCasa"
+                     [class.done]="i<indiceEjercicioCasa">
+                  <span>{{i<indiceEjercicioCasa ? '✓' : (i+1)}}</span>
+                  <div><b>{{e.nombre}}</b><small>{{prescripcionEjercicioCasa(e)}} · {{e.descanso}} s descanso</small></div>
+                </div>
+              </div>
+            </aside>
+          </section>
+
+          <section *ngIf="sesionCasaTerminada" class="home-session-complete">
+            <div class="complete-badge">✓</div>
+            <span>SESIÓN COMPLETADA</span>
+            <h2>Entrenamiento terminado</h2>
+            <p>Completaste {{ejerciciosCasaActuales.length}} ejercicios de {{metaZonaCasa(zonaCasaSeleccionada).nombre}} en {{formatoTiempoCasa(segundosTranscurridosCasa)}}.</p>
+            <div class="complete-actions">
+              <button type="button" class="home-start-session" (click)="reiniciarSesionCasa()">
+                <span>↻</span><div><b>Elegir otro entrenamiento</b><small>Volver a grupos musculares</small></div><em>Continuar →</em>
+              </button>
+              <button type="button" class="member-secondary-action" (click)="abrirModulo('inicio')">Volver al inicio</button>
+            </div>
+          </section>
+
+          <section class="member-module-card home-history-card" *ngIf="historialCasa.length">
+            <div class="card-title-block"><span>HISTORIAL</span><h2>Últimas sesiones en casa</h2><p>Tu progreso queda guardado en el sistema.</p></div>
+            <div class="home-history-list">
+              <div *ngFor="let sesion of historialCasa.slice(0,6)">
+                <span>{{metaZonaCasa(sesion.zona).icono}}</span>
+                <div><b>{{metaZonaCasa(sesion.zona).nombre}}</b><small>{{fecha(sesion.fecha)}} · {{sesion.ejercicios_completados}}/{{sesion.ejercicios_total}} ejercicios</small></div>
+                <em>{{formatoTiempoCasa(sesion.duracion_segundos)}}</em>
+              </div>
+            </div>
+          </section>
+        </section>
+
         <section *ngIf="moduloActivo==='rutinas'" class="member-module member-enter-up">
           <div class="member-module-hero">
             <div><span>ENTRENAMIENTO</span><h1>Mis rutinas</h1><p>Consulta los ejercicios que tu entrenador preparó para ti.</p></div>
