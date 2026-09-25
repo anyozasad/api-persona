@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../auth.service';
 import { GymApiService } from '../../../core/services/gym-api.service';
 import { ClienteExperienciaComponent } from './cliente-experiencia.component';
+import { ExerciseDemoComponent } from './exercise-demo.component';
 
 @Component({
   selector: 'app-usuario',
   standalone: true,
-  imports: [CommonModule, FormsModule, ClienteExperienciaComponent],
+  imports: [CommonModule, FormsModule, ClienteExperienciaComponent, ExerciseDemoComponent],
   styleUrls: ['../mallqui-member.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
@@ -512,46 +513,91 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
                 <span class="session-zone-badge">{{metaZonaCasa(zonaCasaSeleccionada).icono}} {{metaZonaCasa(zonaCasaSeleccionada).nombre}}</span>
               </div>
 
-              <div class="home-timer-stage">
-                <div class="home-timer-ring" [style.background]="temporizadorFondoCasa">
+              <div class="home-coach-stage" *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual">
+                <div class="home-demo-column">
+                  <app-exercise-demo
+                    [ejercicio]="ejercicioCasaActual"
+                    [pausado]="sesionCasaPausada"
+                    [lado]="ladoCasa">
+                  </app-exercise-demo>
+                </div>
+
+                <aside class="home-live-coach">
+                  <div class="live-coach-heading">
+                    <span>ENTRENADOR VISUAL</span>
+                    <h3>Sigue el movimiento</h3>
+                    <p>Mira la demostración y completa el ejercicio a un ritmo cómodo.</p>
+                  </div>
+
+                  <div class="live-target-card">
+                    <span>{{ejercicioCasaActual.icono}}</span>
+                    <div>
+                      <small>OBJETIVO ACTUAL</small>
+                      <b>{{prescripcionEjercicioCasa(ejercicioCasaActual)}}</b>
+                      <em *ngIf="ejercicioCasaActual.por_lado">Lado {{ladoCasa}}</em>
+                      <em *ngIf="!ejercicioCasaActual.por_lado">{{ejercicioCasaActual.modo==='tiempo' ? 'Tiempo guiado' : 'Repeticiones'}}</em>
+                    </div>
+                  </div>
+
+                  <div class="live-number-card" *ngIf="ejercicioCasaActual.modo==='repeticiones'">
+                    <div>
+                      <small>VAS</small>
+                      <strong>{{repsCasaHechas}}</strong>
+                    </div>
+                    <span>/</span>
+                    <div>
+                      <small>META</small>
+                      <strong>{{objetivoRepsCasa}}</strong>
+                    </div>
+                  </div>
+
+                  <div class="live-time-card" *ngIf="ejercicioCasaActual.modo==='tiempo'">
+                    <small>TIEMPO RESTANTE</small>
+                    <strong>{{formatoTiempoCasa(segundosCasa)}}</strong>
+                    <span>{{sesionCasaPausada ? 'Pausado' : 'En curso'}}</span>
+                  </div>
+
+                  <div class="live-instruction-list">
+                    <span>PASO A PASO</span>
+                    <div *ngFor="let paso of ejercicioCasaActual.instrucciones; let p=index">
+                      <b>{{p+1}}</b>
+                      <p>{{paso}}</p>
+                    </div>
+                  </div>
+
+                  <div class="live-side-message active-side-message" *ngIf="ejercicioCasaActual.por_lado">
+                    <b>{{ladoCasa==='derecho' ? 'D' : 'I'}}</b>
+                    <span>
+                      {{ladoCasa==='derecho'
+                        ? 'Completa este lado. Después cambiaremos al lado izquierdo.'
+                        : 'Último lado. Al terminar pasarás al descanso.'}}
+                    </span>
+                  </div>
+                </aside>
+              </div>
+
+              <div class="home-rest-stage" *ngIf="faseCasa==='descanso'">
+                <div class="home-rest-timer" [style.background]="temporizadorFondoCasa">
                   <div>
-                    <small *ngIf="faseCasa==='descanso'">DESCANSO</small>
-                    <small *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='tiempo'">TIEMPO</small>
-                    <small *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'">REPETICIONES</small>
-
-                    <strong *ngIf="faseCasa==='descanso' || ejercicioCasaActual?.modo==='tiempo'">{{formatoTiempoCasa(segundosCasa)}}</strong>
-                    <strong class="reps-display reps-counter-live" *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'">
-                      {{repsCasaHechas}}<small>DE {{objetivoRepsCasa}}</small>
-                      <em *ngIf="ejercicioCasaActual?.por_lado">{{ladoCasa==='derecho' ? 'LADO DERECHO' : 'LADO IZQUIERDO'}}</em>
-                      <em *ngIf="!ejercicioCasaActual?.por_lado">REPETICIONES</em>
-                    </strong>
-
-                    <span>{{sesionCasaPausada ? 'PAUSADO' : (ejercicioCasaActual?.modo==='repeticiones' && faseCasa==='ejercicio' ? 'A TU RITMO' : 'EN CURSO')}}</span>
+                    <small>DESCANSO</small>
+                    <strong>{{formatoTiempoCasa(segundosCasa)}}</strong>
+                    <span>Respira y recupera</span>
                   </div>
                 </div>
 
-                <div class="home-current-guide" *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual">
-                  <span class="current-exercise-icon">{{ejercicioCasaActual.icono}}</span>
-                  <div class="current-instructions">
-                    <span>CÓMO HACERLO</span>
-                    <h3>{{prescripcionEjercicioCasa(ejercicioCasaActual)}}</h3>
-                    <p *ngIf="ejercicioCasaActual.por_lado" class="live-side-message active-side-message">
-                      <b>{{ladoCasa==='derecho' ? 'D' : 'I'}}</b>
-                      Ahora: {{objetivoRepsCasa}} repeticiones con el lado {{ladoCasa}}.
-                      <span *ngIf="ladoCasa==='derecho'">Después el sistema te pedirá cambiar al lado izquierdo.</span>
-                      <span *ngIf="ladoCasa==='izquierdo'">Al terminar, pasarás al descanso.</span>
-                    </p>
-                    <p *ngFor="let paso of ejercicioCasaActual.instrucciones; let p=index"><b>{{p+1}}</b>{{paso}}</p>
-                  </div>
-                </div>
-
-                <div class="home-current-guide rest-guide" *ngIf="faseCasa==='descanso'">
-                  <span class="current-exercise-icon">◷</span>
-                  <div class="current-instructions">
+                <div class="home-next-preview">
+                  <div class="next-preview-copy">
                     <span>SIGUE DESPUÉS</span>
-                    <h3>{{siguienteEjercicioCasa?.nombre}}</h3>
-                    <p>{{prescripcionEjercicioCasa(siguienteEjercicioCasa)}}. Prepárate y continúa cuando termine el descanso.</p>
+                    <h3>{{siguienteEjercicioCasa?.nombre || 'Fin de la sesión'}}</h3>
+                    <p *ngIf="siguienteEjercicioCasa">{{prescripcionEjercicioCasa(siguienteEjercicioCasa)}}. Mira la demostración antes de continuar.</p>
+                    <p *ngIf="!siguienteEjercicioCasa">Terminaste todos los ejercicios programados.</p>
                   </div>
+                  <app-exercise-demo
+                    *ngIf="siguienteEjercicioCasa"
+                    [ejercicio]="siguienteEjercicioCasa"
+                    [pausado]="true"
+                    [lado]="'derecho'">
+                  </app-exercise-demo>
                 </div>
               </div>
 
