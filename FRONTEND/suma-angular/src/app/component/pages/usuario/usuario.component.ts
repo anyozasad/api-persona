@@ -553,7 +553,10 @@ import { GymApiService } from '../../../core/services/gym-api.service';
                 <div *ngFor="let e of ejerciciosCasaActuales; let i=index"
                      [class.current]="i===indiceEjercicioCasa"
                      [class.done]="i<indiceEjercicioCasa">
-                  <span>{{i<indiceEjercicioCasa ? '✓' : (i+1)}}</span>
+                  <span>
+                    <ng-container *ngIf="i<indiceEjercicioCasa; else numeroEjercicio">✓</ng-container>
+                    <ng-template #numeroEjercicio>{{i+1}}</ng-template>
+                  </span>
                   <div><b>{{e.nombre}}</b><small>{{prescripcionEjercicioCasa(e)}} · {{e.descanso}} s descanso</small></div>
                 </div>
               </div>
@@ -840,7 +843,9 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     return Boolean(
       String(this.perfil?.nombres||'').trim() &&
       String(this.perfil?.apellidos||'').trim() &&
-      String(this.perfil?.correo||'').trim()
+      String(this.perfil?.correo||'').trim() &&
+      String(this.perfil?.telefono||'').trim() &&
+      String(this.perfil?.direccion||'').trim()
     );
   }
 
@@ -904,9 +909,6 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   irPasoOnboarding(paso:any):void{
     this.abrirModulo(paso?.modulo || 'inicio');
-  }
-  get perfilCompleto():boolean{
-    return !!(this.perfil?.nombres && this.perfil?.apellidos && this.perfil?.correo && this.perfil?.telefono && this.perfil?.direccion);
   }
   get actividadRegistrada():boolean{
     return this.asistencias.length>0 || this.historialCasa.length>0;
