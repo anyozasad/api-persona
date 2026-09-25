@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -188,7 +188,7 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
   </div>
   `
 })
-export class PublicPageComponent implements OnInit {
+export class PublicPageComponent implements OnInit, OnDestroy {
   pagina: PaginaPublica = 'nosotros';
 
   contacto = { nombre: '', correo: '', asunto: 'Planes', mensaje: '' };
@@ -217,10 +217,15 @@ export class PublicPageComponent implements OnInit {
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
+    document.documentElement.classList.add('mallqui-public-scroll');
     this.route.data.subscribe(data => {
       this.pagina = (data['pagina'] || 'nosotros') as PaginaPublica;
       window.scrollTo({ top: 0, behavior: 'auto' });
     });
+  }
+
+  ngOnDestroy(): void {
+    document.documentElement.classList.remove('mallqui-public-scroll');
   }
 
   enviarConsulta(event: Event): void {
