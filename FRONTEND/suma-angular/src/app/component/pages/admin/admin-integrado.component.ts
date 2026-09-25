@@ -582,7 +582,7 @@ import { AdminComunicacionComponent } from './admin-comunicacion.component';
 
       <ng-container *ngIf="seccion==='reportes'">
         <section class="report-grid"><article><span>👥</span><p>Clientes registrados</p><h2>{{dashboard?.clientes?.total ?? clientes.length}}</h2></article><article><span>✦</span><p>Membresías activas</p><h2>{{dashboard?.membresias?.activas ?? 0}}</h2></article><article><span>💵</span><p>Ingresos del mes</p><h2>S/ {{reporteIngresos?.total_ingresos ?? dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</h2></article><article><span>▣</span><p>Asistencias del periodo</p><h2>{{reporteAsistencias?.total ?? 0}}</h2></article></section>
-        <article class="report-panel"><div class="management-heading"><div><h2>Datos reales para reportes</h2><p>Información calculada por Laravel desde MySQL.</p></div><button class="admin-secondary" type="button" (click)="cargarReportes()">Actualizar reporte</button></div><div class="table-wrap"><table class="management-table"><tbody><tr><th>Membresías</th><td>S/ {{reporteIngresos?.membresias ?? 0 | number:'1.2-2'}}</td></tr><tr><th>Ventas productos</th><td>S/ {{reporteIngresos?.ventas_productos ?? 0 | number:'1.2-2'}}</td></tr><tr><th>Total ingresos</th><td>S/ {{reporteIngresos?.total_ingresos ?? 0 | number:'1.2-2'}}</td></tr></tbody></table></div></article>
+        <article class="report-panel"><div class="management-heading"><div><h2>Datos reales para reportes</h2><p>Información calculada por Laravel desde MySQL.</p></div><div class="report-actions"><button class="admin-secondary" type="button" (click)="cargarReportes()">Actualizar reporte</button><button class="admin-primary" type="button" (click)="exportarReporteCsv()">Exportar CSV</button></div></div><div class="table-wrap"><table class="management-table"><tbody><tr><th>Membresías</th><td>S/ {{reporteIngresos?.membresias ?? 0 | number:'1.2-2'}}</td></tr><tr><th>Ventas productos</th><td>S/ {{reporteIngresos?.ventas_productos ?? 0 | number:'1.2-2'}}</td></tr><tr><th>Total ingresos</th><td>S/ {{reporteIngresos?.total_ingresos ?? 0 | number:'1.2-2'}}</td></tr></tbody></table></div></article>
       </ng-container>
 
       <ng-container *ngIf="seccion==='configuracion'">
@@ -1044,6 +1044,29 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   cargarReportes(){
     this.api.reporteIngresos().subscribe({next:r=>this.reporteIngresos=r,error:e=>this.mostrarError(e)});
     this.api.reporteAsistencias().subscribe({next:r=>this.reporteAsistencias=r,error:e=>this.mostrarError(e)});
+  }
+
+  exportarReporteCsv(){
+    const filas=[
+      ['Indicador','Valor'],
+      ['Clientes registrados',this.dashboard?.clientes?.total ?? this.clientes.length],
+      ['Clientes activos',this.dashboard?.clientes?.activos ?? 0],
+      ['Membresías activas',this.dashboard?.membresias?.activas ?? 0],
+      ['Pagos pendientes',this.dashboard?.membresias?.pagos_pendientes ?? 0],
+      ['Ingresos membresías',this.reporteIngresos?.membresias ?? 0],
+      ['Ingresos ventas',this.reporteIngresos?.ventas_productos ?? 0],
+      ['Ingresos totales',this.reporteIngresos?.total_ingresos ?? this.dashboard?.ingresos?.total_mes ?? 0],
+      ['Asistencias',this.reporteAsistencias?.total ?? 0],
+      ['Soporte pendiente',this.dashboard?.alertas?.soporte_pendiente ?? 0]
+    ];
+    const csv=filas.map(f=>f.map((v:any)=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');
+    const url=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='reporte-mallqui-gym.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    this.ok('Reporte CSV generado');
   }
 
   guardarCliente(){
