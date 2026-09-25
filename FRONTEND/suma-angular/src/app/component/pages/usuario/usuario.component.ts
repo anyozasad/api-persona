@@ -292,7 +292,7 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
                 <span class="payment-icon">▤</span>
                 <p><b>{{p.cliente_membresia?.membresia?.nombre || 'Membresía'}}</b><small>{{fecha(p.fecha_pago)}}</small></p>
                 <strong>S/ {{p.monto}}</strong>
-                <em [class.pending]="p.estado_pago!=='Pagado'">{{p.estado_pago}}</em>
+                <em [class.pending]="p.estado_pago==='Pendiente'">{{p.estado_pago}}</em>
               </div>
             </div>
 
@@ -736,8 +736,9 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
                   <span class="payment-icon">▤</span>
                   <p><b>{{p.cliente_membresia?.membresia?.nombre || 'Membresía'}}</b><small>{{fecha(p.fecha_pago)}} · {{p.metodo_pago}}</small></p>
                   <strong>S/ {{p.monto}}</strong>
-                  <em [class.pending]="p.estado_pago!=='Pagado'">{{p.estado_pago}}</em>
-                  <button type="button" (click)="comprobante(p)">Comprobante</button>
+                  <em [class.pending]="p.estado_pago==='Pendiente'">{{p.estado_pago}}</em>
+                  <button *ngIf="p.estado_pago==='Completado'" type="button" (click)="comprobante(p)">Comprobante</button>
+                  <button *ngIf="p.estado_pago==='Pendiente'" type="button" class="payment-cancel" (click)="cancelarSolicitudPago(p)">Cancelar solicitud</button>
                 </div>
                 <div class="member-empty-state compact-empty" *ngIf="!pagos.length"><span>▤</span><h3>Sin pagos registrados</h3><p>Tus movimientos aparecerán aquí.</p></div>
               </div>
@@ -1341,6 +1342,14 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cancelarReserva(r:any){if(!confirm('¿Cancelar esta reserva?'))return;this.api.cancelarReserva(r.id_reserva).subscribe({next:x=>{this.ok(x.mensaje||'Reserva cancelada');this.cargarReservas();},error:e=>this.error=this.errorApi(e)});}
   cargarReservas(){this.api.reservasCliente().subscribe({next:r=>this.reservas=r,error:e=>this.error=this.errorApi(e)});}
   solicitarRenovacion(){if(!this.pagoForm.id_membresia||!this.pagoForm.numero_operacion.trim()){this.error='Selecciona plan e ingresa el número de operación.';return;}this.api.solicitarPago({...this.pagoForm}).subscribe({next:r=>{this.ok(r.mensaje||'Solicitud enviada');this.pagoForm.numero_operacion='';this.api.pagosCliente().subscribe(x=>this.pagos=x);},error:e=>this.error=this.errorApi(e)});}
+  cancelarSolicitudPago(p:any){
+    if(!p?.id_pago||p.estado_pago!=='Pendiente')return;
+    if(!confirm('¿Cancelar esta solicitud de pago pendiente?'))return;
+    this.api.cancelarSolicitudPago(Number(p.id_pago)).subscribe({
+      next:r=>{this.ok(r.mensaje||'Solicitud cancelada');this.api.pagosCliente().subscribe(x=>this.pagos=x);},
+      error:e=>this.error=this.errorApi(e)
+    });
+  }
   comprobante(p:any){this.api.comprobantePagoCliente(p.id_pago).subscribe({next:r=>{const c=r.comprobante;const html=`<html><body style="font-family:Arial;padding:30px"><h2>Mallqui Gym</h2><hr><p><b>Comprobante:</b> ${c.id_pago}</p><p><b>Cliente:</b> ${c.cliente} - DNI ${c.dni}</p><p><b>Membresía:</b> ${c.membresia}</p><p><b>Periodo:</b> ${c.periodo.inicio} a ${c.periodo.fin}</p><p><b>Monto:</b> S/ ${c.monto}</p><p><b>Método:</b> ${c.metodo_pago}</p><p><b>Operación:</b> ${c.numero_operacion||'-'}</p><p><b>Estado:</b> ${c.estado}</p><script>window.print()<\/script></body></html>`;const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();}},error:e=>this.error=this.errorApi(e)});}
   cerrarSesion(){this.auth.logout().subscribe({next:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);},error:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);}});}
   ok(m:string){this.error='';this.toast='✓ '+m;setTimeout(()=>this.toast='',2600);}
