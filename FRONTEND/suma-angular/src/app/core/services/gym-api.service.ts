@@ -87,6 +87,42 @@ export class GymApiService {
     return this.http.post('/api/mi-cuenta/entrenamiento-casa/sesiones', datos);
   }
 
+  progresoCliente(): Observable<any> {
+    return this.http.get('/api/mi-cuenta/progreso');
+  }
+
+  calendarioCliente(): Observable<any[]> {
+    return this.http.get<any[]>('/api/mi-cuenta/calendario');
+  }
+
+  notificacionesCliente(): Observable<any> {
+    return this.http.get('/api/mi-cuenta/notificaciones');
+  }
+
+  leerNotificacionCliente(id: number): Observable<any> {
+    return this.http.post(`/api/mi-cuenta/notificaciones/${id}/leer`, {});
+  }
+
+  leerTodasNotificacionesCliente(): Observable<any> {
+    return this.http.post('/api/mi-cuenta/notificaciones/leer-todas', {});
+  }
+
+  entrenadorCliente(): Observable<any> {
+    return this.http.get('/api/mi-cuenta/entrenador');
+  }
+
+  historialCliente(): Observable<any> {
+    return this.http.get('/api/mi-cuenta/historial');
+  }
+
+  soporteCliente(): Observable<any[]> {
+    return this.http.get<any[]>('/api/mi-cuenta/soporte');
+  }
+
+  crearSoporteCliente(datos: { asunto: string; mensaje: string }): Observable<any> {
+    return this.http.post('/api/mi-cuenta/soporte', datos);
+  }
+
   // =========================================================
   // PORTAL DEL ENTRENADOR
   // =========================================================
