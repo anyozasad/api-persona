@@ -1331,6 +1331,10 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.sesionCasaTerminada=false;
     this.errorCasa='';
     this.timerCasa=setInterval(()=>this.tickCasa(),1000);
+
+    setTimeout(()=>{
+      document.querySelector('.home-session-live')?.scrollIntoView({behavior:'smooth',block:'start'});
+    },80);
   }
 
   private tickCasa():void{
