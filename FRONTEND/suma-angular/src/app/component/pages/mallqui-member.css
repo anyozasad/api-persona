@@ -757,3 +757,193 @@
   .home-timer-ring{width:180px;height:180px}
   .home-timer-ring strong{font-size:34px}
 }
+
+
+/* HOME TRAINING MUSCLE SELECTOR V2 */
+.home-goal-selector{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  margin:16px 0 12px;
+}
+.home-goal-selector button{
+  min-height:86px;
+  border:1px solid #e1e8ef;
+  border-radius:14px;
+  background:linear-gradient(145deg,#fff,#fbfdff);
+  padding:12px;
+  display:grid;
+  grid-template-columns:38px minmax(0,1fr) 22px;
+  gap:9px;
+  align-items:center;
+  text-align:left;
+  cursor:pointer;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease;
+}
+.home-goal-selector button>span{
+  width:36px;height:36px;border-radius:11px;
+  display:grid;place-items:center;
+  background:#eef3f8;
+  font-size:14px;
+  transition:.2s ease;
+}
+.home-goal-selector button>div{display:flex;flex-direction:column;min-width:0}
+.home-goal-selector button b{font-size:9px;color:#1b334f}
+.home-goal-selector button small{font-size:7px;line-height:1.4;color:#8492a2;margin-top:3px}
+.home-goal-selector button i{
+  width:21px;height:21px;border-radius:7px;
+  display:grid;place-items:center;
+  background:#f0f4f8;
+  color:#8a98a6;
+  font-style:normal;
+  font-size:8px;font-weight:900
+}
+.home-goal-selector button:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 26px rgba(14,35,59,.07)
+}
+.home-goal-selector button.active{
+  border-color:#efb3bd;
+  background:linear-gradient(145deg,#fff8f9,#fff);
+  box-shadow:0 12px 28px rgba(239,35,60,.08)
+}
+.home-goal-selector button.active>span{
+  color:#fff;
+  background:linear-gradient(135deg,#ef233c,#ff7180);
+  transform:rotate(-4deg) scale(1.04)
+}
+.home-goal-selector button.active i{background:#ef233c;color:#fff}
+
+.muscle-area-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+}
+.muscle-area-grid button{
+  min-height:165px!important;
+}
+.muscle-area-grid button:nth-child(7){
+  grid-column:span 2;
+}
+.muscle-area-grid button:after{
+  content:'';
+  position:absolute;
+  right:-34px;
+  bottom:-44px;
+  width:110px;height:110px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(31,82,142,.06),transparent 68%);
+  pointer-events:none;
+}
+.muscle-area-grid button.active:after{
+  background:radial-gradient(circle,rgba(239,35,60,.10),transparent 68%)
+}
+
+.side-instruction{
+  grid-template-columns:28px 1fr!important;
+  background:#fff5f6;
+  border:1px solid #ffdce1;
+  padding:8px!important;
+  border-radius:9px;
+  color:#9f3040!important
+}
+.side-instruction>span{
+  background:#ef233c!important;
+  color:#fff!important
+}
+.side-instruction>b{
+  align-self:center;
+  font-size:8px!important;
+  line-height:1.45
+}
+
+.reps-display{
+  display:flex!important;
+  flex-direction:column;
+  align-items:center;
+  line-height:1!important;
+  font-size:46px!important;
+  letter-spacing:-1px!important
+}
+.reps-display small{
+  margin-top:7px;
+  font-size:7px!important;
+  letter-spacing:1px!important;
+  color:#ef233c!important
+}
+
+.current-instructions>h3{
+  margin:7px 0 2px;
+  font-size:15px;
+  color:#fff
+}
+.live-side-message{
+  padding:8px 9px;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:9px;
+  background:rgba(255,255,255,.06);
+  color:#eef4fb!important
+}
+.live-side-message>b{
+  background:#ef233c!important;
+  color:#fff!important
+}
+
+.home-session-controls .control-primary{
+  position:relative;
+  overflow:hidden;
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease
+}
+.home-session-controls .control-primary:hover{
+  transform:translateY(-2px);
+  background:#ef233c;
+  box-shadow:0 9px 20px rgba(239,35,60,.20)
+}
+.home-session-controls .control-secondary:hover{
+  transform:translateY(-2px);
+  border-color:#bfcddd
+}
+.home-session-controls .control-danger:hover{
+  transform:translateY(-2px);
+  background:#fff0f2
+}
+
+.home-training-module .member-module-hero h1{
+  background:linear-gradient(90deg,#fff,#ffd1d7,#fff);
+  background-size:220% auto;
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  animation:memberTitleShine 7s linear infinite
+}
+.home-training-module .member-module-hero p{
+  max-width:720px;
+  line-height:1.6
+}
+
+.home-exercise-list article{
+  transition:background .18s ease,padding .18s ease
+}
+.home-exercise-list article:hover{
+  background:#fbfdff;
+  padding-left:6px;
+  padding-right:6px
+}
+.exercise-icon{
+  transition:transform .18s ease,background .18s ease
+}
+.home-exercise-list article:hover .exercise-icon{
+  transform:rotate(-4deg) scale(1.06);
+  background:#ffe9db
+}
+
+@media(max-width:1200px){
+  .muscle-area-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .muscle-area-grid button:nth-child(7){grid-column:auto}
+}
+@media(max-width:900px){
+  .home-goal-selector{grid-template-columns:1fr}
+  .muscle-area-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:560px){
+  .muscle-area-grid{grid-template-columns:1fr!important}
+  .home-goal-selector{grid-template-columns:1fr}
+}
