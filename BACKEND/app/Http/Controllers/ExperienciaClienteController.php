@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Asistencia;
 use App\Models\Cliente;
+use App\Models\OpinionCliente;
+use App\Models\Clase;
+use App\Models\ClaseFavorita;
 use App\Models\ClienteMembresia;
 use App\Models\NotificacionCliente;
 use App\Models\MetaCliente;
@@ -375,6 +378,118 @@ class ExperienciaClienteController extends Controller
                 ->orderByDesc('fecha_clase')->limit(20)->get(),
             'pagos' => $pagos,
         ]);
+    }
+
+    public function credencial(Request $request)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+
+        $membresia = ClienteMembresia::with('membresia')
+            ->where('id_cliente', $cliente->id_cliente)
+            ->where('estado', 'Activo')
+            ->whereDate('fecha_inicio', '<=', today())
+            ->whereDate('fecha_fin', '>=', today())
+            ->orderByDesc('fecha_fin')
+            ->first();
+
+        return response()->json([
+            'codigo_socio' => 'MG-'.str_pad((string) $cliente->id_cliente, 6, '0', STR_PAD_LEFT),
+            'cliente' => [
+                'nombres' => $cliente->nombres,
+                'apellidos' => $cliente->apellidos,
+                'dni' => $cliente->dni,
+                'fecha_registro' => $cliente->fecha_registro,
+                'estado' => $cliente->estado,
+            ],
+            'membresia' => $membresia,
+            'dias_restantes' => $membresia?->fecha_fin ? max(0, today()->diffInDays($membresia->fecha_fin, false)) : 0,
+        ]);
+    }
+
+    public function clasesFavoritas(Request $request)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+        $ids = ClaseFavorita::where('id_cliente', $cliente->id_cliente)->pluck('id_clase')->all();
+
+        return response()->json(
+            Clase::with('entrenador')
+                ->where('estado', 'Activo')
+                ->orderBy('dia_semana')
+                ->orderBy('hora_inicio')
+                ->get()
+                ->map(function ($clase) use ($ids) {
+                    $data = $clase->toArray();
+                    $data['favorita'] = in_array($clase->id_clase, $ids, true);
+                    return $data;
+                })
+                ->values()
+        );
+    }
+
+    public function agregarClaseFavorita(Request $request)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+        $datos = $request->validate([
+            'id_clase' => 'required|integer|exists:clases,id_clase',
+        ]);
+
+        $favorito = ClaseFavorita::firstOrCreate([
+            'id_cliente' => $cliente->id_cliente,
+            'id_clase' => $datos['id_clase'],
+        ]);
+
+        return response()->json([
+            'mensaje' => 'Clase agregada a favoritos.',
+            'favorito' => $favorito,
+        ], 201);
+    }
+
+    public function quitarClaseFavorita(Request $request, string $idClase)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+
+        ClaseFavorita::where('id_cliente', $cliente->id_cliente)
+            ->where('id_clase', $idClase)
+            ->delete();
+
+        return response()->json(['mensaje' => 'Clase quitada de favoritos.']);
+    }
+
+    public function opiniones(Request $request)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+
+        return response()->json(
+            OpinionCliente::where('id_cliente', $cliente->id_cliente)
+                ->orderByDesc('fecha')
+                ->limit(20)
+                ->get()
+        );
+    }
+
+    public function guardarOpinion(Request $request)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+
+        $datos = $request->validate([
+            'categoria' => 'required|string|in:Servicio,Instalaciones,Clases,Aplicacion',
+            'calificacion' => 'required|integer|min:1|max:5',
+            'comentario' => 'required|string|min:5|max:1000',
+        ]);
+
+        $opinion = OpinionCliente::create([
+            'id_cliente' => $cliente->id_cliente,
+            'categoria' => $datos['categoria'],
+            'calificacion' => $datos['calificacion'],
+            'comentario' => $datos['comentario'],
+            'estado' => 'Enviada',
+            'fecha' => now(),
+        ]);
+
+        return response()->json([
+            'mensaje' => 'Gracias. Tu opinión fue registrada.',
+            'opinion' => $opinion,
+        ], 201);
     }
 
     public function soporte(Request $request)
