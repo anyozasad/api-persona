@@ -831,3 +831,43 @@
     animation:none!important;
   }
 }
+
+
+/* =========================================================
+   LANDING V6 · MENÚ LIMPIO SIN RAYAS
+   ========================================================= */
+.landing-nav nav a,
+.landing-nav nav a:link,
+.landing-nav nav a:visited,
+.landing-nav nav a:hover,
+.landing-nav nav a:active{
+  text-decoration:none!important;
+  border-bottom:0!important;
+}
+.landing-nav nav a::before,
+.landing-nav nav a::after{
+  content:none!important;
+  display:none!important;
+}
+.landing-nav nav a{
+  min-height:42px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 15px!important;
+  border-radius:11px!important;
+  background:transparent!important;
+  color:#c8d5e2!important;
+  box-shadow:none!important;
+  transition:background .18s ease,color .18s ease,transform .18s ease,box-shadow .18s ease!important;
+}
+.landing-nav nav a:hover{
+  color:#fff!important;
+  background:rgba(255,255,255,.065)!important;
+  transform:translateY(-1px)!important;
+}
+.landing-nav nav a.active{
+  color:#fff!important;
+  background:linear-gradient(135deg,rgba(239,35,60,.28),rgba(239,35,60,.12))!important;
+  box-shadow:inset 0 0 0 1px rgba(255,93,108,.20),0 8px 22px rgba(239,35,60,.10)!important;
+}
