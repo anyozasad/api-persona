@@ -517,21 +517,25 @@ import { ProductosComponent } from './pages/productos/productos';
       <ng-container *ngIf="seccion==='rutinas'">
         <section class="management-grid">
           <article class="admin-form-card">
-            <div class="management-heading"><div><h2>Nueva rutina</h2><p>Asigna una rutina a un cliente y entrenador.</p></div><span>🏋</span></div>
-            <form (ngSubmit)="crearRutina()">
+            <div class="management-heading"><div><h2>{{rutinaEditandoId ? 'Editar rutina' : 'Nueva rutina'}}</h2><p>{{rutinaEditandoId ? 'Modifica la rutina y guarda los cambios.' : 'Asigna una rutina a un cliente y entrenador.'}}</p></div><span>🏋</span></div>
+            <form (ngSubmit)="guardarRutina()">
               <label>Cliente<select [(ngModel)]="rutinaForm.id_cliente" name="rucliente" required><option [ngValue]="0">Seleccionar</option><option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option></select></label>
               <label>Entrenador<select [(ngModel)]="rutinaForm.id_entrenador" name="ruentrenador" required><option [ngValue]="0">Seleccionar</option><option *ngFor="let e of entrenadores" [ngValue]="e.id_entrenador">{{nombreEntrenador(e)}}</option></select></label>
               <label>Nombre<input [(ngModel)]="rutinaForm.nombre_rutina" name="runombre" required></label>
               <label>Objetivo<input [(ngModel)]="rutinaForm.objetivo" name="ruobjetivo"></label>
               <label>Descripción<input [(ngModel)]="rutinaForm.descripcion" name="rudescripcion"></label>
               <div class="form-row"><label>Inicio<input type="date" [(ngModel)]="rutinaForm.fecha_inicio" name="ruinicio" required></label><label>Fin<input type="date" [(ngModel)]="rutinaForm.fecha_fin" name="rufin"></label></div>
-              <button class="admin-primary" type="submit">Guardar rutina</button>
+              <label>Estado<select [(ngModel)]="rutinaForm.estado" name="ruestado"><option>Activo</option><option>Finalizado</option><option>Inactivo</option></select></label>
+              <div class="form-row">
+                <button class="admin-primary" type="submit">{{rutinaEditandoId ? 'Guardar cambios' : 'Guardar rutina'}}</button>
+                <button *ngIf="rutinaEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionRutina()">Cancelar</button>
+              </div>
             </form>
           </article>
           <article class="admin-list-card wide-card">
             <div class="management-heading"><div><h2>Rutinas</h2><p>{{rutinas.length}} registradas.</p></div></div>
             <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Entrenador</th><th>Rutina</th><th>Objetivo</th><th>Periodo</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
-              <tr *ngFor="let r of rutinas"><td>{{r.id_rutina}}</td><td>{{nombreCliente(r.cliente)}}</td><td>{{nombreEntrenador(r.entrenador)}}</td><td><b>{{r.nombre_rutina}}</b></td><td>{{r.objetivo || '-'}}</td><td>{{r.fecha_inicio}} - {{r.fecha_fin || 'Sin fin'}}</td><td>{{r.estado}}</td><td><button class="table-danger" type="button" (click)="desactivarRutina(r.id_rutina)">Desactivar</button></td></tr>
+              <tr *ngFor="let r of rutinas"><td>{{r.id_rutina}}</td><td>{{nombreCliente(r.cliente)}}</td><td>{{nombreEntrenador(r.entrenador)}}</td><td><b>{{r.nombre_rutina}}</b></td><td>{{r.objetivo || '-'}}</td><td>{{r.fecha_inicio}} - {{r.fecha_fin || 'Sin fin'}}</td><td>{{r.estado}}</td><td><button class="table-action" type="button" (click)="editarRutina(r)">Editar</button> <button *ngIf="r.estado==='Activo'" class="table-danger" type="button" (click)="desactivarRutina(r.id_rutina)">Desactivar</button></td></tr>
               <tr *ngIf="!rutinas.length"><td colspan="8">No hay rutinas registradas.</td></tr>
             </tbody></table></div>
           </article>
@@ -551,20 +555,24 @@ import { ProductosComponent } from './pages/productos/productos';
       <ng-container *ngIf="seccion==='usuarios'">
         <section class="management-grid">
           <article class="admin-form-card">
-            <div class="management-heading"><div><h2>Nuevo usuario interno</h2><p>Crea cuentas para administración o entrenadores.</p></div><span>♙</span></div>
-            <form (ngSubmit)="crearUsuario()">
-              <div class="form-row"><label>Usuario<input [(ngModel)]="usuarioForm.nombre_usuario" name="usunombre" required></label><label>Rol<select [(ngModel)]="usuarioForm.rol" name="usurol"><option>Administrador</option><option>Entrenador</option></select></label></div>
+            <div class="management-heading"><div><h2>{{usuarioEditandoId ? 'Editar usuario' : 'Nuevo usuario interno'}}</h2><p>{{usuarioEditandoId ? 'Modifica la cuenta y guarda los cambios.' : 'Crea cuentas para administración o entrenadores.'}}</p></div><span>♙</span></div>
+            <form (ngSubmit)="guardarUsuario()">
+              <div class="form-row"><label>Usuario<input [(ngModel)]="usuarioForm.nombre_usuario" name="usunombre" required></label><label>Rol<select [(ngModel)]="usuarioForm.rol" name="usurol"><option>Administrador</option><option>Entrenador</option><option>Cliente</option></select></label></div>
               <div class="form-row"><label>Nombres<input [(ngModel)]="usuarioForm.nombres" name="usunombres" required></label><label>Apellidos<input [(ngModel)]="usuarioForm.apellidos" name="usuapellidos" required></label></div>
               <div class="form-row"><label>DNI<input [(ngModel)]="usuarioForm.dni" name="usudni" required></label><label>Teléfono<input [(ngModel)]="usuarioForm.telefono" name="usutelefono"></label></div>
               <label>Correo<input type="email" [(ngModel)]="usuarioForm.correo" name="usucorreo" required></label>
-              <label>Contraseña<input type="password" minlength="8" [(ngModel)]="usuarioForm.contrasena" name="usuclave" required></label>
-              <button class="admin-primary" type="submit">Crear usuario</button>
+              <label>{{usuarioEditandoId ? 'Nueva contraseña (opcional)' : 'Contraseña'}}<input type="password" minlength="8" [(ngModel)]="usuarioForm.contrasena" name="usuclave" [required]="!usuarioEditandoId"></label>
+              <label>Estado<select [(ngModel)]="usuarioForm.estado" name="usuestado"><option>Activo</option><option>Inactivo</option></select></label>
+              <div class="form-row">
+                <button class="admin-primary" type="submit">{{usuarioEditandoId ? 'Guardar cambios' : 'Crear usuario'}}</button>
+                <button *ngIf="usuarioEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionUsuario()">Cancelar</button>
+              </div>
             </form>
           </article>
           <article class="admin-list-card wide-card">
             <div class="management-heading"><div><h2>Usuarios</h2><p>{{usuarios.length}} cuentas registradas.</p></div></div>
             <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Usuario</th><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
-              <tr *ngFor="let u of usuarios"><td>{{u.id_usuario}}</td><td>{{u.nombre_usuario}}</td><td>{{u.nombres}} {{u.apellidos}}</td><td>{{u.correo}}</td><td>{{u.rol}}</td><td>{{u.estado}}</td><td><button class="table-danger" type="button" (click)="desactivarUsuario(u.id_usuario)">Desactivar</button></td></tr>
+              <tr *ngFor="let u of usuarios"><td>{{u.id_usuario}}</td><td>{{u.nombre_usuario}}</td><td>{{u.nombres}} {{u.apellidos}}</td><td>{{u.correo}}</td><td>{{u.rol}}</td><td>{{u.estado}}</td><td><button class="table-action" type="button" (click)="editarUsuario(u)">Editar</button> <button *ngIf="u.estado==='Activo'" class="table-danger" type="button" (click)="desactivarUsuario(u.id_usuario)">Desactivar</button></td></tr>
               <tr *ngIf="!usuarios.length"><td colspan="7">No hay usuarios registrados.</td></tr>
             </tbody></table></div>
           </article>
@@ -932,7 +940,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   asistenciaCliente = 0;
   categoriaEditandoId = 0;
   categoriaForm: any = {nombre_categoria:'',descripcion:'',estado:'Activo'};
+  rutinaEditandoId = 0;
   rutinaForm: any = {id_cliente:0,id_entrenador:0,nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:new Date().toISOString().slice(0,10),fecha_fin:'',estado:'Activo'};
+  usuarioEditandoId = 0;
   usuarioForm: any = {nombre_usuario:'',contrasena:'',nombres:'',apellidos:'',dni:'',telefono:'',correo:'',rol:'Entrenador',estado:'Activo'};
   auditoriaFiltros: any = {ruta:'',desde:'',hasta:''};
   proveedorEditandoId = 0;
@@ -956,9 +966,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.cargarDashboard();
     if (this.seccion !== 'dashboard') this.cargarSeccion(this.seccion);
 
-    // Actualiza el módulo visible cada 30 segundos sin recargar la página.
+    // Solo el dashboard se refresca automáticamente.
+    // Los formularios de edición no se recargan en segundo plano para no perder cambios.
     this.autoRefreshId = setInterval(() => {
-      this.actualizarSeccionActual(true);
+      if (this.seccion === 'dashboard') {
+        this.cargarDashboard();
+      }
     }, 30000);
   }
 
@@ -1313,13 +1326,79 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
   desactivarCategoria(id:number){ if(!confirm('¿Desactivar esta categoría?')) return; this.api.eliminarCategoria(id).subscribe({next:r=>{this.ok(r.mensaje||'Categoría desactivada');this.cancelarEdicionCategoria();this.cargarCategorias();},error:e=>this.mostrarError(e)}); }
 
-  crearRutina(){ if(!this.rutinaForm.id_cliente || !this.rutinaForm.id_entrenador){this.error='Selecciona cliente y entrenador.';return;} const datos={...this.rutinaForm}; if(!datos.fecha_fin) datos.fecha_fin=null; this.api.crearRutina(datos).subscribe({next:()=>{this.ok('Rutina registrada');this.rutinaForm={id_cliente:0,id_entrenador:0,nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:new Date().toISOString().slice(0,10),fecha_fin:'',estado:'Activo'};this.cargarRutinas();},error:e=>this.mostrarError(e)}); }
-  desactivarRutina(id:number){ if(!confirm('¿Desactivar esta rutina?')) return; this.api.eliminarRutina(id).subscribe({next:r=>{this.ok(r.mensaje||'Rutina desactivada');this.cargarRutinas();},error:e=>this.mostrarError(e)}); }
+  guardarRutina(){
+    if(!this.rutinaForm.id_cliente || !this.rutinaForm.id_entrenador){this.error='Selecciona cliente y entrenador.';return;}
+    const datos={...this.rutinaForm};
+    if(!datos.fecha_fin) datos.fecha_fin=null;
+    const req=this.rutinaEditandoId
+      ? this.api.actualizarRutina(this.rutinaEditandoId,datos)
+      : this.api.crearRutina(datos);
+    req.subscribe({
+      next:()=>{
+        this.ok(this.rutinaEditandoId?'Rutina actualizada correctamente':'Rutina registrada');
+        this.cancelarEdicionRutina();
+        this.cargarRutinas();
+      },
+      error:e=>this.mostrarError(e)
+    });
+  }
+  editarRutina(r:any){
+    this.rutinaEditandoId=r.id_rutina;
+    this.rutinaForm={
+      id_cliente:Number(r.id_cliente||r.cliente?.id_cliente||0),
+      id_entrenador:Number(r.id_entrenador||r.entrenador?.id_entrenador||0),
+      nombre_rutina:r.nombre_rutina||'',
+      objetivo:r.objetivo||'',
+      descripcion:r.descripcion||'',
+      fecha_inicio:String(r.fecha_inicio||'').slice(0,10),
+      fecha_fin:r.fecha_fin?String(r.fecha_fin).slice(0,10):'',
+      estado:r.estado||'Activo'
+    };
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  cancelarEdicionRutina(){
+    this.rutinaEditandoId=0;
+    this.rutinaForm={id_cliente:0,id_entrenador:0,nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:new Date().toISOString().slice(0,10),fecha_fin:'',estado:'Activo'};
+  }
+  desactivarRutina(id:number){ if(!confirm('¿Desactivar esta rutina?')) return; this.api.eliminarRutina(id).subscribe({next:r=>{this.ok(r.mensaje||'Rutina desactivada');this.cancelarEdicionRutina();this.cargarRutinas();},error:e=>this.mostrarError(e)}); }
 
   cambiarEstadoReserva(id:number,estado:string){ this.api.cambiarEstadoReserva(id,estado).subscribe({next:r=>{this.ok(r.mensaje||'Reserva actualizada');this.cargarReservas();},error:e=>this.mostrarError(e)}); }
 
-  crearUsuario(){ this.api.crearUsuario(this.usuarioForm).subscribe({next:()=>{this.ok('Usuario interno creado');this.usuarioForm={nombre_usuario:'',contrasena:'',nombres:'',apellidos:'',dni:'',telefono:'',correo:'',rol:'Entrenador',estado:'Activo'};this.cargarUsuarios();},error:e=>this.mostrarError(e)}); }
-  desactivarUsuario(id:number){ if(!confirm('¿Desactivar este usuario?')) return; this.api.eliminarUsuario(id).subscribe({next:r=>{this.ok(r.mensaje||'Usuario desactivado');this.cargarUsuarios();},error:e=>this.mostrarError(e)}); }
+  guardarUsuario(){
+    const datos={...this.usuarioForm};
+    if(this.usuarioEditandoId && !datos.contrasena) delete datos.contrasena;
+    const req=this.usuarioEditandoId
+      ? this.api.actualizarUsuario(this.usuarioEditandoId,datos)
+      : this.api.crearUsuario(datos);
+    req.subscribe({
+      next:()=>{
+        this.ok(this.usuarioEditandoId?'Usuario actualizado correctamente':'Usuario interno creado');
+        this.cancelarEdicionUsuario();
+        this.cargarUsuarios();
+      },
+      error:e=>this.mostrarError(e)
+    });
+  }
+  editarUsuario(u:any){
+    this.usuarioEditandoId=u.id_usuario;
+    this.usuarioForm={
+      nombre_usuario:u.nombre_usuario||'',
+      contrasena:'',
+      nombres:u.nombres||'',
+      apellidos:u.apellidos||'',
+      dni:u.dni||'',
+      telefono:u.telefono||'',
+      correo:u.correo||'',
+      rol:u.rol||'Entrenador',
+      estado:u.estado||'Activo'
+    };
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  cancelarEdicionUsuario(){
+    this.usuarioEditandoId=0;
+    this.usuarioForm={nombre_usuario:'',contrasena:'',nombres:'',apellidos:'',dni:'',telefono:'',correo:'',rol:'Entrenador',estado:'Activo'};
+  }
+  desactivarUsuario(id:number){ if(!confirm('¿Desactivar este usuario?')) return; this.api.eliminarUsuario(id).subscribe({next:r=>{this.ok(r.mensaje||'Usuario desactivado');this.cancelarEdicionUsuario();this.cargarUsuarios();},error:e=>this.mostrarError(e)}); }
 
   get auditoriasFiltradas(): any[] {
     const texto=this.auditoriaBusqueda.trim().toLowerCase();
