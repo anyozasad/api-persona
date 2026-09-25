@@ -106,6 +106,52 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             </article>
           </section>
 
+          <section class="member-onboarding member-enter-up">
+            <div class="member-onboarding-head">
+              <div>
+                <span>RUTA DEL CLIENTE</span>
+                <h2>Empieza por aquí</h2>
+                <p>El sistema te guía paso a paso para que no encuentres pantallas vacías.</p>
+              </div>
+              <div class="onboarding-progress">
+                <strong>{{porcentajeInicio}}%</strong>
+                <span>configurado</span>
+              </div>
+            </div>
+
+            <div class="onboarding-track">
+              <button type="button" [class.done]="perfilCompleto" (click)="abrirModulo('perfil')">
+                <span>{{perfilCompleto ? '✓' : '1'}}</span>
+                <div><b>Completa tu perfil</b><small>{{perfilCompleto ? 'Datos listos' : 'Teléfono y dirección'}}</small></div>
+                <em>→</em>
+              </button>
+
+              <button type="button" [class.done]="!!membresiaActual" (click)="abrirModulo('pagos')">
+                <span>{{membresiaActual ? '✓' : '2'}}</span>
+                <div><b>Activa tu membresía</b><small>{{membresiaActual ? 'Plan activo' : 'Elige un plan y registra tu pago'}}</small></div>
+                <em>→</em>
+              </button>
+
+              <button type="button" [class.done]="casaCargado" class="onboarding-home" (click)="abrirModulo('casa')">
+                <span>3</span>
+                <div><b>Entrena en casa</b><small>Elige músculos, días, repeticiones y temporizador</small></div>
+                <em>→</em>
+              </button>
+
+              <button type="button" [class.done]="reservasActivas.length>0" (click)="abrirModulo('clases')">
+                <span>{{reservasActivas.length>0 ? '✓' : '4'}}</span>
+                <div><b>Reserva una clase</b><small>{{reservasActivas.length>0 ? 'Ya tienes una reserva' : 'Explora horarios disponibles'}}</small></div>
+                <em>→</em>
+              </button>
+
+              <button type="button" [class.done]="actividadRegistrada" (click)="abrirModulo('asistencias')">
+                <span>{{actividadRegistrada ? '✓' : '5'}}</span>
+                <div><b>Revisa tu progreso</b><small>Asistencias, sesiones y actividad</small></div>
+                <em>→</em>
+              </button>
+            </div>
+          </section>
+
           <section *ngIf="casaCargado" class="member-home-today-card member-enter-up">
             <div class="home-today-copy">
               <span class="home-today-kicker"><i></i> ENTRENAMIENTO EN CASA · HOY</span>
@@ -540,8 +586,14 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               </div>
             </article>
 
-            <article class="member-empty-card" *ngIf="!rutinas.length">
-              <span>🏋</span><h3>No tienes rutinas registradas</h3><p>Cuando tu entrenador te asigne una, aparecerá aquí.</p>
+            <article class="member-empty-card member-empty-guided" *ngIf="!rutinas.length">
+              <span>🏋</span>
+              <h3>Aún no tienes una rutina del entrenador</h3>
+              <p>Puedes empezar hoy mismo con una sesión guiada en casa mientras esperas tu rutina personalizada.</p>
+              <div class="empty-actions">
+                <button type="button" class="empty-primary" (click)="abrirModulo('casa')">⚡ Entrenar en casa</button>
+                <button type="button" class="empty-secondary" (click)="abrirModulo('perfil')">Revisar mi perfil</button>
+              </div>
             </article>
           </div>
         </section>
@@ -565,8 +617,14 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               <button type="button" (click)="reservar(c)">Reservar clase <span>→</span></button>
             </article>
 
-            <article class="member-empty-card" *ngIf="!clases.length">
-              <span>▣</span><h3>No hay clases disponibles</h3><p>Vuelve a revisar más tarde.</p>
+            <article class="member-empty-card member-empty-guided" *ngIf="!clases.length">
+              <span>▣</span>
+              <h3>Aún no hay clases publicadas</h3>
+              <p>Cuando administración publique horarios aparecerán aquí. Mientras tanto puedes seguir tu sesión en casa.</p>
+              <div class="empty-actions">
+                <button type="button" class="empty-primary" (click)="abrirModulo('casa')">⚡ Entrenar en casa</button>
+                <button type="button" class="empty-secondary" (click)="abrirModulo('inicio')">Volver al inicio</button>
+              </div>
             </article>
           </div>
         </section>
@@ -585,8 +643,12 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               <button *ngIf="r.estado==='Reservada'" type="button" (click)="cancelarReserva(r)">Cancelar reserva</button>
             </article>
 
-            <article class="member-empty-card" *ngIf="!reservas.length">
-              <span>◷</span><h3>No tienes reservas</h3><p>Explora las clases disponibles y reserva tu próxima sesión.</p><button type="button" (click)="abrirModulo('clases')">Ver clases</button>
+            <article class="member-empty-card member-empty-guided" *ngIf="!reservas.length">
+              <span>◷</span><h3>Todavía no tienes reservas</h3><p>Elige una clase disponible o continúa con tu entrenamiento en casa.</p>
+              <div class="empty-actions">
+                <button type="button" class="empty-primary" (click)="abrirModulo('clases')">Ver clases</button>
+                <button type="button" class="empty-secondary" (click)="abrirModulo('casa')">Entrenar en casa</button>
+              </div>
             </article>
           </div>
         </section>
@@ -604,8 +666,13 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               <em>{{a.estado}}</em>
             </article>
 
-            <article class="member-empty-card" *ngIf="!asistencias.length">
-              <span>✓</span><h3>Sin asistencias registradas</h3><p>Tus entradas aparecerán aquí cuando empieces a asistir.</p>
+            <article class="member-empty-card member-empty-guided" *ngIf="!asistencias.length">
+              <span>✓</span><h3>Tu historial empieza desde cero</h3>
+              <p>Las visitas al gimnasio aparecerán aquí. Tus entrenamientos en casa se guardan en su propio historial.</p>
+              <div class="empty-actions">
+                <button type="button" class="empty-primary" (click)="abrirModulo('casa')">Ver entrenamiento en casa</button>
+                <button type="button" class="empty-secondary" (click)="abrirModulo('clases')">Buscar clases</button>
+              </div>
             </article>
           </div>
         </section>
@@ -753,6 +820,22 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   get rutinaActual():any{return this.resumen?.rutina_actual || this.rutinas.find(r=>r.estado==='Activo') || null;}
   get nombreEntrenador():string{return this.nombrePersona(this.rutinaActual?.entrenador) || 'Sin entrenador asignado';}
   get reservasActivas():any[]{return this.reservas.filter(r=>r.estado==='Reservada');}
+  get perfilCompleto():boolean{
+    return !!(this.perfil?.nombres && this.perfil?.apellidos && this.perfil?.correo && this.perfil?.telefono && this.perfil?.direccion);
+  }
+  get actividadRegistrada():boolean{
+    return this.asistencias.length>0 || this.historialCasa.length>0;
+  }
+  get porcentajeInicio():number{
+    const pasos=[
+      this.perfilCompleto,
+      !!this.membresiaActual,
+      this.casaCargado,
+      this.reservasActivas.length>0,
+      this.actividadRegistrada
+    ];
+    return Math.round((pasos.filter(Boolean).length/pasos.length)*100);
+  }
   nombrePersona(p:any):string{return p?[`${p.nombres||''}`,`${p.apellidos||''}`].join(' ').trim():'-';}
   fecha(v:any):string{if(!v)return '-';const d=new Date(v);return isNaN(d.getTime())?String(v):d.toLocaleString('es-PE');}
 
