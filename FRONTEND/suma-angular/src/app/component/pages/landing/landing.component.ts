@@ -37,7 +37,15 @@ import { RouterLink } from '@angular/router';
               <a routerLink="/planes" class="ghost-button">▷ Ver planes</a>
             </div>
           </div>
-          <div class="hero-person hero-image-enter" role="img" aria-label="Persona entrenando con mancuerna"></div>
+          <div class="hero-person hero-image-enter" role="img" aria-label="Persona entrenando con mancuerna">
+            <div class="hero-photo-info">
+              <span><i></i> MALLQUI GYM · PUCALLPA</span>
+              <div>
+                <article><small>HORARIO</small><b>06:00 - 22:00</b></article>
+                <article><small>CLASES</small><b>{{clases.length}} modalidades</b></article>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="feature-bar shell mq-reveal">
