@@ -266,6 +266,22 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               </ng-template>
             </div>
 
+            <div class="home-today-exercise-visuals" *ngIf="entrenamientoCasaHoy?.activo && ejerciciosCasaActuales.length">
+              <article *ngFor="let ejercicio of ejerciciosCasaActuales | slice:0:3">
+                <div class="home-today-exercise-image">
+                  <img *ngIf="imagenEjercicioCasa(ejercicio)"
+                       [src]="imagenEjercicioCasa(ejercicio)"
+                       (error)="ocultarImagenEjercicio($event)"
+                       [alt]="ejercicio.nombre">
+                  <span>{{ejercicio.icono}}</span>
+                </div>
+                <div>
+                  <b>{{ejercicio.nombre}}</b>
+                  <small>{{prescripcionEjercicioCasa(ejercicio)}}</small>
+                </div>
+              </article>
+            </div>
+
             <button type="button" class="home-today-start" (click)="prepararEntrenamientoCasaHoy()">
               <span>{{entrenamientoCasaHoy?.activo ? '▶' : '⚡'}}</span>
               <div>
@@ -521,13 +537,20 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               <div class="home-exercise-list">
                 <article *ngFor="let ejercicio of ejerciciosCasaActuales; let i=index">
                   <span class="exercise-number">{{i+1}}</span>
-                  <span class="exercise-icon">{{ejercicio.icono}}</span>
-                  <div>
+                  <div class="exercise-thumb">
+                    <img *ngIf="imagenEjercicioCasa(ejercicio)"
+                         [src]="imagenEjercicioCasa(ejercicio)"
+                         (error)="ocultarImagenEjercicio($event)"
+                         [alt]="'Demostración de '+ejercicio.nombre">
+                    <span>{{ejercicio.icono}}</span>
+                  </div>
+                  <div class="exercise-list-copy">
                     <b>{{ejercicio.nombre}}</b>
                     <small>{{prescripcionEjercicioCasa(ejercicio)}} · descanso {{ejercicio.descanso}} s</small>
+                    <em>Demostración visual incluida</em>
                   </div>
                   <button type="button" (click)="verEjercicioCasa=verEjercicioCasa===ejercicio.id?'':ejercicio.id">
-                    {{verEjercicioCasa===ejercicio.id ? 'Ocultar' : 'Cómo hacerlo'}}
+                    {{verEjercicioCasa===ejercicio.id ? 'Ocultar pasos' : 'Ver técnica'}}
                   </button>
                   <div class="exercise-howto" *ngIf="verEjercicioCasa===ejercicio.id">
                     <p *ngIf="ejercicio.por_lado" class="side-instruction"><span>↔</span><b>Haz {{ejercicio.repeticiones}} con el lado derecho y luego {{ejercicio.repeticiones}} con el izquierdo.</b></p>
@@ -708,6 +731,13 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                     <ng-container *ngIf="i<indiceEjercicioCasa; else numeroEjercicio">✓</ng-container>
                     <ng-template #numeroEjercicio>{{i+1}}</ng-template>
                   </span>
+                  <div class="queue-exercise-thumb">
+                    <img *ngIf="imagenEjercicioCasa(e)"
+                         [src]="imagenEjercicioCasa(e)"
+                         (error)="ocultarImagenEjercicio($event)"
+                         [alt]="e.nombre">
+                    <i>{{e.icono}}</i>
+                  </div>
                   <div><b>{{e.nombre}}</b><small>{{prescripcionEjercicioCasa(e)}} · {{e.descanso}} s descanso</small></div>
                 </div>
               </div>
@@ -1596,6 +1626,39 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const color=this.faseCasa==='ejercicio'?'#ef233c':'#2f78c8';
 
     return 'conic-gradient('+color+' '+pct+'%, #e7edf3 '+pct+'%)';
+  }
+
+  imagenEjercicioCasa(ejercicio:any):string{
+    const id=String(ejercicio?.id||'');
+    const base='https://d3d2ynhodh9o1z.cloudfront.net/exercises/';
+    const mapa:Record<string,string>={
+      dead_bug:'dead-bug.gif',
+      sentadilla_silla:'bodyweight-squat.gif',
+      sentadilla_gluteos:'bodyweight-squat.gif',
+      talones:'bodyweight-standing-calf-raise.gif',
+      puente_gluteos:'low-glute-bridge-on-floor.gif',
+      abduccion_pie:'side-hip-abduction.gif',
+      patada_atras:'cable-standing-hip-extension.gif',
+      cobra_suave:'pike-to-cobra-push-up.gif',
+      bird_dog_core:'bird-dog.gif',
+      bird_dog_espalda:'bird-dog.gif',
+      zancada_asistida:'bodyweight-rear-lunge.gif',
+      flexion_pared_brazos:'wall-push-up.gif',
+      flexion_pared_pecho:'wall-push-up.gif',
+      plancha_pared_pecho:'wall-push-up.gif',
+      circulos_brazos:'arm-circles.gif',
+      apertura_brazos:'arm-circles.gif',
+      circulos_hombros:'arm-circles.gif',
+      elevacion_lateral_hombros:'side-lateral-raise.gif',
+      marcha:'high-knee.gif',
+      rodilla_mano:'high-knee.gif'
+    };
+    return mapa[id]?base+mapa[id]:'';
+  }
+
+  ocultarImagenEjercicio(event:any):void{
+    const img=event?.target as HTMLImageElement;
+    if(img)img.style.display='none';
   }
 
   guardarPerfil(){this.api.actualizarPerfilCliente(this.perfil).subscribe({next:r=>{this.perfil={...r.cliente};this.ok('Perfil actualizado');},error:e=>this.error=this.errorApi(e)});}
