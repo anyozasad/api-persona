@@ -7830,3 +7830,304 @@
     transition:none!important;
   }
 }
+
+
+/* =========================================================
+   PORTAL CLIENTE V16 · EJERCICIOS CON MEDIA REAL
+   Hace visible qué ejercicio realizará el cliente.
+   ========================================================= */
+
+/* Vista del entrenamiento de hoy en el inicio */
+.member-home-today-card{
+  grid-template-columns:minmax(0,1fr) minmax(360px,.72fr) auto!important;
+  align-items:center!important;
+  gap:18px!important;
+}
+.home-today-exercise-visuals{
+  min-width:0;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+}
+.home-today-exercise-visuals article{
+  min-width:0;
+  display:grid;
+  grid-template-columns:62px minmax(0,1fr);
+  gap:9px;
+  align-items:center;
+  padding:7px;
+  border:1px solid rgba(218,228,237,.92);
+  border-radius:13px;
+  background:rgba(255,255,255,.82);
+  box-shadow:0 7px 18px rgba(15,41,68,.045);
+}
+.home-today-exercise-image{
+  position:relative;
+  width:62px;
+  height:54px;
+  overflow:hidden;
+  border-radius:10px;
+  background:linear-gradient(145deg,#0a2748,#123e66);
+}
+.home-today-exercise-image img{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.home-today-exercise-image>span{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-size:18px;
+}
+.home-today-exercise-visuals b{
+  display:block;
+  overflow:hidden;
+  color:#203d58;
+  font-size:8px;
+  font-weight:900;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.home-today-exercise-visuals small{
+  display:block;
+  margin-top:3px;
+  color:#8191a0;
+  font-size:7px;
+  line-height:1.3;
+}
+
+/* La lista ya no parece una tabla de plantilla: muestra una mini demo */
+.home-exercise-list{
+  gap:8px!important;
+  margin-top:12px!important;
+}
+.home-exercise-list article{
+  grid-template-columns:34px 92px minmax(0,1fr) auto!important;
+  gap:12px!important;
+  padding:10px!important;
+  border:1px solid #e4ebf1!important;
+  border-radius:15px!important;
+  background:linear-gradient(145deg,#fff,#fbfdff)!important;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease!important;
+}
+.home-exercise-list article:hover{
+  transform:translateY(-2px)!important;
+  border-color:#cfdae4!important;
+  box-shadow:0 11px 24px rgba(16,43,69,.065)!important;
+}
+.exercise-thumb{
+  position:relative!important;
+  width:92px!important;
+  height:68px!important;
+  overflow:hidden!important;
+  display:block!important;
+  border-radius:12px!important;
+  background:
+    radial-gradient(circle at 80% 15%,rgba(239,35,60,.15),transparent 25%),
+    linear-gradient(145deg,#092441,#123d66)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)!important;
+}
+.exercise-thumb img{
+  position:absolute!important;
+  inset:0!important;
+  z-index:2!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  display:block!important;
+}
+.exercise-thumb>span{
+  position:absolute!important;
+  inset:0!important;
+  display:grid!important;
+  place-items:center!important;
+  color:#fff!important;
+  font-size:21px!important;
+}
+.exercise-list-copy{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  min-width:0!important;
+}
+.exercise-list-copy b{
+  color:#173653!important;
+  font-size:12px!important;
+  font-weight:900!important;
+}
+.exercise-list-copy small{
+  margin-top:4px!important;
+  color:#778a9c!important;
+  font-size:9px!important;
+}
+.exercise-list-copy em{
+  margin-top:5px!important;
+  color:#2c7b5e!important;
+  font-size:7px!important;
+  font-style:normal!important;
+  font-weight:850!important;
+  letter-spacing:.15px!important;
+}
+.home-exercise-list article>button{
+  min-height:38px!important;
+  padding:0 12px!important;
+  border:1px solid #dce6ee!important;
+  border-radius:10px!important;
+  background:#f8fafc!important;
+  color:#315d83!important;
+  font-size:8px!important;
+  font-weight:900!important;
+  transition:.18s ease!important;
+}
+.home-exercise-list article>button:hover{
+  transform:translateY(-1px)!important;
+  border-color:#c8d7e3!important;
+  background:#eef4f8!important;
+}
+.exercise-howto{
+  grid-column:3 / 5!important;
+  margin-top:2px!important;
+  padding:12px!important;
+  border:1px solid #e5ebf1!important;
+  background:#f7fafc!important;
+}
+
+/* Cola lateral durante la sesión: incluye miniatura real */
+.session-queue-list>div{
+  grid-template-columns:28px 52px minmax(0,1fr)!important;
+  gap:8px!important;
+  min-height:64px!important;
+}
+.queue-exercise-thumb{
+  position:relative;
+  width:50px;
+  height:42px;
+  overflow:hidden;
+  border-radius:9px;
+  background:linear-gradient(145deg,#0a2748,#113d66);
+}
+.queue-exercise-thumb img{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.queue-exercise-thumb i{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-size:13px;
+  font-style:normal;
+}
+
+/* Demo humana principal */
+.home-demo-column .exercise-human-motion{
+  background:
+    radial-gradient(circle at 80% 10%,rgba(239,35,60,.10),transparent 24%),
+    linear-gradient(145deg,#071a32,#0b3159)!important;
+}
+.home-demo-column .exercise-human-image{
+  object-fit:contain!important;
+  object-position:center!important;
+  padding:6px!important;
+  box-sizing:border-box!important;
+}
+.home-demo-column .exercise-media-badge{
+  bottom:68px!important;
+  background:rgba(3,22,41,.76)!important;
+}
+
+/* Hace que la vista previa se sienta como contenido del sistema y no un placeholder */
+.home-first-demo-visual{
+  overflow:hidden!important;
+  border-radius:18px!important;
+  border:1px solid #dfe8f0!important;
+  background:#fff!important;
+}
+.home-first-demo-copy>span{
+  color:#ef233c!important;
+}
+.home-first-demo-copy>div{
+  border:1px solid #e2e9f0!important;
+  background:#f8fafc!important;
+}
+
+/* Animación discreta al cargar miniaturas */
+.exercise-thumb,
+.queue-exercise-thumb,
+.home-today-exercise-visuals article{
+  animation:exerciseMediaIn .36s ease both;
+}
+@keyframes exerciseMediaIn{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:none}
+}
+
+@media(max-width:1280px){
+  .member-home-today-card{
+    grid-template-columns:minmax(0,1fr) minmax(320px,.8fr)!important;
+  }
+  .home-today-start{
+    grid-column:1/-1!important;
+    width:100%!important;
+  }
+}
+@media(max-width:900px){
+  .member-home-today-card{
+    grid-template-columns:1fr!important;
+  }
+  .home-today-exercise-visuals{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  .home-exercise-list article{
+    grid-template-columns:32px 84px minmax(0,1fr)!important;
+  }
+  .home-exercise-list article>button{
+    grid-column:3!important;
+    justify-self:start!important;
+  }
+  .exercise-howto{
+    grid-column:1/-1!important;
+  }
+}
+@media(max-width:620px){
+  .home-today-exercise-visuals{
+    grid-template-columns:1fr!important;
+  }
+  .home-exercise-list article{
+    grid-template-columns:30px 78px minmax(0,1fr)!important;
+  }
+  .exercise-thumb{
+    width:78px!important;
+    height:60px!important;
+  }
+  .home-exercise-list article>button{
+    grid-column:2/4!important;
+    width:100%!important;
+  }
+  .session-queue-list>div{
+    grid-template-columns:27px 46px minmax(0,1fr)!important;
+  }
+  .queue-exercise-thumb{
+    width:44px;
+    height:38px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .exercise-thumb,
+  .queue-exercise-thumb,
+  .home-today-exercise-visuals article{
+    animation:none!important;
+  }
+}
