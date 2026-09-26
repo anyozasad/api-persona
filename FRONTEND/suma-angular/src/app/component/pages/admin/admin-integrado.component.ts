@@ -28,13 +28,15 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         </button>
       </div>
 
-      <div class="admin-menu-label">NAVEGACIÓN</div>
-      <nav>
-        <button *ngFor="let item of menu" type="button" [class.active]="seccion===item.id" (click)="cambiarSeccion(item.id)">
-          <span class="admin-menu-icon">{{item.icono}}</span>
-          <span class="admin-menu-text">{{item.nombre}}</span>
-          <i *ngIf="seccion===item.id">›</i>
-        </button>
+      <nav class="admin-grouped-nav">
+        <section class="admin-menu-group" *ngFor="let grupo of menuGrupos">
+          <div class="admin-menu-group-title">{{grupo.titulo}}</div>
+          <button *ngFor="let item of grupo.items" type="button" [class.active]="seccion===item.id" (click)="cambiarSeccion(item.id)">
+            <span class="admin-menu-icon">{{item.icono}}</span>
+            <span class="admin-menu-text">{{item.nombre}}</span>
+            <i *ngIf="seccion===item.id">›</i>
+          </button>
+        </section>
       </nav>
 
       <div class="admin-system-card">
@@ -687,6 +689,127 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
       </ng-container>
 
 
+
+      <ng-container *ngIf="seccion==='historial-ventas'">
+        <section class="admin-list-card">
+          <div class="management-heading">
+            <div><h2>Historial de ventas</h2><p>{{ventas.length}} operaciones registradas.</p></div>
+            <button class="admin-secondary" type="button" (click)="cargarVentas()">↻ Actualizar</button>
+          </div>
+          <div class="table-wrap">
+            <table class="management-table">
+              <thead><tr><th>ID</th><th>Cliente</th><th>Comprobante</th><th>Fecha</th><th>Método</th><th>Total</th><th>Estado</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let v of ventas">
+                  <td>{{v.id_venta}}</td>
+                  <td>{{nombreCliente(v.cliente)}}</td>
+                  <td>{{v.tipo_comprobante}} {{v.numero_comprobante}}</td>
+                  <td>{{fecha(v.fecha_venta)}}</td>
+                  <td>{{v.metodo_pago}}</td>
+                  <td><b>S/ {{v.total | number:'1.2-2'}}</b></td>
+                  <td>{{v.estado || 'Registrado'}}</td>
+                </tr>
+                <tr *ngIf="!ventas.length"><td colspan="7">Aún no hay ventas registradas.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='planes'">
+        <section class="management-grid">
+          <article class="admin-form-card">
+            <div class="management-heading"><div><h2>{{planEditandoId ? 'Editar plan' : 'Nuevo plan'}}</h2><p>Configura precio, duración y estado.</p></div><span>◆</span></div>
+            <form (ngSubmit)="guardarPlan()">
+              <label>Nombre<input [(ngModel)]="planForm.nombre" name="plan_nombre" required></label>
+              <div class="form-row">
+                <label>Duración (meses)<input type="number" min="1" [(ngModel)]="planForm.duracion_meses" name="plan_duracion" required></label>
+                <label>Precio S/<input type="number" min="0" step="0.01" [(ngModel)]="planForm.precio" name="plan_precio" required></label>
+              </div>
+              <label>Descripción<textarea [(ngModel)]="planForm.descripcion" name="plan_descripcion"></textarea></label>
+              <label>Estado<select [(ngModel)]="planForm.estado" name="plan_estado"><option>Activo</option><option>Inactivo</option></select></label>
+              <div class="form-row">
+                <button class="admin-primary" type="submit">{{planEditandoId ? 'Guardar cambios' : 'Crear plan'}}</button>
+                <button *ngIf="planEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionPlan()">Cancelar</button>
+              </div>
+            </form>
+          </article>
+          <article class="admin-list-card wide-card">
+            <div class="management-heading"><div><h2>Planes disponibles</h2><p>{{planesMembresia.length}} planes configurados.</p></div></div>
+            <div class="table-wrap">
+              <table class="management-table">
+                <thead><tr><th>Plan</th><th>Duración</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody>
+                  <tr *ngFor="let p of planesMembresia">
+                    <td><b>{{p.nombre}}</b><br><small>{{p.descripcion}}</small></td>
+                    <td>{{p.duracion_meses}} mes(es)</td>
+                    <td>S/ {{p.precio}}</td>
+                    <td>{{p.estado}}</td>
+                    <td><button class="table-action" type="button" (click)="editarPlan(p)">Editar</button> <button *ngIf="p.estado==='Activo'" class="table-danger" type="button" (click)="desactivarPlan(p.id_membresia)">Desactivar</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='gastos'">
+        <section class="management-grid">
+          <article class="admin-form-card">
+            <div class="management-heading"><div><h2>Registrar gasto</h2><p>El gasto se registra como egreso de la caja abierta.</p></div><span>↓</span></div>
+            <div class="admin-inline-warning" *ngIf="!caja?.caja_abierta">
+              <b>La caja está cerrada.</b>
+              <p>Debes abrir caja antes de registrar un gasto.</p>
+              <button type="button" class="admin-secondary" (click)="cambiarSeccion('caja')">Ir a Caja</button>
+            </div>
+            <form *ngIf="caja?.caja_abierta" (ngSubmit)="registrarGasto()">
+              <label>Descripción<input [(ngModel)]="gastoForm.descripcion" name="gasto_descripcion" required placeholder="Ej. compra de limpieza"></label>
+              <label>Monto S/<input type="number" min="0.01" step="0.01" [(ngModel)]="gastoForm.monto" name="gasto_monto" required></label>
+              <button class="admin-primary" type="submit">Registrar gasto</button>
+            </form>
+          </article>
+          <article class="admin-list-card wide-card">
+            <div class="management-heading"><div><h2>Gastos de la caja actual</h2><p>{{gastosActuales.length}} egresos registrados.</p></div></div>
+            <div class="table-wrap">
+              <table class="management-table">
+                <thead><tr><th>Fecha</th><th>Descripción</th><th>Origen</th><th>Monto</th><th>Estado</th></tr></thead>
+                <tbody>
+                  <tr *ngFor="let g of gastosActuales">
+                    <td>{{fecha(g.fecha_movimiento)}}</td><td>{{g.descripcion}}</td><td>{{g.origen}}</td><td><b>S/ {{g.monto | number:'1.2-2'}}</b></td><td>{{g.estado}}</td>
+                  </tr>
+                  <tr *ngIf="!gastosActuales.length"><td colspan="5">No hay gastos registrados en la caja actual.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='inventario'">
+        <div class="embedded-productos"><app-productos></app-productos></div>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='reporte-asistencias'">
+        <section class="report-grid">
+          <article><span>✓</span><p>Total asistencias</p><h2>{{reporteAsistencias?.total ?? 0}}</h2></article>
+          <article><span>◷</span><p>Desde</p><h2>{{reporteAsistencias?.desde || '-'}}</h2></article>
+          <article><span>◷</span><p>Hasta</p><h2>{{reporteAsistencias?.hasta || '-'}}</h2></article>
+        </section>
+        <section class="admin-list-card">
+          <div class="management-heading"><div><h2>Asistencias por día</h2><p>Reporte calculado directamente desde MySQL.</p></div><button type="button" class="admin-secondary" (click)="cargarReportes()">↻ Actualizar</button></div>
+          <div class="table-wrap">
+            <table class="management-table">
+              <thead><tr><th>Fecha</th><th>Total de asistencias</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let d of reporteAsistencias?.por_dia"><td>{{d.fecha}}</td><td><b>{{d.total}}</b></td></tr>
+                <tr *ngIf="!reporteAsistencias?.por_dia?.length"><td colspan="2">No hay asistencias para el periodo actual.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </ng-container>
+
       <ng-container *ngIf="seccion==='categorias'">
         <section class="management-grid">
           <article class="admin-form-card">
@@ -973,31 +1096,47 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   historialCaja: any[] = [];
 
   dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
-  menu = [
-    {id:'dashboard',icono:'▦',nombre:'Dashboard'},
-    {id:'clientes',icono:'♙',nombre:'Clientes'},
-    {id:'membresias',icono:'✦',nombre:'Membresías'},
-    {id:'pagos',icono:'▤',nombre:'Pagos'},
-    {id:'entrenador',icono:'🏋',nombre:'Entrenador'},
-    {id:'clases',icono:'◉',nombre:'Clases'},
-    {id:'asistencias',icono:'▣',nombre:'Asistencias'},
-    {id:'rutinas',icono:'🏋',nombre:'Rutinas'},
-    {id:'reservas',icono:'◷',nombre:'Reservas'},
-    {id:'categorias',icono:'▦',nombre:'Categorías'},
-    {id:'productos',icono:'□',nombre:'Productos'},
-    {id:'proveedores',icono:'▤',nombre:'Proveedores'},
-    {id:'compras',icono:'↓',nombre:'Compras'},
-    {id:'ventas',icono:'↑',nombre:'Ventas'},
-    {id:'caja',icono:'$',nombre:'Caja'},
-    {id:'reportes',icono:'▥',nombre:'Reportes'},
-    {id:'usuarios',icono:'♙',nombre:'Usuarios'},
-    {id:'comunicacion',icono:'●',nombre:'Notificaciones'},
-    {id:'soporte',icono:'?',nombre:'Soporte'},
-    {id:'configuracion',icono:'⚙',nombre:'Configuración'}
+  menuGrupos = [
+    {
+      titulo:'Inicio',
+      items:[
+        {id:'dashboard',icono:'⌂',nombre:'Dashboard'},
+        {id:'asistencias',icono:'◷',nombre:'Asistencia'}
+      ]
+    },
+    {
+      titulo:'Gestión',
+      items:[
+        {id:'clientes',icono:'♙',nombre:'Socios'},
+        {id:'caja',icono:'▣',nombre:'Caja'},
+        {id:'membresias',icono:'✦',nombre:'Suscripciones'},
+        {id:'ventas',icono:'▤',nombre:'Punto de Venta'},
+        {id:'comunicacion',icono:'●',nombre:'Notificaciones'},
+        {id:'historial-ventas',icono:'↺',nombre:'Historial de Ventas'}
+      ]
+    },
+    {
+      titulo:'Administración',
+      items:[
+        {id:'planes',icono:'◆',nombre:'Planes'},
+        {id:'gastos',icono:'↓',nombre:'Gastos'},
+        {id:'inventario',icono:'▦',nombre:'Inventario'},
+        {id:'categorias',icono:'◇',nombre:'Categorías'},
+        {id:'reportes',icono:'▥',nombre:'Reportes'},
+        {id:'reporte-asistencias',icono:'✓',nombre:'Rep. Asistencias'},
+        {id:'usuarios',icono:'♙',nombre:'Usuarios'},
+        {id:'configuracion',icono:'⚙',nombre:'Mantenimiento'}
+      ]
+    }
   ];
   titulos: Record<string,[string,string]> = {
-    dashboard:['Panel Administrador','Datos reales del gimnasio'], clientes:['Clientes','Registro y administración de miembros'],
-    membresias:['Membresías','Planes, vigencias y contratación'], pagos:['Pagos','Confirmación e historial de pagos'],
+    dashboard:['Panel Administrador','Datos reales del gimnasio'], clientes:['Socios','Registro y administración de miembros'],
+    membresias:['Suscripciones','Contratación, vigencias y membresías de socios'], pagos:['Pagos','Confirmación e historial de pagos'],
+    planes:['Planes','Configuración de precios, duración y estados'],
+    gastos:['Gastos','Registro de egresos de la caja activa'],
+    inventario:['Inventario','Productos, stock y control del inventario'],
+    'historial-ventas':['Historial de Ventas','Consulta de todas las ventas registradas'],
+    'reporte-asistencias':['Reporte de Asistencias','Resumen y detalle de asistencias registradas'],
     entrenador:['Entrenador','Gestión del entrenador principal'], clases:['Clases','Programación, horarios y cupos'],
     asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['Rutinas','Planes de entrenamiento por cliente'],
     reservas:['Reservas','Control de reservas y asistencia a clases'], categorias:['Categorías','Clasificación de productos'],
@@ -1062,6 +1201,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ajusteForm: any = {id_producto:0,tipo:'Entrada',cantidad:1,motivo:''};
   cajaAbrirForm: any = {monto_inicial:0,observacion:''};
   movCajaForm: any = {tipo:'Ingreso',monto:0,descripcion:'',origen:'Manual'};
+  gastoForm: any = {descripcion:'',monto:0};
   cajaCerrarForm: any = {monto_real:0,observacion:''};
 
   constructor(public auth: AuthService, private api: AdminApiService, private router: Router) {}
@@ -1197,6 +1337,23 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.cargarClases();
         this.cargarClientes();
         break;
+      case 'historial-ventas':
+        this.cargarVentas();
+        break;
+      case 'planes':
+        this.cargarMembresias();
+        break;
+      case 'gastos':
+        this.cargarCaja();
+        break;
+      case 'inventario':
+        this.cargarProductos();
+        this.cargarCategorias();
+        this.cargarKardex();
+        break;
+      case 'reporte-asistencias':
+        this.cargarReportes();
+        break;
       case 'categorias':
         this.cargarCategorias();
         break;
@@ -1234,6 +1391,31 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.cargarConfiguracion();
         break;
     }
+  }
+
+  get gastosActuales(): any[] {
+    const movimientos = this.caja?.caja?.movimientos;
+    return Array.isArray(movimientos)
+      ? movimientos.filter((m:any)=>String(m?.tipo||'').toLowerCase()==='egreso')
+      : [];
+  }
+
+  registrarGasto(): void {
+    const descripcion=String(this.gastoForm.descripcion||'').trim();
+    const monto=Number(this.gastoForm.monto||0);
+    if(!descripcion || monto<=0){
+      this.error='Completa la descripción y un monto válido.';
+      return;
+    }
+    this.api.movimientoCaja('Egreso','Gasto',descripcion,monto).subscribe({
+      next:(r:any)=>{
+        this.gastoForm={descripcion:'',monto:0};
+        this.ok(r?.mensaje || 'Gasto registrado correctamente');
+        this.cargarCaja();
+        this.cargarDashboard();
+      },
+      error:e=>this.mostrarError(e)
+    });
   }
 
   recargarTodo(): void {
