@@ -8604,3 +8604,191 @@
     opacity:.10!important;
   }
 }
+
+
+/* =========================================================
+   PORTAL CLIENTE V19 · IMÁGENES EN ZONAS MARCADAS
+   Solo agrega imagen real en las áreas señaladas; no mueve el layout.
+   ========================================================= */
+
+/* 1) TARJETA DEL ENTRENADOR EN INICIO
+   Mantiene el texto y botón; la foto vive dentro del avatar y del fondo. */
+.member-coach-card{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+}
+.member-coach-card::before{
+  content:''!important;
+  position:absolute!important;
+  z-index:0!important;
+  inset:0!important;
+  background:
+    linear-gradient(180deg,rgba(5,29,54,.08),rgba(5,29,54,.58)),
+    url('https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=900&q=84') center 28%/cover no-repeat!important;
+  opacity:.38!important;
+  pointer-events:none!important;
+}
+.member-coach-card::after{
+  content:''!important;
+  position:absolute!important;
+  z-index:1!important;
+  inset:0!important;
+  background:
+    linear-gradient(90deg,rgba(6,30,56,.93) 0%,rgba(8,39,69,.76) 58%,rgba(11,46,79,.36) 100%),
+    radial-gradient(circle at 82% 14%,rgba(239,35,60,.20),transparent 28%)!important;
+  pointer-events:none!important;
+}
+.member-coach-card>*{
+  position:relative!important;
+  z-index:2!important;
+}
+.coach-avatar-empty{
+  width:82px!important;
+  height:82px!important;
+  border-radius:50%!important;
+  color:transparent!important;
+  font-size:0!important;
+  background:
+    linear-gradient(rgba(9,35,61,.04),rgba(9,35,61,.04)),
+    url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=360&q=88') center 24%/cover no-repeat!important;
+  border:3px solid rgba(255,255,255,.82)!important;
+  box-shadow:0 14px 30px rgba(0,0,0,.24),0 0 0 6px rgba(255,255,255,.06)!important;
+}
+
+/* 2) AGENDA COMPLETA
+   Sustituye el cuadrito plano por una mini fotografía real sin tocar la fecha. */
+.calendar-list-pro .client-event-icon.event-photo{
+  position:relative!important;
+  overflow:hidden!important;
+  width:48px!important;
+  height:48px!important;
+  border-radius:13px!important;
+  display:grid!important;
+  place-items:end start!important;
+  background-size:cover!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+  border:1px solid #e0e7ee!important;
+  box-shadow:0 7px 16px rgba(18,45,71,.10)!important;
+}
+.calendar-list-pro .client-event-icon.event-photo::before{
+  content:''!important;
+  position:absolute!important;
+  inset:0!important;
+  background:linear-gradient(180deg,transparent 36%,rgba(4,22,40,.68) 100%)!important;
+}
+.calendar-list-pro .client-event-icon.event-photo i{
+  position:relative!important;
+  z-index:2!important;
+  width:20px!important;
+  height:20px!important;
+  margin:0 0 5px 5px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:6px!important;
+  background:rgba(239,35,60,.93)!important;
+  color:#fff!important;
+  font-size:9px!important;
+  font-style:normal!important;
+  box-shadow:0 5px 11px rgba(0,0,0,.18)!important;
+}
+
+/* 3) CREDENCIAL DIGITAL DE MI CLUB
+   Foto de gimnasio integrada en la misma tarjeta; conserva todos los datos. */
+.client-digital-card{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+}
+.client-digital-card::before{
+  content:''!important;
+  position:absolute!important;
+  z-index:-2!important;
+  top:0!important;
+  right:0!important;
+  width:56%!important;
+  height:100%!important;
+  background:
+    url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1000&q=84') center/cover no-repeat!important;
+  opacity:.34!important;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 34%,#000 100%)!important;
+  mask-image:linear-gradient(90deg,transparent 0%,#000 34%,#000 100%)!important;
+  pointer-events:none!important;
+}
+.client-digital-card::after{
+  content:'MALLQUI GYM'!important;
+  position:absolute!important;
+  z-index:-1!important;
+  right:22px!important;
+  bottom:20px!important;
+  color:rgba(255,255,255,.07)!important;
+  font-size:34px!important;
+  font-weight:950!important;
+  letter-spacing:2px!important;
+  transform:rotate(-90deg) translateX(42%)!important;
+  transform-origin:right bottom!important;
+  pointer-events:none!important;
+}
+.client-digital-card>*{
+  position:relative!important;
+  z-index:2!important;
+}
+
+/* 4) TARJETA LATERAL DE PERFIL
+   No inventa una foto del usuario: usa una imagen fitness decorativa en el fondo. */
+.profile-summary-card{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  background:
+    linear-gradient(180deg,rgba(6,27,51,.88) 0%,rgba(7,34,62,.90) 50%,rgba(7,30,55,.97) 100%),
+    url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=900&q=84') 68% center/cover no-repeat!important;
+}
+.profile-summary-card::before{
+  content:''!important;
+  position:absolute!important;
+  z-index:0!important;
+  width:210px!important;
+  height:210px!important;
+  right:-78px!important;
+  bottom:-64px!important;
+  border-radius:50%!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  box-shadow:0 0 0 28px rgba(255,255,255,.025),0 0 0 56px rgba(255,255,255,.012)!important;
+  pointer-events:none!important;
+}
+.profile-summary-card>*{
+  position:relative!important;
+  z-index:2!important;
+}
+.profile-avatar{
+  border:2px solid rgba(255,255,255,.68)!important;
+  box-shadow:0 14px 28px rgba(239,35,60,.25),0 0 0 6px rgba(255,255,255,.055)!important;
+}
+
+/* Un acabado ligero para las zonas nuevas */
+@media(hover:hover){
+  .coach-avatar-empty,
+  .calendar-list-pro .client-event-icon.event-photo{
+    transition:transform .28s ease,box-shadow .28s ease,filter .28s ease!important;
+  }
+  .member-coach-card:hover .coach-avatar-empty{
+    transform:translateY(-3px) scale(1.03)!important;
+    box-shadow:0 18px 34px rgba(0,0,0,.28),0 0 0 7px rgba(255,255,255,.07)!important;
+  }
+  .calendar-list-pro article:hover .client-event-icon.event-photo{
+    transform:scale(1.055)!important;
+    box-shadow:0 10px 22px rgba(18,45,71,.15)!important;
+    filter:saturate(1.06)!important;
+  }
+}
+
+/* Mantiene el aspecto limpio en pantallas pequeñas */
+@media(max-width:820px){
+  .member-coach-card::before{opacity:.28!important}
+  .client-digital-card::before{width:68%!important;opacity:.25!important}
+  .profile-summary-card{
+    background-position:72% center!important;
+  }
+}
