@@ -829,7 +829,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         </section>
 
         <section *ngIf="moduloActivo==='reservas'" class="member-module member-enter-up">
-          <div class="member-module-hero">
+          <div class="member-module-hero reservations-hero">
             <div><span>AGENDA PERSONAL</span><h1>Mis reservas</h1><p>Consulta y administra las clases que reservaste.</p></div>
             <div class="module-hero-icon">◷</div>
           </div>
