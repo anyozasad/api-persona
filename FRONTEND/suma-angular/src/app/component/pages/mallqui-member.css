@@ -8341,3 +8341,266 @@
     opacity:.35!important;
   }
 }
+
+
+/* =========================================================
+   PORTAL CLIENTE V18 · FOTOGRAFÍA REAL SIN MOVER LAYOUT
+   Mantiene estructura, tamaños y posiciones; solo añade vida visual.
+   ========================================================= */
+
+/* Biblioteca visual por módulo */
+.hero-photo-casa{
+  --hero-photo:url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1800&q=86');
+  --hero-pos:center 42%;
+}
+.hero-photo-rutinas{
+  --hero-photo:url('https://images.unsplash.com/photo-1534258936925-c58bed479fcb?auto=format&fit=crop&w=1800&q=86');
+  --hero-pos:center 46%;
+}
+.hero-photo-clases{
+  --hero-photo:url('https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=1800&q=86');
+  --hero-pos:center 50%;
+}
+.hero-photo-asistencias{
+  --hero-photo:url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1800&q=86');
+  --hero-pos:center 45%;
+}
+.hero-photo-pagos{
+  --hero-photo:url('https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1800&q=86');
+  --hero-pos:center 42%;
+}
+.hero-photo-perfil{
+  --hero-photo:url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1800&q=86');
+  --hero-pos:center 36%;
+}
+.hero-photo-progreso{
+  --hero-photo:url('https://images.unsplash.com/photo-1549060279-7e168fcee0c2?auto=format&fit=crop&w=1800&q=86');
+  --hero-pos:center 44%;
+}
+.hero-photo-club{
+  --hero-photo:url('https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=1800&q=86');
+  --hero-pos:center 42%;
+}
+.hero-photo-ayuda{
+  --hero-photo:url('https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1800&q=86');
+  --hero-pos:center 48%;
+}
+.hero-photo-avisos{
+  --hero-photo:url('https://images.unsplash.com/photo-1517963879433-6ad2b056d712?auto=format&fit=crop&w=1800&q=86');
+  --hero-pos:center 45%;
+}
+
+/* Hero de módulos principales */
+.member-module-hero.hero-photo{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  background:
+    linear-gradient(90deg,
+      rgba(4,25,48,.98) 0%,
+      rgba(6,32,59,.95) 35%,
+      rgba(8,39,70,.82) 53%,
+      rgba(9,41,73,.48) 72%,
+      rgba(7,29,55,.64) 100%),
+    var(--hero-photo) var(--hero-pos)/cover no-repeat!important;
+}
+
+/* Hero de módulos que viven en cliente-experiencia */
+.client-extra-hero.hero-photo{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  background:
+    linear-gradient(90deg,
+      rgba(4,25,48,.98) 0%,
+      rgba(6,32,59,.94) 34%,
+      rgba(8,39,70,.78) 53%,
+      rgba(10,45,77,.44) 72%,
+      rgba(8,31,57,.62) 100%),
+    var(--hero-photo) var(--hero-pos)/cover no-repeat!important;
+}
+
+/* Acabado premium: imagen más visible en el tercio derecho, sin tapar texto */
+.member-module-hero.hero-photo,
+.client-extra-hero.hero-photo{
+  box-shadow:0 18px 42px rgba(8,33,59,.13)!important;
+  border:1px solid rgba(255,255,255,.055)!important;
+}
+.member-module-hero.hero-photo>div:first-child,
+.client-extra-hero.hero-photo>div:first-child{
+  position:relative!important;
+  z-index:3!important;
+  max-width:720px!important;
+}
+.member-module-hero.hero-photo>div:first-child span,
+.client-extra-hero.hero-photo>div:first-child span{
+  color:#ff9eae!important;
+  text-shadow:0 2px 10px rgba(0,0,0,.16)!important;
+}
+.member-module-hero.hero-photo h1,
+.client-extra-hero.hero-photo h1{
+  color:#fff!important;
+  text-shadow:0 3px 18px rgba(0,0,0,.22)!important;
+}
+.member-module-hero.hero-photo p,
+.client-extra-hero.hero-photo p{
+  color:rgba(232,241,249,.91)!important;
+  text-shadow:0 2px 12px rgba(0,0,0,.18)!important;
+}
+.member-module-hero.hero-photo .module-hero-icon{
+  position:relative!important;
+  z-index:4!important;
+  border:1px solid rgba(255,255,255,.17)!important;
+  background:rgba(255,255,255,.10)!important;
+  box-shadow:0 16px 34px rgba(0,0,0,.18)!important;
+  backdrop-filter:blur(9px)!important;
+}
+
+/* Una luz roja muy sutil da identidad Mallqui sin cambiar estructura */
+.member-module-hero.hero-photo:after,
+.client-extra-hero.hero-photo:after{
+  content:''!important;
+  position:absolute!important;
+  z-index:1!important;
+  width:320px!important;
+  height:320px!important;
+  right:-95px!important;
+  top:-120px!important;
+  border-radius:50%!important;
+  background:radial-gradient(circle,rgba(239,35,60,.18) 0%,rgba(239,35,60,.055) 38%,transparent 70%)!important;
+  pointer-events:none!important;
+}
+.member-module-hero.hero-photo>*,
+.client-extra-hero.hero-photo>*{
+  position:relative!important;
+  z-index:2!important;
+}
+
+/* Mantiene el hero de reservas que ya aprobaste */
+.reservations-hero{
+  background:
+    linear-gradient(90deg,
+      rgba(5,26,50,.98) 0%,
+      rgba(7,35,65,.96) 40%,
+      rgba(9,43,76,.74) 62%,
+      rgba(12,49,82,.34) 78%,
+      rgba(14,45,75,.68) 100%),
+    url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1500&q=85') center 40%/cover no-repeat!important;
+}
+
+/* Los estados vacíos dejan de sentirse como cajas blancas sin contenido.
+   No altera su grid: la fotografía vive como fondo decorativo. */
+.hero-photo-rutinas + .module-grid .member-empty-guided,
+.hero-photo-clases + .member-class-grid .member-empty-guided,
+.hero-photo-asistencias + .attendance-timeline .member-empty-guided{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  background:#fff!important;
+}
+.hero-photo-rutinas + .module-grid .member-empty-guided:before,
+.hero-photo-clases + .member-class-grid .member-empty-guided:before,
+.hero-photo-asistencias + .attendance-timeline .member-empty-guided:before{
+  content:''!important;
+  position:absolute!important;
+  z-index:-2!important;
+  right:0!important;
+  top:0!important;
+  bottom:0!important;
+  width:43%!important;
+  background-size:cover!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+  opacity:.16!important;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 36%)!important;
+  mask-image:linear-gradient(90deg,transparent,#000 36%)!important;
+  pointer-events:none!important;
+}
+.hero-photo-rutinas + .module-grid .member-empty-guided:before{
+  background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1000&q=82')!important;
+}
+.hero-photo-clases + .member-class-grid .member-empty-guided:before{
+  background-image:url('https://images.unsplash.com/photo-1521805103424-d8f8430e8933?auto=format&fit=crop&w=1000&q=82')!important;
+}
+.hero-photo-asistencias + .attendance-timeline .member-empty-guided:before{
+  background-image:url('https://images.unsplash.com/photo-1579758629938-03607ccdbaba?auto=format&fit=crop&w=1000&q=82')!important;
+}
+
+/* Tarjetas blancas de soporte, pagos y club reciben profundidad visual,
+   sin mover formularios ni contenidos */
+.support-grid .client-extra-card,
+.member-payment-layout .member-module-card,
+.client-club-grid .client-extra-card{
+  position:relative!important;
+  overflow:hidden!important;
+}
+.support-grid .client-extra-card:after,
+.member-payment-layout .member-module-card:after,
+.client-club-grid .client-extra-card:after{
+  content:''!important;
+  position:absolute!important;
+  z-index:0!important;
+  right:-70px!important;
+  top:-70px!important;
+  width:190px!important;
+  height:190px!important;
+  border-radius:50%!important;
+  background:radial-gradient(circle,rgba(38,98,153,.06),transparent 68%)!important;
+  pointer-events:none!important;
+}
+.support-grid .client-extra-card>*,
+.member-payment-layout .member-module-card>*,
+.client-club-grid .client-extra-card>*{
+  position:relative!important;
+  z-index:1!important;
+}
+
+/* Solo microanimación fotográfica; nada del layout se desplaza */
+@media(hover:hover){
+  .member-module-hero.hero-photo,
+  .client-extra-hero.hero-photo{
+    transition:background-position .8s ease,box-shadow .35s ease!important;
+  }
+  .member-module-hero.hero-photo:hover,
+  .client-extra-hero.hero-photo:hover{
+    background-position:center,var(--hero-pos)!important;
+    box-shadow:0 22px 48px rgba(8,33,59,.17)!important;
+  }
+}
+
+/* Responsive: mantiene las fotos, pero protege la lectura */
+@media(max-width:900px){
+  .member-module-hero.hero-photo,
+  .client-extra-hero.hero-photo{
+    background:
+      linear-gradient(90deg,
+        rgba(4,25,48,.98) 0%,
+        rgba(6,32,59,.92) 50%,
+        rgba(8,39,70,.62) 75%,
+        rgba(8,32,58,.66) 100%),
+      var(--hero-photo) var(--hero-pos)/cover no-repeat!important;
+  }
+  .member-module-hero.hero-photo:after,
+  .client-extra-hero.hero-photo:after{
+    width:240px!important;
+    height:240px!important;
+  }
+}
+
+@media(max-width:560px){
+  .member-module-hero.hero-photo,
+  .client-extra-hero.hero-photo{
+    background:
+      linear-gradient(90deg,
+        rgba(4,25,48,.97),
+        rgba(6,32,59,.88) 62%,
+        rgba(8,39,70,.66)),
+      var(--hero-photo) center/cover no-repeat!important;
+  }
+  .hero-photo-rutinas + .module-grid .member-empty-guided:before,
+  .hero-photo-clases + .member-class-grid .member-empty-guided:before,
+  .hero-photo-asistencias + .attendance-timeline .member-empty-guided:before{
+    width:58%!important;
+    opacity:.10!important;
+  }
+}
