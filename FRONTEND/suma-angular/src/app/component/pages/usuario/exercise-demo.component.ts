@@ -258,8 +258,8 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
       inset:0;
       width:100%;
       height:100%;
-      object-fit:contain;
-      object-position:center;
+      object-fit:cover;
+      object-position:center 38%;
       display:block;
       background:linear-gradient(145deg,#071a32,#0b3159);
       filter:saturate(.98) contrast(1.035)
@@ -405,30 +405,37 @@ export class ExerciseDemoComponent implements OnChanges {
 
   get gifUrl(): string {
     const id = String(this.ejercicio?.id || '');
-    const base = 'https://d3d2ynhodh9o1z.cloudfront.net/exercises/';
     const mapa: Record<string,string> = {
-      dead_bug: 'dead-bug.gif',
-      sentadilla_silla: 'bodyweight-squat.gif',
-      sentadilla_gluteos: 'bodyweight-squat.gif',
-      talones: 'bodyweight-standing-calf-raise.gif',
-      puente_gluteos: 'low-glute-bridge-on-floor.gif',
-      abduccion_pie: 'side-hip-abduction.gif',
-      patada_atras: 'cable-standing-hip-extension.gif',
-      cobra_suave: 'pike-to-cobra-push-up.gif',
-      bird_dog_core: 'bird-dog.gif',
-      bird_dog_espalda: 'bird-dog.gif',
-      zancada_asistida: 'bodyweight-rear-lunge.gif',
-      flexion_pared_brazos: 'wall-push-up.gif',
-      flexion_pared_pecho: 'wall-push-up.gif',
-      plancha_pared_pecho: 'wall-push-up.gif',
-      circulos_brazos: 'arm-circles.gif',
-      apertura_brazos: 'arm-circles.gif',
-      elevacion_lateral_hombros: 'side-lateral-raise.gif',
-      circulos_hombros: 'arm-circles.gif',
-      marcha: 'high-knee.gif',
-      rodilla_mano: 'high-knee.gif'
+      sentadilla_silla:'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1300&q=88',
+      zancada_asistida:'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=1300&q=88',
+      talones:'https://images.unsplash.com/photo-1579758629938-03607ccdbaba?auto=format&fit=crop&w=1300&q=88',
+      marcha:'https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1300&q=88',
+      flexion_pared_brazos:'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1300&q=88',
+      circulos_brazos:'https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=1300&q=88',
+      empuje_palmas:'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=1300&q=88',
+      extension_triceps_pared:'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1300&q=88',
+      flexion_pared_pecho:'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1300&q=88',
+      presion_pecho:'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=1300&q=88',
+      apertura_brazos:'https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=1300&q=88',
+      plancha_pared_pecho:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1300&q=88',
+      bird_dog_espalda:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1300&q=88',
+      angel_pared:'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=1300&q=88',
+      remo_isometrico:'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1300&q=88',
+      cobra_suave:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1300&q=88',
+      elevacion_lateral_hombros:'https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=1300&q=88',
+      deslizamiento_pared:'https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1300&q=88',
+      rotacion_externa:'https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=1300&q=88',
+      circulos_hombros:'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=1300&q=88',
+      puente_gluteos:'https://images.unsplash.com/photo-1579758629938-03607ccdbaba?auto=format&fit=crop&w=1300&q=88',
+      abduccion_pie:'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1300&q=88',
+      patada_atras:'https://images.unsplash.com/photo-1579758629938-03607ccdbaba?auto=format&fit=crop&w=1300&q=88',
+      sentadilla_gluteos:'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1300&q=88',
+      dead_bug:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1300&q=88',
+      bird_dog_core:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1300&q=88',
+      rodilla_mano:'https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1300&q=88',
+      respiracion_core:'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1300&q=88'
     };
-    return mapa[id] ? base + mapa[id] : '';
+    return mapa[id] || 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=1300&q=88';
   }
 
   get mostrarImagenHumana(): boolean {
