@@ -391,7 +391,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         </section>
 
         <section *ngIf="moduloActivo==='casa'" class="member-module home-training-module member-enter-up">
-          <div class="member-module-hero home-training-hero">
+          <div class="member-module-hero home-training-hero hero-photo hero-photo-casa">
             <div>
               <span>ENTRENAMIENTO EN CASA</span>
               <h1>Elige qué quieres fortalecer hoy</h1>
@@ -770,7 +770,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         </section>
 
         <section *ngIf="moduloActivo==='rutinas'" class="member-module member-enter-up">
-          <div class="member-module-hero">
+          <div class="member-module-hero hero-photo hero-photo-rutinas">
             <div><span>ENTRENAMIENTO</span><h1>Mis rutinas</h1><p>Consulta los ejercicios que tu entrenador preparó para ti.</p></div>
             <div class="module-hero-icon">🏋</div>
           </div>
@@ -798,7 +798,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         </section>
 
         <section *ngIf="moduloActivo==='clases'" class="member-module member-enter-up">
-          <div class="member-module-hero">
+          <div class="member-module-hero hero-photo hero-photo-clases">
             <div><span>AGENDA</span><h1>Clases disponibles</h1><p>Elige una clase, selecciona una fecha válida y reserva tu lugar.</p></div>
             <div class="module-hero-icon">▣</div>
           </div>
@@ -853,7 +853,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         </section>
 
         <section *ngIf="moduloActivo==='asistencias'" class="member-module member-enter-up">
-          <div class="member-module-hero">
+          <div class="member-module-hero hero-photo hero-photo-asistencias">
             <div><span>HISTORIAL</span><h1>Mis asistencias</h1><p>Consulta tus entradas y salidas registradas en el gimnasio.</p></div>
             <div class="module-hero-icon">✓</div>
           </div>
@@ -877,7 +877,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         </section>
 
         <section *ngIf="moduloActivo==='pagos'" class="member-module member-enter-up">
-          <div class="member-module-hero">
+          <div class="member-module-hero hero-photo hero-photo-pagos">
             <div><span>MEMBRESÍA</span><h1>Pagos y renovación</h1><p>Solicita una renovación y consulta tus comprobantes.</p></div>
             <div class="module-hero-icon">▤</div>
           </div>
@@ -919,7 +919,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         </section>
 
         <section *ngIf="moduloActivo==='perfil'" class="member-module member-enter-up">
-          <div class="member-module-hero">
+          <div class="member-module-hero hero-photo hero-photo-perfil">
             <div><span>CUENTA PERSONAL</span><h1>Mi perfil</h1><p>Mantén actualizada tu información de contacto.</p></div>
             <div class="module-hero-icon">♙</div>
           </div>
