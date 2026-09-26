@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-exercise-demo',
@@ -23,16 +23,18 @@ import { Component, Input } from '@angular/core';
         </span>
 
         <div
-          *ngIf="modo==='deadbug'"
+          *ngIf="mostrarImagenHumana"
           class="exercise-human-motion"
-          [class.mirror]="lado==='izquierdo'">
+          [class.mirror]="ejercicio?.por_lado && lado==='izquierdo'">
           <img
             class="exercise-human-image"
-            [src]="pausado ? '/assets/exercises/deadbug_human.webp' : 'https://d3d2ynhodh9o1z.cloudfront.net/exercises/dead-bug.gif'"
-            [alt]="'Persona realizando '+(ejercicio?.nombre || 'Dead bug básico')">
+            [src]="gifUrl"
+            (error)="falloImagenHumana()"
+            [alt]="'Persona realizando '+(ejercicio?.nombre || 'ejercicio')">
+          <span class="exercise-media-badge">DEMOSTRACIÓN REAL</span>
         </div>
 
-        <svg *ngIf="modo!=='deadbug'" viewBox="0 0 360 250" role="img" [attr.aria-label]="'Persona demostrando '+(ejercicio?.nombre || 'ejercicio')">
+        <svg *ngIf="!mostrarImagenHumana" viewBox="0 0 360 250" role="img" [attr.aria-label]="'Persona demostrando '+(ejercicio?.nombre || 'ejercicio')">
           <defs>
             <linearGradient id="skinFill" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stop-color="#f2c39f"></stop>
@@ -256,10 +258,26 @@ import { Component, Input } from '@angular/core';
       inset:0;
       width:100%;
       height:100%;
-      object-fit:cover;
+      object-fit:contain;
       object-position:center;
       display:block;
-      filter:saturate(.96) contrast(1.04)
+      background:linear-gradient(145deg,#071a32,#0b3159);
+      filter:saturate(.98) contrast(1.035)
+    }
+    .exercise-media-badge{
+      position:absolute;
+      z-index:5;
+      left:18px;
+      bottom:70px;
+      padding:7px 10px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:999px;
+      background:rgba(5,25,47,.72);
+      color:#eaf4ff;
+      font-size:7px;
+      font-weight:900;
+      letter-spacing:.85px;
+      backdrop-filter:blur(8px)
     }
     .demo-floor{stroke:rgba(255,255,255,.18);stroke-width:5;stroke-linecap:round}
     .body-head{
@@ -374,10 +392,52 @@ import { Component, Input } from '@angular/core';
     }
   `]
 })
-export class ExerciseDemoComponent {
+export class ExerciseDemoComponent implements OnChanges {
   @Input() ejercicio: any = null;
   @Input() pausado = false;
   @Input() lado: 'derecho' | 'izquierdo' = 'derecho';
+
+  mediaFallida = false;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['ejercicio']) this.mediaFallida = false;
+  }
+
+  get gifUrl(): string {
+    const id = String(this.ejercicio?.id || '');
+    const base = 'https://d3d2ynhodh9o1z.cloudfront.net/exercises/';
+    const mapa: Record<string,string> = {
+      dead_bug: 'dead-bug.gif',
+      sentadilla_silla: 'bodyweight-squat.gif',
+      sentadilla_gluteos: 'bodyweight-squat.gif',
+      talones: 'bodyweight-standing-calf-raise.gif',
+      puente_gluteos: 'low-glute-bridge-on-floor.gif',
+      abduccion_pie: 'side-hip-abduction.gif',
+      patada_atras: 'cable-standing-hip-extension.gif',
+      cobra_suave: 'pike-to-cobra-push-up.gif',
+      bird_dog_core: 'bird-dog.gif',
+      bird_dog_espalda: 'bird-dog.gif',
+      zancada_asistida: 'bodyweight-rear-lunge.gif',
+      flexion_pared_brazos: 'wall-push-up.gif',
+      flexion_pared_pecho: 'wall-push-up.gif',
+      plancha_pared_pecho: 'wall-push-up.gif',
+      circulos_brazos: 'arm-circles.gif',
+      apertura_brazos: 'arm-circles.gif',
+      elevacion_lateral_hombros: 'side-lateral-raise.gif',
+      circulos_hombros: 'arm-circles.gif',
+      marcha: 'high-knee.gif',
+      rodilla_mano: 'high-knee.gif'
+    };
+    return mapa[id] ? base + mapa[id] : '';
+  }
+
+  get mostrarImagenHumana(): boolean {
+    return Boolean(this.gifUrl) && !this.mediaFallida;
+  }
+
+  falloImagenHumana(): void {
+    this.mediaFallida = true;
+  }
 
   get modo(): string {
     const id = String(this.ejercicio?.id || '');
