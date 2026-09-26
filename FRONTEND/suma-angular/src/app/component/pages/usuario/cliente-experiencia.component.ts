@@ -13,7 +13,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
       <div *ngIf="toast" class="client-extra-alert ok">{{toast}}</div>
 
       <ng-container *ngIf="modulo==='progreso'">
-        <header class="client-extra-hero">
+        <header class="client-extra-hero progress-hero hero-photo hero-photo-progreso">
           <div>
             <span>MI PROGRESO</span>
             <h1>Tu actividad en un solo lugar</h1>
@@ -342,7 +342,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
       </ng-container>
 
       <ng-container *ngIf="modulo==='avisos'">
-        <header class="client-extra-hero notices-hero">
+        <header class="client-extra-hero notices-hero hero-photo hero-photo-avisos">
           <div>
             <span>CENTRO DE AVISOS</span>
             <h1>Notificaciones</h1>
@@ -370,7 +370,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
 
 
       <ng-container *ngIf="modulo==='club'">
-        <header class="client-extra-hero club-hero">
+        <header class="client-extra-hero club-hero hero-photo hero-photo-club">
           <div>
             <span>MI CLUB</span>
             <h1>Tu espacio dentro de Mallqui Gym</h1>
@@ -458,7 +458,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
       </ng-container>
 
       <ng-container *ngIf="modulo==='soporte'">
-        <header class="client-extra-hero support-hero">
+        <header class="client-extra-hero support-hero hero-photo hero-photo-ayuda">
           <div>
             <span>AYUDA Y SOPORTE</span>
             <h1>¿Necesitas ayuda?</h1>
