@@ -323,8 +323,12 @@ import { GymApiService } from '../../../core/services/gym-api.service';
                 <strong>{{diaNumero(e.fecha)}}</strong>
                 <small>{{mesCorto(e.fecha)}}</small>
               </div>
-              <span class="client-event-icon" [class.home]="e.tipo==='casa'" [class.membership]="e.tipo==='membresia'">
-                {{e.tipo==='clase' ? '▣' : (e.tipo==='casa' ? '⚡' : '✦')}}
+              <span
+                class="client-event-icon event-photo"
+                [class.home]="e.tipo==='casa'"
+                [class.membership]="e.tipo==='membresia'"
+                [style.background-image]="'url(' + imagenEventoCalendario(e) + ')'">
+                <i>{{e.tipo==='clase' ? '▣' : (e.tipo==='casa' ? '⚡' : '✦')}}</i>
               </span>
               <div class="client-event-copy">
                 <small>{{tipoEventoNombre(e.tipo)}}</small>
@@ -719,6 +723,27 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
     if (t==='casa') return 'Entrenamiento en casa';
     if (t==='membresia') return 'Membresía';
     return 'Clase del gimnasio';
+  }
+
+  imagenEventoCalendario(e:any): string {
+    const tipo=String(e?.tipo||'').toLowerCase();
+    const detalle=String(e?.detalle||'').toLowerCase();
+    if(tipo==='membresia'){
+      return 'https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=240&q=82';
+    }
+    if(tipo==='clase'){
+      return 'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=240&q=82';
+    }
+    if(detalle.includes('pierna')){
+      return 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=240&q=82';
+    }
+    if(detalle.includes('brazo')){
+      return 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=240&q=82';
+    }
+    if(detalle.includes('core') || detalle.includes('abdomen')){
+      return 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=240&q=82';
+    }
+    return 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=240&q=82';
   }
 
   private eventosEnFecha(fecha:Date): any[] {
