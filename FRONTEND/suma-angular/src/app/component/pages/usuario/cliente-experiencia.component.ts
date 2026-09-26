@@ -249,7 +249,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
                 (click)="seleccionarDiaCalendario(d)">
                 <span>{{d.numero}}</span>
                 <div class="calendar-day-dots" *ngIf="d.eventos.length">
-                  <i *ngFor="let e of d.eventos | slice:0:3"
+                  <i *ngFor="let e of eventosVistaDia(d.eventos)"
                      [class.home]="e.tipo==='casa'"
                      [class.membership]="e.tipo==='membresia'"></i>
                 </div>
@@ -662,6 +662,10 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
 
   get eventosAgendaDia(): any[] {
     return this.eventosEnFecha(this.fechaAgenda);
+  }
+
+  eventosVistaDia(eventos:any): any[] {
+    return Array.isArray(eventos) ? eventos.slice(0,3) : [];
   }
 
   get diaAgendaTitulo(): string {
