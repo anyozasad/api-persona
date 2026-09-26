@@ -2369,3 +2369,151 @@
   background:#8f2130!important;
   border-color:rgba(255,166,178,.24)!important;
 }
+
+
+/* =========================================================
+   ADMIN V22 · SIDEBAR COMPACTO ESTILO REFERENCIA
+   Menos botones, agrupados como el panel mostrado por el usuario.
+   ========================================================= */
+
+.admin-nav{
+  padding-bottom:18px!important;
+}
+.admin-grouped-nav{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:12px!important;
+  padding:6px 10px 0!important;
+  overflow-y:auto!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:rgba(255,255,255,.18) transparent!important;
+}
+.admin-grouped-nav::-webkit-scrollbar{width:4px!important}
+.admin-grouped-nav::-webkit-scrollbar-thumb{
+  border-radius:999px!important;
+  background:rgba(255,255,255,.16)!important;
+}
+
+.admin-menu-group{
+  display:grid!important;
+  gap:3px!important;
+}
+.admin-menu-group-title{
+  padding:0 10px 4px!important;
+  color:rgba(205,220,236,.55)!important;
+  font-size:7px!important;
+  font-weight:900!important;
+  letter-spacing:1.1px!important;
+  text-transform:uppercase!important;
+}
+.admin-menu-group button{
+  position:relative!important;
+  width:100%!important;
+  min-height:35px!important;
+  display:grid!important;
+  grid-template-columns:27px minmax(0,1fr) 12px!important;
+  align-items:center!important;
+  gap:7px!important;
+  padding:5px 8px!important;
+  border:1px solid transparent!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  color:#c9d6e3!important;
+  text-align:left!important;
+  cursor:pointer!important;
+  transition:background .17s ease,color .17s ease,border-color .17s ease,transform .17s ease!important;
+}
+.admin-menu-group button:hover{
+  background:rgba(255,255,255,.065)!important;
+  border-color:rgba(255,255,255,.055)!important;
+  color:#fff!important;
+  transform:translateX(2px)!important;
+}
+.admin-menu-group button.active{
+  background:linear-gradient(135deg,#ef233c,#cf1730)!important;
+  border-color:rgba(255,255,255,.08)!important;
+  color:#fff!important;
+  box-shadow:0 8px 18px rgba(239,35,60,.24)!important;
+}
+.admin-menu-group button.active:before{
+  content:''!important;
+  position:absolute!important;
+  left:-10px!important;
+  top:7px!important;
+  bottom:7px!important;
+  width:3px!important;
+  border-radius:0 4px 4px 0!important;
+  background:#fff!important;
+}
+.admin-menu-group .admin-menu-icon{
+  width:26px!important;
+  height:26px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:8px!important;
+  background:rgba(255,255,255,.07)!important;
+  color:#dce8f3!important;
+  font-size:10px!important;
+  line-height:1!important;
+}
+.admin-menu-group button.active .admin-menu-icon{
+  background:rgba(255,255,255,.16)!important;
+  color:#fff!important;
+}
+.admin-menu-group .admin-menu-text{
+  min-width:0!important;
+  overflow:hidden!important;
+  color:inherit!important;
+  font-size:8px!important;
+  font-weight:800!important;
+  line-height:1.15!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.admin-menu-group button>i{
+  color:inherit!important;
+  font-size:13px!important;
+  font-style:normal!important;
+  opacity:.8!important;
+}
+
+.admin-system-card{
+  margin-top:12px!important;
+}
+.admin-logout{
+  min-height:37px!important;
+  border-radius:9px!important;
+  font-size:8px!important;
+  font-weight:800!important;
+}
+
+/* Tarjeta simple para avisos dentro de Gastos */
+.admin-inline-warning{
+  margin:10px 0 4px!important;
+  padding:14px!important;
+  border:1px solid #f3d6da!important;
+  border-radius:12px!important;
+  background:#fff7f8!important;
+}
+.admin-inline-warning b{
+  display:block!important;
+  color:#a82438!important;
+  font-size:10px!important;
+}
+.admin-inline-warning p{
+  margin:4px 0 10px!important;
+  color:#7f6670!important;
+  font-size:8px!important;
+}
+
+/* Los botones nuevos siguen siendo cómodos aunque el sidebar sea más compacto */
+@media(max-width:1180px) and (min-width:851px){
+  .admin-grouped-nav{
+    padding-left:8px!important;
+    padding-right:8px!important;
+  }
+  .admin-menu-group .admin-menu-text{
+    font-size:7.6px!important;
+  }
+}
+
