@@ -171,22 +171,153 @@ import { GymApiService } from '../../../core/services/gym-api.service';
       </ng-container>
 
       <ng-container *ngIf="modulo==='calendario'">
-        <header class="client-extra-hero calendar-hero">
-          <div>
-            <span>MI CALENDARIO</span>
-            <h1>Próximas actividades</h1>
-            <p>Consulta clases reservadas, sesiones en casa y fechas importantes de tu membresía.</p>
+        <header class="calendar-pro-head">
+          <div class="calendar-pro-copy">
+            <span class="calendar-pro-kicker"><i></i> AGENDA PERSONAL</span>
+            <h1>Organiza tu entrenamiento</h1>
+            <p>Tu calendario combina clases, sesiones en casa y fechas de membresía para que tengas claro qué sigue.</p>
+            <div class="calendar-head-actions">
+              <button type="button" class="calendar-today-btn" (click)="irMesActual()">Hoy</button>
+              <button type="button" class="calendar-refresh-btn" (click)="cargarCalendario()">↻ Sincronizar agenda</button>
+            </div>
           </div>
-          <button type="button" (click)="cargarCalendario()">↻ Actualizar</button>
+          <div class="calendar-next-card" *ngIf="proximoEventoCalendario; else sinProximoEvento">
+            <small>PRÓXIMA ACTIVIDAD</small>
+            <div class="calendar-next-date">
+              <strong>{{diaNumero(proximoEventoCalendario.fecha)}}</strong>
+              <span>{{mesCorto(proximoEventoCalendario.fecha)}}</span>
+            </div>
+            <div>
+              <b>{{proximoEventoCalendario.titulo}}</b>
+              <p>{{proximoEventoCalendario.detalle}}</p>
+            </div>
+          </div>
+          <ng-template #sinProximoEvento>
+            <div class="calendar-next-card empty">
+              <small>PRÓXIMA ACTIVIDAD</small>
+              <strong>Agenda libre</strong>
+              <p>No tienes actividades próximas registradas.</p>
+            </div>
+          </ng-template>
         </header>
 
-        <section class="client-calendar-card">
-          <div class="client-calendar-legend">
-            <span><i class="class-dot"></i> Clase</span>
-            <span><i class="home-dot"></i> En casa</span>
-            <span><i class="membership-dot"></i> Membresía</span>
-          </div>
-          <div class="client-calendar-list" *ngIf="calendario.length; else emptyCalendar">
+        <section class="calendar-summary-row">
+          <article>
+            <span class="calendar-summary-icon blue">▣</span>
+            <div><small>CLASES</small><strong>{{totalEventosTipo('clase')}}</strong><p>próximas reservas</p></div>
+          </article>
+          <article>
+            <span class="calendar-summary-icon red">⚡</span>
+            <div><small>EN CASA</small><strong>{{totalEventosTipo('casa')}}</strong><p>sesiones programadas</p></div>
+          </article>
+          <article>
+            <span class="calendar-summary-icon gold">✦</span>
+            <div><small>MEMBRESÍA</small><strong>{{totalEventosTipo('membresia')}}</strong><p>fecha importante</p></div>
+          </article>
+          <article>
+            <span class="calendar-summary-icon green">✓</span>
+            <div><small>TOTAL AGENDA</small><strong>{{calendario.length}}</strong><p>actividades próximas</p></div>
+          </article>
+        </section>
+
+        <section class="calendar-workspace">
+          <article class="calendar-month-card">
+            <header class="calendar-month-head">
+              <div>
+                <span>VISTA MENSUAL</span>
+                <h2>{{mesCalendarioTitulo}}</h2>
+              </div>
+              <div class="calendar-month-nav">
+                <button type="button" (click)="cambiarMes(-1)" aria-label="Mes anterior">‹</button>
+                <button type="button" (click)="irMesActual()">Hoy</button>
+                <button type="button" (click)="cambiarMes(1)" aria-label="Mes siguiente">›</button>
+              </div>
+            </header>
+
+            <div class="calendar-week-head">
+              <span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span><span>DOM</span>
+            </div>
+
+            <div class="calendar-month-grid">
+              <button
+                type="button"
+                *ngFor="let d of diasCalendario"
+                class="calendar-day"
+                [class.outside]="!d.actual"
+                [class.today]="d.hoy"
+                [class.has-events]="d.eventos.length>0"
+                (click)="seleccionarDiaCalendario(d)">
+                <span>{{d.numero}}</span>
+                <div class="calendar-day-dots" *ngIf="d.eventos.length">
+                  <i *ngFor="let e of d.eventos | slice:0:3"
+                     [class.home]="e.tipo==='casa'"
+                     [class.membership]="e.tipo==='membresia'"></i>
+                </div>
+                <small *ngIf="d.eventos.length">{{d.eventos.length}} actividad{{d.eventos.length===1 ? '' : 'es'}}</small>
+              </button>
+            </div>
+
+            <footer class="calendar-month-legend">
+              <span><i></i> Clase</span>
+              <span><i class="home"></i> En casa</span>
+              <span><i class="membership"></i> Membresía</span>
+            </footer>
+          </article>
+
+          <aside class="calendar-agenda-card">
+            <header>
+              <div>
+                <span>AGENDA</span>
+                <h2>{{diaAgendaTitulo}}</h2>
+              </div>
+              <b>{{eventosAgendaDia.length}}</b>
+            </header>
+
+            <div class="calendar-agenda-list" *ngIf="eventosAgendaDia.length; else agendaVacia">
+              <button type="button" *ngFor="let e of eventosAgendaDia" (click)="eventoSeleccionado=e">
+                <span class="agenda-event-icon"
+                      [class.home]="e.tipo==='casa'"
+                      [class.membership]="e.tipo==='membresia'">
+                  {{e.tipo==='clase' ? '▣' : (e.tipo==='casa' ? '⚡' : '✦')}}
+                </span>
+                <div>
+                  <small>{{tipoEventoNombre(e.tipo)}} · {{diaNombre(e.fecha)}}</small>
+                  <b>{{e.titulo}}</b>
+                  <p>{{e.detalle}}</p>
+                </div>
+                <em>›</em>
+              </button>
+            </div>
+
+            <ng-template #agendaVacia>
+              <div class="calendar-agenda-empty">
+                <span>✓</span>
+                <b>Día disponible</b>
+                <p>No tienes actividades registradas para esta fecha.</p>
+              </div>
+            </ng-template>
+
+            <div class="calendar-selected-event" *ngIf="eventoSeleccionado">
+              <button type="button" class="calendar-selected-close" (click)="eventoSeleccionado=null">×</button>
+              <small>DETALLE DE ACTIVIDAD</small>
+              <span class="calendar-selected-icon"
+                    [class.home]="eventoSeleccionado.tipo==='casa'"
+                    [class.membership]="eventoSeleccionado.tipo==='membresia'">
+                {{eventoSeleccionado.tipo==='clase' ? '▣' : (eventoSeleccionado.tipo==='casa' ? '⚡' : '✦')}}
+              </span>
+              <h3>{{eventoSeleccionado.titulo}}</h3>
+              <p>{{eventoSeleccionado.detalle}}</p>
+              <div><b>{{diaNombre(eventoSeleccionado.fecha) | titlecase}}</b><span>{{diaNumero(eventoSeleccionado.fecha)}} {{mesCorto(eventoSeleccionado.fecha)}}</span></div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="calendar-upcoming-card">
+          <header>
+            <div><span>PRÓXIMOS EVENTOS</span><h2>Tu agenda completa</h2><p>Información sincronizada con tus reservas y tu plan de entrenamiento.</p></div>
+            <span class="calendar-sync-status"><i></i> Actualizado</span>
+          </header>
+          <div class="client-calendar-list calendar-list-pro" *ngIf="calendario.length; else emptyCalendar">
             <article *ngFor="let e of calendario">
               <div class="client-date-box">
                 <strong>{{diaNumero(e.fecha)}}</strong>
@@ -195,8 +326,13 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               <span class="client-event-icon" [class.home]="e.tipo==='casa'" [class.membership]="e.tipo==='membresia'">
                 {{e.tipo==='clase' ? '▣' : (e.tipo==='casa' ? '⚡' : '✦')}}
               </span>
-              <div class="client-event-copy"><b>{{e.titulo}}</b><p>{{e.detalle}}</p></div>
+              <div class="client-event-copy">
+                <small>{{tipoEventoNombre(e.tipo)}}</small>
+                <b>{{e.titulo}}</b>
+                <p>{{e.detalle}}</p>
+              </div>
               <small class="client-event-day">{{diaNombre(e.fecha)}}</small>
+              <button type="button" class="calendar-detail-btn" (click)="seleccionarEventoCalendario(e)">Ver detalle</button>
             </article>
           </div>
           <ng-template #emptyCalendar>
@@ -376,6 +512,9 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
   meta: any = { sesiones_semanales: 3, recordatorios: true };
   guardandoMeta = false;
   calendario: any[] = [];
+  mesCalendario = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  fechaAgenda = new Date();
+  eventoSeleccionado: any = null;
   credencial: any = null;
   clasesClub: any[] = [];
   opiniones: any[] = [];
@@ -457,8 +596,132 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
   cargarCalendario(): void {
     this.cargando = true;
     this.api.calendarioCliente().subscribe({
-      next: r => { this.calendario = r || []; this.cargando = false; },
+      next: r => {
+        this.calendario = r || [];
+        const proximo = this.proximoEventoCalendario;
+        if (proximo?.fecha) {
+          const d = this.fechaLocal(proximo.fecha);
+          if (d) {
+            this.mesCalendario = new Date(d.getFullYear(), d.getMonth(), 1);
+            this.fechaAgenda = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+          }
+        }
+        this.cargando = false;
+      },
       error: e => { this.error = this.mensajeError(e); this.cargando = false; }
+    });
+  }
+
+  get mesCalendarioTitulo(): string {
+    return this.mesCalendario.toLocaleDateString('es-PE', { month: 'long', year: 'numeric' })
+      .replace(/^./, x => x.toUpperCase());
+  }
+
+  get proximoEventoCalendario(): any {
+    if (!this.calendario.length) return null;
+    const ahora = new Date();
+    ahora.setHours(0,0,0,0);
+    return [...this.calendario]
+      .filter((e:any) => {
+        const d = this.fechaLocal(e?.fecha);
+        return d ? d.getTime() >= ahora.getTime() : false;
+      })
+      .sort((a:any,b:any) => {
+        const da = this.fechaLocal(a?.fecha)?.getTime() || 0;
+        const db = this.fechaLocal(b?.fecha)?.getTime() || 0;
+        return da-db;
+      })[0] || this.calendario[0];
+  }
+
+  totalEventosTipo(tipo: string): number {
+    return this.calendario.filter((e:any) => String(e?.tipo || '').toLowerCase() === tipo).length;
+  }
+
+  get diasCalendario(): any[] {
+    const y = this.mesCalendario.getFullYear();
+    const m = this.mesCalendario.getMonth();
+    const primero = new Date(y,m,1);
+    const offset = (primero.getDay()+6)%7;
+    const inicio = new Date(y,m,1-offset);
+    const hoy = new Date();
+    hoy.setHours(0,0,0,0);
+
+    return Array.from({length:42},(_,i)=>{
+      const fecha = new Date(inicio);
+      fecha.setDate(inicio.getDate()+i);
+      fecha.setHours(0,0,0,0);
+      return {
+        fecha,
+        numero:fecha.getDate(),
+        actual:fecha.getMonth()===m,
+        hoy:fecha.getTime()===hoy.getTime(),
+        eventos:this.eventosEnFecha(fecha),
+      };
+    });
+  }
+
+  get eventosAgendaDia(): any[] {
+    return this.eventosEnFecha(this.fechaAgenda);
+  }
+
+  get diaAgendaTitulo(): string {
+    return this.fechaAgenda.toLocaleDateString('es-PE',{
+      weekday:'long',day:'numeric',month:'long'
+    }).replace(/^./,x=>x.toUpperCase());
+  }
+
+  cambiarMes(delta:number): void {
+    this.mesCalendario = new Date(
+      this.mesCalendario.getFullYear(),
+      this.mesCalendario.getMonth()+delta,
+      1
+    );
+    this.fechaAgenda = new Date(
+      this.mesCalendario.getFullYear(),
+      this.mesCalendario.getMonth(),
+      1
+    );
+    this.eventoSeleccionado = null;
+  }
+
+  irMesActual(): void {
+    const hoy = new Date();
+    this.mesCalendario = new Date(hoy.getFullYear(),hoy.getMonth(),1);
+    this.fechaAgenda = new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate());
+    this.eventoSeleccionado = null;
+  }
+
+  seleccionarDiaCalendario(d:any): void {
+    if (!d?.fecha) return;
+    this.fechaAgenda = new Date(d.fecha);
+    if (!d.actual) {
+      this.mesCalendario = new Date(d.fecha.getFullYear(),d.fecha.getMonth(),1);
+    }
+    this.eventoSeleccionado = d.eventos?.[0] || null;
+  }
+
+  seleccionarEventoCalendario(e:any): void {
+    this.eventoSeleccionado = e;
+    const d = this.fechaLocal(e?.fecha);
+    if (d) {
+      this.fechaAgenda = new Date(d.getFullYear(),d.getMonth(),d.getDate());
+      this.mesCalendario = new Date(d.getFullYear(),d.getMonth(),1);
+    }
+    window.scrollTo({top:220,behavior:'smooth'});
+  }
+
+  tipoEventoNombre(tipo:any): string {
+    const t = String(tipo || '').toLowerCase();
+    if (t==='casa') return 'Entrenamiento en casa';
+    if (t==='membresia') return 'Membresía';
+    return 'Clase del gimnasio';
+  }
+
+  private eventosEnFecha(fecha:Date): any[] {
+    const y=fecha.getFullYear(), m=fecha.getMonth(), d=fecha.getDate();
+    return this.calendario.filter((e:any)=>{
+      const x=this.fechaLocal(e?.fecha);
+      return !!x && x.getFullYear()===y && x.getMonth()===m && x.getDate()===d;
     });
   }
 
