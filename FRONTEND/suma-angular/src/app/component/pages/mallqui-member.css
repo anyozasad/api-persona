@@ -24649,3 +24649,88 @@
     opacity:1!important;
   }
 }
+
+
+/* PORTAL CLIENTE V85 · IMAGEN VISIBLE EN GUIA VISUAL */
+/* Fallback visible: aunque la animación tarde o una imagen falle, el panel nunca queda vacío. */
+.train-ux-visual-card{
+  background:
+    linear-gradient(180deg,rgba(4,18,31,.02) 0%,rgba(4,19,34,.12) 42%,rgba(3,18,32,.66) 100%),
+    url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=92')
+    center 42%/cover no-repeat!important;
+}
+
+/* Las diapositivas siempre ocupan el panel y la primera se ve desde el primer instante. */
+.train-ux-carousel{
+  z-index:1!important;
+}
+
+.train-ux-slide{
+  z-index:1!important;
+  display:block!important;
+  visibility:visible!important;
+  filter:saturate(1) contrast(1.04) brightness(.94)!important;
+}
+
+.train-ux-slide-1{
+  opacity:1!important;
+  animation:trainUxCarouselFirst 15s infinite!important;
+}
+
+.train-ux-slide-2{
+  animation:trainUxCarouselSecond 15s infinite!important;
+}
+
+.train-ux-slide-3{
+  animation:trainUxCarouselThird 15s infinite!important;
+}
+
+/* Overlay mucho más suave para que la foto siga siendo protagonista. */
+.train-ux-visual-shade{
+  z-index:2!important;
+  background:
+    linear-gradient(180deg,rgba(3,16,29,.03) 0%,rgba(3,18,32,.08) 38%,rgba(3,18,32,.68) 100%),
+    linear-gradient(90deg,rgba(3,19,34,.03),rgba(3,19,34,.12))!important;
+}
+
+.train-ux-live-badge,
+.train-ux-visual-info,
+.train-ux-no-equipment{
+  z-index:4!important;
+}
+
+.train-ux-visual-info{
+  background:rgba(4,23,40,.66)!important;
+  border-color:rgba(255,255,255,.14)!important;
+}
+
+@keyframes trainUxCarouselFirst{
+  0%,28%{opacity:1;transform:scale(1.02)}
+  33%,94%{opacity:0;transform:scale(1)}
+  100%{opacity:1;transform:scale(1.02)}
+}
+
+@keyframes trainUxCarouselSecond{
+  0%,28%{opacity:0;transform:scale(1.02)}
+  33%,61%{opacity:1;transform:scale(1)}
+  66%,100%{opacity:0;transform:scale(1.02)}
+}
+
+@keyframes trainUxCarouselThird{
+  0%,61%{opacity:0;transform:scale(1.02)}
+  66%,94%{opacity:1;transform:scale(1)}
+  100%{opacity:0;transform:scale(1.02)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .train-ux-slide{
+    animation:none!important;
+  }
+  .train-ux-slide-1{
+    opacity:1!important;
+  }
+  .train-ux-slide-2,
+  .train-ux-slide-3{
+    opacity:0!important;
+  }
+}
