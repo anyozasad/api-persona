@@ -15892,3 +15892,105 @@
     background-position:52% 44%!important;
   }
 }
+
+
+/* PORTAL CLIENTE V38 · HERO FULL BLEED COMO LA REFERENCIA */
+@media (min-width:1000px){
+  /* La fotografía ocupa TODO el hero. En la referencia no existe una mitad
+     izquierda plana: el gimnasio continúa detrás del texto y se oscurece
+     únicamente con un degradado. */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main{
+    position:relative!important;
+    overflow:hidden!important;
+    isolation:isolate!important;
+    background:#03182c!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main:before{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    z-index:0!important;
+    width:100%!important;
+    height:100%!important;
+    opacity:1!important;
+    background-image:url('/assets/showcase/hero-showcase.svg')!important;
+    background-repeat:no-repeat!important;
+    background-size:cover!important;
+    background-position:58% 46%!important;
+    filter:saturate(1.12) contrast(1.05) brightness(.97)!important;
+    -webkit-mask-image:none!important;
+    mask-image:none!important;
+    transform:none!important;
+  }
+
+  /* Capa oscura continua: deja ver la textura del gimnasio bajo el texto,
+     pero mantiene la lectura como en la maqueta de referencia. */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-shade{
+    position:absolute!important;
+    inset:0!important;
+    z-index:1!important;
+    background:
+      linear-gradient(
+        90deg,
+        rgba(2,18,34,.97) 0%,
+        rgba(2,18,34,.94) 20%,
+        rgba(2,18,34,.78) 34%,
+        rgba(2,18,34,.50) 46%,
+        rgba(2,18,34,.20) 62%,
+        rgba(2,18,34,.05) 76%,
+        rgba(2,18,34,.12) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(0,12,24,.08) 0%,
+        rgba(0,12,24,.03) 55%,
+        rgba(0,12,24,.30) 100%
+      )!important;
+    pointer-events:none!important;
+  }
+
+  /* El contenido siempre queda encima de la foto y del degradado. */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-copy,
+  .member-page:has(.dashboard-showcase-v30) .showcase-quote,
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpis{
+    position:absolute!important;
+    z-index:3!important;
+  }
+
+  /* Misma composición del mockup: texto a la izquierda, atleta centro-derecha. */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-copy{
+    left:0!important;
+    top:0!important;
+    width:47%!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-quote{
+    right:2vw!important;
+    top:6.3dvh!important;
+  }
+
+  /* Los KPI quedan flotando sobre la misma fotografía, sin una franja separada. */
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpis{
+    left:1.2vw!important;
+    right:1.2vw!important;
+    bottom:1.25dvh!important;
+  }
+}
+
+/* En pantallas 16:9 anchas afinamos el encuadre para que no se agrande
+   demasiado el atleta y se vea más gimnasio alrededor, como en la referencia. */
+@media (min-width:1450px) and (min-height:780px){
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main:before{
+    background-size:cover!important;
+    background-position:60% 45%!important;
+  }
+}
+
+/* En pantallas Full HD de poca altura evita el zoom excesivo del fondo. */
+@media (min-width:1600px) and (max-height:820px){
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main:before{
+    background-size:100% 100%!important;
+    background-position:center center!important;
+  }
+}
