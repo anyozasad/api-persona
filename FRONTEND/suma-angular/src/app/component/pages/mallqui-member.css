@@ -16428,3 +16428,125 @@
     z-index:5!important;
   }
 }
+
+/* PORTAL CLIENTE V42 · FONDO FINAL IGUAL A LA REFERENCIA */
+@media (min-width:1000px){
+
+  /* Fondo ambiental en TODO el hero.
+     Esto rellena de verdad la izquierda y la derecha con el mismo gimnasio. */
+  .member-page .dashboard-showcase-v30 .showcase-hero-main{
+    position:relative!important;
+    overflow:hidden!important;
+    isolation:isolate!important;
+    background:#03182c!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-hero-main:before{
+    content:""!important;
+    display:block!important;
+    position:absolute!important;
+    inset:-2%!important;
+    z-index:0!important;
+
+    background-image:url('/assets/showcase/hero-showcase.svg')!important;
+    background-repeat:no-repeat!important;
+    background-size:100% 100%!important;
+    background-position:center center!important;
+
+    opacity:.78!important;
+    filter:blur(2px) saturate(.96) brightness(.72) contrast(1.03)!important;
+    transform:scale(1.025)!important;
+    pointer-events:none!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-hero-main:after{
+    content:none!important;
+    display:none!important;
+  }
+
+  /* Foto nítida: queda a la derecha con una proporción casi idéntica
+     a la imagen de referencia; ya no aparece pequeña en el centro. */
+  .member-page .dashboard-showcase-v30 .showcase-hero-main .showcase-hero-photo{
+    position:absolute!important;
+    top:0!important;
+    right:0!important;
+    bottom:0!important;
+    left:auto!important;
+
+    z-index:1!important;
+    width:60%!important;
+    height:100%!important;
+    max-width:none!important;
+
+    display:block!important;
+    object-fit:cover!important;
+    object-position:center center!important;
+
+    opacity:1!important;
+    filter:saturate(1.10) contrast(1.05) brightness(.98)!important;
+    transform:none!important;
+
+    -webkit-mask-image:linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0,0,0,.16) 7%,
+      rgba(0,0,0,.60) 16%,
+      #000 29%,
+      #000 100%
+    )!important;
+
+    mask-image:linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0,0,0,.16) 7%,
+      rgba(0,0,0,.60) 16%,
+      #000 29%,
+      #000 100%
+    )!important;
+  }
+
+  /* Degradado de lectura: deja ver el gimnasio detrás del título,
+     en vez de convertirlo en un bloque azul vacío. */
+  .member-page .dashboard-showcase-v30 .showcase-hero-main .showcase-hero-shade{
+    position:absolute!important;
+    inset:0!important;
+    z-index:2!important;
+    pointer-events:none!important;
+
+    background:
+      linear-gradient(
+        90deg,
+        rgba(2,18,34,.82) 0%,
+        rgba(2,18,34,.69) 18%,
+        rgba(2,18,34,.46) 31%,
+        rgba(2,18,34,.22) 43%,
+        rgba(2,18,34,.06) 58%,
+        rgba(2,18,34,.02) 76%,
+        rgba(2,18,34,.08) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(1,12,23,.04) 0%,
+        rgba(1,12,23,.02) 60%,
+        rgba(1,12,23,.24) 100%
+      )!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-hero-main .showcase-hero-copy,
+  .member-page .dashboard-showcase-v30 .showcase-hero-main .showcase-quote{
+    z-index:4!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-hero-main .showcase-kpis{
+    z-index:5!important;
+  }
+}
+
+/* En monitores grandes mantiene al atleta en la misma posición visual
+   que la referencia y evita que vuelva a quedar centrado. */
+@media (min-width:1550px){
+  .member-page .dashboard-showcase-v30 .showcase-hero-main .showcase-hero-photo{
+    width:60%!important;
+    object-position:center center!important;
+  }
+}
