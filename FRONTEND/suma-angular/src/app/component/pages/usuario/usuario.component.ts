@@ -126,6 +126,27 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         </section>
 
         <section *ngIf="moduloActivo==='inicio'" class="member-dashboard dashboard-showcase-v30">
+          <div class="showcase-bg-carousel" aria-hidden="true">
+            <img class="showcase-bg-slide showcase-bg-slide-1"
+                 src="https://images.unsplash.com/photo-1641337221253-fdc7237f6b61?auto=format&fit=crop&w=3200&q=95"
+                 alt=""
+                 fetchpriority="high"
+                 decoding="async">
+            <img class="showcase-bg-slide showcase-bg-slide-2"
+                 src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=3200&q=92"
+                 alt=""
+                 decoding="async">
+            <img class="showcase-bg-slide showcase-bg-slide-3"
+                 src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=3200&q=92"
+                 alt=""
+                 decoding="async">
+            <img class="showcase-bg-slide showcase-bg-slide-4"
+                 src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=3200&q=92"
+                 alt=""
+                 decoding="async">
+          </div>
+          <div class="showcase-bg-vignette" aria-hidden="true"></div>
+
           <section class="showcase-hero-grid">
             <article class="showcase-hero-main">
               <img class="showcase-hero-photo" src="https://images.unsplash.com/photo-1641337221253-fdc7237f6b61?auto=format&fit=crop&w=3200&q=95" alt="" aria-hidden="true">
