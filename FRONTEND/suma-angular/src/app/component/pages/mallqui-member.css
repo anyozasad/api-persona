@@ -16500,3 +16500,261 @@
     background-position:center 40%!important;
   }
 }
+
+
+/* PORTAL CLIENTE V50 · FILA DE MEMBRESÍA Y PROGRESO COMO REFERENCIA */
+@media (min-width:1000px){
+
+  .member-page .dashboard-showcase-v30 .showcase-overview-grid{
+    grid-template-columns:1.14fr 1.10fr 1fr!important;
+    gap:12px!important;
+    align-items:stretch!important;
+  }
+
+  /* Membresía activa, roja y premium como la segunda imagen. */
+  .member-page .dashboard-showcase-v30 .showcase-membership-card{
+    min-height:138px!important;
+    height:138px!important;
+    padding:16px 18px!important;
+    display:grid!important;
+    grid-template-columns:78px minmax(0,1fr) auto!important;
+    align-items:center!important;
+    gap:16px!important;
+    border-radius:18px!important;
+    border:1px solid rgba(255,74,106,.55)!important;
+    background:
+      linear-gradient(118deg,rgba(255,43,76,.14) 0 42%,transparent 42%),
+      radial-gradient(circle at 8% 50%,rgba(255,83,109,.20),transparent 28%),
+      linear-gradient(125deg,#99102f 0%,#770b29 47%,#51091f 100%)!important;
+    box-shadow:0 16px 38px rgba(74,4,23,.28)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-icon{
+    width:72px!important;
+    height:72px!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:15px!important;
+    background:rgba(91,0,28,.46)!important;
+    color:#ff7658!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-icon svg{
+    width:39px!important;
+    height:39px!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-copy span{
+    font-size:11px!important;
+    font-weight:900!important;
+    letter-spacing:.5px!important;
+    color:#ffd4dc!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-copy h2{
+    margin:6px 0 5px!important;
+    font-size:24px!important;
+    line-height:1!important;
+    color:#fff!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-copy p{
+    margin:0!important;
+    font-size:11.5px!important;
+    color:#ffe0e5!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-actions{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-end!important;
+    justify-content:center!important;
+    gap:15px!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-actions>span{
+    padding:7px 13px!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    gap:7px!important;
+    border-radius:999px!important;
+    background:rgba(22,190,120,.18)!important;
+    border:1px solid rgba(69,239,158,.55)!important;
+    color:#cffff0!important;
+    font-size:11px!important;
+    font-weight:900!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-actions>span i{
+    width:8px!important;
+    height:8px!important;
+    border-radius:50%!important;
+    background:#20e59d!important;
+    box-shadow:0 0 12px rgba(32,229,157,.65)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-actions button{
+    min-width:130px!important;
+    min-height:45px!important;
+    border-radius:11px!important;
+    border:1px solid rgba(255,102,128,.54)!important;
+    background:rgba(113,5,35,.34)!important;
+    color:#fff!important;
+    font-size:12px!important;
+    font-weight:900!important;
+  }
+
+  /* Próxima clase reservada, con imagen + datos en una sola fila. */
+  .member-page .dashboard-showcase-v30 .showcase-class-card{
+    height:138px!important;
+    min-height:138px!important;
+    padding:13px 15px!important;
+    border-radius:17px!important;
+    border:1px solid rgba(93,145,184,.31)!important;
+    background:linear-gradient(180deg,rgba(8,45,78,.97),rgba(7,39,68,.97))!important;
+    box-shadow:0 15px 34px rgba(2,18,32,.22)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-card-head{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    padding-bottom:8px!important;
+    border-bottom:1px solid rgba(118,160,192,.16)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-card-head>b{
+    font-size:12px!important;
+    color:#fff!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-card-head>button{
+    border:0!important;
+    background:transparent!important;
+    color:#ff3f5c!important;
+    font-size:11px!important;
+    font-weight:900!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-class-content{
+    margin-top:9px!important;
+    display:grid!important;
+    grid-template-columns:108px minmax(0,1fr)!important;
+    gap:13px!important;
+    align-items:center!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-class-content>img{
+    width:108px!important;
+    height:72px!important;
+    border-radius:9px!important;
+    object-fit:cover!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-class-info{
+    min-width:0!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-class-info h3{
+    margin:0 0 9px!important;
+    font-size:15px!important;
+    line-height:1.05!important;
+    color:#fff!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-class-meta{
+    display:flex!important;
+    align-items:center!important;
+    flex-wrap:wrap!important;
+    gap:8px 15px!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-class-meta p{
+    margin:0!important;
+    display:flex!important;
+    align-items:center!important;
+    gap:5px!important;
+    color:#e3ecf4!important;
+    font-size:10px!important;
+    white-space:nowrap!important;
+  }
+
+  /* Progreso mensual igual a la tarjeta de la referencia. */
+  .member-page .dashboard-showcase-v30 .showcase-progress-card{
+    height:138px!important;
+    min-height:138px!important;
+    padding:13px 15px!important;
+    border-radius:17px!important;
+    border:1px solid rgba(93,145,184,.31)!important;
+    background:linear-gradient(180deg,rgba(8,45,78,.97),rgba(7,39,68,.97))!important;
+    box-shadow:0 15px 34px rgba(2,18,32,.22)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-progress-body{
+    margin-top:8px!important;
+    display:grid!important;
+    grid-template-columns:88px minmax(0,1fr)!important;
+    gap:13px!important;
+    align-items:center!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-progress-ring{
+    width:84px!important;
+    height:84px!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-progress-ring>div{
+    width:59px!important;
+    height:59px!important;
+    background:#092947!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-progress-ring b{
+    font-size:18px!important;
+    color:#fff!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-progress-list{
+    display:grid!important;
+    gap:7px!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-progress-list p{
+    margin:0!important;
+    display:grid!important;
+    grid-template-columns:9px minmax(0,1fr) auto!important;
+    align-items:center!important;
+    gap:7px!important;
+    font-size:10px!important;
+    color:#dbe7ef!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-progress-list p b{
+    color:#fff!important;
+    font-size:10px!important;
+  }
+
+  /* KPI superiores con más presencia como la segunda captura. */
+  .member-page .dashboard-showcase-v30 .showcase-kpis{
+    gap:12px!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi{
+    min-height:82px!important;
+    border-radius:14px!important;
+    background:rgba(4,31,55,.84)!important;
+    border:1px solid rgba(105,156,193,.34)!important;
+    backdrop-filter:blur(10px)!important;
+    -webkit-backdrop-filter:blur(10px)!important;
+    box-shadow:0 11px 25px rgba(0,0,0,.19)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi>span b{
+    font-size:24px!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi mark{
+    font-size:10px!important;
+    padding:5px 8px!important;
+  }
+}
