@@ -18876,3 +18876,543 @@
     outline-offset:2px!important;
   }
 }
+
+
+/* PORTAL CLIENTE V66 · UX TIPOGRÁFICA PRO EN PROGRESO Y SESIÓN ACTIVA */
+@media (min-width:1000px){
+
+  /* =========================================================
+     PROGRESO · MEJOR JERARQUÍA, CONTRASTE Y ESTADOS VACÍOS
+     ========================================================= */
+  .progress-experience-v34{
+    --ux-text:#f7fbff;
+    --ux-soft:#bfd0dc;
+    --ux-muted:#91a8ba;
+    --ux-line:rgba(180,211,231,.14);
+    --ux-panel:rgba(6,35,60,.66);
+    --ux-green:#20e1a2;
+    --ux-red:#ff3153;
+    font-family:Inter,"Segoe UI",Arial,sans-serif!important;
+  }
+
+  .progress-experience-v34 .client-goal-card,
+  .progress-experience-v34 .client-extra-card{
+    position:relative!important;
+    overflow:hidden!important;
+    background:
+      radial-gradient(circle at 94% 6%,rgba(32,225,162,.07),transparent 27%),
+      linear-gradient(145deg,rgba(7,42,70,.80),rgba(4,28,49,.86))!important;
+    border:1px solid var(--ux-line)!important;
+    border-radius:20px!important;
+    box-shadow:
+      0 18px 38px rgba(0,0,0,.20),
+      inset 0 1px 0 rgba(255,255,255,.075)!important;
+    backdrop-filter:blur(17px) saturate(140%)!important;
+    -webkit-backdrop-filter:blur(17px) saturate(140%)!important;
+  }
+
+  .progress-experience-v34 .client-goal-card>div>span,
+  .progress-experience-v34 .client-card-head>div>span{
+    color:#65efc2!important;
+    font-size:9px!important;
+    font-weight:950!important;
+    letter-spacing:1.15px!important;
+    text-transform:uppercase!important;
+  }
+
+  .progress-experience-v34 .client-goal-card h2,
+  .progress-experience-v34 .client-card-head h2{
+    color:var(--ux-text)!important;
+    font-weight:950!important;
+    letter-spacing:-.35px!important;
+    text-shadow:0 2px 12px rgba(0,0,0,.18)!important;
+  }
+
+  .progress-experience-v34 .client-goal-card>div>p{
+    color:var(--ux-soft)!important;
+    line-height:1.62!important;
+  }
+
+  .progress-experience-v34 .client-goal-card form label{
+    color:#dbe8f1!important;
+    font-weight:800!important;
+    letter-spacing:.05px!important;
+  }
+
+  .progress-experience-v34 .client-goal-card select{
+    background:rgba(255,255,255,.065)!important;
+    border:1px solid rgba(193,217,235,.14)!important;
+    color:#fff!important;
+    border-radius:13px!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.045)!important;
+  }
+
+  .progress-experience-v34 .client-goal-card select:focus{
+    border-color:rgba(68,235,180,.38)!important;
+    box-shadow:0 0 0 3px rgba(32,225,162,.09)!important;
+    outline:none!important;
+  }
+
+  .progress-experience-v34 .client-reminder-toggle{
+    color:#b9ccda!important;
+  }
+
+  .progress-experience-v34 .client-reminder-toggle input{
+    accent-color:#20e1a2!important;
+  }
+
+  .progress-experience-v34 .client-goal-card button[type="submit"]{
+    color:#062b21!important;
+    font-weight:950!important;
+    letter-spacing:.08px!important;
+    background:linear-gradient(135deg,#1ed59a,#2be0b2)!important;
+    border:1px solid rgba(95,244,196,.22)!important;
+    box-shadow:
+      0 12px 26px rgba(32,225,162,.17),
+      inset 0 1px 0 rgba(255,255,255,.24)!important;
+    transition:transform .18s ease,filter .18s ease,box-shadow .18s ease!important;
+  }
+
+  .progress-experience-v34 .client-goal-card button[type="submit"]:hover{
+    transform:translateY(-2px)!important;
+    filter:brightness(1.04)!important;
+    box-shadow:
+      0 17px 31px rgba(32,225,162,.22),
+      inset 0 1px 0 rgba(255,255,255,.26)!important;
+  }
+
+  .progress-experience-v34 .client-card-head>b{
+    color:#dffbf2!important;
+    background:rgba(32,225,162,.10)!important;
+    border:1px solid rgba(65,232,177,.15)!important;
+    border-radius:999px!important;
+    padding:7px 10px!important;
+    font-size:9px!important;
+    font-weight:950!important;
+    box-shadow:0 0 14px rgba(32,225,162,.05)!important;
+  }
+
+  .progress-experience-v34 .client-week-progress{
+    background:rgba(255,255,255,.09)!important;
+    border-radius:999px!important;
+    box-shadow:inset 0 1px 3px rgba(0,0,0,.15)!important;
+  }
+
+  .progress-experience-v34 .client-week-progress i{
+    background:linear-gradient(90deg,#20e1a2,#55f2c3)!important;
+    box-shadow:0 0 14px rgba(32,225,162,.19)!important;
+  }
+
+  .progress-experience-v34 .client-week-days>div{
+    background:rgba(255,255,255,.04)!important;
+    border:1px solid rgba(185,212,231,.10)!important;
+    border-radius:14px!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+  }
+
+  .progress-experience-v34 .client-week-days>div>b{
+    color:#f6fbff!important;
+    font-weight:900!important;
+  }
+
+  .progress-experience-v34 .client-week-days>div>span{
+    background:rgba(255,255,255,.075)!important;
+    color:#dfeaf2!important;
+    border:1px solid rgba(255,255,255,.06)!important;
+  }
+
+  .progress-experience-v34 .client-week-days>div>small{
+    color:#9db3c3!important;
+  }
+
+  .progress-experience-v34 .client-week-days>div.active{
+    background:rgba(32,225,162,.08)!important;
+    border-color:rgba(72,237,188,.20)!important;
+  }
+
+  .progress-experience-v34 .client-week-days>div.active>span{
+    background:linear-gradient(135deg,#20dca0,#27cfa0)!important;
+    color:#032c22!important;
+    box-shadow:0 7px 16px rgba(32,225,162,.12)!important;
+  }
+
+  /* Quita los rectángulos blancos de estados vacíos */
+  .progress-experience-v34 .client-empty-mini,
+  .progress-experience-v34 .client-empty-block{
+    background:
+      linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.025))!important;
+    border:1px solid rgba(184,212,232,.11)!important;
+    border-radius:16px!important;
+    color:#eaf3f9!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.04),
+      0 8px 18px rgba(0,0,0,.07)!important;
+  }
+
+  .progress-experience-v34 .client-empty-mini>span{
+    background:rgba(255,255,255,.075)!important;
+    color:#b7c9d6!important;
+    border:1px solid rgba(255,255,255,.06)!important;
+  }
+
+  .progress-experience-v34 .client-empty-mini b,
+  .progress-experience-v34 .client-empty-block b{
+    color:#f7fbff!important;
+    font-weight:900!important;
+  }
+
+  .progress-experience-v34 .client-empty-mini p,
+  .progress-experience-v34 .client-empty-block p{
+    color:#9fb6c6!important;
+    line-height:1.55!important;
+  }
+
+  .progress-experience-v34 .client-history-tabs button{
+    background:rgba(255,255,255,.05)!important;
+    border:1px solid rgba(183,212,231,.10)!important;
+    color:#b9ccda!important;
+    border-radius:10px!important;
+    font-weight:850!important;
+  }
+
+  .progress-experience-v34 .client-history-tabs button:hover{
+    background:rgba(255,255,255,.075)!important;
+    color:#fff!important;
+  }
+
+  .progress-experience-v34 .client-history-tabs button.active{
+    background:linear-gradient(135deg,#18b982,#20d89b)!important;
+    border-color:rgba(79,235,184,.22)!important;
+    color:#062d22!important;
+    box-shadow:0 8px 18px rgba(32,225,162,.12)!important;
+  }
+
+  .progress-experience-v34 .client-history-list>div,
+  .progress-experience-v34 .client-activity-list>div{
+    background:rgba(255,255,255,.035)!important;
+    border:1px solid rgba(255,255,255,.045)!important;
+    border-radius:12px!important;
+  }
+
+  .progress-experience-v34 .client-history-list b,
+  .progress-experience-v34 .client-activity-list b{
+    color:#f4f9fc!important;
+    font-weight:850!important;
+  }
+
+  .progress-experience-v34 .client-history-list span,
+  .progress-experience-v34 .client-history-list small,
+  .progress-experience-v34 .client-activity-list p,
+  .progress-experience-v34 .client-activity-list small,
+  .progress-experience-v34 .client-history-empty{
+    color:#9fb5c5!important;
+  }
+
+  /* =========================================================
+     SESIÓN ACTIVA · QUITA EL BLANCO Y DA JERARQUÍA UX
+     ========================================================= */
+
+  .module-training-v34 .home-session-live{
+    font-family:Inter,"Segoe UI",Arial,sans-serif!important;
+  }
+
+  .module-training-v34 .home-session-main,
+  .module-training-v34 .home-session-queue{
+    background:
+      radial-gradient(circle at 92% 6%,rgba(46,139,199,.08),transparent 26%),
+      linear-gradient(145deg,rgba(7,42,70,.84),rgba(4,27,48,.90))!important;
+    border:1px solid rgba(178,208,228,.14)!important;
+    box-shadow:
+      0 20px 42px rgba(0,0,0,.23),
+      inset 0 1px 0 rgba(255,255,255,.07)!important;
+    backdrop-filter:blur(18px) saturate(140%)!important;
+    -webkit-backdrop-filter:blur(18px) saturate(140%)!important;
+  }
+
+  .module-training-v34 .home-session-top{
+    border-bottom:1px solid rgba(179,209,230,.12)!important;
+  }
+
+  .module-training-v34 .session-live{
+    color:#ff7188!important;
+    font-size:9px!important;
+    font-weight:950!important;
+    letter-spacing:1.15px!important;
+    text-transform:uppercase!important;
+  }
+
+  .module-training-v34 .session-live i{
+    background:#ff3153!important;
+    box-shadow:0 0 0 5px rgba(255,49,83,.08),0 0 14px rgba(255,49,83,.24)!important;
+  }
+
+  .module-training-v34 .home-session-top h2{
+    color:#fff!important;
+    font-size:30px!important;
+    font-weight:950!important;
+    letter-spacing:-.55px!important;
+    text-shadow:0 3px 14px rgba(0,0,0,.20)!important;
+  }
+
+  .module-training-v34 .home-session-top p{
+    color:#a9bfce!important;
+    line-height:1.55!important;
+  }
+
+  .module-training-v34 .session-zone-badge{
+    background:rgba(255,255,255,.055)!important;
+    border:1px solid rgba(185,213,232,.11)!important;
+    color:#eaf4fa!important;
+    font-weight:850!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+  }
+
+  /* La columna de demostración deja de verse como tarjeta blanca */
+  .module-training-v34 .home-demo-column{
+    background:
+      linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.025))!important;
+    border:1px solid rgba(181,211,231,.12)!important;
+    border-radius:18px!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.045),
+      0 12px 26px rgba(0,0,0,.12)!important;
+  }
+
+  .module-training-v34 .home-demo-column .exercise-demo-head>div>span{
+    color:#ff7188!important;
+    font-weight:950!important;
+  }
+
+  .module-training-v34 .home-demo-column .exercise-demo-head h3{
+    color:#fff!important;
+    font-weight:950!important;
+    letter-spacing:-.3px!important;
+  }
+
+  .module-training-v34 .home-demo-column .exercise-demo-head p{
+    color:#aec2d1!important;
+  }
+
+  .module-training-v34 .home-demo-column .exercise-demo-head em{
+    background:rgba(32,225,162,.10)!important;
+    border:1px solid rgba(66,232,178,.14)!important;
+    color:#5aefbe!important;
+  }
+
+  .module-training-v34 .home-demo-column .exercise-demo-foot span{
+    color:#9db2c2!important;
+  }
+
+  /* Panel entrenador visual */
+  .module-training-v34 .home-live-coach{
+    background:
+      radial-gradient(circle at 100% 0,rgba(255,49,83,.08),transparent 25%),
+      linear-gradient(145deg,rgba(7,48,82,.88),rgba(4,31,55,.94))!important;
+    border:1px solid rgba(180,210,230,.13)!important;
+    border-radius:18px!important;
+    box-shadow:
+      0 16px 34px rgba(0,0,0,.18),
+      inset 0 1px 0 rgba(255,255,255,.065)!important;
+  }
+
+  .module-training-v34 .live-coach-heading>span,
+  .module-training-v34 .live-instruction-list>span{
+    color:#ff7188!important;
+    font-size:9px!important;
+    font-weight:950!important;
+    letter-spacing:1.05px!important;
+  }
+
+  .module-training-v34 .live-coach-heading h3{
+    color:#fff!important;
+    font-size:22px!important;
+    font-weight:950!important;
+    letter-spacing:-.35px!important;
+  }
+
+  .module-training-v34 .live-coach-heading p{
+    color:#aec2d1!important;
+    line-height:1.55!important;
+  }
+
+  .module-training-v34 .live-target-card,
+  .module-training-v34 .live-number-card,
+  .module-training-v34 .live-time-card{
+    background:rgba(255,255,255,.055)!important;
+    border:1px solid rgba(184,213,232,.11)!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+
+  .module-training-v34 .live-target-card>span{
+    background:linear-gradient(135deg,#ff4662,#f32143)!important;
+    color:#fff!important;
+    box-shadow:0 10px 20px rgba(255,49,83,.16)!important;
+  }
+
+  .module-training-v34 .live-target-card small,
+  .module-training-v34 .live-number-card small,
+  .module-training-v34 .live-time-card small{
+    color:#98afc0!important;
+    font-weight:850!important;
+    letter-spacing:.8px!important;
+  }
+
+  .module-training-v34 .live-target-card b,
+  .module-training-v34 .live-number-card strong,
+  .module-training-v34 .live-time-card strong{
+    color:#fff!important;
+    font-weight:950!important;
+    text-shadow:0 2px 10px rgba(0,0,0,.15)!important;
+  }
+
+  .module-training-v34 .live-target-card em,
+  .module-training-v34 .live-time-card span{
+    color:#b5c8d6!important;
+  }
+
+  .module-training-v34 .live-number-card>span{
+    color:#7f98aa!important;
+  }
+
+  .module-training-v34 .live-instruction-list>div{
+    background:rgba(255,255,255,.035)!important;
+    border:1px solid rgba(255,255,255,.045)!important;
+    border-radius:12px!important;
+  }
+
+  .module-training-v34 .live-instruction-list>div>b{
+    background:rgba(255,255,255,.075)!important;
+    color:#f5faff!important;
+    border:1px solid rgba(255,255,255,.055)!important;
+  }
+
+  .module-training-v34 .live-instruction-list>div>p{
+    color:#c9d8e3!important;
+    line-height:1.52!important;
+  }
+
+  /* Progreso de la sesión */
+  .module-training-v34 .home-session-progress{
+    color:#dce8f1!important;
+  }
+
+  .module-training-v34 .home-session-progress>div:first-child span{
+    color:#b8cbd9!important;
+    font-weight:800!important;
+  }
+
+  .module-training-v34 .home-session-progress>div:first-child b{
+    color:#fff!important;
+  }
+
+  .module-training-v34 .session-progress-track{
+    background:rgba(255,255,255,.085)!important;
+    box-shadow:inset 0 1px 3px rgba(0,0,0,.15)!important;
+  }
+
+  .module-training-v34 .session-progress-track i{
+    background:linear-gradient(90deg,#ff3153,#ff6078)!important;
+    box-shadow:0 0 14px rgba(255,49,83,.18)!important;
+  }
+
+  /* Cola lateral: elimina blanco y mejora lectura */
+  .module-training-v34 .home-session-queue .card-title-block span{
+    color:#ff7188!important;
+    font-weight:950!important;
+  }
+
+  .module-training-v34 .home-session-queue .card-title-block h2{
+    color:#fff!important;
+    font-weight:950!important;
+  }
+
+  .module-training-v34 .home-session-queue .card-title-block p{
+    color:#9fb5c5!important;
+  }
+
+  .module-training-v34 .session-queue-list>div{
+    background:rgba(255,255,255,.035)!important;
+    border:1px solid rgba(184,212,232,.09)!important;
+    border-radius:13px!important;
+    transition:background .18s ease,border-color .18s ease,transform .18s ease!important;
+  }
+
+  .module-training-v34 .session-queue-list>div:hover{
+    background:rgba(255,255,255,.06)!important;
+    border-color:rgba(198,220,236,.16)!important;
+    transform:translateY(-1px)!important;
+  }
+
+  .module-training-v34 .session-queue-list>div.current{
+    background:rgba(255,49,83,.10)!important;
+    border-color:rgba(255,82,109,.28)!important;
+    box-shadow:
+      inset 3px 0 0 #ff3153,
+      0 9px 20px rgba(255,49,83,.07)!important;
+  }
+
+  .module-training-v34 .session-queue-list>div>span{
+    background:rgba(255,255,255,.075)!important;
+    color:#dce8f1!important;
+    font-weight:900!important;
+  }
+
+  .module-training-v34 .session-queue-list>div.current>span{
+    background:linear-gradient(135deg,#ff4662,#f32143)!important;
+    color:#fff!important;
+  }
+
+  .module-training-v34 .session-queue-list b{
+    color:#fff!important;
+    font-weight:850!important;
+  }
+
+  .module-training-v34 .session-queue-list small{
+    color:#98afc0!important;
+  }
+
+  /* Controles de la sesión */
+  .module-training-v34 .home-rep-counter-panel{
+    background:rgba(255,255,255,.045)!important;
+    border:1px solid rgba(184,212,232,.10)!important;
+    color:#eaf3f9!important;
+  }
+
+  .module-training-v34 .home-rep-counter-panel span{
+    color:#ff7188!important;
+    font-weight:950!important;
+  }
+
+  .module-training-v34 .home-rep-counter-panel b{
+    color:#fff!important;
+    font-weight:950!important;
+  }
+
+  .module-training-v34 .home-rep-counter-panel small{
+    color:#9fb5c5!important;
+  }
+
+  .module-training-v34 .home-session-controls button{
+    font-weight:900!important;
+    letter-spacing:.05px!important;
+  }
+
+  .module-training-v34 .home-session-controls .control-secondary{
+    background:rgba(255,255,255,.06)!important;
+    border-color:rgba(187,214,232,.13)!important;
+    color:#eaf3f9!important;
+  }
+
+  .module-training-v34 .home-session-controls .control-primary{
+    background:linear-gradient(135deg,#ff3a56,#ff2548 58%,#eb1738)!important;
+    border-color:rgba(255,91,116,.38)!important;
+    color:#fff!important;
+    box-shadow:0 12px 24px rgba(255,39,72,.18)!important;
+  }
+
+  .module-training-v34 .home-session-controls .control-danger{
+    background:rgba(255,49,83,.07)!important;
+    border-color:rgba(255,82,109,.20)!important;
+    color:#ff8295!important;
+  }
+}
