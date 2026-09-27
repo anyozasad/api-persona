@@ -709,11 +709,44 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         </section>
 
         <section *ngIf="moduloActivo==='rutinas'" class="member-module module-routines-v34 member-enter-up">
-          <div class="member-module-hero hero-photo hero-photo-rutinas">
-            <div><span>ENTRENAMIENTO</span><h1>Mis rutinas</h1><p>Consulta los ejercicios que tu entrenador preparó para ti.</p></div>
-            <div class="module-hero-icon module-hero-icon-rutinas module-hero-emblem" aria-hidden="true">
-    <svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg>
-  </div>
+          <section class="module-portal-head module-portal-routines">
+            <article class="module-portal-hero module-portal-routines-hero">
+              <div class="module-portal-copy">
+                <span>ENTRENAMIENTO PERSONAL</span>
+                <h1>Mis rutinas</h1>
+                <p>Revisa tu planificación, ejercicios y objetivos sin salir de tu espacio Mallqui Gym.</p>
+                <div class="module-portal-actions">
+                  <button type="button" class="portal-action-primary" (click)="abrirModulo('casa')">
+                    <i>⚡</i><span><b>Entrenar ahora</b><small>Sesión guiada en casa</small></span><em>→</em>
+                  </button>
+                  <button type="button" class="portal-action-secondary" (click)="actualizarSeccion('rutinas')">
+                    <i>↻</i><b>Actualizar</b>
+                  </button>
+                </div>
+              </div>
+              <div class="module-portal-badge" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg>
+              </div>
+            </article>
+
+            <aside class="module-portal-side">
+              <div class="portal-side-head">
+                <span>RESUMEN</span>
+                <b>Tu entrenamiento</b>
+              </div>
+              <div class="portal-mini-stats">
+                <article><i>🏋</i><div><strong>{{rutinas.length}}</strong><small>rutinas asignadas</small></div></article>
+                <article><i>✓</i><div><strong>{{rutinaActual?.detalles?.length || 0}}</strong><small>ejercicios activos</small></div></article>
+                <article><i>◎</i><div><strong>{{rutinaActual?.entrenador ? '1' : '0'}}</strong><small>entrenador asignado</small></div></article>
+              </div>
+              <button type="button" class="portal-side-link" (click)="abrirModulo('progreso')">
+                <span>Ver mi progreso</span><b>→</b>
+              </button>
+            </aside>
+          </section>
+
+          <div class="module-window-title">
+            <div><span>RUTINAS ASIGNADAS</span><h2>Tu plan de entrenamiento</h2><p>Cada rutina aparece en una ventana independiente con sus ejercicios.</p></div>
           </div>
 
           <div class="module-grid routine-grid">
@@ -746,11 +779,44 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         </section>
 
         <section *ngIf="moduloActivo==='clases'" class="member-module module-classes-v34 member-enter-up">
-          <div class="member-module-hero hero-photo hero-photo-clases">
-            <div><span>AGENDA</span><h1>Clases disponibles</h1><p>Elige una clase, selecciona una fecha válida y reserva tu lugar.</p></div>
-            <div class="module-hero-icon module-hero-icon-clases module-hero-emblem" aria-hidden="true">
-    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg>
-  </div>
+          <section class="module-portal-head module-portal-classes">
+            <article class="module-portal-hero module-portal-classes-hero">
+              <div class="module-portal-copy">
+                <span>AGENDA DEL GIMNASIO</span>
+                <h1>Clases</h1>
+                <p>Explora horarios, reserva tu lugar y revisa tu agenda desde una misma pantalla.</p>
+                <div class="module-portal-actions">
+                  <button type="button" class="portal-action-primary" (click)="abrirModulo('reservas')">
+                    <i>◷</i><span><b>Mis reservas</b><small>Ver clases programadas</small></span><em>→</em>
+                  </button>
+                  <button type="button" class="portal-action-secondary" (click)="abrirModulo('calendario')">
+                    <i>▣</i><b>Calendario</b>
+                  </button>
+                </div>
+              </div>
+              <div class="module-portal-badge" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg>
+              </div>
+            </article>
+
+            <aside class="module-portal-side">
+              <div class="portal-side-head">
+                <span>HOY EN MALLQUI</span>
+                <b>Tu agenda</b>
+              </div>
+              <div class="portal-mini-stats">
+                <article><i>▣</i><div><strong>{{clases.length}}</strong><small>clases disponibles</small></div></article>
+                <article><i>◷</i><div><strong>{{reservasActivas.length}}</strong><small>reservas activas</small></div></article>
+                <article><i>✓</i><div><strong>{{showcaseAsistencias}}</strong><small>asistencias del mes</small></div></article>
+              </div>
+              <button type="button" class="portal-side-link" (click)="actualizarSeccion('clases')">
+                <span>Actualizar horarios</span><b>↻</b>
+              </button>
+            </aside>
+          </section>
+
+          <div class="module-window-title">
+            <div><span>CLASES DISPONIBLES</span><h2>Elige tu próxima clase</h2><p>Cada clase tiene su propia ventana con horario, entrenador y reserva.</p></div>
           </div>
 
           <div class="member-class-grid">
