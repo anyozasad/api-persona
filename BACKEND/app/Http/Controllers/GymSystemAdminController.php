@@ -45,7 +45,31 @@ class GymSystemAdminController extends Controller
                     if (!$this->schema->hasColumn('ventas', 'motivo_anulacion')) $table->string('motivo_anulacion', 255)->nullable();
                 });
                 // Permite conservar el método real (Efectivo, Yape, Plin, Transferencia o Tarjeta).
-                $this->db->statement("ALTER TABLE ventas MODIFY metodo_pago VARCHAR(30) NOT NULL");
+                // Solo modifica la definición una vez si la base antigua todavía usa ENUM.
+                $columnaMetodo=$this->db->selectOne("SHOW COLUMNS FROM ventas LIKE 'metodo_pago'");
+                $tipoMetodo=strtolower((string)($columnaMetodo->Type??''));
+                if ($tipoMetodo!=='' && !str_starts_with($tipoMetodo,'varchar')) {
+                    $this->db->statement("ALTER TABLE ventas MODIFY metodo_pago VARCHAR(30) NOT NULL");
+                }
+
+                // Completa el desglose contable de ventas anteriores que aún no lo tenían.
+                $this->db->table('ventas')
+                    ->where('total','>',0)
+                    ->where(function($q){$q->whereNull('subtotal')->orWhere('subtotal','=',0);})
+                    ->orderBy('id')
+                    ->chunkById(200,function($ventas){
+                        foreach($ventas as $venta){
+                            $total=(float)$venta->total;
+                            $porcentaje=(float)($venta->igv_porcentaje??18);
+                            $factor=1+($porcentaje/100);
+                            $subtotal=$factor>0?round($total/$factor,2):$total;
+                            $this->db->table('ventas')->where('id',$venta->id)->update([
+                                'subtotal'=>$subtotal,
+                                'igv'=>round($total-$subtotal,2),
+                                'igv_porcentaje'=>$porcentaje
+                            ]);
+                        }
+                    });
             }
 
             if ($this->schema->hasTable('productos')) {
