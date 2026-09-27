@@ -23,19 +23,19 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
           </button>
 
           <nav class="member-nav member-nav-primary" aria-label="Navegación principal del cliente">
-            <button type="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')">
+            <button type="button" class="nav-step nav-step-inicio" [class.active]="navPrincipalActivo==='inicio'" [attr.aria-current]="navPrincipalActivo==='inicio' ? 'page' : null" (click)="abrirModulo('inicio')">
               <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-7h5v7"/></svg></i><span>Inicio</span>
             </button>
-            <button type="button" [class.active]="moduloActivo==='casa'" (click)="abrirModulo('casa')">
+            <button type="button" class="nav-step nav-step-entrenar" [class.active]="navPrincipalActivo==='entrenar'" [attr.aria-current]="navPrincipalActivo==='entrenar' ? 'page' : null" (click)="abrirModulo('casa')">
               <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-7 12h6l-1 8 7-12h-6z"/></svg></i><span>Entrenar</span>
             </button>
-            <button type="button" [class.active]="moduloActivo==='rutinas'" (click)="abrirModulo('rutinas')">
+            <button type="button" class="nav-step nav-step-rutinas" [class.active]="navPrincipalActivo==='rutinas'" [attr.aria-current]="navPrincipalActivo==='rutinas' ? 'page' : null" (click)="abrirModulo('rutinas')">
               <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg></i><span>Rutinas</span>
             </button>
-            <button type="button" [class.active]="moduloActivo==='clases'" (click)="abrirModulo('clases')">
+            <button type="button" class="nav-step nav-step-clases" [class.active]="navPrincipalActivo==='clases'" [attr.aria-current]="navPrincipalActivo==='clases' ? 'page' : null" (click)="abrirModulo('clases')">
               <i><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg></i><span>Clases</span>
             </button>
-            <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')">
+            <button type="button" class="nav-step nav-step-progreso" [class.active]="navPrincipalActivo==='progreso'" [attr.aria-current]="navPrincipalActivo==='progreso' ? 'page' : null" (click)="abrirModulo('progreso')">
               <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10h4v10zM10 20V4h4v16zM16 20V7h4v13z"/><path d="m4 7 5-3 4 2 6-4"/></svg></i><span>Progreso</span>
             </button>
           </nav>
@@ -969,6 +969,17 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     });
   }
   abrirModulo(m:string){this.mobileMenuAbierto=false;this.moduloActivo=m;if(m==='casa'&&!this.casaCargado)this.cargarEntrenamientoCasa();if(m==='avisos')this.cargarContadorAvisos();window.scrollTo({top:0,behavior:'smooth'});}
+
+  /* Mantiene el menú principal sincronizado con la acción que está viendo el usuario.
+     Flujo: Inicio → Entrenar → Rutinas → Clases/Reservas → Progreso/Asistencias. */
+  get navPrincipalActivo():string{
+    const m=this.moduloActivo;
+    if(m==='casa')return 'entrenar';
+    if(m==='rutinas')return 'rutinas';
+    if(m==='clases' || m==='reservas' || m==='calendario')return 'clases';
+    if(m==='progreso' || m==='asistencias')return 'progreso';
+    return 'inicio';
+  }
   cargarContadorAvisos(){this.api.notificacionesCliente().subscribe({next:r=>this.avisosNoLeidos=Number(r?.no_leidas||0),error:()=>{}});}
   get nombreCorto():string{
     const valor=String(this.perfil?.nombres || this.auth.usuario?.nombres || 'Miembro').trim();
