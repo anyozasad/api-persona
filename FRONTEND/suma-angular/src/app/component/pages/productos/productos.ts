@@ -22,6 +22,7 @@ export class ProductosComponent implements OnInit {
   cargando = false;
   mensaje = '';
   error = '';
+  busqueda = '';
   producto: Producto = this.productoVacio();
 
   constructor(
@@ -98,6 +99,46 @@ export class ProductosComponent implements OnInit {
       next: r => { this.mensaje = r.mensaje; this.listar(); },
       error: e => this.error = this.mensajeError(e, 'No se pudo desactivar el producto.')
     });
+  }
+
+  get totalProductos(): number {
+    return this.productos.length;
+  }
+
+  get productosActivos(): number {
+    return this.productos.filter(p => String(p.estado).toLowerCase() === 'activo').length;
+  }
+
+  get productosStockBajo(): number {
+    return this.productos.filter(p => this.esStockBajo(p)).length;
+  }
+
+  get valorInventario(): number {
+    return this.productos.reduce((total, p) => total + (Number(p.stock || 0) * Number(p.precio_compra || 0)), 0);
+  }
+
+  get productosFiltrados(): Producto[] {
+    const termino = this.busqueda.trim().toLowerCase();
+    if (!termino) return this.productos;
+    return this.productos.filter(p => {
+      const categoria = String(p.categoria?.nombre_categoria ?? p.id_categoria ?? '').toLowerCase();
+      return [
+        p.nombre_producto,
+        p.codigo_producto,
+        p.descripcion,
+        categoria
+      ].some(valor => String(valor ?? '').toLowerCase().includes(termino));
+    });
+  }
+
+  esStockBajo(p: Producto): boolean {
+    const stock = Number(p.stock || 0);
+    const minimo = Number(p.stock_minimo || 0);
+    return minimo > 0 && stock <= minimo;
+  }
+
+  inicialProducto(nombre?: string): string {
+    return String(nombre || 'P').trim().charAt(0).toUpperCase() || 'P';
   }
 
   cerrarSesion(): void {
