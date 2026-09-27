@@ -18240,3 +18240,286 @@
     margin:0!important;
   }
 }
+
+
+/* PORTAL CLIENTE V64 · ENTRENAR UX PREMIUM · TEXTO LEGIBLE Y SIN FONDO BLANCO */
+@media (min-width:1000px){
+
+  /* ===== SESIÓN GUIADA: elimina el bloque blanco y lo integra al tema oscuro ===== */
+  .module-training-v34 .home-first-demo{
+    position:relative!important;
+    overflow:hidden!important;
+    border:1px solid rgba(176,207,228,.16)!important;
+    border-radius:20px!important;
+    background:
+      radial-gradient(circle at 12% 18%,rgba(255,49,83,.09),transparent 26%),
+      radial-gradient(circle at 92% 10%,rgba(42,132,192,.10),transparent 28%),
+      linear-gradient(135deg,rgba(6,38,65,.78),rgba(4,27,48,.84))!important;
+    backdrop-filter:blur(18px) saturate(140%)!important;
+    -webkit-backdrop-filter:blur(18px) saturate(140%)!important;
+    box-shadow:
+      0 18px 38px rgba(0,0,0,.22),
+      inset 0 1px 0 rgba(255,255,255,.075)!important;
+  }
+
+  .module-training-v34 .home-first-demo::before{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    pointer-events:none!important;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.055),transparent 34%),
+      linear-gradient(90deg,rgba(255,49,83,.035),transparent 34%,rgba(51,143,205,.035))!important;
+  }
+
+  .module-training-v34 .home-first-demo>*{
+    position:relative!important;
+    z-index:2!important;
+  }
+
+  /* ===== COLUMNA DE TEXTO ===== */
+  .module-training-v34 .home-first-demo-copy{
+    padding:24px 22px!important;
+    border-radius:16px!important;
+    background:
+      linear-gradient(180deg,rgba(4,28,50,.38),rgba(4,28,50,.20))!important;
+  }
+
+  .module-training-v34 .home-first-demo-copy>span{
+    display:inline-flex!important;
+    width:max-content!important;
+    align-items:center!important;
+    gap:7px!important;
+    padding:6px 9px!important;
+    border-radius:999px!important;
+    background:rgba(255,49,83,.10)!important;
+    border:1px solid rgba(255,82,109,.16)!important;
+    color:#ff7087!important;
+    font-size:9px!important;
+    font-weight:950!important;
+    letter-spacing:1.05px!important;
+    text-shadow:0 0 14px rgba(255,49,83,.15)!important;
+  }
+
+  .module-training-v34 .home-first-demo-copy h3{
+    margin:12px 0 9px!important;
+    color:#ffffff!important;
+    font-size:25px!important;
+    line-height:1.08!important;
+    font-weight:950!important;
+    letter-spacing:-.45px!important;
+    text-shadow:0 3px 14px rgba(0,0,0,.18)!important;
+  }
+
+  .module-training-v34 .home-first-demo-copy p{
+    margin:0!important;
+    max-width:420px!important;
+    color:#c5d6e2!important;
+    font-size:11px!important;
+    line-height:1.7!important;
+  }
+
+  /* Ejercicio que inicia la sesión */
+  .module-training-v34 .home-first-demo-copy>div{
+    margin-top:20px!important;
+    padding:14px 15px!important;
+    border-radius:14px!important;
+    background:rgba(255,255,255,.055)!important;
+    border:1px solid rgba(188,216,235,.12)!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.055),
+      0 8px 18px rgba(0,0,0,.08)!important;
+  }
+
+  .module-training-v34 .home-first-demo-copy b{
+    display:block!important;
+    color:#ffffff!important;
+    font-size:12px!important;
+    font-weight:900!important;
+  }
+
+  .module-training-v34 .home-first-demo-copy small{
+    display:block!important;
+    margin-top:5px!important;
+    color:#9fb6c8!important;
+    font-size:9px!important;
+    font-weight:700!important;
+  }
+
+  /* ===== GUÍA VISUAL ===== */
+  .module-training-v34 .home-first-demo-visual{
+    padding:14px!important;
+    overflow:hidden!important;
+    border:1px solid rgba(179,209,230,.14)!important;
+    border-radius:18px!important;
+    background:
+      linear-gradient(180deg,rgba(5,33,57,.72),rgba(4,26,46,.78))!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.06),
+      0 12px 26px rgba(0,0,0,.14)!important;
+  }
+
+  /* El componente de demostración estaba diseñado para fondo blanco.
+     Se corrigen todos los textos para la versión oscura. */
+  .module-training-v34 .home-first-demo-visual .exercise-demo-head>div>span{
+    color:#ff7188!important;
+    font-size:9px!important;
+    font-weight:950!important;
+    letter-spacing:1.1px!important;
+  }
+
+  .module-training-v34 .home-first-demo-visual .exercise-demo-head h3{
+    color:#ffffff!important;
+    font-size:21px!important;
+    font-weight:900!important;
+    text-shadow:0 2px 10px rgba(0,0,0,.16)!important;
+  }
+
+  .module-training-v34 .home-first-demo-visual .exercise-demo-head p{
+    color:#b8cbd9!important;
+    font-size:10px!important;
+    line-height:1.55!important;
+  }
+
+  .module-training-v34 .home-first-demo-visual .exercise-demo-head em{
+    background:rgba(28,190,137,.13)!important;
+    border:1px solid rgba(55,227,166,.14)!important;
+    color:#58edbc!important;
+    box-shadow:0 0 14px rgba(32,225,162,.06)!important;
+  }
+
+  .module-training-v34 .home-first-demo-visual .exercise-demo-stage{
+    border:1px solid rgba(182,211,231,.12)!important;
+    background:linear-gradient(145deg,#061a31,#0a3157)!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.045),
+      0 12px 28px rgba(0,0,0,.16)!important;
+  }
+
+  .module-training-v34 .home-first-demo-visual .exercise-demo-foot{
+    margin-top:2px!important;
+    padding-top:2px!important;
+  }
+
+  .module-training-v34 .home-first-demo-visual .exercise-demo-foot span{
+    color:#9db2c3!important;
+    font-size:9px!important;
+  }
+
+  .module-training-v34 .home-first-demo-visual .exercise-demo-foot i{
+    background:#28dea2!important;
+    box-shadow:0 0 10px rgba(40,222,162,.30)!important;
+  }
+
+  /* ===== CABECERA DE SESIÓN GUIADA ===== */
+  .module-training-v34 .home-exercise-preview-head{
+    padding-bottom:13px!important;
+    border-bottom:1px solid rgba(178,207,228,.13)!important;
+  }
+
+  .module-training-v34 .home-exercise-preview-head>div>span{
+    color:#ff7087!important;
+    font-size:9px!important;
+    letter-spacing:1px!important;
+  }
+
+  .module-training-v34 .home-exercise-preview-head h3{
+    color:#fff!important;
+    font-size:24px!important;
+    font-weight:950!important;
+    letter-spacing:-.35px!important;
+  }
+
+  .module-training-v34 .home-no-equipment{
+    background:rgba(35,196,139,.12)!important;
+    border:1px solid rgba(54,225,166,.16)!important;
+    color:#63efc0!important;
+    box-shadow:0 0 16px rgba(35,196,139,.06)!important;
+  }
+
+  /* ===== LISTA DE EJERCICIOS: evita texto oscuro sobre fondo oscuro ===== */
+  .module-training-v34 .home-exercise-list article{
+    background:rgba(255,255,255,.045)!important;
+    border-color:rgba(181,210,230,.11)!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.035),
+      0 8px 18px rgba(0,0,0,.08)!important;
+  }
+
+  .module-training-v34 .home-exercise-list article:hover{
+    background:rgba(255,255,255,.075)!important;
+    border-color:rgba(200,222,237,.18)!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.04),
+      0 12px 24px rgba(0,0,0,.13)!important;
+  }
+
+  .module-training-v34 .exercise-list-copy b{
+    color:#ffffff!important;
+    font-size:12px!important;
+  }
+
+  .module-training-v34 .exercise-list-copy small{
+    color:#a9becd!important;
+  }
+
+  .module-training-v34 .exercise-list-copy em{
+    color:#51e4af!important;
+  }
+
+  .module-training-v34 .home-exercise-list article>button{
+    background:rgba(255,255,255,.06)!important;
+    border-color:rgba(190,216,234,.13)!important;
+    color:#e8f3fa!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+
+  .module-training-v34 .home-exercise-list article>button:hover{
+    background:rgba(255,49,83,.11)!important;
+    border-color:rgba(255,79,108,.24)!important;
+    color:#fff!important;
+  }
+
+  .module-training-v34 .exercise-howto{
+    border-color:rgba(183,211,231,.11)!important;
+    background:rgba(4,28,49,.46)!important;
+    color:#dbe8f1!important;
+  }
+
+  /* ===== NOTA DE SEGURIDAD ===== */
+  .module-training-v34 .home-safety-note{
+    background:rgba(27,163,117,.10)!important;
+    border:1px solid rgba(46,211,153,.14)!important;
+    color:#c9f5e5!important;
+  }
+
+  .module-training-v34 .home-safety-note>span{
+    color:#42e7aa!important;
+  }
+
+  /* ===== CTA INICIAR ===== */
+  .module-training-v34 .home-start-session{
+    border:1px solid rgba(255,91,116,.42)!important;
+    background:linear-gradient(135deg,#ff3a56 0%,#ff2548 58%,#eb1738 100%)!important;
+    box-shadow:
+      0 15px 30px rgba(255,39,72,.25),
+      inset 0 1px 0 rgba(255,255,255,.18)!important;
+    transition:transform .18s ease,box-shadow .18s ease,filter .18s ease!important;
+  }
+
+  .module-training-v34 .home-start-session:hover{
+    transform:translateY(-2px)!important;
+    filter:brightness(1.04)!important;
+    box-shadow:
+      0 20px 36px rgba(255,39,72,.32),
+      inset 0 1px 0 rgba(255,255,255,.20)!important;
+  }
+
+  .module-training-v34 .home-start-session b{
+    color:#fff!important;
+  }
+
+  .module-training-v34 .home-start-session small{
+    color:#ffe1e6!important;
+  }
+}
