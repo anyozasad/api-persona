@@ -13,14 +13,37 @@ import { GymApiService } from '../../../core/services/gym-api.service';
       <div *ngIf="toast" class="client-extra-alert ok">{{toast}}</div>
 
       <ng-container *ngIf="modulo==='progreso'">
-        <header class="client-extra-hero progress-hero hero-photo hero-photo-progreso">
-          <div>
-            <span>MI PROGRESO</span>
-            <h1>Tu actividad en un solo lugar</h1>
-            <p>Revisa tus sesiones, asistencias y actividades recientes. La idea es ayudarte a mantener una rutina saludable y constante.</p>
-          </div>
-          <button type="button" class="progress-refresh-btn" (click)="actualizarProgresoCompleto()">↻ Actualizar</button>
-        </header>
+        <section class="progress-portal-head">
+          <header class="client-extra-hero progress-hero hero-photo hero-photo-progreso">
+            <div>
+              <span>MI PROGRESO</span>
+              <h1>Tu actividad</h1>
+              <p>Revisa tu constancia, sesiones y asistencias dentro del mismo espacio Mallqui Gym.</p>
+              <button type="button" class="progress-refresh-btn" (click)="actualizarProgresoCompleto()">↻ Actualizar datos</button>
+            </div>
+          </header>
+
+          <aside class="progress-portal-side">
+            <div class="progress-side-head">
+              <span>RESUMEN PERSONAL</span>
+              <h2>Esta semana</h2>
+              <p>Tu avance se actualiza con tus sesiones y asistencias registradas.</p>
+            </div>
+            <div class="progress-side-score">
+              <strong>{{progreso?.semana?.cumplimiento || 0}}%</strong>
+              <span>meta semanal</span>
+              <div><i [style.width.%]="progreso?.semana?.cumplimiento || 0"></i></div>
+            </div>
+            <div class="progress-side-mini">
+              <article><b>{{progreso?.mes?.sesiones_casa || 0}}</b><small>sesiones en casa</small></article>
+              <article><b>{{progreso?.mes?.minutos_entrenados || 0}}</b><small>minutos guiados</small></article>
+            </div>
+          </aside>
+        </section>
+
+        <div class="module-window-title progress-window-title">
+          <div><span>RESUMEN DE ACTIVIDAD</span><h2>Tu panel de progreso</h2><p>Consulta cada indicador en una ventana independiente.</p></div>
+        </div>
 
         <section class="client-progress-kpis">
           <article>
