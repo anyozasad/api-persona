@@ -36,7 +36,12 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               <span>{{dbConectada ? 'Datos en línea' : 'Sin conexión'}}</span>
             </div>
             <button type="button" class="member-alert-button" [class.active]="moduloActivo==='avisos'" (click)="abrirModulo('avisos')" aria-label="Abrir avisos">
-              <span>●</span>
+              <span class="member-bell-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M10 21h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </span>
               <b *ngIf="avisosNoLeidos>0">{{avisosNoLeidos>9 ? '9+' : avisosNoLeidos}}</b>
             </button>
             <div class="member-mini-profile">
@@ -170,7 +175,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               </div>
 
               <div class="showcase-coach-profile">
-                <img src="assets/showcase/coach-showcase.svg" alt="Entrenador de gimnasio">
+                <img src="https://images.unsplash.com/photo-1581009137042-c552e485697a?auto=format&fit=crop&w=500&q=86" alt="Entrenador de gimnasio">
                 <div>
                   <h3>{{rutinaActual?.entrenador ? nombreEntrenador : 'Entrenador Mallqui'}}</h3>
                   <p>{{rutinaActual?.entrenador ? 'Sigue tus entrenamientos y alcanza tus objetivos.' : 'Acompañamiento disponible mientras se asigna tu entrenador.'}}</p>
