@@ -17421,3 +17421,337 @@
     border-color:rgba(255,255,255,.12)!important;
   }
 }
+
+
+/* PORTAL CLIENTE V60 · CABECERA IGUAL EN TODOS LOS MÓDULOS */
+@media (min-width:1000px){
+
+  /* La cabecera ya no depende de estar en Inicio:
+     Entrenar, Rutinas, Clases y Progreso mantienen exactamente el mismo lenguaje visual. */
+  .member-page .member-topbar{
+    padding:0 1.45vw 0!important;
+    background:
+      radial-gradient(circle at 87% -15%,rgba(21,104,151,.15),transparent 25%),
+      linear-gradient(90deg,#02172b 0%,#031a31 50%,#021426 100%)!important;
+    border-bottom:1px solid rgba(255,255,255,.08)!important;
+    box-shadow:0 8px 28px rgba(0,0,0,.16)!important;
+  }
+
+  .member-page .member-top-row{
+    width:100%!important;
+    max-width:none!important;
+    min-height:8.8dvh!important;
+    margin:0!important;
+    grid-template-columns:20.5% minmax(0,1fr) auto!important;
+    gap:1.15vw!important;
+  }
+
+  .member-page .member-brand{
+    gap:.65vw!important;
+    background:transparent!important;
+    border:0!important;
+    color:#fff!important;
+  }
+
+  .member-page .member-brand img{
+    width:7.1dvh!important;
+    height:7.1dvh!important;
+    flex:0 0 7.1dvh!important;
+  }
+
+  .member-page .member-brand b{
+    color:#fff!important;
+    font-size:2.05dvh!important;
+    line-height:1!important;
+    letter-spacing:.03em!important;
+  }
+
+  .member-page .member-brand strong{
+    color:#ff3153!important;
+  }
+
+  .member-page .member-brand small{
+    margin-top:.55dvh!important;
+    color:#d7e2eb!important;
+    font-size:1.05dvh!important;
+  }
+
+  /* ===== MENÚ PRINCIPAL ===== */
+  .member-page .member-nav-primary{
+    justify-content:center!important;
+    gap:.65vw!important;
+  }
+
+  .member-page .member-nav-primary button{
+    position:relative!important;
+    min-height:5.85dvh!important;
+    min-width:auto!important;
+    padding:0 1vw!important;
+    gap:.55vw!important;
+    border:1px solid transparent!important;
+    border-radius:1.25dvh!important;
+    background:transparent!important;
+    color:#eef5fa!important;
+    font-size:1.52dvh!important;
+    line-height:1!important;
+    font-weight:850!important;
+    box-shadow:none!important;
+  }
+
+  .member-page .member-nav-primary button i{
+    width:3.55dvh!important;
+    height:3.55dvh!important;
+    flex:0 0 3.55dvh!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:.85dvh!important;
+    background:rgba(255,255,255,.045)!important;
+    border:1px solid rgba(255,255,255,.025)!important;
+    color:#f6fbff!important;
+  }
+
+  .member-page .member-nav-primary button i svg{
+    width:2.25dvh!important;
+    height:2.25dvh!important;
+    display:block!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.8!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+
+  .member-page .member-nav-primary button span{
+    color:inherit!important;
+  }
+
+  .member-page .member-nav-primary button:not(.active):hover{
+    transform:translateY(-1px)!important;
+    background:rgba(255,255,255,.055)!important;
+    border-color:rgba(255,255,255,.05)!important;
+    color:#fff!important;
+  }
+
+  /* TODOS los botones activos usan el mismo rojo del Inicio.
+     Nada de morado/naranja/verde en la cabecera. */
+  .member-page .member-nav-primary .nav-step.active,
+  .member-page .member-nav-primary button.active{
+    min-width:8.4dvh!important;
+    padding-left:.78vw!important;
+    padding-right:1.05vw!important;
+    color:#fff!important;
+    background:linear-gradient(135deg,#ff3853 0%,#ff2343 55%,#ec1736 100%)!important;
+    border-color:#ff6076!important;
+    box-shadow:
+      0 0 0 .35dvh rgba(255,39,70,.12),
+      0 1.15dvh 2.6dvh rgba(239,35,60,.31),
+      inset 0 1px 0 rgba(255,255,255,.22)!important;
+  }
+
+  .member-page .member-nav-primary .nav-step.active i,
+  .member-page .member-nav-primary button.active i{
+    color:#fff!important;
+    background:rgba(255,255,255,.12)!important;
+    border-color:rgba(255,255,255,.10)!important;
+  }
+
+  .member-page .member-nav-primary .nav-step.active::after,
+  .member-page .member-nav-primary button.active::after{
+    content:""!important;
+    position:absolute!important;
+    left:15%!important;
+    right:15%!important;
+    bottom:-1.55dvh!important;
+    height:.32dvh!important;
+    border-radius:99px!important;
+    background:#ff2d49!important;
+    box-shadow:0 0 13px rgba(255,45,73,.72)!important;
+  }
+
+  /* ===== ESTADO / CAMPANA / PERFIL / SALIR ===== */
+  .member-page .member-user-actions{
+    gap:.55vw!important;
+  }
+
+  .member-page .member-system-status{
+    min-height:4.95dvh!important;
+    padding:0 .85vw!important;
+    border-radius:1.05dvh!important;
+    border:1px solid rgba(28,201,141,.14)!important;
+    background:rgba(16,111,89,.25)!important;
+    color:#d9fff2!important;
+    font-size:1.15dvh!important;
+    font-weight:850!important;
+  }
+
+  .member-page .member-system-status i{
+    width:.78dvh!important;
+    height:.78dvh!important;
+    background:#19e39c!important;
+    box-shadow:0 0 0 5px rgba(25,227,156,.09),0 0 14px rgba(25,227,156,.48)!important;
+  }
+
+  .member-page .member-alert-button{
+    width:4.95dvh!important;
+    height:4.95dvh!important;
+    border-radius:1.05dvh!important;
+    border:1px solid rgba(255,255,255,.11)!important;
+    background:rgba(255,255,255,.045)!important;
+    color:#fff!important;
+  }
+
+  .member-page .member-bell-icon,
+  .member-page .member-bell-icon svg{
+    width:2.05dvh!important;
+    height:2.05dvh!important;
+  }
+
+  .member-page .member-bell-icon svg{
+    fill:none!important;
+    stroke:currentColor!important;
+  }
+
+  .member-page .member-alert-button>b{
+    min-width:1.75dvh!important;
+    height:1.75dvh!important;
+    top:-.45dvh!important;
+    right:-.35dvh!important;
+    font-size:.78dvh!important;
+  }
+
+  .member-page .member-mini-profile{
+    min-width:13.5vw!important;
+    min-height:4.95dvh!important;
+    padding:.45dvh .72vw!important;
+    border-radius:1.05dvh!important;
+    border:1px solid rgba(255,255,255,.10)!important;
+    background:rgba(255,255,255,.045)!important;
+  }
+
+  .member-page .member-mini-profile>span{
+    width:3.85dvh!important;
+    height:3.85dvh!important;
+    font-size:1.35dvh!important;
+    background:linear-gradient(145deg,#1362a3,#0e477b)!important;
+    color:#fff!important;
+  }
+
+  .member-page .member-mini-profile b{
+    color:#fff!important;
+    font-size:1.15dvh!important;
+  }
+
+  .member-page .member-mini-profile small{
+    margin-top:.15dvh!important;
+    color:#aebfce!important;
+    font-size:.87dvh!important;
+  }
+
+  .member-page .member-logout{
+    min-width:6.5vw!important;
+    height:4.95dvh!important;
+    border-radius:1.05dvh!important;
+    border:1px solid rgba(255,46,72,.52)!important;
+    background:transparent!important;
+    color:#ff5269!important;
+    font-size:1.15dvh!important;
+    font-weight:900!important;
+  }
+
+  .member-page .member-logout svg{
+    width:2.05dvh!important;
+    height:2.05dvh!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.8!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+
+  .member-page .member-logout:hover{
+    background:rgba(255,46,72,.08)!important;
+    color:#ff7184!important;
+  }
+
+  /* ===== SUBNAVEGACIÓN ===== */
+  .member-page .member-subnav{
+    width:100%!important;
+    max-width:none!important;
+    min-height:6.25dvh!important;
+    margin:0!important;
+    padding:.62dvh .68vw!important;
+    border-radius:1.25dvh!important;
+    background:#fff!important;
+    border:1px solid #dfe6ed!important;
+    box-shadow:0 .7dvh 2.2dvh rgba(4,26,47,.08)!important;
+  }
+
+  .member-page .member-subnav-scroll{
+    display:flex!important;
+    align-items:center!important;
+    gap:.5vw!important;
+  }
+
+  .member-page .member-subnav-scroll button{
+    min-height:4.75dvh!important;
+    padding:0 1.05vw!important;
+    gap:.55vw!important;
+    border:1px solid transparent!important;
+    border-radius:.95dvh!important;
+    background:transparent!important;
+    color:#0b1e36!important;
+    font-size:1.27dvh!important;
+    font-weight:850!important;
+    box-shadow:none!important;
+  }
+
+  .member-page .member-subnav-scroll button i{
+    min-width:1.75dvh!important;
+    width:1.75dvh!important;
+    height:1.75dvh!important;
+    display:grid!important;
+    place-items:center!important;
+    color:#0b1e36!important;
+  }
+
+  .member-page .member-subnav-scroll button i svg{
+    width:1.75dvh!important;
+    height:1.75dvh!important;
+    display:block!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.85!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+
+  .member-page .member-subnav-scroll button:nth-child(4) i svg{
+    fill:currentColor!important;
+    stroke:currentColor!important;
+    stroke-width:1.2!important;
+  }
+
+  .member-page .member-subnav-scroll button:hover{
+    background:#f7f9fc!important;
+    color:#0b1e36!important;
+  }
+
+  .member-page .member-subnav-scroll button.active{
+    color:#ef233c!important;
+    border-color:#ffc8d0!important;
+    background:linear-gradient(145deg,#fff2f4,#ffe8ec)!important;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.64)!important;
+  }
+
+  .member-page .member-subnav-scroll button.active i{
+    color:#ef233c!important;
+  }
+
+  /* Evita que estilos de los módulos conviertan los iconos SVG en bloques negros. */
+  .member-page .member-nav-primary svg,
+  .member-page .member-alert-button svg,
+  .member-page .member-logout svg,
+  .member-page .member-subnav-scroll svg{
+    vector-effect:non-scaling-stroke!important;
+  }
+}
