@@ -107,349 +107,171 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
           <button type="button" (click)="abrirModulo('inicio')">⌂ Volver al inicio</button>
         </section>
 
-        <section *ngIf="moduloActivo==='inicio'" class="member-dashboard">
-          <section class="member-hero member-enter-up member-hero-v26">
-            <div class="member-hero-copy member-hero-premium">
-              <div class="member-hero-content">
-                <span class="member-kicker">TU PANEL PERSONAL</span>
+        <section *ngIf="moduloActivo==='inicio'" class="member-dashboard dashboard-showcase-v30">
+          <section class="showcase-hero-grid">
+            <article class="showcase-hero-main">
+              <div class="showcase-hero-shade"></div>
+              <div class="showcase-hero-copy">
+                <span class="showcase-eyebrow">TU ESPACIO PERSONAL</span>
                 <h1>Bienvenido, <strong>{{nombreCorto}}</strong></h1>
-                <p>Entrena, revisa tu progreso y organiza tus próximas actividades desde un panel pensado para acompañarte cada día.</p>
+                <p>Entrena, revisa tu progreso y organiza tus próximas actividades desde un solo lugar.</p>
 
-                <div class="member-hero-actions">
-                  <button type="button" class="member-primary-action" (click)="abrirModulo('casa')">
-                    <span class="action-icon">⚡</span>
-                    <span class="action-copy"><b>Empezar entrenamiento</b><small>Sesión guiada en casa</small></span>
+                <div class="showcase-hero-actions">
+                  <button type="button" class="showcase-btn showcase-btn-primary" (click)="abrirModulo('casa')">
+                    <i>▶</i>
+                    <span><b>Entrenar en casa</b><small>Sesión guiada</small></span>
                     <em>→</em>
                   </button>
-                  <button type="button" class="member-secondary-action" (click)="abrirModulo('rutinas')">
-                    <span>🏋</span> Mis rutinas
+                  <button type="button" class="showcase-btn showcase-btn-secondary" (click)="abrirModulo('rutinas')">
+                    <i>🏋</i><b>Mis rutinas</b>
                   </button>
-                  <button type="button" class="member-secondary-action" (click)="abrirModulo('clases')">
-                    <span>▣</span> Ver clases
+                  <button type="button" class="showcase-btn showcase-btn-secondary" (click)="abrirModulo('clases')">
+                    <i>▣</i><b>Ver clases</b>
                   </button>
                 </div>
-
-                <div class="member-hero-mini-stats">
-                  <div>
-                    <span>ASISTENCIAS</span>
-                    <b>{{resumen?.asistencias_mes || 0}}</b>
-                    <small>este mes</small>
-                  </div>
-                  <i></i>
-                  <div>
-                    <span>RUTINAS</span>
-                    <b>{{rutinas.length}}</b>
-                    <small>registradas</small>
-                  </div>
-                  <i></i>
-                  <div>
-                    <span>RESERVAS</span>
-                    <b>{{reservasActivas.length}}</b>
-                    <small>activas</small>
-                  </div>
-                </div>
               </div>
 
-              <div class="member-hero-visual" aria-hidden="true">
-                <div class="member-hero-photo-frame">
-                  <img src="assets/exercises/deadbug_human.webp" alt="">
-                </div>
-                <div class="hero-floating-card hero-floating-top">
-                  <span>HOY</span>
-                  <b>{{entrenamientoCasaHoy?.activo ? 'Entrenamiento programado' : 'Día flexible'}}</b>
-                  <small>{{entrenamientoCasaHoy?.activo ? ((entrenamientoCasaHoy?.minutos || 0) + ' min aprox.') : 'Elige una sesión cuando quieras'}}</small>
-                </div>
-                <div class="hero-floating-card hero-floating-bottom hero-profile-progress">
-                  <span>CONFIGURACIÓN DE CUENTA</span>
-                  <div class="hero-progress-row">
-                    <b>{{porcentajeInicio}}%</b>
-                    <small>{{porcentajeInicio >= 100 ? 'Perfil listo' : 'Completa tu experiencia'}}</small>
-                  </div>
-                  <div class="hero-progress-line"><i [style.width.%]="porcentajeInicio"></i></div>
-                </div>
-              </div>
-            </div>
-
-            <aside class="member-coach-card member-coach-premium">
-              <div class="coach-header-row">
-                <span class="coach-badge">{{rutinaActual?.entrenador ? 'ENTRENADOR ASIGNADO' : 'ACOMPAÑAMIENTO'}}</span>
-                <span class="coach-live-dot"></span>
+              <div class="showcase-quote">
+                <span>“</span>
+                <b>DISCIPLINA HOY,<br>RESULTADOS MAÑANA</b>
               </div>
 
-              <ng-container *ngIf="rutinaActual?.entrenador; else sinEntrenador">
-                <div class="coach-profile-row">
-                  <div class="coach-avatar-large">{{nombreEntrenador.charAt(0).toUpperCase()}}</div>
-                  <div>
-                    <small>TU ENTRENADOR</small>
-                    <h3>{{nombreEntrenador}}</h3>
-                  </div>
-                </div>
-                <p>{{rutinaActual?.objetivo || 'Tu entrenador está preparando tu seguimiento personalizado.'}}</p>
-                <div class="coach-tags">
-                  <span>Seguimiento</span><span>Progreso</span><span>Constancia</span>
-                </div>
-                <button type="button" class="coach-home-button" (click)="abrirModulo('rutinas')">Ver mi rutina <span>→</span></button>
-              </ng-container>
+              <div class="showcase-kpis">
+                <button type="button" class="showcase-kpi kpi-red" (click)="abrirModulo('asistencias')">
+                  <i>◫</i>
+                  <span><small>Asistencias</small><b>{{resumen?.asistencias_mes || 0}}</b><em>este mes</em></span>
+                  <mark *ngIf="(resumen?.asistencias_mes || 0)>0">↑ +{{resumen?.asistencias_mes || 0}}</mark>
+                </button>
 
-              <ng-template #sinEntrenador>
-                <div class="coach-profile-row">
-                  <div class="coach-avatar-large coach-avatar-empty">MG</div>
-                  <div>
-                    <small>ESTADO ACTUAL</small>
-                    <h3>Asignación pendiente</h3>
-                  </div>
-                </div>
-                <p>Mientras se asigna un entrenador, puedes continuar con sesiones guiadas, clases y seguimiento de tu actividad.</p>
-                <div class="coach-tags">
-                  <span>Sesiones guiadas</span><span>Clases</span><span>Progreso</span>
-                </div>
-                <button type="button" class="coach-home-button" (click)="abrirModulo('casa')">Entrenar ahora <span>→</span></button>
-              </ng-template>
+                <button type="button" class="showcase-kpi kpi-orange" (click)="abrirModulo('rutinas')">
+                  <i>🏋</i>
+                  <span><small>Rutinas</small><b>{{rutinas.length}}</b><em>registradas</em></span>
+                  <mark *ngIf="rutinas.length>0">↑ +{{rutinas.length}}</mark>
+                </button>
 
-              <div class="coach-footer-note">
-                <span>●</span>
-                <div><b>Cuenta activa</b><small>Tu información está sincronizada</small></div>
+                <button type="button" class="showcase-kpi kpi-purple" (click)="abrirModulo('reservas')">
+                  <i>◷</i>
+                  <span><small>Reservas</small><b>{{reservasActivas.length}}</b><em>activas</em></span>
+                  <mark>→ {{reservasActivas.length}}</mark>
+                </button>
+
+                <button type="button" class="showcase-kpi kpi-green" (click)="abrirModulo('progreso')">
+                  <i>▥</i>
+                  <span><small>Progreso</small><b>{{progresoMensualPortal}}%</b><em>actividad mensual</em></span>
+                  <mark>↑ {{progresoMensualPortal}}%</mark>
+                </button>
               </div>
-            </aside>
-          </section>
-
-          <section class="member-next-step member-next-step-v28 member-enter-up">
-            <div class="member-next-step-icon">{{siguientePasoIcono}}</div>
-            <div class="member-next-step-copy">
-              <span>TU SIGUIENTE PASO</span>
-              <h2>{{siguientePasoTitulo}}</h2>
-              <p>{{siguientePasoDescripcion}}</p>
-            </div>
-            <button type="button" (click)="irSiguientePaso()">{{siguientePasoBoton}} <span>→</span></button>
-          </section>
-
-          <section class="member-stats premium-stats">
-            <article class="member-stat-card stat-plan">
-              <div class="stat-top"><span class="stat-icon">✦</span><small>MEMBRESÍA</small></div>
-              <h2>{{membresiaActual?.membresia?.nombre || 'Sin plan activo'}}</h2>
-              <p *ngIf="membresiaActual">Vence: {{fecha(membresiaActual.fecha_fin)}}</p>
-              <p *ngIf="!membresiaActual">Elige un plan para comenzar.</p>
-              <button type="button" (click)="abrirModulo('pagos')">Ver membresía →</button>
             </article>
 
-            <article class="member-stat-card stat-attendance">
-              <div class="stat-top"><span class="stat-icon">✓</span><small>ASISTENCIAS</small></div>
-              <h2>{{resumen?.asistencias_mes || 0}}</h2>
-              <p>Registros durante este mes</p>
-              <div class="mini-progress"><i [style.width.%]="(resumen?.asistencias_mes || 0) > 20 ? 100 : (resumen?.asistencias_mes || 0) * 5"></i></div>
-            </article>
-
-            <article class="member-stat-card stat-routine">
-              <div class="stat-top"><span class="stat-icon">🏋</span><small>RUTINAS</small></div>
-              <h2>{{rutinas.length}}</h2>
-              <p>{{rutinaActual?.nombre_rutina || 'Sin rutina activa'}}</p>
-              <button type="button" (click)="abrirModulo('rutinas')">Abrir rutinas →</button>
-            </article>
-
-            <article class="member-stat-card stat-booking">
-              <div class="stat-top"><span class="stat-icon">◷</span><small>RESERVAS</small></div>
-              <h2>{{reservasActivas.length}}</h2>
-              <p>Clases reservadas actualmente</p>
-              <button type="button" (click)="abrirModulo('reservas')">Ver reservas →</button>
-            </article>
-          </section>
-
-          <section class="member-onboarding member-enter-up">
-            <div class="member-onboarding-head">
-              <div>
-                <span>RUTA DEL CLIENTE</span>
-                <h2>Empieza por aquí</h2>
-                <p>El sistema te guía paso a paso para que no encuentres pantallas vacías.</p>
+            <aside class="showcase-coach-panel">
+              <div class="showcase-coach-head">
+                <b>♙ Mi entrenador</b>
+                <span><i></i>{{rutinaActual?.entrenador ? 'En línea' : 'Disponible'}}</span>
               </div>
-              <div class="onboarding-progress">
-                <strong>{{porcentajeInicio}}%</strong>
-                <span>configurado</span>
-              </div>
-            </div>
 
-            <div class="onboarding-track">
-              <button type="button" [class.done]="perfilCompleto" (click)="abrirModulo('perfil')">
-                <span>{{perfilCompleto ? '✓' : '1'}}</span>
-                <div><b>Completa tu perfil</b><small>{{perfilCompleto ? 'Datos listos' : 'Teléfono y dirección'}}</small></div>
-                <em>→</em>
-              </button>
-
-              <button type="button" [class.done]="!!membresiaActual" (click)="abrirModulo('pagos')">
-                <span>{{membresiaActual ? '✓' : '2'}}</span>
-                <div><b>Activa tu membresía</b><small>{{membresiaActual ? 'Plan activo' : 'Elige un plan y registra tu pago'}}</small></div>
-                <em>→</em>
-              </button>
-
-              <button type="button" [class.done]="casaCargado" class="onboarding-home" (click)="abrirModulo('casa')">
-                <span>3</span>
-                <div><b>Entrena en casa</b><small>Elige músculos, días, repeticiones y temporizador</small></div>
-                <em>→</em>
-              </button>
-
-              <button type="button" [class.done]="reservasActivas.length>0" (click)="abrirModulo('clases')">
-                <span>{{reservasActivas.length>0 ? '✓' : '4'}}</span>
-                <div><b>Reserva una clase</b><small>{{reservasActivas.length>0 ? 'Ya tienes una reserva' : 'Explora horarios disponibles'}}</small></div>
-                <em>→</em>
-              </button>
-
-              <button type="button" [class.done]="actividadRegistrada" (click)="abrirModulo('asistencias')">
-                <span>{{actividadRegistrada ? '✓' : '5'}}</span>
-                <div><b>Revisa tu progreso</b><small>Asistencias, sesiones y actividad</small></div>
-                <em>→</em>
-              </button>
-            </div>
-          </section>
-
-          <section *ngIf="casaCargado" class="member-home-today-card member-enter-up home-today-photo">
-            <div class="home-today-copy">
-              <span class="home-today-kicker"><i></i> ENTRENAMIENTO EN CASA · HOY</span>
-
-              <ng-container *ngIf="entrenamientoCasaHoy?.activo; else hoyDescanso">
-                <h2>{{entrenamientoCasaHoy?.zona?.icono}} Hoy toca {{entrenamientoCasaHoy?.zona?.nombre}}</h2>
-                <p>
-                  {{entrenamientoCasaHoy?.ejercicios}} ejercicios ·
-                  {{entrenamientoCasaHoy?.minutos}} min aprox. ·
-                  objetivo {{metaObjetivoCasa(planCasa.objetivo).nombre.toLowerCase()}}.
-                </p>
-                <div class="home-today-tags">
-                  <span>Guía paso a paso</span>
-                  <span>Repeticiones por lado</span>
-                  <span>Descansos automáticos</span>
-                </div>
-              </ng-container>
-
-              <ng-template #hoyDescanso>
-                <h2>Hoy no tienes sesión programada</h2>
-                <p>Puedes mantener tu día de recuperación o elegir una sesión moderada si deseas entrenar en casa.</p>
-                <div class="home-today-tags">
-                  <span>Plan semanal</span>
-                  <span>Sesiones moderadas</span>
-                  <span>Historial guardado</span>
-                </div>
-              </ng-template>
-            </div>
-
-            <div class="home-today-exercise-visuals" *ngIf="entrenamientoCasaHoy?.activo && ejerciciosCasaActuales.length">
-              <article *ngFor="let ejercicio of ejerciciosCasaActuales | slice:0:3">
-                <div class="home-today-exercise-image">
-                  <img *ngIf="imagenEjercicioCasa(ejercicio)"
-                       [src]="imagenEjercicioCasa(ejercicio)"
-                       (error)="ocultarImagenEjercicio($event)"
-                       [alt]="ejercicio.nombre">
-                  <span>{{ejercicio.icono}}</span>
-                </div>
+              <div class="showcase-coach-profile">
+                <img src="https://images.unsplash.com/photo-1581009137042-c552e485697a?auto=format&fit=crop&w=500&q=86" alt="Entrenador de gimnasio">
                 <div>
-                  <b>{{ejercicio.nombre}}</b>
-                  <small>{{prescripcionEjercicioCasa(ejercicio)}}</small>
+                  <h3>{{rutinaActual?.entrenador ? nombreEntrenador : 'Entrenador Mallqui'}}</h3>
+                  <p>{{rutinaActual?.entrenador ? 'Sigue tus entrenamientos y alcanza tus objetivos.' : 'Acompañamiento disponible mientras se asigna tu entrenador.'}}</p>
                 </div>
-              </article>
-            </div>
-
-            <button type="button" class="home-today-start" (click)="prepararEntrenamientoCasaHoy()">
-              <span>{{entrenamientoCasaHoy?.activo ? '▶' : '⚡'}}</span>
-              <div>
-                <b>{{entrenamientoCasaHoy?.activo ? 'Empezar sesión de hoy' : 'Elegir entrenamiento'}}</b>
-                <small>{{entrenamientoCasaHoy?.activo ? 'Ver ejercicios y comenzar' : 'Piernas, brazos, core y más'}}</small>
-              </div>
-              <em>→</em>
-            </button>
-          </section>
-
-          <section class="member-quick-section">
-            <div class="section-heading-member">
-              <div><span>ACCESOS RÁPIDOS</span><h2>¿Qué quieres hacer hoy?</h2></div>
-            </div>
-            <div class="member-quick-actions">
-              <button type="button" class="home-training-quick" (click)="abrirModulo('casa')"><i>⚡</i><b>Entrenar en casa</b><small>Temporizador y guía paso a paso</small><em>→</em></button>
-              <button type="button" (click)="abrirModulo('rutinas')"><i>🏋</i><b>Mis rutinas</b><small>Revisa tu plan de ejercicios</small><em>→</em></button>
-              <button type="button" (click)="abrirModulo('clases')"><i>▣</i><b>Clases</b><small>Explora horarios disponibles</small><em>→</em></button>
-              <button type="button" (click)="abrirModulo('reservas')"><i>◷</i><b>Reservas</b><small>Administra tus clases</small><em>→</em></button>
-              <button type="button" (click)="abrirModulo('progreso')"><i>◎</i><b>Mi progreso</b><small>Actividad e historial</small><em>→</em></button>
-              <button type="button" (click)="abrirModulo('calendario')"><i>◫</i><b>Calendario</b><small>Próximas actividades</small><em>→</em></button>
-              <button type="button" (click)="abrirModulo('club')"><i>★</i><b>Mi club</b><small>Credencial, favoritos y opinión</small><em>→</em></button>
-              <button type="button" (click)="abrirModulo('avisos')"><i>●</i><b>Avisos</b><small>Mensajes y recordatorios</small><em>→</em></button>
-              <button type="button" (click)="abrirModulo('pagos')"><i>▤</i><b>Pagos</b><small>Consulta tus movimientos</small><em>→</em></button>
-              <button type="button" (click)="abrirModulo('soporte')"><i>?</i><b>Soporte</b><small>Consulta al gimnasio</small><em>→</em></button>
-              <button type="button" (click)="abrirModulo('perfil')"><i>♙</i><b>Mi perfil</b><small>Datos y seguridad</small><em>→</em></button>
-            </div>
-          </section>
-
-          <section class="member-home-grid">
-            <article class="member-panel-card routine-highlight">
-              <div class="panel-head">
-                <div><span>PRÓXIMA RUTINA</span><h2>Tu entrenamiento</h2></div>
-                <button type="button" (click)="abrirModulo('rutinas')">Ver todas →</button>
               </div>
 
-              <ng-container *ngIf="rutinaActual; else sinRutina">
-                <div class="routine-feature">
-                  <div class="routine-visual"><span>🏋</span></div>
-                  <div class="routine-info">
-                    <span class="routine-status">RUTINA ACTIVA</span>
-                    <h3>{{rutinaActual.nombre_rutina}}</h3>
-                    <p>{{rutinaActual.descripcion || rutinaActual.objetivo}}</p>
-                    <button type="button" (click)="abrirModulo('rutinas')">Ver ejercicios</button>
-                  </div>
-                </div>
-              </ng-container>
+              <div class="showcase-coach-tools">
+                <button type="button" (click)="abrirModulo('soporte')"><i>◯</i><span>Chat</span></button>
+                <button type="button" (click)="abrirModulo('calendario')"><i>◫</i><span>Agendar</span></button>
+                <button type="button" (click)="abrirModulo('rutinas')"><i>♙</i><span>Ver rutinas</span></button>
+              </div>
 
-              <ng-template #sinRutina>
-                <div class="member-empty-state member-empty-action">
-                  <span>🏋</span>
-                  <h3>Aún no tienes una rutina del entrenador</h3>
-                  <p>Cuando te asignen una aparecerá aquí. Mientras tanto puedes comenzar una sesión guiada en casa con temporizador y ejercicios paso a paso.</p>
-                  <div class="empty-action-row">
-                    <button type="button" class="member-empty-primary" (click)="abrirModulo('casa')">⚡ Entrenar en casa</button>
-                    <button type="button" class="member-empty-secondary" (click)="abrirModulo('clases')">Ver clases</button>
-                  </div>
+              <button type="button" class="showcase-coach-start" (click)="abrirModulo('casa')">
+                <i>▶</i><span>Iniciar entrenamiento</span><em>→</em>
+              </button>
+            </aside>
+          </section>
+
+          <section class="showcase-overview-grid">
+            <article class="showcase-membership-card">
+              <div class="membership-icon">✦</div>
+              <div class="membership-copy">
+                <span>MEMBRESÍA {{membresiaActual ? 'ACTIVA' : 'PENDIENTE'}}</span>
+                <h2>{{membresiaActual?.membresia?.nombre || 'Sin plan activo'}}</h2>
+                <p>{{membresiaActual ? ('Válido hasta: ' + fechaCortaPortal(membresiaActual.fecha_fin)) : 'Activa una membresía para aprovechar todos los beneficios.'}}</p>
+              </div>
+              <div class="membership-actions">
+                <span [class.inactive]="!membresiaActual"><i></i>{{membresiaActual ? 'Activa' : 'Pendiente'}}</span>
+                <button type="button" (click)="abrirModulo('pagos')">Ver detalles <em>→</em></button>
+              </div>
+            </article>
+
+            <article class="showcase-class-card">
+              <div class="showcase-card-head">
+                <b>◫ Próxima clase reservada</b>
+                <button type="button" (click)="abrirModulo('reservas')">Ver todas <span>→</span></button>
+              </div>
+
+              <div class="showcase-class-content" *ngIf="reservasActivas.length; else sinReservaShowcase">
+                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=700&q=86" alt="Clase de entrenamiento">
+                <div>
+                  <h3>{{reservasActivas[0]?.clase?.nombre || 'Clase reservada'}}</h3>
+                  <p><span>◫</span>{{fechaCortaPortal(reservasActivas[0]?.fecha_clase)}}</p>
+                  <p><span>◷</span>{{reservasActivas[0]?.clase?.hora_inicio || 'Horario por confirmar'}}</p>
+                  <p><span>⌖</span>{{reservasActivas[0]?.clase?.sala || 'Mallqui Gym'}}</p>
+                </div>
+              </div>
+
+              <ng-template #sinReservaShowcase>
+                <div class="showcase-class-empty">
+                  <i>◫</i>
+                  <div><b>Sin clases reservadas</b><small>Explora los horarios disponibles.</small></div>
+                  <button type="button" (click)="abrirModulo('clases')">Reservar</button>
                 </div>
               </ng-template>
             </article>
 
-            <aside class="member-side-stack">
-              <article class="member-panel-card progress-card">
-                <div class="panel-head compact"><div><span>PROGRESO</span><h2>Tu actividad</h2></div></div>
-                <div class="progress-metric">
-                  <div><span>Asistencias del mes</span><b>{{resumen?.asistencias_mes || 0}}</b></div>
-                  <div class="progress-line"><i [style.width.%]="(resumen?.asistencias_mes || 0) > 20 ? 100 : (resumen?.asistencias_mes || 0) * 5"></i></div>
+            <article class="showcase-progress-card">
+              <div class="showcase-card-head">
+                <b>Tu progreso mensual</b>
+                <button type="button" (click)="abrirModulo('progreso')">Ver más <span>→</span></button>
+              </div>
+              <div class="showcase-progress-body">
+                <div class="showcase-progress-ring" [style.background]="'conic-gradient(#ff2746 0 '+progresoMensualPortal+'%, #193a58 '+progresoMensualPortal+'% 100%)'">
+                  <div><b>{{progresoMensualPortal}}%</b></div>
                 </div>
-                <div class="progress-metric">
-                  <div><span>Rutinas activas</span><b>{{rutinas.length}}</b></div>
-                  <div class="progress-line red"><i [style.width.%]="rutinas.length > 5 ? 100 : rutinas.length * 20"></i></div>
+                <div class="showcase-progress-list">
+                  <p><i class="dot-blue"></i><span>Rutinas registradas</span><b>{{rutinas.length}}</b></p>
+                  <p><i class="dot-green"></i><span>Asistencias</span><b>{{resumen?.asistencias_mes || 0}}</b></p>
+                  <p><i class="dot-red"></i><span>Clases reservadas</span><b>{{reservasActivas.length}}</b></p>
                 </div>
-                <div class="progress-metric">
-                  <div><span>Reservas activas</span><b>{{reservasActivas.length}}</b></div>
-                  <div class="progress-line green"><i [style.width.%]="reservasActivas.length > 5 ? 100 : reservasActivas.length * 20"></i></div>
-                </div>
-              </article>
-
-              <article class="member-panel-card account-health-card">
-                <div class="account-health-icon">✓</div>
-                <div><span>ESTADO DE CUENTA</span><h3>Todo listo para entrenar</h3><p>Tu cuenta está activa y sincronizada con Mallqui Gym.</p></div>
-              </article>
-            </aside>
+              </div>
+            </article>
           </section>
 
-          <section class="member-panel-card member-payments-home">
-            <div class="panel-head">
-              <div><span>MOVIMIENTOS</span><h2>Últimos pagos</h2></div>
-              <button type="button" (click)="abrirModulo('pagos')">Ver historial →</button>
-            </div>
-
-            <div *ngIf="pagos.length; else sinPagosHome" class="member-payment-list">
-              <div *ngFor="let p of pagos.slice(0,4)" class="member-payment-item">
-                <span class="payment-icon">▤</span>
-                <p><b>{{p.cliente_membresia?.membresia?.nombre || 'Membresía'}}</b><small>{{fecha(p.fecha_pago)}}</small></p>
-                <strong>S/ {{p.monto}}</strong>
-                <em [class.pending]="p.estado_pago==='Pendiente'">{{p.estado_pago}}</em>
+          <section class="showcase-bottom-grid">
+            <article class="showcase-quick-card">
+              <h2>Accesos rápidos</h2>
+              <div class="showcase-quick-grid">
+                <button type="button" (click)="abrirModulo('calendario')"><i class="quick-red">◫</i><b>Calendario</b><small>Ver horarios</small></button>
+                <button type="button" (click)="abrirModulo('reservas')"><i class="quick-blue">◷</i><b>Reservas</b><small>Mis reservas</small></button>
+                <button type="button" (click)="abrirModulo('rutinas')"><i class="quick-orange">🏋</i><b>Mis rutinas</b><small>Ver y entrenar</small></button>
+                <button type="button" (click)="abrirModulo('clases')"><i class="quick-purple">♟</i><b>Clases</b><small>Explorar clases</small></button>
+                <button type="button" (click)="abrirModulo('progreso')"><i class="quick-green">▥</i><b>Mi progreso</b><small>Estadísticas</small></button>
+                <button type="button" (click)="abrirModulo('club')"><i class="quick-gold">★</i><b>Mi club</b><small>Beneficios</small></button>
+                <button type="button" (click)="abrirModulo('soporte')"><i class="quick-cyan">?</i><b>Ayuda</b><small>Soporte</small></button>
               </div>
-            </div>
+            </article>
 
-            <ng-template #sinPagosHome>
-              <div class="member-empty-state compact-empty">
-                <span>▤</span><h3>Todavía no hay pagos registrados</h3><p>Cuando tengas movimientos aparecerán en este espacio.</p>
+            <article class="showcase-profile-card">
+              <div class="showcase-profile-icon">♙</div>
+              <div class="showcase-profile-copy">
+                <h2>{{perfilCompleto ? 'Tu perfil está completo' : 'Completa tus datos'}}</h2>
+                <p>{{perfilCompleto ? 'Tu información está lista para usar todas las funciones.' : 'Agrega teléfono y dirección para una mejor experiencia.'}}</p>
+                <div class="showcase-profile-progress">
+                  <i [style.width.%]="porcentajeInicio"></i>
+                </div>
               </div>
-            </ng-template>
+              <b class="showcase-profile-percent">{{porcentajeInicio}}%</b>
+              <button type="button" (click)="abrirModulo('perfil')">{{perfilCompleto ? 'Ver perfil' : 'Completar perfil'}} <span>→</span></button>
+            </article>
           </section>
         </section>
 
@@ -1295,6 +1117,20 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     ];
     return Math.round((pasos.filter(Boolean).length/pasos.length)*100);
   }
+  get progresoMensualPortal():number{
+    const asistencias=Math.min(Number(this.resumen?.asistencias_mes||0),12)/12;
+    const rutinas=Math.min(this.rutinas.length,4)/4;
+    const reservas=Math.min(this.reservasActivas.length,4)/4;
+    return Math.max(0,Math.min(100,Math.round((asistencias*.45+rutinas*.30+reservas*.25)*100)));
+  }
+
+  fechaCortaPortal(v:any):string{
+    if(!v)return 'Por confirmar';
+    const d=new Date(v);
+    if(isNaN(d.getTime()))return String(v);
+    return d.toLocaleDateString('es-PE',{day:'2-digit',month:'short',year:'numeric'});
+  }
+
   nombrePersona(p:any):string{return p?[`${p.nombres||''}`,`${p.apellidos||''}`].join(' ').trim():'-';}
   fecha(v:any):string{if(!v)return '-';const d=new Date(v);return isNaN(d.getTime())?String(v):d.toLocaleString('es-PE');}
 
