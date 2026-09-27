@@ -646,15 +646,32 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
           </section>
 
           <section *ngIf="sesionCasaTerminada" class="home-session-complete">
-            <div class="complete-badge">✓</div>
+            <div class="complete-badge" aria-hidden="true">✓</div>
             <span>SESIÓN COMPLETADA</span>
             <h2>Entrenamiento terminado</h2>
             <p>Completaste {{ejerciciosCasaActuales.length}} ejercicios de {{metaZonaCasa(zonaCasaSeleccionada).nombre}} en {{formatoTiempoCasa(segundosTranscurridosCasa)}}.</p>
+
+            <div class="complete-summary">
+              <div><small>EJERCICIOS</small><b>{{ejerciciosCasaActuales.length}}</b></div>
+              <div><small>ZONA</small><b>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</b></div>
+              <div><small>TIEMPO</small><b>{{formatoTiempoCasa(segundosTranscurridosCasa)}}</b></div>
+            </div>
+
             <div class="complete-actions">
-              <button type="button" class="home-start-session" (click)="reiniciarSesionCasa()">
-                <span>↻</span><div><b>Elegir otro entrenamiento</b><small>Volver a grupos musculares</small></div><em>Continuar →</em>
+              <button type="button" class="complete-action-primary" (click)="reiniciarSesionCasa()">
+                <span>↻</span>
+                <div><b>Elegir otro entrenamiento</b><small>Volver a grupos musculares</small></div>
+                <em>Continuar →</em>
               </button>
-              <button type="button" class="member-secondary-action" (click)="abrirModulo('inicio')">Volver al inicio</button>
+
+              <button type="button" class="complete-action-secondary" (click)="abrirModulo('progreso')">
+                <span>▥</span>
+                <div><b>Ver mi progreso</b><small>Revisar actividad guardada</small></div>
+              </button>
+
+              <button type="button" class="complete-action-ghost" (click)="abrirModulo('inicio')">
+                <span>⌂</span><b>Volver al inicio</b>
+              </button>
             </div>
           </section>
 
