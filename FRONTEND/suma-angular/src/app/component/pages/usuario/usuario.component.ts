@@ -23,11 +23,21 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
           </button>
 
           <nav class="member-nav member-nav-primary" aria-label="Navegación principal del cliente">
-            <button type="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')"><i>⌂</i><span>Inicio</span></button>
-            <button type="button" [class.active]="moduloActivo==='casa'" (click)="abrirModulo('casa')"><i>⚡</i><span>Entrenar</span></button>
-            <button type="button" [class.active]="moduloActivo==='rutinas'" (click)="abrirModulo('rutinas')"><i>🏋</i><span>Rutinas</span></button>
-            <button type="button" [class.active]="moduloActivo==='clases'" (click)="abrirModulo('clases')"><i>▣</i><span>Clases</span></button>
-            <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')"><i>◎</i><span>Progreso</span></button>
+            <button type="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')">
+              <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-7h5v7"/></svg></i><span>Inicio</span>
+            </button>
+            <button type="button" [class.active]="moduloActivo==='casa'" (click)="abrirModulo('casa')">
+              <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-7 12h6l-1 8 7-12h-6z"/></svg></i><span>Entrenar</span>
+            </button>
+            <button type="button" [class.active]="moduloActivo==='rutinas'" (click)="abrirModulo('rutinas')">
+              <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg></i><span>Rutinas</span>
+            </button>
+            <button type="button" [class.active]="moduloActivo==='clases'" (click)="abrirModulo('clases')">
+              <i><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg></i><span>Clases</span>
+            </button>
+            <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')">
+              <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10h4v10zM10 20V4h4v16zM16 20V7h4v13z"/><path d="m4 7 5-3 4 2 6-4"/></svg></i><span>Progreso</span>
+            </button>
           </nav>
 
           <div class="member-user-actions">
@@ -54,13 +64,13 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
 
         <div class="member-subnav">
           <div class="member-subnav-scroll">
-            <button type="button" [class.active]="moduloActivo==='calendario'" (click)="abrirModulo('calendario')"><i>◫</i> Calendario</button>
-            <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')"><i>◷</i> Reservas</button>
-            <button type="button" [class.active]="moduloActivo==='asistencias'" (click)="abrirModulo('asistencias')"><i>✓</i> Asistencias</button>
-            <button type="button" [class.active]="moduloActivo==='club'" (click)="abrirModulo('club')"><i>★</i> Mi club</button>
-            <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')"><i>▤</i> Membresía</button>
-            <button type="button" [class.active]="moduloActivo==='soporte'" (click)="abrirModulo('soporte')"><i>?</i> Ayuda</button>
-            <button type="button" [class.active]="moduloActivo==='perfil'" (click)="abrirModulo('perfil')"><i>♙</i> Perfil</button>
+            <button type="button" [class.active]="moduloActivo==='calendario'" (click)="abrirModulo('calendario')"><i><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg></i> Calendario</button>
+            <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></i> Reservas</button>
+            <button type="button" [class.active]="moduloActivo==='asistencias'" (click)="abrirModulo('asistencias')"><i><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10"/></svg></i> Asistencias</button>
+            <button type="button" [class.active]="moduloActivo==='club'" (click)="abrirModulo('club')"><i><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></i> Mi club</button>
+            <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')"><i><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg></i> Membresía</button>
+            <button type="button" [class.active]="moduloActivo==='soporte'" (click)="abrirModulo('soporte')"><i><svg viewBox="0 0 24 24"><path d="M9.5 9a3 3 0 1 1 4.8 2.4c-1.5 1.1-2.3 1.8-2.3 3.1"/><path d="M12 18h.01"/></svg></i> Ayuda</button>
+            <button type="button" [class.active]="moduloActivo==='perfil'" (click)="abrirModulo('perfil')"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/></svg></i> Perfil</button>
           </div>
 
           <button type="button" class="member-membership-chip" (click)="abrirModulo('pagos')">
@@ -255,18 +265,18 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
             <article class="showcase-quick-card">
               <h2>Accesos rápidos</h2>
               <div class="showcase-quick-grid">
-                <button type="button" (click)="abrirModulo('calendario')"><i class="quick-red">◫</i><b>Calendario</b><small>Ver horarios</small></button>
-                <button type="button" (click)="abrirModulo('reservas')"><i class="quick-blue">◷</i><b>Reservas</b><small>Mis reservas</small></button>
-                <button type="button" (click)="abrirModulo('rutinas')"><i class="quick-orange">🏋</i><b>Mis rutinas</b><small>Ver y entrenar</small></button>
-                <button type="button" (click)="abrirModulo('clases')"><i class="quick-purple">♟</i><b>Clases</b><small>Explorar clases</small></button>
-                <button type="button" (click)="abrirModulo('progreso')"><i class="quick-green">▥</i><b>Mi progreso</b><small>Estadísticas</small></button>
-                <button type="button" (click)="abrirModulo('club')"><i class="quick-gold">★</i><b>Mi club</b><small>Beneficios</small></button>
-                <button type="button" (click)="abrirModulo('soporte')"><i class="quick-cyan">?</i><b>Ayuda</b><small>Soporte</small></button>
+                <button type="button" (click)="abrirModulo('calendario')"><i class="quick-red"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg></i><b>Calendario</b><small>Ver horarios</small></button>
+                <button type="button" (click)="abrirModulo('reservas')"><i class="quick-blue"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></i><b>Reservas</b><small>Mis reservas</small></button>
+                <button type="button" (click)="abrirModulo('rutinas')"><i class="quick-orange"><svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg></i><b>Mis rutinas</b><small>Ver y entrenar</small></button>
+                <button type="button" (click)="abrirModulo('clases')"><i class="quick-purple"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2.5 20c.5-4 2.5-6 5.5-6s5 2 5.5 6M10.5 20c.5-4 2.5-6 5.5-6s5 2 5.5 6"/></svg></i><b>Clases</b><small>Explorar clases</small></button>
+                <button type="button" (click)="abrirModulo('progreso')"><i class="quick-green"><svg viewBox="0 0 24 24"><path d="M4 20V11h4v9zM10 20V6h4v14zM16 20V3h4v17z"/></svg></i><b>Mi progreso</b><small>Estadísticas</small></button>
+                <button type="button" (click)="abrirModulo('club')"><i class="quick-gold"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></i><b>Mi club</b><small>Beneficios</small></button>
+                <button type="button" (click)="abrirModulo('soporte')"><i class="quick-cyan"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.7 9.4a2.6 2.6 0 1 1 4.2 2.1c-1.3 1-1.9 1.6-1.9 2.8"/><path d="M12 17.6h.01"/></svg></i><b>Ayuda</b><small>Soporte</small></button>
               </div>
             </article>
 
             <article class="showcase-profile-card">
-              <div class="showcase-profile-icon">♙</div>
+              <div class="showcase-profile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/></svg></div>
               <div class="showcase-profile-copy">
                 <h2>{{perfilCompleto ? 'Tu perfil está completo' : 'Completa tus datos'}}</h2>
                 <p>{{perfilCompleto ? 'Tu información está lista para usar todas las funciones.' : 'Agrega teléfono y dirección para una mejor experiencia.'}}</p>
