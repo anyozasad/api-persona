@@ -274,6 +274,7 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
         Route::post('/dashboard/filtrar', [GymSystemAdminController::class, 'filtrarDashboard']);
 
         Route::get('/socios', [GymSystemAdminController::class, 'socios']);
+        Route::get('/socios/{id}/ficha', [GymSystemAdminController::class, 'fichaSocio']);
         Route::get('/socios/{id}', [GymSystemAdminController::class, 'socio']);
         Route::post('/socios', [GymSystemAdminController::class, 'guardarSocio']);
         Route::put('/socios/{id}', [GymSystemAdminController::class, 'actualizarSocio']);
