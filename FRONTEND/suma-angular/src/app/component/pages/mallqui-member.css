@@ -20358,3 +20358,317 @@
     max-width:none!important;
   }
 }
+
+
+/* PORTAL CLIENTE V73 · SESION ACTIVA EN MODO FOCO ORDENADO */
+@media (min-width:1000px){
+
+  /* La sesión activa pasa a ser la protagonista.
+     No se mezcla visualmente con planificación/agenda. */
+  .module-training-v34 .home-session-live{
+    width:100%!important;
+    max-width:none!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 300px!important;
+    gap:16px!important;
+    align-items:start!important;
+    margin:0!important;
+  }
+
+  .module-training-v34 .home-session-main{
+    min-width:0!important;
+    padding:22px!important;
+    border-radius:20px!important;
+  }
+
+  .module-training-v34 .home-session-queue{
+    width:auto!important;
+    min-width:0!important;
+    padding:18px!important;
+    border-radius:20px!important;
+    position:sticky!important;
+    top:18px!important;
+  }
+
+  /* Cabecera de sesión clara y compacta */
+  .module-training-v34 .home-session-top{
+    display:flex!important;
+    justify-content:space-between!important;
+    align-items:flex-start!important;
+    gap:16px!important;
+    padding-bottom:16px!important;
+    margin-bottom:18px!important;
+  }
+
+  .module-training-v34 .session-live{
+    font-size:9px!important;
+  }
+
+  .module-training-v34 .home-session-top h2{
+    margin:6px 0 4px!important;
+    font-size:28px!important;
+    line-height:1.05!important;
+  }
+
+  .module-training-v34 .home-session-top p{
+    margin:0!important;
+    font-size:10px!important;
+  }
+
+  .module-training-v34 .session-zone-badge{
+    flex:0 0 auto!important;
+    min-height:34px!important;
+    padding:0 11px!important;
+    font-size:9px!important;
+  }
+
+  /* Centro de trabajo: demostración + entrenador visual */
+  .module-training-v34 .home-coach-stage{
+    display:grid!important;
+    grid-template-columns:minmax(0,1.55fr) minmax(300px,.62fr)!important;
+    gap:16px!important;
+    align-items:stretch!important;
+    margin:0 0 16px!important;
+  }
+
+  .module-training-v34 .home-demo-column{
+    min-width:0!important;
+    padding:14px!important;
+    border-radius:17px!important;
+  }
+
+  .module-training-v34 .home-demo-column app-exercise-demo{
+    display:block!important;
+    min-width:0!important;
+  }
+
+  .module-training-v34 .home-live-coach{
+    min-width:0!important;
+    padding:17px!important;
+    gap:10px!important;
+    border-radius:17px!important;
+  }
+
+  .module-training-v34 .live-coach-heading h3{
+    margin:4px 0 4px!important;
+    font-size:20px!important;
+  }
+
+  .module-training-v34 .live-coach-heading p{
+    font-size:9px!important;
+  }
+
+  .module-training-v34 .live-target-card{
+    grid-template-columns:40px minmax(0,1fr)!important;
+    gap:9px!important;
+    padding:10px!important;
+  }
+
+  .module-training-v34 .live-target-card>span{
+    width:38px!important;
+    height:38px!important;
+    font-size:15px!important;
+  }
+
+  .module-training-v34 .live-target-card b{
+    font-size:11px!important;
+  }
+
+  .module-training-v34 .live-number-card{
+    padding:11px 12px!important;
+  }
+
+  .module-training-v34 .live-number-card strong{
+    font-size:25px!important;
+  }
+
+  .module-training-v34 .live-instruction-list{
+    gap:6px!important;
+  }
+
+  .module-training-v34 .live-instruction-list>div{
+    grid-template-columns:25px minmax(0,1fr)!important;
+    gap:8px!important;
+    padding:7px 8px!important;
+  }
+
+  .module-training-v34 .live-instruction-list>div>b{
+    width:25px!important;
+    height:25px!important;
+    font-size:8px!important;
+  }
+
+  .module-training-v34 .live-instruction-list>div>p{
+    margin:2px 0 0!important;
+    font-size:8.5px!important;
+    line-height:1.45!important;
+  }
+
+  /* Progreso, contador y controles quedan agrupados abajo. */
+  .module-training-v34 .home-session-progress{
+    margin:14px 0 0!important;
+    padding:0!important;
+  }
+
+  .module-training-v34 .home-rep-counter-panel{
+    margin-top:12px!important;
+    padding:13px 14px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:14px!important;
+    border-radius:13px!important;
+  }
+
+  .module-training-v34 .home-rep-counter-panel>div{
+    min-width:0!important;
+  }
+
+  .module-training-v34 .home-rep-counter-panel span{
+    font-size:8px!important;
+  }
+
+  .module-training-v34 .home-rep-counter-panel b{
+    display:block!important;
+    margin-top:3px!important;
+    font-size:21px!important;
+    line-height:1!important;
+  }
+
+  .module-training-v34 .home-rep-counter-panel small{
+    display:inline-block!important;
+    margin-left:8px!important;
+    font-size:9px!important;
+  }
+
+  .module-training-v34 .home-rep-counter-panel button{
+    flex:0 0 150px!important;
+    min-width:150px!important;
+    min-height:44px!important;
+    font-size:10px!important;
+  }
+
+  .module-training-v34 .home-session-controls{
+    display:grid!important;
+    grid-template-columns:.72fr 1.45fr .78fr!important;
+    gap:8px!important;
+    margin-top:10px!important;
+  }
+
+  .module-training-v34 .home-session-controls button{
+    min-height:44px!important;
+    height:44px!important;
+    border-radius:10px!important;
+    font-size:9px!important;
+  }
+
+  /* Cola lateral más ordenada y legible */
+  .module-training-v34 .home-session-queue .card-title-block span{
+    font-size:8px!important;
+  }
+
+  .module-training-v34 .home-session-queue .card-title-block h2{
+    margin:4px 0!important;
+    font-size:20px!important;
+  }
+
+  .module-training-v34 .home-session-queue .card-title-block p{
+    margin:0!important;
+    font-size:8px!important;
+    line-height:1.45!important;
+  }
+
+  .module-training-v34 .session-queue-list{
+    display:grid!important;
+    gap:7px!important;
+    margin-top:12px!important;
+  }
+
+  .module-training-v34 .session-queue-list>div{
+    display:grid!important;
+    grid-template-columns:28px 46px minmax(0,1fr)!important;
+    gap:8px!important;
+    align-items:center!important;
+    min-height:58px!important;
+    padding:8px!important;
+  }
+
+  .module-training-v34 .session-queue-list>div>span{
+    width:28px!important;
+    height:28px!important;
+    font-size:8px!important;
+  }
+
+  .module-training-v34 .queue-exercise-thumb{
+    width:46px!important;
+    height:42px!important;
+    border-radius:9px!important;
+    overflow:hidden!important;
+  }
+
+  .module-training-v34 .queue-exercise-thumb img{
+    width:100%!important;
+    height:100%!important;
+    object-fit:cover!important;
+  }
+
+  .module-training-v34 .session-queue-list>div>div:last-child{
+    min-width:0!important;
+  }
+
+  .module-training-v34 .session-queue-list b{
+    display:block!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    font-size:9px!important;
+  }
+
+  .module-training-v34 .session-queue-list small{
+    display:block!important;
+    margin-top:2px!important;
+    font-size:7px!important;
+    line-height:1.35!important;
+  }
+
+  /* Durante el descanso se mantiene el mismo orden visual. */
+  .module-training-v34 .home-rest-stage{
+    grid-template-columns:230px minmax(0,1fr)!important;
+    gap:18px!important;
+    margin:4px 0 16px!important;
+  }
+
+  .module-training-v34 .home-rest-timer{
+    width:220px!important;
+    height:220px!important;
+  }
+
+  .module-training-v34 .home-rest-timer>div{
+    width:174px!important;
+    height:174px!important;
+  }
+
+  .module-training-v34 .home-rest-timer strong{
+    font-size:39px!important;
+  }
+
+  .module-training-v34 .home-next-preview{
+    padding:16px!important;
+  }
+}
+
+@media (min-width:1000px) and (max-width:1280px){
+  .module-training-v34 .home-session-live{
+    grid-template-columns:1fr!important;
+  }
+
+  .module-training-v34 .home-session-queue{
+    position:relative!important;
+    top:auto!important;
+    order:2!important;
+  }
+
+  .module-training-v34 .session-queue-list{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
