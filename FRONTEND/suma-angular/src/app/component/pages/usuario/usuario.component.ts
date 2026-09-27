@@ -19,7 +19,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         <div class="member-top-row">
           <button type="button" class="member-brand" (click)="abrirModulo('inicio')" aria-label="Ir al inicio del portal">
             <img src="assets/mallqui-logo.svg" alt="Mallqui Gym">
-            <span><b>MALLQUI GYM</b><small>Tu espacio de entrenamiento</small></span>
+            <span><b>MALLQUI <strong>GYM</strong></b><small>Tu espacio de entrenamiento</small></span>
           </button>
 
           <nav class="member-nav member-nav-primary" aria-label="Navegación principal del cliente">
@@ -170,7 +170,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               </div>
 
               <div class="showcase-coach-profile">
-                <img src="https://images.unsplash.com/photo-1581009137042-c552e485697a?auto=format&fit=crop&w=500&q=86" alt="Entrenador de gimnasio">
+                <img src="assets/showcase/coach-showcase.svg" alt="Entrenador de gimnasio">
                 <div>
                   <h3>{{rutinaActual?.entrenador ? nombreEntrenador : 'Entrenador Mallqui'}}</h3>
                   <p>{{rutinaActual?.entrenador ? 'Sigue tus entrenamientos y alcanza tus objetivos.' : 'Acompañamiento disponible mientras se asigna tu entrenador.'}}</p>
@@ -210,7 +210,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               </div>
 
               <div class="showcase-class-content" *ngIf="reservasActivas.length; else sinReservaShowcase">
-                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=700&q=86" alt="Clase de entrenamiento">
+                <img src="assets/showcase/class-showcase.svg" alt="Clase de entrenamiento">
                 <div>
                   <h3>{{reservasActivas[0]?.clase?.nombre || 'Clase reservada'}}</h3>
                   <p><span>◫</span>{{fechaCortaPortal(reservasActivas[0]?.fecha_clase)}}</p>
