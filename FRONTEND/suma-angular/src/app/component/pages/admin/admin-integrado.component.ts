@@ -41,7 +41,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
 
       <div class="admin-system-card">
         <div class="system-live-dot"></div>
-        <div><b>Sistema conectado</b><small>Laravel + Angular + MySQL</small></div>
+        <div><b>Sistema en línea</b><small>Operación disponible</small></div>
       </div>
       <button type="button" class="admin-logout" (click)="cerrarSesion()"><span>↪</span> Cerrar sesión</button>
     </aside>
@@ -84,14 +84,14 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
       <ng-container *ngIf="seccion==='dashboard'">
         <section class="ux-dashboard-head premium-dashboard-hero">
           <div class="dashboard-hero-copy">
-            <span class="dashboard-live-pill"><i></i> {{dashboard?.fuente?.base_datos ? ('BD ' + dashboard.fuente.base_datos + ' · DATOS REALES') : 'SISTEMA EN TIEMPO REAL'}}</span>
+            <span class="dashboard-live-pill"><i></i> OPERACIÓN EN TIEMPO REAL</span>
             <span class="ux-overline">PANEL ADMINISTRATIVO · {{dashboard?.periodo?.mes || 'MES ACTUAL'}}</span>
             <h2>Todo lo importante, <strong>sin buscar de más.</strong></h2>
             <p>Controla ventas, clientes, membresías, caja e inventario desde un solo lugar.</p>
             <div class="dashboard-hero-trust">
-              <span>✓ Datos reales</span>
-              <span>✓ Laravel + Angular</span>
-              <span>✓ MySQL conectado</span>
+              <span>✓ Información actualizada</span>
+              <span>✓ Gestión centralizada</span>
+              <span>✓ Control operativo</span>
             </div>
           </div>
           <div class="ux-head-actions premium-head-actions">
@@ -245,7 +245,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
                 <tbody>
                   <tr *ngFor="let v of (dashboard?.ventas?.recientes || []).slice(0,5)">
                     <td><b>{{v.numero_comprobante}}</b><small>{{fecha(v.fecha_venta)}}</small></td>
-                    <td>{{nombreCliente(v.cliente)}}</td><td>{{v.metodo_pago}}</td><td><strong>S/ {{v.total | number:'1.2-2'}}</strong></td>
+                    <td>{{nombreClienteVenta(v.cliente)}}</td><td>{{v.metodo_pago}}</td><td><strong>S/ {{v.total | number:'1.2-2'}}</strong></td>
                   </tr>
                   <tr *ngIf="!(dashboard?.ventas?.recientes?.length)"><td colspan="4">Todavía no hay ventas registradas.</td></tr>
                 </tbody>
@@ -664,19 +664,19 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
 
       <ng-container *ngIf="seccion==='ventas'">
         <section class="management-grid">
-          <article class="admin-form-card"><div class="management-heading"><div><h2>Punto de venta</h2><p>Carrito con varios productos, IGV, stock y Kardex.</p></div><span>↑</span></div>
+          <article class="admin-form-card"><div class="management-heading"><div><h2>Punto de venta</h2><p>Registra productos, pagos y comprobantes en una sola operación.</p></div><span>↑</span></div>
             <form (ngSubmit)="registrarVenta()">
-              <label>Cliente<select [(ngModel)]="ventaForm.id_cliente" name="vcliente"><option [ngValue]="0">Seleccionar</option><option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option></select></label>
+              <label>Cliente<select [(ngModel)]="ventaForm.id_cliente" name="vcliente"><option [ngValue]="0">Público general</option><option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option></select></label>
               <div class="form-row"><label>Producto<select [(ngModel)]="ventaForm.id_producto" name="vproducto"><option [ngValue]="0">Seleccionar</option><option *ngFor="let p of productos" [ngValue]="p.id_producto">{{p.nombre_producto}} (Stock {{p.stock}})</option></select></label><label>Cantidad<input type="number" min="1" [(ngModel)]="ventaForm.cantidad" name="vcantidad"></label></div>
               <button class="admin-secondary" type="button" (click)="agregarItemVenta()">+ Agregar al carrito</button>
               <div class="table-wrap" *ngIf="ventaItems.length"><table class="management-table"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th><th></th></tr></thead><tbody><tr *ngFor="let i of ventaItems;let ix=index"><td>{{nombreProducto(i.id_producto)}}</td><td>{{i.cantidad}}</td><td>S/ {{precioProducto(i.id_producto) | number:'1.2-2'}}</td><td>S/ {{i.cantidad*precioProducto(i.id_producto) | number:'1.2-2'}}</td><td><button class="table-danger" type="button" (click)="quitarItemVenta(ix)">Quitar</button></td></tr></tbody></table></div>
               <div class="report-grid"><article><p>Subtotal sin IGV</p><h2>S/ {{subtotalVentaPreview | number:'1.2-2'}}</h2></article><article><p>IGV incluido {{ventaForm.igv_porcentaje}}%</p><h2>S/ {{igvVentaPreview | number:'1.2-2'}}</h2></article><article><p>Total a cobrar</p><h2>S/ {{totalVentaPreview | number:'1.2-2'}}</h2></article></div>
-              <div class="form-row"><label>Comprobante<select [(ngModel)]="ventaForm.tipo_comprobante" name="vtipo"><option>Boleta</option><option>Factura</option></select></label><label>Número<input [(ngModel)]="ventaForm.numero_comprobante" name="vnumero" required></label></div>
+              <div class="form-row"><label>Comprobante<select [(ngModel)]="ventaForm.tipo_comprobante" name="vtipo"><option>Boleta</option><option>Factura</option></select></label><label>Número<input [value]="ventaForm.numero_comprobante || 'Se genera al cobrar'" name="vnumero" readonly></label></div>
               <div class="form-row"><label>Método<select [(ngModel)]="ventaForm.metodo_pago" name="vmetodo"><option>Efectivo</option><option>Yape</option><option>Plin</option><option>Transferencia</option><option>Tarjeta</option></select></label><label>N° operación<input [(ngModel)]="ventaForm.numero_operacion" name="voperacion"></label></div>
               <button class="admin-primary">Cobrar venta</button>
             </form>
           </article>
-          <article class="admin-list-card wide-card"><div class="management-heading"><div><h2>Ventas</h2><p>{{ventas.length}} registros.</p></div></div><div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Comprobante</th><th>Fecha</th><th>Método</th><th>Total</th><th>Estado</th><th>Acción</th></tr></thead><tbody><tr *ngFor="let v of ventas"><td>{{v.id_venta}}</td><td>{{nombreCliente(v.cliente)}}</td><td>{{v.tipo_comprobante}} {{v.numero_comprobante}}</td><td>{{fecha(v.fecha_venta)}}</td><td>{{v.metodo_pago}}</td><td>S/ {{v.total | number:'1.2-2'}}</td><td>{{v.estado || 'Registrado'}}</td><td><button *ngIf="(v.estado||'Registrado')!=='Anulado'" class="table-danger" type="button" (click)="anularVenta(v.id_venta)">Anular</button></td></tr></tbody></table></div></article>
+          <article class="admin-list-card wide-card"><div class="management-heading"><div><h2>Ventas</h2><p>{{ventas.length}} registros.</p></div></div><div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Comprobante</th><th>Fecha</th><th>Método</th><th>Total</th><th>Estado</th><th>Acción</th></tr></thead><tbody><tr *ngFor="let v of ventas"><td>{{v.id_venta}}</td><td>{{nombreClienteVenta(v.cliente)}}</td><td>{{v.tipo_comprobante}} {{v.numero_comprobante}}</td><td>{{fecha(v.fecha_venta)}}</td><td>{{v.metodo_pago}}</td><td>S/ {{v.total | number:'1.2-2'}}</td><td>{{v.estado || 'Registrado'}}</td><td><button *ngIf="(v.estado||'Registrado')!=='Anulado'" class="table-danger" type="button" (click)="anularVenta(v.id_venta)">Anular</button></td></tr></tbody></table></div></article>
         </section>
       </ng-container>
 
@@ -702,7 +702,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
               <tbody>
                 <tr *ngFor="let v of ventas">
                   <td>{{v.id_venta}}</td>
-                  <td>{{nombreCliente(v.cliente)}}</td>
+                  <td>{{nombreClienteVenta(v.cliente)}}</td>
                   <td>{{v.tipo_comprobante}} {{v.numero_comprobante}}</td>
                   <td>{{fecha(v.fecha_venta)}}</td>
                   <td>{{v.metodo_pago}}</td>
@@ -1140,10 +1140,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     entrenador:['Entrenador','Gestión del entrenador principal'], clases:['Clases','Programación, horarios y cupos'],
     asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['Rutinas','Planes de entrenamiento por cliente'],
     reservas:['Reservas','Control de reservas y asistencia a clases'], categorias:['Categorías','Clasificación de productos'],
-    productos:['Productos','CRUD de productos conectado a Laravel'], proveedores:['Proveedores','Proveedores de productos'],
+    productos:['Productos','Registro, precios y control de stock'], proveedores:['Proveedores','Proveedores de productos'],
     compras:['Compras','Ingreso de productos e inventario'], ventas:['Ventas','Ventas de productos y stock'],
     caja:['Caja','Apertura, movimientos y cierre'],
-    reportes:['Reportes','Indicadores calculados desde MySQL'], usuarios:['Usuarios','Cuentas internas y permisos'],
+    reportes:['Reportes','Indicadores de gestión del gimnasio'], usuarios:['Usuarios','Cuentas internas y permisos'],
     comunicacion:['Notificaciones','Avisos y comunicación con clientes'], soporte:['Soporte','Consultas y respuestas a clientes'],
     configuracion:['Configuración','Ajustes generales y mantenimiento del sistema']
   };
@@ -1669,9 +1669,29 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   get subtotalVentaPreview():number{const f=1+(Number(this.ventaForm.igv_porcentaje||0)/100);return f>0?this.totalVentaPreview/f:this.totalVentaPreview;}
   get igvVentaPreview():number{return this.totalVentaPreview-this.subtotalVentaPreview;}
   registrarVenta(){
-    if(!this.ventaForm.id_cliente || !this.ventaItems.length){this.error='Selecciona cliente y agrega productos al carrito.';return;}
-    const datos={id_cliente:this.ventaForm.id_cliente,tipo_comprobante:this.ventaForm.tipo_comprobante,numero_comprobante:this.ventaForm.numero_comprobante,metodo_pago:this.ventaForm.metodo_pago,numero_operacion:this.ventaForm.metodo_pago==='Efectivo'?null:this.ventaForm.numero_operacion,igv_porcentaje:this.ventaForm.igv_porcentaje,items:this.ventaItems};
-    this.api.registrarVenta(datos).subscribe({next:r=>{this.ok(r.mensaje||'Venta registrada');this.ventaForm={id_cliente:0,id_producto:0,cantidad:1,tipo_comprobante:'Boleta',numero_comprobante:'',metodo_pago:'Efectivo',numero_operacion:'',igv_porcentaje:18};this.ventaItems=[];this.cargarVentas();this.cargarProductos();this.cargarKardex();this.cargarCaja();this.cargarDashboard();},error:e=>this.mostrarError(e)});
+    if(!this.ventaItems.length){this.error='Agrega al menos un producto al carrito.';return;}
+    if(this.ventaForm.metodo_pago!=='Efectivo' && !String(this.ventaForm.numero_operacion||'').trim()){
+      this.error='Ingresa el número de operación para el método de pago seleccionado.';
+      return;
+    }
+    const datos={
+      id_cliente:this.ventaForm.id_cliente||null,
+      tipo_comprobante:this.ventaForm.tipo_comprobante,
+      metodo_pago:this.ventaForm.metodo_pago,
+      numero_operacion:this.ventaForm.metodo_pago==='Efectivo'?null:String(this.ventaForm.numero_operacion||'').trim(),
+      igv_porcentaje:this.ventaForm.igv_porcentaje,
+      items:this.ventaItems
+    };
+    this.api.registrarVenta(datos).subscribe({
+      next:r=>{
+        const numero=r?.numero_comprobante ? ` · ${this.ventaForm.tipo_comprobante} ${r.numero_comprobante}` : '';
+        this.ok((r.mensaje||'Venta registrada')+numero);
+        this.ventaForm={id_cliente:0,id_producto:0,cantidad:1,tipo_comprobante:'Boleta',numero_comprobante:'',metodo_pago:'Efectivo',numero_operacion:'',igv_porcentaje:18};
+        this.ventaItems=[];
+        this.cargarVentas();this.cargarProductos();this.cargarKardex();this.cargarCaja();this.cargarDashboard();
+      },
+      error:e=>this.mostrarError(e)
+    });
   }
   anularVenta(id:number){const motivo=prompt('Motivo de la anulación (mínimo 5 caracteres):');if(!motivo||motivo.trim().length<5)return;this.api.anularVenta(id,motivo.trim()).subscribe({next:r=>{this.ok(r.mensaje||'Venta anulada');this.cargarVentas();this.cargarProductos();this.cargarKardex();this.cargarCaja();this.cargarDashboard();},error:e=>this.mostrarError(e)});}
   nombreProducto(id:number):string{return this.productos.find(p=>p.id_producto===id)?.nombre_producto||'Producto';}
@@ -1937,6 +1957,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   cerrarSesion(){ this.auth.logout().subscribe({next:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);},error:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);}}); }
 
   nombreCliente(c:any): string { return c ? `${c.nombres ?? ''} ${c.apellidos ?? ''}`.trim() : '-'; }
+  nombreClienteVenta(c:any): string {
+    const nombre=this.nombreCliente(c);
+    return nombre==='-' || !nombre ? 'Público general' : nombre;
+  }
   nombreEntrenador(e:any): string { return e ? `${e.nombres ?? ''} ${e.apellidos ?? ''}`.trim() : '-'; }
   clientePago(p:any): string { return this.nombreCliente(p?.cliente_membresia?.cliente ?? p?.clienteMembresia?.cliente); }
   planPago(p:any): string { return p?.cliente_membresia?.membresia?.nombre ?? p?.clienteMembresia?.membresia?.nombre ?? '-'; }
