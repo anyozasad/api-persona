@@ -32,7 +32,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
             <button type="button" class="nav-step nav-step-rutinas" [class.active]="navPrincipalActivo==='rutinas'" [attr.aria-current]="navPrincipalActivo==='rutinas' ? 'page' : null" (click)="abrirModulo('rutinas')">
               <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg></i><span>Rutinas</span>
             </button>
-            <button type="button" class="nav-step nav-step-clases" [class.active]="navPrincipalActivo==='clases'" [attr.aria-current]="navPrincipalActivo==='clases' ? 'page' : null" (click)="abrirModulo('clases')">
+            <button type="button" class="nav-step nav-step-clases nav-step-polished" [class.active]="navPrincipalActivo==='clases'" [attr.aria-current]="navPrincipalActivo==='clases' ? 'page' : null" (click)="abrirModulo('clases')">
               <i><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg></i><span>Clases</span>
             </button>
             <button type="button" class="nav-step nav-step-progreso" [class.active]="navPrincipalActivo==='progreso'" [attr.aria-current]="navPrincipalActivo==='progreso' ? 'page' : null" (click)="abrirModulo('progreso')">
@@ -670,7 +670,9 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         <section *ngIf="moduloActivo==='rutinas'" class="member-module module-routines-v34 member-enter-up">
           <div class="member-module-hero hero-photo hero-photo-rutinas">
             <div><span>ENTRENAMIENTO</span><h1>Mis rutinas</h1><p>Consulta los ejercicios que tu entrenador preparó para ti.</p></div>
-            <div class="module-hero-icon">🏋</div>
+            <div class="module-hero-icon module-hero-icon-rutinas" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg>
+  </div>
           </div>
 
           <div class="module-grid routine-grid">
@@ -698,7 +700,9 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         <section *ngIf="moduloActivo==='clases'" class="member-module module-classes-v34 member-enter-up">
           <div class="member-module-hero hero-photo hero-photo-clases">
             <div><span>AGENDA</span><h1>Clases disponibles</h1><p>Elige una clase, selecciona una fecha válida y reserva tu lugar.</p></div>
-            <div class="module-hero-icon">▣</div>
+            <div class="module-hero-icon module-hero-icon-clases" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg>
+  </div>
           </div>
 
           <div class="member-class-grid">
