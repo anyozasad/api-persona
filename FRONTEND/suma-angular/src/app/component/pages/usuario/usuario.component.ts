@@ -310,125 +310,72 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         </section>
 
         <section *ngIf="moduloActivo==='casa'" class="member-module home-training-module module-training-v34 member-enter-up">
-          <section class="training-showcase-shell" *ngIf="!sesionCasaActiva && !sesionCasaTerminada">
-            <section class="training-showcase-grid">
-              <article class="training-showcase-main">
-                <div class="training-showcase-carousel" aria-hidden="true">
-                  <img class="training-slide training-slide-1"
-                       src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=2200&q=92"
-                       alt="">
-                  <img class="training-slide training-slide-2"
-                       src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=2200&q=92"
-                       alt="">
-                  <img class="training-slide training-slide-3"
-                       src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2200&q=92"
-                       alt="">
-                </div>
-                <div class="training-showcase-overlay"></div>
+          <section class="train-ux-shell" *ngIf="!sesionCasaActiva && !sesionCasaTerminada">
+            <section class="train-ux-intro">
+              <article class="train-ux-copy-card">
+                <div class="train-ux-kicker"><i></i> ENTRENAMIENTO GUIADO</div>
+                <h1>Construye tu sesión <strong>de hoy</strong></h1>
+                <p>Elige tu objetivo, los días que entrenas y la zona que quieres trabajar. Mallqui te guía ejercicio por ejercicio.</p>
 
-                <div class="training-showcase-copy">
-                  <span>ENTRENAMIENTO PERSONAL</span>
-                  <h1>Tu sesión, <strong>a tu ritmo.</strong></h1>
-                  <p>Planifica, elige qué zona trabajar y sigue una guía visual paso a paso sin salir de Mallqui Gym.</p>
-
-                  <div class="training-showcase-actions">
-                    <button type="button" class="training-showcase-primary" (click)="irConfigCasa()">
-                      <i>▶</i>
-                      <span><b>Preparar entrenamiento</b><small>Configura tu sesión de hoy</small></span>
-                      <em>→</em>
-                    </button>
-
-                    <button type="button" class="training-showcase-secondary" (click)="abrirModulo('rutinas')">
-                      <i>
-                        <svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg>
-                      </i>
-                      <b>Mis rutinas</b>
-                    </button>
-                  </div>
+                <div class="train-ux-summary">
+                  <div><span>◎</span><p><small>ZONA ACTUAL</small><b>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</b></p></div>
+                  <div><span>◷</span><p><small>DURACIÓN</small><b>{{duracionEstimadaCasa(zonaCasaSeleccionada)}} min</b></p></div>
+                  <div><span>▦</span><p><small>EJERCICIOS</small><b>{{ejerciciosCasaActuales.length}}</b></p></div>
                 </div>
 
-                <div class="training-showcase-message">
-                  <span>“</span>
-                  <b>CONSTANCIA HOY,<br>PROGRESO MAÑANA</b>
-                </div>
-
-                <div class="training-showcase-kpis">
-                  <article class="training-kpi training-kpi-red">
-                    <i>⚡</i>
-                    <span><small>Objetivo</small><b>{{planCasa.objetivo | titlecase}}</b><em>plan actual</em></span>
-                  </article>
-                  <article class="training-kpi training-kpi-blue">
-                    <i>▣</i>
-                    <span><small>Días</small><b>{{planCasa.dias.length}}</b><em>por semana</em></span>
-                  </article>
-                  <article class="training-kpi training-kpi-purple">
-                    <i>◎</i>
-                    <span><small>Zona</small><b>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</b><em>seleccionada</em></span>
-                  </article>
-                  <article class="training-kpi training-kpi-green">
-                    <i>◷</i>
-                    <span><small>Duración</small><b>{{duracionEstimadaCasa(zonaCasaSeleccionada)}} min</b><em>aprox.</em></span>
-                  </article>
+                <div class="train-ux-actions">
+                  <button type="button" class="train-ux-primary" (click)="irConfigCasa()">
+                    <span>▶</span>
+                    <div><b>Configurar entrenamiento</b><small>Objetivo, días y zona</small></div>
+                    <em>→</em>
+                  </button>
+                  <button type="button" class="train-ux-secondary" (click)="abrirModulo('rutinas')">
+                    <span>🏋</span><b>Ver mis rutinas</b>
+                  </button>
                 </div>
               </article>
 
-              <aside class="training-coach-panel">
-                <div class="training-coach-head">
-                  <b>Entrenador visual</b>
-                  <span><i></i> Listo</span>
+              <article class="train-ux-visual-card">
+                <div class="train-ux-carousel" aria-hidden="true">
+                  <img class="train-ux-slide train-ux-slide-1"
+                       src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1400&q=90"
+                       alt="">
+                  <img class="train-ux-slide train-ux-slide-2"
+                       src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1400&q=90"
+                       alt="">
+                  <img class="train-ux-slide train-ux-slide-3"
+                       src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1400&q=90"
+                       alt="">
+                </div>
+                <div class="train-ux-visual-shade"></div>
+
+                <div class="train-ux-live-badge"><i></i> GUÍA VISUAL</div>
+
+                <div class="train-ux-visual-info">
+                  <small>SESIÓN PREPARADA</small>
+                  <h2>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</h2>
+                  <p>{{ejerciciosCasaActuales.length}} ejercicios · {{duracionEstimadaCasa(zonaCasaSeleccionada)}} min aprox.</p>
                 </div>
 
-                <div class="training-coach-profile">
-                  <img src="https://images.unsplash.com/photo-1581009137042-c552e485697a?auto=format&fit=crop&w=600&q=88"
-                       alt="Entrenador de gimnasio">
-                  <div>
-                    <small>SESIÓN ACTUAL</small>
-                    <h3>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</h3>
-                    <p>{{ejerciciosCasaActuales.length}} ejercicios · {{duracionEstimadaCasa(zonaCasaSeleccionada)}} min aprox.</p>
-                  </div>
-                </div>
-
-                <div class="training-coach-status">
-                  <span>PRÓXIMO PASO</span>
-                  <b>Configura objetivo y días</b>
-                  <p>Después eliges la zona y comienzas la guía visual.</p>
-                </div>
-
-                <div class="training-coach-tools">
-                  <button type="button" (click)="abrirModulo('rutinas')"><i>🏋</i><span>Rutinas</span></button>
-                  <button type="button" (click)="abrirModulo('progreso')"><i>▥</i><span>Progreso</span></button>
-                  <button type="button" (click)="abrirModulo('calendario')"><i>▣</i><span>Calendario</span></button>
-                </div>
-
-                <button type="button" class="training-coach-start" (click)="irConfigCasa()">
-                  <i>▶</i><span>Comenzar configuración</span><em>→</em>
-                </button>
-              </aside>
+                <div class="train-ux-no-equipment">✓ Sin equipo especial</div>
+              </article>
             </section>
 
-            <section class="training-journey-card">
-              <div class="training-journey-copy">
-                <span>RUTA DE ENTRENAMIENTO</span>
-                <h2>Todo en 3 pasos</h2>
-                <p>Una secuencia simple para empezar sin perderte.</p>
+            <section class="train-ux-stepbar">
+              <div class="train-step active">
+                <span>1</span>
+                <div><small>PASO ACTUAL</small><b>Planifica</b><p>Objetivo y días</p></div>
+                <em>ACTUAL</em>
               </div>
-
-              <div class="training-journey-steps">
-                <article class="active">
-                  <span>1</span>
-                  <div><small>PRIMERO</small><b>Planifica</b><p>Objetivo, días y grupos.</p></div>
-                  <em>ACTUAL</em>
-                </article>
-                <i>→</i>
-                <article>
-                  <span>2</span>
-                  <div><small>DESPUÉS</small><b>Elige tu sesión</b><p>Zona y ejercicios.</p></div>
-                </article>
-                <i>→</i>
-                <article>
-                  <span>3</span>
-                  <div><small>FINALMENTE</small><b>Entrena</b><p>Guía, repeticiones y descanso.</p></div>
-                </article>
+              <i>›</i>
+              <div class="train-step">
+                <span>2</span>
+                <div><small>DESPUÉS</small><b>Elige tu sesión</b><p>Zona y ejercicios</p></div>
+              </div>
+              <i>›</i>
+              <div class="train-step">
+                <span>3</span>
+                <div><small>FINAL</small><b>Entrena</b><p>Guía y descansos</p></div>
               </div>
             </section>
           </section>
