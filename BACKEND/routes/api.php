@@ -43,11 +43,42 @@ Route::get('/estado-sistema', function () {
     try {
         DB::connection()->getPdo();
 
+        $mysql = (array) config('database.connections.mysql', []);
+        config([
+            'database.connections.gym_system_check' => array_merge($mysql, [
+                'database' => env('GYM_DB_DATABASE', 'gym_system'),
+            ]),
+        ]);
+
+        $gymConectada = false;
+        $gymTablas = [];
+        try {
+            $gym = DB::connection('gym_system_check');
+            $gym->getPdo();
+            $gymConectada = true;
+            $schema = $gym->getSchemaBuilder();
+            foreach (['socios','planes','suscripciones','ventas','detalle_ventas','gastos','productos','asistencias','cajas','usuarios'] as $tabla) {
+                if ($schema->hasTable($tabla)) {
+                    $gymTablas[] = $tabla;
+                }
+            }
+        } catch (\Throwable $e) {
+            $gymConectada = false;
+        }
+
         return response()->json([
             'api' => true,
             'database' => true,
             'motor' => DB::connection()->getDriverName(),
-            'mensaje' => 'Sistema y base de datos conectados.',
+            'base_principal' => DB::connection()->getDatabaseName(),
+            'gym_system' => [
+                'conectada' => $gymConectada,
+                'base' => env('GYM_DB_DATABASE', 'gym_system'),
+                'tablas_detectadas' => $gymTablas,
+            ],
+            'mensaje' => $gymConectada
+                ? 'Sistema conectado correctamente con gym_system.'
+                : 'La API responde, pero no se pudo abrir gym_system.',
         ]);
     } catch (\Throwable $e) {
         return response()->json([
