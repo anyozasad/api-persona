@@ -11604,3 +11604,355 @@
     animation:none!important;
   }
 }
+
+
+/* PORTAL CLIENTE V29 · ACABADO COHERENTE PREMIUM */
+
+/* Mantiene la estructura, pero unifica el diseño para que no parezca armado por bloques */
+.member-dashboard{
+  gap:18px!important;
+}
+
+/* HERO principal: una sola pieza visual */
+.member-hero-v26{
+  grid-template-columns:minmax(0,2.15fr) minmax(330px,.72fr)!important;
+  gap:18px!important;
+}
+
+.member-hero-v26 .member-hero-premium{
+  min-height:420px!important;
+  grid-template-columns:minmax(0,1.05fr) minmax(390px,.95fr)!important;
+  overflow:hidden!important;
+  border:1px solid rgba(255,255,255,.06)!important;
+  border-radius:28px!important;
+  background:
+    radial-gradient(circle at 16% 16%,rgba(239,35,60,.14),transparent 25%),
+    radial-gradient(circle at 82% 12%,rgba(62,131,193,.16),transparent 26%),
+    linear-gradient(135deg,#071c33 0%,#0a2d4f 52%,#0d3a62 100%)!important;
+  box-shadow:0 26px 58px rgba(7,30,53,.18)!important;
+}
+
+.member-hero-content{
+  position:relative!important;
+  z-index:3!important;
+  padding:48px 26px 42px 46px!important;
+  background:
+    linear-gradient(90deg,rgba(6,27,49,.98) 0%,rgba(7,30,54,.94) 74%,rgba(7,30,54,.58) 100%)!important;
+}
+
+.member-hero-content .member-kicker{
+  min-height:28px!important;
+  padding:0 11px!important;
+  border:1px solid rgba(255,255,255,.11)!important;
+  background:rgba(255,255,255,.065)!important;
+  color:#ff9eac!important;
+  box-shadow:none!important;
+  backdrop-filter:blur(8px)!important;
+}
+.member-hero-content .member-kicker:before{
+  background:#ff3b52!important;
+  box-shadow:0 0 0 5px rgba(255,59,82,.10)!important;
+}
+
+.member-hero-content h1{
+  margin:20px 0 12px!important;
+  color:#fff!important;
+  font-size:50px!important;
+  line-height:.98!important;
+  letter-spacing:-1.8px!important;
+  text-shadow:0 10px 28px rgba(0,0,0,.18)!important;
+}
+.member-hero-content h1 strong{
+  color:#ff8697!important;
+}
+.member-hero-content>p{
+  max-width:650px!important;
+  color:#cad8e4!important;
+  font-size:13.5px!important;
+  line-height:1.7!important;
+}
+
+/* Botones del hero coherentes con fondo oscuro */
+.member-hero-v26 .member-primary-action{
+  min-width:235px!important;
+  min-height:58px!important;
+  border-radius:15px!important;
+  background:linear-gradient(135deg,#ff354e,#e71d38)!important;
+  box-shadow:0 14px 28px rgba(239,35,60,.25)!important;
+}
+.member-hero-v26 .member-secondary-action{
+  min-height:48px!important;
+  padding:0 15px!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  border-radius:13px!important;
+  background:rgba(255,255,255,.07)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  backdrop-filter:blur(8px)!important;
+}
+.member-hero-v26 .member-secondary-action:hover{
+  background:rgba(255,255,255,.12)!important;
+  border-color:rgba(255,255,255,.18)!important;
+  color:#fff!important;
+}
+
+/* Métricas integradas, no como tarjeta blanca pegada */
+.member-hero-mini-stats{
+  width:min(535px,100%)!important;
+  margin-top:28px!important;
+  padding:13px 15px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:15px!important;
+  background:rgba(255,255,255,.055)!important;
+  box-shadow:none!important;
+  backdrop-filter:blur(9px)!important;
+}
+.member-hero-mini-stats>i{
+  background:rgba(255,255,255,.11)!important;
+}
+.member-hero-mini-stats span{
+  color:#92a9bc!important;
+}
+.member-hero-mini-stats b{
+  color:#fff!important;
+}
+.member-hero-mini-stats small{
+  color:#9fb2c3!important;
+}
+
+/* Imagen: ocupa su zona sin verse encajonada */
+.member-hero-visual{
+  position:relative!important;
+  min-height:420px!important;
+  overflow:hidden!important;
+  background:linear-gradient(145deg,#082846,#0d3a62)!important;
+}
+.member-hero-visual:before{
+  content:''!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:2!important;
+  background:
+    linear-gradient(90deg,rgba(7,29,51,.44),rgba(7,29,51,.05) 40%,rgba(7,29,51,.20)),
+    linear-gradient(180deg,rgba(4,20,37,.04),rgba(4,20,37,.23))!important;
+}
+.member-hero-visual:after{
+  content:''!important;
+  position:absolute!important;
+  inset:auto -70px -80px auto!important;
+  width:230px!important;
+  height:230px!important;
+  border-radius:50%!important;
+  border:1px solid rgba(255,255,255,.055)!important;
+  box-shadow:0 0 0 35px rgba(255,255,255,.015),0 0 0 70px rgba(255,255,255,.008)!important;
+  z-index:2!important;
+}
+.member-hero-photo-frame{
+  inset:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#082a49!important;
+  box-shadow:none!important;
+}
+.member-hero-photo-frame img{
+  width:100%!important;
+  height:100%!important;
+  padding:0!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  transform:scale(1.02)!important;
+  filter:saturate(.92) contrast(1.04) brightness(.88)!important;
+}
+.member-hero-photo-frame:after{
+  background:
+    linear-gradient(90deg,rgba(6,28,51,.42),transparent 34%),
+    linear-gradient(180deg,rgba(5,24,44,.02),rgba(5,24,44,.18))!important;
+}
+
+/* Tarjetas flotantes sobrias */
+.hero-floating-card{
+  width:min(220px,calc(100% - 40px))!important;
+  padding:11px 13px!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  border-radius:14px!important;
+  background:rgba(5,27,49,.78)!important;
+  box-shadow:0 14px 32px rgba(0,0,0,.20)!important;
+  backdrop-filter:blur(12px)!important;
+}
+.hero-floating-top{
+  top:20px!important;
+  right:20px!important;
+}
+.hero-floating-bottom{
+  left:20px!important;
+  bottom:20px!important;
+}
+.hero-progress-line{
+  background:rgba(255,255,255,.13)!important;
+}
+
+/* ENTRENADOR: elimina círculo gigante y mantiene una tarjeta sólida */
+.member-coach-premium{
+  min-height:420px!important;
+  padding:25px!important;
+  overflow:hidden!important;
+  border:1px solid rgba(255,255,255,.07)!important;
+  border-radius:28px!important;
+  color:#fff!important;
+  background:
+    radial-gradient(circle at 88% 6%,rgba(239,35,60,.14),transparent 24%),
+    linear-gradient(155deg,#0a2b4b 0%,#0c3559 56%,#092846 100%)!important;
+  box-shadow:0 26px 58px rgba(7,30,53,.16)!important;
+}
+.member-coach-premium:before,
+.member-coach-premium:after{
+  display:none!important;
+  content:none!important;
+}
+.member-coach-premium .coach-badge{
+  border:1px solid rgba(255,255,255,.12)!important;
+  background:rgba(255,255,255,.07)!important;
+  color:#ff9cab!important;
+}
+.coach-profile-row{
+  margin-top:26px!important;
+}
+.coach-profile-row .coach-avatar-large{
+  width:68px!important;
+  height:68px!important;
+  flex-basis:68px!important;
+  border:1px solid rgba(255,255,255,.14)!important;
+  border-radius:18px!important;
+  background:linear-gradient(145deg,#174a74,#0d3458)!important;
+  box-shadow:0 12px 26px rgba(0,0,0,.18)!important;
+}
+.coach-profile-row small{
+  color:#8fa9bd!important;
+}
+.member-coach-premium .coach-profile-row h3{
+  color:#fff!important;
+  font-size:21px!important;
+  line-height:1.08!important;
+}
+.member-coach-premium>p,
+.member-coach-premium ng-container+p{
+  margin-top:18px!important;
+  color:#c5d5e1!important;
+  line-height:1.7!important;
+}
+.member-coach-premium .coach-tags{
+  margin-top:16px!important;
+}
+.member-coach-premium .coach-tags span{
+  border-color:rgba(255,255,255,.10)!important;
+  background:rgba(255,255,255,.06)!important;
+  color:#d3e0e9!important;
+}
+.member-coach-premium .coach-home-button{
+  min-height:50px!important;
+  margin-top:19px!important;
+  border-radius:14px!important;
+  background:linear-gradient(135deg,#ff344d,#e71d38)!important;
+  box-shadow:0 13px 28px rgba(239,35,60,.22)!important;
+}
+.member-coach-premium .coach-home-button:hover{
+  background:linear-gradient(135deg,#ff4058,#d91934)!important;
+  transform:translateY(-2px)!important;
+}
+.coach-footer-note{
+  border-top:1px solid rgba(255,255,255,.09)!important;
+}
+.coach-footer-note b{
+  color:#edf4f8!important;
+}
+.coach-footer-note small{
+  color:#819bad!important;
+}
+
+/* Siguiente paso más compacto para que no compita con el hero */
+.member-next-step-v28{
+  min-height:86px!important;
+  padding:14px 17px!important;
+  border-radius:18px!important;
+  box-shadow:0 11px 26px rgba(13,42,66,.045)!important;
+}
+.member-next-step-v28 .member-next-step-icon{
+  width:48px!important;
+  height:48px!important;
+}
+.member-next-step-v28 .member-next-step-copy h2{
+  font-size:17px!important;
+}
+.member-next-step-v28 .member-next-step-copy p{
+  font-size:9px!important;
+}
+.member-next-step-v28>button{
+  min-height:43px!important;
+}
+
+/* Estadísticas y accesos con menor ruido visual */
+.premium-stats .member-stat-card{
+  min-height:158px!important;
+  border-radius:18px!important;
+}
+.member-onboarding{
+  border-radius:20px!important;
+}
+.member-quick-actions button{
+  min-height:118px!important;
+  border-radius:17px!important;
+}
+
+/* Evita saturación de animaciones */
+.member-hero-v26,
+.member-next-step-v28,
+.premium-stats,
+.member-onboarding,
+.member-quick-section{
+  animation-duration:.36s!important;
+}
+
+/* Laptop */
+@media(max-width:1280px) and (min-width:901px){
+  .member-hero-v26{
+    grid-template-columns:minmax(0,1.75fr) minmax(285px,.68fr)!important;
+  }
+  .member-hero-v26 .member-hero-premium{
+    grid-template-columns:minmax(0,1fr) minmax(320px,.78fr)!important;
+  }
+  .member-hero-content{
+    padding:38px 18px 36px 34px!important;
+  }
+  .member-hero-content h1{
+    font-size:43px!important;
+  }
+}
+
+/* Tablet */
+@media(max-width:900px){
+  .member-hero-v26{
+    grid-template-columns:1fr!important;
+  }
+  .member-hero-v26 .member-hero-premium{
+    grid-template-columns:1fr!important;
+  }
+  .member-hero-content{
+    background:linear-gradient(180deg,rgba(6,27,49,.98),rgba(7,30,54,.94))!important;
+  }
+  .member-hero-visual{
+    min-height:320px!important;
+  }
+  .member-coach-premium{
+    min-height:auto!important;
+  }
+}
+
+/* Móvil */
+@media(max-width:580px){
+  .member-hero-content{
+    padding:28px 21px!important;
+  }
+  .member-hero-content h1{
+    font-size:34px!important;
+  }
+}
