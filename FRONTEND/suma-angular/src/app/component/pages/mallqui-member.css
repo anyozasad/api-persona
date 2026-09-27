@@ -18523,3 +18523,356 @@
     color:#ffe1e6!important;
   }
 }
+
+
+/* PORTAL CLIENTE V65 · ENTRENAR PLANIFICACIÓN UX OSCURA Y LEGIBLE */
+@media (min-width:1000px){
+
+  /* =======================================================
+     PLANIFICACIÓN: elimina blancos residuales y refuerza UX
+     ======================================================= */
+
+  .module-training-v34 .home-plan-card,
+  .module-training-v34 .home-week-card,
+  .module-training-v34 .home-workout-picker{
+    position:relative!important;
+    overflow:hidden!important;
+    background:
+      radial-gradient(circle at 92% 8%,rgba(44,137,199,.09),transparent 28%),
+      radial-gradient(circle at 8% 100%,rgba(255,49,83,.07),transparent 28%),
+      linear-gradient(145deg,rgba(7,42,71,.76),rgba(4,28,49,.82))!important;
+    border:1px solid rgba(178,209,229,.15)!important;
+    backdrop-filter:blur(18px) saturate(140%)!important;
+    -webkit-backdrop-filter:blur(18px) saturate(140%)!important;
+    box-shadow:
+      0 18px 38px rgba(0,0,0,.20),
+      inset 0 1px 0 rgba(255,255,255,.075)!important;
+  }
+
+  .module-training-v34 .home-plan-card::before,
+  .module-training-v34 .home-week-card::before,
+  .module-training-v34 .home-workout-picker::before{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    pointer-events:none!important;
+    background:
+      linear-gradient(180deg,rgba(255,255,255,.045),transparent 34%)!important;
+  }
+
+  .module-training-v34 .home-plan-card>*,
+  .module-training-v34 .home-week-card>*,
+  .module-training-v34 .home-workout-picker>*{
+    position:relative!important;
+    z-index:2!important;
+  }
+
+  /* ===== TITULOS PRINCIPALES ===== */
+  .module-training-v34 .card-title-block>span,
+  .module-training-v34 .home-picker-head>div>span,
+  .module-training-v34 .home-plan-zones>span{
+    color:#ff7188!important;
+    font-size:8px!important;
+    font-weight:950!important;
+    letter-spacing:1.05px!important;
+    text-transform:uppercase!important;
+  }
+
+  .module-training-v34 .card-title-block h2,
+  .module-training-v34 .home-picker-head h2{
+    color:#ffffff!important;
+    font-weight:950!important;
+    text-shadow:0 2px 12px rgba(0,0,0,.16)!important;
+  }
+
+  .module-training-v34 .card-title-block p,
+  .module-training-v34 .home-picker-head p{
+    color:#b9cdda!important;
+    line-height:1.55!important;
+  }
+
+  /* ===== OBJETIVOS ===== */
+  .module-training-v34 .home-goal-selector button{
+    background:
+      linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.025))!important;
+    border:1px solid rgba(185,213,232,.12)!important;
+    color:#edf6fb!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.04),
+      0 7px 16px rgba(0,0,0,.07)!important;
+  }
+
+  .module-training-v34 .home-goal-selector button>span{
+    background:rgba(255,255,255,.07)!important;
+    border:1px solid rgba(255,255,255,.07)!important;
+    color:#ffffff!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+
+  .module-training-v34 .home-goal-selector button div b{
+    color:#ffffff!important;
+    font-weight:900!important;
+  }
+
+  .module-training-v34 .home-goal-selector button div small{
+    color:#aabfce!important;
+  }
+
+  .module-training-v34 .home-goal-selector button>i{
+    background:rgba(255,255,255,.08)!important;
+    color:#cfe0eb!important;
+  }
+
+  .module-training-v34 .home-goal-selector button.active{
+    background:
+      radial-gradient(circle at 6% 50%,rgba(255,49,83,.16),transparent 28%),
+      linear-gradient(145deg,rgba(255,49,83,.13),rgba(255,49,83,.06))!important;
+    border-color:rgba(255,82,109,.42)!important;
+    box-shadow:
+      0 11px 26px rgba(255,49,83,.10),
+      inset 0 1px 0 rgba(255,255,255,.055)!important;
+  }
+
+  .module-training-v34 .home-goal-selector button.active>span{
+    background:linear-gradient(135deg,#ff4662,#f32143)!important;
+    border-color:rgba(255,106,130,.40)!important;
+    box-shadow:0 7px 16px rgba(255,49,83,.18)!important;
+  }
+
+  .module-training-v34 .home-goal-selector button.active>i{
+    background:#ff3153!important;
+    color:#fff!important;
+    box-shadow:0 0 14px rgba(255,49,83,.20)!important;
+  }
+
+  /* ===== DÍAS DE LA SEMANA ===== */
+  .module-training-v34 .home-days-selector button{
+    background:rgba(255,255,255,.04)!important;
+    border:1px solid rgba(184,212,232,.11)!important;
+    color:#dce8f1!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+  }
+
+  .module-training-v34 .home-days-selector button b{
+    color:#f6fbff!important;
+    font-weight:900!important;
+  }
+
+  .module-training-v34 .home-days-selector button small{
+    color:#97adbd!important;
+  }
+
+  .module-training-v34 .home-days-selector button.active{
+    background:rgba(255,49,83,.12)!important;
+    border-color:rgba(255,82,109,.34)!important;
+    box-shadow:0 8px 18px rgba(255,49,83,.07)!important;
+  }
+
+  .module-training-v34 .home-days-selector button.active b{
+    color:#fff!important;
+  }
+
+  .module-training-v34 .home-days-selector button.active small{
+    color:#ffc4ce!important;
+  }
+
+  /* ===== GRUPOS PARA TU SEMANA ===== */
+  .module-training-v34 .home-plan-zones{
+    padding-top:12px!important;
+    border-top:1px solid rgba(178,208,228,.11)!important;
+  }
+
+  .module-training-v34 .home-plan-zones>div button{
+    background:rgba(255,255,255,.045)!important;
+    border:1px solid rgba(181,210,230,.11)!important;
+    color:#dce9f2!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+  }
+
+  .module-training-v34 .home-plan-zones>div button i{
+    color:#f6fbff!important;
+  }
+
+  .module-training-v34 .home-plan-zones>div button.active{
+    background:rgba(255,49,83,.12)!important;
+    border-color:rgba(255,82,109,.32)!important;
+    color:#fff!important;
+  }
+
+  .module-training-v34 .home-save-plan{
+    border:1px solid rgba(255,91,116,.40)!important;
+    background:linear-gradient(135deg,#ff3a56,#ff2548 58%,#eb1738)!important;
+    color:#fff!important;
+    font-weight:900!important;
+    box-shadow:
+      0 12px 26px rgba(255,39,72,.20),
+      inset 0 1px 0 rgba(255,255,255,.18)!important;
+  }
+
+  .module-training-v34 .home-save-plan:hover{
+    transform:translateY(-2px)!important;
+    filter:brightness(1.04)!important;
+    box-shadow:
+      0 17px 32px rgba(255,39,72,.27),
+      inset 0 1px 0 rgba(255,255,255,.20)!important;
+  }
+
+  /* ===== AGENDA EN CASA ===== */
+  .module-training-v34 .home-week-list>div{
+    background:rgba(255,255,255,.035)!important;
+    border:1px solid rgba(181,210,230,.10)!important;
+    color:#e6f0f6!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.03)!important;
+  }
+
+  .module-training-v34 .home-week-list>div:hover{
+    background:rgba(255,255,255,.06)!important;
+    border-color:rgba(197,220,236,.17)!important;
+  }
+
+  .module-training-v34 .home-week-list .week-day{
+    background:rgba(255,255,255,.075)!important;
+    border:1px solid rgba(255,255,255,.06)!important;
+    color:#f6fbff!important;
+  }
+
+  .module-training-v34 .home-week-list b{
+    color:#ffffff!important;
+    font-weight:850!important;
+  }
+
+  .module-training-v34 .home-week-list small{
+    color:#9fb5c5!important;
+  }
+
+  .module-training-v34 .home-week-list>div.active{
+    background:
+      linear-gradient(145deg,rgba(255,49,83,.095),rgba(255,255,255,.025))!important;
+    border-color:rgba(255,82,109,.24)!important;
+  }
+
+  .module-training-v34 .home-week-list>div.today{
+    box-shadow:
+      inset 3px 0 0 #ff3153,
+      inset 0 1px 0 rgba(255,255,255,.035)!important;
+  }
+
+  .module-training-v34 .home-week-list em{
+    background:rgba(255,49,83,.13)!important;
+    border:1px solid rgba(255,82,109,.20)!important;
+    color:#ff8295!important;
+  }
+
+  /* =======================================================
+     SELECTOR DE GRUPO MUSCULAR: quita la franja blanca
+     ======================================================= */
+  .module-training-v34 .home-picker-head{
+    position:relative!important;
+    overflow:hidden!important;
+    padding:18px 20px!important;
+    border:1px solid rgba(181,211,231,.12)!important;
+    border-radius:17px!important;
+    background:
+      radial-gradient(circle at 88% 15%,rgba(50,142,204,.08),transparent 28%),
+      linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.025))!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.045),
+      0 8px 20px rgba(0,0,0,.08)!important;
+  }
+
+  .module-training-v34 .home-picker-summary{
+    min-width:110px!important;
+    padding:12px 15px!important;
+    border-radius:14px!important;
+    background:rgba(6,34,59,.48)!important;
+    border:1px solid rgba(181,211,231,.12)!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.05),
+      0 8px 16px rgba(0,0,0,.08)!important;
+  }
+
+  .module-training-v34 .home-picker-summary b{
+    color:#ffffff!important;
+    font-size:23px!important;
+    text-shadow:0 2px 10px rgba(0,0,0,.16)!important;
+  }
+
+  .module-training-v34 .home-picker-summary span{
+    color:#ff7188!important;
+    font-weight:900!important;
+  }
+
+  .module-training-v34 .home-picker-summary small{
+    color:#9fb5c5!important;
+  }
+
+  /* ===== TARJETAS DE ZONA MUSCULAR ===== */
+  .module-training-v34 .muscle-area-grid button{
+    position:relative!important;
+    overflow:hidden!important;
+    background:
+      radial-gradient(circle at 100% 0,rgba(48,139,199,.07),transparent 28%),
+      linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.025))!important;
+    border:1px solid rgba(181,210,230,.11)!important;
+    color:#edf6fb!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.035),
+      0 8px 18px rgba(0,0,0,.07)!important;
+  }
+
+  .module-training-v34 .muscle-area-grid button>span{
+    background:rgba(255,255,255,.075)!important;
+    border:1px solid rgba(255,255,255,.06)!important;
+    color:#fff!important;
+  }
+
+  .module-training-v34 .muscle-area-grid button small{
+    color:#9fb5c5!important;
+    font-weight:850!important;
+  }
+
+  .module-training-v34 .muscle-area-grid button h3{
+    color:#ffffff!important;
+    font-weight:900!important;
+  }
+
+  .module-training-v34 .muscle-area-grid button p{
+    color:#a9bdcb!important;
+  }
+
+  .module-training-v34 .muscle-area-grid button em{
+    color:#7ea6c4!important;
+    font-style:normal!important;
+    font-weight:850!important;
+  }
+
+  .module-training-v34 .muscle-area-grid button.active{
+    background:
+      radial-gradient(circle at 10% 50%,rgba(255,49,83,.15),transparent 28%),
+      linear-gradient(145deg,rgba(255,49,83,.11),rgba(255,255,255,.03))!important;
+    border-color:rgba(255,82,109,.36)!important;
+    box-shadow:
+      0 12px 26px rgba(255,49,83,.09),
+      inset 0 1px 0 rgba(255,255,255,.05)!important;
+  }
+
+  .module-training-v34 .muscle-area-grid button.active>span{
+    background:linear-gradient(135deg,#ff4662,#f32143)!important;
+    border-color:rgba(255,106,130,.38)!important;
+    box-shadow:0 8px 18px rgba(255,49,83,.16)!important;
+  }
+
+  .module-training-v34 .muscle-area-grid button.active em{
+    color:#ff91a2!important;
+  }
+
+  /* Mejora contraste global del módulo de entrenar */
+  .module-training-v34{
+    color:#eaf3f9!important;
+  }
+
+  .module-training-v34 button:focus-visible{
+    outline:2px solid rgba(255,94,119,.88)!important;
+    outline-offset:2px!important;
+  }
+}
