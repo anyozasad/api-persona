@@ -19418,142 +19418,113 @@
 }
 
 
-/* PORTAL CLIENTE V67 · CLASES Y ACCIÓN HERO PULIDAS */
+/* PORTAL CLIENTE V68 · EMBLEMAS HERO LIMPIOS EN RUTINAS Y CLASES */
 @media (min-width:1000px){
 
-  /* ===== BOTÓN CLASES DEL MENÚ SUPERIOR =====
-     Misma escala y ritmo que Inicio / Entrenar / Rutinas / Progreso. */
-  .member-page .member-nav-primary .nav-step-clases{
-    min-height:5.85dvh!important;
-    border-radius:1.25dvh!important;
-    background:transparent!important;
-    border:1px solid transparent!important;
-    color:#eef5fa!important;
-    box-shadow:none!important;
+  /* Mantiene la navegación principal sin tocar su ritmo. */
+  .member-page .member-nav-primary .nav-step-clases,
+  .member-page .member-nav-primary .nav-step-rutinas{
+    border-radius:1.15dvh!important;
   }
 
-  .member-page .member-nav-primary .nav-step-clases i{
-    width:3.55dvh!important;
-    height:3.55dvh!important;
-    flex:0 0 3.55dvh!important;
+  /* Los iconos del hero dejan de parecer botones grises flotantes.
+     Ahora son emblemas visuales discretos, integrados con la fotografía. */
+  .module-routines-v34 .module-hero-emblem,
+  .module-classes-v34 .module-hero-emblem{
+    position:absolute!important;
+    right:3vw!important;
+    top:50%!important;
+    transform:translateY(-50%)!important;
+
+    width:5.9dvh!important;
+    height:5.9dvh!important;
+    min-width:5.9dvh!important;
+
     display:grid!important;
     place-items:center!important;
-    border-radius:.85dvh!important;
-    background:rgba(255,255,255,.045)!important;
-    border:1px solid rgba(255,255,255,.035)!important;
-    color:#f5f9fd!important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+
+    border-radius:50%!important;
+    border:1px solid rgba(255,255,255,.13)!important;
+    background:rgba(5,28,49,.34)!important;
+
+    backdrop-filter:blur(12px) saturate(145%)!important;
+    -webkit-backdrop-filter:blur(12px) saturate(145%)!important;
+
+    box-shadow:
+      0 10px 24px rgba(0,0,0,.22),
+      inset 0 1px 0 rgba(255,255,255,.09)!important;
+
+    pointer-events:none!important;
+    overflow:visible!important;
   }
 
-  .member-page .member-nav-primary .nav-step-clases i svg{
-    width:2.15dvh!important;
-    height:2.15dvh!important;
+  .module-routines-v34 .module-hero-emblem::before,
+  .module-classes-v34 .module-hero-emblem::before{
+    content:""!important;
+    position:absolute!important;
+    inset:-8px!important;
+    border-radius:50%!important;
+    opacity:.34!important;
+    filter:blur(14px)!important;
+    z-index:-1!important;
+    pointer-events:none!important;
+  }
+
+  .module-routines-v34 .module-hero-emblem svg,
+  .module-classes-v34 .module-hero-emblem svg{
+    width:2.55dvh!important;
+    height:2.55dvh!important;
     display:block!important;
+
     fill:none!important;
     stroke:currentColor!important;
     stroke-width:1.85!important;
     stroke-linecap:round!important;
     stroke-linejoin:round!important;
+
+    filter:drop-shadow(0 2px 7px rgba(0,0,0,.20))!important;
   }
 
-  .member-page .member-nav-primary .nav-step-clases span{
-    color:#f2f7fb!important;
-    font-weight:850!important;
-  }
-
-  .member-page .member-nav-primary .nav-step-clases:not(.active):hover{
-    transform:translateY(-1px)!important;
-    background:rgba(255,255,255,.055)!important;
-    border-color:rgba(255,255,255,.06)!important;
-    box-shadow:0 9px 20px rgba(0,0,0,.10)!important;
-  }
-
-  .member-page .member-nav-primary .nav-step-clases.active{
-    background:linear-gradient(135deg,#ff3853 0%,#ff2343 55%,#ec1736 100%)!important;
-    border-color:#ff6076!important;
-    color:#fff!important;
-    box-shadow:
-      0 0 0 .35dvh rgba(255,39,70,.12),
-      0 1.15dvh 2.6dvh rgba(239,35,60,.31),
-      inset 0 1px 0 rgba(255,255,255,.22)!important;
-  }
-
-  .member-page .member-nav-primary .nav-step-clases.active i{
-    background:rgba(255,255,255,.12)!important;
-    border-color:rgba(255,255,255,.10)!important;
-    color:#fff!important;
-  }
-
-  .member-page .member-nav-primary .nav-step-clases.active span{
-    color:#fff!important;
-  }
-
-  /* ===== ICONO FLOTANTE DE RUTINAS / CLASES =====
-     Se elimina el emoji/cuadro gris y se usa el mismo lenguaje visual del dashboard. */
-  .module-routines-v34 .module-hero-icon,
-  .module-classes-v34 .module-hero-icon{
-    width:8.5dvh!important;
-    height:8.5dvh!important;
-    min-width:8.5dvh!important;
-    display:grid!important;
-    place-items:center!important;
-    border-radius:2.2dvh!important;
-    border:1px solid rgba(255,255,255,.13)!important;
-    background:
-      radial-gradient(circle at 28% 18%,rgba(255,255,255,.12),transparent 34%),
-      linear-gradient(145deg,rgba(8,46,77,.76),rgba(5,31,55,.88))!important;
-    backdrop-filter:blur(14px) saturate(145%)!important;
-    -webkit-backdrop-filter:blur(14px) saturate(145%)!important;
-    box-shadow:
-      0 16px 34px rgba(0,0,0,.23),
-      inset 0 1px 0 rgba(255,255,255,.08)!important;
-    color:#fff!important;
-    transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important;
-  }
-
-  .module-routines-v34 .module-hero-icon svg,
-  .module-classes-v34 .module-hero-icon svg{
-    width:4dvh!important;
-    height:4dvh!important;
-    display:block!important;
-    fill:none!important;
-    stroke:currentColor!important;
-    stroke-width:1.8!important;
-    stroke-linecap:round!important;
-    stroke-linejoin:round!important;
-    filter:drop-shadow(0 4px 10px rgba(0,0,0,.18))!important;
-  }
-
+  /* RUTINAS: naranja, sin cuadro gris */
   .module-routines-v34 .module-hero-icon-rutinas{
     color:#ffb548!important;
-    border-color:rgba(255,181,72,.20)!important;
+    border-color:rgba(255,181,72,.23)!important;
     background:
-      radial-gradient(circle at 28% 18%,rgba(255,199,113,.14),transparent 34%),
-      linear-gradient(145deg,rgba(73,48,13,.34),rgba(5,31,55,.88))!important;
-    box-shadow:
-      0 16px 34px rgba(0,0,0,.23),
-      0 0 24px rgba(255,171,47,.08),
-      inset 0 1px 0 rgba(255,255,255,.08)!important;
+      radial-gradient(circle at 34% 28%,rgba(255,199,112,.16),transparent 43%),
+      rgba(42,31,14,.24)!important;
   }
 
+  .module-routines-v34 .module-hero-icon-rutinas::before{
+    background:rgba(255,171,47,.22)!important;
+  }
+
+  /* CLASES: violeta, sin cuadro gris */
   .module-classes-v34 .module-hero-icon-clases{
-    color:#c2afff!important;
-    border-color:rgba(174,145,255,.20)!important;
+    color:#c5b2ff!important;
+    border-color:rgba(184,158,255,.23)!important;
     background:
-      radial-gradient(circle at 28% 18%,rgba(183,160,255,.14),transparent 34%),
-      linear-gradient(145deg,rgba(52,40,91,.34),rgba(5,31,55,.88))!important;
-    box-shadow:
-      0 16px 34px rgba(0,0,0,.23),
-      0 0 24px rgba(143,105,255,.08),
-      inset 0 1px 0 rgba(255,255,255,.08)!important;
+      radial-gradient(circle at 34% 28%,rgba(190,168,255,.16),transparent 43%),
+      rgba(37,29,66,.24)!important;
   }
 
-  .module-routines-v34 .module-hero-icon:hover,
-  .module-classes-v34 .module-hero-icon:hover{
-    transform:translateY(-2px) scale(1.025)!important;
-    border-color:rgba(255,255,255,.20)!important;
-    box-shadow:
-      0 20px 39px rgba(0,0,0,.27),
-      inset 0 1px 0 rgba(255,255,255,.10)!important;
+  .module-classes-v34 .module-hero-icon-clases::before{
+    background:rgba(143,105,255,.21)!important;
+  }
+
+  /* En pantallas algo más pequeñas se reducen todavía más. */
+  @media (max-width:1280px){
+    .module-routines-v34 .module-hero-emblem,
+    .module-classes-v34 .module-hero-emblem{
+      right:2.2vw!important;
+      width:54px!important;
+      height:54px!important;
+      min-width:54px!important;
+    }
+
+    .module-routines-v34 .module-hero-emblem svg,
+    .module-classes-v34 .module-hero-emblem svg{
+      width:23px!important;
+      height:23px!important;
+    }
   }
 }
