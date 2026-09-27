@@ -16481,3 +16481,24 @@
     background-position:54% center!important;
   }
 }
+
+/* PORTAL CLIENTE V46 · QUITA EL BORDE VISIBLE DEL HERO */
+@media (min-width:1000px){
+  .member-page .dashboard-showcase-v30 .showcase-hero-main{
+    border:0!important;
+    outline:0!important;
+    box-shadow:none!important;
+    padding:0!important;
+    background-origin:border-box!important;
+    background-clip:border-box!important;
+  }
+
+  /* Evita cualquier línea heredada alrededor del hero. */
+  .member-page .dashboard-showcase-v30 .showcase-hero-main,
+  .member-page .dashboard-showcase-v30 .showcase-hero-main:hover,
+  .member-page .dashboard-showcase-v30 .showcase-hero-main:focus,
+  .member-page .dashboard-showcase-v30 .showcase-hero-main:focus-within{
+    border-color:transparent!important;
+    outline:none!important;
+  }
+}
