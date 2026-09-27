@@ -21602,3 +21602,205 @@
     min-width:0!important;
   }
 }
+
+
+/* PORTAL CLIENTE V77 · FONDO PRINCIPAL ANIMADO CON CAMBIO AUTOMATICO */
+@media (min-width:821px){
+
+  /* El dashboard ya no depende de una sola foto fija. */
+  .member-page .dashboard-showcase-v30{
+    position:relative!important;
+    isolation:isolate!important;
+    overflow:hidden!important;
+    background:#031524!important;
+  }
+
+  /* Carrusel fotográfico continuo debajo de todas las tarjetas. */
+  .member-page .dashboard-showcase-v30 .showcase-bg-carousel{
+    position:absolute!important;
+    inset:0!important;
+    z-index:0!important;
+    overflow:hidden!important;
+    pointer-events:none!important;
+    background:#031524!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-bg-slide{
+    position:absolute!important;
+    inset:-2%!important;
+    width:104%!important;
+    height:104%!important;
+    object-fit:cover!important;
+    object-position:center 42%!important;
+
+    opacity:0;
+    will-change:opacity,transform;
+    backface-visibility:hidden;
+    transform:scale(1.045) translate3d(-.6%,0,0);
+
+    animation:mallquiHeroAutoSlide 28s linear infinite!important;
+  }
+
+  /* En el primer instante se ve la imagen actual;
+     luego el resto entra cada 7 segundos con crossfade. */
+  .member-page .dashboard-showcase-v30 .showcase-bg-slide-1{
+    animation-delay:0s!important;
+    object-position:center 40%!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-bg-slide-2{
+    animation-delay:-21s!important;
+    object-position:center 48%!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-bg-slide-3{
+    animation-delay:-14s!important;
+    object-position:center 38%!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-bg-slide-4{
+    animation-delay:-7s!important;
+    object-position:center 44%!important;
+  }
+
+  /* Filtro único: mantiene legibles los textos y hace que el cambio
+     de foto se vea integrado en vez de parecer un corte entre imágenes. */
+  .member-page .dashboard-showcase-v30 .showcase-bg-vignette{
+    position:absolute!important;
+    inset:0!important;
+    z-index:1!important;
+    pointer-events:none!important;
+    background:
+      linear-gradient(
+        90deg,
+        rgba(1,14,27,.34) 0%,
+        rgba(1,14,27,.15) 34%,
+        rgba(1,14,27,.08) 62%,
+        rgba(1,14,27,.22) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(1,12,23,.06) 0%,
+        rgba(1,12,23,.09) 48%,
+        rgba(1,12,23,.30) 100%
+      )!important;
+  }
+
+  /* El overlay antiguo queda desactivado para no duplicar oscuridad. */
+  .member-page .dashboard-showcase-v30::before{
+    content:none!important;
+    display:none!important;
+  }
+
+  /* Todo el contenido real permanece encima del carrusel. */
+  .member-page .dashboard-showcase-v30 > .showcase-hero-grid,
+  .member-page .dashboard-showcase-v30 > .showcase-overview-grid,
+  .member-page .dashboard-showcase-v30 > .showcase-bottom-grid{
+    position:relative!important;
+    z-index:3!important;
+  }
+
+  /* El hero comparte el mismo carrusel de fondo, sin una foto duplicada. */
+  .member-page .dashboard-showcase-v30 .showcase-hero-main{
+    background:transparent!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-hero-main .showcase-hero-photo{
+    display:none!important;
+  }
+
+  @keyframes mallquiHeroAutoSlide{
+    0%{
+      opacity:1;
+      transform:scale(1.045) translate3d(-.6%,0,0);
+      filter:saturate(1.02) contrast(1.02);
+    }
+    18%{
+      opacity:1;
+    }
+    24%{
+      opacity:0;
+      transform:scale(1.105) translate3d(.7%,-.45%,0);
+      filter:saturate(1.08) contrast(1.04);
+    }
+    94%{
+      opacity:0;
+      transform:scale(1.045) translate3d(-.6%,0,0);
+    }
+    100%{
+      opacity:1;
+      transform:scale(1.045) translate3d(-.6%,0,0);
+      filter:saturate(1.02) contrast(1.02);
+    }
+  }
+}
+
+/* Móvil: mismo cambio automático, movimiento más suave para no distraer. */
+@media (max-width:820px){
+  .member-page .dashboard-showcase-v30{
+    position:relative!important;
+    isolation:isolate!important;
+    overflow:hidden!important;
+    background:#031524!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-bg-carousel{
+    position:absolute!important;
+    inset:0!important;
+    z-index:0!important;
+    overflow:hidden!important;
+    pointer-events:none!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-bg-slide{
+    position:absolute!important;
+    inset:0!important;
+    width:100%!important;
+    height:100%!important;
+    object-fit:cover!important;
+    opacity:0;
+    animation:mallquiHeroAutoSlideMobile 28s linear infinite!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-bg-slide-1{animation-delay:0s!important;}
+  .member-page .dashboard-showcase-v30 .showcase-bg-slide-2{animation-delay:-21s!important;}
+  .member-page .dashboard-showcase-v30 .showcase-bg-slide-3{animation-delay:-14s!important;}
+  .member-page .dashboard-showcase-v30 .showcase-bg-slide-4{animation-delay:-7s!important;}
+
+  .member-page .dashboard-showcase-v30 .showcase-bg-vignette{
+    position:absolute!important;
+    inset:0!important;
+    z-index:1!important;
+    pointer-events:none!important;
+    background:linear-gradient(180deg,rgba(1,13,25,.18),rgba(1,13,25,.40))!important;
+  }
+
+  .member-page .dashboard-showcase-v30 > .showcase-hero-grid,
+  .member-page .dashboard-showcase-v30 > .showcase-overview-grid,
+  .member-page .dashboard-showcase-v30 > .showcase-bottom-grid{
+    position:relative!important;
+    z-index:3!important;
+  }
+
+  @keyframes mallquiHeroAutoSlideMobile{
+    0%{opacity:1;transform:scale(1.02);}
+    18%{opacity:1;}
+    24%{opacity:0;transform:scale(1.06);}
+    94%{opacity:0;transform:scale(1.02);}
+    100%{opacity:1;transform:scale(1.02);}
+  }
+}
+
+/* Accesibilidad: si el sistema solicita menos movimiento,
+   mantiene una sola imagen sin animación. */
+@media (prefers-reduced-motion:reduce){
+  .member-page .dashboard-showcase-v30 .showcase-bg-slide{
+    animation:none!important;
+    opacity:0!important;
+    transform:none!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-bg-slide-1{
+    opacity:1!important;
+  }
+}
