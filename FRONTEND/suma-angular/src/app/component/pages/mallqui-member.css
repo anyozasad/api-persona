@@ -16363,172 +16363,186 @@
   }
 }
 
-/* PORTAL CLIENTE V41 · FONDO DEL HERO IGUAL A LA REFERENCIA */
+/* PORTAL CLIENTE V44 · COMPOSICIÓN FINAL LIMPIA COMO LA REFERENCIA */
 @media (min-width:1000px){
-  /* Una sola imagen cubre TODO el hero: izquierda, centro y derecha. */
-  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main{
+
+  /* 1) El contenido ocupa el ancho disponible incluso si Chrome está con zoom.
+     Se elimina el efecto de "cuadro" centrado que aparecía con max-width. */
+  .member-page .member-main:has(.dashboard-showcase-v30){
     position:relative!important;
-    overflow:hidden!important;
     isolation:isolate!important;
-    background:#03182c!important;
+    width:calc(100% - 28px)!important;
+    max-width:none!important;
+    margin:0 auto!important;
+    padding:16px 0 28px!important;
+    background:transparent!important;
+    border-radius:0!important;
+    overflow:visible!important;
   }
 
-  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main:before,
-  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main:after{
-    content:none!important;
-    display:none!important;
-  }
-
-  .member-page:has(.dashboard-showcase-v30) .showcase-hero-photo{
+  /* Ambiente fotográfico MUY suave solo en los espacios entre tarjetas.
+     No crea un rectángulo visible: se desvanece hacia los bordes. */
+  .member-page .member-main:has(.dashboard-showcase-v30)::before{
+    content:""!important;
     position:absolute!important;
     inset:0!important;
     z-index:0!important;
-    width:100%!important;
-    height:100%!important;
-    display:block!important;
-    object-fit:fill!important;
-    object-position:center center!important;
-    opacity:1!important;
-    filter:saturate(1.08) contrast(1.04) brightness(.96)!important;
-    transform:none!important;
-  }
-
-  /* Oscurece solo lo necesario para leer el texto,
-     dejando visible la fotografía en todo el bloque. */
-  .member-page:has(.dashboard-showcase-v30) .showcase-hero-shade{
-    position:absolute!important;
-    inset:0!important;
-    z-index:1!important;
     pointer-events:none!important;
+
     background:
-      linear-gradient(
-        90deg,
-        rgba(2,18,34,.90) 0%,
-        rgba(2,18,34,.78) 18%,
-        rgba(2,18,34,.55) 31%,
-        rgba(2,18,34,.28) 43%,
-        rgba(2,18,34,.08) 58%,
-        rgba(2,18,34,.03) 76%,
-        rgba(2,18,34,.12) 100%
-      ),
-      linear-gradient(
-        180deg,
-        rgba(1,12,23,.04) 0%,
-        rgba(1,12,23,.02) 62%,
-        rgba(1,12,23,.28) 100%
-      )!important;
+      linear-gradient(180deg,rgba(3,18,33,.80),rgba(3,18,33,.90)),
+      url('/assets/showcase/hero-showcase.svg') center 40% / cover no-repeat!important;
+
+    opacity:.26!important;
+    filter:blur(5px) saturate(.82) brightness(.70)!important;
+    transform:scale(1.01)!important;
+
+    -webkit-mask-image:
+      linear-gradient(180deg,transparent 0,#000 4%,#000 94%,transparent 100%)!important;
+    mask-image:
+      linear-gradient(180deg,transparent 0,#000 4%,#000 94%,transparent 100%)!important;
   }
 
-  .member-page:has(.dashboard-showcase-v30) .showcase-hero-copy,
-  .member-page:has(.dashboard-showcase-v30) .showcase-quote{
-    z-index:4!important;
+  .member-page .dashboard-showcase-v30{
+    position:relative!important;
+    z-index:1!important;
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    gap:12px!important;
+    background:transparent!important;
   }
 
-  .member-page:has(.dashboard-showcase-v30) .showcase-kpis{
-    z-index:5!important;
+  .member-page .dashboard-showcase-v30 .showcase-hero-grid,
+  .member-page .dashboard-showcase-v30 .showcase-overview-grid,
+  .member-page .dashboard-showcase-v30 .showcase-bottom-grid{
+    position:relative!important;
+    z-index:1!important;
+    gap:12px!important;
+    margin:0!important;
+    padding:0!important;
+    background:transparent!important;
   }
-}
 
-/* PORTAL CLIENTE V42 · FONDO FINAL IGUAL A LA REFERENCIA */
-@media (min-width:1000px){
+  .member-page .dashboard-showcase-v30 .showcase-overview-grid,
+  .member-page .dashboard-showcase-v30 .showcase-bottom-grid{
+    margin-top:12px!important;
+  }
 
-  /* Fondo ambiental en TODO el hero.
-     Esto rellena de verdad la izquierda y la derecha con el mismo gimnasio. */
+  /* 2) HERO: la fotografía ya no se duplica ni forma un bloque cuadrado.
+     La izquierda usa únicamente el ambiente del gimnasio;
+     el atleta queda nítido al centro-derecha, como en la referencia. */
   .member-page .dashboard-showcase-v30 .showcase-hero-main{
     position:relative!important;
     overflow:hidden!important;
     isolation:isolate!important;
-    background:#03182c!important;
+    background:
+      linear-gradient(90deg,#031a30 0%,#031b31 43%,#05243e 100%)!important;
+    border:1px solid rgba(105,151,187,.28)!important;
+    border-radius:18px!important;
+    box-shadow:0 16px 38px rgba(0,0,0,.20)!important;
   }
 
-  .member-page .dashboard-showcase-v30 .showcase-hero-main:before{
+  /* Rellena el lado izquierdo con SOLO la zona de gimnasio de la misma foto.
+     La ampliamos y oscurecemos para que no aparezca otro atleta duplicado. */
+  .member-page .dashboard-showcase-v30 .showcase-hero-main::before{
     content:""!important;
     display:block!important;
     position:absolute!important;
-    inset:-2%!important;
+    left:0!important;
+    top:0!important;
+    bottom:0!important;
+    width:52%!important;
     z-index:0!important;
+    pointer-events:none!important;
 
     background-image:url('/assets/showcase/hero-showcase.svg')!important;
     background-repeat:no-repeat!important;
-    background-size:100% 100%!important;
-    background-position:center center!important;
+    background-size:500% 100%!important;
+    background-position:left center!important;
 
-    opacity:.78!important;
-    filter:blur(2px) saturate(.96) brightness(.72) contrast(1.03)!important;
-    transform:scale(1.025)!important;
-    pointer-events:none!important;
+    opacity:.76!important;
+    filter:blur(1.6px) saturate(.88) brightness(.68) contrast(1.04)!important;
+    transform:scale(1.02)!important;
+
+    -webkit-mask-image:
+      linear-gradient(90deg,#000 0%,#000 72%,rgba(0,0,0,.45) 88%,transparent 100%)!important;
+    mask-image:
+      linear-gradient(90deg,#000 0%,#000 72%,rgba(0,0,0,.45) 88%,transparent 100%)!important;
   }
 
-  .member-page .dashboard-showcase-v30 .showcase-hero-main:after{
+  .member-page .dashboard-showcase-v30 .showcase-hero-main::after{
     content:none!important;
     display:none!important;
   }
 
-  /* Foto nítida: queda a la derecha con una proporción casi idéntica
-     a la imagen de referencia; ya no aparece pequeña en el centro. */
+  /* Fotografía principal con proporción natural.
+     No se estira a 100%: así el cuerpo y la cara no se deforman. */
   .member-page .dashboard-showcase-v30 .showcase-hero-main .showcase-hero-photo{
     position:absolute!important;
     top:0!important;
     right:0!important;
     bottom:0!important;
     left:auto!important;
-
     z-index:1!important;
-    width:60%!important;
+
+    width:70%!important;
     height:100%!important;
     max-width:none!important;
-
     display:block!important;
+
     object-fit:cover!important;
-    object-position:center center!important;
+    object-position:54% 48%!important;
 
     opacity:1!important;
     filter:saturate(1.10) contrast(1.05) brightness(.98)!important;
     transform:none!important;
 
-    -webkit-mask-image:linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(0,0,0,.16) 7%,
-      rgba(0,0,0,.60) 16%,
-      #000 29%,
-      #000 100%
-    )!important;
-
-    mask-image:linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(0,0,0,.16) 7%,
-      rgba(0,0,0,.60) 16%,
-      #000 29%,
-      #000 100%
-    )!important;
+    -webkit-mask-image:
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0,0,0,.12) 5%,
+        rgba(0,0,0,.48) 13%,
+        rgba(0,0,0,.86) 23%,
+        #000 34%,
+        #000 100%
+      )!important;
+    mask-image:
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0,0,0,.12) 5%,
+        rgba(0,0,0,.48) 13%,
+        rgba(0,0,0,.86) 23%,
+        #000 34%,
+        #000 100%
+      )!important;
   }
 
-  /* Degradado de lectura: deja ver el gimnasio detrás del título,
-     en vez de convertirlo en un bloque azul vacío. */
+  /* Degradado del texto: oscuro, pero deja visible el gimnasio de fondo. */
   .member-page .dashboard-showcase-v30 .showcase-hero-main .showcase-hero-shade{
     position:absolute!important;
     inset:0!important;
     z-index:2!important;
     pointer-events:none!important;
-
     background:
       linear-gradient(
         90deg,
-        rgba(2,18,34,.82) 0%,
-        rgba(2,18,34,.69) 18%,
-        rgba(2,18,34,.46) 31%,
-        rgba(2,18,34,.22) 43%,
-        rgba(2,18,34,.06) 58%,
-        rgba(2,18,34,.02) 76%,
-        rgba(2,18,34,.08) 100%
+        rgba(2,18,34,.84) 0%,
+        rgba(2,18,34,.69) 17%,
+        rgba(2,18,34,.46) 30%,
+        rgba(2,18,34,.20) 43%,
+        rgba(2,18,34,.05) 57%,
+        rgba(2,18,34,.02) 77%,
+        rgba(2,18,34,.10) 100%
       ),
       linear-gradient(
         180deg,
-        rgba(1,12,23,.04) 0%,
-        rgba(1,12,23,.02) 60%,
-        rgba(1,12,23,.24) 100%
+        rgba(1,12,23,.03) 0%,
+        rgba(1,12,23,.02) 61%,
+        rgba(1,12,23,.28) 100%
       )!important;
   }
 
@@ -16540,102 +16554,26 @@
   .member-page .dashboard-showcase-v30 .showcase-hero-main .showcase-kpis{
     z-index:5!important;
   }
-}
 
-/* En monitores grandes mantiene al atleta en la misma posición visual
-   que la referencia y evita que vuelva a quedar centrado. */
-@media (min-width:1550px){
-  .member-page .dashboard-showcase-v30 .showcase-hero-main .showcase-hero-photo{
-    width:60%!important;
-    object-position:center center!important;
-  }
-}
-
-/* PORTAL CLIENTE V43 · IMAGEN TAMBIÉN EN LOS ESPACIOS ENTRE BLOQUES */
-@media (min-width:1000px){
-
-  /* El mismo gimnasio queda detrás de TODO el inicio.
-     Así los espacios que marcaste en rojo ya no son franjas azul oscuro:
-     muestran la fotografía y conectan visualmente todas las tarjetas. */
-  .member-page .member-main:has(.dashboard-showcase-v30){
-    position:relative!important;
-    isolation:isolate!important;
-
-    width:calc(100% - 20px)!important;
-    max-width:1620px!important;
-    margin:0 auto!important;
-    padding:12px 10px 18px!important;
-
-    background:
-      linear-gradient(
-        180deg,
-        rgba(2,16,30,.34) 0%,
-        rgba(2,16,30,.45) 46%,
-        rgba(2,16,30,.58) 100%
-      ),
-      linear-gradient(
-        90deg,
-        rgba(2,18,34,.18) 0%,
-        rgba(2,18,34,.04) 48%,
-        rgba(2,18,34,.18) 100%
-      ),
-      url('/assets/showcase/hero-showcase.svg') center 42% / cover no-repeat!important;
-
-    border-radius:22px!important;
-    overflow:hidden!important;
-  }
-
-  /* El dashboard se vuelve transparente para dejar ver la foto de fondo
-     únicamente en los huecos entre hero, entrenador y tarjetas. */
-  .member-page .dashboard-showcase-v30{
-    position:relative!important;
-    z-index:1!important;
-    width:100%!important;
-    margin:0!important;
-    padding:0!important;
-    gap:12px!important;
-    background:transparent!important;
-  }
-
-  /* Mantiene separaciones bonitas para que la imagen aparezca entre bloques. */
-  .member-page .dashboard-showcase-v30 .showcase-hero-grid,
-  .member-page .dashboard-showcase-v30 .showcase-overview-grid,
-  .member-page .dashboard-showcase-v30 .showcase-bottom-grid{
-    position:relative!important;
-    z-index:1!important;
-    gap:12px!important;
-    margin:0!important;
-    background:transparent!important;
-  }
-
-  /* Espacio horizontal entre las tres filas: ahora muestra la fotografía. */
-  .member-page .dashboard-showcase-v30 .showcase-overview-grid,
-  .member-page .dashboard-showcase-v30 .showcase-bottom-grid{
-    margin-top:12px!important;
-  }
-
-  /* Una sombra suave separa las tarjetas del fondo sin crear franjas negras. */
-  .member-page .dashboard-showcase-v30 .showcase-hero-main,
+  /* 3) Mantiene las tarjetas separadas como la referencia,
+     pero los espacios muestran el ambiente oscuro/fotográfico de abajo. */
   .member-page .dashboard-showcase-v30 .showcase-coach-panel,
   .member-page .dashboard-showcase-v30 .showcase-membership-card,
   .member-page .dashboard-showcase-v30 .showcase-class-card,
   .member-page .dashboard-showcase-v30 .showcase-progress-card,
   .member-page .dashboard-showcase-v30 .showcase-quick-card,
   .member-page .dashboard-showcase-v30 .showcase-profile-card{
-    box-shadow:
-      0 12px 28px rgba(0,0,0,.20),
-      0 0 0 1px rgba(130,170,202,.06)!important;
-  }
-
-  /* El hero conserva su fotografía principal limpia y continua. */
-  .member-page .dashboard-showcase-v30 .showcase-hero-main{
-    border-color:rgba(119,163,197,.28)!important;
+    position:relative!important;
+    z-index:2!important;
+    box-shadow:0 14px 30px rgba(0,0,0,.18)!important;
   }
 }
 
-/* En pantallas muy anchas evita que el fondo se vea demasiado ampliado. */
+/* En monitores grandes mantiene una composición parecida a la maqueta
+   sin encerrar todo el dashboard dentro de un max-width. */
 @media (min-width:1550px){
-  .member-page .member-main:has(.dashboard-showcase-v30){
-    background-position:center 40%!important;
+  .member-page .dashboard-showcase-v30 .showcase-hero-main .showcase-hero-photo{
+    width:68%!important;
+    object-position:56% 48%!important;
   }
 }
