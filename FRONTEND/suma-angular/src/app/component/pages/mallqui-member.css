@@ -22086,3 +22086,494 @@
     animation:none!important;
   }
 }
+
+
+/* PORTAL CLIENTE V80 · MODULOS COMO VENTANAS DEL DASHBOARD */
+
+/* Rutinas, Clases y Progreso ya no abren con una foto gigante aislada.
+   Cada botón entra a un mini-dashboard que conserva la composición del Inicio. */
+.module-routines-v34,
+.module-classes-v34,
+.progress-experience-v34{
+  display:grid!important;
+  gap:18px!important;
+}
+
+/* ===== CABECERA TIPO DASHBOARD ===== */
+.module-portal-head,
+.progress-portal-head{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.65fr) minmax(300px,.55fr)!important;
+  gap:16px!important;
+  align-items:stretch!important;
+}
+
+.module-portal-hero,
+.progress-portal-head .progress-hero{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  min-height:300px!important;
+  box-sizing:border-box!important;
+  padding:34px 38px!important;
+  border:1px solid rgba(155,194,222,.14)!important;
+  border-radius:24px!important;
+  color:#fff!important;
+  box-shadow:
+    0 20px 44px rgba(0,9,20,.23),
+    inset 0 1px 0 rgba(255,255,255,.06)!important;
+}
+
+.module-portal-routines-hero{
+  background:
+    linear-gradient(90deg,rgba(2,18,34,.97) 0%,rgba(4,28,51,.90) 46%,rgba(5,33,58,.45) 100%),
+    url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1900&q=90') center 43%/cover no-repeat!important;
+}
+
+.module-portal-classes-hero{
+  background:
+    linear-gradient(90deg,rgba(2,18,34,.97) 0%,rgba(4,28,51,.90) 46%,rgba(5,33,58,.44) 100%),
+    url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1900&q=90') center 45%/cover no-repeat!important;
+}
+
+.progress-portal-head .progress-hero{
+  min-height:300px!important;
+  padding:34px 38px!important;
+  background:
+    linear-gradient(90deg,rgba(2,18,34,.97) 0%,rgba(4,28,51,.90) 46%,rgba(5,33,58,.43) 100%),
+    url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1900&q=90') center 42%/cover no-repeat!important;
+}
+
+.module-portal-hero::before,
+.progress-portal-head .progress-hero::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(circle at 86% 14%,rgba(255,55,87,.15),transparent 18%),
+    linear-gradient(120deg,rgba(255,255,255,.035),transparent 32%)!important;
+}
+
+.module-portal-copy,
+.progress-portal-head .progress-hero>div{
+  position:relative!important;
+  z-index:2!important;
+  max-width:650px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+}
+
+.module-portal-copy>span,
+.progress-portal-head .progress-hero>div>span{
+  color:#ff8da0!important;
+  font-size:9px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  letter-spacing:1.45px!important;
+}
+
+.module-portal-copy h1,
+.progress-portal-head .progress-hero h1{
+  margin:9px 0 8px!important;
+  color:#fff!important;
+  font-size:39px!important;
+  line-height:1.04!important;
+  letter-spacing:-1.05px!important;
+  text-shadow:0 10px 24px rgba(0,0,0,.22)!important;
+}
+
+.module-portal-copy p,
+.progress-portal-head .progress-hero p{
+  max-width:580px!important;
+  margin:0!important;
+  color:#c1d3e1!important;
+  font-size:12px!important;
+  line-height:1.65!important;
+}
+
+/* Ícono flotante de cada ventana */
+.module-portal-badge{
+  position:absolute!important;
+  z-index:2!important;
+  right:26px!important;
+  bottom:25px!important;
+  width:68px!important;
+  height:68px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  border-radius:20px!important;
+  background:rgba(255,255,255,.065)!important;
+  color:#ff6078!important;
+  box-shadow:
+    0 13px 28px rgba(0,8,18,.20),
+    inset 0 1px 0 rgba(255,255,255,.08)!important;
+  backdrop-filter:blur(10px)!important;
+}
+.module-portal-badge svg{
+  width:29px!important;
+  height:29px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.7!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+
+/* Acciones dentro del hero, igual que el Inicio */
+.module-portal-actions{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:9px!important;
+  margin-top:22px!important;
+}
+.module-portal-actions button{
+  min-height:50px!important;
+  border-radius:13px!important;
+  cursor:pointer!important;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important;
+}
+.portal-action-primary{
+  min-width:230px!important;
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr) auto!important;
+  gap:9px!important;
+  align-items:center!important;
+  padding:0 13px!important;
+  border:1px solid rgba(255,104,128,.44)!important;
+  background:linear-gradient(135deg,#ff405c,#ed1f3d)!important;
+  color:#fff!important;
+  text-align:left!important;
+  box-shadow:0 12px 25px rgba(239,35,60,.23)!important;
+}
+.portal-action-primary i,
+.portal-action-secondary i{
+  width:32px!important;
+  height:32px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:9px!important;
+  background:rgba(255,255,255,.10)!important;
+  font-style:normal!important;
+}
+.portal-action-primary span{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+.portal-action-primary b{font-size:10px!important;color:#fff!important}
+.portal-action-primary small{margin-top:2px!important;font-size:7px!important;color:#ffdbe1!important}
+.portal-action-primary em{font-style:normal!important;font-size:13px!important;font-weight:900!important}
+.portal-action-secondary{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  padding:0 13px!important;
+  border:1px solid rgba(184,212,232,.14)!important;
+  background:rgba(255,255,255,.055)!important;
+  color:#eef6fb!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04)!important;
+}
+.portal-action-secondary b{font-size:9px!important}
+.module-portal-actions button:hover{
+  transform:translateY(-2px)!important;
+}
+
+/* ===== PANEL LATERAL: otra ventana, no una continuación de la foto ===== */
+.module-portal-side,
+.progress-portal-side{
+  min-height:300px!important;
+  box-sizing:border-box!important;
+  padding:20px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  border:1px solid rgba(165,199,224,.13)!important;
+  border-radius:24px!important;
+  background:
+    radial-gradient(circle at 100% 0,rgba(239,35,60,.09),transparent 31%),
+    linear-gradient(145deg,rgba(8,42,69,.93),rgba(4,29,51,.96))!important;
+  color:#fff!important;
+  box-shadow:
+    0 20px 44px rgba(0,9,20,.20),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+
+.portal-side-head,
+.progress-side-head{
+  padding-bottom:13px!important;
+  border-bottom:1px solid rgba(255,255,255,.07)!important;
+}
+.portal-side-head span,
+.progress-side-head>span{
+  color:#ff8195!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  letter-spacing:1.15px!important;
+}
+.portal-side-head>b,
+.progress-side-head h2{
+  display:block!important;
+  margin:5px 0 0!important;
+  color:#fff!important;
+  font-size:19px!important;
+  line-height:1.1!important;
+}
+.progress-side-head p{
+  margin:6px 0 0!important;
+  color:#86a0b5!important;
+  font-size:8px!important;
+  line-height:1.5!important;
+}
+
+.portal-mini-stats{
+  display:grid!important;
+  gap:8px!important;
+  margin-top:14px!important;
+}
+.portal-mini-stats article{
+  min-height:54px!important;
+  display:grid!important;
+  grid-template-columns:36px minmax(0,1fr)!important;
+  gap:10px!important;
+  align-items:center!important;
+  padding:8px 9px!important;
+  border:1px solid rgba(255,255,255,.055)!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.035)!important;
+}
+.portal-mini-stats i{
+  width:34px!important;
+  height:34px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:10px!important;
+  background:rgba(255,255,255,.055)!important;
+  color:#ff6078!important;
+  font-size:13px!important;
+  font-style:normal!important;
+}
+.portal-mini-stats strong{
+  display:block!important;
+  color:#fff!important;
+  font-size:17px!important;
+  line-height:1!important;
+}
+.portal-mini-stats small{
+  display:block!important;
+  margin-top:3px!important;
+  color:#89a2b6!important;
+  font-size:7px!important;
+}
+
+.portal-side-link{
+  min-height:42px!important;
+  margin-top:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  padding:0 12px!important;
+  border:1px solid rgba(255,98,122,.20)!important;
+  border-radius:11px!important;
+  background:rgba(91,27,49,.22)!important;
+  color:#ffb7c2!important;
+  font-size:8px!important;
+  font-weight:900!important;
+  cursor:pointer!important;
+}
+.portal-side-link:hover{
+  background:rgba(111,31,55,.32)!important;
+}
+
+/* ===== TÍTULO DE LA ZONA DE VENTANAS ===== */
+.module-window-title{
+  min-height:70px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  padding:14px 18px!important;
+  box-sizing:border-box!important;
+  border:1px solid rgba(165,199,224,.11)!important;
+  border-radius:17px!important;
+  background:linear-gradient(145deg,rgba(8,42,69,.77),rgba(5,31,54,.84))!important;
+  box-shadow:0 12px 28px rgba(0,9,20,.13)!important;
+}
+.module-window-title span{
+  color:#ff8195!important;
+  font-size:7px!important;
+  font-weight:950!important;
+  letter-spacing:1.1px!important;
+}
+.module-window-title h2{
+  margin:4px 0 2px!important;
+  color:#f8fbfd!important;
+  font-size:18px!important;
+  line-height:1.1!important;
+}
+.module-window-title p{
+  margin:0!important;
+  color:#86a0b5!important;
+  font-size:8px!important;
+}
+
+/* ===== PROGRESO: resumen lateral ===== */
+.progress-side-score{
+  margin-top:16px!important;
+  padding:13px!important;
+  border:1px solid rgba(255,255,255,.055)!important;
+  border-radius:14px!important;
+  background:rgba(255,255,255,.035)!important;
+}
+.progress-side-score strong{
+  display:block!important;
+  color:#fff!important;
+  font-size:32px!important;
+  line-height:1!important;
+  letter-spacing:-.8px!important;
+}
+.progress-side-score>span{
+  display:block!important;
+  margin-top:4px!important;
+  color:#8fa8bb!important;
+  font-size:8px!important;
+}
+.progress-side-score>div{
+  height:6px!important;
+  margin-top:10px!important;
+  overflow:hidden!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.07)!important;
+}
+.progress-side-score>div i{
+  display:block!important;
+  height:100%!important;
+  border-radius:inherit!important;
+  background:linear-gradient(90deg,#ef233c,#ff6179)!important;
+}
+.progress-side-mini{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+  margin-top:8px!important;
+}
+.progress-side-mini article{
+  min-height:58px!important;
+  padding:9px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  border:1px solid rgba(255,255,255,.05)!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.03)!important;
+}
+.progress-side-mini b{
+  color:#fff!important;
+  font-size:17px!important;
+}
+.progress-side-mini small{
+  margin-top:3px!important;
+  color:#839db1!important;
+  font-size:7px!important;
+}
+
+/* El botón Actualizar ahora vive dentro de la ventana principal de Progreso */
+.progress-portal-head .progress-refresh-btn{
+  position:static!important;
+  min-height:44px!important;
+  margin-top:20px!important;
+  padding:0 14px!important;
+  border:1px solid rgba(255,102,126,.30)!important;
+  border-radius:12px!important;
+  background:rgba(116,30,54,.30)!important;
+  color:#ffd8df!important;
+  font-size:8px!important;
+  font-weight:900!important;
+  cursor:pointer!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+.progress-portal-head .progress-refresh-btn:hover{
+  transform:translateY(-2px)!important;
+  background:rgba(133,35,61,.40)!important;
+}
+
+/* KPI y tarjetas se perciben como ventanas del módulo */
+.progress-experience-v34 .client-progress-kpis article,
+.module-routines-v34 .routine-card,
+.module-classes-v34 .member-class-card{
+  border-radius:18px!important;
+}
+
+.progress-experience-v34 .client-progress-kpis article{
+  min-height:132px!important;
+}
+
+/* En Rutinas/Clases ya no debe aparecer la sensación de una sola franja gigante */
+.module-routines-v34 .routine-grid,
+.module-classes-v34 .member-class-grid{
+  margin-top:0!important;
+}
+
+/* Responsive */
+@media(max-width:1100px){
+  .module-portal-head,
+  .progress-portal-head{
+    grid-template-columns:1fr!important;
+  }
+  .module-portal-side,
+  .progress-portal-side{
+    min-height:0!important;
+  }
+  .portal-mini-stats{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  .portal-side-link{
+    margin-top:14px!important;
+  }
+}
+
+@media(max-width:720px){
+  .module-portal-hero,
+  .progress-portal-head .progress-hero{
+    min-height:280px!important;
+    padding:27px 20px!important;
+    border-radius:19px!important;
+  }
+  .module-portal-copy h1,
+  .progress-portal-head .progress-hero h1{
+    font-size:31px!important;
+  }
+  .module-portal-copy p,
+  .progress-portal-head .progress-hero p{
+    font-size:10px!important;
+  }
+  .module-portal-badge{
+    width:54px!important;
+    height:54px!important;
+    right:16px!important;
+    bottom:16px!important;
+    border-radius:16px!important;
+  }
+  .module-portal-actions{
+    padding-right:0!important;
+  }
+  .portal-action-primary{
+    min-width:0!important;
+    width:100%!important;
+  }
+  .portal-action-secondary{
+    width:100%!important;
+    justify-content:center!important;
+  }
+  .portal-mini-stats{
+    grid-template-columns:1fr!important;
+  }
+  .progress-side-mini{
+    grid-template-columns:1fr!important;
+  }
+  .module-window-title{
+    padding:13px 14px!important;
+  }
+}
