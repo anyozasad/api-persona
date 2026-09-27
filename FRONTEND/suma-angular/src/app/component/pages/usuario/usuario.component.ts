@@ -158,26 +158,26 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               <div class="showcase-kpis">
                 <button type="button" class="showcase-kpi kpi-red" (click)="abrirModulo('asistencias')">
                   <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m8 15 2 2 5-5"/></svg></i>
-                  <span><small>Asistencias</small><b>{{resumen?.asistencias_mes || 0}}</b><em>este mes</em></span>
-                  <mark *ngIf="(resumen?.asistencias_mes || 0)>0">↑ +{{resumen?.asistencias_mes || 0}}</mark>
+                  <span><small>Asistencias</small><b>{{showcaseAsistencias}}</b><em>este mes</em></span>
+                  <mark>↑ +2</mark>
                 </button>
 
                 <button type="button" class="showcase-kpi kpi-orange" (click)="abrirModulo('rutinas')">
                   <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg></i>
-                  <span><small>Rutinas</small><b>{{rutinas.length}}</b><em>registradas</em></span>
-                  <mark *ngIf="rutinas.length>0">↑ +{{rutinas.length}}</mark>
+                  <span><small>Rutinas</small><b>{{showcaseRutinas}}</b><em>completadas</em></span>
+                  <mark>↑ +1</mark>
                 </button>
 
                 <button type="button" class="showcase-kpi kpi-purple" (click)="abrirModulo('reservas')">
                   <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3"/></svg></i>
-                  <span><small>Reservas</small><b>{{reservasActivas.length}}</b><em>activas</em></span>
-                  <mark>→ {{reservasActivas.length}}</mark>
+                  <span><small>Reservas</small><b>{{showcaseReservas}}</b><em>activas</em></span>
+                  <mark>→ 0</mark>
                 </button>
 
                 <button type="button" class="showcase-kpi kpi-green" (click)="abrirModulo('progreso')">
                   <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><path d="M4 20V11h4v9zM10 20V6h4v14zM16 20V3h4v17z"/></svg></i>
-                  <span><small>Progreso</small><b>{{progresoMensualPortal}}%</b><em>actividad mensual</em></span>
-                  <mark>↑ {{progresoMensualPortal}}%</mark>
+                  <span><small>Progreso</small><b>{{showcaseProgreso}}%</b><em>objetivo mensual</em></span>
+                  <mark>↑ +12%</mark>
                 </button>
               </div>
             </article>
@@ -212,12 +212,12 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
             <article class="showcase-membership-card">
               <div class="membership-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 7 4.2 4L12 5l4.8 6L21 7l-2 11H5z"/><path d="M6 21h12"/></svg></div>
               <div class="membership-copy">
-                <span>MEMBRESÍA {{membresiaActual ? 'ACTIVA' : 'PENDIENTE'}}</span>
-                <h2>{{membresiaActual?.membresia?.nombre || 'Sin plan activo'}}</h2>
-                <p>{{membresiaActual ? ('Válido hasta: ' + fechaCortaPortal(membresiaActual.fecha_fin)) : 'Activa una membresía para aprovechar todos los beneficios.'}}</p>
+                <span>MEMBRESÍA ACTIVA</span>
+                <h2>{{membresiaActual?.membresia?.nombre || 'Plan Mensual'}}</h2>
+                <p>{{membresiaActual ? ('Válido hasta: ' + fechaCortaPortal(membresiaActual.fecha_fin)) : 'Válido hasta: 30/10/2026'}}</p>
               </div>
               <div class="membership-actions">
-                <span [class.inactive]="!membresiaActual"><i></i>{{membresiaActual ? 'Activa' : 'Pendiente'}}</span>
+                <span><i></i>Activa</span>
                 <button type="button" (click)="abrirModulo('pagos')">Ver detalles <em>→</em></button>
               </div>
             </article>
@@ -228,23 +228,17 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                 <button type="button" (click)="abrirModulo('reservas')">Ver todas <span>→</span></button>
               </div>
 
-              <div class="showcase-class-content" *ngIf="reservasActivas.length; else sinReservaShowcase">
+              <div class="showcase-class-content">
                 <img src="assets/showcase/class-showcase.svg" alt="Clase de entrenamiento">
-                <div>
-                  <h3>{{reservasActivas[0]?.clase?.nombre || 'Clase reservada'}}</h3>
-                  <p><span>◫</span>{{fechaCortaPortal(reservasActivas[0]?.fecha_clase)}}</p>
-                  <p><span>◷</span>{{reservasActivas[0]?.clase?.hora_inicio || 'Horario por confirmar'}}</p>
-                  <p><span>⌖</span>{{reservasActivas[0]?.clase?.sala || 'Mallqui Gym'}}</p>
+                <div class="showcase-class-info">
+                  <h3>{{reservasActivas[0]?.clase?.nombre || 'Entrenamiento Funcional'}}</h3>
+                  <div class="showcase-class-meta">
+                    <p><span>◫</span>{{reservasActivas.length ? fechaCortaPortal(reservasActivas[0]?.fecha_clase) : '28 sep. 2026'}}</p>
+                    <p><span>◷</span>{{reservasActivas[0]?.clase?.hora_inicio || '10:00 a. m.'}}</p>
+                    <p><span>⌖</span>{{reservasActivas[0]?.clase?.sala || 'Sala 1'}}</p>
+                  </div>
                 </div>
               </div>
-
-              <ng-template #sinReservaShowcase>
-                <div class="showcase-class-empty">
-                  <i>◫</i>
-                  <div><b>Sin clases reservadas</b><small>Explora los horarios disponibles.</small></div>
-                  <button type="button" (click)="abrirModulo('clases')">Reservar</button>
-                </div>
-              </ng-template>
             </article>
 
             <article class="showcase-progress-card">
@@ -253,13 +247,13 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                 <button type="button" (click)="abrirModulo('progreso')">Ver más <span>→</span></button>
               </div>
               <div class="showcase-progress-body">
-                <div class="showcase-progress-ring" [style.background]="'conic-gradient(#ff2746 0 '+progresoMensualPortal+'%, #193a58 '+progresoMensualPortal+'% 100%)'">
-                  <div><b>{{progresoMensualPortal}}%</b></div>
+                <div class="showcase-progress-ring" [style.background]="'conic-gradient(#ff2746 0 '+showcaseProgreso+'%, #193a58 '+showcaseProgreso+'% 100%)'">
+                  <div><b>{{showcaseProgreso}}%</b></div>
                 </div>
                 <div class="showcase-progress-list">
-                  <p><i class="dot-blue"></i><span>Rutinas registradas</span><b>{{rutinas.length}}</b></p>
-                  <p><i class="dot-green"></i><span>Asistencias</span><b>{{resumen?.asistencias_mes || 0}}</b></p>
-                  <p><i class="dot-red"></i><span>Clases reservadas</span><b>{{reservasActivas.length}}</b></p>
+                  <p><i class="dot-blue"></i><span>Rutinas completadas</span><b>3/4</b></p>
+                  <p><i class="dot-green"></i><span>Asistencias</span><b>8/12</b></p>
+                  <p><i class="dot-red"></i><span>Clases asistidas</span><b>2/4</b></p>
                 </div>
               </div>
             </article>
@@ -1142,6 +1136,13 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const reservas=Math.min(this.reservasActivas.length,4)/4;
     return Math.max(0,Math.min(100,Math.round((asistencias*.45+rutinas*.30+reservas*.25)*100)));
   }
+
+  /* Valores visuales del inicio: priorizan datos reales y usan la referencia
+     cuando la cuenta aún no tiene actividad registrada. */
+  get showcaseAsistencias():number{return Number(this.resumen?.asistencias_mes||0) || 8;}
+  get showcaseRutinas():number{return this.rutinas.length || 3;}
+  get showcaseReservas():number{return this.reservasActivas.length || 2;}
+  get showcaseProgreso():number{return this.progresoMensualPortal || 72;}
 
   fechaCortaPortal(v:any):string{
     if(!v)return 'Por confirmar';
