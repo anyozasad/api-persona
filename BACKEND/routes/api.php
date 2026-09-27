@@ -37,6 +37,7 @@ use App\Http\Controllers\ConfiguracionSistemaController;
 use App\Http\Controllers\ExperienciaClienteController;
 use App\Http\Controllers\ComunicacionAdminController;
 use App\Http\Controllers\ClienteFichaController;
+use App\Http\Controllers\GymSystemAdminController;
 
 // ESTADO REAL DEL SISTEMA: permite verificar API + conexión con MySQL sin exponer credenciales.
 Route::get('/estado-sistema', function () {
@@ -266,4 +267,90 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
     Route::get('/vistas/clientes-membresias', [ReporteController::class, 'clientesMembresias']);
     Route::get('/vistas/stock', [ReporteController::class, 'stock']);
     Route::get('/vistas/ventas', [ReporteController::class, 'ventas']);
+    // FUNCIONES DEL DASHBOARD DE GYM SYSTEM, conectadas a la BD gym_system.
+    // Se mantienen en un prefijo separado para no romper el portal del cliente.
+    Route::prefix('gym-admin')->group(function () {
+        Route::get('/estado', [GymSystemAdminController::class, 'estado']);
+        Route::post('/dashboard/filtrar', [GymSystemAdminController::class, 'filtrarDashboard']);
+
+        Route::get('/socios', [GymSystemAdminController::class, 'socios']);
+        Route::get('/socios/{id}', [GymSystemAdminController::class, 'socio']);
+        Route::post('/socios', [GymSystemAdminController::class, 'guardarSocio']);
+        Route::put('/socios/{id}', [GymSystemAdminController::class, 'actualizarSocio']);
+        Route::put('/socios/{id}/estado', [GymSystemAdminController::class, 'cambiarEstadoSocio']);
+
+        Route::get('/planes', [GymSystemAdminController::class, 'planes']);
+        Route::post('/planes', [GymSystemAdminController::class, 'guardarPlan']);
+        Route::put('/planes/{id}', [GymSystemAdminController::class, 'actualizarPlan']);
+        Route::put('/planes/{id}/estado', [GymSystemAdminController::class, 'cambiarEstadoPlan']);
+
+        Route::get('/suscripciones', [GymSystemAdminController::class, 'suscripciones']);
+        Route::post('/suscripciones', [GymSystemAdminController::class, 'guardarSuscripcion']);
+        Route::put('/suscripciones/{id}/cancelar', [GymSystemAdminController::class, 'cancelarSuscripcion']);
+        Route::get('/suscripciones/exportar', [GymSystemAdminController::class, 'exportarSuscripciones']);
+
+        Route::get('/asistencias', [GymSystemAdminController::class, 'asistencias']);
+        Route::post('/asistencias/validar', [GymSystemAdminController::class, 'validarAsistencia']);
+        Route::post('/asistencias/entrada', [GymSystemAdminController::class, 'registrarAsistencia']);
+        Route::post('/asistencias/salida', [GymSystemAdminController::class, 'registrarSalida']);
+        Route::get('/asistencias/reporte', [GymSystemAdminController::class, 'reporteAsistencias']);
+        Route::get('/asistencias/exportar', [GymSystemAdminController::class, 'exportarAsistencias']);
+
+        Route::get('/caja/actual', [GymSystemAdminController::class, 'cajaActual']);
+        Route::post('/caja/abrir', [GymSystemAdminController::class, 'abrirCaja']);
+        Route::post('/caja/movimientos', [GymSystemAdminController::class, 'movimientoCaja']);
+        Route::post('/caja/cerrar', [GymSystemAdminController::class, 'cerrarCaja']);
+        Route::get('/caja/historial', [GymSystemAdminController::class, 'historialCaja']);
+
+        Route::get('/gastos', [GymSystemAdminController::class, 'gastos']);
+        Route::post('/gastos', [GymSystemAdminController::class, 'guardarGasto']);
+        Route::put('/gastos/{id}/anular', [GymSystemAdminController::class, 'anularGasto']);
+
+        Route::get('/categorias', [GymSystemAdminController::class, 'categorias']);
+        Route::post('/categorias', [GymSystemAdminController::class, 'guardarCategoria']);
+        Route::put('/categorias/{id}', [GymSystemAdminController::class, 'actualizarCategoria']);
+        Route::put('/categorias/{id}/estado', [GymSystemAdminController::class, 'cambiarEstadoCategoria']);
+
+        Route::get('/productos', [GymSystemAdminController::class, 'productos']);
+        Route::get('/productos/{id}', [GymSystemAdminController::class, 'producto']);
+        Route::post('/productos', [GymSystemAdminController::class, 'guardarProducto']);
+        Route::put('/productos/{id}', [GymSystemAdminController::class, 'actualizarProducto']);
+        Route::put('/productos/{id}/estado', [GymSystemAdminController::class, 'cambiarEstadoProducto']);
+        Route::post('/productos/ajustar-stock', [GymSystemAdminController::class, 'ajustarStock']);
+
+        Route::get('/ventas', [GymSystemAdminController::class, 'ventas']);
+        Route::get('/ventas/{id}', [GymSystemAdminController::class, 'venta']);
+        Route::post('/ventas', [GymSystemAdminController::class, 'registrarVenta']);
+        Route::put('/ventas/{id}/anular', [GymSystemAdminController::class, 'anularVenta']);
+
+        Route::get('/usuarios', [GymSystemAdminController::class, 'usuarios']);
+        Route::post('/usuarios', [GymSystemAdminController::class, 'guardarUsuario']);
+        Route::put('/usuarios/{id}', [GymSystemAdminController::class, 'actualizarUsuario']);
+        Route::put('/usuarios/{id}/estado', [GymSystemAdminController::class, 'cambiarEstadoUsuario']);
+
+        Route::get('/progreso/{socioId}', [GymSystemAdminController::class, 'progreso']);
+        Route::post('/progreso/medidas', [GymSystemAdminController::class, 'guardarMedida']);
+        Route::delete('/progreso/medidas/{id}', [GymSystemAdminController::class, 'eliminarMedida']);
+        Route::post('/progreso/rutina', [GymSystemAdminController::class, 'guardarRutinaReferencia']);
+
+        Route::get('/notificaciones/vencimientos', [GymSystemAdminController::class, 'vencimientosNotificacion']);
+        Route::put('/notificaciones/socios/{id}/api-key', [GymSystemAdminController::class, 'guardarWhatsappKey']);
+        Route::post('/notificaciones/socios/{id}/enviar', [GymSystemAdminController::class, 'enviarWhatsapp']);
+        Route::post('/notificaciones/enviar-todos', [GymSystemAdminController::class, 'enviarWhatsappTodos']);
+
+        Route::get('/reportes/ingresos', [GymSystemAdminController::class, 'reporteIngresos']);
+        Route::get('/reportes/vencimientos', [GymSystemAdminController::class, 'reporteVencimientos']);
+
+        Route::get('/configuracion', [GymSystemAdminController::class, 'configuracion']);
+        Route::put('/configuracion', [GymSystemAdminController::class, 'guardarConfiguracion']);
+
+        Route::get('/mantenimiento/backup', [GymSystemAdminController::class, 'backup']);
+        Route::post('/mantenimiento/restaurar', [GymSystemAdminController::class, 'restaurar']);
+        Route::post('/mantenimiento/limpiar', [GymSystemAdminController::class, 'limpiar']);
+        Route::post('/mantenimiento/limpiar-cache', [GymSystemAdminController::class, 'limpiarCache']);
+
+        Route::get('/documentos/carnet/{socioId}', [GymSystemAdminController::class, 'carnet']);
+        Route::get('/documentos/comprobante/{suscripcionId}', [GymSystemAdminController::class, 'comprobante']);
+        Route::get('/documentos/ticket/{ventaId}', [GymSystemAdminController::class, 'ticket']);
+    });
 });
