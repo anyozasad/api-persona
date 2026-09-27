@@ -16769,3 +16769,40 @@
       )!important;
   }
 }
+
+
+/* PORTAL CLIENTE V42 · REDUCE ESPACIOS MARCADOS */
+@media (min-width:1000px){
+  /* Solo reduce los espacios que marcaste en rojo.
+     No cambia imágenes, textos, botones ni funciones. */
+
+  .member-page:has(.dashboard-showcase-v30) .member-main{
+    width:calc(100% - 12px)!important;
+    padding-top:6px!important;
+    padding-bottom:12px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .dashboard-showcase-v30{
+    gap:6px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-grid{
+    gap:6px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-overview-grid{
+    gap:6px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-bottom-grid{
+    gap:6px!important;
+  }
+
+  /* Evita márgenes extra heredados entre las filas principales */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-grid,
+  .member-page:has(.dashboard-showcase-v30) .showcase-overview-grid,
+  .member-page:has(.dashboard-showcase-v30) .showcase-bottom-grid{
+    margin-top:0!important;
+    margin-bottom:0!important;
+  }
+}
