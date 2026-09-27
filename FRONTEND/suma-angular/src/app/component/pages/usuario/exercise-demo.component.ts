@@ -216,14 +216,14 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
   `,
   styles: [`
     :host{display:block;min-width:0}
-    .exercise-demo{display:grid;gap:14px;min-width:0}
+    .exercise-demo{display:grid;gap:14px;min-width:0;color:#eef6fb;font-family:Inter,"Segoe UI",Arial,sans-serif}
     .exercise-demo-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
-    .exercise-demo-head>div>span{display:block;font-size:9px;font-weight:900;letter-spacing:1.15px;color:#7e92a6}
-    .exercise-demo-head h3{margin:4px 0 3px;font-size:21px;color:#0d2a49;line-height:1.1}
-    .exercise-demo-head p{margin:0;max-width:520px;font-size:11px;line-height:1.5;color:#74879a}
-    .exercise-demo-head em{font-style:normal;padding:6px 9px;border-radius:999px;background:#eaf8f1;color:#257458;font-size:8px;font-weight:900}
-    .exercise-demo.is-paused .exercise-demo-head em{background:#fff4df;color:#a66d14}
-    .exercise-demo-stage{position:relative;min-height:330px;overflow:hidden;border-radius:20px;background:linear-gradient(145deg,#071a32,#0b3159);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+    .exercise-demo-head>div>span{display:block;font-size:9px;font-weight:950;letter-spacing:1.15px;color:#ff7188}
+    .exercise-demo-head h3{margin:4px 0 3px;font-size:22px;color:#fff;line-height:1.1;font-weight:950;letter-spacing:-.3px;text-shadow:0 2px 10px rgba(0,0,0,.18)}
+    .exercise-demo-head p{margin:0;max-width:520px;font-size:11px;line-height:1.55;color:#b7cad8}
+    .exercise-demo-head em{font-style:normal;padding:6px 9px;border-radius:999px;background:rgba(32,225,162,.11);border:1px solid rgba(72,237,188,.14);color:#59efbf;font-size:8px;font-weight:950;box-shadow:0 0 14px rgba(32,225,162,.06)}
+    .exercise-demo.is-paused .exercise-demo-head em{background:rgba(255,174,55,.12);border-color:rgba(255,183,72,.16);color:#ffc36b}
+    .exercise-demo-stage{position:relative;min-height:330px;overflow:hidden;border-radius:20px;border:1px solid rgba(183,212,232,.11);background:linear-gradient(145deg,#071a32,#0b3159);box-shadow:0 14px 30px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.05)}
     .demo-grid{position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:30px 30px;mask-image:linear-gradient(to bottom,transparent,black 22%,black 85%,transparent)}
     .exercise-demo-stage:after{
       content:'PERSONA · GUÍA DE MOVIMIENTO';
@@ -314,8 +314,8 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
     .demo-caption span{font-size:10px;color:#c6d5e3}
     .demo-caption b{font-size:10px;color:#fff;text-align:right}
     .exercise-demo-foot{display:flex;flex-wrap:wrap;gap:8px 14px}
-    .exercise-demo-foot span{display:inline-flex;align-items:center;gap:6px;font-size:9px;color:#6e8194}
-    .exercise-demo-foot i{width:7px;height:7px;border-radius:50%;background:#36b884}
+    .exercise-demo-foot span{display:inline-flex;align-items:center;gap:6px;font-size:9px;color:#9fb4c4;font-weight:700}
+    .exercise-demo-foot i{width:7px;height:7px;border-radius:50%;background:#2be0a3;box-shadow:0 0 10px rgba(43,224,163,.28)}
 
     .is-paused .pose *{animation-play-state:paused!important}
 
