@@ -296,7 +296,7 @@ class DashboardController extends Controller
         }
 
         $query->where(function ($q) use ($estado) {
-            $q->whereIn($estado, ['Activo', 'ACTIVO', 'activo', 'Active', 'ACTIVE', 1, '1', 'Si', 'Sí'])
+            $q->whereIn($estado, ['Activo', 'ACTIVO', 'activo', 'Activa', 'ACTIVA', 'activa', 'Active', 'ACTIVE', 1, '1', 'Si', 'Sí'])
                 ->orWhereNull($estado);
         });
     }
@@ -542,6 +542,14 @@ class DashboardController extends Controller
             if ($tipo) {
                 $q->whereIn($tipo, ['Egreso', 'EGRESO', 'egreso', 'Gasto', 'GASTO', 'gasto']);
             }
+        }
+
+        $estado = $this->columna($tabla, ['estado', 'status']);
+        if ($tabla === 'gastos' && $estado) {
+            $q->where(function ($w) use ($estado) {
+                $w->whereNull($estado)
+                    ->orWhereNotIn($estado, ['Anulado', 'ANULADO', 'anulado']);
+            });
         }
 
         return (float) $q->sum($monto);
