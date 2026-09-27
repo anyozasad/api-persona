@@ -280,6 +280,7 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
         Route::put('/socios/{id}/estado', [GymSystemAdminController::class, 'cambiarEstadoSocio']);
 
         Route::get('/planes', [GymSystemAdminController::class, 'planes']);
+        Route::get('/planes/{id}', [GymSystemAdminController::class, 'plan']);
         Route::post('/planes', [GymSystemAdminController::class, 'guardarPlan']);
         Route::put('/planes/{id}', [GymSystemAdminController::class, 'actualizarPlan']);
         Route::put('/planes/{id}/estado', [GymSystemAdminController::class, 'cambiarEstadoPlan']);
@@ -317,6 +318,7 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
         Route::put('/productos/{id}', [GymSystemAdminController::class, 'actualizarProducto']);
         Route::put('/productos/{id}/estado', [GymSystemAdminController::class, 'cambiarEstadoProducto']);
         Route::post('/productos/ajustar-stock', [GymSystemAdminController::class, 'ajustarStock']);
+        Route::get('/kardex', [GymSystemAdminController::class, 'kardex']);
 
         Route::get('/ventas', [GymSystemAdminController::class, 'ventas']);
         Route::get('/ventas/{id}', [GymSystemAdminController::class, 'venta']);
