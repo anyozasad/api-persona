@@ -16134,3 +16134,580 @@
     background-position:74% 48%!important;
   }
 }
+
+
+/* PORTAL CLIENTE V40 · MATCH DEL ÁREA MARCADA EN LA REFERENCIA */
+@media (min-width:1000px){
+  /* ---------- lienzo principal ---------- */
+  .member-page:has(.dashboard-showcase-v30) .member-main{
+    width:calc(100% - 28px)!important;
+    max-width:1600px!important;
+    margin:0 auto!important;
+    padding:16px 0 28px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .dashboard-showcase-v30{
+    gap:12px!important;
+  }
+
+  /* ---------- hero + entrenador ---------- */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-grid{
+    display:grid!important;
+    grid-template-columns:minmax(0,3.45fr) minmax(292px,.98fr)!important;
+    gap:12px!important;
+    align-items:stretch!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main,
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-panel{
+    height:clamp(355px,43.5vh,420px)!important;
+    min-height:355px!important;
+    border-radius:18px!important;
+  }
+
+  /* ---------- FOTO: sin estirar ni cortar la cara ---------- */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main{
+    position:relative!important;
+    overflow:hidden!important;
+    isolation:isolate!important;
+    border:1px solid rgba(92,145,184,.24)!important;
+    background:
+      radial-gradient(circle at 42% 48%,rgba(22,73,108,.18),transparent 31%),
+      linear-gradient(90deg,#031a30 0%,#041c34 48%,#062844 100%)!important;
+    box-shadow:0 18px 45px rgba(1,17,31,.18)!important;
+  }
+
+  /* anulamos las copias viejas de V37/V38/V39 */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main:before,
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main:after{
+    content:none!important;
+    display:none!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-photo{
+    position:absolute!important;
+    z-index:0!important;
+    top:0!important;
+    right:0!important;
+    width:66%!important;
+    height:100%!important;
+    display:block!important;
+    object-fit:cover!important;
+    object-position:53% 48%!important;
+    filter:saturate(1.10) contrast(1.04) brightness(.96)!important;
+    transform:none!important;
+  }
+
+  /* Fondo ambiental detrás del texto; hace que la imagen parezca continua */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main{
+    background-image:
+      linear-gradient(90deg,rgba(2,20,37,.88),rgba(2,20,37,.66)),
+      url('/assets/showcase/hero-showcase.svg')!important;
+    background-repeat:no-repeat!important;
+    background-size:100% 100%,58% auto!important;
+    background-position:center,right center!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-shade{
+    position:absolute!important;
+    inset:0!important;
+    z-index:1!important;
+    pointer-events:none!important;
+    background:
+      linear-gradient(
+        90deg,
+        rgba(2,19,35,.98) 0%,
+        rgba(2,19,35,.95) 24%,
+        rgba(2,19,35,.82) 35%,
+        rgba(2,19,35,.46) 47%,
+        rgba(2,19,35,.12) 60%,
+        rgba(2,19,35,0) 72%,
+        rgba(2,19,35,.08) 100%
+      ),
+      linear-gradient(180deg,rgba(1,12,23,.05),rgba(1,12,23,.05) 64%,rgba(1,12,23,.30))!important;
+  }
+
+  /* ---------- texto hero ---------- */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-copy{
+    position:absolute!important;
+    z-index:4!important;
+    left:28px!important;
+    top:31px!important;
+    width:43%!important;
+    padding:0!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-eyebrow{
+    margin:0 0 12px!important;
+    font-size:12px!important;
+    letter-spacing:1.6px!important;
+    color:#ff3954!important;
+    font-weight:900!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-copy h1{
+    max-width:none!important;
+    margin:0!important;
+    font-size:clamp(42px,3.25vw,58px)!important;
+    line-height:.98!important;
+    letter-spacing:-2.1px!important;
+    color:#fff!important;
+    font-weight:950!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-copy h1 strong{
+    color:#ff2948!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-copy>p{
+    max-width:430px!important;
+    margin:13px 0 0!important;
+    color:#d7e1eb!important;
+    font-size:14px!important;
+    line-height:1.55!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-actions{
+    margin-top:24px!important;
+    display:flex!important;
+    align-items:stretch!important;
+    gap:10px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-btn-primary{
+    min-width:250px!important;
+    min-height:60px!important;
+    padding:0 14px!important;
+    border-radius:13px!important;
+    background:linear-gradient(135deg,#ff344f,#f51f3e)!important;
+    box-shadow:0 12px 28px rgba(239,35,60,.34)!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-btn-primary>i{
+    width:40px!important;
+    height:40px!important;
+    border-radius:50%!important;
+    background:#fff!important;
+    color:#ff2948!important;
+    font-size:14px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-btn-primary span b{
+    font-size:14px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-btn-primary span small{
+    margin-top:2px!important;
+    font-size:10px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-btn-secondary{
+    min-width:150px!important;
+    min-height:60px!important;
+    padding:0 16px!important;
+    border-radius:12px!important;
+    background:rgba(3,30,53,.72)!important;
+    border:1px solid rgba(120,165,199,.45)!important;
+    color:#fff!important;
+    backdrop-filter:blur(7px)!important;
+    -webkit-backdrop-filter:blur(7px)!important;
+    font-size:13px!important;
+    gap:9px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-line-icon{
+    width:24px!important;
+    height:24px!important;
+    display:grid!important;
+    place-items:center!important;
+    color:#fff!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-line-icon svg{
+    width:22px!important;
+    height:22px!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.85!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+
+  /* ---------- frase ---------- */
+  .member-page:has(.dashboard-showcase-v30) .showcase-quote{
+    position:absolute!important;
+    z-index:4!important;
+    right:22px!important;
+    top:68px!important;
+    display:flex!important;
+    align-items:flex-start!important;
+    gap:7px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-quote span{
+    color:#ff2b49!important;
+    font-size:29px!important;
+    line-height:.7!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-quote b{
+    color:#fff!important;
+    font-size:14px!important;
+    line-height:1.08!important;
+    letter-spacing:.9px!important;
+    text-shadow:0 2px 10px rgba(0,0,0,.58)!important;
+  }
+
+  /* ---------- KPI inferiores del hero ---------- */
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpis{
+    position:absolute!important;
+    z-index:5!important;
+    left:18px!important;
+    right:18px!important;
+    bottom:14px!important;
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi{
+    min-height:76px!important;
+    padding:10px 12px!important;
+    grid-template-columns:52px minmax(0,1fr) auto!important;
+    gap:10px!important;
+    border-radius:12px!important;
+    background:rgba(3,29,51,.89)!important;
+    border:1px solid rgba(105,155,193,.32)!important;
+    box-shadow:0 9px 22px rgba(0,0,0,.18)!important;
+    backdrop-filter:blur(11px)!important;
+    -webkit-backdrop-filter:blur(11px)!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi>i{
+    width:48px!important;
+    height:48px!important;
+    border-radius:11px!important;
+    display:grid!important;
+    place-items:center!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi-icon svg{
+    width:26px!important;
+    height:26px!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.8!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi>span small{
+    font-size:11px!important;
+    color:#e3ecf4!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi>span b{
+    margin-top:2px!important;
+    font-size:26px!important;
+    line-height:1!important;
+    color:#fff!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi>span em{
+    margin-top:2px!important;
+    font-size:9px!important;
+    color:#a9bed1!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi mark{
+    align-self:start!important;
+    padding:5px 8px!important;
+    border-radius:8px!important;
+    font-size:10px!important;
+  }
+
+  /* ---------- entrenador ---------- */
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-panel{
+    padding:20px!important;
+    border:1px solid rgba(93,145,184,.34)!important;
+    background:
+      radial-gradient(circle at 100% 0,rgba(34,89,132,.18),transparent 28%),
+      linear-gradient(180deg,#082d4e 0%,#082947 100%)!important;
+    box-shadow:0 18px 44px rgba(1,17,31,.14)!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-head{
+    padding-bottom:13px!important;
+    border-bottom:1px solid rgba(127,163,191,.20)!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-head>b{
+    display:flex!important;
+    align-items:center!important;
+    gap:7px!important;
+    font-size:14px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .coach-title-icon{
+    width:17px!important;
+    height:17px!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.8!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-head>span{
+    font-size:10px!important;
+    color:#21e59f!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-profile{
+    grid-template-columns:82px minmax(0,1fr)!important;
+    gap:14px!important;
+    margin-top:16px!important;
+    align-items:center!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-profile img{
+    width:78px!important;
+    height:78px!important;
+    border:3px solid #fff!important;
+    object-fit:cover!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-profile h3{
+    font-size:17px!important;
+    color:#fff!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-profile p{
+    margin-top:5px!important;
+    font-size:11px!important;
+    line-height:1.45!important;
+    color:#c8d7e4!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-tools{
+    margin-top:18px!important;
+    gap:8px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-tools button{
+    min-height:82px!important;
+    border-radius:11px!important;
+    background:rgba(7,42,72,.78)!important;
+    border:1px solid rgba(112,157,193,.30)!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-tools i{
+    width:30px!important;
+    height:30px!important;
+    display:grid!important;
+    place-items:center!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-tools i svg{
+    width:25px!important;
+    height:25px!important;
+    fill:none!important;
+    stroke:#fff!important;
+    stroke-width:1.7!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-tools span{
+    margin-top:5px!important;
+    font-size:10px!important;
+    color:#fff!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-start{
+    min-height:57px!important;
+    margin-top:14px!important;
+    padding:0 13px!important;
+    border-radius:11px!important;
+    background:linear-gradient(135deg,#ff344f,#f51f3e)!important;
+    box-shadow:0 12px 28px rgba(239,35,60,.25)!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-start i{
+    width:36px!important;
+    height:36px!important;
+    background:#fff!important;
+    color:#ff2948!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-start span{
+    font-size:13px!important;
+    font-weight:900!important;
+  }
+
+  /* ---------- fila inferior del área marcada ---------- */
+  .member-page:has(.dashboard-showcase-v30) .showcase-overview-grid{
+    display:grid!important;
+    grid-template-columns:1.14fr 1.1fr 1fr!important;
+    gap:12px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-membership-card,
+  .member-page:has(.dashboard-showcase-v30) .showcase-class-card,
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-card{
+    height:130px!important;
+    min-height:130px!important;
+    border-radius:15px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-membership-card{
+    padding:15px 16px!important;
+    grid-template-columns:76px minmax(0,1fr) auto!important;
+    gap:14px!important;
+    background:
+      radial-gradient(circle at 5% 48%,rgba(255,39,70,.22),transparent 28%),
+      linear-gradient(120deg,#8b0e2d 0%,#5c0a21 100%)!important;
+    border:1px solid rgba(255,50,80,.72)!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .membership-icon{
+    width:68px!important;
+    height:68px!important;
+    border-radius:14px!important;
+    background:rgba(85,0,24,.50)!important;
+    color:#ff6c49!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .membership-icon svg{
+    width:38px!important;
+    height:38px!important;
+    fill:currentColor!important;
+    stroke:currentColor!important;
+    stroke-width:1.2!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .membership-copy span{
+    font-size:11px!important;
+    color:#ffd1d8!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .membership-copy h2{
+    margin:6px 0 5px!important;
+    font-size:23px!important;
+    color:#fff!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .membership-copy p{
+    font-size:11px!important;
+    color:#ffd6dd!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .membership-actions>span{
+    padding:6px 10px!important;
+    border-radius:9px!important;
+    font-size:10px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .membership-actions button{
+    min-width:116px!important;
+    min-height:42px!important;
+    border-radius:10px!important;
+    font-size:11px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-class-card,
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-card{
+    padding:13px 14px!important;
+    background:linear-gradient(180deg,#082d4e,#082947)!important;
+    border:1px solid rgba(93,145,184,.30)!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-card-head>b{
+    font-size:12px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-card-head>button{
+    font-size:10px!important;
+    color:#ff3652!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-class-content{
+    margin-top:9px!important;
+    grid-template-columns:100px minmax(0,1fr)!important;
+    gap:12px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-class-content>img{
+    width:100px!important;
+    height:72px!important;
+    border-radius:8px!important;
+    object-fit:cover!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-class-content h3{
+    font-size:15px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-class-content p{
+    margin-top:5px!important;
+    font-size:10px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-body{
+    margin-top:8px!important;
+    grid-template-columns:86px minmax(0,1fr)!important;
+    gap:12px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-ring{
+    width:82px!important;
+    height:82px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-ring>div{
+    width:58px!important;
+    height:58px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-ring b{
+    font-size:18px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-list p{
+    font-size:10px!important;
+  }
+
+  /* ---------- salir como en la referencia ---------- */
+  .member-page:has(.dashboard-showcase-v30) .member-logout{
+    min-width:96px!important;
+    height:48px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:8px!important;
+    border:1px solid rgba(255,47,74,.66)!important;
+    border-radius:11px!important;
+    background:transparent!important;
+    color:#ff4660!important;
+    font-size:12px!important;
+    font-weight:900!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .member-logout svg{
+    width:20px!important;
+    height:20px!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.8!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+}
+
+/* Mantén proporción en monitores muy anchos. */
+@media (min-width:1550px){
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-photo{
+    width:64%!important;
+    object-position:55% 48%!important;
+  }
+}
