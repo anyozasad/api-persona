@@ -38,8 +38,21 @@ class GymSystemAdminController extends Controller
                     if (!$this->schema->hasColumn('ventas', 'tipo_comprobante')) $table->string('tipo_comprobante', 20)->nullable();
                     if (!$this->schema->hasColumn('ventas', 'numero_comprobante')) $table->string('numero_comprobante', 50)->nullable();
                     if (!$this->schema->hasColumn('ventas', 'numero_operacion')) $table->string('numero_operacion', 80)->nullable();
+                    if (!$this->schema->hasColumn('ventas', 'subtotal')) $table->decimal('subtotal', 10, 2)->default(0);
+                    if (!$this->schema->hasColumn('ventas', 'igv')) $table->decimal('igv', 10, 2)->default(0);
+                    if (!$this->schema->hasColumn('ventas', 'igv_porcentaje')) $table->decimal('igv_porcentaje', 5, 2)->default(18);
                     if (!$this->schema->hasColumn('ventas', 'estado')) $table->string('estado', 20)->default('Registrado');
                     if (!$this->schema->hasColumn('ventas', 'motivo_anulacion')) $table->string('motivo_anulacion', 255)->nullable();
+                });
+                // Permite conservar el método real (Efectivo, Yape, Plin, Transferencia o Tarjeta).
+                $this->db->statement("ALTER TABLE ventas MODIFY metodo_pago VARCHAR(30) NOT NULL");
+            }
+
+            if ($this->schema->hasTable('productos')) {
+                $this->schema->table('productos', function ($table) {
+                    if (!$this->schema->hasColumn('productos', 'descripcion')) $table->text('descripcion')->nullable();
+                    if (!$this->schema->hasColumn('productos', 'stock_minimo')) $table->unsignedInteger('stock_minimo')->default(5);
+                    if (!$this->schema->hasColumn('productos', 'unidad_medida')) $table->string('unidad_medida', 30)->default('Unidad');
                 });
             }
             if ($this->schema->hasTable('asistencias')) {
@@ -504,9 +517,23 @@ class GymSystemAdminController extends Controller
 
     public function registrarVenta(Request $request)
     {
-        $d=$request->validate(['id_cliente'=>'nullable|integer','tipo_comprobante'=>'nullable|string|max:20','numero_comprobante'=>'nullable|string|max:50','metodo_pago'=>'required|string|max:30','numero_operacion'=>'nullable|string|max:80','items'=>'required|array|min:1','items.*.id_producto'=>'required|integer','items.*.cantidad'=>'required|integer|min:1']);
+        $d=$request->validate([
+            'id_cliente'=>'nullable|integer',
+            'tipo_comprobante'=>'nullable|string|in:Boleta,Factura',
+            'metodo_pago'=>'required|string|in:Efectivo,Yape,Plin,Transferencia,Tarjeta',
+            'numero_operacion'=>'nullable|string|max:80',
+            'igv_porcentaje'=>'nullable|numeric|min:0|max:100',
+            'items'=>'required|array|min:1',
+            'items.*.id_producto'=>'required|integer',
+            'items.*.cantidad'=>'required|integer|min:1'
+        ]);
+
         $c=$this->db->table('cajas')->where('estado','abierta')->orderByDesc('id')->first();
         abort_if(!$c,422,'Debes abrir caja antes de registrar una venta.');
+
+        if (!empty($d['id_cliente'])) {
+            abort_if(!$this->db->table('socios')->where('id',$d['id_cliente'])->exists(),422,'El socio seleccionado no existe.');
+        }
 
         return $this->db->transaction(function()use($d,$c){
             $total=0;$detalle=[];
@@ -514,15 +541,53 @@ class GymSystemAdminController extends Controller
                 $p=$this->db->table('productos')->where('id',$item['id_producto'])->lockForUpdate()->first();
                 abort_if(!$p||$p->estado!=='activo',422,'Producto no disponible.');
                 abort_if((int)$p->stock<(int)$item['cantidad'],422,'Stock insuficiente para '.$p->nombre.'.');
-                $sub=round((float)$p->precio_venta*(int)$item['cantidad'],2);$total+=$sub;$detalle[]=[$p,(int)$item['cantidad'],$sub];
+                $sub=round((float)$p->precio_venta*(int)$item['cantidad'],2);
+                $total+=$sub;
+                $detalle[]=[$p,(int)$item['cantidad'],$sub];
             }
-            $metodo=strtolower($d['metodo_pago']);if(!in_array($metodo,['efectivo','tarjeta','transferencia'],true))$metodo='transferencia';
-            $id=$this->db->table('ventas')->insertGetId(['caja_id'=>$c->id,'socio_id'=>$d['id_cliente']?:null,'total'=>round($total,2),'descuento'=>0,'metodo_pago'=>$metodo,'fecha'=>now(),'tipo_comprobante'=>$d['tipo_comprobante']??'Boleta','numero_comprobante'=>$d['numero_comprobante']?:null,'numero_operacion'=>$d['numero_operacion']??null,'estado'=>'Registrado']);
+
+            $total=round($total,2);
+            $igvPorcentaje=(float)($d['igv_porcentaje']??18);
+            $factor=1+($igvPorcentaje/100);
+            $subtotal=$factor>0?round($total/$factor,2):$total;
+            $igv=round($total-$subtotal,2);
+
+            $id=$this->db->table('ventas')->insertGetId([
+                'caja_id'=>$c->id,
+                'socio_id'=>!empty($d['id_cliente'])?(int)$d['id_cliente']:null,
+                'subtotal'=>$subtotal,
+                'igv'=>$igv,
+                'igv_porcentaje'=>$igvPorcentaje,
+                'total'=>$total,
+                'descuento'=>0,
+                'metodo_pago'=>$d['metodo_pago'],
+                'fecha'=>now(),
+                'tipo_comprobante'=>$d['tipo_comprobante']??'Boleta',
+                'numero_comprobante'=>null,
+                'numero_operacion'=>$d['metodo_pago']==='Efectivo'?null:($d['numero_operacion']??null),
+                'estado'=>'Registrado'
+            ]);
+
+            // El número nace del ID real de la venta: no se repite y no depende del usuario.
+            $numero=str_pad((string)$id,6,'0',STR_PAD_LEFT);
+            $this->db->table('ventas')->where('id',$id)->update(['numero_comprobante'=>$numero]);
+
             foreach($detalle as [$p,$cant,$sub]){
-                $this->db->table('detalle_ventas')->insert(['venta_id'=>$id,'producto_id'=>$p->id,'cantidad'=>$cant,'precio_unitario'=>$p->precio_venta,'subtotal'=>$sub]);
+                $this->db->table('detalle_ventas')->insert([
+                    'venta_id'=>$id,'producto_id'=>$p->id,'cantidad'=>$cant,
+                    'precio_unitario'=>$p->precio_venta,'subtotal'=>$sub
+                ]);
                 $this->db->table('productos')->where('id',$p->id)->decrement('stock',$cant);
             }
-            return response()->json(['mensaje'=>'Venta registrada correctamente.','id_venta'=>$id,'total'=>round($total,2)],201);
+
+            return response()->json([
+                'mensaje'=>'Venta registrada correctamente.',
+                'id_venta'=>$id,
+                'numero_comprobante'=>$numero,
+                'subtotal'=>$subtotal,
+                'igv'=>$igv,
+                'total'=>$total
+            ],201);
         });
     }
 
@@ -739,13 +804,42 @@ class GymSystemAdminController extends Controller
 
     private function mapProducto($p):array
     {
-        return ['id_producto'=>(int)$p->id,'id_categoria'=>(int)$p->categoria_id,'codigo_producto'=>$p->codigo,'nombre_producto'=>$p->nombre,'descripcion'=>null,'precio_compra'=>(float)$p->precio_compra,'precio_venta'=>(float)$p->precio_venta,'stock'=>(int)$p->stock,'stock_minimo'=>5,'unidad_medida'=>'Unidad','estado'=>ucfirst((string)$p->estado),'foto'=>$p->foto,'categoria'=>['id_categoria'=>(int)$p->categoria_id,'nombre_categoria'=>$p->categoria_nombre??'']];
+        return [
+            'id_producto'=>(int)$p->id,
+            'id_categoria'=>(int)$p->categoria_id,
+            'codigo_producto'=>$p->codigo,
+            'nombre_producto'=>$p->nombre,
+            'descripcion'=>$p->descripcion??null,
+            'precio_compra'=>(float)$p->precio_compra,
+            'precio_venta'=>(float)$p->precio_venta,
+            'stock'=>(int)$p->stock,
+            'stock_minimo'=>(int)($p->stock_minimo??5),
+            'unidad_medida'=>$p->unidad_medida??'Unidad',
+            'estado'=>ucfirst((string)$p->estado),
+            'foto'=>$p->foto??null,
+            'categoria'=>['id_categoria'=>(int)$p->categoria_id,'nombre_categoria'=>$p->categoria_nombre??'']
+        ];
     }
 
     private function mapVenta($v):array
     {
         $cli=null;if($v->socio_id){$s=(object)['id'=>$v->socio_id,'nombre'=>$v->socio_nombre??'','dni'=>$v->dni??'','email'=>$v->email??null,'telefono'=>$v->telefono??null,'estado'=>$v->socio_estado??'activo','foto'=>null,'whatsapp_api_key'=>null,'fecha_registro'=>null];$cli=$this->mapSocio($s);}
-        return ['id_venta'=>(int)$v->id,'cliente'=>$cli,'tipo_comprobante'=>$v->tipo_comprobante??'Boleta','numero_comprobante'=>$v->numero_comprobante?:str_pad((string)$v->id,6,'0',STR_PAD_LEFT),'fecha_venta'=>$v->fecha,'metodo_pago'=>ucfirst((string)$v->metodo_pago),'numero_operacion'=>$v->numero_operacion??null,'total'=>(float)$v->total,'descuento'=>(float)$v->descuento,'estado'=>$v->estado??'Registrado','motivo_anulacion'=>$v->motivo_anulacion??null];
+        return [
+            'id_venta'=>(int)$v->id,
+            'cliente'=>$cli,
+            'tipo_comprobante'=>$v->tipo_comprobante??'Boleta',
+            'numero_comprobante'=>$v->numero_comprobante?:str_pad((string)$v->id,6,'0',STR_PAD_LEFT),
+            'fecha_venta'=>$v->fecha,
+            'metodo_pago'=>ucfirst((string)$v->metodo_pago),
+            'numero_operacion'=>$v->numero_operacion??null,
+            'subtotal'=>(float)($v->subtotal??0),
+            'igv'=>(float)($v->igv??0),
+            'igv_porcentaje'=>(float)($v->igv_porcentaje??18),
+            'total'=>(float)$v->total,
+            'descuento'=>(float)$v->descuento,
+            'estado'=>$v->estado??'Registrado',
+            'motivo_anulacion'=>$v->motivo_anulacion??null
+        ];
     }
 
     private function mapUsuario($u):array
@@ -756,8 +850,30 @@ class GymSystemAdminController extends Controller
 
     private function validarProducto(Request $request):array
     {
-        $d=$request->validate(['id_categoria'=>'required|integer','codigo_producto'=>'required|string|max:50','nombre_producto'=>'required|string|max:150','precio_compra'=>'required|numeric|min:0','precio_venta'=>'required|numeric|min:0','stock'=>'nullable|integer|min:0','estado'=>'nullable|string']);
-        return ['categoria_id'=>$d['id_categoria'],'codigo'=>$d['codigo_producto'],'nombre'=>$d['nombre_producto'],'precio_compra'=>$d['precio_compra'],'precio_venta'=>$d['precio_venta'],'stock'=>$d['stock']??0,'estado'=>$this->estadoDb($d['estado']??'Activo')];
+        $d=$request->validate([
+            'id_categoria'=>'required|integer',
+            'codigo_producto'=>'required|string|max:50',
+            'nombre_producto'=>'required|string|max:150',
+            'descripcion'=>'nullable|string|max:1000',
+            'precio_compra'=>'required|numeric|min:0',
+            'precio_venta'=>'required|numeric|min:0',
+            'stock'=>'nullable|integer|min:0',
+            'stock_minimo'=>'nullable|integer|min:0',
+            'unidad_medida'=>'nullable|string|max:30',
+            'estado'=>'nullable|string'
+        ]);
+        return [
+            'categoria_id'=>$d['id_categoria'],
+            'codigo'=>$d['codigo_producto'],
+            'nombre'=>$d['nombre_producto'],
+            'descripcion'=>$d['descripcion']??null,
+            'precio_compra'=>$d['precio_compra'],
+            'precio_venta'=>$d['precio_venta'],
+            'stock'=>$d['stock']??0,
+            'stock_minimo'=>$d['stock_minimo']??5,
+            'unidad_medida'=>trim((string)($d['unidad_medida']??'Unidad'))?:'Unidad',
+            'estado'=>$this->estadoDb($d['estado']??'Activo')
+        ];
     }
 
     private function resumenCaja($c):array
