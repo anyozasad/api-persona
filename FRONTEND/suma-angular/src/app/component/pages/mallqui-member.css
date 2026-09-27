@@ -16363,10 +16363,9 @@
   }
 }
 
-/* PORTAL CLIENTE V41 · RELLENA LOS ESPACIOS VACÍOS DEL HERO CON LA MISMA IMAGEN */
+/* PORTAL CLIENTE V41 · FONDO DEL HERO IGUAL A LA REFERENCIA */
 @media (min-width:1000px){
-  /* Mantiene la foto actual y usa una copia de la misma imagen detrás,
-     para que no queden zonas azul oscuro vacías a los lados. */
+  /* Una sola imagen cubre TODO el hero: izquierda, centro y derecha. */
   .member-page:has(.dashboard-showcase-v30) .showcase-hero-main{
     position:relative!important;
     overflow:hidden!important;
@@ -16374,59 +16373,47 @@
     background:#03182c!important;
   }
 
-  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main:before{
-    content:""!important;
-    display:block!important;
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main:before,
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main:after{
+    content:none!important;
+    display:none!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-photo{
     position:absolute!important;
     inset:0!important;
     z-index:0!important;
-    background-image:url('/assets/showcase/hero-showcase.svg')!important;
-    background-repeat:no-repeat!important;
-    background-size:cover!important;
-    background-position:center 48%!important;
-    opacity:.72!important;
-    filter:saturate(1.06) contrast(1.03) brightness(.70)!important;
-    transform:scale(1.015)!important;
-    pointer-events:none!important;
-  }
-
-  /* La foto principal se mantiene nítida en su posición actual. */
-  .member-page:has(.dashboard-showcase-v30) .showcase-hero-photo{
-    position:absolute!important;
-    z-index:1!important;
-    top:0!important;
-    right:0!important;
-    width:66%!important;
+    width:100%!important;
     height:100%!important;
     display:block!important;
-    object-fit:cover!important;
-    object-position:53% 48%!important;
+    object-fit:fill!important;
+    object-position:center center!important;
     opacity:1!important;
-    filter:saturate(1.10) contrast(1.04) brightness(.96)!important;
+    filter:saturate(1.08) contrast(1.04) brightness(.96)!important;
     transform:none!important;
   }
 
-  /* Degradado para que el texto de la izquierda siga leyéndose bien,
-     pero dejando visible la imagen en toda la tarjeta. */
+  /* Oscurece solo lo necesario para leer el texto,
+     dejando visible la fotografía en todo el bloque. */
   .member-page:has(.dashboard-showcase-v30) .showcase-hero-shade{
     position:absolute!important;
     inset:0!important;
-    z-index:2!important;
+    z-index:1!important;
     pointer-events:none!important;
     background:
       linear-gradient(
         90deg,
-        rgba(2,19,35,.90) 0%,
-        rgba(2,19,35,.78) 18%,
-        rgba(2,19,35,.54) 32%,
-        rgba(2,19,35,.22) 48%,
-        rgba(2,19,35,.04) 66%,
-        rgba(2,19,35,.04) 82%,
-        rgba(2,19,35,.18) 100%
+        rgba(2,18,34,.90) 0%,
+        rgba(2,18,34,.78) 18%,
+        rgba(2,18,34,.55) 31%,
+        rgba(2,18,34,.28) 43%,
+        rgba(2,18,34,.08) 58%,
+        rgba(2,18,34,.03) 76%,
+        rgba(2,18,34,.12) 100%
       ),
       linear-gradient(
         180deg,
-        rgba(1,12,23,.03) 0%,
+        rgba(1,12,23,.04) 0%,
         rgba(1,12,23,.02) 62%,
         rgba(1,12,23,.28) 100%
       )!important;
@@ -16439,12 +16426,5 @@
 
   .member-page:has(.dashboard-showcase-v30) .showcase-kpis{
     z-index:5!important;
-  }
-}
-
-@media (min-width:1550px){
-  .member-page:has(.dashboard-showcase-v30) .showcase-hero-photo{
-    width:64%!important;
-    object-position:55% 48%!important;
   }
 }
