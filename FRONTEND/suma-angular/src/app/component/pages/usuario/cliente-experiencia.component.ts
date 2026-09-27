@@ -8,7 +8,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <section class="client-extra-shell" *ngIf="!cargando; else loadingTpl">
+    <section class="client-extra-shell" [class.progress-experience-v34]="modulo==='progreso'" *ngIf="!cargando; else loadingTpl">
       <div *ngIf="error" class="client-extra-alert error">{{error}}</div>
       <div *ngIf="toast" class="client-extra-alert ok">{{toast}}</div>
 
