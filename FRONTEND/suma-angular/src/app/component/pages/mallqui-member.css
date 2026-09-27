@@ -17070,249 +17070,351 @@
   }
 }
 
-/* PORTAL CLIENTE V53 · MEJORA VISUAL SIN MOVER EL DISEÑO */
+/* PORTAL CLIENTE V55 · PALETA PREMIUM EN ZONAS MARCADAS · SIN MOVER LAYOUT */
 @media (min-width:1000px){
 
-  /* IMPORTANTE:
-     Este bloque mejora SOLO apariencia.
-     No modifica grid, tamaños, alturas, posiciones, margins ni paddings base. */
-
-  /* HERO */
-  .member-page .dashboard-showcase-v30 .showcase-hero-main{
-    box-shadow:
-      0 20px 44px rgba(0,0,0,.22),
-      inset 0 1px 0 rgba(255,255,255,.03)!important;
-  }
-
-  .member-page .dashboard-showcase-v30 .showcase-hero-shade{
-    background:
-      radial-gradient(circle at 78% 22%,rgba(255,42,72,.07),transparent 24%),
-      linear-gradient(
-        90deg,
-        rgba(2,18,34,.87) 0%,
-        rgba(2,18,34,.70) 18%,
-        rgba(2,18,34,.40) 30%,
-        rgba(2,18,34,.13) 43%,
-        rgba(2,18,34,0) 58%,
-        rgba(2,18,34,.02) 100%
-      )!important;
-  }
-
-  .member-page .dashboard-showcase-v30 .showcase-eyebrow{
-    text-shadow:0 0 18px rgba(255,39,72,.18)!important;
-  }
-
-  .member-page .dashboard-showcase-v30 .showcase-btn-primary{
-    background:linear-gradient(135deg,#ff3855 0%,#ff284a 58%,#ed1738 100%)!important;
-    box-shadow:
-      0 12px 25px rgba(255,39,72,.25),
-      inset 0 1px 0 rgba(255,255,255,.18)!important;
-  }
-
-  .member-page .dashboard-showcase-v30 .showcase-btn-secondary{
-    background:linear-gradient(180deg,rgba(11,49,81,.88),rgba(6,37,63,.88))!important;
-    border-color:rgba(133,176,208,.34)!important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.03)!important;
-  }
-
-  .member-page .dashboard-showcase-v30 .showcase-btn,
-  .member-page .dashboard-showcase-v30 .showcase-kpi,
-  .member-page .dashboard-showcase-v30 .showcase-coach-tools button,
-  .member-page .dashboard-showcase-v30 .showcase-coach-start,
-  .member-page .dashboard-showcase-v30 .membership-actions button,
-  .member-page .dashboard-showcase-v30 .showcase-card-head button,
-  .member-page .dashboard-showcase-v30 .showcase-quick-grid button,
-  .member-page .dashboard-showcase-v30 .showcase-profile-card>button{
-    transition:
-      transform .18s ease,
-      box-shadow .18s ease,
-      filter .18s ease,
-      border-color .18s ease!important;
-  }
-
-  .member-page .dashboard-showcase-v30 .showcase-btn:hover,
-  .member-page .dashboard-showcase-v30 .showcase-kpi:hover,
-  .member-page .dashboard-showcase-v30 .showcase-coach-tools button:hover,
-  .member-page .dashboard-showcase-v30 .membership-actions button:hover,
-  .member-page .dashboard-showcase-v30 .showcase-quick-grid button:hover{
-    transform:translateY(-2px)!important;
-    filter:brightness(1.045)!important;
-  }
-
-  /* KPI: SOLO ACABADO */
+  /* KPI superiores */
   .member-page .dashboard-showcase-v30 .showcase-kpi{
+    position:relative!important;
+    overflow:hidden!important;
+    border-radius:18px!important;
+    border:1px solid rgba(124,168,201,.32)!important;
     background:
-      linear-gradient(145deg,rgba(10,48,79,.93),rgba(5,33,57,.94))!important;
-    border-color:rgba(118,164,199,.34)!important;
+      radial-gradient(circle at 86% 10%,rgba(255,255,255,.055),transparent 28%),
+      linear-gradient(135deg,rgba(9,48,80,.97) 0%,rgba(4,29,52,.97) 100%)!important;
     box-shadow:
-      0 10px 23px rgba(0,0,0,.20),
-      inset 0 1px 0 rgba(255,255,255,.035)!important;
-    backdrop-filter:blur(10px)!important;
-    -webkit-backdrop-filter:blur(10px)!important;
+      0 14px 28px rgba(0,0,0,.22),
+      inset 0 1px 0 rgba(255,255,255,.045)!important;
+    backdrop-filter:blur(11px)!important;
+    -webkit-backdrop-filter:blur(11px)!important;
+    transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,filter .18s ease!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi::after{
+    content:""!important;
+    position:absolute!important;
+    left:0!important;
+    top:12px!important;
+    bottom:12px!important;
+    width:4px!important;
+    border-radius:0 6px 6px 0!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .kpi-red::after{
+    background:linear-gradient(180deg,#ff3157,#ff6680)!important;
+    box-shadow:0 0 16px rgba(255,49,87,.42)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .kpi-orange::after{
+    background:linear-gradient(180deg,#ffa326,#ffd05a)!important;
+    box-shadow:0 0 16px rgba(255,163,38,.34)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .kpi-purple::after{
+    background:linear-gradient(180deg,#8d63ff,#b38cff)!important;
+    box-shadow:0 0 16px rgba(141,99,255,.36)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .kpi-green::after{
+    background:linear-gradient(180deg,#18e4a0,#55ffc3)!important;
+    box-shadow:0 0 16px rgba(24,228,160,.36)!important;
   }
 
   .member-page .dashboard-showcase-v30 .showcase-kpi:hover{
-    border-color:rgba(151,192,222,.48)!important;
+    transform:translateY(-3px)!important;
+    filter:brightness(1.04)!important;
+    border-color:rgba(160,198,226,.48)!important;
     box-shadow:
-      0 15px 30px rgba(0,0,0,.24),
-      inset 0 1px 0 rgba(255,255,255,.045)!important;
-  }
-
-  .member-page .dashboard-showcase-v30 .kpi-red{
-    box-shadow:
-      inset 3px 0 0 rgba(255,39,72,.95),
-      0 10px 23px rgba(0,0,0,.20)!important;
-  }
-
-  .member-page .dashboard-showcase-v30 .kpi-orange{
-    box-shadow:
-      inset 3px 0 0 rgba(255,157,36,.95),
-      0 10px 23px rgba(0,0,0,.20)!important;
-  }
-
-  .member-page .dashboard-showcase-v30 .kpi-purple{
-    box-shadow:
-      inset 3px 0 0 rgba(139,92,246,.95),
-      0 10px 23px rgba(0,0,0,.20)!important;
-  }
-
-  .member-page .dashboard-showcase-v30 .kpi-green{
-    box-shadow:
-      inset 3px 0 0 rgba(32,227,163,.95),
-      0 10px 23px rgba(0,0,0,.20)!important;
+      0 20px 34px rgba(0,0,0,.26),
+      inset 0 1px 0 rgba(255,255,255,.055)!important;
   }
 
   .member-page .dashboard-showcase-v30 .showcase-kpi>i{
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,.05),
-      0 8px 18px rgba(0,0,0,.12)!important;
+      inset 0 1px 0 rgba(255,255,255,.06),
+      0 9px 19px rgba(0,0,0,.15)!important;
   }
 
-  /* ENTRENADOR */
+  .member-page .dashboard-showcase-v30 .kpi-red>i{
+    background:linear-gradient(180deg,rgba(255,49,87,.18),rgba(255,49,87,.08))!important;
+    border-color:rgba(255,68,101,.46)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .kpi-orange>i{
+    background:linear-gradient(180deg,rgba(255,163,38,.18),rgba(255,163,38,.08))!important;
+    border-color:rgba(255,177,67,.42)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .kpi-purple>i{
+    background:linear-gradient(180deg,rgba(141,99,255,.19),rgba(141,99,255,.08))!important;
+    border-color:rgba(157,117,255,.44)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .kpi-green>i{
+    background:linear-gradient(180deg,rgba(24,228,160,.18),rgba(24,228,160,.08))!important;
+    border-color:rgba(60,236,176,.44)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi>span small{
+    color:#edf6fb!important;
+    font-weight:800!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi>span b{
+    color:#fff!important;
+    text-shadow:0 3px 12px rgba(0,0,0,.18)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi>span em{
+    color:#c4d4df!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi mark{
+    border-radius:11px!important;
+    background:rgba(13,139,108,.24)!important;
+    border:1px solid rgba(43,228,166,.19)!important;
+    color:#55f2bd!important;
+    box-shadow:0 0 14px rgba(32,227,163,.08)!important;
+  }
+
+  /* Mi entrenador */
   .member-page .dashboard-showcase-v30 .showcase-coach-panel{
+    position:relative!important;
+    overflow:hidden!important;
+    border-radius:22px!important;
+    border:1px solid rgba(104,158,198,.36)!important;
     background:
-      radial-gradient(circle at 88% 4%,rgba(40,116,169,.20),transparent 28%),
-      linear-gradient(180deg,#0a3153 0%,#082a49 100%)!important;
-    border-color:rgba(112,160,197,.34)!important;
+      radial-gradient(circle at 88% 10%,rgba(33,122,188,.23),transparent 28%),
+      radial-gradient(circle at 8% 105%,rgba(255,42,72,.11),transparent 31%),
+      linear-gradient(180deg,#0b3559 0%,#082a49 52%,#061f37 100%)!important;
     box-shadow:
-      0 18px 38px rgba(0,0,0,.20),
-      inset 0 1px 0 rgba(255,255,255,.03)!important;
+      0 20px 44px rgba(0,0,0,.24),
+      inset 0 1px 0 rgba(255,255,255,.035)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-coach-panel::before{
+    content:""!important;
+    position:absolute!important;
+    left:0!important;
+    right:0!important;
+    top:0!important;
+    height:3px!important;
+    background:linear-gradient(90deg,transparent,#ff3556 18%,#ff3556 82%,transparent)!important;
+    opacity:.9!important;
+    pointer-events:none!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-coach-head{
+    border-bottom-color:rgba(132,176,207,.17)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-coach-head>span{
+    background:rgba(19,185,132,.15)!important;
+    border:1px solid rgba(42,227,161,.22)!important;
+    border-radius:999px!important;
+    color:#57f2bf!important;
+    box-shadow:0 0 17px rgba(20,190,135,.09)!important;
   }
 
   .member-page .dashboard-showcase-v30 .showcase-coach-profile img{
     box-shadow:
-      0 0 0 4px rgba(255,39,72,.08),
-      0 9px 20px rgba(0,0,0,.22)!important;
+      0 0 0 4px rgba(255,44,79,.09),
+      0 12px 24px rgba(0,0,0,.25)!important;
   }
 
   .member-page .dashboard-showcase-v30 .showcase-coach-tools button{
-    background:linear-gradient(180deg,rgba(11,54,90,.90),rgba(7,43,73,.90))!important;
-    border-color:rgba(125,169,201,.29)!important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+    border-radius:15px!important;
+    border-color:rgba(121,167,199,.30)!important;
+    background:
+      radial-gradient(circle at 50% 0,rgba(51,119,167,.08),transparent 44%),
+      linear-gradient(180deg,rgba(11,58,96,.94),rgba(7,43,73,.94))!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.035),
+      0 10px 20px rgba(0,0,0,.13)!important;
+    transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,filter .18s ease!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-coach-tools button:hover{
+    transform:translateY(-3px)!important;
+    filter:brightness(1.05)!important;
+    border-color:rgba(161,198,225,.44)!important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.045),
+      0 15px 26px rgba(0,0,0,.19)!important;
   }
 
   .member-page .dashboard-showcase-v30 .showcase-coach-start{
-    background:linear-gradient(135deg,#ff3b56,#ff2748 58%,#eb1838)!important;
+    border-radius:15px!important;
+    background:linear-gradient(135deg,#ff3c58 0%,#ff2648 58%,#e91639 100%)!important;
     box-shadow:
-      0 12px 27px rgba(255,39,72,.25),
-      inset 0 1px 0 rgba(255,255,255,.18)!important;
+      0 14px 29px rgba(255,39,72,.29),
+      inset 0 1px 0 rgba(255,255,255,.19)!important;
   }
 
-  /* MEMBRESÍA: MISMA POSICIÓN, MÁS PROFUNDIDAD */
+  .member-page .dashboard-showcase-v30 .showcase-coach-start:hover{
+    transform:translateY(-2px)!important;
+    filter:brightness(1.04)!important;
+  }
+
+  /* Plan mensual */
   .member-page .dashboard-showcase-v30 .showcase-membership-card{
+    position:relative!important;
+    overflow:hidden!important;
+    border-radius:20px!important;
+    border-color:rgba(255,78,109,.72)!important;
     background:
-      radial-gradient(circle at 10% 44%,rgba(255,93,116,.20),transparent 27%),
-      linear-gradient(123deg,#a31437 0%,#83102f 48%,#53091f 100%)!important;
-    border-color:rgba(255,76,107,.70)!important;
+      radial-gradient(circle at 10% 40%,rgba(255,100,122,.21),transparent 28%),
+      linear-gradient(125deg,#a7153a 0%,#871130 48%,#52091f 100%)!important;
     box-shadow:
-      0 16px 34px rgba(61,3,20,.27),
+      0 18px 36px rgba(61,3,20,.30),
       inset 0 1px 0 rgba(255,255,255,.035)!important;
   }
 
+  .member-page .dashboard-showcase-v30 .showcase-membership-card::before{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    pointer-events:none!important;
+    background:
+      linear-gradient(120deg,rgba(255,255,255,.035) 0 44%,transparent 44%),
+      linear-gradient(120deg,transparent 0 43%,rgba(70,5,28,.20) 43.5% 100%)!important;
+  }
+
   .member-page .dashboard-showcase-v30 .membership-icon{
-    background:linear-gradient(180deg,rgba(97,4,34,.64),rgba(72,2,26,.70))!important;
+    background:linear-gradient(180deg,rgba(101,4,35,.68),rgba(72,2,26,.73))!important;
     box-shadow:
       inset 0 1px 0 rgba(255,255,255,.035),
-      0 9px 19px rgba(50,0,18,.22)!important;
+      0 10px 20px rgba(50,0,18,.23)!important;
   }
 
   .member-page .dashboard-showcase-v30 .membership-actions>span{
+    background:rgba(19,184,131,.18)!important;
+    border-color:rgba(52,233,166,.36)!important;
+    color:#d7fff0!important;
     box-shadow:
-      0 0 0 1px rgba(40,229,163,.08),
+      0 0 0 1px rgba(40,229,163,.06),
       0 0 18px rgba(31,226,157,.07)!important;
   }
 
   .member-page .dashboard-showcase-v30 .membership-actions button{
-    background:linear-gradient(180deg,rgba(126,6,41,.35),rgba(94,3,32,.35))!important;
+    background:linear-gradient(180deg,rgba(133,8,45,.40),rgba(94,3,32,.38))!important;
+    border-color:rgba(255,82,113,.45)!important;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
   }
 
-  /* CLASE Y PROGRESO */
-  .member-page .dashboard-showcase-v30 .showcase-class-card,
-  .member-page .dashboard-showcase-v30 .showcase-progress-card{
-    background:
-      radial-gradient(circle at 94% 2%,rgba(38,112,167,.13),transparent 26%),
-      linear-gradient(180deg,#0a3153 0%,#082a49 100%)!important;
-    border-color:rgba(111,158,194,.30)!important;
-    box-shadow:
-      0 15px 31px rgba(0,0,0,.18),
-      inset 0 1px 0 rgba(255,255,255,.025)!important;
+  .member-page .dashboard-showcase-v30 .membership-actions button:hover{
+    transform:translateY(-2px)!important;
+    filter:brightness(1.07)!important;
   }
 
-  .member-page .dashboard-showcase-v30 .showcase-card-head{
-    border-bottom-color:rgba(129,169,200,.16)!important;
+  /* Próxima clase */
+  .member-page .dashboard-showcase-v30 .showcase-class-card{
+    position:relative!important;
+    overflow:hidden!important;
+    border-radius:20px!important;
+    border-color:rgba(111,158,194,.33)!important;
+    background:
+      radial-gradient(circle at 95% 8%,rgba(25,140,217,.15),transparent 27%),
+      linear-gradient(180deg,#0b365b 0%,#082a49 100%)!important;
+    box-shadow:
+      0 18px 35px rgba(0,0,0,.21),
+      inset 0 1px 0 rgba(255,255,255,.035)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-class-card::before{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    pointer-events:none!important;
+    background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 38%)!important;
   }
 
   .member-page .dashboard-showcase-v30 .showcase-class-content>img{
-    filter:saturate(1.08) contrast(1.03)!important;
-    box-shadow:0 8px 19px rgba(0,0,0,.19)!important;
+    border-radius:12px!important;
+    border:1px solid rgba(255,255,255,.07)!important;
+    filter:saturate(1.12) contrast(1.05)!important;
+    box-shadow:0 9px 20px rgba(0,0,0,.21)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-class-meta p{
+    background:rgba(255,255,255,.045)!important;
+    border-color:rgba(255,255,255,.055)!important;
+    border-radius:8px!important;
+    color:#e1edf5!important;
+  }
+
+  /* Progreso mensual */
+  .member-page .dashboard-showcase-v30 .showcase-progress-card{
+    position:relative!important;
+    overflow:hidden!important;
+    border-radius:20px!important;
+    border-color:rgba(111,158,194,.33)!important;
+    background:
+      radial-gradient(circle at 90% 10%,rgba(0,203,255,.12),transparent 27%),
+      linear-gradient(180deg,#0b365b 0%,#082a49 100%)!important;
+    box-shadow:
+      0 18px 35px rgba(0,0,0,.21),
+      inset 0 1px 0 rgba(255,255,255,.035)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-progress-card::before{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    pointer-events:none!important;
+    background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 38%)!important;
   }
 
   .member-page .dashboard-showcase-v30 .showcase-progress-ring{
-    filter:drop-shadow(0 8px 14px rgba(0,0,0,.20))!important;
+    filter:drop-shadow(0 9px 15px rgba(0,0,0,.21))!important;
   }
 
-  /* ACCESOS RÁPIDOS */
-  .member-page .dashboard-showcase-v30 .showcase-quick-card{
-    background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%)!important;
-    border-color:rgba(204,219,232,.82)!important;
+  .member-page .dashboard-showcase-v30 .showcase-progress-ring>div{
+    background:radial-gradient(circle at 50% 30%,#0c375c,#082846 74%)!important;
     box-shadow:
-      0 16px 34px rgba(8,29,47,.12),
-      inset 0 1px 0 rgba(255,255,255,.95)!important;
+      inset 0 1px 0 rgba(255,255,255,.035),
+      0 4px 12px rgba(0,0,0,.15)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-card-head{
+    border-bottom-color:rgba(129,169,200,.17)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-card-head>button{
+    color:#ff4965!important;
+    text-shadow:0 0 12px rgba(255,73,101,.08)!important;
+  }
+
+  /* Sin mover, solo pulido en tarjetas blancas */
+  .member-page .dashboard-showcase-v30 .showcase-quick-card,
+  .member-page .dashboard-showcase-v30 .showcase-profile-card{
+    border-radius:22px!important;
+    border-color:rgba(205,220,232,.82)!important;
+    background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%)!important;
+    box-shadow:
+      0 18px 38px rgba(8,29,47,.12),
+      inset 0 1px 0 rgba(255,255,255,.96)!important;
   }
 
   .member-page .dashboard-showcase-v30 .showcase-quick-grid button{
+    border-radius:14px!important;
     box-shadow:
-      0 6px 14px rgba(18,42,63,.05),
+      0 7px 15px rgba(18,42,63,.05),
       inset 0 1px 0 rgba(255,255,255,.84)!important;
+    transition:transform .18s ease,box-shadow .18s ease,filter .18s ease!important;
   }
 
   .member-page .dashboard-showcase-v30 .showcase-quick-grid button:hover{
+    transform:translateY(-3px)!important;
+    filter:brightness(1.02)!important;
     box-shadow:
-      0 11px 22px rgba(18,42,63,.10),
+      0 14px 24px rgba(18,42,63,.10),
       inset 0 1px 0 rgba(255,255,255,.90)!important;
-  }
-
-  /* PERFIL */
-  .member-page .dashboard-showcase-v30 .showcase-profile-card{
-    background:
-      radial-gradient(circle at 6% 50%,rgba(255,45,78,.05),transparent 28%),
-      linear-gradient(180deg,#ffffff,#fbfdff)!important;
-    border-color:rgba(205,220,232,.82)!important;
-    box-shadow:
-      0 16px 34px rgba(8,29,47,.12),
-      inset 0 1px 0 rgba(255,255,255,.96)!important;
   }
 
   .member-page .dashboard-showcase-v30 .showcase-profile-card>button{
     background:linear-gradient(135deg,#ff3653,#f32143)!important;
-    box-shadow:0 10px 24px rgba(255,39,72,.18)!important;
-  }
-
-  /* ACCESIBILIDAD Y PULIDO */
-  .member-page .dashboard-showcase-v30 button:focus-visible{
-    outline:2px solid rgba(255,255,255,.92)!important;
-    outline-offset:2px!important;
+    box-shadow:0 12px 26px rgba(255,39,72,.18)!important;
   }
 }
 
