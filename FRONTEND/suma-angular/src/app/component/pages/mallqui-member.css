@@ -19946,3 +19946,300 @@
     border-color:rgba(200,222,237,.20)!important;
   }
 }
+
+
+/* PORTAL CLIENTE V71 · ORDENA PLANIFICACION Y AGENDA DE ENTRENAR */
+@media (min-width:1000px){
+
+  /* La agenda vertical estaba haciendo crecer toda la fila y dejaba
+     un hueco enorme debajo de Configura tu entrenamiento. */
+  .module-training-v34 .home-plan-layout{
+    display:grid!important;
+    grid-template-columns:minmax(0,1.62fr) minmax(350px,.72fr)!important;
+    gap:16px!important;
+    align-items:stretch!important;
+    margin:0!important;
+  }
+
+  .module-training-v34 .home-plan-card,
+  .module-training-v34 .home-week-card{
+    height:100%!important;
+    min-height:0!important;
+    align-self:stretch!important;
+    padding:22px!important;
+  }
+
+  /* Más jerarquía: los textos ya no quedan diminutos. */
+  .module-training-v34 .home-plan-card .card-title-block>span,
+  .module-training-v34 .home-week-card .card-title-block>span{
+    font-size:9px!important;
+    letter-spacing:1.1px!important;
+  }
+
+  .module-training-v34 .home-plan-card .card-title-block h2,
+  .module-training-v34 .home-week-card .card-title-block h2{
+    margin:5px 0 5px!important;
+    font-size:20px!important;
+    line-height:1.08!important;
+  }
+
+  .module-training-v34 .home-plan-card .card-title-block p,
+  .module-training-v34 .home-week-card .card-title-block p{
+    font-size:10px!important;
+    line-height:1.5!important;
+  }
+
+  /* Objetivos más compactos para que la tarjeta izquierda no se desborde. */
+  .module-training-v34 .home-goal-selector{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:9px!important;
+    margin:15px 0 12px!important;
+  }
+
+  .module-training-v34 .home-goal-selector button{
+    min-height:76px!important;
+    padding:10px!important;
+    grid-template-columns:36px minmax(0,1fr) 20px!important;
+    gap:8px!important;
+    border-radius:13px!important;
+  }
+
+  .module-training-v34 .home-goal-selector button>span{
+    width:34px!important;
+    height:34px!important;
+    font-size:14px!important;
+    border-radius:10px!important;
+  }
+
+  .module-training-v34 .home-goal-selector button b{
+    font-size:10px!important;
+    line-height:1.1!important;
+  }
+
+  .module-training-v34 .home-goal-selector button small{
+    margin-top:3px!important;
+    font-size:8px!important;
+    line-height:1.35!important;
+  }
+
+  /* Días: una sola línea, limpia y equilibrada. */
+  .module-training-v34 .home-days-selector{
+    display:grid!important;
+    grid-template-columns:repeat(7,minmax(0,1fr))!important;
+    gap:7px!important;
+    margin-top:12px!important;
+  }
+
+  .module-training-v34 .home-days-selector button{
+    min-height:50px!important;
+    padding:7px 4px!important;
+    border-radius:11px!important;
+  }
+
+  .module-training-v34 .home-days-selector button b{
+    font-size:9px!important;
+  }
+
+  .module-training-v34 .home-days-selector button small{
+    margin-top:2px!important;
+    font-size:7px!important;
+  }
+
+  .module-training-v34 .home-plan-zones{
+    margin-top:12px!important;
+    padding-top:10px!important;
+  }
+
+  .module-training-v34 .home-plan-zones>span{
+    display:block!important;
+    margin-bottom:8px!important;
+    font-size:8px!important;
+  }
+
+  .module-training-v34 .home-plan-zones>div{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:6px!important;
+  }
+
+  .module-training-v34 .home-plan-zones>div button{
+    min-height:32px!important;
+    padding:0 10px!important;
+    border-radius:999px!important;
+    font-size:8px!important;
+  }
+
+  .module-training-v34 .home-save-plan{
+    width:100%!important;
+    min-height:42px!important;
+    height:42px!important;
+    margin-top:12px!important;
+    border-radius:12px!important;
+    font-size:9px!important;
+  }
+
+  /* ===== AGENDA COMPACTA =====
+     7 filas verticales -> mini tarjetas en 2 columnas.
+     Así ambas columnas terminan casi a la misma altura. */
+  .module-training-v34 .home-week-list{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:8px!important;
+    margin-top:14px!important;
+  }
+
+  .module-training-v34 .home-week-list>div{
+    min-height:58px!important;
+    display:grid!important;
+    grid-template-columns:38px minmax(0,1fr)!important;
+    gap:8px!important;
+    align-items:center!important;
+    padding:8px!important;
+    border-radius:12px!important;
+  }
+
+  .module-training-v34 .home-week-list>div:nth-child(7){
+    grid-column:1 / -1!important;
+  }
+
+  .module-training-v34 .home-week-list .week-day{
+    width:36px!important;
+    height:36px!important;
+    display:grid!important;
+    place-items:center!important;
+    border-radius:10px!important;
+    font-size:8px!important;
+  }
+
+  .module-training-v34 .home-week-list>div>div{
+    min-width:0!important;
+  }
+
+  .module-training-v34 .home-week-list b{
+    display:block!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    font-size:9px!important;
+    line-height:1.15!important;
+  }
+
+  .module-training-v34 .home-week-list small{
+    display:block!important;
+    margin-top:3px!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    font-size:7px!important;
+  }
+
+  .module-training-v34 .home-week-list em{
+    position:absolute!important;
+    top:6px!important;
+    right:7px!important;
+    padding:3px 5px!important;
+    border-radius:999px!important;
+    font-size:6px!important;
+  }
+
+  .module-training-v34 .home-week-list>div{
+    position:relative!important;
+  }
+
+  /* El selector muscular empieza enseguida; elimina el vacío visual. */
+  .module-training-v34 .home-workout-picker{
+    margin-top:0!important;
+    gap:14px!important;
+  }
+
+  .module-training-v34 .home-picker-head{
+    padding:16px 18px!important;
+    border-radius:16px!important;
+  }
+
+  .module-training-v34 .home-picker-head h2{
+    margin:4px 0!important;
+    font-size:21px!important;
+  }
+
+  .module-training-v34 .home-picker-head p{
+    font-size:10px!important;
+  }
+
+  .module-training-v34 .home-picker-summary{
+    min-width:105px!important;
+    padding:10px 12px!important;
+  }
+
+  .module-training-v34 .home-picker-summary b{
+    font-size:20px!important;
+  }
+
+  /* Zonas en 3 columnas uniformes, sin tarjeta perdida al final. */
+  .module-training-v34 .muscle-area-grid{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+
+  .module-training-v34 .muscle-area-grid button{
+    min-height:92px!important;
+    padding:11px!important;
+    display:grid!important;
+    grid-template-columns:38px minmax(0,1fr) auto!important;
+    gap:9px!important;
+    align-items:center!important;
+    border-radius:14px!important;
+  }
+
+  .module-training-v34 .muscle-area-grid button>span{
+    width:36px!important;
+    height:36px!important;
+    border-radius:11px!important;
+    font-size:14px!important;
+  }
+
+  .module-training-v34 .muscle-area-grid button small{
+    font-size:7px!important;
+  }
+
+  .module-training-v34 .muscle-area-grid button h3{
+    margin:2px 0!important;
+    font-size:12px!important;
+  }
+
+  .module-training-v34 .muscle-area-grid button p{
+    margin:0!important;
+    font-size:8px!important;
+    line-height:1.35!important;
+  }
+
+  .module-training-v34 .muscle-area-grid button em{
+    align-self:end!important;
+    font-size:7px!important;
+    white-space:nowrap!important;
+  }
+
+  .module-training-v34 .muscle-area-grid button:nth-child(7){
+    grid-column:1 / 2!important;
+  }
+}
+
+@media (min-width:1000px) and (max-width:1280px){
+  .module-training-v34 .home-plan-layout{
+    grid-template-columns:minmax(0,1.45fr) minmax(320px,.72fr)!important;
+  }
+
+  .module-training-v34 .home-week-list{
+    grid-template-columns:1fr!important;
+  }
+
+  .module-training-v34 .home-week-list>div:nth-child(7){
+    grid-column:auto!important;
+  }
+
+  .module-training-v34 .muscle-area-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
