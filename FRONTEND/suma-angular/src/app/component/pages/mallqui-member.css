@@ -15994,3 +15994,143 @@
     background-position:center center!important;
   }
 }
+
+
+/* PORTAL CLIENTE V39 · FOTO NATURAL SIN ESTIRAR */
+@media (min-width:1000px){
+  /* Solución final del hero:
+     - una copia suave llena el ambiente;
+     - otra copia nítida mantiene la proporción real del atleta.
+     Así la foto NO se estira a todo el ancho ni agranda la cara. */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main{
+    position:relative!important;
+    overflow:hidden!important;
+    isolation:isolate!important;
+    background:
+      linear-gradient(90deg,#03192e 0%,#031b31 48%,#052641 100%)!important;
+  }
+
+  /* Ambiente de gimnasio a todo el ancho, muy oscuro y suave. */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main:before{
+    content:""!important;
+    position:absolute!important;
+    inset:-2.2%!important;
+    z-index:0!important;
+    width:auto!important;
+    height:auto!important;
+    background-image:url('/assets/showcase/hero-showcase.svg')!important;
+    background-repeat:no-repeat!important;
+    background-size:cover!important;
+    background-position:58% 48%!important;
+    opacity:.43!important;
+    filter:blur(2.4px) saturate(.92) brightness(.68)!important;
+    transform:scale(1.025)!important;
+    -webkit-mask-image:none!important;
+    mask-image:none!important;
+  }
+
+  /* Copia nítida del atleta: conserva su proporción natural y queda a la derecha. */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main:after{
+    content:""!important;
+    position:absolute!important;
+    z-index:1!important;
+    top:0!important;
+    right:0!important;
+    bottom:0!important;
+    width:67%!important;
+    background-image:url('/assets/showcase/hero-showcase.svg')!important;
+    background-repeat:no-repeat!important;
+    background-size:auto 108%!important;
+    background-position:72% 48%!important;
+    opacity:1!important;
+    filter:saturate(1.08) contrast(1.04) brightness(.96)!important;
+    pointer-events:none!important;
+    -webkit-mask-image:linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0,0,0,.16) 8%,
+      rgba(0,0,0,.58) 20%,
+      #000 36%,
+      #000 100%
+    )!important;
+    mask-image:linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0,0,0,.16) 8%,
+      rgba(0,0,0,.58) 20%,
+      #000 36%,
+      #000 100%
+    )!important;
+  }
+
+  /* Degradado de lectura parecido al mockup bonito, sin tapar al atleta. */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-shade{
+    z-index:2!important;
+    background:
+      linear-gradient(
+        90deg,
+        rgba(2,19,35,.98) 0%,
+        rgba(2,19,35,.95) 18%,
+        rgba(2,19,35,.82) 32%,
+        rgba(2,19,35,.44) 46%,
+        rgba(2,19,35,.08) 61%,
+        rgba(2,19,35,0) 74%,
+        rgba(2,19,35,.08) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(1,12,23,.05) 0%,
+        rgba(1,12,23,.02) 60%,
+        rgba(1,12,23,.36) 100%
+      )!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-copy,
+  .member-page:has(.dashboard-showcase-v30) .showcase-quote,
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpis{
+    z-index:4!important;
+  }
+
+  /* Da más aire al bloque, como en la referencia. */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main,
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-panel{
+    min-height:43.8dvh!important;
+    height:43.8dvh!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-copy{
+    width:45%!important;
+    padding-top:4.6dvh!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-copy h1{
+    max-width:34vw!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-copy>p{
+    max-width:28vw!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-quote{
+    right:1.8vw!important;
+    top:6.7dvh!important;
+  }
+
+  /* KPI semitransparent para que se note que flotan sobre la fotografía. */
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi{
+    background:rgba(3,31,55,.82)!important;
+    border-color:rgba(116,164,201,.32)!important;
+    backdrop-filter:blur(10px)!important;
+    -webkit-backdrop-filter:blur(10px)!important;
+  }
+}
+
+/* El zoom del navegador puede cambiar el viewport CSS; esta regla mantiene
+   el atleta proporcionado en pantallas muy anchas. */
+@media (min-width:1700px){
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main:after{
+    width:64%!important;
+    background-size:auto 104%!important;
+    background-position:74% 48%!important;
+  }
+}
