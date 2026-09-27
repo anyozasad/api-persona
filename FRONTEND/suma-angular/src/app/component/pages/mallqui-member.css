@@ -13246,3 +13246,347 @@
     width:auto!important;
   }
 }
+
+
+/* PORTAL CLIENTE V32 · MATCH FINAL REFERENCIA */
+
+/* Inicio: fondo general igual al mockup */
+.member-page:has(.dashboard-showcase-v30){
+  background:#06182b!important;
+}
+
+/* Cabecera limpia: sin caja redondeada alrededor de toda la fila */
+.member-topbar{
+  padding:6px 0 7px!important;
+  background:linear-gradient(100deg,#06182c 0%,#082744 58%,#06182d 100%)!important;
+  box-shadow:none!important;
+}
+.member-top-row{
+  width:min(1580px,calc(100% - 30px))!important;
+  min-height:72px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  grid-template-columns:300px minmax(0,1fr) auto!important;
+  gap:14px!important;
+}
+.member-brand{
+  padding:0 2px!important;
+}
+.member-brand img{
+  width:66px!important;
+  height:66px!important;
+}
+.member-brand b{
+  font-size:17px!important;
+  letter-spacing:.5px!important;
+}
+.member-brand b strong{
+  color:#ff2f49!important;
+  font-weight:950!important;
+}
+.member-brand small{
+  font-size:9.5px!important;
+  color:#c4d1dc!important;
+}
+.member-nav-primary{
+  gap:10px!important;
+}
+.member-nav-primary button{
+  min-height:52px!important;
+  padding:0 15px!important;
+  border-radius:12px!important;
+  font-size:11.5px!important;
+}
+.member-nav-primary button i{
+  width:31px!important;
+  height:31px!important;
+  font-size:14px!important;
+}
+.member-nav-primary button.active{
+  box-shadow:0 0 0 3px rgba(255,45,71,.17),0 10px 24px rgba(239,35,60,.30)!important;
+}
+.member-system-status{
+  min-height:44px!important;
+  padding:0 14px!important;
+  border-radius:11px!important;
+}
+.member-system-status>span{font-size:10px!important}
+.member-alert-button{
+  width:44px!important;
+  height:44px!important;
+}
+.member-mini-profile{
+  min-width:158px!important;
+  min-height:44px!important;
+}
+.member-logout{
+  min-width:84px!important;
+  height:44px!important;
+  border-color:rgba(239,35,60,.50)!important;
+  background:transparent!important;
+  color:#ff6377!important;
+}
+
+/* Segunda navegación: blanca, compacta y alineada */
+.member-subnav{
+  width:min(1592px,calc(100% - 26px))!important;
+  min-height:52px!important;
+  margin:5px auto 0!important;
+  padding:5px 10px!important;
+  border-radius:13px!important;
+  background:#fff!important;
+  box-shadow:0 7px 18px rgba(2,18,34,.13)!important;
+}
+.member-subnav-scroll{
+  gap:8px!important;
+}
+.member-subnav-scroll button{
+  min-height:40px!important;
+  padding:0 14px!important;
+  border-radius:10px!important;
+  font-size:10.5px!important;
+}
+.member-page:has(.dashboard-showcase-v30) .member-subnav-scroll button:first-child{
+  background:#fff0f3!important;
+  color:#ef233c!important;
+  border-color:#f4cbd2!important;
+}
+
+/* Dashboard: misma escala del diseño de referencia */
+.member-page:has(.dashboard-showcase-v30) .member-main{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:14px 20px 28px!important;
+  box-sizing:border-box!important;
+}
+.dashboard-showcase-v30{
+  width:100%!important;
+  max-width:1600px!important;
+  margin:0 auto!important;
+  padding:0!important;
+  gap:10px!important;
+  background:transparent!important;
+}
+
+/* Hero + entrenador: altura exacta y sin estiramiento accidental */
+.showcase-hero-grid{
+  grid-template-columns:minmax(0,3.02fr) minmax(320px,.92fr)!important;
+  gap:11px!important;
+}
+.showcase-hero-main,
+.showcase-coach-panel{
+  height:405px!important;
+  min-height:405px!important;
+  box-sizing:border-box!important;
+}
+.showcase-hero-main{
+  border-radius:17px!important;
+  overflow:hidden!important;
+  background:linear-gradient(115deg,#04172b 0%,#06213a 47%,#072744 100%)!important;
+}
+.showcase-hero-main:before{
+  content:''!important;
+  position:absolute!important;
+  top:0!important;
+  right:0!important;
+  bottom:0!important;
+  left:auto!important;
+  width:62%!important;
+  z-index:0!important;
+  opacity:1!important;
+  background:url('/assets/showcase/hero-showcase.svg') center center/cover no-repeat!important;
+}
+.showcase-hero-shade{
+  z-index:1!important;
+  background:
+    linear-gradient(90deg,#04172b 0%,rgba(4,23,43,.98) 31%,rgba(4,23,43,.88) 42%,rgba(4,23,43,.40) 59%,rgba(4,23,43,.05) 100%),
+    linear-gradient(180deg,rgba(2,15,29,.01) 62%,rgba(2,15,29,.70) 100%)!important;
+}
+.showcase-hero-copy{
+  width:min(600px,50%)!important;
+  padding:38px 0 112px 38px!important;
+}
+.showcase-eyebrow{
+  margin-bottom:12px!important;
+  font-size:10px!important;
+}
+.showcase-hero-copy h1{
+  font-size:50px!important;
+  line-height:.98!important;
+}
+.showcase-hero-copy>p{
+  max-width:470px!important;
+  margin-top:13px!important;
+  font-size:13.5px!important;
+  line-height:1.55!important;
+}
+.showcase-hero-actions{
+  margin-top:24px!important;
+}
+.showcase-btn-primary{
+  min-width:258px!important;
+  min-height:58px!important;
+}
+.showcase-btn-secondary{
+  min-height:58px!important;
+  padding:0 20px!important;
+}
+/* La frase ya viene dentro de la imagen exacta */
+.showcase-quote{
+  display:none!important;
+}
+
+/* Métricas inferiores del hero */
+.showcase-kpis{
+  left:20px!important;
+  right:20px!important;
+  bottom:14px!important;
+  gap:9px!important;
+}
+.showcase-kpi{
+  min-height:86px!important;
+  padding:10px 12px!important;
+  border-radius:11px!important;
+  background:rgba(4,28,50,.92)!important;
+}
+.showcase-kpi>i{
+  width:46px!important;
+  height:46px!important;
+}
+.showcase-kpi>span small{font-size:8.5px!important}
+.showcase-kpi>span b{font-size:21px!important}
+.showcase-kpi>span em{font-size:7.5px!important}
+
+/* Entrenador: proporciones y avatar del mockup */
+.showcase-coach-panel{
+  padding:17px!important;
+  border-radius:17px!important;
+  background:linear-gradient(155deg,#08243f,#0a2f51 68%,#071e35)!important;
+}
+.showcase-coach-profile{
+  grid-template-columns:88px minmax(0,1fr)!important;
+  gap:14px!important;
+  margin-top:16px!important;
+}
+.showcase-coach-profile img{
+  width:86px!important;
+  height:86px!important;
+  border:3px solid #fff!important;
+}
+.showcase-coach-profile h3{
+  font-size:15px!important;
+}
+.showcase-coach-profile p{
+  font-size:8.7px!important;
+  line-height:1.45!important;
+}
+.showcase-coach-tools{
+  gap:8px!important;
+  margin-top:16px!important;
+}
+.showcase-coach-tools button{
+  min-height:80px!important;
+}
+.showcase-coach-start{
+  min-height:58px!important;
+  margin-top:16px!important;
+}
+
+/* Segunda fila exacta */
+.showcase-overview-grid{
+  grid-template-columns:1.08fr 1fr .92fr!important;
+  gap:11px!important;
+}
+.showcase-membership-card,
+.showcase-class-card,
+.showcase-progress-card{
+  min-height:154px!important;
+  border-radius:15px!important;
+}
+.showcase-membership-card{
+  padding:15px!important;
+}
+.showcase-class-card,
+.showcase-progress-card{
+  padding:14px!important;
+}
+.showcase-class-content>img{
+  width:100px!important;
+  height:74px!important;
+}
+
+/* Fila inferior */
+.showcase-bottom-grid{
+  grid-template-columns:1.62fr 1fr!important;
+  gap:11px!important;
+}
+.showcase-quick-card,
+.showcase-profile-card{
+  min-height:126px!important;
+  border-radius:15px!important;
+}
+.showcase-quick-grid{
+  gap:7px!important;
+}
+.showcase-quick-grid button{
+  min-height:78px!important;
+}
+
+/* Evita separaciones blancas entre cabecera y dashboard en inicio */
+.member-page:has(.dashboard-showcase-v30) .member-main,
+.member-page:has(.dashboard-showcase-v30) .dashboard-showcase-v30{
+  background-color:#06182b!important;
+}
+
+/* Laptop */
+@media(max-width:1320px) and (min-width:901px){
+  .member-top-row{
+    grid-template-columns:245px minmax(0,1fr) auto!important;
+  }
+  .member-brand b{font-size:14.5px!important}
+  .member-nav-primary button{
+    padding:0 10px!important;
+    font-size:9.6px!important;
+  }
+  .showcase-hero-grid{
+    grid-template-columns:minmax(0,2.55fr) minmax(290px,.82fr)!important;
+  }
+  .showcase-hero-main,
+  .showcase-coach-panel{
+    height:395px!important;
+    min-height:395px!important;
+  }
+  .showcase-hero-copy{
+    width:52%!important;
+    padding-left:28px!important;
+  }
+  .showcase-hero-copy h1{
+    font-size:42px!important;
+  }
+  .showcase-hero-main:before{
+    width:61%!important;
+  }
+}
+
+/* Tablet */
+@media(max-width:900px){
+  .member-page:has(.dashboard-showcase-v30) .member-main{
+    padding:10px!important;
+  }
+  .showcase-hero-main,
+  .showcase-coach-panel{
+    height:auto!important;
+    min-height:0!important;
+  }
+  .showcase-hero-main{
+    min-height:610px!important;
+  }
+  .showcase-hero-main:before{
+    width:100%!important;
+    opacity:.55!important;
+  }
+}
