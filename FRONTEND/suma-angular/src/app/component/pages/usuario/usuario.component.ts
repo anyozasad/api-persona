@@ -113,8 +113,8 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
       </div>
 
       <main class="member-main" *ngIf="!cargando; else cargandoTpl">
-        <div *ngIf="error" class="member-toast error-toast">{{error}}</div>
-        <div *ngIf="toast" class="member-toast success-toast">{{toast}}</div>
+        <div *ngIf="error" class="member-toast member-toast-error"><span aria-hidden="true">!</span><b>{{error}}</b></div>
+        <div *ngIf="toast" class="member-toast member-toast-success"><span aria-hidden="true">✓</span><b>{{toast}}</b></div>
 
         <section *ngIf="!['inicio','casa','rutinas','clases','progreso'].includes(moduloActivo)" class="member-page-context">
           <div>
