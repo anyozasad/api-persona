@@ -21231,3 +21231,374 @@
     grid-template-columns:1fr!important;
   }
 }
+
+
+/* PORTAL CLIENTE V76 · SIN PANELES BLANCOS EN ENTRENAMIENTO */
+.module-training-v34{
+  --training-surface:linear-gradient(145deg,rgba(7,42,70,.86),rgba(4,27,48,.92));
+  --training-surface-soft:linear-gradient(145deg,rgba(10,48,78,.72),rgba(5,31,54,.82));
+  --training-border:rgba(184,213,232,.13);
+  --training-text:#f4f8fb;
+  --training-muted:#a7bdcc;
+}
+
+/* Ningún bloque principal del flujo de entrenamiento debe volver a verse
+   como una tarjeta blanca desconectada del dashboard. */
+.module-training-v34 .home-flow-stepper,
+.module-training-v34 .home-plan-card,
+.module-training-v34 .home-week-card,
+.module-training-v34 .home-picker-head,
+.module-training-v34 .home-exercise-preview,
+.module-training-v34 .home-first-demo-visual,
+.module-training-v34 .home-session-main,
+.module-training-v34 .home-session-queue,
+.module-training-v34 .home-next-preview,
+.module-training-v34 .home-session-complete,
+.module-training-v34 .home-history-card{
+  border-color:var(--training-border)!important;
+  background:var(--training-surface)!important;
+  color:var(--training-text)!important;
+  box-shadow:
+    0 18px 38px rgba(0,0,0,.18),
+    inset 0 1px 0 rgba(255,255,255,.055)!important;
+}
+
+/* Final de entrenamiento: compacto, oscuro e integrado */
+.module-training-v34 .home-session-complete{
+  position:relative!important;
+  overflow:hidden!important;
+  min-height:0!important;
+  padding:30px 32px!important;
+  text-align:left!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  grid-template-areas:
+    "badge kicker"
+    "badge title"
+    "badge text"
+    "summary summary"
+    "actions actions"!important;
+  column-gap:18px!important;
+  row-gap:5px!important;
+  border-radius:22px!important;
+  background:
+    radial-gradient(circle at 90% 10%,rgba(46,224,164,.11),transparent 28%),
+    radial-gradient(circle at 0 100%,rgba(255,49,83,.07),transparent 34%),
+    linear-gradient(145deg,rgba(7,42,70,.93),rgba(4,27,48,.97))!important;
+}
+
+.module-training-v34 .home-session-complete::before{
+  content:""!important;
+  position:absolute!important;
+  width:300px!important;
+  height:300px!important;
+  right:-130px!important;
+  bottom:-160px!important;
+  border-radius:50%!important;
+  background:rgba(44,224,164,.055)!important;
+  filter:blur(2px)!important;
+  pointer-events:none!important;
+}
+
+.module-training-v34 .home-session-complete .complete-badge{
+  grid-area:badge!important;
+  align-self:start!important;
+  width:66px!important;
+  height:66px!important;
+  margin:0!important;
+  border-radius:19px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:linear-gradient(145deg,#31dfa6,#1ebd83)!important;
+  color:#042f23!important;
+  font-size:31px!important;
+  font-weight:950!important;
+  box-shadow:
+    0 14px 30px rgba(31,202,145,.18),
+    inset 0 1px 0 rgba(255,255,255,.25)!important;
+}
+
+.module-training-v34 .home-session-complete>span{
+  grid-area:kicker!important;
+  align-self:end!important;
+  color:#55eabd!important;
+  font-size:9px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  letter-spacing:1.15px!important;
+}
+
+.module-training-v34 .home-session-complete>h2{
+  grid-area:title!important;
+  margin:1px 0 0!important;
+  color:#fff!important;
+  font-size:28px!important;
+  line-height:1.05!important;
+  font-weight:950!important;
+  letter-spacing:-.45px!important;
+  text-shadow:0 2px 12px rgba(0,0,0,.16)!important;
+}
+
+.module-training-v34 .home-session-complete>p{
+  grid-area:text!important;
+  margin:3px 0 0!important;
+  max-width:760px!important;
+  color:#b6cad8!important;
+  font-size:10px!important;
+  line-height:1.55!important;
+}
+
+.module-training-v34 .complete-summary{
+  grid-area:summary!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:9px!important;
+  margin-top:18px!important;
+}
+
+.module-training-v34 .complete-summary>div{
+  min-height:66px!important;
+  padding:11px 13px!important;
+  display:grid!important;
+  align-content:center!important;
+  gap:4px!important;
+  border-radius:14px!important;
+  border:1px solid rgba(183,212,232,.10)!important;
+  background:rgba(255,255,255,.035)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+
+.module-training-v34 .complete-summary small{
+  color:#8fa7b8!important;
+  font-size:7px!important;
+  font-weight:950!important;
+  letter-spacing:.9px!important;
+}
+
+.module-training-v34 .complete-summary b{
+  color:#f7fbfd!important;
+  font-size:13px!important;
+  line-height:1.15!important;
+  font-weight:900!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+
+/* Acciones del final: todas con función real y jerarquía clara */
+.module-training-v34 .complete-actions{
+  grid-area:actions!important;
+  max-width:none!important;
+  width:100%!important;
+  margin:14px 0 0!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1.25fr) minmax(0,.85fr) auto!important;
+  gap:9px!important;
+  align-items:stretch!important;
+}
+
+.module-training-v34 .complete-actions button{
+  min-height:58px!important;
+  border-radius:14px!important;
+  cursor:pointer!important;
+  transition:transform .18s ease,filter .18s ease,border-color .18s ease,background .18s ease!important;
+}
+
+.module-training-v34 .complete-action-primary{
+  padding:0 15px!important;
+  display:grid!important;
+  grid-template-columns:36px minmax(0,1fr) auto!important;
+  gap:10px!important;
+  align-items:center!important;
+  text-align:left!important;
+  border:1px solid rgba(255,92,117,.42)!important;
+  background:linear-gradient(135deg,#ff3a56,#ff2448 58%,#eb1738)!important;
+  color:#fff!important;
+  box-shadow:
+    0 14px 27px rgba(255,39,72,.20),
+    inset 0 1px 0 rgba(255,255,255,.18)!important;
+}
+
+.module-training-v34 .complete-action-primary>span,
+.module-training-v34 .complete-action-secondary>span{
+  width:34px!important;
+  height:34px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:10px!important;
+  background:rgba(255,255,255,.11)!important;
+  color:#fff!important;
+  font-size:14px!important;
+}
+
+.module-training-v34 .complete-action-primary>div,
+.module-training-v34 .complete-action-secondary>div{
+  min-width:0!important;
+  display:grid!important;
+  gap:2px!important;
+}
+
+.module-training-v34 .complete-action-primary b,
+.module-training-v34 .complete-action-secondary b{
+  color:#fff!important;
+  font-size:10px!important;
+  font-weight:950!important;
+}
+
+.module-training-v34 .complete-action-primary small{
+  color:#ffdce2!important;
+  font-size:8px!important;
+}
+
+.module-training-v34 .complete-action-primary em{
+  color:#fff!important;
+  font-size:9px!important;
+  font-style:normal!important;
+  font-weight:950!important;
+}
+
+.module-training-v34 .complete-action-secondary{
+  padding:0 14px!important;
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr)!important;
+  gap:9px!important;
+  align-items:center!important;
+  text-align:left!important;
+  border:1px solid rgba(72,237,188,.18)!important;
+  background:rgba(32,225,162,.075)!important;
+  color:#effbf7!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04)!important;
+}
+
+.module-training-v34 .complete-action-secondary>span{
+  color:#50eaba!important;
+  background:rgba(32,225,162,.10)!important;
+}
+
+.module-training-v34 .complete-action-secondary small{
+  color:#9fc4b8!important;
+  font-size:8px!important;
+}
+
+.module-training-v34 .complete-action-ghost{
+  min-width:130px!important;
+  padding:0 14px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  border:1px solid rgba(183,212,232,.12)!important;
+  background:rgba(255,255,255,.035)!important;
+  color:#dce9f2!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+
+.module-training-v34 .complete-action-ghost span{
+  color:#9fb6c6!important;
+  font-size:13px!important;
+}
+
+.module-training-v34 .complete-action-ghost b{
+  color:#eaf3f8!important;
+  font-size:9px!important;
+  font-weight:900!important;
+}
+
+.module-training-v34 .complete-actions button:hover{
+  transform:translateY(-2px)!important;
+  filter:brightness(1.04)!important;
+}
+
+/* Previene reaparición de fondos claros en elementos principales del módulo */
+.module-training-v34 .home-picker-head h2,
+.module-training-v34 .home-exercise-preview h3,
+.module-training-v34 .home-first-demo-copy h3,
+.module-training-v34 .home-plan-card h2,
+.module-training-v34 .home-week-card h2,
+.module-training-v34 .home-history-card h2{
+  color:#f5f9fc!important;
+}
+
+.module-training-v34 .home-picker-head p,
+.module-training-v34 .home-exercise-preview p,
+.module-training-v34 .home-first-demo-copy p,
+.module-training-v34 .home-plan-card p,
+.module-training-v34 .home-week-card p,
+.module-training-v34 .home-history-card p{
+  color:#a7bdcc!important;
+}
+
+.module-training-v34 .home-goal-selector button,
+.module-training-v34 .muscle-area-grid button,
+.module-training-v34 .home-plan-zones button,
+.module-training-v34 .home-exercise-list article>button{
+  background:rgba(255,255,255,.045)!important;
+  color:#dce9f2!important;
+  border-color:rgba(183,212,232,.11)!important;
+}
+
+.module-training-v34 .home-goal-selector button.active,
+.module-training-v34 .muscle-area-grid button.active{
+  background:
+    radial-gradient(circle at 0 0,rgba(255,49,83,.08),transparent 38%),
+    rgba(255,255,255,.055)!important;
+  border-color:rgba(255,82,109,.30)!important;
+}
+
+.module-training-v34 .home-exercise-list article{
+  border-bottom-color:rgba(183,212,232,.085)!important;
+}
+
+.module-training-v34 .exercise-howto{
+  background:rgba(255,255,255,.035)!important;
+  border:1px solid rgba(183,212,232,.09)!important;
+}
+
+.module-training-v34 .home-session-controls .control-secondary,
+.module-training-v34 .home-session-controls .control-danger{
+  background:rgba(255,255,255,.04)!important;
+}
+
+.module-training-v34 .home-session-controls .control-secondary{
+  color:#dce9f2!important;
+  border-color:rgba(183,212,232,.12)!important;
+}
+
+.module-training-v34 .home-session-controls .control-danger{
+  color:#ff8da0!important;
+  border-color:rgba(255,91,116,.20)!important;
+}
+
+/* La alerta de error sí destaca, pero nunca como una franja blanca grande */
+.module-training-v34 .home-training-alert{
+  border:1px solid rgba(255,91,116,.22)!important;
+  background:rgba(102,21,38,.72)!important;
+  color:#ffe5ea!important;
+  box-shadow:0 10px 22px rgba(0,0,0,.12)!important;
+}
+
+@media (max-width:999px){
+  .module-training-v34 .home-session-complete{
+    grid-template-columns:1fr!important;
+    grid-template-areas:
+      "badge"
+      "kicker"
+      "title"
+      "text"
+      "summary"
+      "actions"!important;
+    padding:22px!important;
+  }
+
+  .module-training-v34 .complete-summary{
+    grid-template-columns:1fr!important;
+  }
+
+  .module-training-v34 .complete-actions{
+    grid-template-columns:1fr!important;
+  }
+
+  .module-training-v34 .complete-action-ghost{
+    min-width:0!important;
+  }
+}
