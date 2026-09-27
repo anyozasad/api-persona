@@ -128,7 +128,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         <section *ngIf="moduloActivo==='inicio'" class="member-dashboard dashboard-showcase-v30">
           <section class="showcase-hero-grid">
             <article class="showcase-hero-main">
-              <img class="showcase-hero-photo" src="/assets/showcase/hero-showcase.svg" alt="" aria-hidden="true">
+              <img class="showcase-hero-photo" src="https://images.unsplash.com/photo-1641337221253-fdc7237f6b61?auto=format&fit=crop&w=2400&h=900&q=90" alt="" aria-hidden="true">
               <div class="showcase-hero-shade"></div>
               <div class="showcase-hero-copy">
                 <span class="showcase-eyebrow">TU ESPACIO PERSONAL</span>
