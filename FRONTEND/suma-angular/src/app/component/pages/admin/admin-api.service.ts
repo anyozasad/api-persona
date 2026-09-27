@@ -14,25 +14,25 @@ export class AdminApiService {
   // =========================================================
   // CLIENTES
   // =========================================================
-  clientes(): Observable<any[]> { return this.http.get<any[]>('/api/clientes'); }
-  cliente(id: number): Observable<any> { return this.http.get(`/api/clientes/${id}`); }
+  clientes(): Observable<any[]> { return this.http.get<any[]>('/api/gym-admin/socios'); }
+  cliente(id: number): Observable<any> { return this.http.get(`/api/gym-admin/socios/${id}`); }
   fichaCliente(id: number): Observable<any> { return this.http.get(`/api/clientes/${id}/ficha`); }
-  crearCliente(datos: any): Observable<any> { return this.http.post('/api/clientes', datos); }
-  actualizarCliente(id: number, datos: any): Observable<any> { return this.http.put(`/api/clientes/${id}`, datos); }
-  desactivarCliente(id: number): Observable<any> { return this.http.delete(`/api/clientes/${id}`); }
+  crearCliente(datos: any): Observable<any> { return this.http.post('/api/gym-admin/socios', datos); }
+  actualizarCliente(id: number, datos: any): Observable<any> { return this.http.put(`/api/gym-admin/socios/${id}`, datos); }
+  desactivarCliente(id: number): Observable<any> { return this.http.put(`/api/gym-admin/socios/${id}/estado`, { estado: 'Inactivo' }); }
 
   // =========================================================
   // MEMBRESIAS Y PAGOS
   // =========================================================
-  membresiasDisponibles(): Observable<any[]> { return this.http.get<any[]>('/api/membresias'); }
-  membresia(id: number): Observable<any> { return this.http.get(`/api/membresias/${id}`); }
-  crearMembresia(datos: any): Observable<any> { return this.http.post('/api/membresias', datos); }
-  actualizarMembresia(id: number, datos: any): Observable<any> { return this.http.put(`/api/membresias/${id}`, datos); }
-  eliminarMembresia(id: number): Observable<any> { return this.http.delete(`/api/membresias/${id}`); }
+  membresiasDisponibles(): Observable<any[]> { return this.http.get<any[]>('/api/gym-admin/planes'); }
+  membresia(id: number): Observable<any> { return this.http.get<any[]>('/api/gym-admin/planes'); }
+  crearMembresia(datos: any): Observable<any> { return this.http.post('/api/gym-admin/planes', datos); }
+  actualizarMembresia(id: number, datos: any): Observable<any> { return this.http.put(`/api/gym-admin/planes/${id}`, datos); }
+  eliminarMembresia(id: number): Observable<any> { return this.http.put(`/api/gym-admin/planes/${id}/estado`, { estado: 'Inactivo' }); }
 
-  clienteMembresias(): Observable<any[]> { return this.http.get<any[]>('/api/cliente-membresias'); }
+  clienteMembresias(): Observable<any[]> { return this.http.get<any[]>('/api/gym-admin/suscripciones'); }
   clienteMembresia(id: number): Observable<any> { return this.http.get(`/api/cliente-membresias/${id}`); }
-  contratarMembresia(datos: any): Observable<any> { return this.http.post('/api/membresias/contratar', datos); }
+  contratarMembresia(datos: any): Observable<any> { return this.http.post('/api/gym-admin/suscripciones', datos); }
   renovarMembresia(datos: any): Observable<any> { return this.http.post('/api/membresias/renovar', datos); }
   estadoMembresiaCliente(idCliente: number): Observable<any> {
     return this.http.get(`/api/clientes/${idCliente}/estado-membresia`);
@@ -90,13 +90,13 @@ export class AdminApiService {
   // =========================================================
   // ASISTENCIAS
   // =========================================================
-  asistencias(): Observable<any[]> { return this.http.get<any[]>('/api/asistencias'); }
+  asistencias(): Observable<any[]> { return this.http.get<any[]>('/api/gym-admin/asistencias'); }
   asistencia(id: number): Observable<any> { return this.http.get(`/api/asistencias/${id}`); }
   registrarEntrada(id_cliente: number, observacion?: string): Observable<any> {
-    return this.http.post('/api/asistencias/entrada', { id_cliente, observacion });
+    return this.http.post('/api/gym-admin/asistencias/entrada', { id_cliente, observacion });
   }
   registrarSalida(id_cliente: number, observacion?: string): Observable<any> {
-    return this.http.post('/api/asistencias/salida', { id_cliente, observacion });
+    return this.http.post('/api/gym-admin/asistencias/salida', { id_cliente, observacion });
   }
   historialAsistencias(idCliente: number): Observable<any[]> {
     return this.http.get<any[]>(`/api/clientes/${idCliente}/asistencias`);
@@ -113,17 +113,17 @@ export class AdminApiService {
   // =========================================================
   // CATEGORIAS Y PRODUCTOS
   // =========================================================
-  categorias(): Observable<any[]> { return this.http.get<any[]>('/api/categorias'); }
+  categorias(): Observable<any[]> { return this.http.get<any[]>('/api/gym-admin/categorias'); }
   categoria(id: number): Observable<any> { return this.http.get(`/api/categorias/${id}`); }
-  crearCategoria(datos: any): Observable<any> { return this.http.post('/api/categorias', datos); }
-  actualizarCategoria(id: number, datos: any): Observable<any> { return this.http.put(`/api/categorias/${id}`, datos); }
-  eliminarCategoria(id: number): Observable<any> { return this.http.delete(`/api/categorias/${id}`); }
+  crearCategoria(datos: any): Observable<any> { return this.http.post('/api/gym-admin/categorias', datos); }
+  actualizarCategoria(id: number, datos: any): Observable<any> { return this.http.put(`/api/gym-admin/categorias/${id}`, datos); }
+  eliminarCategoria(id: number): Observable<any> { return this.http.put(`/api/gym-admin/categorias/${id}/estado`, { estado: 'Inactivo' }); }
 
-  productos(): Observable<any[]> { return this.http.get<any[]>('/api/productos'); }
-  producto(id: number): Observable<any> { return this.http.get(`/api/productos/${id}`); }
-  crearProducto(datos: any): Observable<any> { return this.http.post('/api/productos', datos); }
-  actualizarProducto(id: number, datos: any): Observable<any> { return this.http.put(`/api/productos/${id}`, datos); }
-  eliminarProducto(id: number): Observable<any> { return this.http.delete(`/api/productos/${id}`); }
+  productos(): Observable<any[]> { return this.http.get<any[]>('/api/gym-admin/productos'); }
+  producto(id: number): Observable<any> { return this.http.get(`/api/gym-admin/productos/${id}`); }
+  crearProducto(datos: any): Observable<any> { return this.http.post('/api/gym-admin/productos', datos); }
+  actualizarProducto(id: number, datos: any): Observable<any> { return this.http.put(`/api/gym-admin/productos/${id}`, datos); }
+  eliminarProducto(id: number): Observable<any> { return this.http.put(`/api/gym-admin/productos/${id}/estado`, { estado: 'Inactivo' }); }
 
   // =========================================================
   // PROVEEDORES
@@ -145,10 +145,10 @@ export class AdminApiService {
   // =========================================================
   // VENTAS
   // =========================================================
-  ventas(): Observable<any[]> { return this.http.get<any[]>('/api/ventas'); }
-  venta(id: number): Observable<any> { return this.http.get(`/api/ventas/${id}`); }
-  registrarVenta(datos: any): Observable<any> { return this.http.post('/api/ventas', datos); }
-  anularVenta(id: number, motivo: string): Observable<any> { return this.http.post(`/api/ventas/${id}/anular`, { motivo }); }
+  ventas(): Observable<any[]> { return this.http.get<any[]>('/api/gym-admin/ventas'); }
+  venta(id: number): Observable<any> { return this.http.get(`/api/gym-admin/ventas/${id}`); }
+  registrarVenta(datos: any): Observable<any> { return this.http.post('/api/gym-admin/ventas', datos); }
+  anularVenta(id: number, motivo: string): Observable<any> { return this.http.put(`/api/gym-admin/ventas/${id}/anular`, { motivo }); }
 
   // =========================================================
   // KARDEX
@@ -161,32 +161,32 @@ export class AdminApiService {
     return this.http.get<any[]>('/api/kardex', { params });
   }
   ajustarStock(datos: { id_producto: number; tipo: 'Entrada' | 'Salida'; cantidad: number; motivo: string }): Observable<any> {
-    return this.http.post('/api/kardex/ajustar', datos);
+    return this.http.post('/api/gym-admin/productos/ajustar-stock', datos);
   }
 
   // =========================================================
   // CAJA
   // =========================================================
-  cajaActual(): Observable<any> { return this.http.get('/api/caja/actual'); }
+  cajaActual(): Observable<any> { return this.http.get('/api/gym-admin/caja/actual'); }
   abrirCaja(monto_inicial: number, observacion?: string): Observable<any> {
-    return this.http.post('/api/caja/abrir', { monto_inicial, observacion });
+    return this.http.post('/api/gym-admin/caja/abrir', { monto_inicial, observacion });
   }
   movimientoCaja(tipo: 'Ingreso' | 'Egreso', origen: string, descripcion: string, monto: number): Observable<any> {
-    return this.http.post('/api/caja/movimientos', { tipo, origen, descripcion, monto });
+    return this.http.post('/api/gym-admin/caja/movimientos', { tipo, origen, descripcion, monto });
   }
   cerrarCaja(monto_real: number, observacion?: string): Observable<any> {
-    return this.http.post('/api/caja/cerrar', { monto_real, observacion });
+    return this.http.post('/api/gym-admin/caja/cerrar', { monto_real, observacion });
   }
-  historialCaja(): Observable<any[]> { return this.http.get<any[]>('/api/caja/historial'); }
+  historialCaja(): Observable<any[]> { return this.http.get<any[]>('/api/gym-admin/caja/historial'); }
 
   // =========================================================
   // USUARIOS
   // =========================================================
-  usuarios(): Observable<any[]> { return this.http.get<any[]>('/api/usuarios'); }
+  usuarios(): Observable<any[]> { return this.http.get<any[]>('/api/gym-admin/usuarios'); }
   usuario(id: number): Observable<any> { return this.http.get(`/api/usuarios/${id}`); }
-  crearUsuario(datos: any): Observable<any> { return this.http.post('/api/usuarios', datos); }
-  actualizarUsuario(id: number, datos: any): Observable<any> { return this.http.put(`/api/usuarios/${id}`, datos); }
-  eliminarUsuario(id: number): Observable<any> { return this.http.delete(`/api/usuarios/${id}`); }
+  crearUsuario(datos: any): Observable<any> { return this.http.post('/api/gym-admin/usuarios', datos); }
+  actualizarUsuario(id: number, datos: any): Observable<any> { return this.http.put(`/api/gym-admin/usuarios/${id}`, datos); }
+  eliminarUsuario(id: number): Observable<any> { return this.http.put(`/api/gym-admin/usuarios/${id}/estado`, { estado: 'Inactivo' }); }
 
   // =========================================================
   // AUDITORIA
@@ -204,11 +204,11 @@ export class AdminApiService {
   // REPORTES Y VISTAS
   // =========================================================
   reporteIngresos(desde?: string, hasta?: string): Observable<any> {
-    return this.http.get('/api/reportes/ingresos', { params: this.rangoFechas(desde, hasta) });
+    return this.http.get('/api/gym-admin/reportes/ingresos', { params: this.rangoFechas(desde, hasta) });
   }
-  reporteVencimientos(): Observable<any> { return this.http.get('/api/reportes/vencimientos'); }
+  reporteVencimientos(): Observable<any> { return this.http.get('/api/gym-admin/reportes/vencimientos'); }
   reporteAsistencias(desde?: string, hasta?: string): Observable<any> {
-    return this.http.get('/api/reportes/asistencias', { params: this.rangoFechas(desde, hasta) });
+    return this.http.get('/api/gym-admin/asistencias/reporte', { params: this.rangoFechas(desde, hasta) });
   }
   vistaClientesMembresias(): Observable<any[]> { return this.http.get<any[]>('/api/vistas/clientes-membresias'); }
   vistaStock(): Observable<any[]> { return this.http.get<any[]>('/api/vistas/stock'); }
@@ -254,6 +254,56 @@ export class AdminApiService {
   cerrarSoporte(id: number): Observable<any> {
     return this.http.put(`/api/soporte-clientes/${id}/cerrar`, {});
   }
+
+  // =========================================================
+  // FUNCIONES COMPLETAS DEL REPOSITORIO DE REFERENCIA (GYM SYSTEM)
+  // =========================================================
+  gymEstado(): Observable<any> { return this.http.get('/api/gym-admin/estado'); }
+  filtrarDashboardGym(plan_ids: string[] = [], busqueda = ''): Observable<any> {
+    return this.http.post('/api/gym-admin/dashboard/filtrar', { plan_ids, busqueda });
+  }
+  validarAsistenciaDni(dni: string): Observable<any> {
+    return this.http.post('/api/gym-admin/asistencias/validar', { dni });
+  }
+  exportarAsistenciasGym(desde?: string, hasta?: string): Observable<Blob> {
+    return this.http.get('/api/gym-admin/asistencias/exportar', { params: this.rangoFechas(desde,hasta), responseType:'blob' });
+  }
+  exportarSuscripcionesGym(): Observable<Blob> {
+    return this.http.get('/api/gym-admin/suscripciones/exportar', { responseType:'blob' });
+  }
+  gastosGym(): Observable<any[]> { return this.http.get<any[]>('/api/gym-admin/gastos'); }
+  registrarGastoGym(datos:any): Observable<any> { return this.http.post('/api/gym-admin/gastos', datos); }
+  anularGastoGym(id:number,motivo:string): Observable<any> {
+    return this.http.put(`/api/gym-admin/gastos/${id}/anular`, { motivo });
+  }
+  progresoGym(socioId:number): Observable<any> { return this.http.get(`/api/gym-admin/progreso/${socioId}`); }
+  guardarMedidaGym(datos:any): Observable<any> { return this.http.post('/api/gym-admin/progreso/medidas', datos); }
+  eliminarMedidaGym(id:number): Observable<any> { return this.http.delete(`/api/gym-admin/progreso/medidas/${id}`); }
+  guardarRutinaGym(datos:any): Observable<any> { return this.http.post('/api/gym-admin/progreso/rutina', datos); }
+  vencimientosWhatsappGym(dias=7): Observable<any[]> {
+    return this.http.get<any[]>('/api/gym-admin/notificaciones/vencimientos', { params:new HttpParams().set('dias',String(dias)) });
+  }
+  guardarWhatsappKeyGym(id:number,whatsapp_api_key:string): Observable<any> {
+    return this.http.put(`/api/gym-admin/notificaciones/socios/${id}/api-key`, { whatsapp_api_key });
+  }
+  enviarWhatsappGym(id:number): Observable<any> {
+    return this.http.post(`/api/gym-admin/notificaciones/socios/${id}/enviar`, {});
+  }
+  enviarWhatsappTodosGym(dias=7): Observable<any> {
+    return this.http.post('/api/gym-admin/notificaciones/enviar-todos', { dias });
+  }
+  backupGym(): Observable<Blob> {
+    return this.http.get('/api/gym-admin/mantenimiento/backup', { responseType:'blob' });
+  }
+  restaurarGym(archivo:File): Observable<any> {
+    const fd=new FormData(); fd.append('backup_file',archivo);
+    return this.http.post('/api/gym-admin/mantenimiento/restaurar', fd);
+  }
+  limpiarGym(): Observable<any> { return this.http.post('/api/gym-admin/mantenimiento/limpiar', {}); }
+  limpiarCacheGym(): Observable<any> { return this.http.post('/api/gym-admin/mantenimiento/limpiar-cache', {}); }
+  carnetGym(socioId:number): Observable<any> { return this.http.get(`/api/gym-admin/documentos/carnet/${socioId}`); }
+  comprobanteGym(suscripcionId:number): Observable<any> { return this.http.get(`/api/gym-admin/documentos/comprobante/${suscripcionId}`); }
+  ticketGym(ventaId:number): Observable<any> { return this.http.get(`/api/gym-admin/documentos/ticket/${ventaId}`); }
 
   private rangoFechas(desde?: string, hasta?: string): HttpParams {
     let params = new HttpParams();
