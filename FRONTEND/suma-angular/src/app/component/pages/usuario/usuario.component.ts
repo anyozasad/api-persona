@@ -111,7 +111,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
           <section class="member-hero member-enter-up member-hero-v26">
             <div class="member-hero-copy member-hero-premium">
               <div class="member-hero-content">
-                <span class="member-kicker">TU EXPERIENCIA MALLQUI</span>
+                <span class="member-kicker">TU PANEL PERSONAL</span>
                 <h1>Bienvenido, <strong>{{nombreCorto}}</strong></h1>
                 <p>Entrena, revisa tu progreso y organiza tus próximas actividades desde un panel pensado para acompañarte cada día.</p>
 
@@ -159,10 +159,13 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                   <b>{{entrenamientoCasaHoy?.activo ? 'Entrenamiento programado' : 'Día flexible'}}</b>
                   <small>{{entrenamientoCasaHoy?.activo ? ((entrenamientoCasaHoy?.minutos || 0) + ' min aprox.') : 'Elige una sesión cuando quieras'}}</small>
                 </div>
-                <div class="hero-floating-card hero-floating-bottom">
-                  <span>SIGUIENTE PASO</span>
-                  <b>{{siguientePasoTitulo}}</b>
-                  <small>{{siguientePasoBoton}}</small>
+                <div class="hero-floating-card hero-floating-bottom hero-profile-progress">
+                  <span>CONFIGURACIÓN DE CUENTA</span>
+                  <div class="hero-progress-row">
+                    <b>{{porcentajeInicio}}%</b>
+                    <small>{{porcentajeInicio >= 100 ? 'Perfil listo' : 'Completa tu experiencia'}}</small>
+                  </div>
+                  <div class="hero-progress-line"><i [style.width.%]="porcentajeInicio"></i></div>
                 </div>
               </div>
             </div>
@@ -210,7 +213,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
             </aside>
           </section>
 
-          <section class="member-next-step member-enter-up">
+          <section class="member-next-step member-next-step-v28 member-enter-up">
             <div class="member-next-step-icon">{{siguientePasoIcono}}</div>
             <div class="member-next-step-copy">
               <span>TU SIGUIENTE PASO</span>
