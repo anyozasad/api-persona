@@ -22241,3 +22241,686 @@
     transition:none!important;
   }
 }
+
+
+/* PORTAL CLIENTE V79 · CONTINUIDAD VISUAL RUTINAS CLASES PROGRESO */
+
+/* Las vistas abiertas desde el menú principal continúan el lenguaje visual
+   del dashboard: azul noche + cristal + rojo Mallqui. */
+.member-page:has(.module-routines-v34),
+.member-page:has(.module-classes-v34),
+.member-page:has(.progress-experience-v34){
+  background:
+    radial-gradient(circle at 11% 8%,rgba(27,92,148,.19),transparent 25%),
+    radial-gradient(circle at 91% 20%,rgba(239,35,60,.11),transparent 24%),
+    linear-gradient(180deg,#041424 0%,#061b2f 38%,#08243d 100%)!important;
+  background-attachment:fixed!important;
+}
+
+/* deja respirar las nuevas pantallas debajo del header */
+.member-page:has(.module-routines-v34) .member-main,
+.member-page:has(.module-classes-v34) .member-main,
+.member-page:has(.progress-experience-v34) .member-main{
+  padding-top:24px!important;
+  padding-bottom:44px!important;
+}
+
+/* HERO: más cinematográfico y consistente con el inicio */
+.module-routines-v34>.member-module-hero,
+.module-classes-v34>.member-module-hero,
+.progress-experience-v34 .progress-hero{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  min-height:360px!important;
+  padding:48px 50px!important;
+  border:1px solid rgba(152,190,222,.16)!important;
+  border-radius:28px!important;
+  box-shadow:
+    0 30px 68px rgba(0,10,22,.34),
+    inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+
+.module-routines-v34>.member-module-hero{
+  background:
+    linear-gradient(90deg,rgba(2,17,33,.98) 0%,rgba(4,27,49,.92) 42%,rgba(4,30,53,.55) 72%,rgba(3,19,36,.34) 100%),
+    url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=2200&q=92') center 43%/cover no-repeat!important;
+}
+
+.module-classes-v34>.member-module-hero{
+  background:
+    linear-gradient(90deg,rgba(2,17,33,.98) 0%,rgba(4,27,49,.92) 42%,rgba(4,30,53,.52) 72%,rgba(3,19,36,.34) 100%),
+    url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2200&q=92') center 48%/cover no-repeat!important;
+}
+
+.progress-experience-v34 .progress-hero{
+  background:
+    linear-gradient(90deg,rgba(2,17,33,.98) 0%,rgba(4,27,49,.92) 43%,rgba(4,31,54,.54) 73%,rgba(3,19,36,.34) 100%),
+    url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=2200&q=92') center 43%/cover no-repeat!important;
+}
+
+.module-routines-v34>.member-module-hero::before,
+.module-classes-v34>.member-module-hero::before,
+.progress-experience-v34 .progress-hero::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(circle at 86% 23%,rgba(255,58,89,.18),transparent 16%),
+    linear-gradient(120deg,rgba(255,255,255,.045),transparent 30%,transparent 72%,rgba(255,255,255,.025))!important;
+  animation:mallquiModuleLightSweep 8s ease-in-out infinite alternate!important;
+}
+
+.module-routines-v34>.member-module-hero::after,
+.module-classes-v34>.member-module-hero::after,
+.progress-experience-v34 .progress-hero::after{
+  content:""!important;
+  position:absolute!important;
+  right:34px!important;
+  bottom:30px!important;
+  top:auto!important;
+  width:122px!important;
+  height:122px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:32px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.035))!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.11),
+    0 18px 38px rgba(0,8,18,.22)!important;
+  backdrop-filter:blur(10px)!important;
+  transform:rotate(-5deg)!important;
+  opacity:1!important;
+}
+
+.module-routines-v34>.member-module-hero>div,
+.module-classes-v34>.member-module-hero>div,
+.progress-experience-v34 .progress-hero>div,
+.progress-experience-v34 .progress-hero>button{
+  position:relative!important;
+  z-index:3!important;
+}
+
+.module-routines-v34>.member-module-hero>div:first-child,
+.module-classes-v34>.member-module-hero>div:first-child,
+.progress-experience-v34 .progress-hero>div:first-child{
+  max-width:720px!important;
+}
+
+.module-routines-v34>.member-module-hero span,
+.module-classes-v34>.member-module-hero span,
+.progress-experience-v34 .progress-hero>div>span{
+  color:#ff8da0!important;
+  font-size:10px!important;
+  font-weight:950!important;
+  letter-spacing:1.75px!important;
+}
+
+.module-routines-v34>.member-module-hero h1,
+.module-classes-v34>.member-module-hero h1,
+.progress-experience-v34 .progress-hero h1{
+  margin:10px 0 12px!important;
+  color:#fff!important;
+  font-size:46px!important;
+  line-height:1.02!important;
+  letter-spacing:-1.5px!important;
+  text-shadow:0 12px 28px rgba(0,0,0,.28)!important;
+}
+
+.module-routines-v34>.member-module-hero p,
+.module-classes-v34>.member-module-hero p,
+.progress-experience-v34 .progress-hero p{
+  max-width:650px!important;
+  color:#c8d8e6!important;
+  font-size:14px!important;
+  line-height:1.7!important;
+}
+
+/* Emblemas de Rutinas y Clases */
+.module-routines-v34 .module-hero-emblem,
+.module-classes-v34 .module-hero-emblem{
+  width:94px!important;
+  height:94px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(255,255,255,.14)!important;
+  border-radius:27px!important;
+  background:
+    radial-gradient(circle at 35% 25%,rgba(255,255,255,.13),transparent 45%),
+    rgba(7,29,52,.55)!important;
+  color:#ff536d!important;
+  box-shadow:
+    0 18px 40px rgba(0,8,18,.28),
+    inset 0 1px 0 rgba(255,255,255,.09)!important;
+  backdrop-filter:blur(13px)!important;
+  animation:mallquiModuleIconFloat 4s ease-in-out infinite!important;
+}
+.module-routines-v34 .module-hero-emblem svg,
+.module-classes-v34 .module-hero-emblem svg{
+  width:38px!important;
+  height:38px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.65!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+
+/* BOTÓN de progreso dentro del hero */
+.progress-experience-v34 .progress-refresh-btn{
+  min-height:46px!important;
+  padding:0 18px!important;
+  border:1px solid rgba(255,255,255,.15)!important;
+  border-radius:13px!important;
+  background:rgba(8,31,55,.70)!important;
+  color:#fff!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  box-shadow:
+    0 12px 28px rgba(0,9,19,.18),
+    inset 0 1px 0 rgba(255,255,255,.08)!important;
+  backdrop-filter:blur(10px)!important;
+  transition:.22s ease!important;
+}
+.progress-experience-v34 .progress-refresh-btn:hover{
+  transform:translateY(-3px)!important;
+  border-color:rgba(255,91,117,.46)!important;
+  background:rgba(73,27,48,.82)!important;
+  box-shadow:0 16px 31px rgba(239,35,60,.17)!important;
+}
+
+/* =========================================================
+   RUTINAS · tarjetas premium
+   ========================================================= */
+.module-routines-v34 .routine-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:18px!important;
+}
+
+.module-routines-v34 .routine-card{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  min-height:330px!important;
+  padding:24px!important;
+  border:1px solid rgba(137,177,210,.15)!important;
+  border-radius:24px!important;
+  background:
+    radial-gradient(circle at 100% 0,rgba(255,54,91,.11),transparent 31%),
+    linear-gradient(145deg,rgba(10,38,65,.96),rgba(7,29,52,.96))!important;
+  color:#fff!important;
+  box-shadow:
+    0 20px 44px rgba(0,10,22,.23),
+    inset 0 1px 0 rgba(255,255,255,.045)!important;
+  transition:transform .26s ease,border-color .26s ease,box-shadow .26s ease!important;
+}
+
+.module-routines-v34 .routine-card::before{
+  content:""!important;
+  position:absolute!important;
+  width:150px!important;
+  height:150px!important;
+  right:-62px!important;
+  bottom:-70px!important;
+  border-radius:50%!important;
+  border:1px solid rgba(255,255,255,.055)!important;
+  box-shadow:0 0 0 27px rgba(255,255,255,.018)!important;
+  pointer-events:none!important;
+}
+
+.module-routines-v34 .routine-card:hover{
+  transform:translateY(-7px)!important;
+  border-color:rgba(255,89,116,.34)!important;
+  box-shadow:
+    0 27px 55px rgba(0,8,18,.31),
+    0 0 0 1px rgba(255,71,101,.055)!important;
+}
+
+.module-routines-v34 .routine-card-head span{
+  color:#ff8296!important;
+  font-size:8px!important;
+  letter-spacing:1.3px!important;
+  font-weight:950!important;
+}
+.module-routines-v34 .routine-card-head h2{
+  margin-top:5px!important;
+  color:#fff!important;
+  font-size:23px!important;
+  letter-spacing:-.45px!important;
+}
+.module-routines-v34 .routine-card-head>i{
+  width:50px!important;
+  height:50px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+  border-radius:15px!important;
+  background:rgba(255,255,255,.055)!important;
+  font-size:20px!important;
+  font-style:normal!important;
+}
+.module-routines-v34 .routine-card>p{
+  color:#adc3d5!important;
+  font-size:11px!important;
+  line-height:1.6!important;
+}
+.module-routines-v34 .routine-period{
+  display:inline-flex!important;
+  width:max-content!important;
+  padding:7px 10px!important;
+  border:1px solid rgba(116,165,205,.16)!important;
+  border-radius:999px!important;
+  background:rgba(95,146,188,.075)!important;
+  color:#bcd1e1!important;
+  font-size:8px!important;
+}
+.module-routines-v34 .routine-exercises{
+  margin-top:18px!important;
+  padding-top:14px!important;
+  border-top:1px solid rgba(255,255,255,.07)!important;
+}
+.module-routines-v34 .routine-exercises>div{
+  padding:9px 0!important;
+  border-bottom:1px solid rgba(255,255,255,.055)!important;
+}
+.module-routines-v34 .routine-exercises>div>span{
+  background:rgba(45,190,114,.14)!important;
+  color:#75dea5!important;
+}
+.module-routines-v34 .routine-exercises b{color:#f7fbff!important;font-size:10px!important}
+.module-routines-v34 .routine-exercises small{color:#829bb1!important;font-size:8px!important}
+
+/* =========================================================
+   CLASES · tarjetas tipo club premium
+   ========================================================= */
+.module-classes-v34 .member-class-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:18px!important;
+}
+
+.module-classes-v34 .member-class-card{
+  position:relative!important;
+  overflow:hidden!important;
+  min-height:340px!important;
+  padding:22px!important;
+  border:1px solid rgba(137,177,210,.15)!important;
+  border-radius:24px!important;
+  background:
+    radial-gradient(circle at 93% 3%,rgba(57,132,207,.14),transparent 29%),
+    linear-gradient(145deg,rgba(10,38,65,.97),rgba(7,29,52,.97))!important;
+  color:#fff!important;
+  box-shadow:
+    0 20px 44px rgba(0,10,22,.23),
+    inset 0 1px 0 rgba(255,255,255,.045)!important;
+  transition:transform .26s ease,border-color .26s ease,box-shadow .26s ease!important;
+}
+
+.module-classes-v34 .member-class-card::after{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  bottom:0!important;
+  height:3px!important;
+  background:linear-gradient(90deg,#ef233c,#ff7187,transparent 86%)!important;
+  opacity:.75!important;
+}
+
+.module-classes-v34 .member-class-card:hover{
+  transform:translateY(-7px)!important;
+  border-color:rgba(255,89,116,.32)!important;
+  box-shadow:0 27px 55px rgba(0,8,18,.31)!important;
+}
+
+.module-classes-v34 .class-card-top span{
+  color:#92abc0!important;
+  font-size:8px!important;
+  letter-spacing:1.3px!important;
+}
+.module-classes-v34 .class-card-top i{
+  width:48px!important;
+  height:48px!important;
+  border:1px solid rgba(111,174,225,.16)!important;
+  border-radius:15px!important;
+  background:rgba(65,133,191,.10)!important;
+  color:#75b9ee!important;
+}
+.module-classes-v34 .member-class-card h2{
+  margin:18px 0!important;
+  color:#fff!important;
+  font-size:22px!important;
+  letter-spacing:-.4px!important;
+}
+.module-classes-v34 .class-meta{
+  gap:8px!important;
+}
+.module-classes-v34 .class-meta span{
+  min-height:58px!important;
+  justify-content:center!important;
+  padding:9px!important;
+  border:1px solid rgba(255,255,255,.055)!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.035)!important;
+  color:#c1d1df!important;
+  font-size:8px!important;
+}
+.module-classes-v34 .class-meta b{
+  color:#6f8ba3!important;
+  font-size:7px!important;
+}
+.module-classes-v34 .member-class-card label{
+  color:#b8cada!important;
+  font-size:9px!important;
+}
+.module-classes-v34 .member-class-card input{
+  height:44px!important;
+  border:1px solid rgba(140,180,213,.16)!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.06)!important;
+  color:#eef6fc!important;
+  color-scheme:dark!important;
+}
+.module-classes-v34 .member-class-card input:focus{
+  border-color:rgba(255,84,111,.46)!important;
+  box-shadow:0 0 0 3px rgba(239,35,60,.09)!important;
+}
+.module-classes-v34 .member-class-card>button{
+  height:46px!important;
+  border-radius:12px!important;
+  background:linear-gradient(135deg,#ff3f5d,#e91d39)!important;
+  color:#fff!important;
+  font-size:9px!important;
+  box-shadow:0 12px 25px rgba(239,35,60,.22)!important;
+  transition:.2s ease!important;
+}
+.module-classes-v34 .member-class-card>button:hover{
+  transform:translateY(-2px)!important;
+  box-shadow:0 16px 31px rgba(239,35,60,.31)!important;
+}
+
+/* Estados vacíos también continúan el diseño */
+.module-routines-v34 .member-empty-card,
+.module-classes-v34 .member-empty-card{
+  min-height:310px!important;
+  border:1px dashed rgba(139,180,214,.22)!important;
+  border-radius:24px!important;
+  background:
+    radial-gradient(circle at 50% 0,rgba(255,59,89,.08),transparent 30%),
+    linear-gradient(145deg,rgba(10,38,65,.94),rgba(7,29,52,.96))!important;
+  color:#fff!important;
+  box-shadow:0 20px 44px rgba(0,10,22,.20)!important;
+}
+.module-routines-v34 .member-empty-card h3,
+.module-classes-v34 .member-empty-card h3{color:#fff!important;font-size:20px!important}
+.module-routines-v34 .member-empty-card p,
+.module-classes-v34 .member-empty-card p{max-width:580px!important;color:#93abc0!important;font-size:10px!important}
+.module-routines-v34 .empty-state-kicker,
+.module-classes-v34 .empty-state-kicker{color:#ff8599!important}
+.module-routines-v34 .empty-state-icon,
+.module-classes-v34 .empty-state-icon{
+  background:rgba(255,255,255,.055)!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  color:#ff536d!important;
+}
+
+/* =========================================================
+   PROGRESO · paneles oscuros, gráficos y meta visual
+   ========================================================= */
+.progress-experience-v34{
+  display:grid!important;
+  gap:18px!important;
+}
+
+.progress-experience-v34 .client-progress-kpis{
+  gap:16px!important;
+}
+
+.progress-experience-v34 .client-progress-kpis article{
+  position:relative!important;
+  overflow:hidden!important;
+  min-height:166px!important;
+  padding:21px!important;
+  border:1px solid rgba(137,177,210,.14)!important;
+  border-radius:22px!important;
+  background:
+    radial-gradient(circle at 94% 0,rgba(255,61,95,.095),transparent 32%),
+    linear-gradient(145deg,rgba(10,38,65,.97),rgba(7,29,52,.97))!important;
+  box-shadow:
+    0 19px 40px rgba(0,10,22,.21),
+    inset 0 1px 0 rgba(255,255,255,.04)!important;
+  transition:.24s ease!important;
+}
+.progress-experience-v34 .client-progress-kpis article:hover{
+  transform:translateY(-5px)!important;
+  border-color:rgba(105,171,223,.29)!important;
+  box-shadow:0 25px 48px rgba(0,8,18,.28)!important;
+}
+.progress-experience-v34 .client-progress-kpis article>span{
+  width:43px!important;
+  height:43px!important;
+  border:1px solid rgba(255,255,255,.065)!important;
+  border-radius:13px!important;
+  background:rgba(255,255,255,.055)!important;
+  color:#ff5e77!important;
+}
+.progress-experience-v34 .client-progress-kpis small{
+  color:#7894aa!important;
+  font-size:8px!important;
+}
+.progress-experience-v34 .client-progress-kpis strong{
+  color:#fff!important;
+  font-size:32px!important;
+  letter-spacing:-.7px!important;
+}
+.progress-experience-v34 .client-progress-kpis p{
+  color:#8ba3b7!important;
+  font-size:9px!important;
+}
+
+/* meta semanal */
+.progress-experience-v34 .client-goal-card{
+  border:1px solid rgba(137,177,210,.14)!important;
+  border-radius:24px!important;
+  background:
+    radial-gradient(circle at 100% 0,rgba(239,35,60,.09),transparent 31%),
+    linear-gradient(145deg,rgba(10,38,65,.97),rgba(7,29,52,.97))!important;
+  box-shadow:0 20px 44px rgba(0,10,22,.22)!important;
+}
+.progress-experience-v34 .client-goal-copy>span{color:#ff7d92!important}
+.progress-experience-v34 .client-goal-copy h2{color:#fff!important}
+.progress-experience-v34 .client-goal-copy p{color:#93aabe!important}
+.progress-experience-v34 .goal-session-control>span{color:#7f99af!important}
+.progress-experience-v34 .goal-session-options button{
+  border-color:rgba(147,183,212,.14)!important;
+  background:rgba(255,255,255,.045)!important;
+  color:#d8e6f1!important;
+}
+.progress-experience-v34 .goal-session-options button.active{
+  border-color:rgba(255,89,116,.48)!important;
+  background:linear-gradient(145deg,rgba(255,65,95,.24),rgba(98,27,50,.42))!important;
+  color:#fff!important;
+  box-shadow:0 9px 22px rgba(239,35,60,.14)!important;
+}
+.progress-experience-v34 .client-reminder-toggle{
+  color:#d8e5ef!important;
+}
+.progress-experience-v34 .reminder-copy small{color:#7792a9!important}
+
+/* tarjetas inferiores del progreso */
+.progress-experience-v34 .client-extra-card{
+  border:1px solid rgba(137,177,210,.14)!important;
+  border-radius:23px!important;
+  background:
+    linear-gradient(145deg,rgba(10,38,65,.97),rgba(7,29,52,.97))!important;
+  box-shadow:0 19px 42px rgba(0,10,22,.21)!important;
+}
+.progress-experience-v34 .client-card-head span{color:#7893aa!important}
+.progress-experience-v34 .client-card-head h2{color:#f8fbff!important}
+.progress-experience-v34 .client-card-head>b{
+  background:rgba(60,137,199,.11)!important;
+  color:#8bc5f1!important;
+}
+.progress-experience-v34 .client-card-head>button{
+  border-color:rgba(143,181,211,.14)!important;
+  background:rgba(255,255,255,.04)!important;
+  color:#9ec0da!important;
+}
+
+.progress-experience-v34 .client-week-progress{
+  background:rgba(255,255,255,.065)!important;
+}
+.progress-experience-v34 .client-week-days>div{
+  border-color:rgba(255,255,255,.055)!important;
+  background:rgba(255,255,255,.032)!important;
+}
+.progress-experience-v34 .client-week-days>div.active{
+  border-color:rgba(78,151,211,.25)!important;
+  background:rgba(48,119,179,.105)!important;
+}
+.progress-experience-v34 .client-week-days b{color:#b7cad9!important}
+.progress-experience-v34 .client-week-days small{color:#718ba2!important}
+
+.progress-experience-v34 .client-coach-body,
+.progress-experience-v34 .client-empty-mini{
+  background:rgba(255,255,255,.035)!important;
+}
+.progress-experience-v34 .client-coach-body h3,
+.progress-experience-v34 .client-empty-mini b{color:#f4f9fd!important}
+.progress-experience-v34 .client-coach-body p,
+.progress-experience-v34 .client-empty-mini p{color:#8ea5b9!important}
+.progress-experience-v34 .client-coach-objective{
+  border-left-color:#ff4964!important;
+  background:rgba(91,30,50,.23)!important;
+}
+.progress-experience-v34 .client-coach-objective p{color:#cbb5bd!important}
+
+.progress-experience-v34 .client-activity-list>div,
+.progress-experience-v34 .client-history-list>div{
+  border-bottom-color:rgba(255,255,255,.06)!important;
+}
+.progress-experience-v34 .client-activity-list>div>span{
+  background:rgba(255,255,255,.05)!important;
+  color:#ff6078!important;
+}
+.progress-experience-v34 .client-activity-list b,
+.progress-experience-v34 .client-history-list b{color:#eef6fc!important}
+.progress-experience-v34 .client-activity-list p,
+.progress-experience-v34 .client-activity-list small,
+.progress-experience-v34 .client-history-list span,
+.progress-experience-v34 .client-history-list small,
+.progress-experience-v34 .client-history-empty{color:#7f98ad!important}
+.progress-experience-v34 .client-history-tabs button{
+  border-color:rgba(139,178,210,.13)!important;
+  background:rgba(255,255,255,.035)!important;
+  color:#8da7bb!important;
+}
+.progress-experience-v34 .client-history-tabs button.active{
+  border-color:#ef3550!important;
+  background:linear-gradient(135deg,#ef233c,#ff516a)!important;
+  color:#fff!important;
+  box-shadow:0 8px 19px rgba(239,35,60,.19)!important;
+}
+
+/* navegación principal: hace más claro que cada botón abre otra pantalla */
+.member-nav-primary .nav-step-rutinas,
+.member-nav-primary .nav-step-clases,
+.member-nav-primary .nav-step-progreso{
+  transition:
+    transform .20s ease,
+    background .20s ease,
+    border-color .20s ease,
+    box-shadow .20s ease!important;
+}
+.member-nav-primary .nav-step-rutinas:hover,
+.member-nav-primary .nav-step-clases:hover,
+.member-nav-primary .nav-step-progreso:hover{
+  transform:translateY(-2px)!important;
+  background:rgba(255,255,255,.055)!important;
+  box-shadow:0 9px 20px rgba(0,8,18,.14)!important;
+}
+
+/* animaciones */
+@keyframes mallquiModuleLightSweep{
+  from{transform:translateX(-2%);opacity:.72}
+  to{transform:translateX(2%);opacity:1}
+}
+@keyframes mallquiModuleIconFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-7px)}
+}
+
+/* Responsive */
+@media(max-width:1180px){
+  .module-classes-v34 .member-class-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .module-routines-v34 .routine-grid{
+    grid-template-columns:1fr!important;
+  }
+}
+
+@media(max-width:820px){
+  .module-routines-v34>.member-module-hero,
+  .module-classes-v34>.member-module-hero,
+  .progress-experience-v34 .progress-hero{
+    min-height:300px!important;
+    padding:31px 24px!important;
+    border-radius:22px!important;
+  }
+  .module-routines-v34>.member-module-hero h1,
+  .module-classes-v34>.member-module-hero h1,
+  .progress-experience-v34 .progress-hero h1{
+    font-size:34px!important;
+  }
+  .module-routines-v34>.member-module-hero p,
+  .module-classes-v34>.member-module-hero p,
+  .progress-experience-v34 .progress-hero p{
+    font-size:11px!important;
+  }
+  .module-routines-v34 .module-hero-emblem,
+  .module-classes-v34 .module-hero-emblem{
+    width:70px!important;
+    height:70px!important;
+    border-radius:21px!important;
+  }
+  .module-classes-v34 .member-class-grid,
+  .progress-experience-v34 .client-progress-kpis,
+  .progress-experience-v34 .client-extra-grid.two{
+    grid-template-columns:1fr!important;
+  }
+}
+
+@media(max-width:560px){
+  .module-routines-v34>.member-module-hero,
+  .module-classes-v34>.member-module-hero,
+  .progress-experience-v34 .progress-hero{
+    min-height:270px!important;
+    padding:27px 20px!important;
+  }
+  .module-routines-v34>.member-module-hero h1,
+  .module-classes-v34>.member-module-hero h1,
+  .progress-experience-v34 .progress-hero h1{
+    font-size:29px!important;
+  }
+  .module-routines-v34 .routine-card,
+  .module-classes-v34 .member-class-card,
+  .progress-experience-v34 .client-extra-card,
+  .progress-experience-v34 .client-goal-card{
+    border-radius:18px!important;
+  }
+  .progress-experience-v34 .client-week-days{
+    grid-template-columns:repeat(4,1fr)!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .module-routines-v34>.member-module-hero::before,
+  .module-classes-v34>.member-module-hero::before,
+  .progress-experience-v34 .progress-hero::before,
+  .module-routines-v34 .module-hero-emblem,
+  .module-classes-v34 .module-hero-emblem{
+    animation:none!important;
+  }
+}
