@@ -582,32 +582,35 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
 
               <div class="home-rep-counter-panel"
                    *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'">
-                <div>
+                <div class="rep-counter-copy">
                   <span>CONTADOR DE REPETICIONES</span>
-                  <b>{{repsCasaHechas}} / {{objetivoRepsCasa}}</b>
-                  <small *ngIf="ejercicioCasaActual?.por_lado">Lado {{ladoCasa}}</small>
-                  <small *ngIf="!ejercicioCasaActual?.por_lado">Completa el objetivo con control</small>
+                  <div class="rep-counter-line">
+                    <b>{{repsCasaHechas}} <i>/ {{objetivoRepsCasa}}</i></b>
+                    <small *ngIf="ejercicioCasaActual?.por_lado">Lado {{ladoCasa}}</small>
+                    <small *ngIf="!ejercicioCasaActual?.por_lado">Ritmo controlado</small>
+                  </div>
+                  <em>Toca +1 al completar cada repetición. Al llegar a la meta, el ejercicio avanza automáticamente.</em>
                 </div>
                 <button type="button"
+                        class="rep-tap-button"
                         (click)="sumarRepeticionCasa()"
+                        [attr.aria-label]="'Registrar repetición '+(repsCasaHechas+1)"
+                        title="Registrar una repetición"
                         [disabled]="repsCasaHechas>=objetivoRepsCasa || sesionCasaPausada">
-                  + 1 repetición
+                  <strong>+1</strong>
+                  <span>REP</span>
                 </button>
               </div>
 
-              <div class="home-session-controls">
+              <div class="home-session-controls"
+                   [class.rep-mode]="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'">
                 <button type="button" class="control-secondary" (click)="togglePausaCasa()">{{sesionCasaPausada ? '▶ Continuar' : 'Ⅱ Pausar'}}</button>
 
                 <button type="button"
+                        *ngIf="!(faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones')"
                         class="control-primary"
-                        (click)="avanzarEjercicioCasa()"
-                        [disabled]="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones' && repsCasaHechas !== objetivoRepsCasa">
-                  <ng-container *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'; else siguienteNormal">
-                    {{repsCasaHechas !== objetivoRepsCasa
-                      ? 'Completa la meta · avance automático'
-                      : 'Cambiando automáticamente…'}}
-                  </ng-container>
-                  <ng-template #siguienteNormal>Siguiente →</ng-template>
+                        (click)="avanzarEjercicioCasa()">
+                  Siguiente →
                 </button>
 
                 <button type="button" class="control-danger" (click)="cancelarSesionCasa()">Terminar sesión</button>
