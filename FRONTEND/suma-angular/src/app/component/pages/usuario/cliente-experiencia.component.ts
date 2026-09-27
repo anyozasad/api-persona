@@ -19,7 +19,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             <h1>Tu actividad en un solo lugar</h1>
             <p>Revisa tus sesiones, asistencias y actividades recientes. La idea es ayudarte a mantener una rutina saludable y constante.</p>
           </div>
-          <button type="button" (click)="cargarProgreso()">↻ Actualizar</button>
+          <button type="button" class="progress-refresh-btn" (click)="actualizarProgresoCompleto()">↻ Actualizar</button>
         </header>
 
         <section class="client-progress-kpis">
@@ -50,25 +50,41 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         </section>
 
         <section class="client-goal-card">
-          <div>
+          <div class="client-goal-copy">
             <span>META SEMANAL PERSONAL</span>
             <h2>Configura una meta realista</h2>
             <p>Elige entre 1 y 4 sesiones por semana. La meta sirve para organizar tu constancia, no para entrenar en exceso.</p>
           </div>
-          <form (ngSubmit)="guardarMeta()">
-            <label>Sesiones por semana
-              <select [(ngModel)]="meta.sesiones_semanales" name="meta_sesiones">
-                <option [ngValue]="1">1 sesión</option>
-                <option [ngValue]="2">2 sesiones</option>
-                <option [ngValue]="3">3 sesiones</option>
-                <option [ngValue]="4">4 sesiones</option>
-              </select>
-            </label>
-            <label class="client-reminder-toggle">
-              <input type="checkbox" [(ngModel)]="meta.recordatorios" name="meta_recordatorios">
-              <span>Mostrar recordatorios de entrenamiento</span>
-            </label>
-            <button type="submit" [disabled]="guardandoMeta">{{guardandoMeta ? 'Guardando...' : 'Guardar meta'}}</button>
+
+          <form class="client-goal-form" (ngSubmit)="guardarMeta()">
+            <div class="goal-session-control">
+              <span>SESIONES POR SEMANA</span>
+              <div class="goal-session-options" role="group" aria-label="Sesiones por semana">
+                <button type="button"
+                        *ngFor="let n of [1,2,3,4]"
+                        [class.active]="meta.sesiones_semanales===n"
+                        (click)="seleccionarMetaSesiones(n)">
+                  <b>{{n}}</b>
+                  <small>{{n===1 ? 'sesión' : 'sesiones'}}</small>
+                </button>
+              </div>
+            </div>
+
+            <div class="goal-form-actions">
+              <label class="client-reminder-toggle">
+                <input type="checkbox" [(ngModel)]="meta.recordatorios" name="meta_recordatorios">
+                <span class="reminder-switch" aria-hidden="true"><i></i></span>
+                <span class="reminder-copy">
+                  <b>Recordatorios</b>
+                  <small>{{meta.recordatorios ? 'Activados' : 'Desactivados'}}</small>
+                </span>
+              </label>
+
+              <button type="submit" class="goal-save-button" [disabled]="guardandoMeta">
+                <span>{{guardandoMeta ? 'Guardando...' : 'Guardar meta'}}</span>
+                <b *ngIf="!guardandoMeta">→</b>
+              </button>
+            </div>
           </form>
         </section>
 
@@ -134,12 +150,12 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           </article>
 
           <article class="client-extra-card">
-            <div class="client-card-head"><div><span>HISTORIAL</span><h2>Últimos registros</h2></div><button type="button" (click)="cargarHistorial()">↻</button></div>
+            <div class="client-card-head"><div><span>HISTORIAL</span><h2>Últimos registros</h2></div><button type="button" class="history-refresh-btn" (click)="cargarHistorial()" title="Actualizar historial">↻</button></div>
             <div class="client-history-tabs">
-              <button type="button" [class.active]="historialTab==='casa'" (click)="historialTab='casa'">En casa</button>
-              <button type="button" [class.active]="historialTab==='gym'" (click)="historialTab='gym'">Asistencias</button>
-              <button type="button" [class.active]="historialTab==='reservas'" (click)="historialTab='reservas'">Reservas</button>
-              <button type="button" [class.active]="historialTab==='pagos'" (click)="historialTab='pagos'">Pagos</button>
+              <button type="button" [class.active]="historialTab==='casa'" (click)="seleccionarHistorialTab('casa')">En casa</button>
+              <button type="button" [class.active]="historialTab==='gym'" (click)="seleccionarHistorialTab('gym')">Asistencias</button>
+              <button type="button" [class.active]="historialTab==='reservas'" (click)="seleccionarHistorialTab('reservas')">Reservas</button>
+              <button type="button" [class.active]="historialTab==='pagos'" (click)="seleccionarHistorialTab('pagos')">Pagos</button>
             </div>
 
             <div class="client-history-list" *ngIf="historialTab==='casa'">
@@ -558,11 +574,18 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
     if (this.modulo === 'soporte') this.cargarSoporte();
   }
 
-  cargarProgreso(): void {
+  cargarProgreso(mostrarAviso = false): void {
     this.cargando = true;
     this.api.progresoCliente().subscribe({
-      next: r => { this.progreso = r; this.cargando = false; },
-      error: e => { this.error = this.mensajeError(e); this.cargando = false; }
+      next: r => {
+        this.progreso = r;
+        this.cargando = false;
+        if (mostrarAviso) this.mostrarToast('Progreso actualizado.');
+      },
+      error: e => {
+        this.error = this.mensajeError(e);
+        this.cargando = false;
+      }
     });
   }
 
@@ -574,6 +597,26 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
       },
       error: () => this.meta = { sesiones_semanales: 3, recordatorios: true }
     });
+  }
+
+  seleccionarMetaSesiones(sesiones: number): void {
+    this.meta = {
+      ...this.meta,
+      sesiones_semanales: Math.max(1, Math.min(4, Number(sesiones || 1)))
+    };
+  }
+
+  actualizarProgresoCompleto(): void {
+    this.error = '';
+    this.cargarProgreso(true);
+    this.cargarMeta();
+    this.cargarEntrenador();
+    this.cargarHistorial();
+  }
+
+  seleccionarHistorialTab(tab: 'casa' | 'gym' | 'reservas' | 'pagos'): void {
+    this.historialTab = tab;
+    if (!this.historial) this.cargarHistorial();
   }
 
   guardarMeta(): void {
