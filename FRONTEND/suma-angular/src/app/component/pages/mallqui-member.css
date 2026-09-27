@@ -23829,3 +23829,102 @@
     opacity:1!important;
   }
 }
+
+
+/* PORTAL CLIENTE V83 · ENTRENAR HEREDA EL INICIO REAL */
+.module-training-v34:has(.training-home-clone){
+  padding:0!important;
+  gap:14px!important;
+  background:
+    radial-gradient(circle at 7% 42%,rgba(239,35,60,.08),transparent 19%),
+    linear-gradient(180deg,#06192c 0%,#071c31 42%,#06182a 100%)!important;
+}
+
+.training-home-clone{
+  position:relative!important;
+  z-index:1!important;
+  width:100%!important;
+  margin:0!important;
+  border-radius:0!important;
+}
+
+.training-home-clone .showcase-hero-main{
+  min-height:390px!important;
+}
+
+.training-home-clone .showcase-hero-photo{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center 38%!important;
+  z-index:-2!important;
+}
+
+.training-home-clone .showcase-hero-main:before{
+  z-index:-1!important;
+}
+
+.training-clone-next{
+  margin-top:14px!important;
+  padding:13px!important;
+  border:1px solid rgba(143,183,215,.16)!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.035)!important;
+}
+
+.training-clone-next>span{
+  display:block!important;
+  color:#ff7187!important;
+  font-size:7px!important;
+  font-weight:900!important;
+  letter-spacing:.9px!important;
+}
+
+.training-clone-next>b{
+  display:block!important;
+  margin-top:5px!important;
+  color:#fff!important;
+  font-size:10.5px!important;
+}
+
+.training-clone-next>p{
+  margin:4px 0 0!important;
+  color:#91a8ba!important;
+  font-size:8px!important;
+  line-height:1.45!important;
+}
+
+.training-plan-card .membership-icon{
+  font-size:27px!important;
+}
+
+.training-ready-card .showcase-profile-icon{
+  font-size:20px!important;
+  font-weight:900!important;
+}
+
+.training-home-clone + .home-training-alert,
+.training-home-clone ~ #config-entreno-casa{
+  margin-left:16px!important;
+  margin-right:16px!important;
+}
+
+@media(max-width:900px){
+  .training-home-clone .showcase-hero-main{
+    min-height:480px!important;
+  }
+}
+
+@media(max-width:620px){
+  .training-home-clone{
+    padding:10px!important;
+  }
+
+  .training-home-clone + .home-training-alert,
+  .training-home-clone ~ #config-entreno-casa{
+    margin-left:10px!important;
+    margin-right:10px!important;
+  }
+}
