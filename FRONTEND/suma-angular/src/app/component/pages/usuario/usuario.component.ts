@@ -308,7 +308,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
 
           <div *ngIf="errorCasa" class="home-training-alert">{{errorCasa}}</div>
 
-          <section class="home-plan-layout">
+          <section *ngIf="!sesionCasaActiva && !sesionCasaTerminada" class="home-plan-layout">
             <article class="member-module-card home-plan-card">
               <div class="card-title-block">
                 <span>OBJETIVO Y DÍAS</span>
