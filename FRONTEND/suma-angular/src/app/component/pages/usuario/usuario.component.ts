@@ -670,7 +670,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         <section *ngIf="moduloActivo==='rutinas'" class="member-module module-routines-v34 member-enter-up">
           <div class="member-module-hero hero-photo hero-photo-rutinas">
             <div><span>ENTRENAMIENTO</span><h1>Mis rutinas</h1><p>Consulta los ejercicios que tu entrenador preparó para ti.</p></div>
-            <div class="module-hero-icon module-hero-icon-rutinas" aria-hidden="true">
+            <div class="module-hero-icon module-hero-icon-rutinas module-hero-emblem" aria-hidden="true">
     <svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg>
   </div>
           </div>
@@ -700,7 +700,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         <section *ngIf="moduloActivo==='clases'" class="member-module module-classes-v34 member-enter-up">
           <div class="member-module-hero hero-photo hero-photo-clases">
             <div><span>AGENDA</span><h1>Clases disponibles</h1><p>Elige una clase, selecciona una fecha válida y reserva tu lugar.</p></div>
-            <div class="module-hero-icon module-hero-icon-clases" aria-hidden="true">
+            <div class="module-hero-icon module-hero-icon-clases module-hero-emblem" aria-hidden="true">
     <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg>
   </div>
           </div>
