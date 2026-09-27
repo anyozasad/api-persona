@@ -115,6 +115,67 @@ class GymSystemAdminController extends Controller
         return response()->json($this->mapSocio($s));
     }
 
+    public function fichaSocio(string $id)
+    {
+        $s=$this->db->table('socios')->where('id',$id)->first();
+        abort_if(!$s,404,'Socio no encontrado.');
+
+        $sus=$this->db->table('suscripciones as su')
+            ->join('planes as p','p.id','=','su.plan_id')
+            ->where('su.socio_id',$id)
+            ->where('su.estado','activa')
+            ->whereDate('su.fecha_fin','>=',today())
+            ->select('su.*','p.nombre as plan_nombre','p.precio','p.duracion_dias','p.descripcion as plan_descripcion','p.estado as plan_estado')
+            ->orderByDesc('su.fecha_fin')->first();
+
+        $membresiaActual=null;
+        if($sus){
+            $plan=(object)['id'=>$sus->plan_id,'nombre'=>$sus->plan_nombre,'precio'=>$sus->precio,'duracion_dias'=>$sus->duracion_dias,'descripcion'=>$sus->plan_descripcion,'estado'=>$sus->plan_estado];
+            $membresiaActual=['id_cliente_membresia'=>$sus->id,'fecha_inicio'=>$sus->fecha_inicio,'fecha_fin'=>$sus->fecha_fin,'estado'=>ucfirst($sus->estado),'membresia'=>$this->mapPlan($plan)];
+        }
+
+        $asistencias=$this->db->table('asistencias')->where('socio_id',$id)->orderByDesc('fecha_hora')->limit(50)->get()->map(fn($a)=>[
+            'id_asistencia'=>$a->id,'fecha_hora_entrada'=>$a->fecha_hora,
+            'fecha_hora_salida'=>$a->fecha_hora_salida??null,'estado'=>$a->estado??'Registrada'
+        ]);
+
+        $rutinas=$this->db->table('rutinas')->where('socio_id',$id)->orderByDesc('id')->get()->map(fn($r)=>[
+            'id_rutina'=>$r->id,'nombre_rutina'=>'Rutina #'.$r->id,'objetivo'=>$r->observaciones??'Plan de entrenamiento',
+            'descripcion'=>$r->observaciones,'estado'=>'Activo','entrenador'=>null,
+            'dia1'=>$r->dia1,'dia2'=>$r->dia2,'dia3'=>$r->dia3,'dia4'=>$r->dia4,'dia5'=>$r->dia5,'dia6'=>$r->dia6
+        ]);
+
+        $ventas=$this->db->table('ventas as v')->where('v.socio_id',$id)->orderByDesc('v.id')->limit(50)->get()->map(fn($v)=>[
+            'id_venta'=>$v->id,'tipo_comprobante'=>$v->tipo_comprobante??'Boleta',
+            'numero_comprobante'=>$v->numero_comprobante?:str_pad((string)$v->id,6,'0',STR_PAD_LEFT),
+            'fecha_venta'=>$v->fecha,'metodo_pago'=>ucfirst((string)$v->metodo_pago),
+            'total'=>(float)$v->total,'estado'=>$v->estado??'Registrado'
+        ]);
+
+        $pagos=$this->db->table('suscripciones as su')
+            ->join('planes as p','p.id','=','su.plan_id')->where('su.socio_id',$id)
+            ->select('su.*','p.nombre as plan_nombre','p.precio')->orderByDesc('su.id')->get()->map(fn($x)=>[
+                'id_pago'=>$x->id,'fecha_pago'=>$x->fecha_inicio,'monto'=>(float)$x->precio,
+                'metodo_pago'=>'Registro de suscripción','estado_pago'=>ucfirst($x->estado),
+                'cliente_membresia'=>['membresia'=>['nombre'=>$x->plan_nombre]]
+            ]);
+
+        return response()->json([
+            'cliente'=>$this->mapSocio($s),
+            'membresia_actual'=>$membresiaActual,
+            'resumen'=>[
+                'asistencias_mes'=>$this->db->table('asistencias')->where('socio_id',$id)->whereBetween('fecha_hora',[now()->startOfMonth(),now()->endOfMonth()])->count(),
+                'rutinas_activas'=>$rutinas->count(),
+                'sesiones_casa_mes'=>0,
+                'reservas_activas'=>0,
+                'total_ventas'=>round((float)$this->db->table('ventas')->where('socio_id',$id)->where(function($q){$q->whereNull('estado')->orWhere('estado','<>','Anulado');})->sum('total'),2),
+                'soporte_pendiente'=>0,
+            ],
+            'rutinas'=>$rutinas,'asistencias'=>$asistencias,'reservas'=>[],'pagos'=>$pagos,
+            'sesiones_casa'=>[],'ventas'=>$ventas,'soporte'=>[],
+        ]);
+    }
+
     public function guardarSocio(Request $request)
     {
         $d = $request->validate([
