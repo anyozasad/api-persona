@@ -158,6 +158,13 @@ class GymSystemAdminController extends Controller
         return response()->json($this->db->table('planes')->orderBy('nombre')->get()->map(fn($p) => $this->mapPlan($p))->values());
     }
 
+    public function plan(string $id)
+    {
+        $p=$this->db->table('planes')->where('id',$id)->first();
+        abort_if(!$p,404,'Plan no encontrado.');
+        return response()->json($this->mapPlan($p));
+    }
+
     public function guardarPlan(Request $request)
     {
         $d = $request->validate(['nombre'=>'required|string|max:50','precio'=>'required|numeric|min:0','duracion_meses'=>'nullable|integer|min:1','duracion_dias'=>'nullable|integer|min:1','descripcion'=>'nullable|string','estado'=>'nullable|string']);
@@ -388,7 +395,11 @@ class GymSystemAdminController extends Controller
 
     public function actualizarProducto(Request $request,string $id)
     {
-        $this->db->table('productos')->where('id',$id)->update($this->validarProducto($request));
+        $actual=$this->db->table('productos')->where('id',$id)->first();
+        abort_if(!$actual,404,'Producto no encontrado.');
+        $datos=$this->validarProducto($request);
+        if(!$request->has('stock')) $datos['stock']=$actual->stock;
+        $this->db->table('productos')->where('id',$id)->update($datos);
         return response()->json(['mensaje'=>'Producto actualizado.']);
     }
 
@@ -407,6 +418,13 @@ class GymSystemAdminController extends Controller
         abort_if($nuevo<0,422,'Stock insuficiente.');
         $this->db->table('productos')->where('id',$p->id)->update(['stock'=>$nuevo]);
         return response()->json(['mensaje'=>'Stock ajustado correctamente.','stock'=>$nuevo]);
+    }
+
+    public function kardex(Request $request)
+    {
+        // El repositorio de referencia modifica stock directamente y no posee tabla kardex.
+        // Este endpoint conserva la compatibilidad del dashboard actual sin leer otra base.
+        return response()->json([]);
     }
 
     public function ventas()
