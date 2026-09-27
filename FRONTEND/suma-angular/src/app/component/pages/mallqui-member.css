@@ -15167,3 +15167,622 @@
     justify-self:start!important;
   }
 }
+
+
+/* PORTAL CLIENTE V36 · MATCH VISUAL FINAL DE REFERENCIA */
+
+/* =========================================================
+   ESCALA DE ESCRITORIO BASADA EN LA ALTURA DEL VIEWPORT.
+   Evita que el portal se vea diminuto cuando el navegador
+   trabaja con un viewport CSS más ancho por el zoom.
+   ========================================================= */
+@media (min-width:1000px){
+  .member-page:has(.dashboard-showcase-v30){
+    --mallqui-red:#ff2746;
+    --mallqui-navy:#03182c;
+    --mallqui-panel:#062a49;
+    min-height:100dvh!important;
+    background:
+      radial-gradient(circle at 4% 88%,rgba(239,35,60,.12),transparent 23%),
+      linear-gradient(180deg,#03182c 0%,#021526 100%)!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .member-topbar{
+    padding:0 1.45vw 0!important;
+    background:
+      radial-gradient(circle at 87% -15%,rgba(21,104,151,.15),transparent 25%),
+      linear-gradient(90deg,#02172b 0%,#031a31 50%,#021426 100%)!important;
+    border-bottom:1px solid rgba(255,255,255,.08)!important;
+    box-shadow:0 8px 28px rgba(0,0,0,.16)!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .member-top-row{
+    width:100%!important;
+    max-width:none!important;
+    min-height:8.8dvh!important;
+    margin:0!important;
+    grid-template-columns:20.5% minmax(0,1fr) auto!important;
+    gap:1.15vw!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .member-brand{
+    gap:.65vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-brand img{
+    width:7.1dvh!important;
+    height:7.1dvh!important;
+    flex:0 0 7.1dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-brand b{
+    font-size:2.05dvh!important;
+    line-height:1!important;
+    letter-spacing:.03em!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-brand small{
+    margin-top:.55dvh!important;
+    font-size:1.05dvh!important;
+  }
+
+  /* NAV PRINCIPAL */
+  .member-page:has(.dashboard-showcase-v30) .member-nav-primary{
+    justify-content:center!important;
+    gap:.65vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-nav-primary button{
+    min-height:5.85dvh!important;
+    padding:0 1vw!important;
+    gap:.55vw!important;
+    border-radius:1.25dvh!important;
+    font-size:1.52dvh!important;
+    line-height:1!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-nav-primary button i{
+    width:3.55dvh!important;
+    height:3.55dvh!important;
+    flex:0 0 3.55dvh!important;
+    border-radius:.85dvh!important;
+    background:rgba(255,255,255,.045)!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-nav-primary button i svg{
+    width:2.25dvh!important;
+    height:2.25dvh!important;
+    display:block!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.8!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-nav-primary button.active{
+    min-width:8.4dvh!important;
+    padding-left:.78vw!important;
+    padding-right:1.05vw!important;
+    background:linear-gradient(135deg,#ff3853 0%,#ff2343 55%,#ec1736 100%)!important;
+    border-color:#ff6076!important;
+    box-shadow:
+      0 0 0 .35dvh rgba(255,39,70,.12),
+      0 1.15dvh 2.6dvh rgba(239,35,60,.31),
+      inset 0 1px 0 rgba(255,255,255,.22)!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-nav-primary button.active:after{
+    bottom:-1.55dvh!important;
+    height:.32dvh!important;
+  }
+
+  /* ACCIONES DERECHA */
+  .member-page:has(.dashboard-showcase-v30) .member-user-actions{
+    gap:.55vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-system-status{
+    min-height:4.95dvh!important;
+    padding:0 .85vw!important;
+    border-radius:1.05dvh!important;
+    font-size:1.15dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-system-status i{
+    width:.78dvh!important;
+    height:.78dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-alert-button{
+    width:4.95dvh!important;
+    height:4.95dvh!important;
+    border-radius:1.05dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-bell-icon,
+  .member-page:has(.dashboard-showcase-v30) .member-bell-icon svg{
+    width:2.05dvh!important;
+    height:2.05dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-alert-button>b{
+    min-width:1.75dvh!important;
+    height:1.75dvh!important;
+    top:-.45dvh!important;
+    right:-.35dvh!important;
+    font-size:.78dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-mini-profile{
+    min-width:13.5vw!important;
+    min-height:4.95dvh!important;
+    padding:.45dvh .72vw!important;
+    border-radius:1.05dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-mini-profile>span{
+    width:3.85dvh!important;
+    height:3.85dvh!important;
+    font-size:1.35dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-mini-profile b{
+    font-size:1.15dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-mini-profile small{
+    margin-top:.15dvh!important;
+    font-size:.87dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-logout{
+    min-width:6.5vw!important;
+    height:4.95dvh!important;
+    border-radius:1.05dvh!important;
+    font-size:1.15dvh!important;
+  }
+
+  /* SUBNAV */
+  .member-page:has(.dashboard-showcase-v30) .member-subnav{
+    width:100%!important;
+    max-width:none!important;
+    min-height:6.25dvh!important;
+    margin:0!important;
+    padding:.62dvh .68vw!important;
+    border-radius:1.25dvh!important;
+    box-shadow:0 .7dvh 2.2dvh rgba(4,26,47,.08)!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-subnav-scroll{
+    gap:.5vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-subnav-scroll button{
+    min-height:4.75dvh!important;
+    padding:0 1.05vw!important;
+    gap:.55vw!important;
+    border-radius:.95dvh!important;
+    font-size:1.27dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-subnav-scroll button i{
+    min-width:1.75dvh!important;
+    width:1.75dvh!important;
+    height:1.75dvh!important;
+    display:grid!important;
+    place-items:center!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-subnav-scroll button i svg{
+    width:1.75dvh!important;
+    height:1.75dvh!important;
+    display:block!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.85!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .member-subnav-scroll button:nth-child(4) i svg{
+    fill:currentColor!important;
+    stroke:currentColor!important;
+    stroke-width:1.2!important;
+  }
+
+  /* MAIN */
+  .member-page:has(.dashboard-showcase-v30) .member-main{
+    width:calc(100% - 3vw)!important;
+    max-width:none!important;
+    margin:0 auto!important;
+    padding:1.8dvh 0 3dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .dashboard-showcase-v30{
+    width:100%!important;
+    max-width:none!important;
+    gap:1.25dvh!important;
+  }
+
+  /* HERO + ENTRENADOR */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-grid{
+    grid-template-columns:minmax(0,3.24fr) minmax(0,1fr)!important;
+    gap:.9vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main,
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-panel{
+    height:42.9dvh!important;
+    min-height:42.9dvh!important;
+    border-radius:1.8dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main{
+    overflow:hidden!important;
+    background:
+      radial-gradient(circle at 8% 48%,rgba(11,57,92,.28),transparent 35%),
+      #031a30!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main:before{
+    width:66%!important;
+    right:0!important;
+    left:auto!important;
+    background:url('/assets/showcase/hero-showcase.svg') center 46%/cover no-repeat!important;
+    filter:saturate(1.08) contrast(1.04) brightness(.98)!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-shade{
+    background:
+      linear-gradient(90deg,#03182c 0%,rgba(3,24,44,.97) 29%,rgba(3,24,44,.56) 52%,rgba(3,24,44,.10) 76%),
+      linear-gradient(180deg,rgba(2,17,31,.05),rgba(2,17,31,.22))!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-copy{
+    width:48%!important;
+    padding:4.45dvh 0 12.2dvh 2.1vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-eyebrow{
+    margin-bottom:1.45dvh!important;
+    font-size:1.18dvh!important;
+    letter-spacing:.17em!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-copy h1{
+    font-size:5.75dvh!important;
+    line-height:.98!important;
+    letter-spacing:-.055em!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-copy>p{
+    max-width:31vw!important;
+    margin-top:1.45dvh!important;
+    font-size:1.62dvh!important;
+    line-height:1.55!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-actions{
+    margin-top:2.55dvh!important;
+    gap:.8vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-btn-primary{
+    min-width:15.8vw!important;
+    min-height:6.8dvh!important;
+    padding:0 .95vw!important;
+    border-radius:1.3dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-btn-primary>i{
+    width:4.35dvh!important;
+    height:4.35dvh!important;
+    font-size:1.5dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-btn-primary span b{
+    font-size:1.38dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-btn-primary span small{
+    font-size:1.02dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-btn-primary em{
+    font-size:2.1dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-btn-secondary{
+    min-height:6.8dvh!important;
+    padding:0 1.3vw!important;
+    border-radius:1.2dvh!important;
+    font-size:1.35dvh!important;
+    gap:.7vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-btn-secondary i{
+    font-size:1.8dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-quote{
+    right:1.95vw!important;
+    top:6.9dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-quote>b{
+    font-size:1.6dvh!important;
+    line-height:1.18!important;
+  }
+
+  /* KPI HERO */
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpis{
+    left:1.15vw!important;
+    right:1.15vw!important;
+    bottom:1.35dvh!important;
+    gap:.72vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi{
+    min-height:9.6dvh!important;
+    padding:1.1dvh .75vw!important;
+    grid-template-columns:5.1dvh minmax(0,1fr) auto!important;
+    gap:.65vw!important;
+    border-radius:1.2dvh!important;
+    background:rgba(3,31,55,.87)!important;
+    border:1px solid rgba(111,159,196,.29)!important;
+    backdrop-filter:blur(10px)!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi>i{
+    width:4.95dvh!important;
+    height:4.95dvh!important;
+    font-size:1.95dvh!important;
+    border-radius:1.05dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi>span small{
+    font-size:1.08dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi>span b{
+    font-size:2.7dvh!important;
+    line-height:1!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi>span em{
+    font-size:.92dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi mark{
+    padding:.55dvh .5vw!important;
+    font-size:.92dvh!important;
+    border-radius:.65dvh!important;
+  }
+
+  /* ENTRENADOR */
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-panel{
+    padding:2.05dvh 1.25vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-head{
+    padding-bottom:1.45dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-head>b{
+    font-size:1.55dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-head>span{
+    font-size:1.05dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-profile{
+    grid-template-columns:9.2dvh minmax(0,1fr)!important;
+    gap:.85vw!important;
+    margin-top:1.65dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-profile img{
+    width:8.9dvh!important;
+    height:8.9dvh!important;
+    border:.34dvh solid #fff!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-profile h3{
+    font-size:1.85dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-profile p{
+    margin-top:.55dvh!important;
+    font-size:1.17dvh!important;
+    line-height:1.5!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-tools{
+    margin-top:2dvh!important;
+    gap:.6vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-tools button{
+    min-height:8.6dvh!important;
+    border-radius:1.15dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-tools i{
+    font-size:2.2dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-tools span{
+    margin-top:.4dvh!important;
+    font-size:1.05dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-start{
+    min-height:6.25dvh!important;
+    margin-top:1.85dvh!important;
+    padding:0 1vw!important;
+    border-radius:1.15dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-start i{
+    width:3.75dvh!important;
+    height:3.75dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-start span{
+    font-size:1.37dvh!important;
+  }
+
+  /* FILA MEMBRESÍA / CLASE / PROGRESO */
+  .member-page:has(.dashboard-showcase-v30) .showcase-overview-grid{
+    grid-template-columns:1.08fr 1.03fr .95fr!important;
+    gap:.8vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-membership-card,
+  .member-page:has(.dashboard-showcase-v30) .showcase-class-card,
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-card{
+    min-height:17.2dvh!important;
+    height:17.2dvh!important;
+    border-radius:1.55dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-membership-card{
+    padding:1.6dvh 1vw!important;
+    grid-template-columns:8dvh minmax(0,1fr) auto!important;
+    gap:.9vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .membership-icon{
+    width:7.4dvh!important;
+    height:7.4dvh!important;
+    font-size:2.7dvh!important;
+    border-radius:1.25dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .membership-copy span{
+    font-size:1.12dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .membership-copy h2{
+    margin:.45dvh 0!important;
+    font-size:2.55dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .membership-copy p{
+    font-size:1.22dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .membership-actions>span{
+    padding:.55dvh .55vw!important;
+    font-size:1.02dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .membership-actions button{
+    min-height:4.2dvh!important;
+    min-width:7vw!important;
+    font-size:1.05dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-class-card,
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-card{
+    padding:1.35dvh .9vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-card-head>b{
+    font-size:1.26dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-card-head>button{
+    font-size:1.05dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-class-content{
+    margin-top:1.1dvh!important;
+    grid-template-columns:10.6dvh minmax(0,1fr)!important;
+    gap:.75vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-class-content>img{
+    width:10.6dvh!important;
+    height:7.9dvh!important;
+    border-radius:.85dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-class-content h3{
+    font-size:1.48dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-class-content p{
+    margin-top:.7dvh!important;
+    font-size:1.08dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-body{
+    margin-top:1dvh!important;
+    grid-template-columns:9.8dvh minmax(0,1fr)!important;
+    gap:.75vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-ring{
+    width:9.4dvh!important;
+    height:9.4dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-ring>div{
+    width:6.7dvh!important;
+    height:6.7dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-ring b{
+    font-size:1.85dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-list p{
+    font-size:1.05dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-list p>b{
+    font-size:1.08dvh!important;
+  }
+
+  /* ACCESOS RÁPIDOS + PERFIL */
+  .member-page:has(.dashboard-showcase-v30) .showcase-bottom-grid{
+    grid-template-columns:1.58fr 1fr!important;
+    gap:.8vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-quick-card,
+  .member-page:has(.dashboard-showcase-v30) .showcase-profile-card{
+    min-height:16.1dvh!important;
+    height:16.1dvh!important;
+    border-radius:1.45dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-quick-card{
+    padding:1.25dvh .9vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-quick-card h2{
+    margin:0 0 1.05dvh!important;
+    font-size:1.7dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-quick-grid{
+    height:11.15dvh!important;
+    gap:.5vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-quick-grid button{
+    min-height:11.15dvh!important;
+    height:11.15dvh!important;
+    padding:.75dvh .35vw!important;
+    border-radius:.9dvh!important;
+    gap:.35dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-quick-grid i{
+    width:4.3dvh!important;
+    height:4.3dvh!important;
+    margin:0 0 .15dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-quick-grid i svg{
+    width:2.55dvh!important;
+    height:2.55dvh!important;
+    display:block!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.8!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-quick-grid .quick-gold svg{
+    fill:currentColor!important;
+    stroke:currentColor!important;
+    stroke-width:1.15!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-quick-grid b{
+    font-size:1.05dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-quick-grid small{
+    font-size:.9dvh!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-profile-card{
+    padding:1.6dvh 1.15vw!important;
+    grid-template-columns:5.8dvh minmax(0,1fr) auto auto!important;
+    gap:.8vw!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-profile-icon{
+    width:5.6dvh!important;
+    height:5.6dvh!important;
+    border-radius:1.05dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-profile-icon svg{
+    width:2.9dvh!important;
+    height:2.9dvh!important;
+    fill:none!important;
+    stroke:currentColor!important;
+    stroke-width:1.8!important;
+    stroke-linecap:round!important;
+    stroke-linejoin:round!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-profile-copy h2{
+    font-size:1.75dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-profile-copy p{
+    margin:.45dvh 0 .85dvh!important;
+    font-size:1.03dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-profile-progress{
+    height:.88dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-profile-percent{
+    font-size:1.55dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-profile-card>button{
+    min-width:10vw!important;
+    min-height:5.15dvh!important;
+    padding:0 .9vw!important;
+    border-radius:1dvh!important;
+    font-size:1.12dvh!important;
+  }
+
+  /* Microanimación discreta, como dashboard premium */
+  .member-page:has(.dashboard-showcase-v30) .showcase-quick-grid button,
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi,
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-tools button{
+    transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-quick-grid button:hover,
+  .member-page:has(.dashboard-showcase-v30) .showcase-kpi:hover,
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-tools button:hover{
+    transform:translateY(-.35dvh)!important;
+    box-shadow:0 1.2dvh 2.6dvh rgba(4,25,45,.16)!important;
+  }
+}
+
+/* Pantallas menos altas: conserva proporción sin aplastar el portal */
+@media (min-width:1000px) and (max-height:720px){
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main,
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-panel{
+    height:46dvh!important;
+    min-height:46dvh!important;
+  }
+  .member-page:has(.dashboard-showcase-v30) .showcase-overview-grid,
+  .member-page:has(.dashboard-showcase-v30) .showcase-bottom-grid{
+    margin-top:.6dvh!important;
+  }
+}
