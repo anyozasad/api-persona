@@ -16758,3 +16758,314 @@
     padding:5px 8px!important;
   }
 }
+
+
+/* PORTAL CLIENTE V51 · KPI Y MEMBRESÍA AJUSTADOS A LA REFERENCIA */
+@media (min-width:1000px){
+
+  /* ===== KPI DEL HERO: tamaño, separación y proporción como la referencia ===== */
+  .member-page .dashboard-showcase-v30 .showcase-kpis{
+    position:absolute!important;
+    left:18px!important;
+    right:18px!important;
+    bottom:14px!important;
+    z-index:6!important;
+
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:12px!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi{
+    min-width:0!important;
+    min-height:88px!important;
+    height:88px!important;
+
+    display:grid!important;
+    grid-template-columns:58px minmax(0,1fr) auto!important;
+    align-items:center!important;
+    column-gap:12px!important;
+
+    padding:10px 12px!important;
+    border-radius:15px!important;
+
+    background:rgba(4,31,55,.88)!important;
+    border:1px solid rgba(103,153,190,.34)!important;
+    box-shadow:0 10px 24px rgba(0,0,0,.22)!important;
+
+    backdrop-filter:blur(11px)!important;
+    -webkit-backdrop-filter:blur(11px)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi>i{
+    width:56px!important;
+    height:56px!important;
+    border-radius:13px!important;
+    display:grid!important;
+    place-items:center!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi-icon svg{
+    width:30px!important;
+    height:30px!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi>span{
+    min-width:0!important;
+    align-self:center!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi>span small{
+    display:block!important;
+    margin:0!important;
+    font-size:12px!important;
+    line-height:1.05!important;
+    font-weight:700!important;
+    color:#edf4fa!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi>span b{
+    display:block!important;
+    margin:4px 0 0!important;
+    font-size:27px!important;
+    line-height:.95!important;
+    font-weight:950!important;
+    letter-spacing:-.6px!important;
+    color:#fff!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi>span em{
+    display:block!important;
+    margin-top:5px!important;
+    font-size:10px!important;
+    line-height:1!important;
+    font-style:normal!important;
+    color:#c3d3e0!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi mark{
+    align-self:start!important;
+    justify-self:end!important;
+    margin:0!important;
+    padding:6px 9px!important;
+    border-radius:10px!important;
+    font-size:10px!important;
+    line-height:1!important;
+    font-weight:900!important;
+    white-space:nowrap!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi.kpi-red>i{
+    background:rgba(255,34,72,.14)!important;
+    border:1px solid rgba(255,49,84,.58)!important;
+    color:#ff3554!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi.kpi-orange>i{
+    background:rgba(240,143,24,.14)!important;
+    border:1px solid rgba(246,151,29,.48)!important;
+    color:#ff9d24!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi.kpi-purple>i{
+    background:rgba(119,75,234,.18)!important;
+    border:1px solid rgba(137,87,255,.48)!important;
+    color:#8c5cff!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi.kpi-green>i{
+    background:rgba(18,193,137,.14)!important;
+    border:1px solid rgba(36,224,160,.52)!important;
+    color:#20e3a3!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi.kpi-red mark,
+  .member-page .dashboard-showcase-v30 .showcase-kpi.kpi-orange mark,
+  .member-page .dashboard-showcase-v30 .showcase-kpi.kpi-green mark{
+    background:rgba(11,126,105,.34)!important;
+    color:#43efbe!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-kpi.kpi-purple mark{
+    background:rgba(28,77,113,.62)!important;
+    color:#cfe8fa!important;
+  }
+
+  /* ===== MEMBRESÍA: composición exacta de la tarjeta roja de la referencia ===== */
+  .member-page .dashboard-showcase-v30 .showcase-membership-card{
+    position:relative!important;
+    isolation:isolate!important;
+    overflow:hidden!important;
+
+    height:145px!important;
+    min-height:145px!important;
+
+    display:grid!important;
+    grid-template-columns:84px minmax(0,1fr)!important;
+    align-items:center!important;
+    gap:18px!important;
+
+    padding:18px 170px 18px 20px!important;
+
+    border-radius:17px!important;
+    border:1px solid rgba(255,68,101,.72)!important;
+
+    background:
+      radial-gradient(circle at 8% 48%,rgba(255,70,100,.20),transparent 29%),
+      linear-gradient(118deg,#a31235 0%,#83102f 48%,#54091f 100%)!important;
+
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.02),
+      0 14px 32px rgba(63,3,20,.26)!important;
+  }
+
+  /* diagonal oscura/roja visible en el centro, como la maqueta */
+  .member-page .dashboard-showcase-v30 .showcase-membership-card::before{
+    content:""!important;
+    position:absolute!important;
+    z-index:0!important;
+    inset:0!important;
+    pointer-events:none!important;
+    background:
+      linear-gradient(
+        122deg,
+        rgba(255,45,78,.10) 0%,
+        rgba(255,45,78,.10) 44%,
+        rgba(72,5,27,.22) 44.2%,
+        rgba(72,5,27,.22) 100%
+      )!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .showcase-membership-card>*{
+    position:relative!important;
+    z-index:1!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-icon{
+    width:82px!important;
+    height:82px!important;
+    margin:0!important;
+
+    display:grid!important;
+    place-items:center!important;
+
+    border-radius:15px!important;
+    background:rgba(78,2,27,.52)!important;
+    color:#ff6e50!important;
+
+    box-shadow:inset 0 0 0 1px rgba(255,100,126,.10)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-icon svg{
+    width:43px!important;
+    height:43px!important;
+    fill:currentColor!important;
+    stroke:currentColor!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-copy{
+    min-width:0!important;
+    align-self:center!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-copy span{
+    display:block!important;
+    margin:0!important;
+    font-size:12px!important;
+    line-height:1!important;
+    font-weight:900!important;
+    letter-spacing:.35px!important;
+    color:#ffdbe1!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-copy h2{
+    margin:9px 0 7px!important;
+    font-size:25px!important;
+    line-height:1!important;
+    font-weight:950!important;
+    letter-spacing:-.45px!important;
+    color:#fff!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-copy p{
+    margin:0!important;
+    font-size:12px!important;
+    line-height:1.15!important;
+    color:#ffe4e9!important;
+  }
+
+  /* badge arriba y botón abajo exactamente como la referencia */
+  .member-page .dashboard-showcase-v30 .membership-actions{
+    position:absolute!important;
+    z-index:3!important;
+    top:18px!important;
+    right:18px!important;
+    bottom:18px!important;
+
+    width:145px!important;
+
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-end!important;
+    justify-content:space-between!important;
+    gap:0!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-actions>span{
+    min-height:34px!important;
+    padding:0 13px!important;
+
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:8px!important;
+
+    border-radius:11px!important;
+    background:rgba(17,160,113,.22)!important;
+    border:1px solid rgba(52,232,166,.65)!important;
+
+    color:#cffff0!important;
+    font-size:12px!important;
+    font-weight:900!important;
+
+    box-shadow:0 0 16px rgba(25,216,152,.08)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-actions>span i{
+    width:10px!important;
+    height:10px!important;
+    border-radius:50%!important;
+    background:#20e3a0!important;
+    box-shadow:0 0 9px rgba(32,227,160,.72)!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-actions button{
+    width:145px!important;
+    min-width:145px!important;
+    height:48px!important;
+    min-height:48px!important;
+
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:14px!important;
+
+    padding:0 14px!important;
+    border-radius:11px!important;
+
+    border:1px solid rgba(255,62,98,.82)!important;
+    background:rgba(103,5,35,.30)!important;
+
+    color:#fff!important;
+    font-size:12px!important;
+    font-weight:900!important;
+
+    box-shadow:none!important;
+  }
+
+  .member-page .dashboard-showcase-v30 .membership-actions button em{
+    font-size:19px!important;
+    line-height:1!important;
+    font-style:normal!important;
+  }
+}
