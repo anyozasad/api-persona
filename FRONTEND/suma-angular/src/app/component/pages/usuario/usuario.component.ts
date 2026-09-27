@@ -310,26 +310,89 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         </section>
 
         <section *ngIf="moduloActivo==='casa'" class="member-module home-training-module module-training-v34 member-enter-up">
-          <div class="member-module-hero home-training-hero hero-photo hero-photo-casa">
-            <div>
-              <span>ENTRENAMIENTO EN CASA</span>
-              <h1>Elige qué quieres fortalecer hoy</h1>
-              <p>Tu sesión te indica el grupo muscular, las repeticiones, cuándo cambiar de lado, el descanso y qué ejercicio continúa.</p>
-            </div>
-            <div class="module-hero-icon home-training-icon">⚡</div>
-          </div>
+          <section class="training-dashboard-head" *ngIf="!sesionCasaActiva && !sesionCasaTerminada">
+            <article class="training-dashboard-hero">
+              <div class="training-dashboard-copy">
+                <span>ENTRENAMIENTO EN CASA</span>
+                <h1>Entrena a tu ritmo</h1>
+                <p>Organiza tu sesión, elige una zona y sigue cada movimiento con una guía visual dentro de Mallqui Gym.</p>
 
-          <div class="home-flow-stepper" *ngIf="!sesionCasaActiva && !sesionCasaTerminada">
-            <div class="active"><span>1</span><div><b>Planifica</b><small>Objetivo, días y grupos</small></div></div>
-            <i>→</i>
-            <div><span>2</span><div><b>Elige tu sesión</b><small>Zona y ejercicios</small></div></div>
-            <i>→</i>
-            <div><span>3</span><div><b>Entrena</b><small>Guía, repeticiones y descanso</small></div></div>
-          </div>
+                <div class="training-dashboard-actions">
+                  <button type="button" class="training-primary-action" (click)="irConfigCasa()">
+                    <i>⚡</i>
+                    <span><b>Preparar entrenamiento</b><small>Objetivo, zona y ejercicios</small></span>
+                    <em>→</em>
+                  </button>
+
+                  <button type="button" class="training-secondary-action" (click)="abrirModulo('rutinas')">
+                    <i>
+                      <svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg>
+                    </i>
+                    <b>Mis rutinas</b>
+                  </button>
+                </div>
+              </div>
+
+              <div class="training-hero-status">
+                <span><i></i> SESIÓN PERSONAL</span>
+                <strong>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</strong>
+                <small>{{ejerciciosCasaActuales.length}} ejercicios · {{duracionEstimadaCasa(zonaCasaSeleccionada)}} min aprox.</small>
+              </div>
+            </article>
+
+            <aside class="training-dashboard-side">
+              <div class="training-side-head">
+                <div>
+                  <span>TU PLAN ACTUAL</span>
+                  <h2>Resumen de hoy</h2>
+                </div>
+                <i class="training-side-icon">⚡</i>
+              </div>
+
+              <div class="training-side-grid">
+                <article>
+                  <span>01</span>
+                  <div><small>OBJETIVO</small><b>{{planCasa.objetivo | titlecase}}</b></div>
+                </article>
+                <article>
+                  <span>02</span>
+                  <div><small>DÍAS / SEMANA</small><b>{{planCasa.dias.length}}</b></div>
+                </article>
+                <article>
+                  <span>03</span>
+                  <div><small>ZONA ACTUAL</small><b>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</b></div>
+                </article>
+                <article>
+                  <span>04</span>
+                  <div><small>DURACIÓN</small><b>{{duracionEstimadaCasa(zonaCasaSeleccionada)}} min</b></div>
+                </article>
+              </div>
+
+              <button type="button" class="training-side-link" (click)="abrirModulo('progreso')">
+                <span>Ver mi progreso</span><b>→</b>
+              </button>
+            </aside>
+          </section>
+
+          <section class="training-progress-window" *ngIf="!sesionCasaActiva && !sesionCasaTerminada">
+            <div class="training-progress-title">
+              <span>FLUJO DE ENTRENAMIENTO</span>
+              <h2>De la planificación a la sesión</h2>
+              <p>Avanza paso a paso sin salir de esta pantalla.</p>
+            </div>
+
+            <div class="home-flow-stepper">
+              <div class="active"><span>1</span><div><b>Planifica</b><small>Objetivo, días y grupos</small></div></div>
+              <i>→</i>
+              <div><span>2</span><div><b>Elige tu sesión</b><small>Zona y ejercicios</small></div></div>
+              <i>→</i>
+              <div><span>3</span><div><b>Entrena</b><small>Guía, repeticiones y descanso</small></div></div>
+            </div>
+          </section>
 
           <div *ngIf="errorCasa" class="home-training-alert">{{errorCasa}}</div>
 
-          <section *ngIf="!sesionCasaActiva && !sesionCasaTerminada" class="home-plan-layout">
+          <section id="config-entreno-casa" *ngIf="!sesionCasaActiva && !sesionCasaTerminada" class="home-plan-layout">
             <article class="member-module-card home-plan-card">
               <div class="card-title-block">
                 <span>OBJETIVO Y DÍAS</span>
@@ -1094,6 +1157,12 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     });
   }
   abrirModulo(m:string){this.mobileMenuAbierto=false;this.moduloActivo=m;if(m==='casa'&&!this.casaCargado)this.cargarEntrenamientoCasa();if(m==='avisos')this.cargarContadorAvisos();window.scrollTo({top:0,behavior:'smooth'});}
+
+  irConfigCasa():void{
+    setTimeout(()=>{
+      document.getElementById('config-entreno-casa')?.scrollIntoView({behavior:'smooth',block:'start'});
+    },0);
+  }
 
   actualizarSeccion(modulo:'rutinas'|'clases'):void{
     this.cargando=true;
