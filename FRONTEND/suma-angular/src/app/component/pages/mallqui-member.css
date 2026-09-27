@@ -20672,3 +20672,157 @@
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
 }
+
+
+/* PORTAL CLIENTE V74 · CONTADOR COMPACTO SIN BOTON GIGANTE */
+@media (min-width:821px){
+
+  .module-training-v34 .home-rep-counter-panel{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:center!important;
+    gap:16px!important;
+    padding:14px 16px!important;
+    min-height:86px!important;
+    background:
+      radial-gradient(circle at 100% 50%,rgba(255,49,83,.07),transparent 26%),
+      linear-gradient(145deg,rgba(7,42,70,.80),rgba(4,28,49,.88))!important;
+  }
+
+  .module-training-v34 .rep-counter-copy{
+    min-width:0!important;
+  }
+
+  .module-training-v34 .rep-counter-copy>span{
+    display:block!important;
+    color:#ff7188!important;
+    font-size:8px!important;
+    font-weight:950!important;
+    letter-spacing:1.05px!important;
+  }
+
+  .module-training-v34 .rep-counter-line{
+    display:flex!important;
+    align-items:baseline!important;
+    gap:12px!important;
+    margin-top:5px!important;
+  }
+
+  .module-training-v34 .rep-counter-line b{
+    color:#fff!important;
+    font-size:23px!important;
+    line-height:1!important;
+    font-weight:950!important;
+    letter-spacing:-.4px!important;
+  }
+
+  .module-training-v34 .rep-counter-line b i{
+    color:#8fa6b8!important;
+    font-size:14px!important;
+    font-style:normal!important;
+    font-weight:850!important;
+  }
+
+  .module-training-v34 .rep-counter-line small{
+    color:#a9becc!important;
+    font-size:9px!important;
+    font-weight:800!important;
+  }
+
+  .module-training-v34 .rep-counter-copy>em{
+    display:block!important;
+    max-width:650px!important;
+    margin-top:6px!important;
+    color:#8fa7b8!important;
+    font-size:8px!important;
+    line-height:1.45!important;
+    font-style:normal!important;
+  }
+
+  /* Acción pequeña e integrada: mantiene la función sin dominar la pantalla. */
+  .module-training-v34 .rep-tap-button{
+    width:62px!important;
+    min-width:62px!important;
+    height:62px!important;
+    min-height:62px!important;
+    padding:0!important;
+
+    display:grid!important;
+    align-content:center!important;
+    justify-items:center!important;
+    gap:1px!important;
+
+    border-radius:18px!important;
+    border:1px solid rgba(255,91,116,.38)!important;
+
+    background:linear-gradient(145deg,#ff3a56,#ed183b)!important;
+    color:#fff!important;
+
+    box-shadow:
+      0 12px 24px rgba(255,39,72,.19),
+      inset 0 1px 0 rgba(255,255,255,.18)!important;
+
+    cursor:pointer!important;
+    transition:transform .18s ease,filter .18s ease,box-shadow .18s ease!important;
+  }
+
+  .module-training-v34 .rep-tap-button strong{
+    color:#fff!important;
+    font-size:21px!important;
+    line-height:1!important;
+    font-weight:950!important;
+  }
+
+  .module-training-v34 .rep-tap-button span{
+    color:#ffdbe1!important;
+    font-size:7px!important;
+    font-weight:950!important;
+    letter-spacing:.8px!important;
+  }
+
+  .module-training-v34 .rep-tap-button:not(:disabled):hover{
+    transform:translateY(-2px) scale(1.025)!important;
+    filter:brightness(1.04)!important;
+    box-shadow:
+      0 16px 28px rgba(255,39,72,.25),
+      inset 0 1px 0 rgba(255,255,255,.20)!important;
+  }
+
+  .module-training-v34 .rep-tap-button:disabled{
+    opacity:.48!important;
+    cursor:not-allowed!important;
+    filter:saturate(.55)!important;
+    box-shadow:none!important;
+  }
+
+  /* En ejercicios por repeticiones ya no aparece el botón redundante
+     "Completa la meta · avance automático". */
+  .module-training-v34 .home-session-controls.rep-mode{
+    grid-template-columns:1fr 1fr!important;
+  }
+
+  .module-training-v34 .home-session-controls.rep-mode .control-secondary,
+  .module-training-v34 .home-session-controls.rep-mode .control-danger{
+    min-height:44px!important;
+  }
+}
+
+@media (max-width:820px){
+  .module-training-v34 .home-rep-counter-panel{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:12px!important;
+  }
+
+  .module-training-v34 .rep-tap-button{
+    width:58px!important;
+    min-width:58px!important;
+    height:58px!important;
+    min-height:58px!important;
+    border-radius:17px!important;
+  }
+
+  .module-training-v34 .home-session-controls.rep-mode{
+    grid-template-columns:1fr 1fr!important;
+  }
+}
