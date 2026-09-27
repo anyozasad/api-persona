@@ -17339,90 +17339,6 @@
   }
 }
 
-
-/* PORTAL CLIENTE V59 · RITMO FUNCIONAL DEL MENÚ PRINCIPAL */
-@media (min-width:1000px){
-
-  /* Los botones siguen el mismo orden funcional del portal:
-     Entrenar → Rutinas → Clases → Progreso. */
-  .member-page .member-nav-primary{
-    position:relative!important;
-    display:flex!important;
-    align-items:center!important;
-  }
-
-  .member-page .member-nav-primary .nav-step{
-    position:relative!important;
-    isolation:isolate!important;
-    transition:
-      color .18s ease,
-      background .18s ease,
-      border-color .18s ease,
-      transform .18s ease,
-      box-shadow .18s ease!important;
-  }
-
-  .member-page .member-nav-primary .nav-step:not(.active):hover{
-    transform:translateY(-1px)!important;
-    background:rgba(255,255,255,.045)!important;
-  }
-
-  /* Cada acción tiene su acento, igual que las tarjetas del dashboard. */
-  .member-page .member-nav-primary .nav-step-entrenar{--nav-accent:#ff3a59;}
-  .member-page .member-nav-primary .nav-step-rutinas{--nav-accent:#ffad2f;}
-  .member-page .member-nav-primary .nav-step-clases{--nav-accent:#9469ff;}
-  .member-page .member-nav-primary .nav-step-progreso{--nav-accent:#20e1a2;}
-  .member-page .member-nav-primary .nav-step-inicio{--nav-accent:#ff3153;}
-
-  .member-page .member-nav-primary .nav-step.active{
-    background:
-      linear-gradient(180deg,color-mix(in srgb,var(--nav-accent) 20%,#0a2d4b),rgba(7,34,58,.94))!important;
-    border-color:color-mix(in srgb,var(--nav-accent) 58%,transparent)!important;
-    box-shadow:
-      0 10px 22px color-mix(in srgb,var(--nav-accent) 17%,transparent),
-      inset 0 1px 0 rgba(255,255,255,.08)!important;
-  }
-
-  .member-page .member-nav-primary .nav-step.active::after{
-    content:""!important;
-    position:absolute!important;
-    left:18%!important;
-    right:18%!important;
-    bottom:-9px!important;
-    height:3px!important;
-    border-radius:999px!important;
-    background:var(--nav-accent)!important;
-    box-shadow:0 0 12px color-mix(in srgb,var(--nav-accent) 58%,transparent)!important;
-  }
-
-  .member-page .member-nav-primary .nav-step.active i{
-    color:var(--nav-accent)!important;
-    background:color-mix(in srgb,var(--nav-accent) 12%,rgba(8,42,70,.72))!important;
-    border-color:color-mix(in srgb,var(--nav-accent) 28%,transparent)!important;
-  }
-
-  .member-page .member-nav-primary .nav-step.active span{
-    color:#fff!important;
-    text-shadow:0 0 12px color-mix(in srgb,var(--nav-accent) 16%,transparent)!important;
-  }
-
-  /* Conserva Inicio como botón principal rojo del diseño. */
-  .member-page .member-nav-primary .nav-step-inicio.active{
-    background:linear-gradient(135deg,#ff3a56,#ff2748 58%,#ec1739)!important;
-    border-color:rgba(255,89,115,.76)!important;
-    box-shadow:
-      0 11px 25px rgba(255,39,72,.28),
-      inset 0 1px 0 rgba(255,255,255,.18)!important;
-  }
-
-  .member-page .member-nav-primary .nav-step-inicio.active i{
-    color:#fff!important;
-    background:rgba(255,255,255,.10)!important;
-    border-color:rgba(255,255,255,.12)!important;
-  }
-}
-
-
 /* PORTAL CLIENTE V60 · CABECERA IGUAL EN TODOS LOS MÓDULOS */
 @media (min-width:1000px){
 
@@ -17753,5 +17669,101 @@
   .member-page .member-logout svg,
   .member-page .member-subnav-scroll svg{
     vector-effect:non-scaling-stroke!important;
+  }
+}
+
+
+/* PORTAL CLIENTE V61 · MENÚ SIN SALTOS · MISMO RITMO QUE INICIO */
+@media (min-width:1000px){
+
+  /* Mantiene los cinco botones en su sitio.
+     Al cambiar de Inicio a Entrenar/Rutinas/Clases/Progreso ya no se desplazan. */
+  .member-page .member-nav-primary{
+    display:grid!important;
+    grid-template-columns:
+      7.4vw
+      8.2vw
+      7.8vw
+      7.5vw
+      8.3vw!important;
+    justify-content:center!important;
+    align-items:center!important;
+    gap:.45vw!important;
+  }
+
+  .member-page .member-nav-primary .nav-step{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    box-sizing:border-box!important;
+    justify-content:center!important;
+    margin:0!important;
+    padding:0 .72vw!important;
+    white-space:nowrap!important;
+  }
+
+  /* El estado activo NO cambia ancho ni padding.
+     Solo cambia el acabado visual, exactamente igual al botón Inicio. */
+  .member-page .member-nav-primary .nav-step.active,
+  .member-page .member-nav-primary button.active{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    padding:0 .72vw!important;
+    color:#fff!important;
+    background:linear-gradient(135deg,#ff3853 0%,#ff2343 55%,#ec1736 100%)!important;
+    border-color:#ff6076!important;
+    box-shadow:
+      0 0 0 .35dvh rgba(255,39,70,.12),
+      0 1.15dvh 2.6dvh rgba(239,35,60,.31),
+      inset 0 1px 0 rgba(255,255,255,.22)!important;
+  }
+
+  .member-page .member-nav-primary .nav-step.active i,
+  .member-page .member-nav-primary button.active i{
+    color:#fff!important;
+    background:rgba(255,255,255,.12)!important;
+    border-color:rgba(255,255,255,.10)!important;
+  }
+
+  .member-page .member-nav-primary .nav-step.active::after,
+  .member-page .member-nav-primary button.active::after{
+    left:18%!important;
+    right:18%!important;
+    bottom:-1.55dvh!important;
+    height:.32dvh!important;
+    background:#ff2d49!important;
+    box-shadow:0 0 13px rgba(255,45,73,.72)!important;
+  }
+
+  /* Misma lectura visual en todos: icono + nombre centrados. */
+  .member-page .member-nav-primary .nav-step i{
+    flex:0 0 3.55dvh!important;
+  }
+
+  .member-page .member-nav-primary .nav-step span{
+    display:inline-block!important;
+    text-align:left!important;
+  }
+}
+
+@media (min-width:1000px) and (max-width:1280px){
+  .member-page .member-nav-primary{
+    grid-template-columns:
+      86px
+      98px
+      92px
+      88px
+      100px!important;
+    gap:6px!important;
+  }
+
+  .member-page .member-nav-primary .nav-step{
+    padding:0 8px!important;
+  }
+
+  .member-page .member-nav-primary .nav-step.active,
+  .member-page .member-nav-primary button.active{
+    padding:0 8px!important;
   }
 }
