@@ -16806,3 +16806,78 @@
     margin-bottom:0!important;
   }
 }
+
+
+/* PORTAL CLIENTE V43 · ELIMINA LOS HUECOS MARCADOS */
+@media (min-width:1000px){
+  /* SOLO corrige los huecos/gutters que marcaste.
+     No toca imagen, funciones, textos ni botones. */
+
+  .member-page:has(.dashboard-showcase-v30) .member-main{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .dashboard-showcase-v30{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    gap:0!important;
+    background:#03182c!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-grid,
+  .member-page:has(.dashboard-showcase-v30) .showcase-overview-grid,
+  .member-page:has(.dashboard-showcase-v30) .showcase-bottom-grid{
+    gap:0!important;
+    margin:0!important;
+    padding:0!important;
+  }
+
+  /* Quita las líneas oscuras entre hero y entrenador */
+  .member-page:has(.dashboard-showcase-v30) .showcase-hero-main{
+    border-top-right-radius:0!important;
+    border-bottom-right-radius:0!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-coach-panel{
+    border-top-left-radius:0!important;
+    border-bottom-left-radius:0!important;
+  }
+
+  /* Quita la franja horizontal entre hero y la fila siguiente */
+  .member-page:has(.dashboard-showcase-v30) .showcase-overview-grid{
+    margin-top:-1px!important;
+  }
+
+  /* Une visualmente las tres tarjetas inferiores */
+  .member-page:has(.dashboard-showcase-v30) .showcase-membership-card{
+    border-top-right-radius:0!important;
+    border-bottom-right-radius:0!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-class-card{
+    border-radius:0!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-progress-card{
+    border-top-left-radius:0!important;
+    border-bottom-left-radius:0!important;
+  }
+
+  /* Une la zona de accesos rápidos con "Completa tus datos" */
+  .member-page:has(.dashboard-showcase-v30) .showcase-bottom-grid{
+    margin-top:-1px!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-quick-card{
+    border-top-right-radius:0!important;
+  }
+
+  .member-page:has(.dashboard-showcase-v30) .showcase-profile-card{
+    border-top-left-radius:0!important;
+  }
+}
