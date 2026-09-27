@@ -2,7 +2,7 @@
   <div class="productos-topbar">
     <div>
       <h2>Gestión de Productos</h2>
-      <p>CRUD conectado con la API Laravel y MySQL</p>
+      <p>Administra los productos, precios y stock del gimnasio.</p>
     </div>
     <div class="sesion-productos">
       <span>{{ auth.usuario?.nombre_usuario }} · {{ auth.usuario?.rol }}</span>
@@ -48,7 +48,7 @@
   <section class="producto-card">
     <h3>Productos registrados</h3>
     @if (cargando) {
-      <p>Cargando desde Laravel...</p>
+      <p>Cargando productos...</p>
     } @else {
       <div class="tabla-productos">
         <table>
