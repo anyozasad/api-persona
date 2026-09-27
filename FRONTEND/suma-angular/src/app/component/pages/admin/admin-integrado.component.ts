@@ -84,7 +84,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
       <ng-container *ngIf="seccion==='dashboard'">
         <section class="ux-dashboard-head premium-dashboard-hero">
           <div class="dashboard-hero-copy">
-            <span class="dashboard-live-pill"><i></i> SISTEMA EN TIEMPO REAL</span>
+            <span class="dashboard-live-pill"><i></i> {{dashboard?.fuente?.base_datos ? ('BD ' + dashboard.fuente.base_datos + ' · DATOS REALES') : 'SISTEMA EN TIEMPO REAL'}}</span>
             <span class="ux-overline">PANEL ADMINISTRATIVO · {{dashboard?.periodo?.mes || 'MES ACTUAL'}}</span>
             <h2>Todo lo importante, <strong>sin buscar de más.</strong></h2>
             <p>Controla ventas, clientes, membresías, caja e inventario desde un solo lugar.</p>
@@ -119,7 +119,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
             <span>＋</span><div><b>Nueva venta</b><small>Vender productos</small></div>
           </button>
           <button type="button" class="ux-action" (click)="cambiarSeccion('clientes')">
-            <span>♙</span><div><b>Registrar cliente</b><small>Nuevo socio</small></div>
+            <span>♙</span><div><b>Nuevo socio</b><small>Registrar miembro</small></div>
           </button>
           <button type="button" class="ux-action" (click)="cambiarSeccion('membresias')">
             <span>✦</span><div><b>Asignar membresía</b><small>Contratar o renovar</small></div>
@@ -134,28 +134,28 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
 
         <section class="ux-primary-kpis" aria-label="Indicadores principales">
           <article class="ux-kpi">
-            <div class="ux-kpi-head"><span class="ux-kpi-icon success">S/</span><small>HOY</small></div>
-            <p>Ventas</p>
-            <h3>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</h3>
-            <span>{{dashboard?.ventas?.hoy_cantidad ?? 0}} operaciones válidas</span>
+            <div class="ux-kpi-head"><span class="ux-kpi-icon success">♙</span><small>SOCIOS</small></div>
+            <p>Socios activos</p>
+            <h3>{{dashboard?.clientes?.activos ?? 0}}</h3>
+            <span>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos este mes</span>
           </article>
           <article class="ux-kpi">
             <div class="ux-kpi-head"><span class="ux-kpi-icon">↗</span><small>ESTE MES</small></div>
             <p>Ingresos</p>
             <h3>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</h3>
-            <span [class.ux-positive]="(dashboard?.ingresos?.variacion_mes ?? 0) >= 0">{{dashboard?.ingresos?.variacion_mes ?? 0 | number:'1.1-1'}}% vs. mes anterior</span>
+            <span>{{dashboard?.ingresos?.membresias_mes ?? 0 | number:'1.2-2'}} suscripciones + S/ {{dashboard?.ingresos?.ventas_mes ?? 0 | number:'1.2-2'}} ventas</span>
           </article>
           <article class="ux-kpi">
-            <div class="ux-kpi-head"><span class="ux-kpi-icon">♙</span><small>CLIENTES</small></div>
-            <p>Clientes activos</p>
-            <h3>{{dashboard?.clientes?.activos ?? 0}}</h3>
-            <span>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos este mes</span>
+            <div class="ux-kpi-head"><span class="ux-kpi-icon warning">↓</span><small>EGRESOS</small></div>
+            <p>Gastos del mes</p>
+            <h3>S/ {{dashboard?.gastos?.total_mes ?? 0 | number:'1.2-2'}}</h3>
+            <span>Registrados en la tabla de gastos</span>
           </article>
           <article class="ux-kpi">
-            <div class="ux-kpi-head"><span class="ux-kpi-icon warning">✦</span><small>MEMBRESÍAS</small></div>
-            <p>Membresías activas</p>
-            <h3>{{dashboard?.membresias?.activas ?? 0}}</h3>
-            <span>{{dashboard?.membresias?.por_vencer_7_dias ?? 0}} por vencer</span>
+            <div class="ux-kpi-head"><span class="ux-kpi-icon success">S/</span><small>RESULTADO</small></div>
+            <p>Utilidad neta</p>
+            <h3>S/ {{dashboard?.utilidad?.total_mes ?? 0 | number:'1.2-2'}}</h3>
+            <span>Ingresos menos gastos del mes</span>
           </article>
         </section>
 
