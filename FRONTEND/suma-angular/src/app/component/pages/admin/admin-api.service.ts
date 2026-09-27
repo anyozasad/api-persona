@@ -25,7 +25,7 @@ export class AdminApiService {
   // MEMBRESIAS Y PAGOS
   // =========================================================
   membresiasDisponibles(): Observable<any[]> { return this.http.get<any[]>('/api/gym-admin/planes'); }
-  membresia(id: number): Observable<any> { return this.http.get<any[]>('/api/gym-admin/planes'); }
+  membresia(id: number): Observable<any> { return this.http.get(`/api/gym-admin/planes/${id}`); }
   crearMembresia(datos: any): Observable<any> { return this.http.post('/api/gym-admin/planes', datos); }
   actualizarMembresia(id: number, datos: any): Observable<any> { return this.http.put(`/api/gym-admin/planes/${id}`, datos); }
   eliminarMembresia(id: number): Observable<any> { return this.http.put(`/api/gym-admin/planes/${id}/estado`, { estado: 'Inactivo' }); }
@@ -158,7 +158,7 @@ export class AdminApiService {
     if (filtros?.id_producto) params = params.set('id_producto', String(filtros.id_producto));
     if (filtros?.desde) params = params.set('desde', filtros.desde);
     if (filtros?.hasta) params = params.set('hasta', filtros.hasta);
-    return this.http.get<any[]>('/api/kardex', { params });
+    return this.http.get<any[]>('/api/gym-admin/kardex', { params });
   }
   ajustarStock(datos: { id_producto: number; tipo: 'Entrada' | 'Salida'; cantidad: number; motivo: string }): Observable<any> {
     return this.http.post('/api/gym-admin/productos/ajustar-stock', datos);
