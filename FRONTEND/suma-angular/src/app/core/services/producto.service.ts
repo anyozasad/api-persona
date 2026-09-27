@@ -5,7 +5,7 @@ import { Producto } from '../../models/producto';
 
 @Injectable({ providedIn: 'root' })
 export class ProductoService {
-  private readonly apiUrl = '/api/productos';
+  private readonly apiUrl = '/api/gym-admin/productos';
 
   constructor(private http: HttpClient) {}
 
@@ -25,7 +25,7 @@ export class ProductoService {
     return this.http.put<Producto>(`${this.apiUrl}/${id}`, producto);
   }
 
-  eliminar(id: number): Observable<{ mensaje: string; producto: Producto }> {
-    return this.http.delete<{ mensaje: string; producto: Producto }>(`${this.apiUrl}/${id}`);
+  eliminar(id: number): Observable<{ mensaje: string; producto?: Producto }> {
+    return this.http.put<{ mensaje: string; producto?: Producto }>(`${this.apiUrl}/${id}/estado`, { estado: 'Inactivo' });
   }
 }
