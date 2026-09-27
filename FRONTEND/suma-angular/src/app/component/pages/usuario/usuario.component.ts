@@ -685,13 +685,20 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               </div>
             </article>
 
-            <article class="member-empty-card member-empty-guided" *ngIf="!rutinas.length">
-              <span>🏋</span>
-              <h3>Aún no tienes una rutina del entrenador</h3>
-              <p>Puedes empezar hoy mismo con una sesión guiada en casa mientras esperas tu rutina personalizada.</p>
+            <article class="member-empty-card member-empty-guided empty-routines-panel" *ngIf="!rutinas.length">
+              <span class="empty-state-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg>
+              </span>
+              <small class="empty-state-kicker">RUTINAS PERSONALIZADAS</small>
+              <h3>Aún no tienes una rutina asignada</h3>
+              <p>Mientras tu entrenador prepara tu rutina, puedes continuar con una sesión guiada en casa o volver a consultar si ya fue publicada.</p>
               <div class="empty-actions">
-                <button type="button" class="empty-primary" (click)="abrirModulo('casa')">⚡ Entrenar en casa</button>
-                <button type="button" class="empty-secondary" (click)="abrirModulo('perfil')">Revisar mi perfil</button>
+                <button type="button" class="empty-primary" (click)="abrirModulo('casa')">
+                  <span>⚡</span><b>Entrenar en casa</b>
+                </button>
+                <button type="button" class="empty-secondary" (click)="actualizarSeccion('rutinas')">
+                  <span>↻</span><b>Actualizar rutinas</b>
+                </button>
               </div>
             </article>
           </div>
@@ -718,13 +725,20 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               <button type="button" (click)="reservar(c)">Reservar clase <span>→</span></button>
             </article>
 
-            <article class="member-empty-card member-empty-guided" *ngIf="!clases.length">
-              <span>▣</span>
-              <h3>Aún no hay clases publicadas</h3>
-              <p>Cuando administración publique horarios aparecerán aquí. Mientras tanto puedes seguir tu sesión en casa.</p>
+            <article class="member-empty-card member-empty-guided empty-classes-panel" *ngIf="!clases.length">
+              <span class="empty-state-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg>
+              </span>
+              <small class="empty-state-kicker">AGENDA DEL GIMNASIO</small>
+              <h3>No hay clases disponibles por ahora</h3>
+              <p>Puedes actualizar los horarios para comprobar nuevas clases o continuar con una sesión guiada en casa.</p>
               <div class="empty-actions">
-                <button type="button" class="empty-primary" (click)="abrirModulo('casa')">⚡ Entrenar en casa</button>
-                <button type="button" class="empty-secondary" (click)="abrirModulo('inicio')">Volver al inicio</button>
+                <button type="button" class="empty-primary" (click)="actualizarSeccion('clases')">
+                  <span>↻</span><b>Actualizar clases</b>
+                </button>
+                <button type="button" class="empty-secondary" (click)="abrirModulo('casa')">
+                  <span>⚡</span><b>Entrenar en casa</b>
+                </button>
               </div>
             </article>
           </div>
@@ -973,6 +987,33 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     });
   }
   abrirModulo(m:string){this.mobileMenuAbierto=false;this.moduloActivo=m;if(m==='casa'&&!this.casaCargado)this.cargarEntrenamientoCasa();if(m==='avisos')this.cargarContadorAvisos();window.scrollTo({top:0,behavior:'smooth'});}
+
+  actualizarSeccion(modulo:'rutinas'|'clases'):void{
+    this.cargando=true;
+    this.error='';
+    this.api.cargarPortalCliente().subscribe({
+      next:r=>{
+        this.resumen=r.resumen;
+        this.perfil={...r.perfil};
+        this.membresiaActual=r.membresia?.actual;
+        this.membresiasDisponibles=r.membresiasDisponibles||[];
+        this.pagos=r.pagos||[];
+        this.rutinas=r.rutinas||[];
+        this.asistencias=r.asistencias||[];
+        this.reservas=r.reservas||[];
+        this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');
+        this.compras=r.compras||[];
+        this.moduloActivo=modulo;
+        this.cargando=false;
+        this.toast=modulo==='rutinas' ? 'Rutinas actualizadas' : 'Clases actualizadas';
+        setTimeout(()=>{ if(this.toast.includes('actualizadas')) this.toast=''; },2200);
+      },
+      error:e=>{
+        this.error=this.errorApi(e);
+        this.cargando=false;
+      }
+    });
+  }
 
   /* Mantiene el menú principal sincronizado con la acción que está viendo el usuario.
      Flujo: Inicio → Entrenar → Rutinas → Clases/Reservas → Progreso/Asistencias. */
