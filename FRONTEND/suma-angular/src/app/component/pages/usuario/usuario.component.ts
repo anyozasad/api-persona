@@ -116,7 +116,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         <div *ngIf="error" class="member-toast error-toast">{{error}}</div>
         <div *ngIf="toast" class="member-toast success-toast">{{toast}}</div>
 
-        <section *ngIf="moduloActivo!=='inicio' && moduloActivo!=='casa'" class="member-page-context">
+        <section *ngIf="!['inicio','casa','rutinas','clases','progreso'].includes(moduloActivo)" class="member-page-context">
           <div>
             <span>MI ESPACIO · MALLQUI GYM</span>
             <h2>{{tituloModuloActual}}</h2>
