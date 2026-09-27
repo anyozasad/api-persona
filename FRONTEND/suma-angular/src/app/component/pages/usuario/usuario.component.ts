@@ -280,7 +280,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
           </section>
         </section>
 
-        <section *ngIf="moduloActivo==='casa'" class="member-module home-training-module member-enter-up">
+        <section *ngIf="moduloActivo==='casa'" class="member-module home-training-module module-training-v34 member-enter-up">
           <div class="member-module-hero home-training-hero hero-photo hero-photo-casa">
             <div>
               <span>ENTRENAMIENTO EN CASA</span>
@@ -659,7 +659,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
           </section>
         </section>
 
-        <section *ngIf="moduloActivo==='rutinas'" class="member-module member-enter-up">
+        <section *ngIf="moduloActivo==='rutinas'" class="member-module module-routines-v34 member-enter-up">
           <div class="member-module-hero hero-photo hero-photo-rutinas">
             <div><span>ENTRENAMIENTO</span><h1>Mis rutinas</h1><p>Consulta los ejercicios que tu entrenador preparó para ti.</p></div>
             <div class="module-hero-icon">🏋</div>
@@ -687,7 +687,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
           </div>
         </section>
 
-        <section *ngIf="moduloActivo==='clases'" class="member-module member-enter-up">
+        <section *ngIf="moduloActivo==='clases'" class="member-module module-classes-v34 member-enter-up">
           <div class="member-module-hero hero-photo hero-photo-clases">
             <div><span>AGENDA</span><h1>Clases disponibles</h1><p>Elige una clase, selecciona una fecha válida y reserva tu lugar.</p></div>
             <div class="module-hero-icon">▣</div>
