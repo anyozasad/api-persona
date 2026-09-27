@@ -58,7 +58,10 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               <span>{{nombreCorto.charAt(0).toUpperCase()}}</span>
               <div><b>{{nombreCorto}}</b><small>{{membresiaActual?.membresia?.nombre || 'Cliente Mallqui'}}</small></div>
             </div>
-            <button class="member-logout" type="button" (click)="cerrarSesion()">Salir</button>
+            <button class="member-logout" type="button" (click)="cerrarSesion()">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5"/><path d="M14 8l4 4-4 4M18 12H9"/></svg>
+              <span>Salir</span>
+            </button>
           </div>
         </div>
 
@@ -125,6 +128,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
         <section *ngIf="moduloActivo==='inicio'" class="member-dashboard dashboard-showcase-v30">
           <section class="showcase-hero-grid">
             <article class="showcase-hero-main">
+              <img class="showcase-hero-photo" src="/assets/showcase/hero-showcase.svg" alt="" aria-hidden="true">
               <div class="showcase-hero-shade"></div>
               <div class="showcase-hero-copy">
                 <span class="showcase-eyebrow">TU ESPACIO PERSONAL</span>
@@ -138,10 +142,10 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                     <em>→</em>
                   </button>
                   <button type="button" class="showcase-btn showcase-btn-secondary" (click)="abrirModulo('rutinas')">
-                    <i>🏋</i><b>Mis rutinas</b>
+                    <i class="showcase-line-icon"><svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg></i><b>Mis rutinas</b>
                   </button>
                   <button type="button" class="showcase-btn showcase-btn-secondary" (click)="abrirModulo('clases')">
-                    <i>▣</i><b>Ver clases</b>
+                    <i class="showcase-line-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg></i><b>Ver clases</b>
                   </button>
                 </div>
               </div>
@@ -153,25 +157,25 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
 
               <div class="showcase-kpis">
                 <button type="button" class="showcase-kpi kpi-red" (click)="abrirModulo('asistencias')">
-                  <i>◫</i>
+                  <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m8 15 2 2 5-5"/></svg></i>
                   <span><small>Asistencias</small><b>{{resumen?.asistencias_mes || 0}}</b><em>este mes</em></span>
                   <mark *ngIf="(resumen?.asistencias_mes || 0)>0">↑ +{{resumen?.asistencias_mes || 0}}</mark>
                 </button>
 
                 <button type="button" class="showcase-kpi kpi-orange" (click)="abrirModulo('rutinas')">
-                  <i>🏋</i>
+                  <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg></i>
                   <span><small>Rutinas</small><b>{{rutinas.length}}</b><em>registradas</em></span>
                   <mark *ngIf="rutinas.length>0">↑ +{{rutinas.length}}</mark>
                 </button>
 
                 <button type="button" class="showcase-kpi kpi-purple" (click)="abrirModulo('reservas')">
-                  <i>◷</i>
+                  <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3"/></svg></i>
                   <span><small>Reservas</small><b>{{reservasActivas.length}}</b><em>activas</em></span>
                   <mark>→ {{reservasActivas.length}}</mark>
                 </button>
 
                 <button type="button" class="showcase-kpi kpi-green" (click)="abrirModulo('progreso')">
-                  <i>▥</i>
+                  <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><path d="M4 20V11h4v9zM10 20V6h4v14zM16 20V3h4v17z"/></svg></i>
                   <span><small>Progreso</small><b>{{progresoMensualPortal}}%</b><em>actividad mensual</em></span>
                   <mark>↑ {{progresoMensualPortal}}%</mark>
                 </button>
@@ -180,7 +184,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
 
             <aside class="showcase-coach-panel">
               <div class="showcase-coach-head">
-                <b>♙ Mi entrenador</b>
+                <b><svg class="coach-title-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/></svg> Mi entrenador</b>
                 <span><i></i>{{rutinaActual?.entrenador ? 'En línea' : 'Disponible'}}</span>
               </div>
 
@@ -193,9 +197,9 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               </div>
 
               <div class="showcase-coach-tools">
-                <button type="button" (click)="abrirModulo('soporte')"><i>◯</i><span>Chat</span></button>
-                <button type="button" (click)="abrirModulo('calendario')"><i>◫</i><span>Agendar</span></button>
-                <button type="button" (click)="abrirModulo('rutinas')"><i>♙</i><span>Ver rutinas</span></button>
+                <button type="button" (click)="abrirModulo('soporte')"><i><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8 9 9 0 0 1-4-.9L3 21l1.8-5A8 8 0 1 1 21 12z"/></svg></i><span>Chat</span></button>
+                <button type="button" (click)="abrirModulo('calendario')"><i><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3"/></svg></i><span>Agendar</span></button>
+                <button type="button" (click)="abrirModulo('rutinas')"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/><path d="M8 13h8"/></svg></i><span>Ver rutinas</span></button>
               </div>
 
               <button type="button" class="showcase-coach-start" (click)="abrirModulo('casa')">
@@ -206,7 +210,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
 
           <section class="showcase-overview-grid">
             <article class="showcase-membership-card">
-              <div class="membership-icon">✦</div>
+              <div class="membership-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 7 4.2 4L12 5l4.8 6L21 7l-2 11H5z"/><path d="M6 21h12"/></svg></div>
               <div class="membership-copy">
                 <span>MEMBRESÍA {{membresiaActual ? 'ACTIVA' : 'PENDIENTE'}}</span>
                 <h2>{{membresiaActual?.membresia?.nombre || 'Sin plan activo'}}</h2>
