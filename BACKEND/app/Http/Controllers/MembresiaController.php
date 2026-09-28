@@ -8,8 +8,42 @@ use Illuminate\Validation\Rule;
 
 class MembresiaController extends Controller
 {
+    private const PLANES_PUBLICOS = [
+        [
+            'nombre' => 'BÁSICO',
+            'duracion_meses' => 1,
+            'precio' => 79,
+            'descripcion' => 'Acceso a sala de pesas, clases grupales y rutinas básicas.',
+        ],
+        [
+            'nombre' => 'PREMIUM',
+            'duracion_meses' => 1,
+            'precio' => 129,
+            'descripcion' => 'Acceso total, clases ilimitadas, rutinas personalizadas y evaluación mensual.',
+        ],
+        [
+            'nombre' => 'PRO',
+            'duracion_meses' => 1,
+            'precio' => 179,
+            'descripcion' => 'Todo Premium, asesoría 1 a 1 y plan nutricional.',
+        ],
+    ];
+
     public function index()
     {
+        // Mantiene sincronizados los planes que se muestran en la página pública /planes
+        // con los planes reales que el cliente puede elegir al solicitar una renovación.
+        foreach (self::PLANES_PUBLICOS as $plan) {
+            $membresia = Membresia::firstOrNew(['nombre' => $plan['nombre']]);
+            $membresia->fill([
+                'duracion_meses' => $plan['duracion_meses'],
+                'precio' => $plan['precio'],
+                'descripcion' => $plan['descripcion'],
+                'estado' => 'Activo',
+            ]);
+            $membresia->save();
+        }
+
         return response()->json(
             Membresia::withCount('clienteMembresias')
                 ->orderBy('precio')
