@@ -379,6 +379,22 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
     @keyframes cobraLift{50%{transform:rotate(-14deg) translateY(-15px)}}
     @keyframes breatheRing{0%{transform:scale(.65);opacity:.7}70%,100%{transform:scale(1.7);opacity:0}}
 
+    /* V90 legibilidad global del demo */
+    .exercise-demo-head>div>span{font-size:11px!important;letter-spacing:1px}
+    .exercise-demo-head h3{font-size:28px!important;line-height:1.08!important}
+    .exercise-demo-head p{font-size:14px!important;line-height:1.55!important}
+    .exercise-demo-head em{font-size:10px!important;padding:8px 11px!important}
+    .exercise-demo-stage:after{font-size:9px!important;padding:8px 11px!important}
+    .exercise-media-badge{font-size:9px!important;padding:8px 11px!important}
+    .demo-side{font-size:10px!important;padding:8px 10px!important}
+    .demo-caption{padding:12px 14px!important}
+    .demo-caption span{font-size:13px!important;line-height:1.4!important}
+    .demo-caption b{font-size:13px!important;line-height:1.35!important}
+    .exercise-demo-foot{gap:10px 16px!important}
+    .exercise-demo-foot span{font-size:11.5px!important;line-height:1.4!important}
+    .exercise-demo-foot i{width:8px!important;height:8px!important}
+    .exercise-demo-stage{min-height:360px!important}
+
     @media(max-width:700px){
       .exercise-demo-stage{min-height:290px}
       .exercise-demo-stage svg{height:245px;padding-left:10px;padding-right:10px}
