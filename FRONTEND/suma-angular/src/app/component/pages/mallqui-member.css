@@ -26406,3 +26406,554 @@
     transition-duration:.001ms!important;
   }
 }
+
+
+/* PORTAL CLIENTE V89 · ANIMACION AMBIENTAL PREMIUM EN TODO EL PORTAL */
+@media (prefers-reduced-motion:no-preference){
+
+  /* =========================================================
+     HEADER COMPLETO
+     ========================================================= */
+  .member-page .member-topbar{
+    animation:mallquiHeaderDrop .72s cubic-bezier(.18,.8,.25,1) both!important;
+  }
+
+  .member-page .member-brand img{
+    transform-origin:center!important;
+    animation:mallquiLogoAlive 5s ease-in-out infinite!important;
+    filter:drop-shadow(0 4px 10px rgba(239,35,60,.12))!important;
+  }
+
+  .member-page .member-brand span b strong{
+    display:inline-block!important;
+    animation:mallquiBrandAccent 3.8s ease-in-out infinite!important;
+  }
+
+  .member-page .member-system-status{
+    position:relative!important;
+    overflow:hidden!important;
+    animation:mallquiStatusBreathe 3s ease-in-out infinite!important;
+  }
+
+  .member-page .member-system-status::after{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    transform:translateX(-120%) skewX(-20deg)!important;
+    background:linear-gradient(90deg,transparent,rgba(109,255,204,.10),transparent)!important;
+    animation:mallquiStatusSweep 4.2s ease-in-out infinite!important;
+    pointer-events:none!important;
+  }
+
+  .member-page .member-system-status>i{
+    animation:mallquiOnlinePulse 1.35s ease-in-out infinite!important;
+  }
+
+  .member-page .member-mini-profile>span{
+    animation:mallquiMiniAvatarPulse 3.6s ease-in-out infinite!important;
+  }
+
+  .member-page .member-membership-chip{
+    overflow:hidden!important;
+    transition:transform .2s ease,box-shadow .2s ease!important;
+  }
+
+  .member-page .member-membership-chip:hover{
+    transform:translateY(-2px) scale(1.015)!important;
+  }
+
+  .member-page .member-membership-chip>em{
+    display:inline-block!important;
+    animation:mallquiArrowNudge 1.7s ease-in-out infinite!important;
+  }
+
+  /* =========================================================
+     FONDOS DE MODULOS: MOVIMIENTO LENTO
+     ========================================================= */
+  .member-page .member-main:has(.module-training-v34),
+  .member-page .member-main:has(.module-routines-v34),
+  .member-page .member-main:has(.module-classes-v34),
+  .member-page .member-main:has(.progress-experience-v34){
+    background-size:112% 112%!important;
+    animation:mallquiBackgroundDrift 14s ease-in-out infinite alternate!important;
+  }
+
+  /* =========================================================
+     INICIO: FOTO, KPIS, ACCESOS Y PANELES
+     ========================================================= */
+  .member-page .showcase-hero-photo{
+    animation:mallquiHeroPhotoZoom 12s ease-in-out infinite alternate!important;
+    transform-origin:center 42%!important;
+  }
+
+  .member-page .showcase-quote{
+    animation:mallquiQuoteFloat 4.4s ease-in-out infinite!important;
+  }
+
+  .member-page .showcase-quote>span{
+    display:block!important;
+    animation:mallquiQuoteBlink 3s ease-in-out infinite!important;
+  }
+
+  .member-page .showcase-kpi{
+    overflow:hidden!important;
+    transition:
+      transform .22s ease,
+      box-shadow .22s ease,
+      border-color .22s ease!important;
+  }
+
+  .member-page .showcase-kpi:hover{
+    transform:translateY(-5px) scale(1.025)!important;
+    box-shadow:0 18px 34px rgba(0,0,0,.22)!important;
+  }
+
+  .member-page .showcase-kpi mark{
+    animation:mallquiBadgeGlow 2.8s ease-in-out infinite!important;
+  }
+
+  .member-page .showcase-kpi:nth-child(2) mark{animation-delay:.35s!important}
+  .member-page .showcase-kpi:nth-child(3) mark{animation-delay:.7s!important}
+  .member-page .showcase-kpi:nth-child(4) mark{animation-delay:1.05s!important}
+
+  .member-page .showcase-kpi-icon{
+    animation:mallquiKpiIconFloat 3.1s ease-in-out infinite!important;
+  }
+
+  .member-page .showcase-overview-grid>article,
+  .member-page .showcase-bottom-grid>article{
+    animation:mallquiCardEnter .62s cubic-bezier(.2,.75,.25,1) both!important;
+  }
+
+  .member-page .showcase-overview-grid>article:nth-child(2){animation-delay:.08s!important}
+  .member-page .showcase-overview-grid>article:nth-child(3){animation-delay:.16s!important}
+  .member-page .showcase-bottom-grid>article:nth-child(1){animation-delay:.20s!important}
+  .member-page .showcase-bottom-grid>article:nth-child(2){animation-delay:.28s!important}
+
+  .member-page .showcase-quick-grid button{
+    transition:
+      transform .2s ease,
+      background .2s ease,
+      border-color .2s ease,
+      box-shadow .2s ease!important;
+  }
+
+  .member-page .showcase-quick-grid button:hover{
+    transform:translateY(-5px) scale(1.025)!important;
+    box-shadow:0 14px 26px rgba(0,0,0,.15)!important;
+  }
+
+  .member-page .showcase-quick-grid button>i{
+    transition:transform .25s cubic-bezier(.2,.8,.2,1)!important;
+  }
+
+  .member-page .showcase-quick-grid button:hover>i{
+    transform:scale(1.16) rotate(-5deg)!important;
+  }
+
+  .member-page .showcase-class-content img{
+    animation:mallquiSmallImageZoom 7s ease-in-out infinite alternate!important;
+  }
+
+  /* =========================================================
+     HERO DE TODAS LAS SECCIONES
+     ========================================================= */
+  .member-page .member-module-hero,
+  .member-page .module-portal-hero,
+  .member-page .progress-hero{
+    background-size:108% 108%!important;
+    animation:
+      mallquiHeroReveal .72s cubic-bezier(.2,.75,.25,1) both,
+      mallquiHeroBackgroundMove 11s ease-in-out .72s infinite alternate!important;
+  }
+
+  .member-page .module-portal-badge,
+  .member-page .module-hero-emblem,
+  .member-page .module-hero-icon{
+    animation:mallquiEmblemOrbit 4.5s ease-in-out infinite!important;
+  }
+
+  /* =========================================================
+     TARJETAS: DESTELLO INTERNO
+     ========================================================= */
+  .member-page .member-module-card,
+  .member-page .routine-card,
+  .member-page .member-class-card,
+  .member-page .client-progress-kpis article,
+  .member-page .client-extra-card,
+  .member-page .client-goal-card,
+  .member-page .member-empty-card,
+  .member-page .profile-summary-card,
+  .member-page .train-ux-copy-card{
+    position:relative!important;
+    overflow:hidden!important;
+    isolation:isolate!important;
+  }
+
+  .member-page .member-module-card::after,
+  .member-page .routine-card::after,
+  .member-page .member-class-card::before,
+  .member-page .client-progress-kpis article::after,
+  .member-page .client-extra-card::after,
+  .member-page .client-goal-card::after,
+  .member-page .profile-summary-card::after,
+  .member-page .train-ux-copy-card::after{
+    content:""!important;
+    position:absolute!important;
+    z-index:0!important;
+    top:-80%!important;
+    left:-55%!important;
+    width:34%!important;
+    height:260%!important;
+    transform:rotate(18deg)!important;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.055),transparent)!important;
+    animation:mallquiCardSheen 7.5s ease-in-out infinite!important;
+    pointer-events:none!important;
+  }
+
+  .member-page .member-module-card>*,
+  .member-page .routine-card>*,
+  .member-page .member-class-card>*,
+  .member-page .client-progress-kpis article>*,
+  .member-page .client-extra-card>*,
+  .member-page .client-goal-card>*,
+  .member-page .profile-summary-card>*,
+  .member-page .train-ux-copy-card>*{
+    position:relative!important;
+    z-index:2!important;
+  }
+
+  /* =========================================================
+     ENTRENAR: MÁS VIDA
+     ========================================================= */
+  .member-page .train-ux-kicker{
+    animation:mallquiKickerSlide 3.6s ease-in-out infinite!important;
+  }
+
+  .member-page .train-ux-summary>div:nth-child(1){animation:mallquiSummaryFloat 4s ease-in-out infinite!important}
+  .member-page .train-ux-summary>div:nth-child(2){animation:mallquiSummaryFloat 4s .35s ease-in-out infinite!important}
+  .member-page .train-ux-summary>div:nth-child(3){animation:mallquiSummaryFloat 4s .7s ease-in-out infinite!important}
+
+  .member-page .train-ux-no-equipment{
+    animation:mallquiBadgeFloat 3.2s ease-in-out infinite!important;
+  }
+
+  .member-page .train-ux-visual-info{
+    animation:mallquiPanelRise 4.8s ease-in-out infinite!important;
+  }
+
+  .member-page .train-ux-primary>em,
+  .member-page .portal-action-primary>em,
+  .member-page .home-start-session em{
+    display:inline-block!important;
+    animation:mallquiArrowNudge 1.5s ease-in-out infinite!important;
+  }
+
+  .member-page .train-step:nth-of-type(1){animation:mallquiStepFloat 4s ease-in-out infinite!important}
+  .member-page .train-step:nth-of-type(2){animation:mallquiStepFloat 4s .35s ease-in-out infinite!important}
+  .member-page .train-step:nth-of-type(3){animation:mallquiStepFloat 4s .7s ease-in-out infinite!important}
+
+  /* =========================================================
+     RUTINAS: EJERCICIOS Y TARJETAS
+     ========================================================= */
+  .member-page .routine-card{
+    animation:mallquiRoutineBreathe 5.5s ease-in-out infinite!important;
+  }
+
+  .member-page .routine-card:nth-child(2){animation-delay:.45s!important}
+  .member-page .routine-card:nth-child(3){animation-delay:.9s!important}
+
+  .member-page .routine-period{
+    animation:mallquiBadgeGlow 3.2s ease-in-out infinite!important;
+  }
+
+  .member-page .routine-exercises>div{
+    transition:transform .18s ease,background .18s ease!important;
+  }
+
+  .member-page .routine-exercises>div:hover{
+    transform:translateX(5px)!important;
+    background:rgba(255,255,255,.025)!important;
+  }
+
+  /* =========================================================
+     CLASES
+     ========================================================= */
+  .member-page .member-class-card{
+    animation:mallquiClassBreathe 5.8s ease-in-out infinite!important;
+  }
+
+  .member-page .member-class-card:nth-child(2){animation-delay:.4s!important}
+  .member-page .member-class-card:nth-child(3){animation-delay:.8s!important}
+
+  .member-page .class-meta span{
+    transition:transform .18s ease,background .18s ease,border-color .18s ease!important;
+  }
+
+  .member-page .class-meta span:hover{
+    transform:translateY(-3px)!important;
+    background:rgba(255,255,255,.055)!important;
+    border-color:rgba(115,177,223,.22)!important;
+  }
+
+  /* =========================================================
+     PROGRESO
+     ========================================================= */
+  .member-page .client-progress-kpis strong{
+    display:inline-block!important;
+    animation:mallquiMetricPop .62s cubic-bezier(.2,.75,.25,1) both!important;
+  }
+
+  .member-page .client-progress-kpis article:nth-child(2) strong{animation-delay:.1s!important}
+  .member-page .client-progress-kpis article:nth-child(3) strong{animation-delay:.2s!important}
+  .member-page .client-progress-kpis article:nth-child(4) strong{animation-delay:.3s!important}
+
+  .member-page .progress-side-score strong{
+    animation:mallquiMetricGlow 3.2s ease-in-out infinite!important;
+  }
+
+  .member-page .client-week-days>div.active{
+    animation:mallquiDayActive 2.7s ease-in-out infinite!important;
+  }
+
+  /* =========================================================
+     RESERVAS, ASISTENCIAS, PAGOS
+     ========================================================= */
+  .member-page .reservation-mark,
+  .member-page .payment-icon{
+    animation:mallquiMiniIconFloat 3.2s ease-in-out infinite!important;
+  }
+
+  .member-page .member-payment-item em,
+  .member-page .member-reservation-list em,
+  .member-page .attendance-timeline em{
+    animation:mallquiBadgeGlow 3.4s ease-in-out infinite!important;
+  }
+
+  /* =========================================================
+     PERFIL
+     ========================================================= */
+  .member-page .profile-summary-card>span{
+    animation:mallquiBadgeGlow 3s ease-in-out infinite!important;
+  }
+
+  .member-page .profile-summary-card li{
+    transition:transform .18s ease,color .18s ease!important;
+  }
+
+  .member-page .profile-summary-card li:hover{
+    transform:translateX(4px)!important;
+  }
+
+  /* =========================================================
+     CONTEXTO DE PAGINAS SECUNDARIAS
+     ========================================================= */
+  .member-page .member-page-context{
+    animation:mallquiContextEnter .55s cubic-bezier(.2,.75,.25,1) both!important;
+  }
+
+  .member-page .member-page-context button span,
+  .member-page .member-page-context button{
+    transition:transform .18s ease!important;
+  }
+
+  /* =========================================================
+     TOASTS Y MENÚ MÓVIL
+     ========================================================= */
+  .member-page .member-toast{
+    animation:mallquiToastBounce .55s cubic-bezier(.2,.9,.25,1.15) both!important;
+  }
+
+  .member-page .member-toast>span{
+    animation:mallquiToastIconPop .9s .15s cubic-bezier(.2,.9,.25,1.15) both!important;
+  }
+
+  .member-page .member-mobile-menu-backdrop{
+    animation:mallquiBackdropIn .24s ease both!important;
+  }
+
+  .member-page .member-mobile-menu-sheet{
+    animation:mallquiSheetIn .34s cubic-bezier(.2,.8,.25,1) both!important;
+  }
+
+  .member-page .member-mobile-menu-grid button{
+    animation:mallquiCardEnter .4s cubic-bezier(.2,.75,.25,1) both!important;
+  }
+
+  .member-page .member-mobile-menu-grid button:nth-child(2){animation-delay:.04s!important}
+  .member-page .member-mobile-menu-grid button:nth-child(3){animation-delay:.08s!important}
+  .member-page .member-mobile-menu-grid button:nth-child(4){animation-delay:.12s!important}
+  .member-page .member-mobile-menu-grid button:nth-child(5){animation-delay:.16s!important}
+  .member-page .member-mobile-menu-grid button:nth-child(6){animation-delay:.20s!important}
+  .member-page .member-mobile-menu-grid button:nth-child(7){animation-delay:.24s!important}
+  .member-page .member-mobile-menu-grid button:nth-child(8){animation-delay:.28s!important}
+  .member-page .member-mobile-menu-grid button:nth-child(9){animation-delay:.32s!important}
+}
+
+/* =========================================================
+   NUEVOS KEYFRAMES V89
+   ========================================================= */
+@keyframes mallquiHeaderDrop{
+  from{opacity:0;transform:translateY(-18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes mallquiLogoAlive{
+  0%,100%{transform:translateY(0) scale(1) rotate(0)}
+  35%{transform:translateY(-3px) scale(1.025) rotate(-1.5deg)}
+  65%{transform:translateY(1px) scale(1.012) rotate(1deg)}
+}
+
+@keyframes mallquiBrandAccent{
+  0%,100%{text-shadow:0 0 0 rgba(239,35,60,0)}
+  50%{text-shadow:0 0 12px rgba(239,35,60,.32)}
+}
+
+@keyframes mallquiStatusBreathe{
+  0%,100%{box-shadow:0 0 0 rgba(41,219,159,0)}
+  50%{box-shadow:0 0 20px rgba(41,219,159,.09)}
+}
+
+@keyframes mallquiStatusSweep{
+  0%,55%{transform:translateX(-120%) skewX(-20deg)}
+  78%,100%{transform:translateX(160%) skewX(-20deg)}
+}
+
+@keyframes mallquiMiniAvatarPulse{
+  0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(61,153,220,0)}
+  50%{transform:scale(1.045);box-shadow:0 0 0 6px rgba(61,153,220,.06)}
+}
+
+@keyframes mallquiArrowNudge{
+  0%,100%{transform:translateX(0)}
+  50%{transform:translateX(5px)}
+}
+
+@keyframes mallquiBackgroundDrift{
+  0%{background-position:center 46%}
+  100%{background-position:center 52%}
+}
+
+@keyframes mallquiHeroPhotoZoom{
+  0%{transform:scale(1.01) translate3d(0,0,0)}
+  100%{transform:scale(1.075) translate3d(-.7%,-.5%,0)}
+}
+
+@keyframes mallquiQuoteFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+}
+
+@keyframes mallquiQuoteBlink{
+  0%,100%{opacity:.72;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.08)}
+}
+
+@keyframes mallquiBadgeGlow{
+  0%,100%{filter:brightness(1);transform:scale(1)}
+  50%{filter:brightness(1.14);transform:scale(1.035)}
+}
+
+@keyframes mallquiSmallImageZoom{
+  0%{transform:scale(1)}
+  100%{transform:scale(1.06)}
+}
+
+@keyframes mallquiHeroBackgroundMove{
+  0%{background-position:center 44%}
+  100%{background-position:center 50%}
+}
+
+@keyframes mallquiEmblemOrbit{
+  0%,100%{transform:translateY(0) rotate(0)}
+  35%{transform:translateY(-5px) rotate(-3deg)}
+  70%{transform:translateY(2px) rotate(2deg)}
+}
+
+@keyframes mallquiCardSheen{
+  0%,62%{left:-55%;opacity:0}
+  70%{opacity:.8}
+  88%,100%{left:135%;opacity:0}
+}
+
+@keyframes mallquiKickerSlide{
+  0%,100%{transform:translateX(0)}
+  50%{transform:translateX(4px)}
+}
+
+@keyframes mallquiSummaryFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-3px)}
+}
+
+@keyframes mallquiBadgeFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-4px)}
+}
+
+@keyframes mallquiPanelRise{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-4px)}
+}
+
+@keyframes mallquiStepFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-3px)}
+}
+
+@keyframes mallquiRoutineBreathe{
+  0%,100%{box-shadow:0 18px 36px rgba(0,8,18,.17)}
+  50%{box-shadow:0 22px 46px rgba(0,8,18,.25),0 0 0 1px rgba(255,86,113,.035)}
+}
+
+@keyframes mallquiClassBreathe{
+  0%,100%{box-shadow:0 18px 36px rgba(0,8,18,.17)}
+  50%{box-shadow:0 22px 46px rgba(0,8,18,.24),0 0 0 1px rgba(93,165,220,.04)}
+}
+
+@keyframes mallquiMetricPop{
+  from{opacity:0;transform:translateY(9px) scale(.82)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+@keyframes mallquiMetricGlow{
+  0%,100%{text-shadow:0 0 0 rgba(255,74,103,0)}
+  50%{text-shadow:0 0 16px rgba(255,74,103,.20)}
+}
+
+@keyframes mallquiDayActive{
+  0%,100%{box-shadow:0 0 0 0 rgba(70,166,226,0)}
+  50%{box-shadow:0 0 0 4px rgba(70,166,226,.06)}
+}
+
+@keyframes mallquiMiniIconFloat{
+  0%,100%{transform:translateY(0) rotate(0)}
+  50%{transform:translateY(-4px) rotate(-3deg)}
+}
+
+@keyframes mallquiContextEnter{
+  from{opacity:0;transform:translateX(-12px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+@keyframes mallquiToastBounce{
+  0%{opacity:0;transform:translate3d(18px,-14px,0) scale(.92)}
+  65%{opacity:1;transform:translate3d(-3px,2px,0) scale(1.015)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+
+@keyframes mallquiToastIconPop{
+  0%{transform:scale(.4) rotate(-18deg)}
+  70%{transform:scale(1.14) rotate(4deg)}
+  100%{transform:scale(1) rotate(0)}
+}
+
+@keyframes mallquiBackdropIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+@keyframes mallquiSheetIn{
+  from{opacity:0;transform:translateY(24px) scale(.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
