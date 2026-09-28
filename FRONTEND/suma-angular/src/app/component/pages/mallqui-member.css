@@ -26957,3 +26957,483 @@
   from{opacity:0;transform:translateY(24px) scale(.98)}
   to{opacity:1;transform:translateY(0) scale(1)}
 }
+
+
+/* PORTAL CLIENTE V90 · TIPOGRAFIA GRANDE Y LEGIBLE EN TODO EL PORTAL */
+/* Soluciona definitivamente los textos de 6–10 px heredados de versiones antiguas. */
+
+@media (min-width:900px){
+
+  /* =========================================================
+     BASE GLOBAL DE LECTURA
+     ========================================================= */
+  .member-page{
+    font-size:14px!important;
+  }
+
+  .member-page p{
+    font-size:13px!important;
+    line-height:1.55!important;
+  }
+
+  .member-page small{
+    font-size:11px!important;
+    line-height:1.4!important;
+  }
+
+  .member-page label{
+    font-size:12px!important;
+    line-height:1.35!important;
+  }
+
+  .member-page button{
+    font-size:13px!important;
+  }
+
+  .member-page input,
+  .member-page select,
+  .member-page textarea{
+    font-size:14px!important;
+  }
+
+  .member-page .card-title-block>span,
+  .member-page .module-window-title span,
+  .member-page .empty-state-kicker,
+  .member-page .module-portal-copy>span,
+  .member-page .progress-portal-head .progress-hero>div>span,
+  .member-page .train-ux-kicker,
+  .member-page .portal-side-head span,
+  .member-page .progress-side-head>span{
+    font-size:10px!important;
+    line-height:1.2!important;
+  }
+
+  .member-page .card-title-block h2{
+    font-size:25px!important;
+    line-height:1.1!important;
+  }
+
+  .member-page .card-title-block p{
+    font-size:12.5px!important;
+    line-height:1.55!important;
+  }
+
+  /* =========================================================
+     SESIÓN EN VIVO · ARREGLA LA PANTALLA DE TU CAPTURA
+     ========================================================= */
+  .module-training-v34 .home-session-live{
+    gap:18px!important;
+  }
+
+  .module-training-v34 .home-session-main{
+    padding:22px!important;
+    border-radius:20px!important;
+  }
+
+  .module-training-v34 .home-session-top{
+    padding-bottom:18px!important;
+    margin-bottom:20px!important;
+  }
+
+  .module-training-v34 .session-live{
+    font-size:11px!important;
+    letter-spacing:1px!important;
+  }
+
+  .module-training-v34 .home-session-top h2{
+    margin:7px 0 6px!important;
+    font-size:34px!important;
+    line-height:1.04!important;
+  }
+
+  .module-training-v34 .home-session-top p{
+    font-size:13px!important;
+    line-height:1.5!important;
+  }
+
+  .module-training-v34 .session-zone-badge{
+    min-height:40px!important;
+    padding:0 14px!important;
+    border-radius:999px!important;
+    font-size:12px!important;
+  }
+
+  /* Entrenador visual lateral */
+  .module-training-v34 .home-live-coach{
+    padding:20px!important;
+    gap:12px!important;
+  }
+
+  .module-training-v34 .live-coach-heading>span{
+    font-size:10px!important;
+    letter-spacing:1px!important;
+  }
+
+  .module-training-v34 .live-coach-heading h3{
+    margin:5px 0 5px!important;
+    font-size:24px!important;
+  }
+
+  .module-training-v34 .live-coach-heading p{
+    font-size:12px!important;
+    line-height:1.5!important;
+  }
+
+  .module-training-v34 .live-target-card{
+    grid-template-columns:46px minmax(0,1fr)!important;
+    gap:11px!important;
+    padding:12px!important;
+    border-radius:13px!important;
+  }
+
+  .module-training-v34 .live-target-card>span{
+    width:44px!important;
+    height:44px!important;
+    font-size:18px!important;
+  }
+
+  .module-training-v34 .live-target-card small{
+    font-size:10px!important;
+  }
+
+  .module-training-v34 .live-target-card b{
+    font-size:14px!important;
+    line-height:1.25!important;
+  }
+
+  .module-training-v34 .live-target-card em{
+    margin-top:4px!important;
+    font-size:11px!important;
+  }
+
+  .module-training-v34 .live-number-card,
+  .module-training-v34 .live-time-card{
+    padding:13px 14px!important;
+  }
+
+  .module-training-v34 .live-number-card small,
+  .module-training-v34 .live-time-card small{
+    font-size:10px!important;
+  }
+
+  .module-training-v34 .live-number-card strong{
+    font-size:31px!important;
+  }
+
+  .module-training-v34 .live-number-card>span{
+    font-size:16px!important;
+  }
+
+  .module-training-v34 .live-time-card strong{
+    font-size:32px!important;
+  }
+
+  .module-training-v34 .live-time-card>span{
+    font-size:11px!important;
+  }
+
+  .module-training-v34 .live-instruction-list>span{
+    font-size:10px!important;
+    letter-spacing:.9px!important;
+  }
+
+  .module-training-v34 .live-instruction-list{
+    gap:8px!important;
+  }
+
+  .module-training-v34 .live-instruction-list>div{
+    min-height:46px!important;
+    grid-template-columns:32px minmax(0,1fr)!important;
+    gap:10px!important;
+    padding:9px 10px!important;
+    border-radius:10px!important;
+  }
+
+  .module-training-v34 .live-instruction-list>div>b{
+    width:31px!important;
+    height:31px!important;
+    font-size:10px!important;
+  }
+
+  .module-training-v34 .live-instruction-list>div>p{
+    margin:0!important;
+    font-size:12px!important;
+    line-height:1.5!important;
+  }
+
+  .module-training-v34 .live-side-message{
+    padding:11px 12px!important;
+    gap:10px!important;
+  }
+
+  .module-training-v34 .live-side-message>b{
+    font-size:13px!important;
+  }
+
+  .module-training-v34 .live-side-message>span{
+    font-size:11.5px!important;
+    line-height:1.5!important;
+  }
+
+  /* Progreso de la sesión */
+  .module-training-v34 .home-session-progress{
+    margin-top:18px!important;
+  }
+
+  .module-training-v34 .home-session-progress>div:first-child span,
+  .module-training-v34 .home-session-progress>div:first-child b{
+    font-size:12px!important;
+  }
+
+  .module-training-v34 .session-progress-track{
+    height:12px!important;
+    margin-top:7px!important;
+  }
+
+  /* Contador grande y legible */
+  .module-training-v34 .home-rep-counter-panel{
+    min-height:112px!important;
+    margin-top:16px!important;
+    padding:18px 20px!important;
+    gap:20px!important;
+    border-radius:16px!important;
+  }
+
+  .module-training-v34 .rep-counter-copy>span{
+    font-size:10px!important;
+    letter-spacing:1px!important;
+  }
+
+  .module-training-v34 .rep-counter-line{
+    gap:14px!important;
+    margin-top:7px!important;
+  }
+
+  .module-training-v34 .rep-counter-line b{
+    font-size:31px!important;
+  }
+
+  .module-training-v34 .rep-counter-line b i{
+    font-size:18px!important;
+  }
+
+  .module-training-v34 .rep-counter-line small{
+    font-size:12px!important;
+  }
+
+  .module-training-v34 .rep-counter-copy>em{
+    max-width:780px!important;
+    margin-top:8px!important;
+    font-size:11.5px!important;
+    line-height:1.5!important;
+  }
+
+  .module-training-v34 .rep-tap-button{
+    width:118px!important;
+    min-width:118px!important;
+    height:78px!important;
+    min-height:78px!important;
+    border-radius:18px!important;
+  }
+
+  .module-training-v34 .rep-tap-button strong{
+    font-size:29px!important;
+  }
+
+  .module-training-v34 .rep-tap-button span{
+    margin-top:2px!important;
+    font-size:10px!important;
+  }
+
+  /* Pausar / siguiente / terminar */
+  .module-training-v34 .home-session-controls{
+    gap:12px!important;
+    margin-top:14px!important;
+  }
+
+  .module-training-v34 .home-session-controls button,
+  .module-training-v34 .home-session-controls.rep-mode .control-secondary,
+  .module-training-v34 .home-session-controls.rep-mode .control-danger{
+    min-height:58px!important;
+    height:58px!important;
+    padding:0 18px!important;
+    border-radius:13px!important;
+    font-size:14px!important;
+  }
+
+  /* Cola lateral de ejercicios */
+  .module-training-v34 .home-session-queue{
+    padding:20px!important;
+  }
+
+  .module-training-v34 .home-session-queue .card-title-block span{
+    font-size:10px!important;
+  }
+
+  .module-training-v34 .home-session-queue .card-title-block h2{
+    margin:5px 0!important;
+    font-size:24px!important;
+  }
+
+  .module-training-v34 .home-session-queue .card-title-block p{
+    font-size:11.5px!important;
+    line-height:1.5!important;
+  }
+
+  .module-training-v34 .session-queue-list{
+    gap:9px!important;
+    margin-top:15px!important;
+  }
+
+  .module-training-v34 .session-queue-list>div{
+    grid-template-columns:34px 56px minmax(0,1fr)!important;
+    gap:10px!important;
+    min-height:74px!important;
+    padding:10px!important;
+    border-radius:12px!important;
+  }
+
+  .module-training-v34 .session-queue-list>div>span{
+    width:34px!important;
+    height:34px!important;
+    font-size:10px!important;
+  }
+
+  .module-training-v34 .queue-exercise-thumb{
+    width:56px!important;
+    height:52px!important;
+  }
+
+  .module-training-v34 .session-queue-list b{
+    font-size:12.5px!important;
+  }
+
+  .module-training-v34 .session-queue-list small{
+    margin-top:4px!important;
+    font-size:10.5px!important;
+    line-height:1.4!important;
+  }
+
+  /* =========================================================
+     HISTORIAL DE ENTRENAMIENTOS
+     ========================================================= */
+  .module-training-v34 .home-history-card{
+    padding:22px!important;
+  }
+
+  .module-training-v34 .home-history-card .card-title-block>span{
+    font-size:10px!important;
+  }
+
+  .module-training-v34 .home-history-card .card-title-block h2{
+    font-size:27px!important;
+  }
+
+  .module-training-v34 .home-history-card .card-title-block p{
+    font-size:12.5px!important;
+  }
+
+  .module-training-v34 .home-history-list{
+    margin-top:16px!important;
+  }
+
+  .module-training-v34 .home-history-list>div{
+    min-height:66px!important;
+    grid-template-columns:46px minmax(0,1fr) auto!important;
+    gap:12px!important;
+    padding:10px 0!important;
+  }
+
+  .module-training-v34 .home-history-list>div>span{
+    width:42px!important;
+    height:42px!important;
+    border-radius:11px!important;
+    font-size:18px!important;
+  }
+
+  .module-training-v34 .home-history-list b{
+    font-size:13px!important;
+  }
+
+  .module-training-v34 .home-history-list small{
+    margin-top:4px!important;
+    font-size:11px!important;
+    line-height:1.4!important;
+  }
+
+  .module-training-v34 .home-history-list em{
+    font-size:12px!important;
+  }
+
+  /* =========================================================
+     RESTO DEL PORTAL · EVITA METADATOS MINIATURA
+     ========================================================= */
+  .member-page .routine-exercises b,
+  .member-page .member-class-card .class-meta,
+  .member-page .member-reservation-list h3,
+  .member-page .attendance-timeline h3,
+  .member-page .member-payment-item b,
+  .member-page .client-history-list b,
+  .member-page .client-activity-list b{
+    font-size:13px!important;
+  }
+
+  .member-page .routine-exercises small,
+  .member-page .member-class-card .class-meta b,
+  .member-page .member-reservation-list p,
+  .member-page .attendance-timeline p,
+  .member-page .member-payment-item small,
+  .member-page .client-history-list span,
+  .member-page .client-history-list small,
+  .member-page .client-activity-list p,
+  .member-page .client-activity-list small{
+    font-size:11px!important;
+    line-height:1.45!important;
+  }
+
+  .member-page .portal-mini-stats small,
+  .member-page .progress-side-mini small,
+  .member-page .client-progress-kpis small{
+    font-size:10.5px!important;
+  }
+
+  .member-page .portal-side-link,
+  .member-page .progress-refresh-btn,
+  .member-page .client-history-tabs button,
+  .member-page .goal-session-options button,
+  .member-page .client-card-head>button{
+    font-size:11.5px!important;
+  }
+}
+
+/* Tablet también debe verse legible. */
+@media (min-width:600px) and (max-width:899px){
+  .member-page{
+    font-size:14px!important;
+  }
+
+  .member-page p{
+    font-size:12.5px!important;
+  }
+
+  .member-page small{
+    font-size:10.5px!important;
+  }
+
+  .member-page button{
+    font-size:12.5px!important;
+  }
+
+  .module-training-v34 .home-session-controls button{
+    min-height:52px!important;
+    font-size:13px!important;
+  }
+
+  .module-training-v34 .home-history-list b{
+    font-size:12px!important;
+  }
+
+  .module-training-v34 .home-history-list small{
+    font-size:10px!important;
+  }
+}
