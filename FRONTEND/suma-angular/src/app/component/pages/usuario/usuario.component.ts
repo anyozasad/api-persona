@@ -965,7 +965,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                 <label>Plan
                   <select [(ngModel)]="pagoForm.id_membresia" name="planPago" required>
                     <option [ngValue]="0">Seleccionar plan</option>
-                    <option *ngFor="let m of membresiasDisponibles" [ngValue]="m.id_membresia">{{m.nombre}} - S/ {{m.precio}}</option>
+                    <option *ngFor="let m of planesRenovacion" [ngValue]="m.id_membresia">{{m.nombre}} - S/ {{m.precio}}</option>
                   </select>
                 </label>
                 <label>Inicio<input type="date" [(ngModel)]="pagoForm.fecha_inicio" name="fechaPago"></label>
@@ -1221,6 +1221,23 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       perfil:'Actualiza tus datos y protege tu cuenta.'
     };
     return textos[this.moduloActivo] || '';
+  }
+
+  get planesRenovacion():any[]{
+    const orden=['BASICO','PREMIUM','PRO'];
+    const normalizar=(valor:any)=>String(valor??'')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g,'')
+      .trim()
+      .toUpperCase();
+
+    const porNombre=new Map<string,any>();
+    for(const membresia of this.membresiasDisponibles||[]){
+      porNombre.set(normalizar(membresia?.nombre),membresia);
+    }
+
+    const planes=orden.map(nombre=>porNombre.get(nombre)).filter(Boolean);
+    return planes.length===orden.length ? planes : (this.membresiasDisponibles||[]);
   }
 
   get siguientePasoModulo():string{
