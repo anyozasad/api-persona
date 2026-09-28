@@ -25200,3 +25200,636 @@
     font-size:8px!important;
   }
 }
+
+
+/* PORTAL CLIENTE V87 · ESCALA Y ORDEN GLOBAL DEL PORTAL */
+/* Pase general de UX: tipografía legible, áreas clicables cómodas,
+   tarjetas alineadas y espaciado consistente en TODAS las ventanas. */
+
+@media (min-width:900px){
+
+  /* =========================================================
+     RITMO GENERAL
+     ========================================================= */
+  .member-page{
+    --ui-gap:16px;
+    --ui-card-radius:18px;
+    --ui-control-radius:12px;
+    --ui-control-h:50px;
+    --ui-text:12px;
+    --ui-small:10px;
+  }
+
+  .member-page .member-main{
+    padding:24px 28px 44px!important;
+  }
+
+  .member-page .member-module,
+  .member-page .progress-experience-v34{
+    gap:16px!important;
+  }
+
+  .member-page .member-module-card,
+  .member-page .member-empty-card,
+  .member-page .member-class-card,
+  .member-page .routine-card,
+  .member-page .client-extra-card,
+  .member-page .client-goal-card,
+  .member-page .profile-summary-card{
+    border-radius:18px!important;
+  }
+
+  /* =========================================================
+     NAVEGACIÓN PRINCIPAL
+     ========================================================= */
+  .member-page .member-nav-primary{
+    gap:8px!important;
+  }
+
+  .member-page .member-nav-primary .nav-step{
+    min-height:52px!important;
+    padding:0 14px!important;
+    border-radius:13px!important;
+    font-size:12px!important;
+    gap:9px!important;
+  }
+
+  .member-page .member-nav-primary .nav-step i{
+    width:36px!important;
+    height:36px!important;
+    min-width:36px!important;
+    flex-basis:36px!important;
+    border-radius:10px!important;
+  }
+
+  .member-page .member-nav-primary .nav-step i svg{
+    width:19px!important;
+    height:19px!important;
+  }
+
+  .member-page .member-nav-primary .nav-step span{
+    font-size:12px!important;
+    font-weight:850!important;
+  }
+
+  .member-page .member-alert-button,
+  .member-page .member-logout{
+    min-height:48px!important;
+    border-radius:12px!important;
+  }
+
+  /* =========================================================
+     SUBMENÚ BLANCO
+     ========================================================= */
+  .member-page .member-subnav{
+    min-height:58px!important;
+  }
+
+  .member-page .member-subnav-scroll{
+    min-height:58px!important;
+    gap:4px!important;
+    padding:6px 14px!important;
+  }
+
+  .member-page .member-subnav-scroll button{
+    min-height:44px!important;
+    padding:0 14px!important;
+    border-radius:11px!important;
+    gap:8px!important;
+    font-size:11px!important;
+  }
+
+  .member-page .member-subnav-scroll button i{
+    min-width:22px!important;
+    font-size:14px!important;
+  }
+
+  .member-page .member-subnav-scroll button i svg{
+    width:17px!important;
+    height:17px!important;
+  }
+
+  /* =========================================================
+     HERO GENERAL DE VENTANAS SECUNDARIAS
+     ========================================================= */
+  .member-page .member-module-hero{
+    min-height:285px!important;
+    padding:34px 38px!important;
+    border-radius:20px!important;
+    box-sizing:border-box!important;
+  }
+
+  .member-page .member-module-hero>div:first-child{
+    max-width:720px!important;
+  }
+
+  .member-page .member-module-hero>div:first-child>span{
+    font-size:10px!important;
+    letter-spacing:1.25px!important;
+  }
+
+  .member-page .member-module-hero h1{
+    margin:8px 0 9px!important;
+    font-size:38px!important;
+    line-height:1.04!important;
+  }
+
+  .member-page .member-module-hero p{
+    max-width:650px!important;
+    font-size:13px!important;
+    line-height:1.6!important;
+  }
+
+  .member-page .module-hero-icon{
+    width:58px!important;
+    height:58px!important;
+    min-width:58px!important;
+    border-radius:16px!important;
+    font-size:22px!important;
+  }
+
+  /* =========================================================
+     HERO / PANEL DE RUTINAS, CLASES Y PROGRESO
+     ========================================================= */
+  .member-page .module-portal-head,
+  .member-page .progress-portal-head{
+    gap:16px!important;
+    grid-template-columns:minmax(0,1.7fr) minmax(330px,.62fr)!important;
+  }
+
+  .member-page .module-portal-hero,
+  .member-page .progress-portal-head .progress-hero{
+    min-height:320px!important;
+    padding:36px 40px!important;
+    border-radius:20px!important;
+  }
+
+  .member-page .module-portal-copy h1,
+  .member-page .progress-portal-head .progress-hero h1{
+    font-size:40px!important;
+  }
+
+  .member-page .module-portal-copy p,
+  .member-page .progress-portal-head .progress-hero p{
+    font-size:13px!important;
+    line-height:1.6!important;
+  }
+
+  .member-page .module-portal-copy>span,
+  .member-page .progress-portal-head .progress-hero>div>span{
+    font-size:9px!important;
+  }
+
+  .member-page .portal-action-primary{
+    min-width:250px!important;
+    min-height:56px!important;
+    padding:0 15px!important;
+    grid-template-columns:38px minmax(0,1fr) 18px!important;
+    gap:10px!important;
+    border-radius:13px!important;
+  }
+
+  .member-page .portal-action-primary i{
+    width:36px!important;
+    height:36px!important;
+    font-size:14px!important;
+  }
+
+  .member-page .portal-action-primary b{
+    font-size:12px!important;
+  }
+
+  .member-page .portal-action-primary small{
+    font-size:9px!important;
+  }
+
+  .member-page .portal-action-secondary{
+    min-height:56px!important;
+    padding:0 16px!important;
+    border-radius:13px!important;
+  }
+
+  .member-page .portal-action-secondary b{
+    font-size:11px!important;
+  }
+
+  .member-page .module-portal-side,
+  .member-page .progress-portal-side{
+    min-height:320px!important;
+    padding:22px!important;
+    border-radius:20px!important;
+  }
+
+  .member-page .portal-side-head span,
+  .member-page .progress-side-head>span{
+    font-size:8px!important;
+  }
+
+  .member-page .portal-side-head>b,
+  .member-page .progress-side-head h2{
+    font-size:21px!important;
+  }
+
+  .member-page .portal-mini-stats article{
+    min-height:64px!important;
+    grid-template-columns:40px minmax(0,1fr)!important;
+    gap:10px!important;
+    padding:10px!important;
+  }
+
+  .member-page .portal-mini-stats i{
+    width:38px!important;
+    height:38px!important;
+    font-size:15px!important;
+  }
+
+  .member-page .portal-mini-stats strong{
+    font-size:19px!important;
+  }
+
+  .member-page .portal-mini-stats small{
+    font-size:9px!important;
+  }
+
+  .member-page .portal-side-link{
+    min-height:46px!important;
+    padding:0 13px!important;
+    font-size:10px!important;
+  }
+
+  .member-page .progress-portal-head .progress-refresh-btn{
+    min-height:48px!important;
+    padding:0 16px!important;
+    font-size:10px!important;
+  }
+
+  /* =========================================================
+     TÍTULOS ENTRE SECCIONES
+     ========================================================= */
+  .member-page .module-window-title{
+    min-height:82px!important;
+    padding:16px 20px!important;
+    border-radius:15px!important;
+  }
+
+  .member-page .module-window-title span{
+    font-size:8px!important;
+  }
+
+  .member-page .module-window-title h2{
+    font-size:20px!important;
+  }
+
+  .member-page .module-window-title p{
+    font-size:10px!important;
+  }
+
+  /* =========================================================
+     TARJETAS DE RUTINAS
+     ========================================================= */
+  .member-page .module-routines-v34 .routine-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:16px!important;
+  }
+
+  .member-page .module-routines-v34 .routine-card{
+    min-height:300px!important;
+    padding:22px!important;
+  }
+
+  .member-page .routine-card-head h2{
+    font-size:21px!important;
+  }
+
+  .member-page .routine-card-head span{
+    font-size:8px!important;
+  }
+
+  .member-page .routine-card>p{
+    font-size:11px!important;
+    line-height:1.55!important;
+  }
+
+  .member-page .routine-period{
+    font-size:9px!important;
+    padding:7px 10px!important;
+  }
+
+  .member-page .routine-exercises>div{
+    min-height:48px!important;
+    padding:9px 0!important;
+  }
+
+  .member-page .routine-exercises b{
+    font-size:11px!important;
+  }
+
+  .member-page .routine-exercises small{
+    font-size:9px!important;
+  }
+
+  /* =========================================================
+     TARJETAS DE CLASES
+     ========================================================= */
+  .member-page .module-classes-v34 .member-class-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:16px!important;
+  }
+
+  .member-page .module-classes-v34 .member-class-card{
+    min-height:350px!important;
+    padding:22px!important;
+  }
+
+  .member-page .member-class-card .class-card-top span{
+    font-size:8px!important;
+  }
+
+  .member-page .member-class-card h2{
+    margin:17px 0!important;
+    font-size:21px!important;
+  }
+
+  .member-page .member-class-card .class-meta{
+    gap:8px!important;
+  }
+
+  .member-page .member-class-card .class-meta span{
+    min-height:62px!important;
+    padding:9px!important;
+    border-radius:11px!important;
+    font-size:10px!important;
+  }
+
+  .member-page .member-class-card .class-meta b{
+    font-size:8px!important;
+  }
+
+  .member-page .member-class-card label{
+    margin-top:13px!important;
+    font-size:10px!important;
+  }
+
+  .member-page .member-class-card input{
+    min-height:46px!important;
+    margin-top:6px!important;
+    padding:0 12px!important;
+    font-size:11px!important;
+  }
+
+  .member-page .member-class-card>button{
+    min-height:50px!important;
+    margin-top:12px!important;
+    font-size:11px!important;
+    border-radius:11px!important;
+  }
+
+  /* =========================================================
+     PROGRESO
+     ========================================================= */
+  .member-page .progress-experience-v34{
+    gap:16px!important;
+  }
+
+  .member-page .client-progress-kpis{
+    gap:14px!important;
+  }
+
+  .member-page .client-progress-kpis article{
+    min-height:150px!important;
+    padding:20px!important;
+  }
+
+  .member-page .client-progress-kpis article>span{
+    width:44px!important;
+    height:44px!important;
+  }
+
+  .member-page .client-progress-kpis small{
+    font-size:9px!important;
+  }
+
+  .member-page .client-progress-kpis strong{
+    font-size:31px!important;
+  }
+
+  .member-page .client-progress-kpis p{
+    font-size:10px!important;
+  }
+
+  .member-page .client-extra-card,
+  .member-page .client-goal-card{
+    padding:20px!important;
+  }
+
+  .member-page .client-card-head h2,
+  .member-page .client-goal-copy h2{
+    font-size:20px!important;
+  }
+
+  .member-page .client-card-head span,
+  .member-page .client-goal-copy>span{
+    font-size:8px!important;
+  }
+
+  .member-page .client-goal-copy p{
+    font-size:10px!important;
+  }
+
+  .member-page .goal-session-options button,
+  .member-page .client-history-tabs button,
+  .member-page .client-card-head>button{
+    min-height:40px!important;
+    padding:0 12px!important;
+    font-size:9px!important;
+    border-radius:10px!important;
+  }
+
+  /* =========================================================
+     RESERVAS / ASISTENCIAS / PAGOS / PERFIL
+     ========================================================= */
+  .member-page .member-reservation-list,
+  .member-page .attendance-timeline,
+  .member-page .member-payment-list{
+    display:grid!important;
+    gap:10px!important;
+  }
+
+  .member-page .member-reservation-list>article,
+  .member-page .attendance-timeline>article,
+  .member-page .member-payment-item{
+    min-height:84px!important;
+    padding:14px 16px!important;
+    border-radius:14px!important;
+  }
+
+  .member-page .member-reservation-list h3,
+  .member-page .attendance-timeline h3{
+    font-size:14px!important;
+  }
+
+  .member-page .member-reservation-list p,
+  .member-page .attendance-timeline p{
+    font-size:10px!important;
+  }
+
+  .member-page .member-reservation-list button,
+  .member-page .member-payment-item button{
+    min-height:40px!important;
+    padding:0 12px!important;
+    border-radius:10px!important;
+    font-size:9px!important;
+  }
+
+  .member-page .member-payment-layout,
+  .member-page .profile-layout,
+  .member-page .profile-security-grid{
+    gap:16px!important;
+  }
+
+  .member-page .member-module-card{
+    padding:20px!important;
+  }
+
+  .member-page .card-title-block>span{
+    font-size:8px!important;
+  }
+
+  .member-page .card-title-block h2{
+    margin:5px 0 4px!important;
+    font-size:21px!important;
+  }
+
+  .member-page .card-title-block p{
+    font-size:10px!important;
+    line-height:1.5!important;
+  }
+
+  .member-page .member-form{
+    gap:13px!important;
+  }
+
+  .member-page .member-form label{
+    font-size:10px!important;
+    font-weight:800!important;
+  }
+
+  .member-page .member-form input,
+  .member-page .member-form select,
+  .member-page .member-form textarea{
+    min-height:46px!important;
+    margin-top:6px!important;
+    padding:0 12px!important;
+    border-radius:10px!important;
+    font-size:11px!important;
+  }
+
+  .member-page .member-form textarea{
+    min-height:110px!important;
+    padding-top:11px!important;
+  }
+
+  .member-page .member-form-submit{
+    min-height:50px!important;
+    padding:0 16px!important;
+    border-radius:11px!important;
+    font-size:11px!important;
+  }
+
+  .member-page .profile-summary-card{
+    padding:22px!important;
+  }
+
+  .member-page .profile-summary-card h2{
+    font-size:21px!important;
+  }
+
+  .member-page .profile-summary-card p,
+  .member-page .profile-summary-card li{
+    font-size:10px!important;
+  }
+
+  /* =========================================================
+     ESTADOS VACÍOS Y ACCIONES
+     ========================================================= */
+  .member-page .member-empty-card{
+    min-height:270px!important;
+    padding:26px!important;
+  }
+
+  .member-page .member-empty-card h3{
+    font-size:20px!important;
+  }
+
+  .member-page .member-empty-card p{
+    max-width:620px!important;
+    font-size:11px!important;
+    line-height:1.55!important;
+  }
+
+  .member-page .empty-state-kicker{
+    font-size:8px!important;
+  }
+
+  .member-page .empty-actions{
+    gap:9px!important;
+    margin-top:16px!important;
+  }
+
+  .member-page .empty-actions button{
+    min-height:48px!important;
+    padding:0 15px!important;
+    border-radius:11px!important;
+    font-size:10px!important;
+  }
+
+  /* =========================================================
+     BOTONES GENERALES: EVITAR MINIATURAS
+     ========================================================= */
+  .member-page button{
+    line-height:1.15!important;
+  }
+
+  .member-page button:focus-visible{
+    outline:3px solid rgba(92,177,236,.34)!important;
+    outline-offset:2px!important;
+  }
+}
+
+/* Desktop medio: mantiene orden sin apretar 3 columnas. */
+@media (min-width:900px) and (max-width:1250px){
+  .member-page .module-classes-v34 .member-class-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+
+  .member-page .module-routines-v34 .routine-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .member-page .member-main{
+    padding-left:20px!important;
+    padding-right:20px!important;
+  }
+}
+
+/* Tablet: botones cómodos y tarjetas en una columna. */
+@media (min-width:600px) and (max-width:899px){
+  .member-page .member-main{
+    padding:18px!important;
+  }
+
+  .member-page .member-module,
+  .member-page .progress-experience-v34{
+    gap:14px!important;
+  }
+
+  .member-page button{
+    min-height:44px;
+  }
+
+  .member-page .member-class-grid,
+  .member-page .routine-grid,
+  .member-page .client-progress-kpis{
+    grid-template-columns:1fr!important;
+  }
+}
