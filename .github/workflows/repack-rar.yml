@@ -1,0 +1,51 @@
+name: Repack Mallqui Gym to RAR
+
+on:
+  push:
+    paths:
+      - '.github/workflows/repack-rar.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  rar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download existing full package
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl -L \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/anyozasad/api-persona/actions/artifacts/11065927243/zip \
+            -o paquete.zip
+          mkdir paquete
+          unzip -q paquete.zip -d paquete
+
+      - name: Install official RAR
+        shell: bash
+        run: |
+          curl -L https://www.rarlab.com/rar/rarlinux-x64-723.tar.gz -o rarlinux.tar.gz
+          tar -xzf rarlinux.tar.gz
+
+      - name: Create RAR
+        shell: bash
+        run: |
+          (cd paquete && ../rar/rar a -r -m3 ../Mallqui_Gym_Completo.rar .)
+
+      - name: Verify RAR
+        shell: bash
+        run: |
+          ./rar/rar t Mallqui_Gym_Completo.rar
+
+      - name: Upload RAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mallqui_Gym_RAR
+          path: Mallqui_Gym_Completo.rar
+          retention-days: 7
