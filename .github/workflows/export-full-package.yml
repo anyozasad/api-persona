@@ -288,3 +288,33 @@ jobs:
           path: export/Mallqui_Gym_Completo
           include-hidden-files: true
           retention-days: 7
+
+
+  rar:
+    needs: package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download full package
+        uses: actions/download-artifact@v4
+        with:
+          name: Mallqui_Gym_Completo
+          path: paquete
+
+      - name: Install official RAR
+        shell: bash
+        run: |
+          curl -L https://www.rarlab.com/rar/rarlinux-x64-723.tar.gz -o rarlinux.tar.gz
+          tar -xzf rarlinux.tar.gz
+
+      - name: Create RAR
+        shell: bash
+        run: |
+          ./rar/rar a -r -m3 Mallqui_Gym_Completo.rar paquete/Mallqui_Gym_Completo
+
+      - name: Upload RAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mallqui_Gym_RAR
+          path: Mallqui_Gym_Completo.rar
+          retention-days: 7
