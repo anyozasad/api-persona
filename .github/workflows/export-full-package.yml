@@ -310,7 +310,7 @@ jobs:
       - name: Create RAR
         shell: bash
         run: |
-          ./rar/rar a -r -m3 Mallqui_Gym_Completo.rar paquete/Mallqui_Gym_Completo
+          cd paquete\n          ../rar/rar a -r -m3 ../Mallqui_Gym_Completo.rar .
 
       - name: Upload RAR
         uses: actions/upload-artifact@v4
