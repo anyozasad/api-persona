@@ -1,0 +1,31 @@
+name: Export project ZIP
+
+on:
+  push:
+    paths:
+      - '.github/workflows/export-project-zip.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Prepare clean project folder
+        shell: bash
+        run: |
+          mkdir -p export/Mallqui_Gym_Proyecto
+          rsync -a --exclude='.git' --exclude='node_modules' --exclude='vendor' --exclude='.env' ./ export/Mallqui_Gym_Proyecto/
+
+      - name: Upload project ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mallqui_Gym_Proyecto
+          path: export/Mallqui_Gym_Proyecto
+          if-no-files-found: error
+          retention-days: 7
