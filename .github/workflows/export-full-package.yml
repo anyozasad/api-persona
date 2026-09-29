@@ -1,0 +1,290 @@
+name: Export full Mallqui Gym package
+
+on:
+  push:
+    paths:
+      - '.github/workflows/export-full-package.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  database:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: gym_system
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_mysql, openssl, fileinfo
+          coverage: none
+
+      - name: Composer
+        working-directory: BACKEND
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Prepare Laravel env
+        shell: bash
+        run: |
+          cp BACKEND/.env.example BACKEND/.env
+          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=root/' BACKEND/.env
+          sed -i 's/DB_DATABASE=.*/DB_DATABASE=gym_system/' BACKEND/.env
+          sed -i 's/GYM_DB_DATABASE=.*/GYM_DB_DATABASE=gym_system/' BACKEND/.env
+
+      - name: Build clean database
+        working-directory: BACKEND
+        shell: bash
+        run: |
+          php artisan key:generate
+          php artisan jwt:secret --force
+          php artisan db:generar
+          php artisan migrate:fresh --seed --force
+
+      - name: Add demo accounts
+        shell: bash
+        run: |
+          HASH=$(php -r 'echo password_hash("Mallqui123", PASSWORD_BCRYPT);')
+          mysql -h127.0.0.1 -uroot -proot gym_system <<SQL
+          INSERT INTO clientes (dni,nombres,apellidos,sexo,telefono,correo,direccion,fecha_nacimiento,fecha_registro,estado)
+          VALUES ('12345678','Cliente','Demo','Masculino','999111222','cliente@mallquigym.local','Pucallpa','2000-01-01',NOW(),'Activo')
+          ON DUPLICATE KEY UPDATE nombres='Cliente',apellidos='Demo',estado='Activo';
+
+          SET @cliente_id=(SELECT id_cliente FROM clientes WHERE dni='12345678' LIMIT 1);
+
+          INSERT INTO usuarios (nombre_usuario,contrasena,nombres,apellidos,dni,telefono,correo,id_cliente,id_entrenador,rol,estado,fecha_registro)
+          VALUES ('admin','$HASH','Administrador','Demo','99999999','999999999','admin@mallquigym.local',NULL,NULL,'Administrador','Activo',NOW())
+          ON DUPLICATE KEY UPDATE contrasena='$HASH',rol='Administrador',estado='Activo';
+
+          INSERT INTO usuarios (nombre_usuario,contrasena,nombres,apellidos,dni,telefono,correo,id_cliente,id_entrenador,rol,estado,fecha_registro)
+          VALUES ('cliente','$HASH','Cliente','Demo','12345678','999111222','cliente@mallquigym.local',@cliente_id,NULL,'Cliente','Activo',NOW())
+          ON DUPLICATE KEY UPDATE contrasena='$HASH',id_cliente=@cliente_id,rol='Cliente',estado='Activo';
+
+          SET @plan_id=(SELECT id_membresia FROM membresias WHERE LOWER(nombre)='premium' LIMIT 1);
+
+          INSERT INTO cliente_membresia (id_cliente,id_membresia,fecha_inicio,fecha_fin,estado)
+          SELECT @cliente_id,@plan_id,CURDATE(),DATE_ADD(CURDATE(),INTERVAL 30 DAY),'Activo'
+          WHERE @plan_id IS NOT NULL
+            AND NOT EXISTS (
+              SELECT 1 FROM cliente_membresia
+              WHERE id_cliente=@cliente_id AND estado='Activo'
+            );
+          SQL
+
+      - name: Export SQL
+        shell: bash
+        run: |
+          mkdir -p database-export
+          mysqldump -h127.0.0.1 -uroot -proot --single-transaction --routines --triggers gym_system > database-export/mallqui_gym.sql
+
+      - name: Upload database
+        uses: actions/upload-artifact@v4
+        with:
+          name: mallqui-db
+          path: database-export/mallqui_gym.sql
+          retention-days: 1
+
+  package:
+    needs: database
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_mysql, openssl, fileinfo
+          coverage: none
+
+      - name: Install Laravel dependencies
+        working-directory: BACKEND
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Download prepared database
+        uses: actions/download-artifact@v4
+        with:
+          name: mallqui-db
+          path: BASE_DE_DATOS
+
+      - name: Prepare friend env
+        shell: pwsh
+        run: |
+          Copy-Item BACKEND/.env.example BACKEND/.env.amigo -Force
+          $envContent = Get-Content BACKEND/.env.amigo
+          $envContent = $envContent -replace '^DB_DATABASE=.*','DB_DATABASE=gym_system'
+          $envContent = $envContent -replace '^GYM_DB_DATABASE=.*','GYM_DB_DATABASE=gym_system'
+          $envContent = $envContent -replace '^DB_USERNAME=.*','DB_USERNAME=root'
+          $envContent = $envContent -replace '^DB_PASSWORD=.*','DB_PASSWORD='
+          $envContent | Set-Content BACKEND/.env.amigo
+
+      - name: Create easy start scripts
+        shell: pwsh
+        run: |
+          @'
+          @echo off
+          setlocal
+          cd /d "%~dp0"
+
+          echo ================================================
+          echo    MALLQUI GYM - PRIMER INICIO
+          echo ================================================
+
+          set "PHP=php"
+          if exist "C:\xampp\php\php.exe" set "PHP=C:\xampp\php\php.exe"
+
+          set "MYSQL=mysql"
+          if exist "C:\xampp\mysql\bin\mysql.exe" set "MYSQL=C:\xampp\mysql\bin\mysql.exe"
+
+          where node >nul 2>nul
+          if errorlevel 1 (
+            echo.
+            echo ERROR: Node.js no esta instalado o no esta en PATH.
+            echo Instala Node.js y vuelve a ejecutar este archivo.
+            pause
+            exit /b 1
+          )
+
+          if exist "C:\xampp\xampp_start.exe" (
+            echo Iniciando XAMPP...
+            start "" /min "C:\xampp\xampp_start.exe"
+            timeout /t 6 /nobreak >nul
+          )
+
+          echo Preparando archivo .env...
+          if not exist "BACKEND\.env" copy /Y "BACKEND\.env.amigo" "BACKEND\.env" >nul
+
+          echo Preparando base de datos gym_system...
+          "%MYSQL%" -u root -e "CREATE DATABASE IF NOT EXISTS gym_system CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+          if errorlevel 1 (
+            echo.
+            echo No se pudo conectar a MySQL con root sin contrasena.
+            echo Si tu MySQL usa contrasena, edita BACKEND\.env y configura DB_PASSWORD.
+            pause
+            exit /b 1
+          )
+
+          "%MYSQL%" -u root gym_system < "BASE_DE_DATOS\mallqui_gym.sql"
+          if errorlevel 1 (
+            echo ERROR importando la base de datos.
+            pause
+            exit /b 1
+          )
+
+          echo Generando claves locales...
+          pushd BACKEND
+          "%PHP%" artisan key:generate --force
+          "%PHP%" artisan jwt:secret --force
+          popd
+
+          if not exist "FRONTEND\suma-angular\node_modules" (
+            echo Instalando Angular por primera vez...
+            pushd FRONTEND\suma-angular
+            call npm ci
+            if errorlevel 1 (
+              echo ERROR instalando dependencias de Angular.
+              popd
+              pause
+              exit /b 1
+            )
+            popd
+          )
+
+          echo.
+          echo Base preparada correctamente.
+          echo Usuario administrador: admin
+          echo Usuario cliente: cliente
+          echo Contrasena para ambos: Mallqui123
+          echo.
+          echo Iniciando sistema...
+          call INICIAR_MALLQUI.bat
+          '@ | Set-Content -Encoding ASCII PRIMER_INICIO.bat
+
+          @'
+          @echo off
+          setlocal
+          cd /d "%~dp0"
+
+          set "PHP=php"
+          if exist "C:\xampp\php\php.exe" set "PHP=C:\xampp\php\php.exe"
+
+          if exist "C:\xampp\xampp_start.exe" start "" /min "C:\xampp\xampp_start.exe"
+
+          start "Mallqui Gym - Laravel" cmd /k "cd /d ""%~dp0BACKEND"" && ""%PHP%"" artisan serve"
+          start "Mallqui Gym - Angular" cmd /k "cd /d ""%~dp0FRONTEND\suma-angular"" && npm start"
+
+          timeout /t 8 /nobreak >nul
+          start http://localhost:4200
+          '@ | Set-Content -Encoding ASCII INICIAR_MALLQUI.bat
+
+          @'
+          MALLQUI GYM - PAQUETE PARA COMPARTIR
+
+          CONTIENE:
+          - FRONTEND Angular.
+          - BACKEND Laravel 12.
+          - Dependencias PHP en BACKEND/vendor.
+          - Base de datos preparada en BASE_DE_DATOS/mallqui_gym.sql.
+          - Planes Basico, Premium y Pro.
+          - Usuario administrador de demostracion.
+          - Usuario cliente de demostracion.
+          - Scripts para preparar e iniciar el sistema.
+
+          PRIMERA VEZ:
+          1. Extraer el ZIP completo.
+          2. Tener XAMPP/MySQL y Node.js instalados.
+          3. Hacer doble clic en PRIMER_INICIO.bat.
+          4. Esperar a que termine.
+          5. Se abrira http://localhost:4200
+
+          SIGUIENTES VECES:
+          - Hacer doble clic en INICIAR_MALLQUI.bat.
+
+          CREDENCIALES DEMO:
+          Administrador:
+            usuario: admin
+            contrasena: Mallqui123
+
+          Cliente:
+            usuario: cliente
+            contrasena: Mallqui123
+
+          IMPORTANTE:
+          Esta base se genera a partir de las migraciones y seeders del proyecto.
+          No contiene los registros privados que solo existen en la PC original.
+          '@ | Set-Content -Encoding UTF8 LEEME_PRIMERO.txt
+
+      - name: Prepare clean package folder
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force export\Mallqui_Gym_Completo | Out-Null
+          robocopy . export\Mallqui_Gym_Completo /E /XD .git export /XF .env /NFL /NDL /NJH /NJS /NC /NS
+          if ($LASTEXITCODE -ge 8) { exit $LASTEXITCODE }
+          exit 0
+
+      - name: Upload full package
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mallqui_Gym_Completo
+          path: export/Mallqui_Gym_Completo
+          include-hidden-files: true
+          retention-days: 7
