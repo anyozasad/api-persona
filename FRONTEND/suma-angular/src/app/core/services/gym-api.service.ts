@@ -76,11 +76,11 @@ export class GymApiService {
   }
 
   entrenamientoCasaCliente(): Observable<any> {
-    return this.http.get('/api/mi-cuenta/entrenamiento-casa');
+    return this.http.get('/api/mi-cuenta/entrenamiento-gym');
   }
 
   guardarPlanCasaCliente(datos: { dias: string[]; zonas: string[]; objetivo: string }): Observable<any> {
-    return this.http.put('/api/mi-cuenta/entrenamiento-casa/plan', datos);
+    return this.http.put('/api/mi-cuenta/entrenamiento-gym/plan', datos);
   }
 
   registrarSesionCasaCliente(datos: {
@@ -89,7 +89,7 @@ export class GymApiService {
     ejercicios_total: number;
     ejercicios_completados: number;
   }): Observable<any> {
-    return this.http.post('/api/mi-cuenta/entrenamiento-casa/sesiones', datos);
+    return this.http.post('/api/mi-cuenta/entrenamiento-gym/sesiones', datos);
   }
 
   progresoCliente(): Observable<any> {
