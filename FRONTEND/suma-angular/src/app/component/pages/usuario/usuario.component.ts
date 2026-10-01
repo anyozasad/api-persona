@@ -423,17 +423,45 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
 
           <div *ngIf="errorCasa" class="home-training-alert">{{errorCasa}}</div>
 
-          <section class="gym-assigned-routine" *ngIf="!sesionCasaActiva && !sesionCasaTerminada && rutinaActual">
-            <div class="gym-assigned-icon">🏋</div>
-            <div>
-              <small>RUTINA ASIGNADA POR TU ENTRENADOR</small>
-              <h3>{{rutinaActual.nombre_rutina}}</h3>
-              <p>{{rutinaActual.objetivo || 'Plan de entrenamiento personalizado'}} · {{rutinaActual.detalles?.length || 0}} ejercicios</p>
+          <section class="gym-assigned-routine gym-assigned-routine-real"
+                   *ngIf="!sesionCasaActiva && !sesionCasaTerminada && tieneRutinaAsignadaGym">
+            <div class="gym-assigned-routine-head">
+              <div class="gym-assigned-icon">🏋</div>
+              <div>
+                <small>RUTINA ACTIVA ASIGNADA POR TU ENTRENADOR</small>
+                <h3>{{rutinaActual.nombre_rutina}}</h3>
+                <p>{{rutinaActual.objetivo || 'Plan de entrenamiento personalizado'}} · {{ejerciciosCasaActuales.length}} ejercicios</p>
+              </div>
+              <button type="button" class="gym-assigned-view" (click)="abrirModulo('rutinas')">Ver detalle →</button>
             </div>
-            <button type="button" (click)="abrirModulo('rutinas')">Ver rutina completa →</button>
+
+            <div class="gym-assigned-exercises">
+              <article *ngFor="let e of ejerciciosCasaActuales; let i=index">
+                <span>{{i+1}}</span>
+                <div>
+                  <b>{{e.nombre}}</b>
+                  <small>{{e.equipo}}</small>
+                </div>
+                <p><b>{{e.series}}</b><small>series</small></p>
+                <p><b>{{e.repeticiones}}</b><small>reps</small></p>
+                <p><b>{{textoPesoGym(e)}}</b><small>carga</small></p>
+                <p><b>{{e.descanso}} s</b><small>descanso</small></p>
+              </article>
+            </div>
+
+            <div class="gym-assigned-actions">
+              <div>
+                <small>LISTA PARA ENTRENAR</small>
+                <b>{{totalSeriesCasaActuales}} series programadas · {{duracionEstimadaCasa(zonaCasaSeleccionada)}} min aprox.</b>
+              </div>
+              <button type="button" class="gym-assigned-start" (click)="iniciarEntrenamientoCasa()">
+                <span>▶</span>
+                Iniciar rutina asignada
+              </button>
+            </div>
           </section>
 
-          <section id="config-entreno-casa" *ngIf="!sesionCasaActiva && !sesionCasaTerminada" class="home-plan-layout">
+          <section id="config-entreno-casa" *ngIf="!sesionCasaActiva && !sesionCasaTerminada && !tieneRutinaAsignadaGym" class="home-plan-layout">
             <article class="member-module-card home-plan-card">
               <div class="card-title-block">
                 <span>PLAN DE ENTRENAMIENTO EN GIMNASIO</span>
@@ -500,7 +528,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
             </article>
           </section>
 
-          <section *ngIf="!sesionCasaActiva && !sesionCasaTerminada" class="home-workout-picker">
+          <section *ngIf="!sesionCasaActiva && !sesionCasaTerminada && !tieneRutinaAsignadaGym" class="home-workout-picker">
             <div class="home-picker-head">
               <div>
                 <span>GRUPO MUSCULAR</span>
@@ -599,186 +627,188 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
             </div>
           </section>
 
-          <section id="sesion-entrenamiento-casa" *ngIf="sesionCasaActiva" class="home-session-live">
-            <article class="home-session-main">
-              <div class="home-session-top">
-                <div>
-                  <span class="session-live"><i></i> SESIÓN EN CURSO</span>
-                  <h2 *ngIf="faseCasa==='ejercicio'">{{ejercicioCasaActual?.nombre}}</h2>
-                  <h2 *ngIf="faseCasa==='descanso'">Descanso</h2>
-                  <p>{{faseCasa==='ejercicio'
-                    ? ('Ejercicio '+(indiceEjercicioCasa+1)+' de '+ejerciciosCasaActuales.length+' · Serie '+serieCasaActual+' de '+seriesCasaTotalActual)
-                    : textoDescansoCasa}}</p>
-                </div>
-                <span class="session-zone-badge">{{metaZonaCasa(zonaCasaSeleccionada).icono}} {{metaZonaCasa(zonaCasaSeleccionada).nombre}}</span>
+          <section id="sesion-entrenamiento-casa" *ngIf="sesionCasaActiva" class="gym-workout-session">
+            <header class="gym-workout-session-head">
+              <div>
+                <span><i></i> ENTRENAMIENTO EN CURSO · MALLQUI GYM</span>
+                <h2>{{nombreRutinaSesionGym}}</h2>
+                <p>{{rutinaActual?.entrenador ? ('Entrenador: '+nombreEntrenador) : 'Sesión de musculación en sala'}}</p>
               </div>
 
-              <div class="gym-live-board" *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual">
-                <section class="gym-live-exercise">
-                  <div class="gym-live-photo">
-                    <img [src]="imagenEjercicioCasa(ejercicioCasaActual)"
-                         (error)="ocultarImagenEjercicio($event)"
-                         [alt]="ejercicioCasaActual.nombre">
-                    <span>ESTACIÓN ACTUAL</span>
+              <div class="gym-workout-head-stats">
+                <article><small>EJERCICIO</small><b>{{indiceEjercicioCasa+1}} / {{ejerciciosCasaActuales.length}}</b></article>
+                <article><small>SERIE</small><b>{{serieCasaActual}} / {{seriesCasaTotalActual}}</b></article>
+                <article><small>TIEMPO</small><b>{{formatoTiempoCasa(segundosTranscurridosCasa)}}</b></article>
+              </div>
+            </header>
+
+            <div *ngIf="errorCasa" class="home-training-alert">{{errorCasa}}</div>
+
+            <section class="gym-workout-current" *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual">
+              <article class="gym-workout-exercise">
+                <div class="gym-workout-photo">
+                  <img [src]="imagenEjercicioCasa(ejercicioCasaActual)"
+                       (error)="ocultarImagenEjercicio($event)"
+                       [alt]="ejercicioCasaActual.nombre">
+                  <span>ESTACIÓN {{indiceEjercicioCasa+1}}</span>
+                </div>
+
+                <div class="gym-workout-copy">
+                  <span>EJERCICIO ACTUAL</span>
+                  <h3>{{ejercicioCasaActual.nombre}}</h3>
+
+                  <div class="gym-workout-equipment">
+                    <i>🏋</i>
+                    <div><small>EQUIPO / MÁQUINA</small><b>{{ejercicioCasaActual.equipo || 'Área de musculación'}}</b></div>
                   </div>
 
-                  <div class="gym-live-main">
-                    <small>RUTINA EN SALA DE MUSCULACIÓN</small>
-                    <h3>{{ejercicioCasaActual.nombre}}</h3>
-                    <p class="gym-live-equipment"><span>🏋</span> {{ejercicioCasaActual.equipo || 'Equipo del gimnasio'}}</p>
-
-                    <div class="gym-live-metrics">
-                      <article>
-                        <small>SERIE</small>
-                        <b>{{serieCasaActual}} / {{seriesCasaTotalActual}}</b>
-                      </article>
-                      <article>
-                        <small>OBJETIVO</small>
-                        <b>{{prescripcionEjercicioCasa(ejercicioCasaActual)}}</b>
-                      </article>
-                      <article>
-                        <small>DESCANSO</small>
-                        <b>{{ejercicioCasaActual.descanso || 30}} s</b>
-                      </article>
-                    </div>
-
-                    <div class="gym-live-series">
-                      <span>SERIES</span>
-                      <div>
-                        <i *ngFor="let serie of seriesArrayCasa(ejercicioCasaActual)"
-                           [class.done]="serie < serieCasaActual"
-                           [class.active]="serie===serieCasaActual">
-                          {{serie < serieCasaActual ? '✓' : serie}}
-                        </i>
-                      </div>
-                    </div>
-
-                    <button type="button"
-                            class="gym-technique-toggle"
-                            (click)="verEjercicioCasa=verEjercicioCasa===ejercicioCasaActual.id?'':ejercicioCasaActual.id">
-                      {{verEjercicioCasa===ejercicioCasaActual.id ? 'Ocultar técnica' : 'Ver técnica del ejercicio'}}
-                    </button>
-
-                    <div class="gym-live-technique" *ngIf="verEjercicioCasa===ejercicioCasaActual.id">
-                      <p *ngFor="let paso of ejercicioCasaActual.instrucciones; let p=index">
-                        <span>{{p+1}}</span>{{paso}}
-                      </p>
-                    </div>
-                  </div>
-                </section>
-
-                <aside class="gym-live-counter">
-                  <span>CONTROL DE SERIE</span>
-                  <h3>{{ejercicioCasaActual.modo==='repeticiones' ? 'Repeticiones' : 'Tiempo de trabajo'}}</h3>
-
-                  <div class="gym-rep-display" *ngIf="ejercicioCasaActual.modo==='repeticiones'">
-                    <strong>{{repsCasaHechas}}</strong>
-                    <span>/ {{objetivoRepsCasa}}</span>
+                  <div class="gym-workout-prescription">
+                    <article><small>SERIES</small><b>{{seriesCasaTotalActual}}</b></article>
+                    <article><small>REPETICIONES</small><b>{{prescripcionEjercicioCasa(ejercicioCasaActual)}}</b></article>
+                    <article><small>CARGA</small><b>{{textoPesoGym(ejercicioCasaActual)}}</b></article>
+                    <article><small>DESCANSO</small><b>{{ejercicioCasaActual.descanso || 45}} s</b></article>
                   </div>
 
-                  <div class="gym-time-display" *ngIf="ejercicioCasaActual.modo==='tiempo'">
-                    <strong>{{formatoTiempoCasa(segundosCasa)}}</strong>
-                    <span>{{sesionCasaPausada ? 'Pausado' : 'En curso'}}</span>
-                  </div>
+                  <p class="gym-workout-observation" *ngIf="ejercicioCasaActual.observaciones">
+                    <span>INDICACIÓN DEL ENTRENADOR</span>
+                    {{ejercicioCasaActual.observaciones}}
+                  </p>
 
-                  <button *ngIf="ejercicioCasaActual.modo==='repeticiones'"
-                          type="button"
-                          class="gym-register-rep"
-                          (click)="sumarRepeticionCasa()"
-                          [disabled]="repsCasaHechas>=objetivoRepsCasa || sesionCasaPausada">
-                    <b>+1</b>
-                    <span>Registrar repetición</span>
+                  <button type="button"
+                          class="gym-technique-toggle"
+                          (click)="verEjercicioCasa=verEjercicioCasa===ejercicioCasaActual.id?'':ejercicioCasaActual.id">
+                    {{verEjercicioCasa===ejercicioCasaActual.id ? 'Ocultar indicaciones' : 'Ver indicaciones'}}
                   </button>
 
-                  <div class="gym-live-status">
-                    <p><span>Equipo</span><b>{{ejercicioCasaActual.equipo || 'Gimnasio'}}</b></p>
-                    <p><span>Serie actual</span><b>{{serieCasaActual}} de {{seriesCasaTotalActual}}</b></p>
-                    <p><span>Siguiente</span><b>{{serieCasaActual < seriesCasaTotalActual ? 'Repetir serie' : (siguienteEjercicioCasa?.nombre || 'Finalizar')}}</b></p>
+                  <div class="gym-live-technique" *ngIf="verEjercicioCasa===ejercicioCasaActual.id">
+                    <p *ngFor="let paso of ejercicioCasaActual.instrucciones; let p=index">
+                      <span>{{p+1}}</span>{{paso}}
+                    </p>
                   </div>
-                </aside>
-              </div>
+                </div>
+              </article>
 
-              <div class="gym-rest-board" *ngIf="faseCasa==='descanso'">
-                <section class="gym-rest-timer-card">
-                  <span>DESCANSO ENTRE SERIES</span>
-                  <strong>{{formatoTiempoCasa(segundosCasa)}}</strong>
-                  <p>{{textoDescansoCasa}}</p>
-                  <div class="gym-rest-progress" [style.background]="temporizadorFondoCasa"></div>
-                </section>
+              <aside class="gym-set-control">
+                <div class="gym-set-control-head">
+                  <span>CONTROL DE SERIES</span>
+                  <h3>Registra lo que haces</h3>
+                  <p>No necesitas tocar un botón por cada repetición. Completa la serie y márcala una sola vez.</p>
+                </div>
 
-                <section class="gym-next-station">
-                  <div class="gym-next-photo" *ngIf="serieCasaActual >= seriesCasaTotalActual && siguienteEjercicioCasa">
-                    <img [src]="imagenEjercicioCasa(siguienteEjercicioCasa)"
-                         (error)="ocultarImagenEjercicio($event)"
-                         [alt]="siguienteEjercicioCasa.nombre">
+                <div class="gym-set-list">
+                  <article *ngFor="let serie of seriesArrayCasa(ejercicioCasaActual)"
+                           [class.done]="serie < serieCasaActual"
+                           [class.active]="serie===serieCasaActual">
+                    <span>{{serie < serieCasaActual ? '✓' : serie}}</span>
+                    <div>
+                      <b>Serie {{serie}}</b>
+                      <small>{{prescripcionEjercicioCasa(ejercicioCasaActual)}} · {{textoPesoGym(ejercicioCasaActual)}}</small>
+                    </div>
+                    <em>{{serie < serieCasaActual ? 'Completada' : (serie===serieCasaActual ? 'En curso' : 'Pendiente')}}</em>
+                  </article>
+                </div>
+
+                <label class="gym-load-input">
+                  <span>Carga usada en este ejercicio</span>
+                  <div>
+                    <input type="number"
+                           min="0"
+                           step="0.5"
+                           [ngModel]="cargaActualGym(ejercicioCasaActual)"
+                           (ngModelChange)="actualizarCargaGym(ejercicioCasaActual,$event)"
+                           name="cargaGymActual"
+                           placeholder="0">
+                    <b>kg</b>
                   </div>
-                  <div class="gym-next-photo same" *ngIf="serieCasaActual < seriesCasaTotalActual">
-                    <img [src]="imagenEjercicioCasa(ejercicioCasaActual)"
-                         (error)="ocultarImagenEjercicio($event)"
-                         [alt]="ejercicioCasaActual?.nombre">
-                  </div>
-                  <div class="gym-next-copy">
-                    <small>{{serieCasaActual < seriesCasaTotalActual ? 'SIGUIENTE SERIE' : 'SIGUIENTE ESTACIÓN'}}</small>
-                    <h3>{{serieCasaActual < seriesCasaTotalActual ? ejercicioCasaActual?.nombre : (siguienteEjercicioCasa?.nombre || 'Sesión completada')}}</h3>
-                    <ng-container *ngIf="serieCasaActual < seriesCasaTotalActual">
-                      <p>Serie {{serieCasaActual + 1}} de {{seriesCasaTotalActual}}</p>
-                      <b>Equipo: {{ejercicioCasaActual?.equipo || 'Equipo del gimnasio'}}</b>
-                    </ng-container>
-                    <ng-container *ngIf="serieCasaActual >= seriesCasaTotalActual && siguienteEjercicioCasa">
-                      <p>{{siguienteEjercicioCasa.series || 3}} series · {{prescripcionEjercicioCasa(siguienteEjercicioCasa)}} · descanso {{siguienteEjercicioCasa.descanso}} s</p>
-                      <b>Equipo: {{siguienteEjercicioCasa.equipo || 'Equipo del gimnasio'}}</b>
-                    </ng-container>
-                    <p *ngIf="serieCasaActual >= seriesCasaTotalActual && !siguienteEjercicioCasa">Has completado todas las estaciones de esta sesión.</p>
-                  </div>
-                </section>
-              </div>
-
-              <div class="home-session-progress">
-                <div><span>Progreso de la sesión</span><b>{{progresoCasa}}%</b></div>
-                <div class="session-progress-track"><i [style.width.%]="progresoCasa"></i></div>
-              </div>
-
-              <div class="home-session-controls"
-                   [class.rep-mode]="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'">
-                <button type="button" class="control-secondary" (click)="togglePausaCasa()">{{sesionCasaPausada ? '▶ Continuar' : 'Ⅱ Pausar'}}</button>
+                  <small *ngIf="ejercicioCasaActual.peso_recomendado">
+                    Recomendado por la rutina: {{ejercicioCasaActual.peso_recomendado}} kg
+                  </small>
+                  <small *ngIf="!ejercicioCasaActual.peso_recomendado">
+                    Registra la carga que estás utilizando en el gimnasio.
+                  </small>
+                </label>
 
                 <button type="button"
-                        *ngIf="!(faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones')"
-                        class="control-primary"
-                        (click)="avanzarEjercicioCasa()">
-                  Siguiente →
-                </button>
-
-                <button type="button" class="control-danger" (click)="cancelarSesionCasa()">Terminar sesión</button>
-              </div>
-            </article>
-
-            <aside class="home-session-queue">
-              <div class="card-title-block">
-                <span>SESIÓN DE HOY</span>
-                <h2>{{ejerciciosCasaActuales.length}} ejercicios</h2>
-                <p>Mira qué sigue antes de llegar a cada ejercicio.</p>
-              </div>
-
-              <div class="session-queue-list">
-                <div *ngFor="let e of ejerciciosCasaActuales; let i=index"
-                     [class.current]="i===indiceEjercicioCasa"
-                     [class.done]="i<indiceEjercicioCasa">
-                  <span>
-                    <ng-container *ngIf="i<indiceEjercicioCasa; else numeroEjercicio">✓</ng-container>
-                    <ng-template #numeroEjercicio>{{i+1}}</ng-template>
-                  </span>
-                  <div class="queue-exercise-thumb">
-                    <img *ngIf="imagenEjercicioCasa(e)"
-                         [src]="imagenEjercicioCasa(e)"
-                         (error)="ocultarImagenEjercicio($event)"
-                         [alt]="e.nombre">
-                    <i>{{e.icono}}</i>
+                        class="gym-complete-set"
+                        (click)="completarSerieGym()"
+                        [disabled]="sesionCasaPausada">
+                  <span>✓</span>
+                  <div>
+                    <b>Completar serie {{serieCasaActual}}</b>
+                    <small>{{prescripcionEjercicioCasa(ejercicioCasaActual)}} realizadas</small>
                   </div>
-                  <div><b>{{e.nombre}}</b><small>{{e.series || 3}} series · {{prescripcionEjercicioCasa(e)}} · {{e.descanso}} s · {{e.equipo || 'Equipo del gimnasio'}}</small></div>
-                </div>
+                </button>
+              </aside>
+            </section>
+
+            <section class="gym-workout-rest" *ngIf="faseCasa==='descanso'">
+              <article class="gym-workout-rest-timer">
+                <span>DESCANSO PROGRAMADO</span>
+                <strong>{{formatoTiempoCasa(segundosCasa)}}</strong>
+                <p>{{textoDescansoCasa}}</p>
+                <button type="button" (click)="saltarDescansoGym()">Saltar descanso →</button>
+              </article>
+
+              <article class="gym-workout-next">
+                <small>{{serieCasaActual < seriesCasaTotalActual ? 'SIGUIENTE SERIE' : 'SIGUIENTE EJERCICIO'}}</small>
+                <h3>{{serieCasaActual < seriesCasaTotalActual ? ejercicioCasaActual?.nombre : (siguienteEjercicioCasa?.nombre || 'Finalizar rutina')}}</h3>
+
+                <ng-container *ngIf="serieCasaActual < seriesCasaTotalActual">
+                  <p>Serie {{serieCasaActual+1}} de {{seriesCasaTotalActual}}</p>
+                  <div><span>Equipo</span><b>{{ejercicioCasaActual?.equipo}}</b></div>
+                  <div><span>Objetivo</span><b>{{prescripcionEjercicioCasa(ejercicioCasaActual)}}</b></div>
+                  <div><span>Carga</span><b>{{textoPesoGym(ejercicioCasaActual)}}</b></div>
+                </ng-container>
+
+                <ng-container *ngIf="serieCasaActual >= seriesCasaTotalActual && siguienteEjercicioCasa">
+                  <p>Prepárate para cambiar de estación.</p>
+                  <div><span>Equipo</span><b>{{siguienteEjercicioCasa.equipo}}</b></div>
+                  <div><span>Series</span><b>{{siguienteEjercicioCasa.series}} × {{siguienteEjercicioCasa.repeticiones}}</b></div>
+                  <div><span>Carga</span><b>{{textoPesoGym(siguienteEjercicioCasa)}}</b></div>
+                </ng-container>
+              </article>
+            </section>
+
+            <section class="gym-workout-progress">
+              <div>
+                <span>PROGRESO DE LA RUTINA</span>
+                <b>{{progresoCasa}}%</b>
               </div>
-            </aside>
+              <div class="gym-workout-progress-track"><i [style.width.%]="progresoCasa"></i></div>
+            </section>
+
+            <section class="gym-workout-table">
+              <header>
+                <div>
+                  <span>RUTINA DE HOY</span>
+                  <h3>{{ejerciciosCasaActuales.length}} ejercicios programados</h3>
+                </div>
+                <small>{{totalSeriesCasaActuales}} series en total</small>
+              </header>
+
+              <div class="gym-workout-table-head">
+                <span>#</span><span>Ejercicio</span><span>Equipo</span><span>Series × reps</span><span>Carga</span><span>Descanso</span><span>Estado</span>
+              </div>
+
+              <article *ngFor="let e of ejerciciosCasaActuales; let i=index"
+                       [class.current]="i===indiceEjercicioCasa"
+                       [class.done]="i<indiceEjercicioCasa">
+                <span>{{i<indiceEjercicioCasa ? '✓' : (i+1)}}</span>
+                <div><b>{{e.nombre}}</b><small *ngIf="e.observaciones">{{e.observaciones}}</small></div>
+                <b>{{e.equipo}}</b>
+                <b>{{e.series}} × {{e.repeticiones}}</b>
+                <b>{{textoPesoGym(e)}}</b>
+                <b>{{e.descanso}} s</b>
+                <em>{{i<indiceEjercicioCasa ? 'Completado' : (i===indiceEjercicioCasa ? (faseCasa==='descanso' ? 'Descanso' : 'En curso') : 'Pendiente')}}</em>
+              </article>
+            </section>
+
+            <footer class="gym-workout-actions">
+              <button type="button" class="control-secondary" (click)="togglePausaCasa()">
+                {{sesionCasaPausada ? '▶ Continuar sesión' : 'Ⅱ Pausar sesión'}}
+              </button>
+              <button type="button" class="control-danger" (click)="cancelarSesionCasa()">Finalizar antes de tiempo</button>
+            </footer>
           </section>
 
           <section *ngIf="sesionCasaTerminada" class="home-session-complete">
@@ -871,7 +901,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               <p>{{r.objetivo}}</p>
               <small class="routine-period">{{fecha(r.fecha_inicio)}} — {{r.fecha_fin ? fecha(r.fecha_fin) : 'Sin fecha final'}}</small>
               <div class="routine-exercises">
-                <div *ngFor="let e of r.detalles"><span>✓</span><p><b>{{e.ejercicio}}</b><small>{{e.series}} series × {{e.repeticiones}} reps · descanso {{e.descanso_segundos || 0}} s</small></p></div>
+                <div *ngFor="let e of r.detalles"><span>✓</span><p><b>{{e.ejercicio}}</b><small>{{e.series}} series × {{e.repeticiones}} reps · {{e.peso_recomendado ? (e.peso_recomendado+' kg') : 'carga por definir'}} · descanso {{e.descanso_segundos || 0}} s</small></p></div>
               </div>
             </article>
 
@@ -1347,6 +1377,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   segundosTranscurridosCasa=0;
   repsCasaHechas=0;
   serieCasaActual=1;
+  cargasGym:Record<string,string|number>={};
   ladoCasa:'derecho'|'izquierdo'='derecho';
   private timerCasa:any=null;
 
@@ -1795,13 +1826,114 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   ejerciciosZonaCasa(zona:string):any[]{return this.catalogoCasa?.[zona]||[];}
-  get ejerciciosCasaActuales():any[]{return this.ejerciciosZonaCasa(this.zonaCasaSeleccionada);}
+
+  get tieneRutinaAsignadaGym():boolean{
+    return Array.isArray(this.rutinaActual?.detalles) && this.rutinaActual.detalles.length>0;
+  }
+
+  normalizarTextoGym(valor:any):string{
+    return String(valor||'')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g,'')
+      .trim()
+      .toLowerCase();
+  }
+
+  equipoRutinaGym(nombre:any):string{
+    const n=this.normalizarTextoGym(nombre);
+    if(n.includes('prensa'))return 'Máquina de prensa';
+    if(n.includes('extension') && n.includes('cuadr'))return 'Máquina de extensión de cuádriceps';
+    if(n.includes('femoral'))return 'Máquina de curl femoral';
+    if(n.includes('abdu'))return 'Máquina de abductores';
+    if(n.includes('aductor'))return 'Máquina de aductores';
+    if(n.includes('jalon'))return 'Polea alta';
+    if(n.includes('face pull'))return 'Polea alta con cuerda';
+    if(n.includes('triceps') && n.includes('polea'))return 'Polea alta';
+    if(n.includes('pallof'))return 'Polea';
+    if(n.includes('polea'))return 'Polea';
+    if(n.includes('remo') && n.includes('mancuerna'))return 'Banco y mancuerna';
+    if(n.includes('remo'))return 'Polea baja';
+    if(n.includes('press') && n.includes('banca'))return 'Banco y peso libre';
+    if(n.includes('press') && n.includes('pecho'))return 'Máquina de pecho';
+    if(n.includes('press') && n.includes('hombro'))return 'Banco y mancuernas';
+    if(n.includes('hip thrust'))return 'Banco y barra';
+    if(n.includes('sentadilla'))return 'Rack / peso libre';
+    if(n.includes('curl') || n.includes('biceps'))return 'Mancuernas';
+    if(n.includes('elevacion'))return 'Mancuernas';
+    if(n.includes('apertura'))return 'Banco y mancuernas';
+    if(n.includes('crunch'))return 'Máquina abdominal';
+    if(n.includes('plancha'))return 'Colchoneta';
+    return 'Área de musculación';
+  }
+
+  get ejerciciosRutinaAsignadaGym():any[]{
+    const detalles=Array.isArray(this.rutinaActual?.detalles) ? this.rutinaActual.detalles : [];
+    return detalles.map((d:any,i:number)=>({
+      id:'rutina_'+String(d?.id_detalle_rutina||i+1),
+      nombre:String(d?.ejercicio||('Ejercicio '+(i+1))),
+      modo:'repeticiones',
+      repeticiones:Math.max(1,Number(d?.repeticiones||10)),
+      por_lado:false,
+      series:Math.max(1,Number(d?.series||3)),
+      segundos:45,
+      descanso:Math.max(10,Number(d?.descanso_segundos||45)),
+      icono:'🏋',
+      equipo:this.equipoRutinaGym(d?.ejercicio),
+      peso_recomendado:Number(d?.peso_recomendado||0),
+      observaciones:String(d?.observaciones||'').trim(),
+      instrucciones:String(d?.observaciones||'').trim()
+        ? [String(d.observaciones)]
+        : [
+            'Ajusta correctamente el equipo antes de comenzar.',
+            'Completa la serie con técnica controlada.',
+            'Respeta el descanso indicado antes de la siguiente serie.'
+          ],
+      origen:'rutina_asignada'
+    }));
+  }
+
+  get ejerciciosCasaActuales():any[]{
+    return this.tieneRutinaAsignadaGym
+      ? this.ejerciciosRutinaAsignadaGym
+      : this.ejerciciosZonaCasa(this.zonaCasaSeleccionada);
+  }
+
   get ejercicioCasaActual():any{return this.ejerciciosCasaActuales[this.indiceEjercicioCasa]||null;}
   get siguienteEjercicioCasa():any{
     const siguienteIndice=this.indiceEjercicioCasa+1;
     return siguienteIndice<this.ejerciciosCasaActuales.length
       ? this.ejerciciosCasaActuales[siguienteIndice]
       : null;
+  }
+
+  get nombreRutinaSesionGym():string{
+    return this.tieneRutinaAsignadaGym
+      ? String(this.rutinaActual?.nombre_rutina||'Rutina asignada')
+      : ('Entrenamiento de '+this.metaZonaCasa(this.zonaCasaSeleccionada).nombre);
+  }
+
+  claveEjercicioGym(e:any):string{
+    return String(e?.id||e?.nombre||'ejercicio');
+  }
+
+  cargaActualGym(e:any):string|number{
+    const clave=this.claveEjercicioGym(e);
+    const valor=this.cargasGym[clave];
+    if(valor!==undefined && valor!==null && valor!=='')return valor;
+    const recomendado=Number(e?.peso_recomendado||0);
+    return recomendado>0 ? recomendado : '';
+  }
+
+  actualizarCargaGym(e:any,valor:any):void{
+    const clave=this.claveEjercicioGym(e);
+    this.cargasGym={...this.cargasGym,[clave]:valor};
+  }
+
+  textoPesoGym(e:any):string{
+    const carga=this.cargaActualGym(e);
+    if(carga!=='' && carga!==null && carga!==undefined)return String(carga)+' kg';
+    const recomendado=Number(e?.peso_recomendado||0);
+    return recomendado>0 ? recomendado+' kg recomendados' : 'Según indicación del entrenador';
   }
 
   metaZonaCasa(zona:string):any{
@@ -1836,7 +1968,10 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   duracionEstimadaCasa(zona:string):number{
-    const total=this.ejerciciosZonaCasa(zona).reduce((s:number,e:any)=>{
+    const lista=this.tieneRutinaAsignadaGym
+      ? this.ejerciciosRutinaAsignadaGym
+      : this.ejerciciosZonaCasa(zona);
+    const total=lista.reduce((s:number,e:any)=>{
       const trabajo=e?.modo==='repeticiones'
         ? Math.max(30,this.repeticionesObjetivoCasa(e)*(e?.por_lado?4:3))
         : this.segundosObjetivoCasa(e);
@@ -1912,69 +2047,25 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       : 0;
   }
 
-  sumarRepeticionCasa():void{
+  completarSerieGym():void{
     if(!this.sesionCasaActiva || this.sesionCasaPausada || this.faseCasa!=='ejercicio')return;
-    if(this.ejercicioCasaActual?.modo!=='repeticiones')return;
-
-    const indiceActual=this.indiceEjercicioCasa;
-    const ladoActual=this.ladoCasa;
-    const objetivo=Math.max(1,this.objetivoRepsCasa);
-    const nuevasReps=Math.min(objetivo,this.repsCasaHechas+1);
-
-    this.repsCasaHechas=nuevasReps;
     this.errorCasa='';
+    this.siguienteFaseCasa();
+  }
 
-    // Al completar la meta, el flujo continúa solo:
-    // derecho -> izquierdo -> descanso -> siguiente ejercicio.
-    if(nuevasReps>=objetivo){
-      setTimeout(()=>{
-        if(!this.sesionCasaActiva || this.sesionCasaPausada || this.faseCasa!=='ejercicio')return;
-        if(this.indiceEjercicioCasa!==indiceActual || this.ladoCasa!==ladoActual)return;
-
-        const ejercicio=this.ejercicioCasaActual;
-
-        if(ejercicio?.por_lado && this.ladoCasa==='derecho'){
-          this.ladoCasa='izquierdo';
-          this.repsCasaHechas=0;
-          return;
-        }
-
-        this.ladoCasa='derecho';
-        this.repsCasaHechas=0;
-        this.siguienteFaseCasa();
-      },650);
-    }
+  saltarDescansoGym():void{
+    if(!this.sesionCasaActiva || this.faseCasa!=='descanso')return;
+    this.segundosCasa=0;
+    this.siguienteFaseCasa();
   }
 
   avanzarEjercicioCasa():void{
     if(!this.sesionCasaActiva)return;
-
     if(this.faseCasa==='descanso'){
-      this.siguienteFaseCasa();
+      this.saltarDescansoGym();
       return;
     }
-
-    const ejercicio=this.ejercicioCasaActual;
-
-    if(ejercicio?.modo==='repeticiones'){
-      if(this.repsCasaHechas<this.objetivoRepsCasa){
-        this.errorCasa='Completa las '+this.objetivoRepsCasa+' repeticiones antes de continuar.';
-        return;
-      }
-
-      if(ejercicio?.por_lado && this.ladoCasa==='derecho'){
-        this.ladoCasa='izquierdo';
-        this.repsCasaHechas=0;
-        this.errorCasa='';
-        return;
-      }
-
-      this.ladoCasa='derecho';
-      this.repsCasaHechas=0;
-    }
-
-    this.errorCasa='';
-    this.siguienteFaseCasa();
+    this.completarSerieGym();
   }
 
   iniciarEntrenamientoCasa():void{
@@ -1991,6 +2082,11 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.repsCasaHechas=0;
     this.serieCasaActual=1;
     this.ladoCasa='derecho';
+    this.cargasGym={};
+    for(const ejercicio of this.ejerciciosCasaActuales){
+      const recomendado=Number(ejercicio?.peso_recomendado||0);
+      if(recomendado>0)this.cargasGym[this.claveEjercicioGym(ejercicio)]=recomendado;
+    }
     this.sesionCasaActiva=true;
     this.sesionCasaPausada=false;
     this.sesionCasaTerminada=false;
@@ -2133,44 +2229,18 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       .reduce((s:number,e:any)=>s+this.seriesEjercicioCasa(e),0);
 
     const completasAntesActual=seriesAnteriores+Math.max(0,this.serieCasaActual-1);
-    const actual=this.ejercicioCasaActual;
-    let fraccionSerie=0;
+    const actualCompletada=this.faseCasa==='descanso' ? 1 : 0;
 
-    if(this.faseCasa==='ejercicio' && actual?.modo==='repeticiones'){
-      const objetivo=Math.max(1,this.objetivoRepsCasa);
-      const ladoBase=actual?.por_lado && this.ladoCasa==='izquierdo' ? .5 : 0;
-      const divisor=actual?.por_lado ? 2 : 1;
-      fraccionSerie=Math.min(.8,(ladoBase+(this.repsCasaHechas/objetivo)/divisor)*.8);
-    }else if(this.faseCasa==='ejercicio'){
-      const total=Math.max(1,this.segundosObjetivoCasa(actual));
-      fraccionSerie=Math.min(.8,Math.max(0,(total-this.segundosCasa)/total)*.8);
-    }else{
-      const total=Math.max(1,Number(actual?.descanso||1));
-      const descansoPct=Math.min(1,Math.max(0,(total-this.segundosCasa)/total));
-      fraccionSerie=.8+(descansoPct*.2);
-    }
-
-    return Math.min(100,Math.round(((completasAntesActual+fraccionSerie)/totalSeries)*100));
+    return Math.min(100,Math.round(((completasAntesActual+actualCompletada)/totalSeries)*100));
   }
 
   get temporizadorFondoCasa():string{
     const actual=this.ejercicioCasaActual;
-
-    if(this.faseCasa==='ejercicio' && actual?.modo==='repeticiones'){
-      const objetivo=Math.max(1,this.objetivoRepsCasa);
-      const ladoBase=actual?.por_lado && this.ladoCasa==='izquierdo' ? 50 : 0;
-      const pct=Math.max(0,Math.min(100,ladoBase+(this.repsCasaHechas/objetivo)*(actual?.por_lado?50:100)));
-      return 'conic-gradient(#ef233c '+pct+'%, #e7edf3 '+pct+'%)';
-    }
-
-    const total=this.faseCasa==='ejercicio'
-      ? this.segundosObjetivoCasa(actual)
-      : Math.max(1,Number(actual?.descanso||1));
-
-    const pct=Math.max(0,Math.min(100,((total-this.segundosCasa)/Math.max(1,total))*100));
-    const color=this.faseCasa==='ejercicio'?'#ef233c':'#2f78c8';
-
-    return 'conic-gradient('+color+' '+pct+'%, #e7edf3 '+pct+'%)';
+    const total=Math.max(1,Number(actual?.descanso||30));
+    const pct=this.faseCasa==='descanso'
+      ? Math.max(0,Math.min(100,((total-this.segundosCasa)/total)*100))
+      : 0;
+    return 'conic-gradient(#2f78c8 '+pct+'%, #e7edf3 '+pct+'%)';
   }
 
   imagenEjercicioCasa(ejercicio:any):string{
