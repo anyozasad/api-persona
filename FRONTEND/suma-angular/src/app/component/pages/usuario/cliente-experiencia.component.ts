@@ -35,7 +35,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               <div><i [style.width.%]="progreso?.semana?.cumplimiento || 0"></i></div>
             </div>
             <div class="progress-side-mini">
-              <article><b>{{progreso?.mes?.sesiones_casa || 0}}</b><small>sesiones en casa</small></article>
+              <article><b>{{progreso?.mes?.sesiones_casa || 0}}</b><small>sesiones en el gym</small></article>
               <article><b>{{progreso?.mes?.minutos_entrenados || 0}}</b><small>minutos guiados</small></article>
             </div>
           </aside>
@@ -151,7 +151,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             <ng-template #coachEmpty>
               <div class="client-empty-mini">
                 <span>?</span>
-                <div><b>Aún no tienes entrenador asignado</b><p>Puedes continuar con tus sesiones guiadas en casa mientras el gimnasio completa la asignación.</p></div>
+                <div><b>Aún no tienes entrenador asignado</b><p>Puedes continuar con tus sesiones guiadas dentro del gimnasio mientras se completa la asignación.</p></div>
               </div>
             </ng-template>
           </article>
@@ -168,7 +168,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               </div>
             </div>
             <ng-template #noActivity>
-              <div class="client-empty-block"><b>Aún no hay actividad esta semana</b><p>Cuando registres una asistencia o completes una sesión en casa aparecerá aquí.</p></div>
+              <div class="client-empty-block"><b>Aún no hay actividad esta semana</b><p>Cuando registres una asistencia o completes una sesión en el gimnasio aparecerá aquí.</p></div>
             </ng-template>
           </article>
 
@@ -214,7 +214,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           <div class="calendar-pro-copy">
             <span class="calendar-pro-kicker"><i></i> AGENDA PERSONAL</span>
             <h1>Organiza tu entrenamiento</h1>
-            <p>Tu calendario combina clases, sesiones en casa y fechas de membresía para que tengas claro qué sigue.</p>
+            <p>Tu calendario combina clases, sesiones en el gimnasio y fechas de membresía para que tengas claro qué sigue.</p>
             <div class="calendar-head-actions">
               <button type="button" class="calendar-today-btn" (click)="irMesActual()">Hoy</button>
               <button type="button" class="calendar-refresh-btn" (click)="cargarCalendario()">↻ Sincronizar agenda</button>
@@ -379,7 +379,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             </article>
           </div>
           <ng-template #emptyCalendar>
-            <div class="client-empty-block large"><b>No tienes actividades próximas</b><p>Cuando reserves una clase o configures tu plan en casa aparecerán aquí.</p></div>
+            <div class="client-empty-block large"><b>No tienes actividades próximas</b><p>Cuando reserves una clase o configures tu plan de entrenamiento en el gym aparecerán aquí.</p></div>
           </ng-template>
         </section>
       </ng-container>
@@ -786,7 +786,7 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
 
   tipoEventoNombre(tipo:any): string {
     const t = String(tipo || '').toLowerCase();
-    if (t==='casa') return 'Entrenamiento en casa';
+    if (t==='casa') return 'Entrenamiento en el gimnasio';
     if (t==='membresia') return 'Membresía';
     return 'Clase del gimnasio';
   }
