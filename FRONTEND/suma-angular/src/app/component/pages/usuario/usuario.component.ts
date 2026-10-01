@@ -1071,7 +1071,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                 <div class="membership-plan-price">
                   <small>S/</small>
                   <strong>{{m.precio | number:'1.0-0'}}</strong>
-                  <span>/ {{m.duracion_meses || 1}} mes{{Number(m.duracion_meses || 1)>1 ? 'es' : ''}}</span>
+                  <span>/ {{m.duracion_meses || 1}} mes{{(m.duracion_meses || 1)>1 ? 'es' : ''}}</span>
                 </div>
 
                 <p class="membership-plan-description">{{m.descripcion || 'Membresía Mallqui Gym'}}</p>
@@ -1121,7 +1121,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                   </article>
                   <article>
                     <small>DURACIÓN</small>
-                    <b>{{planPagoSeleccionado.duracion_meses || 1}} mes{{Number(planPagoSeleccionado.duracion_meses || 1)>1 ? 'es' : ''}}</b>
+                    <b>{{planPagoSeleccionado.duracion_meses || 1}} mes{{(planPagoSeleccionado.duracion_meses || 1)>1 ? 'es' : ''}}</b>
                   </article>
                   <article>
                     <small>INICIO ESTIMADO</small>
@@ -1174,7 +1174,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
 
                 <div class="membership-payment-review" *ngIf="planPagoSeleccionado">
                   <p><span>Plan</span><b>{{planPagoSeleccionado.nombre}}</b></p>
-                  <p><span>Duración</span><b>{{planPagoSeleccionado.duracion_meses || 1}} mes{{Number(planPagoSeleccionado.duracion_meses || 1)>1 ? 'es' : ''}}</b></p>
+                  <p><span>Duración</span><b>{{planPagoSeleccionado.duracion_meses || 1}} mes{{(planPagoSeleccionado.duracion_meses || 1)>1 ? 'es' : ''}}</b></p>
                   <p><span>Método</span><b>{{pagoForm.metodo_pago}}</b></p>
                   <p class="total"><span>Total</span><b>S/ {{planPagoSeleccionado.precio | number:'1.2-2'}}</b></p>
                 </div>
