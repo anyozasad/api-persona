@@ -313,9 +313,16 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
           <section class="train-ux-shell" *ngIf="!sesionCasaActiva && !sesionCasaTerminada">
             <section class="train-ux-intro">
               <article class="train-ux-copy-card">
-                <div class="train-ux-kicker"><i></i> ENTRENAMIENTO GUIADO</div>
-                <h1>Construye tu sesión <strong>de hoy</strong></h1>
-                <p>Elige tu objetivo, los días que entrenas y la zona que quieres trabajar. Mallqui te guía ejercicio por ejercicio.</p>
+                <div class="train-ux-kicker"><i></i> ENTRENAMIENTO DENTRO DE MALLQUI GYM</div>
+                <h1>Entrena con <strong>máquinas y pesas</strong></h1>
+                <p>Elige el grupo muscular y sigue una sesión del gimnasio con máquinas, poleas, banco y mancuernas. El sistema te guía por series, repeticiones y descansos.</p>
+
+                <div class="train-gym-context-strip">
+                  <span>🏋 Máquinas</span>
+                  <span>◉ Poleas</span>
+                  <span>◆ Mancuernas</span>
+                  <span>▰ Banco</span>
+                </div>
 
                 <div class="train-ux-summary">
                   <div><span>◎</span><p><small>ZONA ACTUAL</small><b>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</b></p></div>
@@ -326,7 +333,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                 <div class="train-ux-actions">
                   <button type="button" class="train-ux-primary" (click)="irConfigCasa()">
                     <span>▶</span>
-                    <div><b>Configurar entrenamiento</b><small>Objetivo, días y zona</small></div>
+                    <div><b>Preparar sesión en el gym</b><small>Días, grupo muscular y equipo</small></div>
                     <em>→</em>
                   </button>
                   <button type="button" class="train-ux-secondary" (click)="abrirModulo('rutinas')">
@@ -352,7 +359,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                 <div class="train-ux-live-badge"><i></i> GUÍA VISUAL</div>
 
                 <div class="train-ux-visual-info">
-                  <small>SESIÓN PREPARADA</small>
+                  <small>SESIÓN EN SALA DE MUSCULACIÓN</small>
                   <h2>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</h2>
                   <p>{{ejerciciosCasaActuales.length}} ejercicios · {{duracionEstimadaCasa(zonaCasaSeleccionada)}} min aprox.</p>
                 </div>
@@ -385,9 +392,9 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
           <section id="config-entreno-casa" *ngIf="!sesionCasaActiva && !sesionCasaTerminada" class="home-plan-layout">
             <article class="member-module-card home-plan-card">
               <div class="card-title-block">
-                <span>OBJETIVO Y DÍAS</span>
-                <h2>Configura tu entrenamiento</h2>
-                <p>Elige un objetivo general y hasta 4 días por semana. Las sesiones son moderadas y guiadas.</p>
+                <span>PLAN DE ENTRENAMIENTO EN GIMNASIO</span>
+                <h2>Configura tu sesión en sala</h2>
+                <p>Elige tu objetivo y hasta 4 días por semana. Cada sesión usa equipamiento real del gimnasio y controla series, repeticiones y descansos.</p>
               </div>
 
               <div class="home-goal-selector">
@@ -454,7 +461,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               <div>
                 <span>GRUPO MUSCULAR</span>
                 <h2>¿Qué quieres entrenar?</h2>
-                <p>Selecciona una zona. El sistema te mostrará el orden y las repeticiones exactas.</p>
+                <p>Selecciona un grupo muscular. Verás los ejercicios, la máquina o equipo que debes usar, las series, repeticiones y el descanso.</p>
               </div>
               <div class="home-picker-summary">
                 <b>{{ejerciciosCasaActuales.length}}</b>
@@ -481,7 +488,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
             <div class="home-exercise-preview">
               <div class="home-exercise-preview-head">
                 <div>
-                  <span>SESIÓN GUIADA</span>
+                  <span>SESIÓN DE MUSCULACIÓN</span>
                   <h3>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</h3>
                 </div>
                 <span class="home-no-equipment">Equipo del gimnasio</span>
@@ -494,7 +501,8 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                   <p>Mira el movimiento antes de iniciar. Durante la sesión la guía cambia automáticamente con cada ejercicio.</p>
                   <div>
                     <b>{{ejerciciosCasaActuales[0].nombre}}</b>
-                    <small>{{prescripcionEjercicioCasa(ejerciciosCasaActuales[0])}}</small>
+                    <small>{{ejerciciosCasaActuales[0].series || 3}} series · {{prescripcionEjercicioCasa(ejerciciosCasaActuales[0])}}</small>
+                    <em>Equipo: {{ejerciciosCasaActuales[0].equipo || 'Área funcional'}}</em>
                   </div>
                 </div>
                 <div class="home-first-demo-visual">
@@ -518,8 +526,8 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                   </div>
                   <div class="exercise-list-copy">
                     <b>{{ejercicio.nombre}}</b>
-                    <small>{{prescripcionEjercicioCasa(ejercicio)}} · descanso {{ejercicio.descanso}} s</small>
-                    <em>Demostración visual incluida</em>
+                    <small>{{ejercicio.series || 3}} series · {{prescripcionEjercicioCasa(ejercicio)}} · descanso {{ejercicio.descanso}} s</small>
+                    <em>Equipo: {{ejercicio.equipo || 'Área funcional'}}</em>
                   </div>
                   <button type="button" (click)="verEjercicioCasa=verEjercicioCasa===ejercicio.id?'':ejercicio.id">
                     {{verEjercicioCasa===ejercicio.id ? 'Ocultar pasos' : 'Ver técnica'}}
@@ -540,7 +548,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                 <span>▶</span>
                 <div>
                   <b>Comenzar {{metaZonaCasa(zonaCasaSeleccionada).nombre}}</b>
-                  <small>{{ejerciciosCasaActuales.length}} ejercicios con guía, repeticiones y descansos</small>
+                  <small>{{ejerciciosCasaActuales.length}} ejercicios · máquinas/pesas · series, repeticiones y descansos</small>
                 </div>
                 <em>Empezar →</em>
               </button>
@@ -555,8 +563,8 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                   <h2 *ngIf="faseCasa==='ejercicio'">{{ejercicioCasaActual?.nombre}}</h2>
                   <h2 *ngIf="faseCasa==='descanso'">Descanso</h2>
                   <p>{{faseCasa==='ejercicio'
-                    ? ('Ejercicio '+(indiceEjercicioCasa+1)+' de '+ejerciciosCasaActuales.length)
-                    : 'Respira y prepárate para continuar'}}</p>
+                    ? ('Ejercicio '+(indiceEjercicioCasa+1)+' de '+ejerciciosCasaActuales.length+' · Serie '+serieCasaActual+' de '+seriesCasaTotalActual)
+                    : textoDescansoCasa}}</p>
                 </div>
                 <span class="session-zone-badge">{{metaZonaCasa(zonaCasaSeleccionada).icono}} {{metaZonaCasa(zonaCasaSeleccionada).nombre}}</span>
               </div>
@@ -574,14 +582,15 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                   <div class="live-coach-heading">
                     <span>ENTRENADOR VISUAL</span>
                     <h3>Sigue el movimiento</h3>
-                    <p>Mira la demostración y completa el ejercicio a un ritmo cómodo.</p>
+                    <p>Usa el equipo indicado, completa la serie y respeta el descanso antes de continuar.</p>
                   </div>
 
                   <div class="live-target-card">
                     <span>{{ejercicioCasaActual.icono}}</span>
                     <div>
-                      <small>OBJETIVO ACTUAL</small>
+                      <small>SERIE {{serieCasaActual}} DE {{seriesCasaTotalActual}}</small>
                       <b>{{prescripcionEjercicioCasa(ejercicioCasaActual)}}</b>
+                      <em>Equipo: {{ejercicioCasaActual.equipo || 'Área funcional'}}</em>
                       <em *ngIf="ejercicioCasaActual.por_lado">Lado {{ladoCasa}}</em>
                       <em *ngIf="!ejercicioCasaActual.por_lado">{{ejercicioCasaActual.modo==='tiempo' ? 'Tiempo guiado' : 'Repeticiones'}}</em>
                     </div>
@@ -635,14 +644,15 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
 
                 <div class="home-next-preview">
                   <div class="next-preview-copy">
-                    <span>SIGUE DESPUÉS</span>
-                    <h3>{{siguienteEjercicioCasa?.nombre || 'Fin de la sesión'}}</h3>
-                    <p *ngIf="siguienteEjercicioCasa">{{prescripcionEjercicioCasa(siguienteEjercicioCasa)}}. Mira la demostración antes de continuar.</p>
-                    <p *ngIf="!siguienteEjercicioCasa">Terminaste todos los ejercicios programados.</p>
+                    <span>{{serieCasaActual < seriesCasaTotalActual ? 'SIGUIENTE SERIE' : 'SIGUE DESPUÉS'}}</span>
+                    <h3>{{serieCasaActual < seriesCasaTotalActual ? ejercicioCasaActual?.nombre : (siguienteEjercicioCasa?.nombre || 'Fin de la sesión')}}</h3>
+                    <p *ngIf="serieCasaActual < seriesCasaTotalActual">Prepárate para la serie {{serieCasaActual + 1}} de {{seriesCasaTotalActual}} · {{ejercicioCasaActual?.equipo || 'Equipo del gimnasio'}}.</p>
+                    <p *ngIf="serieCasaActual >= seriesCasaTotalActual && siguienteEjercicioCasa">{{siguienteEjercicioCasa.series || 3}} series · {{prescripcionEjercicioCasa(siguienteEjercicioCasa)}} · {{siguienteEjercicioCasa.equipo || 'Equipo del gimnasio'}}.</p>
+                    <p *ngIf="serieCasaActual >= seriesCasaTotalActual && !siguienteEjercicioCasa">Terminaste todos los ejercicios programados.</p>
                   </div>
                   <app-exercise-demo
-                    *ngIf="siguienteEjercicioCasa"
-                    [ejercicio]="siguienteEjercicioCasa"
+                    *ngIf="serieCasaActual < seriesCasaTotalActual ? ejercicioCasaActual : siguienteEjercicioCasa"
+                    [ejercicio]="serieCasaActual < seriesCasaTotalActual ? ejercicioCasaActual : siguienteEjercicioCasa"
                     [pausado]="true"
                     [lado]="'derecho'">
                   </app-exercise-demo>
@@ -663,7 +673,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                     <small *ngIf="ejercicioCasaActual?.por_lado">Lado {{ladoCasa}}</small>
                     <small *ngIf="!ejercicioCasaActual?.por_lado">Ritmo controlado</small>
                   </div>
-                  <em>Toca +1 al completar cada repetición. Al llegar a la meta, el ejercicio avanza automáticamente.</em>
+                  <em>Toca +1 al completar cada repetición. Al terminar la serie comienza el descanso; después continúa la siguiente serie o ejercicio.</em>
                 </div>
                 <button type="button"
                         class="rep-tap-button"
@@ -713,7 +723,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                          [alt]="e.nombre">
                     <i>{{e.icono}}</i>
                   </div>
-                  <div><b>{{e.nombre}}</b><small>{{prescripcionEjercicioCasa(e)}} · {{e.descanso}} s descanso</small></div>
+                  <div><b>{{e.nombre}}</b><small>{{e.series || 3}} series · {{prescripcionEjercicioCasa(e)}} · {{e.descanso}} s · {{e.equipo || 'Equipo del gimnasio'}}</small></div>
                 </div>
               </div>
             </aside>
@@ -1093,13 +1103,13 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     {id:'movilidad',nombre:'Movilidad',icono:'↔',descripcion:'Mejorar control, postura y amplitud cómoda de movimiento.'},
   ];
   zonasCasaMeta=[
-    {id:'piernas',nombre:'Piernas',icono:'🦵',subtitulo:'TREN INFERIOR',enfoque:'Piernas y equilibrio',descripcion:'Sentadillas, zancadas y pantorrillas con control.'},
-    {id:'gluteos',nombre:'Glúteos',icono:'↥',subtitulo:'CADERA Y ESTABILIDAD',enfoque:'Glúteos y cadera',descripcion:'Ejercicios de glúteos con banco, polea, máquina y mancuernas.'},
-    {id:'brazos',nombre:'Brazos',icono:'💪',subtitulo:'TREN SUPERIOR',enfoque:'Brazos y tríceps',descripcion:'Trabajo moderado de brazos usando el propio peso.'},
-    {id:'pecho',nombre:'Pecho',icono:'◆',subtitulo:'EMPUJE',enfoque:'Pecho y control',descripcion:'Flexiones en pared y ejercicios de empuje suaves.'},
-    {id:'espalda',nombre:'Espalda',icono:'✦',subtitulo:'POSTURA Y CONTROL',enfoque:'Espalda y postura',descripcion:'Movimientos de espalda y escápulas de forma controlada.'},
-    {id:'hombros',nombre:'Hombros',icono:'↻',subtitulo:'MOVILIDAD Y FUERZA',enfoque:'Hombros y estabilidad',descripcion:'Elevaciones y movilidad sin cargas externas.'},
-    {id:'core',nombre:'Abdomen / Core',icono:'◎',subtitulo:'ESTABILIDAD CENTRAL',enfoque:'Core y postura',descripcion:'Ejercicios de estabilidad del tronco y control corporal.'},
+    {id:'piernas',nombre:'Piernas',icono:'🦵',subtitulo:'MÁQUINAS + PESAS',enfoque:'Tren inferior',descripcion:'Prensa, extensión de cuádriceps, curl femoral y sentadilla con mancuernas.'},
+    {id:'gluteos',nombre:'Glúteos',icono:'↥',subtitulo:'BANCO + POLEA',enfoque:'Glúteos y cadera',descripcion:'Hip thrust, sentadilla sumo, abductores y patada de glúteo en polea.'},
+    {id:'brazos',nombre:'Brazos',icono:'💪',subtitulo:'MANCUERNAS + POLEA',enfoque:'Bíceps y tríceps',descripcion:'Curl de bíceps, martillo y extensiones de tríceps con polea y mancuerna.'},
+    {id:'pecho',nombre:'Pecho',icono:'◆',subtitulo:'BANCO + MÁQUINA',enfoque:'Pecho y empuje',descripcion:'Press de banca, press en máquina, aperturas con mancuernas y banco.'},
+    {id:'espalda',nombre:'Espalda',icono:'✦',subtitulo:'POLEAS + MANCUERNA',enfoque:'Dorsales y espalda',descripcion:'Jalón al pecho, remo sentado, remo con mancuerna y pullover en polea.'},
+    {id:'hombros',nombre:'Hombros',icono:'↻',subtitulo:'PESAS + POLEA',enfoque:'Deltoides',descripcion:'Press de hombros, elevaciones con mancuernas y face pull en polea.'},
+    {id:'core',nombre:'Abdomen / Core',icono:'◎',subtitulo:'MÁQUINA + BANCO',enfoque:'Zona media',descripcion:'Crunch en máquina, plancha, elevación de rodillas y press Pallof en polea.'},
   ];
   planCasa:any={dias:['Lunes','Miércoles','Viernes'],zonas:['piernas','brazos','core'],objetivo:'fuerza'};
   catalogoCasa:Record<string,any[]>={piernas:[],gluteos:[],brazos:[],pecho:[],espalda:[],hombros:[],core:[]};
@@ -1116,6 +1126,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   segundosCasa=0;
   segundosTranscurridosCasa=0;
   repsCasaHechas=0;
+  serieCasaActual=1;
   ladoCasa:'derecho'|'izquierdo'='derecho';
   private timerCasa:any=null;
 
@@ -1507,8 +1518,12 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   duracionEstimadaCasa(zona:string):number{
     const total=this.ejerciciosZonaCasa(zona).reduce((s:number,e:any)=>{
-      const trabajo=e?.modo==='repeticiones' ? Math.max(30,this.repeticionesObjetivoCasa(e)*(e?.por_lado?4:3)) : this.segundosObjetivoCasa(e);
-      return s+trabajo+Number(e?.descanso||0);
+      const trabajo=e?.modo==='repeticiones'
+        ? Math.max(30,this.repeticionesObjetivoCasa(e)*(e?.por_lado?4:3))
+        : this.segundosObjetivoCasa(e);
+      const series=this.seriesEjercicioCasa(e);
+      const descanso=Math.max(0,Number(e?.descanso||0));
+      return s+((trabajo+descanso)*series);
     },0);
     return Math.max(1,Math.ceil(total/60));
   }
@@ -1541,6 +1556,23 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       this.zonaCasaSeleccionada=hoy.zona.id;
     }
     this.abrirModulo('casa');
+  }
+
+  get seriesCasaTotalActual():number{
+    return Math.max(1,Number(this.ejercicioCasaActual?.series||1));
+  }
+
+  seriesEjercicioCasa(e:any):number{
+    return Math.max(1,Number(e?.series||1));
+  }
+
+  get textoDescansoCasa():string{
+    if(this.serieCasaActual<this.seriesCasaTotalActual){
+      return 'Descansa y prepárate para la serie '+(this.serieCasaActual+1)+' de '+this.seriesCasaTotalActual;
+    }
+    return this.siguienteEjercicioCasa
+      ? 'Recupera antes de pasar a '+this.siguienteEjercicioCasa.nombre
+      : 'Último descanso antes de completar la sesión';
   }
 
   get objetivoRepsCasa():number{
@@ -1626,6 +1658,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.segundosCasa=this.ejercicioCasaActual?.modo==='tiempo' ? this.segundosObjetivoCasa(this.ejercicioCasaActual) : 0;
     this.segundosTranscurridosCasa=0;
     this.repsCasaHechas=0;
+    this.serieCasaActual=1;
     this.ladoCasa='derecho';
     this.sesionCasaActiva=true;
     this.sesionCasaPausada=false;
@@ -1659,21 +1692,37 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     if(!this.sesionCasaActiva)return;
 
     if(this.faseCasa==='ejercicio'){
-      if(this.indiceEjercicioCasa>=this.ejerciciosCasaActuales.length-1){
-        this.completarSesionCasa();
-        return;
-      }
-
       this.faseCasa='descanso';
-      this.segundosCasa=Math.max(10,Number(this.ejercicioCasaActual?.descanso||20));
+      this.segundosCasa=Math.max(10,Number(this.ejercicioCasaActual?.descanso||30));
+      return;
+    }
+
+    // Si todavía faltan series del ejercicio actual, repetimos el mismo ejercicio.
+    if(this.serieCasaActual<this.seriesCasaTotalActual){
+      this.serieCasaActual++;
+      this.faseCasa='ejercicio';
+      this.repsCasaHechas=0;
+      this.ladoCasa='derecho';
+      this.segundosCasa=this.ejercicioCasaActual?.modo==='tiempo'
+        ? this.segundosObjetivoCasa(this.ejercicioCasaActual)
+        : 0;
+      return;
+    }
+
+    // Al completar todas las series, avanzamos al siguiente ejercicio.
+    if(this.indiceEjercicioCasa>=this.ejerciciosCasaActuales.length-1){
+      this.completarSesionCasa();
       return;
     }
 
     this.indiceEjercicioCasa++;
+    this.serieCasaActual=1;
     this.faseCasa='ejercicio';
     this.repsCasaHechas=0;
     this.ladoCasa='derecho';
-    this.segundosCasa=this.ejercicioCasaActual?.modo==='tiempo' ? this.segundosObjetivoCasa(this.ejercicioCasaActual) : 0;
+    this.segundosCasa=this.ejercicioCasaActual?.modo==='tiempo'
+      ? this.segundosObjetivoCasa(this.ejercicioCasaActual)
+      : 0;
   }
 
   togglePausaCasa():void{this.sesionCasaPausada=!this.sesionCasaPausada;}
@@ -1686,6 +1735,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.sesionCasaTerminada=false;
     this.indiceEjercicioCasa=0;
     this.repsCasaHechas=0;
+    this.serieCasaActual=1;
     this.ladoCasa='derecho';
     this.segundosCasa=0;
   }
@@ -1719,6 +1769,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.sesionCasaTerminada=false;
     this.indiceEjercicioCasa=0;
     this.repsCasaHechas=0;
+    this.serieCasaActual=1;
     this.ladoCasa='derecho';
     this.segundosCasa=0;
     this.segundosTranscurridosCasa=0;
@@ -1740,30 +1791,35 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   get progresoCasa():number{
-    const total=this.ejerciciosCasaActuales.length;
-    if(!total)return 0;
+    const ejercicios=this.ejerciciosCasaActuales;
+    if(!ejercicios.length)return 0;
 
-    const base=(this.indiceEjercicioCasa/total)*100;
+    const totalSeries=ejercicios.reduce((s:number,e:any)=>s+this.seriesEjercicioCasa(e),0);
+    if(!totalSeries)return 0;
+
+    const seriesAnteriores=ejercicios
+      .slice(0,this.indiceEjercicioCasa)
+      .reduce((s:number,e:any)=>s+this.seriesEjercicioCasa(e),0);
+
+    const completasAntesActual=seriesAnteriores+Math.max(0,this.serieCasaActual-1);
     const actual=this.ejercicioCasaActual;
+    let fraccionSerie=0;
 
     if(this.faseCasa==='ejercicio' && actual?.modo==='repeticiones'){
       const objetivo=Math.max(1,this.objetivoRepsCasa);
       const ladoBase=actual?.por_lado && this.ladoCasa==='izquierdo' ? .5 : 0;
       const divisor=actual?.por_lado ? 2 : 1;
-      const fraccion=Math.min(1,ladoBase+(this.repsCasaHechas/objetivo)/divisor);
-      return Math.min(100,Math.round(base+(fraccion*.72*(100/total))));
+      fraccionSerie=Math.min(.8,(ladoBase+(this.repsCasaHechas/objetivo)/divisor)*.8);
+    }else if(this.faseCasa==='ejercicio'){
+      const total=Math.max(1,this.segundosObjetivoCasa(actual));
+      fraccionSerie=Math.min(.8,Math.max(0,(total-this.segundosCasa)/total)*.8);
+    }else{
+      const total=Math.max(1,Number(actual?.descanso||1));
+      const descansoPct=Math.min(1,Math.max(0,(total-this.segundosCasa)/total));
+      fraccionSerie=.8+(descansoPct*.2);
     }
 
-    const duracion=this.faseCasa==='ejercicio'
-      ? this.segundosObjetivoCasa(actual)
-      : Math.max(1,Number(actual?.descanso||1));
-
-    const parcial=duracion>0
-      ? Math.min(1,Math.max(0,(duracion-this.segundosCasa)/duracion))
-      : 0;
-
-    const pesoFase=this.faseCasa==='ejercicio' ? .72 : .28;
-    return Math.min(100,Math.round(base+(parcial*pesoFase*(100/total))));
+    return Math.min(100,Math.round(((completasAntesActual+fraccionSerie)/totalSeries)*100));
   }
 
   get temporizadorFondoCasa():string{
