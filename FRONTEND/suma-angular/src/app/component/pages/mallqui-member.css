@@ -28169,3 +28169,541 @@
   .gym-next-station{grid-template-columns:1fr}
   .gym-next-photo{min-height:190px}
 }
+
+
+/* PORTAL CLIENTE V94 · PLANES REALES Y CHECKOUT DE MEMBRESIA */
+
+.membership-real-module{
+  display:grid;
+  gap:18px;
+}
+
+.membership-current-status{
+  margin-top:2px;
+}
+.membership-current-card{
+  display:grid;
+  grid-template-columns:58px minmax(0,1fr) auto;
+  gap:16px;
+  align-items:center;
+  padding:18px 20px;
+  border:1px solid #d9e5ee;
+  border-radius:18px;
+  background:#fff;
+  box-shadow:0 12px 34px rgba(15,45,71,.07);
+}
+.membership-current-card.inactive{
+  border-style:dashed;
+}
+.membership-current-icon{
+  width:54px;
+  height:54px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:#edf7f3;
+  color:#24ad7d;
+  font-size:23px;
+  font-weight:950;
+}
+.membership-current-card.inactive .membership-current-icon{
+  background:#fff4f5;
+  color:#ed2948;
+}
+.membership-current-copy small{
+  color:#7e97aa;
+  font-size:9px!important;
+  font-weight:950;
+  letter-spacing:.9px;
+}
+.membership-current-copy h2{
+  margin:4px 0 3px!important;
+  color:#0d2e4c;
+  font-size:23px!important;
+}
+.membership-current-copy p{
+  margin:0!important;
+  color:#71899b!important;
+  font-size:11px!important;
+}
+.membership-current-state{
+  display:flex;
+  align-items:flex-end;
+  flex-direction:column;
+  gap:8px;
+}
+.membership-current-state>span{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 10px;
+  border-radius:999px;
+  background:#f3f7fa;
+  color:#71899b;
+  font-size:9px;
+  font-weight:900;
+}
+.membership-current-state>span.active{
+  background:#eaf9f3;
+  color:#16845f;
+}
+.membership-current-state>span i{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:currentColor;
+}
+.membership-current-state>b{
+  color:#0d2e4c;
+  font-size:15px;
+}
+
+.membership-plan-section{
+  padding:22px;
+  border:1px solid #dde8f0;
+  border-radius:20px;
+  background:#f8fbfd;
+}
+.membership-section-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:16px;
+}
+.membership-section-head>div>span{
+  color:#ef2a49;
+  font-size:9px;
+  font-weight:950;
+  letter-spacing:1px;
+}
+.membership-section-head h2{
+  margin:4px 0 4px!important;
+  color:#102f4b;
+  font-size:26px!important;
+}
+.membership-section-head p{
+  margin:0!important;
+  color:#72899b!important;
+  font-size:11.5px!important;
+}
+.membership-data-live{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 11px;
+  border-radius:999px;
+  background:#eaf8f3;
+  color:#177e5d;
+  font-size:9px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.membership-data-live i{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#27c98f;
+  box-shadow:0 0 0 5px rgba(39,201,143,.10);
+}
+
+.membership-real-plans{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+.membership-real-plan{
+  position:relative;
+  min-height:360px;
+  display:flex!important;
+  flex-direction:column;
+  align-items:stretch!important;
+  padding:21px!important;
+  overflow:hidden;
+  text-align:left!important;
+  border:1px solid #d8e4ed!important;
+  border-radius:18px!important;
+  background:#fff!important;
+  color:#102f4b!important;
+  box-shadow:0 10px 28px rgba(11,42,66,.06);
+}
+.membership-real-plan:hover{
+  transform:translateY(-4px)!important;
+  border-color:#ff9aaa!important;
+  box-shadow:0 16px 34px rgba(20,45,65,.11)!important;
+}
+.membership-real-plan.featured{
+  border-color:#ffb2bd!important;
+  background:
+    radial-gradient(circle at 100% 0,rgba(255,39,70,.10),transparent 34%),
+    #fff!important;
+}
+.membership-real-plan.selected{
+  border:2px solid #ef2445!important;
+  box-shadow:0 18px 42px rgba(239,36,69,.15)!important;
+}
+.membership-plan-selected,
+.membership-plan-recommended{
+  align-self:flex-start;
+  min-height:26px;
+  display:flex;
+  align-items:center;
+  padding:0 9px;
+  margin-bottom:12px;
+  border-radius:999px;
+  font-size:8px;
+  font-weight:950;
+  letter-spacing:.75px;
+}
+.membership-plan-selected{
+  background:#ef2445;
+  color:#fff;
+}
+.membership-plan-recommended{
+  background:#fff0f2;
+  color:#d91e3d;
+  border:1px solid #ffc7d0;
+}
+.membership-plan-name small{
+  color:#8aa0b1!important;
+  font-size:8.5px!important;
+  font-weight:900!important;
+  letter-spacing:.7px!important;
+}
+.membership-plan-name h3{
+  margin:4px 0 0!important;
+  color:#102e49;
+  font-size:24px!important;
+}
+.membership-plan-price{
+  display:flex;
+  align-items:flex-end;
+  gap:4px;
+  margin:15px 0 12px;
+}
+.membership-plan-price small{
+  padding-bottom:8px;
+  color:#143651!important;
+  font-size:13px!important;
+  font-weight:900!important;
+}
+.membership-plan-price strong{
+  color:#143d68;
+  font-size:46px;
+  line-height:1;
+}
+.membership-real-plan.selected .membership-plan-price strong,
+.membership-real-plan.featured .membership-plan-price strong{
+  color:#e31f40;
+}
+.membership-plan-price span{
+  padding-bottom:6px;
+  color:#8299aa;
+  font-size:10px;
+  font-weight:800;
+}
+.membership-plan-description{
+  min-height:38px;
+  margin:0 0 12px!important;
+  color:#738b9d!important;
+  font-size:11px!important;
+  line-height:1.5!important;
+}
+.membership-real-plan ul{
+  display:grid;
+  gap:8px;
+  padding:0;
+  margin:0 0 18px;
+  list-style:none;
+}
+.membership-real-plan li{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  color:#39536a;
+  font-size:10.5px;
+  line-height:1.4;
+}
+.membership-real-plan li span{
+  color:#1fa979;
+  font-weight:950;
+}
+.membership-plan-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:auto;
+  padding-top:13px;
+  border-top:1px solid #e8eef3;
+}
+.membership-plan-footer span{
+  color:#173b59;
+  font-size:10px;
+  font-weight:900;
+}
+.membership-plan-footer b{
+  width:31px;
+  height:31px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:#f1f6f9;
+  color:#173b59;
+}
+.membership-real-plan.selected .membership-plan-footer b{
+  background:#ef2445;
+  color:#fff;
+}
+
+.membership-checkout-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(0,1.35fr);
+  gap:16px;
+}
+.membership-checkout-card,
+.membership-payment-history-card{
+  min-height:100%;
+}
+.membership-selected-summary{
+  margin:14px 0 16px;
+  overflow:hidden;
+  border:1px solid #dce8ef;
+  border-radius:16px;
+  background:#f8fbfd;
+}
+.membership-selected-main{
+  display:grid;
+  grid-template-columns:48px minmax(0,1fr);
+  gap:12px;
+  align-items:center;
+  padding:15px;
+  border-bottom:1px solid #e1eaf0;
+}
+.membership-selected-main>span{
+  width:46px;
+  height:46px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:#102f4b;
+  color:#fff;
+  font-size:21px;
+}
+.membership-selected-main small{
+  color:#ef2b4a!important;
+  font-size:8.5px!important;
+  font-weight:950!important;
+  letter-spacing:.8px!important;
+}
+.membership-selected-main h3{
+  margin:3px 0 2px!important;
+  color:#102f4b;
+  font-size:19px!important;
+}
+.membership-selected-main p{
+  margin:0!important;
+  color:#7a91a2!important;
+  font-size:10px!important;
+  line-height:1.4!important;
+}
+.membership-selected-numbers{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+}
+.membership-selected-numbers article{
+  padding:12px 13px;
+  border-right:1px solid #e2ebf1;
+}
+.membership-selected-numbers article:last-child{
+  border-right:0;
+}
+.membership-selected-numbers small{
+  display:block;
+  color:#8aa0b1!important;
+  font-size:8px!important;
+  font-weight:900!important;
+  letter-spacing:.65px!important;
+}
+.membership-selected-numbers b{
+  display:block;
+  margin-top:4px;
+  color:#163a58;
+  font-size:12px;
+}
+
+.membership-select-first{
+  display:grid;
+  grid-template-columns:40px minmax(0,1fr);
+  gap:10px;
+  align-items:center;
+  margin:14px 0 16px;
+  padding:13px;
+  border:1px dashed #d7e2ea;
+  border-radius:14px;
+  background:#fafcfd;
+}
+.membership-select-first>span{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:#fff0f2;
+  color:#e42142;
+  font-weight:950;
+}
+.membership-select-first b{
+  color:#173a57;
+  font-size:12px;
+}
+.membership-select-first p{
+  margin:3px 0 0!important;
+  color:#7d93a4!important;
+  font-size:10px!important;
+}
+
+.membership-payment-form label>small{
+  display:block;
+  margin-top:6px;
+  color:#849aaa!important;
+  font-size:9px!important;
+  line-height:1.35!important;
+}
+.membership-payment-instruction{
+  display:grid;
+  grid-template-columns:46px minmax(0,1fr);
+  gap:11px;
+  align-items:center;
+  padding:13px;
+  border:1px solid #dbe7ee;
+  border-radius:14px;
+  background:#f7fafc;
+}
+.membership-payment-instruction>span{
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:#102f4b;
+  color:#fff;
+  font-size:19px;
+}
+.membership-payment-instruction small{
+  display:block;
+  color:#7f96a8!important;
+  font-size:8px!important;
+  font-weight:900!important;
+  letter-spacing:.7px!important;
+}
+.membership-payment-instruction b{
+  display:block;
+  margin-top:2px;
+  color:#e52445;
+  font-size:20px;
+}
+.membership-payment-instruction p{
+  margin:3px 0 0!important;
+  color:#71899b!important;
+  font-size:10px!important;
+}
+
+.membership-payment-review{
+  display:grid;
+  gap:0;
+  overflow:hidden;
+  border:1px solid #dce7ee;
+  border-radius:14px;
+  background:#fff;
+}
+.membership-payment-review p{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:0!important;
+  padding:10px 12px;
+  border-bottom:1px solid #edf2f5;
+}
+.membership-payment-review p:last-child{
+  border-bottom:0;
+}
+.membership-payment-review span{
+  color:#7890a2;
+  font-size:10px;
+}
+.membership-payment-review b{
+  color:#163a58;
+  font-size:10.5px;
+}
+.membership-payment-review .total{
+  background:#102f4b;
+}
+.membership-payment-review .total span{
+  color:#a9bfd0;
+}
+.membership-payment-review .total b{
+  color:#fff;
+  font-size:15px;
+}
+
+.membership-validation-note{
+  display:grid!important;
+  grid-template-columns:24px minmax(0,1fr);
+  gap:8px;
+  align-items:start;
+  margin:2px 0 0!important;
+  padding:10px 11px;
+  border-radius:11px;
+  background:#fff8e9;
+  color:#7c6a3c!important;
+  font-size:9.5px!important;
+  line-height:1.45!important;
+}
+.membership-validation-note>span{
+  width:22px;
+  height:22px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#f4c95d;
+  color:#513d0f;
+  font-weight:950;
+}
+.membership-payment-form .member-form-submit:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  transform:none!important;
+  box-shadow:none!important;
+}
+.membership-payment-history-card .member-payment-item p{
+  min-width:0;
+}
+.membership-payment-history-card .member-payment-item p small{
+  display:block;
+}
+
+@media(prefers-reduced-motion:no-preference){
+  .membership-real-plan{
+    animation:mallquiCardEnter .48s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .membership-real-plan:nth-child(2){animation-delay:.07s}
+  .membership-real-plan:nth-child(3){animation-delay:.14s}
+  .membership-selected-summary{
+    animation:mallquiSectionRise .42s cubic-bezier(.2,.8,.2,1) both;
+  }
+}
+
+@media(max-width:1100px){
+  .membership-real-plans{grid-template-columns:1fr 1fr}
+  .membership-checkout-layout{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .membership-real-plans{grid-template-columns:1fr}
+  .membership-current-card{grid-template-columns:48px minmax(0,1fr)}
+  .membership-current-state{grid-column:1/-1;align-items:flex-start}
+  .membership-section-head{align-items:flex-start;flex-direction:column}
+  .membership-selected-numbers{grid-template-columns:1fr}
+  .membership-selected-numbers article{border-right:0;border-bottom:1px solid #e2ebf1}
+  .membership-selected-numbers article:last-child{border-bottom:0}
+}
