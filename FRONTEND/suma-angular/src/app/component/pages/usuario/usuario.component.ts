@@ -484,7 +484,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                   <span>SESIÓN GUIADA</span>
                   <h3>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</h3>
                 </div>
-                <span class="home-no-equipment">Sin equipo especial</span>
+                <span class="home-no-equipment">Equipo del gimnasio</span>
               </div>
 
               <div class="home-first-demo" *ngIf="ejerciciosCasaActuales[0]">
@@ -1094,7 +1094,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   ];
   zonasCasaMeta=[
     {id:'piernas',nombre:'Piernas',icono:'🦵',subtitulo:'TREN INFERIOR',enfoque:'Piernas y equilibrio',descripcion:'Sentadillas, zancadas y pantorrillas con control.'},
-    {id:'gluteos',nombre:'Glúteos',icono:'↥',subtitulo:'CADERA Y ESTABILIDAD',enfoque:'Glúteos y cadera',descripcion:'Puentes y movimientos de cadera sin equipo especial.'},
+    {id:'gluteos',nombre:'Glúteos',icono:'↥',subtitulo:'CADERA Y ESTABILIDAD',enfoque:'Glúteos y cadera',descripcion:'Ejercicios de glúteos con banco, polea, máquina y mancuernas.'},
     {id:'brazos',nombre:'Brazos',icono:'💪',subtitulo:'TREN SUPERIOR',enfoque:'Brazos y tríceps',descripcion:'Trabajo moderado de brazos usando el propio peso.'},
     {id:'pecho',nombre:'Pecho',icono:'◆',subtitulo:'EMPUJE',enfoque:'Pecho y control',descripcion:'Flexiones en pared y ejercicios de empuje suaves.'},
     {id:'espalda',nombre:'Espalda',icono:'✦',subtitulo:'POSTURA Y CONTROL',enfoque:'Espalda y postura',descripcion:'Movimientos de espalda y escápulas de forma controlada.'},
