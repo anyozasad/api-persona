@@ -1015,43 +1015,210 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
           </div>
         </section>
 
-        <section *ngIf="moduloActivo==='pagos'" class="member-module member-enter-up">
+        <section *ngIf="moduloActivo==='pagos'" class="member-module membership-real-module member-enter-up">
           <div class="member-module-hero hero-photo hero-photo-pagos">
-            <div><span>MEMBRESÍA</span><h1>Pagos y renovación</h1><p>Solicita una renovación y consulta tus comprobantes.</p></div>
+            <div>
+              <span>MEMBRESÍA</span>
+              <h1>Planes y renovación</h1>
+              <p>Elige un plan real de Mallqui Gym, revisa sus beneficios y registra tu pago.</p>
+            </div>
             <div class="module-hero-icon">▤</div>
           </div>
 
-          <section class="member-payment-layout">
-            <article class="member-module-card renewal-card">
-              <div class="card-title-block"><span>NUEVA SOLICITUD</span><h2>Solicitar renovación</h2><p>Completa los datos de tu pago.</p></div>
-              <form class="member-form" (ngSubmit)="solicitarRenovacion()">
-                <label>Plan
-                  <select [(ngModel)]="pagoForm.id_membresia" name="planPago" required>
-                    <option [ngValue]="0">Seleccionar plan</option>
-                    <option *ngFor="let m of planesRenovacion" [ngValue]="m.id_membresia">{{m.nombre}} - S/ {{m.precio}}</option>
+          <section class="membership-current-status">
+            <article class="membership-current-card" [class.inactive]="!membresiaActual">
+              <div class="membership-current-icon">{{membresiaActual ? '✓' : '!'}}</div>
+              <div class="membership-current-copy">
+                <small>MEMBRESÍA ACTUAL</small>
+                <h2>{{membresiaActual?.membresia?.nombre || 'Sin plan activo'}}</h2>
+                <p *ngIf="membresiaActual">
+                  Vigente del {{fechaCortaPortal(membresiaActual.fecha_inicio)}} al {{fechaCortaPortal(membresiaActual.fecha_fin)}}
+                </p>
+                <p *ngIf="!membresiaActual">Selecciona uno de los planes disponibles para activar tu acceso.</p>
+              </div>
+              <div class="membership-current-state">
+                <span [class.active]="!!membresiaActual"><i></i>{{membresiaActual ? (membresiaActual.estado || 'Activo') : 'Sin membresía'}}</span>
+                <b *ngIf="membresiaActual?.membresia?.precio">S/ {{membresiaActual.membresia.precio | number:'1.2-2'}}</b>
+              </div>
+            </article>
+          </section>
+
+          <section class="membership-plan-section">
+            <div class="membership-section-head">
+              <div>
+                <span>PLANES DISPONIBLES</span>
+                <h2>Elige tu membresía</h2>
+                <p>Los precios y la duración se cargan directamente desde el sistema.</p>
+              </div>
+              <span class="membership-data-live"><i></i> Datos del sistema</span>
+            </div>
+
+            <div class="membership-real-plans" *ngIf="planesRenovacion.length; else sinPlanesGym">
+              <button type="button"
+                      class="membership-real-plan"
+                      *ngFor="let m of planesRenovacion"
+                      [class.selected]="pagoForm.id_membresia===m.id_membresia"
+                      [class.featured]="nombrePlanNormalizado(m)==='PREMIUM'"
+                      (click)="seleccionarPlanRenovacion(m)">
+                <span class="membership-plan-selected" *ngIf="pagoForm.id_membresia===m.id_membresia">✓ SELECCIONADO</span>
+                <span class="membership-plan-recommended" *ngIf="nombrePlanNormalizado(m)==='PREMIUM' && pagoForm.id_membresia!==m.id_membresia">MÁS ELEGIDO</span>
+
+                <div class="membership-plan-name">
+                  <small>{{subtituloPlanGym(m)}}</small>
+                  <h3>{{m.nombre}}</h3>
+                </div>
+
+                <div class="membership-plan-price">
+                  <small>S/</small>
+                  <strong>{{m.precio | number:'1.0-0'}}</strong>
+                  <span>/ {{m.duracion_meses || 1}} mes{{Number(m.duracion_meses || 1)>1 ? 'es' : ''}}</span>
+                </div>
+
+                <p class="membership-plan-description">{{m.descripcion || 'Membresía Mallqui Gym'}}</p>
+
+                <ul>
+                  <li *ngFor="let beneficio of beneficiosPlanGym(m)"><span>✓</span>{{beneficio}}</li>
+                </ul>
+
+                <div class="membership-plan-footer">
+                  <span>{{pagoForm.id_membresia===m.id_membresia ? 'Plan elegido' : 'Elegir plan'}}</span>
+                  <b>→</b>
+                </div>
+              </button>
+            </div>
+
+            <ng-template #sinPlanesGym>
+              <div class="member-empty-state">
+                <span>!</span>
+                <h3>No se pudieron cargar los planes</h3>
+                <p>Verifica que Laravel y la base de datos estén conectados.</p>
+              </div>
+            </ng-template>
+          </section>
+
+          <section class="membership-checkout-layout">
+            <article class="member-module-card membership-checkout-card">
+              <div class="card-title-block">
+                <span>SOLICITUD DE MEMBRESÍA</span>
+                <h2>{{membresiaActual ? 'Renovar o cambiar plan' : 'Activar membresía'}}</h2>
+                <p>Completa los datos del pago del plan que elegiste.</p>
+              </div>
+
+              <div class="membership-selected-summary" *ngIf="planPagoSeleccionado; else seleccionaPlanPago">
+                <div class="membership-selected-main">
+                  <span>{{iconoPlanGym(planPagoSeleccionado)}}</span>
+                  <div>
+                    <small>PLAN SELECCIONADO</small>
+                    <h3>{{planPagoSeleccionado.nombre}}</h3>
+                    <p>{{planPagoSeleccionado.descripcion}}</p>
+                  </div>
+                </div>
+
+                <div class="membership-selected-numbers">
+                  <article>
+                    <small>PRECIO</small>
+                    <b>S/ {{planPagoSeleccionado.precio | number:'1.2-2'}}</b>
+                  </article>
+                  <article>
+                    <small>DURACIÓN</small>
+                    <b>{{planPagoSeleccionado.duracion_meses || 1}} mes{{Number(planPagoSeleccionado.duracion_meses || 1)>1 ? 'es' : ''}}</b>
+                  </article>
+                  <article>
+                    <small>INICIO ESTIMADO</small>
+                    <b>{{fechaCortaPortal(fechaInicioRenovacion)}}</b>
+                  </article>
+                </div>
+              </div>
+
+              <ng-template #seleccionaPlanPago>
+                <div class="membership-select-first">
+                  <span>↑</span>
+                  <div><b>Primero elige un plan</b><p>Selecciona Básico, Premium o Pro para continuar con el pago.</p></div>
+                </div>
+              </ng-template>
+
+              <form class="member-form membership-payment-form" (ngSubmit)="solicitarRenovacion()">
+                <label>Fecha solicitada de inicio
+                  <input type="date"
+                         [(ngModel)]="pagoForm.fecha_inicio"
+                         name="fechaPago"
+                         [min]="fechaMinimaPago">
+                  <small *ngIf="membresiaActual">Si tu membresía sigue vigente, Laravel programará la nueva desde el día siguiente a su vencimiento.</small>
+                </label>
+
+                <label>Método de pago
+                  <select [(ngModel)]="pagoForm.metodo_pago" name="metodoPago">
+                    <option>Yape</option>
+                    <option>Plin</option>
+                    <option>Transferencia</option>
+                    <option>Tarjeta</option>
                   </select>
                 </label>
-                <label>Inicio<input type="date" [(ngModel)]="pagoForm.fecha_inicio" name="fechaPago"></label>
-                <label>Método
-                  <select [(ngModel)]="pagoForm.metodo_pago" name="metodoPago"><option>Yape</option><option>Plin</option><option>Transferencia</option><option>Tarjeta</option></select>
+
+                <div class="membership-payment-instruction" *ngIf="planPagoSeleccionado">
+                  <span>▤</span>
+                  <div>
+                    <small>MONTO A REGISTRAR</small>
+                    <b>S/ {{planPagoSeleccionado.precio | number:'1.2-2'}}</b>
+                    <p>{{instruccionMetodoPago}}</p>
+                  </div>
+                </div>
+
+                <label>N° de operación
+                  <input [(ngModel)]="pagoForm.numero_operacion"
+                         name="operacionPago"
+                         placeholder="Ejemplo: 548721963"
+                         required>
+                  <small>Debe coincidir con la operación realizada por el monto del plan.</small>
                 </label>
-                <label>N° operación<input [(ngModel)]="pagoForm.numero_operacion" name="operacionPago" placeholder="Número de operación" required></label>
-                <button class="member-form-submit" type="submit">Enviar solicitud <span>→</span></button>
+
+                <div class="membership-payment-review" *ngIf="planPagoSeleccionado">
+                  <p><span>Plan</span><b>{{planPagoSeleccionado.nombre}}</b></p>
+                  <p><span>Duración</span><b>{{planPagoSeleccionado.duracion_meses || 1}} mes{{Number(planPagoSeleccionado.duracion_meses || 1)>1 ? 'es' : ''}}</b></p>
+                  <p><span>Método</span><b>{{pagoForm.metodo_pago}}</b></p>
+                  <p class="total"><span>Total</span><b>S/ {{planPagoSeleccionado.precio | number:'1.2-2'}}</b></p>
+                </div>
+
+                <button class="member-form-submit"
+                        type="submit"
+                        [disabled]="!planPagoSeleccionado || !pagoForm.numero_operacion.trim()">
+                  {{membresiaActual ? 'Enviar renovación' : 'Solicitar activación'}}
+                  <span>→</span>
+                </button>
+
+                <p class="membership-validation-note">
+                  <span>i</span>
+                  La solicitud queda <b>Pendiente</b> hasta que administración confirme el pago. El monto final se toma del plan guardado en la base de datos.
+                </p>
               </form>
             </article>
 
-            <article class="member-module-card">
-              <div class="card-title-block"><span>HISTORIAL</span><h2>Mis pagos</h2><p>Movimientos registrados en tu cuenta.</p></div>
+            <article class="member-module-card membership-payment-history-card">
+              <div class="card-title-block">
+                <span>HISTORIAL REAL</span>
+                <h2>Mis pagos</h2>
+                <p>Movimientos guardados en tu cuenta.</p>
+              </div>
+
               <div class="member-payment-list full-list">
                 <div *ngFor="let p of pagos" class="member-payment-item">
                   <span class="payment-icon">▤</span>
-                  <p><b>{{p.cliente_membresia?.membresia?.nombre || 'Membresía'}}</b><small>{{fecha(p.fecha_pago)}} · {{p.metodo_pago}}</small></p>
-                  <strong>S/ {{p.monto}}</strong>
+                  <p>
+                    <b>{{p.cliente_membresia?.membresia?.nombre || 'Membresía'}}</b>
+                    <small>{{fecha(p.fecha_pago)}} · {{p.metodo_pago}}</small>
+                    <small *ngIf="p.numero_operacion">Op. {{p.numero_operacion}}</small>
+                  </p>
+                  <strong>S/ {{p.monto | number:'1.2-2'}}</strong>
                   <em [class.pending]="p.estado_pago==='Pendiente'">{{p.estado_pago}}</em>
                   <button *ngIf="p.estado_pago==='Completado'" type="button" (click)="comprobante(p)">Comprobante</button>
                   <button *ngIf="p.estado_pago==='Pendiente'" type="button" class="payment-cancel" (click)="cancelarSolicitudPago(p)">Cancelar solicitud</button>
                 </div>
-                <div class="member-empty-state compact-empty" *ngIf="!pagos.length"><span>▤</span><h3>Sin pagos registrados</h3><p>Tus movimientos aparecerán aquí.</p></div>
+
+                <div class="member-empty-state compact-empty" *ngIf="!pagos.length">
+                  <span>▤</span>
+                  <h3>Sin pagos registrados</h3>
+                  <p>Cuando envíes una solicitud aparecerá aquí con su estado.</p>
+                </div>
               </div>
             </article>
           </section>
@@ -1206,10 +1373,20 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargar():void{
     this.cargando=true; this.error='';
     this.api.cargarPortalCliente().subscribe({
-      next:r=>{this.resumen=r.resumen;this.perfil={...r.perfil};this.membresiaActual=r.membresia?.actual;this.membresiasDisponibles=r.membresiasDisponibles||[];this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.cargando=false;this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
+      next:r=>{this.resumen=r.resumen;this.perfil={...r.perfil};this.membresiaActual=r.membresia?.actual;this.membresiasDisponibles=r.membresiasDisponibles||[];this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.preseleccionarPlanActual();this.cargando=false;this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
       error:e=>{this.error=this.errorApi(e);this.cargando=false;}
     });
   }
+  preseleccionarPlanActual():void{
+    if(Number(this.pagoForm?.id_membresia||0)>0)return;
+
+    const idActual=Number(this.membresiaActual?.membresia?.id_membresia||this.membresiaActual?.id_membresia||0);
+    const actual=this.planesRenovacion.find((m:any)=>Number(m?.id_membresia)===idActual);
+    if(actual){
+      this.pagoForm={...this.pagoForm,id_membresia:Number(actual.id_membresia)};
+    }
+  }
+
   abrirModulo(m:string){this.mobileMenuAbierto=false;this.moduloActivo=m;if(m==='casa'&&!this.casaCargado)this.cargarEntrenamientoCasa();if(m==='avisos')this.cargarContadorAvisos();window.scrollTo({top:0,behavior:'smooth'});}
 
   irConfigCasa():void{
@@ -1302,6 +1479,95 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
     const planes=orden.map(nombre=>porNombre.get(nombre)).filter(Boolean);
     return planes.length===orden.length ? planes : (this.membresiasDisponibles||[]);
+  }
+
+  nombrePlanNormalizado(plan:any):string{
+    return String(plan?.nombre||'')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g,'')
+      .trim()
+      .toUpperCase();
+  }
+
+  subtituloPlanGym(plan:any):string{
+    const nombre=this.nombrePlanNormalizado(plan);
+    if(nombre==='BASICO')return 'IDEAL PARA COMENZAR';
+    if(nombre==='PREMIUM')return 'PARA MEJORES RESULTADOS';
+    if(nombre==='PRO')return 'EXPERIENCIA COMPLETA';
+    return 'PLAN MALLQUI GYM';
+  }
+
+  iconoPlanGym(plan:any):string{
+    const nombre=this.nombrePlanNormalizado(plan);
+    if(nombre==='BASICO')return '🏋';
+    if(nombre==='PREMIUM')return '★';
+    if(nombre==='PRO')return '♛';
+    return '▤';
+  }
+
+  beneficiosPlanGym(plan:any):string[]{
+    const nombre=this.nombrePlanNormalizado(plan);
+    if(nombre==='BASICO')return [
+      'Acceso a sala de pesas',
+      'Clases grupales',
+      'Rutinas básicas'
+    ];
+    if(nombre==='PREMIUM')return [
+      'Acceso total al gimnasio',
+      'Clases ilimitadas',
+      'Rutinas personalizadas',
+      'Evaluación mensual'
+    ];
+    if(nombre==='PRO')return [
+      'Todo lo incluido en Premium',
+      'Asesoría personalizada 1 a 1',
+      'Plan nutricional'
+    ];
+
+    const descripcion=String(plan?.descripcion||'').trim();
+    return descripcion ? [descripcion] : ['Acceso según condiciones del plan'];
+  }
+
+  seleccionarPlanRenovacion(plan:any):void{
+    const id=Number(plan?.id_membresia||0);
+    if(!id)return;
+    this.pagoForm={...this.pagoForm,id_membresia:id};
+    this.error='';
+  }
+
+  get planPagoSeleccionado():any{
+    const id=Number(this.pagoForm?.id_membresia||0);
+    return this.planesRenovacion.find((m:any)=>Number(m?.id_membresia)===id)||null;
+  }
+
+  get fechaMinimaPago():string{
+    return new Date().toISOString().slice(0,10);
+  }
+
+  get fechaInicioRenovacion():string{
+    const solicitada=String(this.pagoForm?.fecha_inicio||this.fechaMinimaPago);
+    if(!this.membresiaActual?.fecha_fin)return solicitada;
+
+    const fin=new Date(this.membresiaActual.fecha_fin);
+    if(isNaN(fin.getTime()))return solicitada;
+
+    const siguiente=new Date(fin);
+    siguiente.setDate(siguiente.getDate()+1);
+
+    const pedida=new Date(solicitada+'T00:00:00');
+    const real=!isNaN(pedida.getTime()) && pedida>siguiente ? pedida : siguiente;
+    return real.toISOString().slice(0,10);
+  }
+
+  get instruccionMetodoPago():string{
+    const metodo=String(this.pagoForm?.metodo_pago||'Yape');
+    if(metodo==='Yape' || metodo==='Plin'){
+      return 'Realiza el pago por el monto exacto y registra el número de operación.';
+    }
+    if(metodo==='Transferencia'){
+      return 'Realiza la transferencia por el monto exacto y registra el código de operación.';
+    }
+    return 'Registra el número de operación o comprobante entregado al realizar el pago.';
   }
 
   get siguientePasoModulo():string{
@@ -1995,7 +2261,26 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   reservar(c:any){const f=this.fechasReserva[c.id_clase];if(!f){this.error='Selecciona una fecha para la clase.';return;}this.api.reservarClase(c.id_clase,f).subscribe({next:r=>{this.ok(r.mensaje||'Reserva creada');this.cargarReservas();},error:e=>this.error=this.errorApi(e)});}
   cancelarReserva(r:any){if(!confirm('¿Cancelar esta reserva?'))return;this.api.cancelarReserva(r.id_reserva).subscribe({next:x=>{this.ok(x.mensaje||'Reserva cancelada');this.cargarReservas();},error:e=>this.error=this.errorApi(e)});}
   cargarReservas(){this.api.reservasCliente().subscribe({next:r=>this.reservas=r,error:e=>this.error=this.errorApi(e)});}
-  solicitarRenovacion(){if(!this.pagoForm.id_membresia||!this.pagoForm.numero_operacion.trim()){this.error='Selecciona plan e ingresa el número de operación.';return;}this.api.solicitarPago({...this.pagoForm}).subscribe({next:r=>{this.ok(r.mensaje||'Solicitud enviada');this.pagoForm.numero_operacion='';this.api.pagosCliente().subscribe(x=>this.pagos=x);},error:e=>this.error=this.errorApi(e)});}
+  solicitarRenovacion(){
+    if(!this.planPagoSeleccionado){
+      this.error='Selecciona uno de los planes disponibles.';
+      return;
+    }
+    if(!String(this.pagoForm.numero_operacion||'').trim()){
+      this.error='Ingresa el número de operación del pago.';
+      return;
+    }
+
+    this.api.solicitarPago({...this.pagoForm}).subscribe({
+      next:r=>{
+        this.ok(r.mensaje||'Solicitud enviada');
+        this.pagoForm.numero_operacion='';
+        this.api.pagosCliente().subscribe(x=>this.pagos=x);
+        this.api.membresiaCliente().subscribe(x=>this.membresiaActual=x?.actual||this.membresiaActual);
+      },
+      error:e=>this.error=this.errorApi(e)
+    });
+  }
   cancelarSolicitudPago(p:any){
     if(!p?.id_pago||p.estado_pago!=='Pendiente')return;
     if(!confirm('¿Cancelar esta solicitud de pago pendiente?'))return;
