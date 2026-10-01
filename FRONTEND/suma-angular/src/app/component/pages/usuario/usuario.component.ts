@@ -159,7 +159,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                 <div class="showcase-hero-actions">
                   <button type="button" class="showcase-btn showcase-btn-primary" (click)="abrirModulo('casa')">
                     <i>▶</i>
-                    <span><b>Entrenar en casa</b><small>Sesión guiada</small></span>
+                    <span><b>Entrenar en el gym</b><small>Sesión guiada en sala</small></span>
                     <em>→</em>
                   </button>
                   <button type="button" class="showcase-btn showcase-btn-secondary" (click)="abrirModulo('rutinas')">
@@ -357,7 +357,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                   <p>{{ejerciciosCasaActuales.length}} ejercicios · {{duracionEstimadaCasa(zonaCasaSeleccionada)}} min aprox.</p>
                 </div>
 
-                <div class="train-ux-no-equipment">✓ Sin equipo especial</div>
+                <div class="train-ux-no-equipment">✓ Equipamiento del gimnasio</div>
               </article>
             </section>
 
@@ -429,7 +429,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
             <article class="member-module-card home-week-card">
               <div class="card-title-block">
                 <span>ESTA SEMANA</span>
-                <h2>Tu agenda en casa</h2>
+                <h2>Tu agenda en el gym</h2>
                 <p>{{planCasa.dias.length}} días programados</p>
               </div>
 
@@ -750,7 +750,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
           </section>
 
           <section class="member-module-card home-history-card" *ngIf="historialCasa.length">
-            <div class="card-title-block"><span>HISTORIAL</span><h2>Últimas sesiones en casa</h2><p>Tu progreso queda guardado en el sistema.</p></div>
+            <div class="card-title-block"><span>HISTORIAL</span><h2>Últimas sesiones en el gym</h2><p>Tu progreso queda guardado en el sistema.</p></div>
             <div class="home-history-list">
               <div *ngFor="let sesion of historialCasa.slice(0,6)">
                 <span>{{metaZonaCasa(sesion.zona).icono}}</span>
@@ -770,7 +770,7 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                 <p>Revisa tu planificación, ejercicios y objetivos sin salir de tu espacio Mallqui Gym.</p>
                 <div class="module-portal-actions">
                   <button type="button" class="portal-action-primary" (click)="abrirModulo('casa')">
-                    <i>⚡</i><span><b>Entrenar ahora</b><small>Sesión guiada en casa</small></span><em>→</em>
+                    <i>⚡</i><span><b>Entrenar ahora</b><small>Sesión guiada en el gimnasio</small></span><em>→</em>
                   </button>
                   <button type="button" class="portal-action-secondary" (click)="actualizarSeccion('rutinas')">
                     <i>↻</i><b>Actualizar</b>
@@ -818,10 +818,10 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               </span>
               <small class="empty-state-kicker">RUTINAS PERSONALIZADAS</small>
               <h3>Aún no tienes una rutina asignada</h3>
-              <p>Mientras tu entrenador prepara tu rutina, puedes continuar con una sesión guiada en casa o volver a consultar si ya fue publicada.</p>
+              <p>Mientras tu entrenador prepara tu rutina, puedes continuar con una sesión guiada dentro del gimnasio o volver a consultar si ya fue publicada.</p>
               <div class="empty-actions">
                 <button type="button" class="empty-primary" (click)="abrirModulo('casa')">
-                  <span>⚡</span><b>Entrenar en casa</b>
+                  <span>⚡</span><b>Entrenar en el gym</b>
                 </button>
                 <button type="button" class="empty-secondary" (click)="actualizarSeccion('rutinas')">
                   <span>↻</span><b>Actualizar rutinas</b>
@@ -891,13 +891,13 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               </span>
               <small class="empty-state-kicker">AGENDA DEL GIMNASIO</small>
               <h3>No hay clases disponibles por ahora</h3>
-              <p>Puedes actualizar los horarios para comprobar nuevas clases o continuar con una sesión guiada en casa.</p>
+              <p>Puedes actualizar los horarios para comprobar nuevas clases o continuar con una sesión guiada dentro del gimnasio.</p>
               <div class="empty-actions">
                 <button type="button" class="empty-primary" (click)="actualizarSeccion('clases')">
                   <span>↻</span><b>Actualizar clases</b>
                 </button>
                 <button type="button" class="empty-secondary" (click)="abrirModulo('casa')">
-                  <span>⚡</span><b>Entrenar en casa</b>
+                  <span>⚡</span><b>Entrenar en el gym</b>
                 </button>
               </div>
             </article>
@@ -919,10 +919,10 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
             </article>
 
             <article class="member-empty-card member-empty-guided" *ngIf="!reservas.length">
-              <span>◷</span><h3>Todavía no tienes reservas</h3><p>Elige una clase disponible o continúa con tu entrenamiento en casa.</p>
+              <span>◷</span><h3>Todavía no tienes reservas</h3><p>Elige una clase disponible o continúa con tu entrenamiento en el gimnasio.</p>
               <div class="empty-actions">
                 <button type="button" class="empty-primary" (click)="abrirModulo('clases')">Ver clases</button>
-                <button type="button" class="empty-secondary" (click)="abrirModulo('casa')">Entrenar en casa</button>
+                <button type="button" class="empty-secondary" (click)="abrirModulo('casa')">Entrenar en el gym</button>
               </div>
             </article>
           </div>
@@ -943,9 +943,9 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
 
             <article class="member-empty-card member-empty-guided" *ngIf="!asistencias.length">
               <span>✓</span><h3>Tu historial empieza desde cero</h3>
-              <p>Las visitas al gimnasio aparecerán aquí. Tus entrenamientos en casa se guardan en su propio historial.</p>
+              <p>Las visitas y tus sesiones de entrenamiento dentro del gimnasio aparecerán aquí.</p>
               <div class="empty-actions">
-                <button type="button" class="empty-primary" (click)="abrirModulo('casa')">Ver entrenamiento en casa</button>
+                <button type="button" class="empty-primary" (click)="abrirModulo('casa')">Ver entrenamiento en el gym</button>
                 <button type="button" class="empty-secondary" (click)="abrirModulo('clases')">Buscar clases</button>
               </div>
             </article>
@@ -1198,7 +1198,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
   get tituloModuloActual():string{
     const titulos:Record<string,string>={
-      casa:'Entrenamiento en casa',rutinas:'Mis rutinas',clases:'Clases del gimnasio',
+      casa:'Entrenamiento en el gimnasio',rutinas:'Mis rutinas',clases:'Clases del gimnasio',
       reservas:'Mis reservas',asistencias:'Mis asistencias',progreso:'Mi progreso',
       calendario:'Mi calendario',club:'Mi club',avisos:'Avisos',pagos:'Membresía y pagos',
       soporte:'Ayuda y soporte',perfil:'Mi perfil'
@@ -1207,7 +1207,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
   get subtituloModuloActual():string{
     const textos:Record<string,string>={
-      casa:'Planifica una sesión sencilla y sigue cada ejercicio paso a paso.',
+      casa:'Planifica tu sesión dentro del gimnasio y sigue cada ejercicio paso a paso.',
       rutinas:'Consulta las rutinas asignadas por tu entrenador.',
       clases:'Encuentra horarios disponibles y reserva sin complicaciones.',
       reservas:'Revisa tus próximas clases y administra tus reservas.',
@@ -1251,7 +1251,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const m=this.siguientePasoModulo;
     if(m==='perfil')return 'Completa tus datos';
     if(m==='pagos')return 'Activa tu membresía';
-    if(m==='casa')return 'Configura tu entrenamiento en casa';
+    if(m==='casa')return 'Configura tu entrenamiento en el gym';
     if(m==='clases')return 'Reserva tu próxima clase';
     return 'Revisa tu progreso';
   }
@@ -1329,7 +1329,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         done:Boolean(this.membresiaActual),
       },
       {
-        titulo:'Configurar entrenamiento en casa',
+        titulo:'Configurar entrenamiento en el gym',
         descripcion:'Elige días, objetivo y zonas para tus sesiones guiadas.',
         icono:'⚡',
         modulo:'casa',
@@ -1337,7 +1337,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       },
       {
         titulo:'Registrar tu primera actividad',
-        descripcion:'Entrena en casa, reserva una clase o registra una asistencia.',
+        descripcion:'Entrena dentro del gym, reserva una clase o registra una asistencia.',
         icono:'✓',
         modulo:'casa',
         done:this.primeraActividadRegistrada,
@@ -1425,7 +1425,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const dias=[...(this.planCasa.dias||[])];
     const i=dias.indexOf(dia);
     if(i>=0){
-      if(dias.length===1){this.errorCasa='Mantén al menos un día de entrenamiento en casa.';return;}
+      if(dias.length===1){this.errorCasa='Mantén al menos un día de entrenamiento en el gimnasio.';return;}
       dias.splice(i,1);
     }else{
       if(dias.length>=4){this.errorCasa='Puedes programar hasta 4 días por semana para estas sesiones.';return;}
