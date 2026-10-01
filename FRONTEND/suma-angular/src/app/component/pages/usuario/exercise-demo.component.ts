@@ -449,7 +449,35 @@ export class ExerciseDemoComponent implements OnChanges {
       dead_bug:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1300&q=88',
       bird_dog_core:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1300&q=88',
       rodilla_mano:'https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1300&q=88',
-      respiracion_core:'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1300&q=88'
+      respiracion_core:'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1300&q=88',
+      sentadilla_mancuernas:'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1300&q=88',
+      prensa_piernas:'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1300&q=88',
+      extension_cuadriceps:'https://images.unsplash.com/photo-1579758629938-03607ccdbaba?auto=format&fit=crop&w=1300&q=88',
+      curl_femoral:'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1300&q=88',
+      curl_biceps_mancuernas:'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1300&q=88',
+      curl_martillo:'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1300&q=88',
+      triceps_polea:'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=1300&q=88',
+      triceps_mancuerna:'https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=1300&q=88',
+      press_banca_mancuernas:'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1300&q=88',
+      press_pecho_maquina:'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1300&q=88',
+      aperturas_mancuernas:'https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=1300&q=88',
+      flexiones_banco:'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1300&q=88',
+      jalon_pecho:'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1300&q=88',
+      remo_sentado:'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1300&q=88',
+      remo_mancuerna:'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=1300&q=88',
+      pullover_polea:'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=1300&q=88',
+      press_hombros:'https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=1300&q=88',
+      elevacion_lateral_mancuernas:'https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=1300&q=88',
+      face_pull:'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=1300&q=88',
+      elevacion_frontal_mancuernas:'https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=1300&q=88',
+      hip_thrust_banco:'https://images.unsplash.com/photo-1579758629938-03607ccdbaba?auto=format&fit=crop&w=1300&q=88',
+      sentadilla_sumo_mancuerna:'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1300&q=88',
+      abduccion_maquina:'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1300&q=88',
+      patada_polea:'https://images.unsplash.com/photo-1579758629938-03607ccdbaba?auto=format&fit=crop&w=1300&q=88',
+      crunch_maquina:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1300&q=88',
+      plancha_colchoneta:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1300&q=88',
+      elevacion_rodillas_banco:'https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1300&q=88',
+      pallof_polea:'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=1300&q=88'
     };
     return mapa[id] || 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=1300&q=88';
   }
@@ -464,6 +492,19 @@ export class ExerciseDemoComponent implements OnChanges {
 
   get modo(): string {
     const id = String(this.ejercicio?.id || '');
+
+    if (['sentadilla_mancuernas','prensa_piernas','sentadilla_sumo_mancuerna'].includes(id)) return 'squat';
+    if (['curl_biceps_mancuernas','curl_martillo','triceps_polea','triceps_mancuerna','press_hombros','elevacion_lateral_mancuernas','elevacion_frontal_mancuernas'].includes(id)) return 'arms';
+    if (['jalon_pecho','remo_sentado','remo_mancuerna','pullover_polea','face_pull','pallof_polea'].includes(id)) return 'row';
+    if (['press_banca_mancuernas','press_pecho_maquina','aperturas_mancuernas'].includes(id)) return 'palms';
+    if (id === 'flexiones_banco') return 'wall';
+    if (id === 'hip_thrust_banco') return 'bridge';
+    if (id === 'abduccion_maquina') return 'abduction';
+    if (id === 'patada_polea') return 'kickback';
+    if (id === 'plancha_colchoneta') return 'deadbug';
+    if (id === 'elevacion_rodillas_banco') return 'march';
+    if (['extension_cuadriceps','curl_femoral','crunch_maquina'].includes(id)) return 'standing';
+
     if (['sentadilla_silla','sentadilla_gluteos'].includes(id)) return 'squat';
     if (id === 'zancada_asistida') return 'lunge';
     if (id === 'talones') return 'calf';
@@ -483,21 +524,54 @@ export class ExerciseDemoComponent implements OnChanges {
   }
 
   get mensajeGuia(): string {
+    const id = String(this.ejercicio?.id || '');
+    const guiaGym: Record<string,string> = {
+      sentadilla_mancuernas:'Mantén el torso estable y realiza cada repetición con control.',
+      prensa_piernas:'Empuja la plataforma con ambos pies y evita bloquear las rodillas.',
+      extension_cuadriceps:'Extiende y baja el peso lentamente, sin impulso.',
+      curl_femoral:'Flexiona las rodillas con control y regresa lentamente.',
+      curl_biceps_mancuernas:'Mantén los codos estables y evita balancear el cuerpo.',
+      curl_martillo:'Sube las mancuernas con agarre neutro y baja con control.',
+      triceps_polea:'Mantén los codos cerca del cuerpo durante todo el movimiento.',
+      triceps_mancuerna:'Extiende los brazos sin arquear la espalda.',
+      press_banca_mancuernas:'Baja las mancuernas con control y empuja manteniendo las muñecas alineadas.',
+      press_pecho_maquina:'Empuja de forma controlada y mantén la espalda apoyada.',
+      aperturas_mancuernas:'Abre los brazos hasta un rango cómodo y vuelve al centro lentamente.',
+      flexiones_banco:'Mantén el cuerpo alineado mientras bajas y subes hacia el banco.',
+      jalon_pecho:'Lleva la barra hacia el pecho sin usar impulso.',
+      remo_sentado:'Lleva el agarre hacia el abdomen manteniendo la espalda estable.',
+      remo_mancuerna:'Acerca la mancuerna al torso sin girar el cuerpo.',
+      pullover_polea:'Lleva el agarre hacia los muslos manteniendo los brazos controlados.',
+      press_hombros:'Empuja las mancuernas arriba y baja lentamente.',
+      elevacion_lateral_mancuernas:'Eleva las mancuernas hasta una altura cómoda sin balancearte.',
+      face_pull:'Lleva la cuerda hacia el rostro manteniendo el torso estable.',
+      elevacion_frontal_mancuernas:'Eleva los brazos al frente de forma controlada.',
+      hip_thrust_banco:'Eleva la cadera con control y mantén los pies firmes.',
+      sentadilla_sumo_mancuerna:'Baja con control manteniendo las rodillas alineadas.',
+      abduccion_maquina:'Abre y cierra las piernas lentamente evitando golpes del peso.',
+      patada_polea:'Lleva la pierna hacia atrás sin arquear la espalda.',
+      crunch_maquina:'Flexiona el tronco usando el abdomen y regresa lentamente.',
+      plancha_colchoneta:'Mantén el cuerpo alineado y respira de forma normal.',
+      elevacion_rodillas_banco:'Acerca las rodillas al torso sin balancearte.',
+      pallof_polea:'Extiende los brazos al frente manteniendo el torso estable.'
+    };
+    if (guiaGym[id]) return guiaGym[id];
+
     const mensajes: Record<string,string> = {
       squat: 'Baja con control y vuelve a subir sin rebotar.',
       lunge: 'Mantén el equilibrio y baja solo hasta un rango cómodo.',
       calf: 'Sube y baja los talones lentamente.',
       march: 'Alterna ambos lados con el torso estable.',
-      wall: 'Acércate a la pared con el cuerpo alineado y vuelve con control.',
+      wall: 'Mantén el cuerpo alineado y vuelve con control.',
       arms: 'Mueve los brazos despacio y evita encoger los hombros.',
-      palms: 'Presiona, relaja y mantén la respiración natural.',
-      row: 'Lleva los codos hacia atrás con movimientos suaves.',
+      palms: 'Empuja con control y mantén la respiración natural.',
+      row: 'Lleva los codos hacia atrás con movimientos controlados.',
       birddog: 'Extiende brazo y pierna contraria sin arquear la espalda.',
       cobra: 'Eleva el pecho suavemente sin forzar la zona lumbar.',
       bridge: 'Eleva la cadera y baja lentamente.',
-      abduction: 'Eleva la pierna al costado sin inclinar el torso.',
+      abduction: 'Abre el movimiento sin inclinar el torso.',
       kickback: 'Lleva la pierna hacia atrás sin arquear la espalda.',
-      deadbug: 'Alterna brazo y pierna contraria manteniendo la espalda estable.',
+      deadbug: 'Mantén el abdomen estable durante todo el movimiento.',
       breathe: 'Respira lento y mantén el abdomen estable.'
     };
     return mensajes[this.modo] || 'Sigue la demostración a un ritmo cómodo y controlado.';
