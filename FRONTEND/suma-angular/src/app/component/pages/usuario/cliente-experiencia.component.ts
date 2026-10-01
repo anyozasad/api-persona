@@ -27,7 +27,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             <div class="progress-side-head">
               <span>RESUMEN PERSONAL</span>
               <h2>Esta semana</h2>
-              <p>Tu avance se actualiza con tus sesiones y asistencias registradas.</p>
+              <p>Tu avance separa las sesiones de entrenamiento de las asistencias registradas al ingresar al gimnasio.</p>
             </div>
             <div class="progress-side-score">
               <strong>{{progreso?.semana?.cumplimiento || 0}}%</strong>
@@ -35,7 +35,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               <div><i [style.width.%]="progreso?.semana?.cumplimiento || 0"></i></div>
             </div>
             <div class="progress-side-mini">
-              <article><b>{{progreso?.mes?.sesiones_casa || 0}}</b><small>sesiones en el gym</small></article>
+              <article><b>{{progreso?.mes?.sesiones_casa || 0}}</b><small>sesiones de entrenamiento</small></article>
               <article><b>{{progreso?.mes?.minutos_entrenados || 0}}</b><small>minutos guiados</small></article>
             </div>
           </aside>
@@ -48,7 +48,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         <section class="client-progress-kpis">
           <article>
             <span>⚡</span>
-            <small>SESIONES EN GYM</small>
+            <small>ENTRENAMIENTOS</small>
             <strong>{{progreso?.mes?.sesiones_casa || 0}}</strong>
             <p>este mes</p>
           </article>
@@ -124,7 +124,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               <div *ngFor="let d of progreso?.semana?.dias" [class.active]="d.activo">
                 <b>{{d.dia}}</b>
                 <span>{{d.activo ? '✓' : '·'}}</span>
-                <small>{{d.casa ? 'Casa' : (d.gimnasio ? 'Gym' : 'Sin registro')}}</small>
+                <small>{{d.casa ? 'Entreno' : (d.gimnasio ? 'Asistencia' : 'Sin registro')}}</small>
               </div>
             </div>
           </article>
@@ -175,7 +175,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           <article class="client-extra-card">
             <div class="client-card-head"><div><span>HISTORIAL</span><h2>Últimos registros</h2></div><button type="button" class="history-refresh-btn" (click)="cargarHistorial()" title="Actualizar historial">↻</button></div>
             <div class="client-history-tabs">
-              <button type="button" [class.active]="historialTab==='casa'" (click)="seleccionarHistorialTab('casa')">En el gym</button>
+              <button type="button" [class.active]="historialTab==='casa'" (click)="seleccionarHistorialTab('casa')">Entrenamientos</button>
               <button type="button" [class.active]="historialTab==='gym'" (click)="seleccionarHistorialTab('gym')">Asistencias</button>
               <button type="button" [class.active]="historialTab==='reservas'" (click)="seleccionarHistorialTab('reservas')">Reservas</button>
               <button type="button" [class.active]="historialTab==='pagos'" (click)="seleccionarHistorialTab('pagos')">Pagos</button>
@@ -214,7 +214,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           <div class="calendar-pro-copy">
             <span class="calendar-pro-kicker"><i></i> AGENDA PERSONAL</span>
             <h1>Organiza tu entrenamiento</h1>
-            <p>Tu calendario combina clases, sesiones en el gimnasio y fechas de membresía para que tengas claro qué sigue.</p>
+            <p>Tu calendario combina clases, entrenamientos en sala y fechas de membresía para que tengas claro qué sigue.</p>
             <div class="calendar-head-actions">
               <button type="button" class="calendar-today-btn" (click)="irMesActual()">Hoy</button>
               <button type="button" class="calendar-refresh-btn" (click)="cargarCalendario()">↻ Sincronizar agenda</button>
@@ -247,7 +247,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           </article>
           <article>
             <span class="calendar-summary-icon red">⚡</span>
-            <div><small>EN EL GYM</small><strong>{{totalEventosTipo('casa')}}</strong><p>sesiones programadas</p></div>
+            <div><small>ENTRENAMIENTOS</small><strong>{{totalEventosTipo('casa')}}</strong><p>sesiones programadas</p></div>
           </article>
           <article>
             <span class="calendar-summary-icon gold">✦</span>
@@ -298,7 +298,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
 
             <footer class="calendar-month-legend">
               <span><i></i> Clase</span>
-              <span><i class="home"></i> En el gym</span>
+              <span><i class="home"></i> Entrenamiento</span>
               <span><i class="membership"></i> Membresía</span>
             </footer>
           </article>
