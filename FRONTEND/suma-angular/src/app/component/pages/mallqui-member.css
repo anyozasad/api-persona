@@ -27520,3 +27520,545 @@
 @media (max-width:720px){
   .train-gym-context-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+
+/* PORTAL CLIENTE V92 · FLUJO COMPLETO DE ENTRENAMIENTO EN GIMNASIO */
+
+/* Estado real del socio dentro de la sala */
+.train-gym-statusbar{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-top:14px;
+}
+.train-gym-statusbar>div{
+  min-height:58px;
+  padding:11px 13px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:3px;
+  border:1px solid rgba(132,181,220,.16);
+  border-radius:13px;
+  background:rgba(4,31,53,.52);
+}
+.train-gym-statusbar small{
+  color:#76a4c7!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  letter-spacing:.85px!important;
+}
+.train-gym-statusbar b{
+  color:#f5fbff;
+  font-size:12px;
+  line-height:1.25;
+}
+
+/* Flujo de una visita real al gimnasio */
+.gym-session-flow{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin:16px 0;
+}
+.gym-session-flow article{
+  min-height:118px;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  gap:12px;
+  align-items:start;
+  padding:17px;
+  border:1px solid rgba(113,171,214,.18);
+  border-radius:16px;
+  background:linear-gradient(145deg,rgba(8,44,72,.96),rgba(5,32,54,.97));
+  box-shadow:0 10px 28px rgba(0,14,27,.17);
+}
+.gym-session-flow article>span{
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:linear-gradient(135deg,#ff2347,#d81638);
+  color:#fff;
+  font-size:15px;
+  font-weight:950;
+  box-shadow:0 8px 20px rgba(239,35,60,.22);
+}
+.gym-session-flow small{
+  color:#ff6680!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  letter-spacing:.85px!important;
+}
+.gym-session-flow b{
+  display:block;
+  margin-top:3px;
+  color:#f6fbff;
+  font-size:15px;
+}
+.gym-session-flow p{
+  margin:5px 0 0!important;
+  color:#9fb8cb!important;
+  font-size:11px!important;
+  line-height:1.45!important;
+}
+
+/* Rutina asignada por entrenador */
+.gym-assigned-routine{
+  display:grid;
+  grid-template-columns:56px minmax(0,1fr) auto;
+  gap:14px;
+  align-items:center;
+  margin:0 0 16px;
+  padding:16px 18px;
+  border:1px solid rgba(44,207,157,.22);
+  border-radius:17px;
+  background:linear-gradient(90deg,rgba(8,55,69,.95),rgba(6,38,60,.96));
+}
+.gym-assigned-icon{
+  width:52px;
+  height:52px;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  background:rgba(45,211,161,.12);
+  border:1px solid rgba(45,211,161,.24);
+  font-size:24px;
+}
+.gym-assigned-routine small{
+  color:#39d8aa!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  letter-spacing:.9px!important;
+}
+.gym-assigned-routine h3{
+  margin:3px 0!important;
+  color:#f7fcff;
+  font-size:19px!important;
+}
+.gym-assigned-routine p{
+  margin:0!important;
+  color:#a7bfd1!important;
+  font-size:11px!important;
+}
+.gym-assigned-routine button{
+  min-height:44px;
+  padding:0 16px;
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:12px;
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  font-weight:850;
+}
+
+/* Primera estación: compacta, no tutorial gigante */
+.gym-first-station{
+  display:grid;
+  grid-template-columns:minmax(220px,310px) minmax(0,1fr);
+  overflow:hidden;
+  margin:15px 0 18px;
+  border:1px solid rgba(102,164,208,.18);
+  border-radius:17px;
+  background:#082d4a;
+}
+.gym-first-station-photo{
+  position:relative;
+  min-height:205px;
+  overflow:hidden;
+}
+.gym-first-station-photo img{
+  width:100%;
+  height:100%;
+  min-height:205px;
+  display:block;
+  object-fit:cover;
+}
+.gym-first-station-photo:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,rgba(2,20,35,.08),rgba(2,20,35,.72));
+  pointer-events:none;
+}
+.gym-first-station-photo>span{
+  position:absolute;
+  z-index:2;
+  left:13px;
+  bottom:13px;
+  padding:7px 9px;
+  border-radius:999px;
+  background:#ff2448;
+  color:#fff;
+  font-size:8px;
+  font-weight:950;
+  letter-spacing:.75px;
+}
+.gym-first-station-copy{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:21px 23px;
+}
+.gym-first-station-copy>span{
+  color:#ff627b;
+  font-size:9px;
+  font-weight:950;
+  letter-spacing:.9px;
+}
+.gym-first-station-copy h3{
+  margin:5px 0 7px!important;
+  color:#fff;
+  font-size:24px!important;
+}
+.gym-first-station-copy>p{
+  max-width:690px;
+  margin:0!important;
+  color:#acc2d2!important;
+  font-size:12px!important;
+}
+.gym-first-station-metrics{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+  margin-top:15px;
+}
+.gym-first-station-metrics article{
+  padding:10px 12px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:11px;
+  background:rgba(255,255,255,.04);
+}
+.gym-first-station-metrics small{
+  display:block;
+  color:#769fbe!important;
+  font-size:8px!important;
+  font-weight:900!important;
+  letter-spacing:.65px!important;
+}
+.gym-first-station-metrics b{
+  display:block;
+  margin-top:3px;
+  color:#f7fbff;
+  font-size:13px;
+}
+
+/* Equipo visible al abrir la técnica */
+.gym-equipment-instruction{
+  border-color:rgba(44,207,157,.18)!important;
+  background:rgba(44,207,157,.07)!important;
+}
+.gym-equipment-instruction span{
+  background:rgba(44,207,157,.15)!important;
+  color:#4ce0b5!important;
+}
+
+/* Sesión activa: tablero de entrenamiento, no demostración gigante */
+.gym-live-board{
+  display:grid;
+  grid-template-columns:minmax(0,1.8fr) minmax(255px,.7fr);
+  gap:14px;
+  margin-top:4px;
+}
+.gym-live-exercise,
+.gym-live-counter{
+  border:1px solid rgba(100,165,212,.18);
+  border-radius:17px;
+  background:linear-gradient(145deg,#092f4e,#072740);
+  overflow:hidden;
+}
+.gym-live-exercise{
+  display:grid;
+  grid-template-columns:minmax(240px,350px) minmax(0,1fr);
+  min-height:330px;
+}
+.gym-live-photo{
+  position:relative;
+  min-height:330px;
+  overflow:hidden;
+}
+.gym-live-photo img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+.gym-live-photo:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,rgba(3,23,38,.02),rgba(3,23,38,.78));
+}
+.gym-live-photo>span{
+  position:absolute;
+  z-index:2;
+  left:14px;
+  top:14px;
+  padding:7px 10px;
+  border-radius:999px;
+  background:#ff2448;
+  color:#fff;
+  font-size:8px;
+  font-weight:950;
+  letter-spacing:.8px;
+}
+.gym-live-main{
+  display:flex;
+  flex-direction:column;
+  padding:22px;
+}
+.gym-live-main>small,
+.gym-live-counter>span{
+  color:#ff6179!important;
+  font-size:9px!important;
+  font-weight:950!important;
+  letter-spacing:.85px!important;
+}
+.gym-live-main h3{
+  margin:5px 0 8px!important;
+  color:#fff;
+  font-size:27px!important;
+  line-height:1.05!important;
+}
+.gym-live-equipment{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:0 0 15px!important;
+  color:#b8cbd9!important;
+  font-size:12px!important;
+  font-weight:800;
+}
+.gym-live-equipment span{
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:rgba(45,211,161,.10);
+}
+.gym-live-metrics{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+}
+.gym-live-metrics article{
+  min-height:68px;
+  padding:10px 11px;
+  border-radius:11px;
+  background:#0d395b;
+  border:1px solid rgba(255,255,255,.06);
+}
+.gym-live-metrics small{
+  display:block;
+  color:#7fa5c0!important;
+  font-size:8px!important;
+  font-weight:900!important;
+}
+.gym-live-metrics b{
+  display:block;
+  margin-top:5px;
+  color:#fff;
+  font-size:15px;
+}
+.gym-live-series{
+  margin-top:15px;
+}
+.gym-live-series>span{
+  color:#85a7bf;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.8px;
+}
+.gym-live-series>div{
+  display:flex;
+  gap:7px;
+  margin-top:7px;
+}
+.gym-live-series i{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:#0b3656;
+  border:1px solid rgba(255,255,255,.08);
+  color:#91aec2;
+  font-style:normal;
+  font-size:11px;
+  font-weight:900;
+}
+.gym-live-series i.active{
+  background:#ff2448;
+  border-color:#ff2448;
+  color:#fff;
+  box-shadow:0 7px 18px rgba(239,35,60,.25);
+}
+.gym-live-series i.done{
+  background:rgba(45,211,161,.14);
+  border-color:rgba(45,211,161,.35);
+  color:#48ddaF;
+}
+.gym-technique-toggle{
+  align-self:flex-start;
+  min-height:38px!important;
+  margin-top:15px;
+  padding:0 13px!important;
+  border:1px solid rgba(255,255,255,.1)!important;
+  border-radius:10px!important;
+  background:rgba(255,255,255,.05)!important;
+  color:#f5faff!important;
+  font-size:10px!important;
+  font-weight:850!important;
+}
+.gym-live-technique{
+  display:grid;
+  gap:7px;
+  margin-top:10px;
+}
+.gym-live-technique p{
+  display:grid;
+  grid-template-columns:26px minmax(0,1fr);
+  align-items:center;
+  gap:8px;
+  margin:0!important;
+  padding:8px 9px;
+  border-radius:9px;
+  background:rgba(255,255,255,.035);
+  color:#aec4d4!important;
+  font-size:10.5px!important;
+}
+.gym-live-technique p span{
+  width:25px;
+  height:25px;
+  display:grid;
+  place-items:center;
+  border-radius:8px;
+  background:#123f60;
+  color:#fff;
+  font-weight:900;
+}
+
+/* Contador compacto de la serie */
+.gym-live-counter{
+  padding:20px;
+}
+.gym-live-counter h3{
+  margin:5px 0 15px!important;
+  color:#fff;
+  font-size:20px!important;
+}
+.gym-rep-display,
+.gym-time-display{
+  min-height:88px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap:7px;
+  padding:12px;
+  border-radius:14px;
+  background:#06233a;
+  border:1px solid rgba(255,255,255,.06);
+}
+.gym-rep-display strong,
+.gym-time-display strong{
+  color:#fff;
+  font-size:43px;
+  line-height:1;
+}
+.gym-rep-display span,
+.gym-time-display span{
+  padding-bottom:5px;
+  color:#91aec3;
+  font-size:12px;
+  font-weight:800;
+}
+.gym-register-rep{
+  width:100%;
+  min-height:59px!important;
+  display:flex!important;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-top:10px;
+  border:0!important;
+  border-radius:13px!important;
+  background:linear-gradient(135deg,#ff2a4c,#e4173b)!important;
+  color:#fff!important;
+  box-shadow:0 10px 23px rgba(239,35,60,.20);
+}
+.gym-register-rep b{
+  font-size:23px;
+}
+.gym-register-rep span{
+  font-size:11px;
+  font-weight:900;
+}
+.gym-live-status{
+  display:grid;
+  gap:7px;
+  margin-top:13px;
+}
+.gym-live-status p{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin:0!important;
+  padding:9px 0;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.gym-live-status p span{
+  color:#789eb9;
+  font-size:9px;
+  font-weight:800;
+}
+.gym-live-status p b{
+  max-width:60%;
+  color:#f2f7fb;
+  font-size:10px;
+  text-align:right;
+}
+
+/* El control de sesión ya no necesita el panel gigante de +1. */
+.module-training-v34 .home-session-controls{
+  margin-top:12px!important;
+}
+.module-training-v34 .home-session-controls button{
+  min-height:50px!important;
+}
+
+/* Historial: deja claro que son sesiones, no solo visitas. */
+.module-training-v34 .home-history-card .card-title-block p:after{
+  content:" · Diferente al registro de asistencia.";
+  color:#7da0b9;
+}
+
+@media (prefers-reduced-motion:no-preference){
+  .gym-session-flow article,
+  .gym-assigned-routine,
+  .gym-first-station,
+  .gym-live-board{
+    animation:mallquiSectionRise .55s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .gym-session-flow article:nth-child(2){animation-delay:.06s}
+  .gym-session-flow article:nth-child(3){animation-delay:.12s}
+  .gym-session-flow article:nth-child(4){animation-delay:.18s}
+}
+
+@media (max-width:1100px){
+  .gym-session-flow{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .gym-live-board{grid-template-columns:1fr}
+  .gym-live-exercise{grid-template-columns:minmax(210px,300px) minmax(0,1fr)}
+}
+@media (max-width:760px){
+  .train-gym-statusbar{grid-template-columns:1fr}
+  .gym-session-flow{grid-template-columns:1fr}
+  .gym-assigned-routine{grid-template-columns:48px minmax(0,1fr)}
+  .gym-assigned-routine button{grid-column:1/-1}
+  .gym-first-station{grid-template-columns:1fr}
+  .gym-first-station-photo{min-height:190px}
+  .gym-live-exercise{grid-template-columns:1fr}
+  .gym-live-photo{min-height:220px}
+  .gym-live-metrics,.gym-first-station-metrics{grid-template-columns:1fr 1fr}
+}
