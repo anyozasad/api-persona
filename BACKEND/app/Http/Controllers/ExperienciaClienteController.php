@@ -85,7 +85,7 @@ class ExperienciaClienteController extends Controller
 
         foreach ($sesionesSemana as $sesion) {
             $actividades->push([
-                'tipo' => 'Entrenamiento en casa',
+                'tipo' => 'Entrenamiento en el gimnasio',
                 'titulo' => ucfirst((string) $sesion->zona),
                 'fecha' => optional($sesion->fecha)->toDateTimeString(),
                 'detalle' => round(((int) $sesion->duracion_segundos) / 60).' min · '.$sesion->ejercicios_completados.' ejercicios',
@@ -222,7 +222,7 @@ class ExperienciaClienteController extends Controller
             $eventos->push([
                 'tipo' => 'casa',
                 'fecha' => $fecha->toDateString(),
-                'titulo' => 'Entrenamiento en casa',
+                'titulo' => 'Entrenamiento en el gimnasio',
                 'detalle' => ucfirst((string) $zona),
             ]);
         }
@@ -305,7 +305,7 @@ class ExperienciaClienteController extends Controller
             $automaticas->push([
                 'id_notificacion' => null,
                 'titulo' => 'Entrenamiento programado para hoy',
-                'mensaje' => 'Tu plan semanal tiene una sesión en casa para hoy.',
+                'mensaje' => 'Tu plan semanal tiene una sesión de entrenamiento en el gimnasio para hoy.',
                 'tipo' => 'Entrenamiento',
                 'leida' => false,
                 'fecha' => now()->toDateTimeString(),
