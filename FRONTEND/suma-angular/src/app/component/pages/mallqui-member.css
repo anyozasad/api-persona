@@ -27437,3 +27437,86 @@
     font-size:10px!important;
   }
 }
+
+
+/* PORTAL CLIENTE V91 · ENTRENAMIENTO REAL DENTRO DEL GIMNASIO */
+.train-gym-context-strip{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin:18px 0 4px;
+}
+.train-gym-context-strip span{
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:8px 10px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;
+  background:rgba(255,255,255,.055);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.2px;
+  color:#eaf4ff;
+  backdrop-filter:blur(8px);
+}
+.train-gym-context-strip span:hover{
+  transform:translateY(-2px);
+  border-color:rgba(255,45,75,.45);
+  background:rgba(255,45,75,.09);
+}
+
+.home-first-demo-copy>div em{
+  display:block;
+  margin-top:5px;
+  color:#ff6478;
+  font-size:11px;
+  font-style:normal;
+  font-weight:800;
+  letter-spacing:.25px;
+}
+.home-exercise-list .exercise-list-copy em{
+  color:#e64a61!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  font-style:normal!important;
+}
+.home-exercise-list .exercise-list-copy small{
+  line-height:1.45!important;
+}
+.home-live-coach .live-target-card em:first-of-type{
+  display:block;
+  margin-top:5px;
+  color:#31d6a5;
+  font-size:10px;
+  font-style:normal;
+  font-weight:800;
+}
+.home-session-queue .session-queue-list small{
+  line-height:1.45!important;
+}
+.home-session-top .session-live::after{
+  content:" · SALA DE MUSCULACIÓN";
+  color:#31d6a5;
+}
+.home-no-equipment{
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+@media (prefers-reduced-motion:no-preference){
+  .train-gym-context-strip span{
+    animation:mallquiGymChipIn .55s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .train-gym-context-strip span:nth-child(2){animation-delay:.07s}
+  .train-gym-context-strip span:nth-child(3){animation-delay:.14s}
+  .train-gym-context-strip span:nth-child(4){animation-delay:.21s}
+}
+@keyframes mallquiGymChipIn{
+  from{opacity:0;transform:translateY(10px) scale(.96)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@media (max-width:720px){
+  .train-gym-context-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
