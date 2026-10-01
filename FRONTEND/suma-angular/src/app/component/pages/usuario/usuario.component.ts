@@ -698,30 +698,39 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                 </aside>
               </div>
 
-              <div class="home-rest-stage" *ngIf="faseCasa==='descanso'">
-                <div class="home-rest-timer" [style.background]="temporizadorFondoCasa">
-                  <div>
-                    <small>DESCANSO</small>
-                    <strong>{{formatoTiempoCasa(segundosCasa)}}</strong>
-                    <span>Respira y recupera</span>
-                  </div>
-                </div>
+              <div class="gym-rest-board" *ngIf="faseCasa==='descanso'">
+                <section class="gym-rest-timer-card">
+                  <span>DESCANSO ENTRE SERIES</span>
+                  <strong>{{formatoTiempoCasa(segundosCasa)}}</strong>
+                  <p>{{textoDescansoCasa}}</p>
+                  <div class="gym-rest-progress" [style.background]="temporizadorFondoCasa"></div>
+                </section>
 
-                <div class="home-next-preview">
-                  <div class="next-preview-copy">
-                    <span>{{serieCasaActual < seriesCasaTotalActual ? 'SIGUIENTE SERIE' : 'SIGUE DESPUÉS'}}</span>
-                    <h3>{{serieCasaActual < seriesCasaTotalActual ? ejercicioCasaActual?.nombre : (siguienteEjercicioCasa?.nombre || 'Fin de la sesión')}}</h3>
-                    <p *ngIf="serieCasaActual < seriesCasaTotalActual">Prepárate para la serie {{serieCasaActual + 1}} de {{seriesCasaTotalActual}} · {{ejercicioCasaActual?.equipo || 'Equipo del gimnasio'}}.</p>
-                    <p *ngIf="serieCasaActual >= seriesCasaTotalActual && siguienteEjercicioCasa">{{siguienteEjercicioCasa.series || 3}} series · {{prescripcionEjercicioCasa(siguienteEjercicioCasa)}} · {{siguienteEjercicioCasa.equipo || 'Equipo del gimnasio'}}.</p>
-                    <p *ngIf="serieCasaActual >= seriesCasaTotalActual && !siguienteEjercicioCasa">Terminaste todos los ejercicios programados.</p>
+                <section class="gym-next-station">
+                  <div class="gym-next-photo" *ngIf="serieCasaActual >= seriesCasaTotalActual && siguienteEjercicioCasa">
+                    <img [src]="imagenEjercicioCasa(siguienteEjercicioCasa)"
+                         (error)="ocultarImagenEjercicio($event)"
+                         [alt]="siguienteEjercicioCasa.nombre">
                   </div>
-                  <app-exercise-demo
-                    *ngIf="serieCasaActual < seriesCasaTotalActual ? ejercicioCasaActual : siguienteEjercicioCasa"
-                    [ejercicio]="serieCasaActual < seriesCasaTotalActual ? ejercicioCasaActual : siguienteEjercicioCasa"
-                    [pausado]="true"
-                    [lado]="'derecho'">
-                  </app-exercise-demo>
-                </div>
+                  <div class="gym-next-photo same" *ngIf="serieCasaActual < seriesCasaTotalActual">
+                    <img [src]="imagenEjercicioCasa(ejercicioCasaActual)"
+                         (error)="ocultarImagenEjercicio($event)"
+                         [alt]="ejercicioCasaActual?.nombre">
+                  </div>
+                  <div class="gym-next-copy">
+                    <small>{{serieCasaActual < seriesCasaTotalActual ? 'SIGUIENTE SERIE' : 'SIGUIENTE ESTACIÓN'}}</small>
+                    <h3>{{serieCasaActual < seriesCasaTotalActual ? ejercicioCasaActual?.nombre : (siguienteEjercicioCasa?.nombre || 'Sesión completada')}}</h3>
+                    <ng-container *ngIf="serieCasaActual < seriesCasaTotalActual">
+                      <p>Serie {{serieCasaActual + 1}} de {{seriesCasaTotalActual}}</p>
+                      <b>Equipo: {{ejercicioCasaActual?.equipo || 'Equipo del gimnasio'}}</b>
+                    </ng-container>
+                    <ng-container *ngIf="serieCasaActual >= seriesCasaTotalActual && siguienteEjercicioCasa">
+                      <p>{{siguienteEjercicioCasa.series || 3}} series · {{prescripcionEjercicioCasa(siguienteEjercicioCasa)}} · descanso {{siguienteEjercicioCasa.descanso}} s</p>
+                      <b>Equipo: {{siguienteEjercicioCasa.equipo || 'Equipo del gimnasio'}}</b>
+                    </ng-container>
+                    <p *ngIf="serieCasaActual >= seriesCasaTotalActual && !siguienteEjercicioCasa">Has completado todas las estaciones de esta sesión.</p>
+                  </div>
+                </section>
               </div>
 
               <div class="home-session-progress">
