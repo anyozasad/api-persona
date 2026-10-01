@@ -793,13 +793,13 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               <article *ngFor="let e of ejerciciosCasaActuales; let i=index"
                        [class.current]="i===indiceEjercicioCasa"
                        [class.done]="i<indiceEjercicioCasa">
-                <span>{{i<indiceEjercicioCasa ? '✓' : (i+1)}}</span>
+                <span>{{numeroFilaGym(i)}}</span>
                 <div><b>{{e.nombre}}</b><small *ngIf="e.observaciones">{{e.observaciones}}</small></div>
                 <b>{{e.equipo}}</b>
                 <b>{{e.series}} × {{e.repeticiones}}</b>
                 <b>{{textoPesoGym(e)}}</b>
                 <b>{{e.descanso}} s</b>
-                <em>{{i<indiceEjercicioCasa ? 'Completado' : (i===indiceEjercicioCasa ? (faseCasa==='descanso' ? 'Descanso' : 'En curso') : 'Pendiente')}}</em>
+                <em>{{estadoFilaGym(i)}}</em>
               </article>
             </section>
 
@@ -1934,6 +1934,16 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     if(carga!=='' && carga!==null && carga!==undefined)return String(carga)+' kg';
     const recomendado=Number(e?.peso_recomendado||0);
     return recomendado>0 ? recomendado+' kg recomendados' : 'Según indicación del entrenador';
+  }
+
+  numeroFilaGym(indice:number):string|number{
+    return indice<this.indiceEjercicioCasa ? '✓' : indice+1;
+  }
+
+  estadoFilaGym(indice:number):string{
+    if(indice<this.indiceEjercicioCasa)return 'Completado';
+    if(indice>this.indiceEjercicioCasa)return 'Pendiente';
+    return this.faseCasa==='descanso' ? 'Descanso' : 'En curso';
   }
 
   metaZonaCasa(zona:string):any{
