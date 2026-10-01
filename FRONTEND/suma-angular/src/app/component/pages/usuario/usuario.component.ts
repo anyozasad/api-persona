@@ -324,6 +324,21 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                   <span>▰ Banco</span>
                 </div>
 
+                <div class="train-gym-statusbar">
+                  <div>
+                    <small>MEMBRESÍA</small>
+                    <b>{{membresiaActual ? 'Acceso activo' : 'Revisar membresía'}}</b>
+                  </div>
+                  <div>
+                    <small>RUTINA</small>
+                    <b>{{rutinaActual?.nombre_rutina || 'Sesión guiada Mallqui'}}</b>
+                  </div>
+                  <div>
+                    <small>ENTRENADOR</small>
+                    <b>{{rutinaActual?.entrenador ? nombreEntrenador : 'Disponible en sala'}}</b>
+                  </div>
+                </div>
+
                 <div class="train-ux-summary">
                   <div><span>◎</span><p><small>ZONA ACTUAL</small><b>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</b></p></div>
                   <div><span>◷</span><p><small>DURACIÓN</small><b>{{duracionEstimadaCasa(zonaCasaSeleccionada)}} min</b></p></div>
@@ -387,7 +402,36 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
             </section>
           </section>
 
+          <section class="gym-session-flow" *ngIf="!sesionCasaActiva && !sesionCasaTerminada">
+            <article>
+              <span>1</span>
+              <div><small>INGRESO</small><b>Asistencia</b><p>Tu visita al gimnasio queda registrada en el módulo de Asistencias.</p></div>
+            </article>
+            <article>
+              <span>2</span>
+              <div><small>PREPARACIÓN</small><b>Calentamiento</b><p>Realiza una preparación breve antes de comenzar la rutina principal.</p></div>
+            </article>
+            <article>
+              <span>3</span>
+              <div><small>RUTINA EN SALA</small><b>Máquinas y pesas</b><p>Sigue ejercicios con equipo, series, repeticiones y descansos.</p></div>
+            </article>
+            <article>
+              <span>4</span>
+              <div><small>CIERRE</small><b>Guardar sesión</b><p>Al terminar, la sesión queda registrada en tu Progreso e Historial.</p></div>
+            </article>
+          </section>
+
           <div *ngIf="errorCasa" class="home-training-alert">{{errorCasa}}</div>
+
+          <section class="gym-assigned-routine" *ngIf="!sesionCasaActiva && !sesionCasaTerminada && rutinaActual">
+            <div class="gym-assigned-icon">🏋</div>
+            <div>
+              <small>RUTINA ASIGNADA POR TU ENTRENADOR</small>
+              <h3>{{rutinaActual.nombre_rutina}}</h3>
+              <p>{{rutinaActual.objetivo || 'Plan de entrenamiento personalizado'}} · {{rutinaActual.detalles?.length || 0}} ejercicios</p>
+            </div>
+            <button type="button" (click)="abrirModulo('rutinas')">Ver rutina completa →</button>
+          </section>
 
           <section id="config-entreno-casa" *ngIf="!sesionCasaActiva && !sesionCasaTerminada" class="home-plan-layout">
             <article class="member-module-card home-plan-card">
@@ -494,23 +538,22 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                 <span class="home-no-equipment">Equipo del gimnasio</span>
               </div>
 
-              <div class="home-first-demo" *ngIf="ejerciciosCasaActuales[0]">
-                <div class="home-first-demo-copy">
-                  <span>VISTA PREVIA ANIMADA</span>
-                  <h3>Así comienza tu sesión</h3>
-                  <p>Mira el movimiento antes de iniciar. Durante la sesión la guía cambia automáticamente con cada ejercicio.</p>
-                  <div>
-                    <b>{{ejerciciosCasaActuales[0].nombre}}</b>
-                    <small>{{ejerciciosCasaActuales[0].series || 3}} series · {{prescripcionEjercicioCasa(ejerciciosCasaActuales[0])}}</small>
-                    <em>Equipo: {{ejerciciosCasaActuales[0].equipo || 'Área funcional'}}</em>
-                  </div>
+              <div class="gym-first-station" *ngIf="ejerciciosCasaActuales[0]">
+                <div class="gym-first-station-photo">
+                  <img [src]="imagenEjercicioCasa(ejerciciosCasaActuales[0])"
+                       (error)="ocultarImagenEjercicio($event)"
+                       [alt]="ejerciciosCasaActuales[0].nombre">
+                  <span>PRIMERA ESTACIÓN</span>
                 </div>
-                <div class="home-first-demo-visual">
-                  <app-exercise-demo
-                    [ejercicio]="ejerciciosCasaActuales[0]"
-                    [pausado]="false"
-                    [lado]="'derecho'">
-                  </app-exercise-demo>
+                <div class="gym-first-station-copy">
+                  <span>RUTINA EN SALA</span>
+                  <h3>{{ejerciciosCasaActuales[0].nombre}}</h3>
+                  <p>Empieza en <b>{{ejerciciosCasaActuales[0].equipo || 'el área funcional'}}</b>. Revisa la técnica antes de iniciar y completa todas las series.</p>
+                  <div class="gym-first-station-metrics">
+                    <article><small>SERIES</small><b>{{ejerciciosCasaActuales[0].series || 3}}</b></article>
+                    <article><small>REPETICIONES</small><b>{{prescripcionEjercicioCasa(ejerciciosCasaActuales[0])}}</b></article>
+                    <article><small>DESCANSO</small><b>{{ejerciciosCasaActuales[0].descanso}} s</b></article>
+                  </div>
                 </div>
               </div>
 
@@ -533,7 +576,8 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                     {{verEjercicioCasa===ejercicio.id ? 'Ocultar pasos' : 'Ver técnica'}}
                   </button>
                   <div class="exercise-howto" *ngIf="verEjercicioCasa===ejercicio.id">
-                    <p *ngIf="ejercicio.por_lado" class="side-instruction"><span>↔</span><b>Haz {{ejercicio.repeticiones}} con el lado derecho y luego {{ejercicio.repeticiones}} con el izquierdo.</b></p>
+                    <p class="gym-equipment-instruction"><span>🏋</span><b>Equipo: {{ejercicio.equipo || 'Área funcional del gimnasio'}}</b></p>
+                    <p *ngIf="ejercicio.por_lado" class="side-instruction"><span>↔</span><b>Completa el lado derecho y luego el izquierdo.</b></p>
                     <p *ngFor="let paso of ejercicio.instrucciones; let p=index"><span>{{p+1}}</span>{{paso}}</p>
                   </div>
                 </article>
@@ -569,66 +613,87 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
                 <span class="session-zone-badge">{{metaZonaCasa(zonaCasaSeleccionada).icono}} {{metaZonaCasa(zonaCasaSeleccionada).nombre}}</span>
               </div>
 
-              <div class="home-coach-stage" *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual">
-                <div class="home-demo-column">
-                  <app-exercise-demo
-                    [ejercicio]="ejercicioCasaActual"
-                    [pausado]="sesionCasaPausada"
-                    [lado]="ladoCasa">
-                  </app-exercise-demo>
-                </div>
-
-                <aside class="home-live-coach">
-                  <div class="live-coach-heading">
-                    <span>ENTRENADOR VISUAL</span>
-                    <h3>Sigue el movimiento</h3>
-                    <p>Usa el equipo indicado, completa la serie y respeta el descanso antes de continuar.</p>
+              <div class="gym-live-board" *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual">
+                <section class="gym-live-exercise">
+                  <div class="gym-live-photo">
+                    <img [src]="imagenEjercicioCasa(ejercicioCasaActual)"
+                         (error)="ocultarImagenEjercicio($event)"
+                         [alt]="ejercicioCasaActual.nombre">
+                    <span>ESTACIÓN ACTUAL</span>
                   </div>
 
-                  <div class="live-target-card">
-                    <span>{{ejercicioCasaActual.icono}}</span>
-                    <div>
-                      <small>SERIE {{serieCasaActual}} DE {{seriesCasaTotalActual}}</small>
-                      <b>{{prescripcionEjercicioCasa(ejercicioCasaActual)}}</b>
-                      <em>Equipo: {{ejercicioCasaActual.equipo || 'Área funcional'}}</em>
-                      <em *ngIf="ejercicioCasaActual.por_lado">Lado {{ladoCasa}}</em>
-                      <em *ngIf="!ejercicioCasaActual.por_lado">{{ejercicioCasaActual.modo==='tiempo' ? 'Tiempo guiado' : 'Repeticiones'}}</em>
+                  <div class="gym-live-main">
+                    <small>RUTINA EN SALA DE MUSCULACIÓN</small>
+                    <h3>{{ejercicioCasaActual.nombre}}</h3>
+                    <p class="gym-live-equipment"><span>🏋</span> {{ejercicioCasaActual.equipo || 'Equipo del gimnasio'}}</p>
+
+                    <div class="gym-live-metrics">
+                      <article>
+                        <small>SERIE</small>
+                        <b>{{serieCasaActual}} / {{seriesCasaTotalActual}}</b>
+                      </article>
+                      <article>
+                        <small>OBJETIVO</small>
+                        <b>{{prescripcionEjercicioCasa(ejercicioCasaActual)}}</b>
+                      </article>
+                      <article>
+                        <small>DESCANSO</small>
+                        <b>{{ejercicioCasaActual.descanso || 30}} s</b>
+                      </article>
+                    </div>
+
+                    <div class="gym-live-series">
+                      <span>SERIES</span>
+                      <div>
+                        <i *ngFor="let serie of seriesArrayCasa(ejercicioCasaActual)"
+                           [class.done]="serie < serieCasaActual"
+                           [class.active]="serie===serieCasaActual">
+                          {{serie < serieCasaActual ? '✓' : serie}}
+                        </i>
+                      </div>
+                    </div>
+
+                    <button type="button"
+                            class="gym-technique-toggle"
+                            (click)="verEjercicioCasa=verEjercicioCasa===ejercicioCasaActual.id?'':ejercicioCasaActual.id">
+                      {{verEjercicioCasa===ejercicioCasaActual.id ? 'Ocultar técnica' : 'Ver técnica del ejercicio'}}
+                    </button>
+
+                    <div class="gym-live-technique" *ngIf="verEjercicioCasa===ejercicioCasaActual.id">
+                      <p *ngFor="let paso of ejercicioCasaActual.instrucciones; let p=index">
+                        <span>{{p+1}}</span>{{paso}}
+                      </p>
                     </div>
                   </div>
+                </section>
 
-                  <div class="live-number-card" *ngIf="ejercicioCasaActual.modo==='repeticiones'">
-                    <div>
-                      <small>VAS</small>
-                      <strong>{{repsCasaHechas}}</strong>
-                    </div>
-                    <span>/</span>
-                    <div>
-                      <small>META</small>
-                      <strong>{{objetivoRepsCasa}}</strong>
-                    </div>
+                <aside class="gym-live-counter">
+                  <span>CONTROL DE SERIE</span>
+                  <h3>{{ejercicioCasaActual.modo==='repeticiones' ? 'Repeticiones' : 'Tiempo de trabajo'}}</h3>
+
+                  <div class="gym-rep-display" *ngIf="ejercicioCasaActual.modo==='repeticiones'">
+                    <strong>{{repsCasaHechas}}</strong>
+                    <span>/ {{objetivoRepsCasa}}</span>
                   </div>
 
-                  <div class="live-time-card" *ngIf="ejercicioCasaActual.modo==='tiempo'">
-                    <small>TIEMPO RESTANTE</small>
+                  <div class="gym-time-display" *ngIf="ejercicioCasaActual.modo==='tiempo'">
                     <strong>{{formatoTiempoCasa(segundosCasa)}}</strong>
                     <span>{{sesionCasaPausada ? 'Pausado' : 'En curso'}}</span>
                   </div>
 
-                  <div class="live-instruction-list">
-                    <span>PASO A PASO</span>
-                    <div *ngFor="let paso of ejercicioCasaActual.instrucciones; let p=index">
-                      <b>{{p+1}}</b>
-                      <p>{{paso}}</p>
-                    </div>
-                  </div>
+                  <button *ngIf="ejercicioCasaActual.modo==='repeticiones'"
+                          type="button"
+                          class="gym-register-rep"
+                          (click)="sumarRepeticionCasa()"
+                          [disabled]="repsCasaHechas>=objetivoRepsCasa || sesionCasaPausada">
+                    <b>+1</b>
+                    <span>Registrar repetición</span>
+                  </button>
 
-                  <div class="live-side-message active-side-message" *ngIf="ejercicioCasaActual.por_lado">
-                    <b>{{ladoCasa==='derecho' ? 'D' : 'I'}}</b>
-                    <span>
-                      {{ladoCasa==='derecho'
-                        ? 'Completa este lado. Al llegar a la meta cambiaremos automáticamente al lado izquierdo.'
-                        : 'Último lado. Al completar la meta comenzará el descanso automáticamente.'}}
-                    </span>
+                  <div class="gym-live-status">
+                    <p><span>Equipo</span><b>{{ejercicioCasaActual.equipo || 'Gimnasio'}}</b></p>
+                    <p><span>Serie actual</span><b>{{serieCasaActual}} de {{seriesCasaTotalActual}}</b></p>
+                    <p><span>Siguiente</span><b>{{serieCasaActual < seriesCasaTotalActual ? 'Repetir serie' : (siguienteEjercicioCasa?.nombre || 'Finalizar')}}</b></p>
                   </div>
                 </aside>
               </div>
@@ -662,28 +727,6 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
               <div class="home-session-progress">
                 <div><span>Progreso de la sesión</span><b>{{progresoCasa}}%</b></div>
                 <div class="session-progress-track"><i [style.width.%]="progresoCasa"></i></div>
-              </div>
-
-              <div class="home-rep-counter-panel"
-                   *ngIf="faseCasa==='ejercicio' && ejercicioCasaActual?.modo==='repeticiones'">
-                <div class="rep-counter-copy">
-                  <span>CONTADOR DE REPETICIONES</span>
-                  <div class="rep-counter-line">
-                    <b>{{repsCasaHechas}} <i>/ {{objetivoRepsCasa}}</i></b>
-                    <small *ngIf="ejercicioCasaActual?.por_lado">Lado {{ladoCasa}}</small>
-                    <small *ngIf="!ejercicioCasaActual?.por_lado">Ritmo controlado</small>
-                  </div>
-                  <em>Toca +1 al completar cada repetición. Al terminar la serie comienza el descanso; después continúa la siguiente serie o ejercicio.</em>
-                </div>
-                <button type="button"
-                        class="rep-tap-button"
-                        (click)="sumarRepeticionCasa()"
-                        [attr.aria-label]="'Registrar repetición '+(repsCasaHechas+1)"
-                        title="Registrar una repetición"
-                        [disabled]="repsCasaHechas>=objetivoRepsCasa || sesionCasaPausada">
-                  <strong>+1</strong>
-                  <span>REP</span>
-                </button>
               </div>
 
               <div class="home-session-controls"
@@ -733,10 +776,11 @@ import { ExerciseDemoComponent } from './exercise-demo.component';
             <div class="complete-badge" aria-hidden="true">✓</div>
             <span>SESIÓN COMPLETADA</span>
             <h2>Entrenamiento terminado</h2>
-            <p>Completaste {{ejerciciosCasaActuales.length}} ejercicios de {{metaZonaCasa(zonaCasaSeleccionada).nombre}} en {{formatoTiempoCasa(segundosTranscurridosCasa)}}.</p>
+            <p>Completaste tu sesión de {{metaZonaCasa(zonaCasaSeleccionada).nombre}} dentro del gimnasio. Se guardaron tus ejercicios, series y tiempo de entrenamiento.</p>
 
             <div class="complete-summary">
               <div><small>EJERCICIOS</small><b>{{ejerciciosCasaActuales.length}}</b></div>
+              <div><small>SERIES</small><b>{{totalSeriesCasaActuales}}</b></div>
               <div><small>ZONA</small><b>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</b></div>
               <div><small>TIEMPO</small><b>{{formatoTiempoCasa(segundosTranscurridosCasa)}}</b></div>
             </div>
@@ -1270,7 +1314,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const m=this.siguientePasoModulo;
     if(m==='perfil')return 'Agrega teléfono y dirección para dejar tu cuenta lista.';
     if(m==='pagos')return 'Elige un plan y registra tu pago para comenzar a usar el gimnasio.';
-    if(m==='casa')return 'Elige días y zonas para tener sesiones guiadas listas cuando las necesites.';
+    if(m==='casa')return 'Elige días y grupos musculares para organizar tus sesiones dentro del gimnasio.';
     if(m==='clases')return 'Explora horarios disponibles y reserva una clase que te convenga.';
     return 'Mira tus sesiones, asistencias, calendario y actividad reciente.';
   }
@@ -1341,7 +1385,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       },
       {
         titulo:'Configurar entrenamiento en el gym',
-        descripcion:'Elige días, objetivo y zonas para tus sesiones guiadas.',
+        descripcion:'Elige días, objetivo y grupos musculares para tus entrenamientos en sala.',
         icono:'⚡',
         modulo:'casa',
         done:this.planCasaConfigurado,
@@ -1564,6 +1608,18 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   seriesEjercicioCasa(e:any):number{
     return Math.max(1,Number(e?.series||1));
+  }
+
+  seriesArrayCasa(e:any):number[]{
+    return Array.from({length:this.seriesEjercicioCasa(e)},(_,i)=>i+1);
+  }
+
+  get totalSeriesCasaActuales():number{
+    return this.ejerciciosCasaActuales.reduce((total:number,e:any)=>total+this.seriesEjercicioCasa(e),0);
+  }
+
+  get equiposCasaActuales():string[]{
+    return Array.from(new Set(this.ejerciciosCasaActuales.map((e:any)=>String(e?.equipo||'Equipo del gimnasio'))));
   }
 
   get textoDescansoCasa():string{
