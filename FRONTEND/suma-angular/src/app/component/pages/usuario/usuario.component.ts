@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../auth.service';
 import { GymApiService } from '../../../core/services/gym-api.service';
 import { ClienteExperienciaComponent } from './cliente-experiencia.component';
+import { code128DataUri, code128Svg } from '../../../shared/code128';
 
 @Component({
   selector: 'app-usuario',
@@ -69,7 +70,7 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
             <button type="button" [class.active]="moduloActivo==='calendario'" (click)="abrirModulo('calendario')"><i><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg></i> Calendario</button>
             <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></i> Reservas</button>
             <button type="button" [class.active]="moduloActivo==='asistencias'" (click)="abrirModulo('asistencias')"><i><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10"/></svg></i> Asistencias</button>
-            <button type="button" [class.active]="moduloActivo==='club'" (click)="abrirModulo('club')"><i><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></i> Mi club</button>
+            <button type="button" [class.active]="moduloActivo==='club'" (click)="abrirModulo('club')"><i><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></i> Acceso al gym</button>
             <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')"><i><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg></i> Membresía</button>
             <button type="button" [class.active]="moduloActivo==='soporte'" (click)="abrirModulo('soporte')"><i><svg viewBox="0 0 24 24"><path d="M9.5 9a3 3 0 1 1 4.8 2.4c-1.5 1.1-2.3 1.8-2.3 3.1"/><path d="M12 18h.01"/></svg></i> Ayuda</button>
             <button type="button" [class.active]="moduloActivo==='perfil'" (click)="abrirModulo('perfil')"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/></svg></i> Perfil</button>
@@ -97,7 +98,7 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
             <button type="button" (click)="abrirModulo('calendario')"><i>◫</i><span>Calendario</span></button>
             <button type="button" (click)="abrirModulo('reservas')"><i>◷</i><span>Reservas</span></button>
             <button type="button" (click)="abrirModulo('asistencias')"><i>✓</i><span>Asistencias</span></button>
-            <button type="button" (click)="abrirModulo('club')"><i>★</i><span>Mi club</span></button>
+            <button type="button" (click)="abrirModulo('club')"><i>★</i><span>Acceso al gym</span></button>
             <button type="button" (click)="abrirModulo('pagos')"><i>▤</i><span>Membresía</span></button>
             <button type="button" (click)="abrirModulo('avisos')"><i>●</i><span>Avisos</span></button>
             <button type="button" (click)="abrirModulo('soporte')"><i>?</i><span>Ayuda</span></button>
@@ -288,7 +289,7 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
                 <button type="button" (click)="abrirModulo('rutinas')"><i class="quick-orange"><svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg></i><b>Mis rutinas</b><small>Ver y entrenar</small></button>
                 <button type="button" (click)="abrirModulo('clases')"><i class="quick-purple"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2.5 20c.5-4 2.5-6 5.5-6s5 2 5.5 6M10.5 20c.5-4 2.5-6 5.5-6s5 2 5.5 6"/></svg></i><b>Clases</b><small>Explorar clases</small></button>
                 <button type="button" (click)="abrirModulo('progreso')"><i class="quick-green"><svg viewBox="0 0 24 24"><path d="M4 20V11h4v9zM10 20V6h4v14zM16 20V3h4v17z"/></svg></i><b>Mi progreso</b><small>Estadísticas</small></button>
-                <button type="button" (click)="abrirModulo('club')"><i class="quick-gold"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></i><b>Mi club</b><small>Beneficios</small></button>
+                <button type="button" (click)="abrirModulo('club')"><i class="quick-gold"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></i><b>Acceso al gym</b><small>Credencial y beneficios</small></button>
                 <button type="button" (click)="abrirModulo('soporte')"><i class="quick-cyan"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.7 9.4a2.6 2.6 0 1 1 4.2 2.1c-1.3 1-1.9 1.6-1.9 2.8"/><path d="M12 17.6h.01"/></svg></i><b>Ayuda</b><small>Soporte</small></button>
               </div>
             </article>
@@ -1108,12 +1109,17 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
                   </div>
                 </div>
 
-                <div class="membership-payment-review" *ngIf="ultimaBoleta">
-                  <p><span>BOLETA GENERADA</span><b>N° {{ultimaBoleta.id_pago}}</b></p>
+                <div class="membership-payment-review receipt-preview" *ngIf="ultimaBoleta">
+                  <p><span>BOLETA GENERADA</span><b>{{ultimaBoleta.numero_comprobante || ('B001-'+ultimaBoleta.id_pago)}}</b></p>
                   <p><span>Plan</span><b>{{ultimaBoleta.membresia}}</b></p>
-                  <p><span>Periodo</span><b>{{ultimaBoleta.periodo?.inicio}} - {{ultimaBoleta.periodo?.fin}}</b></p>
+                  <p><span>Periodo</span><b>{{ultimaBoleta.periodo?.inicio || ultimaBoleta.periodo?.fecha_inicio}} - {{ultimaBoleta.periodo?.fin || ultimaBoleta.periodo?.fecha_fin}}</b></p>
+                  <p><span>Método</span><b>{{ultimaBoleta.metodo_pago}} · Op. {{ultimaBoleta.numero_operacion || '-'}}</b></p>
                   <p class="total"><span>Total pagado</span><b>S/ {{ultimaBoleta.monto | number:'1.2-2'}}</b></p>
-                  <button type="button" class="member-form-submit" (click)="imprimirBoleta(ultimaBoleta)">Imprimir boleta</button>
+                  <div class="receipt-barcode" *ngIf="ultimaBoletaBarcode">
+                    <img [src]="ultimaBoletaBarcode" alt="Código de barras de la boleta">
+                  </div>
+                  <small class="receipt-tax-note">{{ultimaBoleta.nota_tributaria}}</small>
+                  <button type="button" class="member-form-submit" (click)="imprimirBoleta(ultimaBoleta)">Imprimir / guardar PDF</button>
                 </div>
               </form>
             </article>
@@ -1462,7 +1468,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const titulos:Record<string,string>={
       casa:'Entrenamiento en el gimnasio',rutinas:'Mis rutinas',clases:'Clases del gimnasio',
       reservas:'Mis reservas',asistencias:'Mis asistencias',progreso:'Mi progreso',
-      calendario:'Mi calendario',club:'Mi club',avisos:'Avisos',pagos:'Membresía y pagos',
+      calendario:'Mi calendario',club:'Acceso al gimnasio',avisos:'Avisos',pagos:'Membresía y pagos',
       soporte:'Ayuda y soporte',perfil:'Mi perfil'
     };
     return titulos[this.moduloActivo] || 'Mi espacio';
@@ -1476,7 +1482,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       asistencias:'Consulta tus ingresos registrados en el gimnasio.',
       progreso:'Mira tu actividad, constancia e historial reciente.',
       calendario:'Ten tus próximas actividades y fechas importantes en un solo lugar.',
-      club:'Tu credencial, clases favoritas y opinión sobre el servicio.',
+      club:'Muestra tu credencial con código de barras para ingresar al gimnasio y consulta tus beneficios.',
       avisos:'Mensajes importantes del gimnasio y recordatorios.',
       pagos:'Revisa tu membresía, compras realizadas y boletas generadas.',
       soporte:'Escríbenos cuando necesites ayuda y revisa nuestras respuestas.',
@@ -2387,6 +2393,11 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       error:e=>this.error=this.errorApi(e)
     });
   }
+  get ultimaBoletaBarcode():string{
+    const codigo=String(this.ultimaBoleta?.codigo_barras||'').trim();
+    return codigo ? code128DataUri(codigo,{height:54,module:2,quiet:12,text:true}) : '';
+  }
+
   comprarMembresia(){
     if(this.procesandoCompra)return;
     if(!this.planPagoSeleccionado){
@@ -2449,7 +2460,36 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
   imprimirBoleta(c:any){
     if(!c)return;
-    const html=`<html><head><title>Boleta Mallqui Gym</title></head><body style="font-family:Arial;padding:30px;max-width:700px;margin:auto"><h2>Mallqui Gym</h2><h3>BOLETA DE MEMBRESÍA</h3><hr><p><b>N°:</b> ${c.id_pago}</p><p><b>Fecha:</b> ${c.fecha||'-'}</p><p><b>Cliente:</b> ${c.cliente||'-'} - DNI ${c.dni||'-'}</p><p><b>Membresía:</b> ${c.membresia||'-'}</p><p><b>Periodo:</b> ${c.periodo?.inicio||'-'} a ${c.periodo?.fin||'-'}</p><p><b>Monto:</b> S/ ${c.monto}</p><p><b>Método:</b> ${c.metodo_pago||'-'}</p><p><b>Operación:</b> ${c.numero_operacion||'-'}</p><p><b>Estado:</b> ${c.estado||'Completado'}</p><hr><small>Comprobante interno generado por Mallqui Gym.</small><script>window.print()<\/script></body></html>`;
+    const empresa=c?.empresa||{};
+    const periodoInicio=c?.periodo?.inicio||c?.periodo?.fecha_inicio||'-';
+    const periodoFin=c?.periodo?.fin||c?.periodo?.fecha_fin||'-';
+    const numero=String(c?.numero_comprobante||('B001-'+String(c?.id_pago||'').padStart(8,'0')));
+    const barcode=code128Svg(String(c?.codigo_barras||numero),{height:64,module:2,quiet:14,text:true});
+    const safe=(v:any)=>String(v??'').replace(/[&<>"']/g,(m:string)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]||m));
+    const html=`<!doctype html><html><head><meta charset="utf-8"><title>${safe(numero)} - Mallqui Gym</title><style>
+      body{font-family:Arial,sans-serif;background:#eef2f4;color:#172b3a;padding:28px}
+      .receipt{max-width:720px;margin:auto;background:#fff;border:1px solid #d8e0e5;border-radius:16px;padding:28px;box-shadow:0 12px 34px rgba(20,45,65,.12)}
+      .head{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #142f44;padding-bottom:18px}
+      .brand h1{margin:0;color:#102f4b}.brand p{margin:5px 0;color:#667a88;font-size:13px}.doc{text-align:right}.doc b{display:block;font-size:18px}.doc span{font-size:13px;color:#5f7483}
+      .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0}.box{background:#f6f8fa;padding:12px;border-radius:10px}.box small{display:block;color:#738795;font-size:10px;font-weight:700}.box b{display:block;margin-top:4px}
+      table{width:100%;border-collapse:collapse;margin:18px 0}th,td{padding:12px;border-bottom:1px solid #dce4e9;text-align:left}th{font-size:11px;color:#607482}.amount{text-align:right;font-size:22px;font-weight:800}
+      .barcode{text-align:center;border:1px dashed #c9d4da;border-radius:12px;padding:14px;margin-top:18px}.note{font-size:10px;color:#6f808a;margin-top:12px;line-height:1.5}
+      @media print{body{background:#fff;padding:0}.receipt{box-shadow:none;border:0}}
+    </style></head><body><section class="receipt">
+      <div class="head"><div class="brand"><h1>${safe(empresa.nombre||'Mallqui Gym')}</h1><p>RUC: ${safe(empresa.ruc||'No configurado')}</p><p>${safe(empresa.direccion||'Dirección no configurada')}</p><p>${safe(empresa.telefono||'')} ${empresa.correo ? ' · '+safe(empresa.correo) : ''}</p></div>
+      <div class="doc"><b>BOLETA DE MEMBRESÍA</b><span>${safe(numero)}</span><p>${safe(c.fecha||c.fecha_pago||'-')}</p></div></div>
+      <div class="grid">
+        <div class="box"><small>CLIENTE</small><b>${safe(c.cliente||'-')}</b></div>
+        <div class="box"><small>DNI</small><b>${safe(c.dni||'-')}</b></div>
+        <div class="box"><small>MÉTODO DE PAGO</small><b>${safe(c.metodo_pago||'-')}</b></div>
+        <div class="box"><small>N° OPERACIÓN</small><b>${safe(c.numero_operacion||'-')}</b></div>
+      </div>
+      <table><thead><tr><th>CONCEPTO</th><th>PERIODO</th><th style="text-align:right">IMPORTE</th></tr></thead><tbody>
+        <tr><td>Membresía ${safe(c.membresia||'Mallqui Gym')}</td><td>${safe(periodoInicio)} al ${safe(periodoFin)}</td><td class="amount">S/ ${Number(c.monto||0).toFixed(2)}</td></tr>
+      </tbody></table>
+      <div class="barcode">${barcode}</div>
+      <p class="note">${safe(c.nota_tributaria||'Comprobante interno generado por Mallqui Gym.')}</p>
+    </section><script>window.print()<\/script></body></html>`;
     const w=window.open('','_blank');
     if(w){w.document.write(html);w.document.close();}
   }
