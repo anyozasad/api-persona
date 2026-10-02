@@ -11,9 +11,33 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         foreach ([
-            ['nombre' => 'Básico', 'duracion_meses' => 1, 'precio' => 79.00, 'descripcion' => 'Acceso general al gimnasio.', 'estado' => 'Activo'],
-            ['nombre' => 'Premium', 'duracion_meses' => 1, 'precio' => 129.00, 'descripcion' => 'Acceso general y clases grupales.', 'estado' => 'Activo'],
-            ['nombre' => 'Pro', 'duracion_meses' => 1, 'precio' => 179.00, 'descripcion' => 'Plan completo con seguimiento personalizado.', 'estado' => 'Activo'],
+            [
+                'nombre' => 'Básico',
+                'duracion_meses' => 1,
+                'precio' => 79.00,
+                'descripcion' => 'Acceso a sala de pesas, clases grupales y rutinas básicas.',
+                'beneficios' => ['Acceso a sala de pesas', 'Clases grupales', 'Rutinas básicas'],
+                'permite_reservas' => true,
+                'estado' => 'Activo',
+            ],
+            [
+                'nombre' => 'Premium',
+                'duracion_meses' => 1,
+                'precio' => 129.00,
+                'descripcion' => 'Acceso total, clases ilimitadas, rutinas personalizadas y evaluación mensual.',
+                'beneficios' => ['Acceso total al gimnasio', 'Clases ilimitadas', 'Rutinas personalizadas', 'Evaluación mensual'],
+                'permite_reservas' => true,
+                'estado' => 'Activo',
+            ],
+            [
+                'nombre' => 'Pro',
+                'duracion_meses' => 1,
+                'precio' => 179.00,
+                'descripcion' => 'Todo Premium, asesoría 1 a 1 y plan nutricional.',
+                'beneficios' => ['Todo lo incluido en Premium', 'Asesoría personalizada 1 a 1', 'Plan nutricional'],
+                'permite_reservas' => true,
+                'estado' => 'Activo',
+            ],
         ] as $plan) {
             Membresia::updateOrCreate(['nombre' => $plan['nombre']], $plan);
         }

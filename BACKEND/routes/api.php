@@ -58,7 +58,7 @@ Route::get('/estado-sistema', function () {
             $gym->getPdo();
             $gymConectada = true;
             $schema = $gym->getSchemaBuilder();
-            foreach (['socios','planes','suscripciones','ventas','detalle_ventas','gastos','productos','asistencias','cajas','usuarios'] as $tabla) {
+            foreach (['clientes','membresias','cliente_membresia','pagos_membresia','rutinas','detalle_rutina','clases','reservas','asistencias','productos','ventas','cajas','usuarios'] as $tabla) {
                 if ($schema->hasTable($tabla)) {
                     $gymTablas[] = $tabla;
                 }
@@ -78,8 +78,8 @@ Route::get('/estado-sistema', function () {
                 'tablas_detectadas' => $gymTablas,
             ],
             'mensaje' => $gymConectada
-                ? 'Sistema conectado correctamente con gym_system.'
-                : 'La API responde, pero no se pudo abrir gym_system.',
+                ? 'Sistema conectado correctamente con la base de datos de Mallqui Gym.'
+                : 'La API responde, pero no se pudo abrir la base de datos de Mallqui Gym.',
         ]);
     } catch (\Throwable $e) {
         return response()->json([
@@ -147,13 +147,7 @@ Route::middleware(['auth:sanctum', 'rol:Cliente', 'auditoria'])->prefix('mi-cuen
 
     // Flujo actual: entrenamiento guiado dentro del gimnasio.
     Route::get('/entrenamiento-gym', [PortalClienteController::class, 'entrenamientoCasa']);
-    Route::put('/entrenamiento-gym/plan', [PortalClienteController::class, 'guardarPlanEntrenamientoCasa']);
     Route::post('/entrenamiento-gym/sesiones', [PortalClienteController::class, 'registrarSesionEntrenamientoCasa']);
-
-    // Alias heredados para no romper instalaciones o clientes anteriores.
-    Route::get('/entrenamiento-casa', [PortalClienteController::class, 'entrenamientoCasa']);
-    Route::put('/entrenamiento-casa/plan', [PortalClienteController::class, 'guardarPlanEntrenamientoCasa']);
-    Route::post('/entrenamiento-casa/sesiones', [PortalClienteController::class, 'registrarSesionEntrenamientoCasa']);
 
     Route::post('/pagos/comprar', [SolicitudPagoMembresiaController::class, 'comprar']);
     // Alias temporal para clientes antiguos del frontend.
@@ -223,9 +217,6 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
     Route::apiResource('/pagos-membresia', PagoMembresiaController::class)->only(['index', 'show']);
     Route::post('/membresias/contratar', [MembresiaProcesoController::class, 'contratar']);
     Route::post('/membresias/renovar', [MembresiaProcesoController::class, 'renovar']);
-    Route::get('/pagos-membresia-pendientes', [SolicitudPagoMembresiaController::class, 'pendientes']);
-    Route::post('/pagos-membresia/{idPago}/confirmar', [SolicitudPagoMembresiaController::class, 'confirmar']);
-    Route::post('/pagos-membresia/{idPago}/rechazar', [SolicitudPagoMembresiaController::class, 'rechazar']);
     Route::get('/clientes/{idCliente}/estado-membresia', [MembresiaProcesoController::class, 'estadoCliente']);
     Route::get('/clientes/{idCliente}/historial-pagos', [MembresiaProcesoController::class, 'historialPagos']);
     Route::get('/pagos-membresia/{idPago}/comprobante', [MembresiaProcesoController::class, 'comprobante']);

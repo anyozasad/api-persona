@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Entrenador;
 use App\Models\Rutina;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -40,7 +41,18 @@ class RutinaController extends Controller
         }
 
         $datos['estado'] = $datos['estado'] ?? 'Activo';
-        return response()->json(Rutina::create($datos)->load(['cliente', 'entrenador', 'detalles']), 201);
+
+        $rutina = DB::transaction(function () use ($datos) {
+            if ($datos['estado'] === 'Activo') {
+                Rutina::where('id_cliente', $datos['id_cliente'])
+                    ->where('estado', 'Activo')
+                    ->update(['estado' => 'Finalizado']);
+            }
+
+            return Rutina::create($datos);
+        });
+
+        return response()->json($rutina->load(['cliente', 'entrenador', 'detalles']), 201);
     }
 
     public function show(Request $request, string $id)
@@ -69,7 +81,20 @@ class RutinaController extends Controller
             return response()->json(['mensaje' => 'La fecha de fin no puede ser anterior a la fecha de inicio.'], 422);
         }
 
-        $rutina->update($datos);
+        DB::transaction(function () use ($rutina, $datos) {
+            $clienteFinal = (int) ($datos['id_cliente'] ?? $rutina->id_cliente);
+            $estadoFinal = (string) ($datos['estado'] ?? $rutina->estado);
+
+            if ($estadoFinal === 'Activo') {
+                Rutina::where('id_cliente', $clienteFinal)
+                    ->where('id_rutina', '!=', $rutina->id_rutina)
+                    ->where('estado', 'Activo')
+                    ->update(['estado' => 'Finalizado']);
+            }
+
+            $rutina->update($datos);
+        });
+
         return response()->json($rutina->fresh(['cliente', 'entrenador', 'detalles']));
     }
 

@@ -103,6 +103,8 @@ return new class extends Migration {
             $table->unsignedInteger('duracion_meses');
             $table->decimal('precio', 10, 2);
             $table->text('descripcion')->nullable();
+            $table->json('beneficios')->nullable();
+            $table->boolean('permite_reservas')->default(true);
             $table->string('estado', 30)->default('Activo');
         });
     }
