@@ -27446,7 +27446,7 @@
   gap:10px;
   margin:18px 0 4px;
 }
-.train-gym-context-strip span{
+.train-gym-context-strip button{
   min-height:42px;
   display:flex;
   align-items:center;
@@ -27462,7 +27462,7 @@
   color:#eaf4ff;
   backdrop-filter:blur(8px);
 }
-.train-gym-context-strip span:hover{
+.train-gym-context-strip button:hover{
   transform:translateY(-2px);
   border-color:rgba(255,45,75,.45);
   background:rgba(255,45,75,.09);
@@ -27506,12 +27506,12 @@
   letter-spacing:.5px;
 }
 @media (prefers-reduced-motion:no-preference){
-  .train-gym-context-strip span{
+  .train-gym-context-strip button{
     animation:mallquiGymChipIn .55s cubic-bezier(.2,.8,.2,1) both;
   }
-  .train-gym-context-strip span:nth-child(2){animation-delay:.07s}
-  .train-gym-context-strip span:nth-child(3){animation-delay:.14s}
-  .train-gym-context-strip span:nth-child(4){animation-delay:.21s}
+  .train-gym-context-strip button:nth-child(2){animation-delay:.07s}
+  .train-gym-context-strip button:nth-child(3){animation-delay:.14s}
+  .train-gym-context-strip button:nth-child(4){animation-delay:.21s}
 }
 @keyframes mallquiGymChipIn{
   from{opacity:0;transform:translateY(10px) scale(.96)}
@@ -27561,7 +27561,7 @@
   gap:12px;
   margin:16px 0;
 }
-.gym-session-flow article{
+.gym-session-flow button{
   min-height:118px;
   display:grid;
   grid-template-columns:42px minmax(0,1fr);
@@ -27573,7 +27573,7 @@
   background:linear-gradient(145deg,rgba(8,44,72,.96),rgba(5,32,54,.97));
   box-shadow:0 10px 28px rgba(0,14,27,.17);
 }
-.gym-session-flow article>span{
+.gym-session-flow button>span{
   width:40px;
   height:40px;
   display:grid;
@@ -28035,15 +28035,15 @@
 }
 
 @media (prefers-reduced-motion:no-preference){
-  .gym-session-flow article,
+  .gym-session-flow button,
   .gym-assigned-routine,
   .gym-first-station,
   .gym-live-board{
     animation:mallquiSectionRise .55s cubic-bezier(.2,.8,.2,1) both;
   }
-  .gym-session-flow article:nth-child(2){animation-delay:.06s}
-  .gym-session-flow article:nth-child(3){animation-delay:.12s}
-  .gym-session-flow article:nth-child(4){animation-delay:.18s}
+  .gym-session-flow button:nth-child(2){animation-delay:.06s}
+  .gym-session-flow button:nth-child(3){animation-delay:.12s}
+  .gym-session-flow button:nth-child(4){animation-delay:.18s}
 }
 
 @media (max-width:1100px){
@@ -29810,4 +29810,222 @@
 }
 @media(max-width:900px){
   .client-support-contact-strip{grid-template-columns:1fr}
+}
+
+
+/* PORTAL CLIENTE V95 · ACCIONES FUNCIONALES DESPUÉS DE COMPRAR */
+.train-gym-context-strip button{
+  appearance:none;
+  width:100%;
+  cursor:pointer;
+  font-family:inherit;
+}
+.train-gym-context-strip button:focus-visible{
+  outline:2px solid rgba(255,88,112,.75);
+  outline-offset:2px;
+}
+
+.membership-unlocked-panel{
+  margin:16px 0;
+  padding:18px;
+  border:1px solid rgba(45,211,161,.24);
+  border-radius:18px;
+  background:linear-gradient(145deg,rgba(7,48,63,.97),rgba(5,32,54,.98));
+  box-shadow:0 14px 34px rgba(0,17,31,.18);
+}
+.membership-unlocked-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:14px;
+}
+.membership-unlocked-head small{
+  display:block;
+  color:#43d7ad!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  letter-spacing:.9px!important;
+}
+.membership-unlocked-head h2{
+  margin:4px 0 5px!important;
+  color:#f7fbff!important;
+  font-size:23px!important;
+}
+.membership-unlocked-head p{
+  margin:0!important;
+  max-width:720px;
+  color:#a7bdcc!important;
+  font-size:10.5px!important;
+  line-height:1.5!important;
+}
+.membership-unlocked-head>span{
+  flex:0 0 auto;
+  padding:8px 11px;
+  border-radius:999px;
+  background:rgba(45,211,161,.12);
+  border:1px solid rgba(45,211,161,.22);
+  color:#52dcb4;
+  font-size:9px;
+  font-weight:900;
+}
+.membership-unlocked-summary{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+}
+.membership-unlocked-summary article{
+  min-height:94px;
+  padding:13px;
+  border:1px solid rgba(132,181,220,.15);
+  border-radius:13px;
+  background:rgba(255,255,255,.045);
+}
+.membership-unlocked-summary small{
+  display:block;
+  color:#7fa7c3!important;
+  font-size:7.5px!important;
+  font-weight:950!important;
+  letter-spacing:.75px!important;
+}
+.membership-unlocked-summary b{
+  display:block;
+  margin-top:4px;
+  color:#f6fbff;
+  font-size:12px;
+  line-height:1.25;
+}
+.membership-unlocked-summary p{
+  margin:5px 0 0!important;
+  color:#9fb6c7!important;
+  font-size:9px!important;
+  line-height:1.4!important;
+}
+.membership-unlocked-actions{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-top:12px;
+}
+.membership-unlocked-actions button{
+  min-height:72px;
+  display:grid;
+  grid-template-columns:36px minmax(0,1fr);
+  grid-template-rows:auto auto;
+  gap:2px 9px;
+  align-items:center;
+  padding:11px 12px;
+  border:1px solid rgba(145,188,219,.16);
+  border-radius:13px;
+  background:rgba(255,255,255,.045);
+  color:#eef7fd;
+  text-align:left;
+  cursor:pointer;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease;
+}
+.membership-unlocked-actions button:hover{
+  transform:translateY(-2px);
+  border-color:rgba(255,55,82,.35);
+  background:rgba(255,255,255,.07);
+}
+.membership-unlocked-actions button:disabled{
+  opacity:.65;
+  cursor:wait;
+}
+.membership-unlocked-actions button>span{
+  grid-row:1/3;
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:rgba(255,255,255,.07);
+  color:#ff6078;
+  font-weight:950;
+}
+.membership-unlocked-actions button>b{
+  align-self:end;
+  font-size:10.5px;
+}
+.membership-unlocked-actions button>small{
+  align-self:start;
+  color:#91aabd!important;
+  font-size:8px!important;
+}
+.membership-upcoming-card{
+  margin-top:12px;
+  padding:12px 14px;
+  border:1px solid rgba(255,190,87,.20);
+  border-radius:12px;
+  background:rgba(255,190,87,.07);
+}
+.membership-upcoming-card>span{
+  display:block;
+  color:#ffc46c;
+  font-size:8px;
+  font-weight:950;
+  letter-spacing:.8px;
+}
+.membership-upcoming-card>b{
+  display:block;
+  margin-top:4px;
+  color:#fff;
+  font-size:12px;
+}
+.membership-upcoming-card>p{
+  margin:3px 0 0!important;
+  color:#b7c7d2!important;
+  font-size:9px!important;
+}
+
+.membership-current-status{
+  display:grid;
+  gap:10px;
+}
+.membership-next-card{
+  border-color:#d9e1f1;
+  background:linear-gradient(145deg,#fff,#f8faff);
+}
+.membership-next-card .membership-current-icon{
+  background:#eef2ff;
+  color:#586dc3;
+}
+
+@media(max-width:980px){
+  .membership-unlocked-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .membership-unlocked-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:620px){
+  .membership-unlocked-head{flex-direction:column}
+  .membership-unlocked-summary,
+  .membership-unlocked-actions{grid-template-columns:1fr}
+}
+
+
+.train-step{
+  appearance:none!important;
+  width:100%!important;
+  color:inherit!important;
+  font-family:inherit!important;
+  text-align:left!important;
+  cursor:pointer!important;
+}
+.train-step:focus-visible,
+.gym-session-flow button:focus-visible{
+  outline:2px solid rgba(255,91,117,.72)!important;
+  outline-offset:2px!important;
+}
+.gym-session-flow button{
+  appearance:none;
+  width:100%;
+  color:inherit;
+  font-family:inherit;
+  text-align:left;
+  cursor:pointer;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease;
+}
+.gym-session-flow button:hover{
+  transform:translateY(-3px);
+  border-color:rgba(255,75,103,.30);
+  background:linear-gradient(145deg,rgba(11,54,84,.98),rgba(7,38,62,.98));
 }

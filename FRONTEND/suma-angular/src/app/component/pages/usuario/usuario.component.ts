@@ -56,7 +56,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             </button>
             <div class="member-mini-profile">
               <span>{{nombreCorto.charAt(0).toUpperCase()}}</span>
-              <div><b>{{nombreCorto}}</b><small>{{membresiaActual?.membresia?.nombre || 'Cliente Mallqui'}}</small></div>
+              <div><b>{{nombreCorto}}</b><small>{{membresiaActual ? nombreMembresiaVisible(membresiaActual) : 'Cliente Mallqui'}}</small></div>
             </div>
             <button class="member-logout" type="button" (click)="cerrarSesion()">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5"/><path d="M14 8l4 4-4 4M18 12H9"/></svg>
@@ -78,7 +78,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
 
           <button type="button" class="member-membership-chip" (click)="abrirModulo('pagos')">
             <span>{{membresiaActual ? '✓' : '!'}}</span>
-            <div><small>{{membresiaActual ? 'MENSUALIDAD ACTIVA' : 'MEMBRESÍA'}}</small><b>{{membresiaActual?.membresia?.nombre || 'Activar membresía'}}</b></div>
+            <div><small>{{membresiaActual ? 'MENSUALIDAD ACTIVA' : 'MEMBRESÍA'}}</small><b>{{membresiaActual ? nombreMembresiaVisible(membresiaActual) : 'Activar membresía'}}</b></div>
             <em>→</em>
           </button>
         </div>
@@ -234,7 +234,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               <div class="membership-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 7 4.2 4L12 5l4.8 6L21 7l-2 11H5z"/><path d="M6 21h12"/></svg></div>
               <div class="membership-copy">
                 <span>{{membresiaActual ? 'MEMBRESÍA ACTIVA' : 'MEMBRESÍA'}}</span>
-                <h2>{{membresiaActual?.membresia?.nombre || 'Sin membresía activa'}}</h2>
+                <h2>{{nombreMembresiaVisible(membresiaActual)}}</h2>
                 <p>{{membresiaActual ? ('Válido hasta: ' + fechaCortaPortal(membresiaActual.fecha_fin)) : 'Consulta las mensualidades disponibles para activar tu acceso.'}}</p>
               </div>
               <div class="membership-actions">
@@ -356,24 +356,24 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <p>Esta pantalla usa la rutina activa que Mallqui Gym tiene registrada para tu cuenta. Aquí se muestran exactamente los ejercicios, series, repeticiones, carga recomendada, descansos e indicaciones de tu entrenador.</p>
 
                 <div class="train-gym-context-strip">
-                  <span>🏋 Rutina asignada</span>
-                  <span>✓ Datos del cliente</span>
-                  <span>◷ Descansos</span>
-                  <span>▦ Progreso</span>
+                  <button type="button" (click)="abrirModulo('rutinas')">🏋 Rutina asignada</button>
+                  <button type="button" (click)="abrirModulo('perfil')">✓ Datos del cliente</button>
+                  <button type="button" (click)="irDetalleEntrenamiento()">◷ Descansos</button>
+                  <button type="button" (click)="abrirModulo('progreso')">▦ Progreso</button>
                 </div>
 
                 <div class="train-gym-statusbar">
                   <div>
                     <small>MEMBRESÍA</small>
-                    <b>{{membresiaActual?.membresia?.nombre || 'Sin membresía activa'}}</b>
+                    <b>{{nombreMembresiaVisible(membresiaActual)}}</b>
                   </div>
                   <div>
                     <small>RUTINA</small>
                     <b>{{rutinaActual?.nombre_rutina || 'Sin rutina asignada'}}</b>
                   </div>
                   <div>
-                    <small>ENTRENADOR</small>
-                    <b>{{rutinaActual?.entrenador ? nombreEntrenador : 'Sin entrenador asignado'}}</b>
+                    <small>GUÍA</small>
+                    <b>{{rutinaActual?.entrenador ? nombreEntrenador : 'Personal de Mallqui Gym'}}</b>
                   </div>
                 </div>
 
@@ -386,17 +386,17 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <div class="train-ux-actions">
                   <button type="button"
                           class="train-ux-primary"
-                          (click)="iniciarEntrenamientoCasa()"
-                          [disabled]="!puedeEntrenarRutinaGym">
-                    <span>▶</span>
+                          (click)="accionEntrenamientoPrincipal()"
+                          [disabled]="procesandoSolicitudRutina">
+                    <span>{{puedeEntrenarRutinaGym ? '▶' : (membresiaActual ? '✉' : '▤')}}</span>
                     <div>
-                      <b>{{puedeEntrenarRutinaGym ? 'Iniciar mi rutina' : 'Rutina no disponible'}}</b>
-                      <small>{{!membresiaActual ? 'Necesitas una membresía activa' : (!tieneRutinaAsignadaGym ? 'El entrenador debe asignarte una rutina' : 'Entrenamiento registrado en Mallqui Gym')}}</small>
+                      <b>{{puedeEntrenarRutinaGym ? 'Iniciar mi rutina' : (!membresiaActual ? 'Activar membresía' : (procesandoSolicitudRutina ? 'Enviando solicitud...' : 'Solicitar rutina al personal'))}}</b>
+                      <small>{{!membresiaActual ? 'Elige tu mensualidad para habilitar el acceso' : (!tieneRutinaAsignadaGym ? 'Tu membresía está activa; pide al personal que registre tu rutina' : 'Entrenamiento registrado en Mallqui Gym')}}</small>
                     </div>
                     <em>→</em>
                   </button>
-                  <button type="button" class="train-ux-secondary" (click)="abrirModulo('rutinas')">
-                    <span>🏋</span><b>Ver mi rutina registrada</b>
+                  <button type="button" class="train-ux-secondary" (click)="abrirModulo(tieneRutinaAsignadaGym ? 'rutinas' : 'soporte')">
+                    <span>🏋</span><b>{{tieneRutinaAsignadaGym ? 'Ver mi rutina registrada' : 'Hablar con el gimnasio'}}</b>
                   </button>
                 </div>
               </article>
@@ -429,43 +429,76 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             </section>
 
             <section class="train-ux-stepbar">
-              <div class="train-step" [class.active]="!!membresiaActual">
+              <button type="button" class="train-step" [class.active]="!!membresiaActual" (click)="abrirModulo('pagos')">
                 <span>1</span>
                 <div><small>ACCESO</small><b>Membresía</b><p>{{membresiaActual ? 'Membresía activa' : 'Sin membresía activa'}}</p></div>
                 <em *ngIf="membresiaActual">✓</em>
-              </div>
+              </button>
               <i>›</i>
-              <div class="train-step" [class.active]="tieneRutinaAsignadaGym">
+              <button type="button" class="train-step" [class.active]="tieneRutinaAsignadaGym" (click)="tieneRutinaAsignadaGym ? abrirModulo('rutinas') : solicitarRutinaAlPersonal()">
                 <span>2</span>
-                <div><small>PLANIFICACIÓN</small><b>Rutina asignada</b><p>{{tieneRutinaAsignadaGym ? rutinaActual?.nombre_rutina : 'Pendiente del entrenador'}}</p></div>
+                <div><small>PLANIFICACIÓN</small><b>Rutina asignada</b><p>{{tieneRutinaAsignadaGym ? rutinaActual?.nombre_rutina : 'Pendiente del personal'}}</p></div>
                 <em *ngIf="tieneRutinaAsignadaGym">✓</em>
-              </div>
+              </button>
               <i>›</i>
-              <div class="train-step" [class.active]="puedeEntrenarRutinaGym">
+              <button type="button" class="train-step" [class.active]="puedeEntrenarRutinaGym" (click)="accionEntrenamientoPrincipal()">
                 <span>3</span>
-                <div><small>EJECUCIÓN</small><b>Entrenar en sala</b><p>Series, repeticiones, carga y descansos</p></div>
+                <div><small>EJECUCIÓN</small><b>Entrenar en sala</b><p>{{puedeEntrenarRutinaGym ? 'Series, repeticiones, carga y descansos' : 'Completa el paso anterior para comenzar'}}</p></div>
                 <em *ngIf="puedeEntrenarRutinaGym">LISTO</em>
-              </div>
+              </button>
             </section>
           </section>
 
+          <section *ngIf="membresiaActual && !sesionCasaActiva && !sesionCasaTerminada" class="membership-unlocked-panel">
+            <div class="membership-unlocked-head">
+              <div>
+                <small>MEMBRESÍA HABILITADA</small>
+                <h2>Tu acceso al gimnasio ya está activo</h2>
+                <p>Ahora puedes usar las funciones de tu cuenta aunque todavía estés esperando que el personal registre una rutina.</p>
+              </div>
+              <span>{{diasRestantesMembresia}} días restantes</span>
+            </div>
+
+            <div class="membership-unlocked-summary">
+              <article><small>MEMBRESÍA</small><b>{{nombreMembresiaVisible(membresiaActual)}}</b><p>{{fechaCortaPortal(membresiaActual.fecha_inicio)}} → {{fechaCortaPortal(membresiaActual.fecha_fin)}}</p></article>
+              <article><small>ÚLTIMO PAGO</small><b>{{ultimoPagoCompletado ? ('S/ '+(ultimoPagoCompletado.monto | number:'1.2-2')) : 'Sin pago reciente'}}</b><p>{{ultimoPagoCompletado ? (ultimoPagoCompletado.metodo_pago+' · Op. '+(ultimoPagoCompletado.numero_operacion || '-')) : 'Consulta tu historial en Membresía'}}</p></article>
+              <article><small>RUTINA</small><b>{{tieneRutinaAsignadaGym ? rutinaActual?.nombre_rutina : 'Pendiente del personal'}}</b><p>{{tieneRutinaAsignadaGym ? (ejerciciosCasaActuales.length+' ejercicios registrados') : 'Puedes solicitarla desde aquí'}}</p></article>
+              <article><small>ACCESO</small><b>Credencial habilitada</b><p>Usa tu código de barras en recepción.</p></article>
+            </div>
+
+            <div class="membership-unlocked-actions">
+              <button type="button" (click)="abrirModulo('club')"><span>▥</span><b>Credencial de acceso</b><small>Mostrar código de barras</small></button>
+              <button type="button" (click)="ultimoPagoCompletado ? comprobante(ultimoPagoCompletado) : abrirModulo('pagos')"><span>▤</span><b>Mi boleta</b><small>Ver último comprobante</small></button>
+              <button type="button" (click)="abrirModulo('clases')"><span>▣</span><b>Clases</b><small>Ver horarios y reservar</small></button>
+              <button type="button" (click)="abrirModulo('asistencias')"><span>✓</span><b>Asistencias</b><small>Entradas y salidas</small></button>
+              <button type="button" (click)="tieneRutinaAsignadaGym ? abrirModulo('rutinas') : solicitarRutinaAlPersonal()" [disabled]="procesandoSolicitudRutina"><span>🏋</span><b>{{tieneRutinaAsignadaGym ? 'Mi rutina' : 'Solicitar rutina'}}</b><small>{{tieneRutinaAsignadaGym ? 'Ver ejercicios' : 'Enviar solicitud al personal'}}</small></button>
+              <button type="button" (click)="abrirModulo('perfil')"><span>♙</span><b>Mi perfil</b><small>Datos de la cuenta</small></button>
+            </div>
+
+            <div class="membership-upcoming-card" *ngIf="membresiaProxima">
+              <span>PRÓXIMA MEMBRESÍA PROGRAMADA</span>
+              <b>{{nombreMembresiaVisible(membresiaProxima)}}</b>
+              <p>Comienza el {{fechaCortaPortal(membresiaProxima.fecha_inicio)}} y termina el {{fechaCortaPortal(membresiaProxima.fecha_fin)}}.</p>
+            </div>
+          </section>
+
           <section class="gym-session-flow" *ngIf="!sesionCasaActiva && !sesionCasaTerminada">
-            <article>
+            <button type="button" (click)="abrirModulo('asistencias')">
               <span>1</span>
-              <div><small>INGRESO</small><b>Asistencia</b><p>Tu visita al gimnasio queda registrada en el módulo de Asistencias.</p></div>
-            </article>
-            <article>
+              <div><small>INGRESO</small><b>Asistencia</b><p>Consulta tus entradas y salidas registradas en recepción.</p></div>
+            </button>
+            <button type="button" (click)="irDetalleEntrenamiento()">
               <span>2</span>
-              <div><small>PREPARACIÓN</small><b>Calentamiento</b><p>Realiza una preparación breve antes de comenzar la rutina principal.</p></div>
-            </article>
-            <article>
+              <div><small>PREPARACIÓN</small><b>Guía de la sesión</b><p>Revisa ejercicios, descansos e indicaciones antes de comenzar.</p></div>
+            </button>
+            <button type="button" (click)="tieneRutinaAsignadaGym ? abrirModulo('rutinas') : solicitarRutinaAlPersonal()">
               <span>3</span>
-              <div><small>RUTINA EN SALA</small><b>Máquinas y pesas</b><p>Sigue ejercicios con equipo, series, repeticiones y descansos.</p></div>
-            </article>
-            <article>
+              <div><small>RUTINA EN SALA</small><b>Máquinas y pesas</b><p>{{tieneRutinaAsignadaGym ? 'Ver ejercicios asignados' : 'Solicitar rutina al personal'}}</p></div>
+            </button>
+            <button type="button" (click)="abrirModulo('progreso')">
               <span>4</span>
-              <div><small>CIERRE</small><b>Guardar sesión</b><p>Al terminar, la sesión queda registrada en tu Progreso e Historial.</p></div>
-            </article>
+              <div><small>CIERRE</small><b>Progreso e historial</b><p>Consulta las sesiones y actividades que ya fueron guardadas.</p></div>
+            </button>
           </section>
 
           <div *ngIf="errorCasa" class="home-training-alert">{{errorCasa}}</div>
@@ -518,8 +551,8 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               <button type="button" class="empty-primary" (click)="abrirModulo('rutinas')">
                 <span>🏋</span><b>Revisar mis rutinas</b>
               </button>
-              <button type="button" class="empty-secondary" (click)="abrirModulo('soporte')">
-                <span>?</span><b>Consultar al gimnasio</b>
+              <button type="button" class="empty-secondary" (click)="solicitarRutinaAlPersonal()" [disabled]="procesandoSolicitudRutina">
+                <span>?</span><b>{{procesandoSolicitudRutina ? 'Enviando...' : 'Solicitar rutina al personal'}}</b>
               </button>
             </div>
           </section>
@@ -982,7 +1015,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               <div class="membership-current-icon">{{membresiaActual ? '✓' : '!'}}</div>
               <div class="membership-current-copy">
                 <small>MEMBRESÍA ACTUAL</small>
-                <h2>{{membresiaActual?.membresia?.nombre || 'Sin mensualidad activa'}}</h2>
+                <h2>{{nombreMembresiaVisible(membresiaActual)}}</h2>
                 <p *ngIf="membresiaActual">
                   Vigente del {{fechaCortaPortal(membresiaActual.fecha_inicio)}} al {{fechaCortaPortal(membresiaActual.fecha_fin)}}
                 </p>
@@ -991,6 +1024,19 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               <div class="membership-current-state">
                 <span [class.active]="!!membresiaActual"><i></i>{{membresiaActual ? (membresiaActual.estado || 'Activo') : 'Sin membresía'}}</span>
                 <b *ngIf="membresiaActual?.membresia?.precio">S/ {{membresiaActual.membresia.precio | number:'1.2-2'}}</b>
+              </div>
+            </article>
+
+            <article class="membership-current-card membership-next-card" *ngIf="membresiaProxima">
+              <div class="membership-current-icon">→</div>
+              <div class="membership-current-copy">
+                <small>PRÓXIMA MEMBRESÍA YA COMPRADA</small>
+                <h2>{{nombreMembresiaVisible(membresiaProxima)}}</h2>
+                <p>Programada del {{fechaCortaPortal(membresiaProxima.fecha_inicio)}} al {{fechaCortaPortal(membresiaProxima.fecha_fin)}}.</p>
+              </div>
+              <div class="membership-current-state">
+                <span class="active"><i></i>Programada</span>
+                <b *ngIf="membresiaProxima?.membresia?.precio">S/ {{membresiaProxima.membresia.precio | number:'1.2-2'}}</b>
               </div>
             </article>
           </section>
@@ -1176,7 +1222,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <div *ngFor="let p of pagos" class="member-payment-item">
                   <span class="payment-icon">▤</span>
                   <p>
-                    <b>{{p.cliente_membresia?.membresia?.nombre || 'Membresía'}}</b>
+                    <b>{{nombreMembresiaVisible(p.cliente_membresia)}}</b>
                     <small>{{fecha(p.fecha_pago)}} · {{p.metodo_pago}}</small>
                     <small *ngIf="p.numero_operacion">Op. {{p.numero_operacion}}</small>
                   </p>
@@ -1306,12 +1352,13 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   apiConectada=false;
   dbConectada=false;
   dbMotor='MySQL';
-  resumen:any=null; perfil:any={}; membresiaActual:any=null; membresiasDisponibles:any[]=[]; gymInfo:any={};
+  resumen:any=null; perfil:any={}; membresiaActual:any=null; membresiaProxima:any=null; membresiasDisponibles:any[]=[]; gymInfo:any={};
   pagos:any[]=[]; rutinas:any[]=[]; asistencias:any[]=[]; reservas:any[]=[]; clases:any[]=[]; compras:any[]=[];
   fechasReserva:Record<number,string>={};
   pagoForm:any={id_membresia:0,fecha_inicio:new Date().toISOString().slice(0,10),metodo_pago:'Yape',numero_operacion:''};
   ultimaBoleta:any=null;
   procesandoCompra=false;
+  procesandoSolicitudRutina=false;
   actualizandoModulo=false;
   seguridadForm:any={actual:'',nueva:'',confirmacion:''};
 
@@ -1373,7 +1420,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargar():void{
     this.cargando=true; this.error='';
     this.api.cargarPortalCliente().subscribe({
-      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiasDisponibles=r.membresiasDisponibles||[];this.gymInfo=r.gymInfo||{};this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.preseleccionarPlanActual();this.cargando=false;this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
+      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=r.membresiasDisponibles||[];this.gymInfo=r.gymInfo||{};this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.preseleccionarPlanActual();this.cargando=false;this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
       error:e=>{this.error=this.errorApi(e);this.cargando=false;}
     });
   }
@@ -1440,6 +1487,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.resumen=r.resumen;
         this.perfil=this.normalizarPerfil(r.perfil);
         this.membresiaActual=r.membresia?.actual||null;
+        this.membresiaProxima=r.membresia?.proxima||null;
         this.membresiasDisponibles=r.membresiasDisponibles||[];
         this.gymInfo=r.gymInfo||this.gymInfo||{};
         this.pagos=r.pagos||[];
@@ -1473,6 +1521,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.resumen=r.resumen;
         this.perfil=this.normalizarPerfil(r.perfil);
         this.membresiaActual=r.membresia?.actual;
+        this.membresiaProxima=r.membresia?.proxima||null;
         this.membresiasDisponibles=r.membresiasDisponibles||[];
         this.gymInfo=r.gymInfo||this.gymInfo||{};
         this.pagos=r.pagos||[];
@@ -1793,6 +1842,99 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const d=new Date(v);
     if(isNaN(d.getTime()))return String(v);
     return d.toLocaleDateString('es-PE',{day:'2-digit',month:'short',year:'numeric'});
+  }
+
+  nombreMembresiaVisible(relacion:any):string{
+    if(!relacion)return 'Sin membresía activa';
+    const membresia=relacion?.membresia||relacion||{};
+    const nombre=String(membresia?.nombre||'').trim();
+    const meses=Math.max(0,Number(membresia?.duracion_meses||0));
+    const oficial=/^(Mensualidad 1 mes|Promoción 2 meses|Promocion 2 meses|Promoción 3 meses|Promocion 3 meses)$/i.test(nombre);
+    if(oficial)return nombre;
+    if(meses===1)return 'Mensualidad vigente · 1 mes';
+    if(meses>1)return `Membresía vigente · ${meses} meses`;
+    return nombre || 'Membresía vigente';
+  }
+
+  get ultimoPagoCompletado():any{
+    return (this.pagos||[]).find((p:any)=>String(p?.estado_pago||'').toLowerCase()==='completado')||null;
+  }
+
+  get diasRestantesMembresia():number{
+    if(!this.membresiaActual?.fecha_fin)return 0;
+    const fin=new Date(String(this.membresiaActual.fecha_fin).slice(0,10)+'T23:59:59');
+    const hoy=new Date();
+    return Math.max(0,Math.ceil((fin.getTime()-hoy.getTime())/86400000));
+  }
+
+  accionEntrenamientoPrincipal():void{
+    if(!this.membresiaActual){
+      this.abrirModulo('pagos');
+      return;
+    }
+    if(!this.tieneRutinaAsignadaGym){
+      this.solicitarRutinaAlPersonal();
+      return;
+    }
+    this.iniciarEntrenamientoCasa();
+  }
+
+  solicitarRutinaAlPersonal():void{
+    if(!this.membresiaActual){
+      this.abrirModulo('pagos');
+      return;
+    }
+    if(this.tieneRutinaAsignadaGym){
+      this.abrirModulo('rutinas');
+      return;
+    }
+    if(this.procesandoSolicitudRutina)return;
+
+    this.procesandoSolicitudRutina=true;
+    this.errorCasa='';
+    const crear=()=>{
+      this.api.crearSoporteCliente({
+        asunto:'Solicitud de rutina',
+        mensaje:'Tengo una membresía vigente y solicito que el personal de Mallqui Gym registre mi rutina de entrenamiento en el sistema.'
+      }).subscribe({
+        next:r=>{
+          this.procesandoSolicitudRutina=false;
+          this.ok(r?.mensaje||'Solicitud de rutina enviada al personal del gimnasio.');
+          this.abrirModulo('soporte');
+        },
+        error:e=>{
+          this.procesandoSolicitudRutina=false;
+          this.errorCasa=this.errorApi(e);
+        }
+      });
+    };
+
+    this.api.soporteCliente().subscribe({
+      next:(items:any[])=>{
+        const pendiente=(items||[]).find((s:any)=>
+          String(s?.estado||'').toLowerCase()==='pendiente' &&
+          String(s?.asunto||'').toLowerCase().includes('rutina')
+        );
+        if(pendiente){
+          this.procesandoSolicitudRutina=false;
+          this.ok('Ya tienes una solicitud de rutina pendiente con el gimnasio.');
+          this.abrirModulo('soporte');
+          return;
+        }
+        crear();
+      },
+      error:()=>crear()
+    });
+  }
+
+  irDetalleEntrenamiento():void{
+    if(!this.tieneRutinaAsignadaGym){
+      this.solicitarRutinaAlPersonal();
+      return;
+    }
+    setTimeout(()=>{
+      document.querySelector('.gym-assigned-routine-real')?.scrollIntoView({behavior:'smooth',block:'start'});
+    },0);
   }
 
   nombrePersona(p:any):string{return p?[`${p.nombres||''}`,`${p.apellidos||''}`].join(' ').trim():'-';}
@@ -2468,7 +2610,12 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.api.pagosCliente().subscribe(x=>this.pagos=x);
         this.api.membresiaCliente().subscribe(x=>{
           this.membresiaActual=x?.actual||this.membresiaActual;
-          this.resumen={...(this.resumen||{}),membresia_actual:this.membresiaActual};
+          this.membresiaProxima=x?.proxima||null;
+          this.resumen={
+            ...(this.resumen||{}),
+            membresia_actual:this.membresiaActual,
+            membresia_proxima:this.membresiaProxima
+          };
         });
       },
       error:e=>{
