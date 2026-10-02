@@ -211,7 +211,7 @@ class ExperienciaClienteController extends Controller
                 ($rutina->entrenador?->nombres ?? '').' '.($rutina->entrenador?->apellidos ?? '')
             );
 
-            if ($inicioRutina && $inicioRutina->between($desde, $hasta)) {
+            if ($inicioRutina && !$inicioRutina->isToday() && $inicioRutina->between($desde, $hasta)) {
                 $eventos->push([
                     'tipo' => 'casa',
                     'fecha' => $inicioRutina->toDateString(),
@@ -232,7 +232,7 @@ class ExperienciaClienteController extends Controller
                 ]);
             }
 
-            if ($finRutina && $finRutina->between($desde, $hasta)) {
+            if ($finRutina && !$finRutina->isToday() && $finRutina->between($desde, $hasta)) {
                 $eventos->push([
                     'tipo' => 'casa',
                     'fecha' => $finRutina->toDateString(),
