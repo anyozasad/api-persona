@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GymApiService } from '../../../core/services/gym-api.service';
+import { code128DataUri, code128Svg } from '../../../shared/code128';
 
 @Component({
   selector: 'app-cliente-experiencia',
@@ -441,9 +442,20 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               <div><small>VIGENCIA</small><b>{{credencial?.membresia ? fechaCorta(credencial.membresia.fecha_fin) : '-'}}</b></div>
               <div><small>DÍAS RESTANTES</small><b>{{credencial?.dias_restantes || 0}}</b></div>
             </div>
+
+            <div class="client-access-status" [class.inside]="!!credencial?.asistencia_actual" [class.blocked]="!credencial?.acceso_habilitado">
+              <span>{{credencial?.acceso_habilitado ? (credencial?.asistencia_actual ? 'DENTRO DEL GYM' : 'ACCESO HABILITADO') : 'ACCESO NO HABILITADO'}}</span>
+              <small>{{credencial?.estado_acceso || 'Sin estado de acceso'}}</small>
+            </div>
+
+            <div class="client-card-barcode-wrap" *ngIf="credencialBarcode">
+              <img class="client-card-barcode" [src]="credencialBarcode" alt="Código de barras de la credencial">
+              <small>Escanea este código en recepción para registrar entrada o salida.</small>
+            </div>
+
             <div class="client-card-footer">
               <span [class.inactive]="credencial?.cliente?.estado!=='Activo'">{{credencial?.cliente?.estado || 'Sin estado'}}</span>
-              <small>Presenta tu código de socio en recepción.</small>
+              <button type="button" (click)="imprimirCredencial()">Imprimir credencial</button>
             </div>
           </article>
 
@@ -897,6 +909,42 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
 
   get inicialSocio(): string {
     return this.nombreSocio.charAt(0).toUpperCase() || 'M';
+  }
+
+  get credencialBarcode(): string {
+    const codigo=String(this.credencial?.codigo_barras || this.credencial?.codigo_socio || '').trim();
+    return codigo ? code128DataUri(codigo,{height:52,module:2,quiet:12,text:true}) : '';
+  }
+
+  imprimirCredencial(): void {
+    if(!this.credencial)return;
+    const codigo=String(this.credencial?.codigo_barras || this.credencial?.codigo_socio || '');
+    const barcode=code128Svg(codigo,{height:58,module:2,quiet:14,text:true});
+    const gimnasio=this.credencial?.gimnasio || {};
+    const plan=this.credencial?.membresia?.membresia?.nombre || 'Sin membresía activa';
+    const vigencia=this.credencial?.membresia?.fecha_fin ? this.fechaCorta(this.credencial.membresia.fecha_fin) : '-';
+    const html=`<!doctype html><html><head><meta charset="utf-8"><title>Credencial Mallqui Gym</title><style>
+      body{font-family:Arial,sans-serif;background:#eef3f6;padding:30px;color:#102f4b}
+      .card{max-width:620px;margin:auto;background:#fff;border:1px solid #dbe4ea;border-radius:20px;padding:24px;box-shadow:0 12px 35px rgba(16,47,75,.12)}
+      h1{margin:0 0 4px;font-size:24px}.muted{color:#6d8190}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+      .item{padding:12px;border-radius:12px;background:#f6f9fb}.item small{display:block;color:#7a8d9c;font-size:10px;font-weight:700}.item b{display:block;margin-top:4px}
+      .barcode{text-align:center;margin-top:18px;padding:16px;background:#fff;border:1px dashed #ccd8df;border-radius:12px}
+      .state{display:inline-block;padding:7px 10px;border-radius:999px;background:#e8f7ee;color:#1e6a3d;font-weight:700;font-size:11px}
+      @media print{body{background:#fff;padding:0}.card{box-shadow:none;border-color:#bbb}}
+    </style></head><body><div class="card">
+      <h1>${gimnasio.nombre || 'Mallqui Gym'}</h1>
+      <div class="muted">Credencial digital de socio</div>
+      <p><span class="state">${this.credencial?.estado_acceso || 'Acceso'}</span></p>
+      <div class="grid">
+        <div class="item"><small>SOCIO</small><b>${this.nombreSocio}</b></div>
+        <div class="item"><small>CÓDIGO</small><b>${codigo}</b></div>
+        <div class="item"><small>PLAN</small><b>${plan}</b></div>
+        <div class="item"><small>VIGENCIA</small><b>${vigencia}</b></div>
+      </div>
+      <div class="barcode">${barcode}<div class="muted">Presentar en recepción</div></div>
+    </div><script>window.print()<\/script></body></html>`;
+    const w=window.open('','_blank');
+    if(w){w.document.write(html);w.document.close();}
   }
 
   fechaCorta(valor: any): string {
