@@ -11,7 +11,6 @@ use App\Models\ClienteMembresia;
 use App\Models\NotificacionCliente;
 use App\Models\MetaCliente;
 use App\Models\PagoMembresia;
-use App\Models\PlanEntrenamientoCasa;
 use App\Models\Reserva;
 use App\Models\Rutina;
 use App\Models\SesionEntrenamientoCasa;
@@ -28,18 +27,24 @@ class ExperienciaClienteController extends Controller
         $inicioSemana = now()->startOfWeek(Carbon::MONDAY);
         $finSemana = now()->endOfWeek(Carbon::SUNDAY);
 
-        $plan = PlanEntrenamientoCasa::where('id_cliente', $cliente->id_cliente)
-            ->where('activo', true)
+        $rutinaActiva = Rutina::where('id_cliente', $cliente->id_cliente)
+            ->where('estado', 'Activo')
+            ->whereDate('fecha_inicio', '<=', today())
+            ->where(function ($q) {
+                $q->whereNull('fecha_fin')->orWhereDate('fecha_fin', '>=', today());
+            })
+            ->orderByDesc('fecha_inicio')
             ->first();
 
         $meta = MetaCliente::firstOrCreate(
             ['id_cliente' => $cliente->id_cliente],
-            ['sesiones_semanales' => max(1, min(4, count($plan?->dias ?? ['Lunes', 'Miércoles', 'Viernes']))), 'recordatorios' => true]
+            ['sesiones_semanales' => 3, 'recordatorios' => true]
         );
 
         $metaSemanal = max(1, min(4, (int) $meta->sesiones_semanales));
 
-        $sesionesSemana = SesionEntrenamientoCasa::where('id_cliente', $cliente->id_cliente)
+        $sesionesSemana = SesionEntrenamientoCasa::with('rutina')
+            ->where('id_cliente', $cliente->id_cliente)
             ->whereBetween('fecha', [$inicioSemana, $finSemana])
             ->where('estado', 'Completada')
             ->orderBy('fecha')
@@ -86,7 +91,7 @@ class ExperienciaClienteController extends Controller
         foreach ($sesionesSemana as $sesion) {
             $actividades->push([
                 'tipo' => 'Entrenamiento en el gimnasio',
-                'titulo' => ucfirst((string) $sesion->zona),
+                'titulo' => $sesion->rutina?->nombre_rutina ?? 'Rutina de gimnasio',
                 'fecha' => optional($sesion->fecha)->toDateTimeString(),
                 'detalle' => round(((int) $sesion->duracion_segundos) / 60).' min · '.$sesion->ejercicios_completados.' ejercicios',
             ]);
@@ -108,12 +113,15 @@ class ExperienciaClienteController extends Controller
             'semana' => [
                 'meta_sesiones' => $metaSemanal,
                 'sesiones_casa' => $completadasSemana,
+                'sesiones_gym' => $completadasSemana,
+                'rutina_activa' => $rutinaActiva?->nombre_rutina,
                 'asistencias_gimnasio' => $asistenciasSemana->count(),
                 'cumplimiento' => $cumplimiento,
                 'dias' => $dias,
             ],
             'mes' => [
                 'sesiones_casa' => $sesionesMes,
+                'sesiones_gym' => $sesionesMes,
                 'minutos_entrenados' => (int) round($segundosMes / 60),
                 'asistencias_gimnasio' => $asistenciasMes,
             ],
@@ -310,17 +318,25 @@ class ExperienciaClienteController extends Controller
             ]);
         }
 
-        $plan = PlanEntrenamientoCasa::where('id_cliente', $cliente->id_cliente)
-            ->where('activo', true)
+        $rutinaActiva = Rutina::where('id_cliente', $cliente->id_cliente)
+            ->where('estado', 'Activo')
+            ->whereDate('fecha_inicio', '<=', today())
+            ->where(function ($q) {
+                $q->whereNull('fecha_fin')->orWhereDate('fecha_fin', '>=', today());
+            })
+            ->orderByDesc('fecha_inicio')
             ->first();
 
-        $mapaDias = [1=>'Lunes',2=>'Martes',3=>'Miércoles',4=>'Jueves',5=>'Viernes',6=>'Sábado',7=>'Domingo'];
-        $hoyNombre = $mapaDias[now()->isoWeekday()] ?? '';
-        if ($plan && in_array($hoyNombre, $plan->dias ?? [], true)) {
+        $entrenoHoy = SesionEntrenamientoCasa::where('id_cliente', $cliente->id_cliente)
+            ->whereDate('fecha', today())
+            ->where('estado', 'Completada')
+            ->exists();
+
+        if ($rutinaActiva && !$entrenoHoy) {
             $automaticas->push([
                 'id_notificacion' => null,
-                'titulo' => 'Entrenamiento programado para hoy',
-                'mensaje' => 'Tu plan semanal tiene una sesión de entrenamiento en el gimnasio para hoy.',
+                'titulo' => 'Tu rutina está lista',
+                'mensaje' => 'Tienes activa la rutina "'.$rutinaActiva->nombre_rutina.'". Ábrela desde Entrenar cuando realices tu sesión en Mallqui Gym.',
                 'tipo' => 'Entrenamiento',
                 'leida' => false,
                 'fecha' => now()->toDateTimeString(),
@@ -384,9 +400,15 @@ class ExperienciaClienteController extends Controller
             ->limit(20)
             ->get();
 
+        $entrenamientos = SesionEntrenamientoCasa::with(['rutina', 'detalles.detalleRutina'])
+            ->where('id_cliente', $cliente->id_cliente)
+            ->orderByDesc('fecha')
+            ->limit(20)
+            ->get();
+
         return response()->json([
-            'entrenamientos_casa' => SesionEntrenamientoCasa::where('id_cliente', $cliente->id_cliente)
-                ->orderByDesc('fecha')->limit(20)->get(),
+            'entrenamientos_gym' => $entrenamientos,
+            'entrenamientos_casa' => $entrenamientos,
             'asistencias' => Asistencia::where('id_cliente', $cliente->id_cliente)
                 ->orderByDesc('fecha_hora_entrada')->limit(20)->get(),
             'reservas' => Reserva::with('clase')->where('id_cliente', $cliente->id_cliente)
