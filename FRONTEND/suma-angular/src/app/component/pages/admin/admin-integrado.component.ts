@@ -168,7 +168,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         </section>
 
         <section class="ux-alert-banner" *ngIf="(dashboard?.alertas?.total ?? 0) > 0">
-          <div><span>!</span><div><b>Hay {{dashboard?.alertas?.total}} alertas operativas.</b><small>Revisa membresías por vencer, stock bajo y consultas de soporte. Las compras de planes se registran automáticamente.</small></div></div>
+          <div><span>!</span><div><b>Hay {{dashboard?.alertas?.total}} alertas operativas.</b><small>Revisa membresías por vencer, stock bajo y consultas de soporte. Las compras de mensualidades se registran automáticamente.</small></div></div>
           <button type="button" (click)="(dashboard?.alertas?.soporte_pendiente ?? 0)>0 ? cambiarSeccion('soporte') : cambiarSeccion('reportes')">Revisar pendientes →</button>
         </section>
 
@@ -280,7 +280,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
           </article>
 
           <article class="ux-card">
-            <div class="ux-card-head compact"><div><span class="ux-section-label">DISTRIBUCIÓN</span><h3>Membresías por plan</h3></div><strong class="ux-card-total">{{dashboard?.membresias?.activas ?? 0}} activas</strong></div>
+            <div class="ux-card-head compact"><div><span class="ux-section-label">DISTRIBUCIÓN</span><h3>Membresías por duración</h3></div><strong class="ux-card-total">{{dashboard?.membresias?.activas ?? 0}} activas</strong></div>
             <div class="membership-progress-list ux-membership-list">
               <div *ngFor="let p of dashboard?.tendencias?.membresias_por_plan">
                 <div><b>{{p.nombre}}</b><span>{{p.total}} clientes</span></div>
@@ -515,7 +515,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
       <ng-container *ngIf="seccion==='membresias'">
         <section class="management-grid">
           <article class="admin-form-card">
-            <div class="management-heading"><div><h2>{{planEditandoId ? 'Editar plan' : 'Nuevo plan'}}</h2><p>Configura precio, duración y estado de las membresías.</p></div><span>✦</span></div>
+            <div class="management-heading"><div><h2>{{planEditandoId ? 'Editar tarifa' : 'Nueva tarifa'}}</h2><p>Configura precio, duración y estado de las membresías.</p></div><span>✦</span></div>
             <form (ngSubmit)="guardarPlan()">
               <label>Nombre<input [(ngModel)]="planForm.nombre" name="pnombre" required></label>
               <div class="form-row"><label>Duración (meses)<input type="number" min="1" [(ngModel)]="planForm.duracion_meses" name="pduracion" required></label><label>Precio S/<input type="number" min="0" step="0.01" [(ngModel)]="planForm.precio" name="pprecio" required></label></div>
@@ -523,25 +523,25 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
               <label>Beneficios (uno por línea)<textarea [(ngModel)]="planForm.beneficios_texto" name="pbeneficios" placeholder="Acceso a sala&#10;Clases grupales&#10;Rutina personalizada"></textarea></label>
               <label><input type="checkbox" [(ngModel)]="planForm.permite_reservas" name="preservas"> Permite reservar clases</label>
               <label>Estado<select [(ngModel)]="planForm.estado" name="pestado"><option>Activo</option><option>Inactivo</option></select></label>
-              <div class="form-row"><button class="admin-primary" type="submit">{{planEditandoId ? 'Guardar cambios' : 'Crear plan'}}</button><button *ngIf="planEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionPlan()">Cancelar</button></div>
+              <div class="form-row"><button class="admin-primary" type="submit">{{planEditandoId ? 'Guardar cambios' : 'Crear tarifa'}}</button><button *ngIf="planEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionPlan()">Cancelar</button></div>
             </form>
           </article>
           <article class="admin-list-card wide-card">
-            <div class="management-heading"><div><h2>Planes de membresía</h2><p>{{planesMembresia.length}} planes configurados.</p></div></div>
-            <div class="table-wrap"><table class="management-table"><thead><tr><th>Plan</th><th>Duración</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr *ngFor="let p of planesMembresia"><td><b>{{p.nombre}}</b><br><small>{{p.descripcion}}</small></td><td>{{p.duracion_meses}} mes(es)</td><td>S/ {{p.precio}}</td><td>{{p.estado}}</td><td><button class="table-action" type="button" (click)="editarPlan(p)">Editar</button> <button *ngIf="p.estado==='Activo'" class="table-danger" type="button" (click)="desactivarPlan(p.id_membresia)">Desactivar</button></td></tr></tbody></table></div>
+            <div class="management-heading"><div><h2>Mensualidades y promociones</h2><p>{{planesMembresia.length}} tarifas configuradas.</p></div></div>
+            <div class="table-wrap"><table class="management-table"><thead><tr><th>Membresía</th><th>Duración</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr *ngFor="let p of planesMembresia"><td><b>{{p.nombre}}</b><br><small>{{p.descripcion}}</small></td><td>{{p.duracion_meses}} mes(es)</td><td>S/ {{p.precio}}</td><td>{{p.estado}}</td><td><button class="table-action" type="button" (click)="editarPlan(p)">Editar</button> <button *ngIf="p.estado==='Activo'" class="table-danger" type="button" (click)="desactivarPlan(p.id_membresia)">Desactivar</button></td></tr></tbody></table></div>
           </article>
           <article class="admin-form-card">
             <div class="management-heading"><div><h2>Contratar membresía</h2><p>Registra membresía y pago en la base de datos.</p></div><span>＋</span></div>
             <form (ngSubmit)="contratarMembresia()">
               <label>Cliente<select [(ngModel)]="membresiaForm.id_cliente" name="mcliente" required><option [ngValue]="0">Seleccionar</option><option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option></select></label>
-              <label>Plan<select [(ngModel)]="membresiaForm.id_membresia" name="mplan" required><option [ngValue]="0">Seleccionar</option><option *ngFor="let m of membresiasDisponibles" [ngValue]="m.id_membresia">{{m.nombre}} - S/ {{m.precio}}</option></select></label>
+              <label>Mensualidad<select [(ngModel)]="membresiaForm.id_membresia" name="mplan" required><option [ngValue]="0">Seleccionar</option><option *ngFor="let m of membresiasDisponibles" [ngValue]="m.id_membresia">{{m.nombre}} - S/ {{m.precio}}</option></select></label>
               <div class="form-row"><label>Método<select [(ngModel)]="membresiaForm.metodo_pago" name="mmetodo"><option>Efectivo</option><option>Yape</option><option>Plin</option><option>Transferencia</option><option>Tarjeta</option></select></label><label>N° operación<input [(ngModel)]="membresiaForm.numero_operacion" name="moperacion"></label></div>
               <button class="admin-primary" type="submit">Contratar membresía</button>
             </form>
           </article>
           <article class="admin-list-card wide-card">
             <div class="management-heading"><div><h2>Membresías de clientes</h2><p>{{membresiasCliente.length}} registros.</p></div></div>
-            <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Plan</th><th>Inicio</th><th>Fin</th><th>Estado</th></tr></thead><tbody>
+            <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Membresía</th><th>Inicio</th><th>Fin</th><th>Estado</th></tr></thead><tbody>
               <tr *ngFor="let m of membresiasCliente"><td>{{m.id_cliente_membresia}}</td><td>{{nombreCliente(m.cliente)}}</td><td>{{m.membresia?.nombre}}</td><td>{{m.fecha_inicio}}</td><td>{{m.fecha_fin}}</td><td>{{m.estado}}</td></tr>
             </tbody></table></div>
           </article>
@@ -767,7 +767,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
       <ng-container *ngIf="seccion==='planes'">
         <section class="management-grid">
           <article class="admin-form-card">
-            <div class="management-heading"><div><h2>{{planEditandoId ? 'Editar plan' : 'Nuevo plan'}}</h2><p>Configura precio, duración y estado.</p></div><span>◆</span></div>
+            <div class="management-heading"><div><h2>{{planEditandoId ? 'Editar tarifa' : 'Nueva tarifa'}}</h2><p>Configura precio, duración y estado.</p></div><span>◆</span></div>
             <form (ngSubmit)="guardarPlan()">
               <label>Nombre<input [(ngModel)]="planForm.nombre" name="plan_nombre" required></label>
               <div class="form-row">
@@ -779,7 +779,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
               <label><input type="checkbox" [(ngModel)]="planForm.permite_reservas" name="plan_reservas"> Permite reservar clases</label>
               <label>Estado<select [(ngModel)]="planForm.estado" name="plan_estado"><option>Activo</option><option>Inactivo</option></select></label>
               <div class="form-row">
-                <button class="admin-primary" type="submit">{{planEditandoId ? 'Guardar cambios' : 'Crear plan'}}</button>
+                <button class="admin-primary" type="submit">{{planEditandoId ? 'Guardar cambios' : 'Crear tarifa'}}</button>
                 <button *ngIf="planEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionPlan()">Cancelar</button>
               </div>
             </form>
@@ -788,7 +788,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
             <div class="management-heading"><div><h2>Planes disponibles</h2><p>{{planesMembresia.length}} planes configurados.</p></div></div>
             <div class="table-wrap">
               <table class="management-table">
-                <thead><tr><th>Plan</th><th>Duración</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <thead><tr><th>Membresía</th><th>Duración</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead>
                 <tbody>
                   <tr *ngFor="let p of planesMembresia">
                     <td><b>{{p.nombre}}</b><br><small>{{p.descripcion}}</small></td>
