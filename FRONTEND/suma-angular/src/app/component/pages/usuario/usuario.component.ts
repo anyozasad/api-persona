@@ -429,23 +429,23 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             </section>
 
             <section class="train-ux-stepbar">
-              <div class="train-step" [class.active]="!!membresiaActual">
+              <button type="button" class="train-step" [class.active]="!!membresiaActual" (click)="abrirModulo('pagos')">
                 <span>1</span>
                 <div><small>ACCESO</small><b>Membresía</b><p>{{membresiaActual ? 'Membresía activa' : 'Sin membresía activa'}}</p></div>
                 <em *ngIf="membresiaActual">✓</em>
-              </div>
+              </button>
               <i>›</i>
-              <div class="train-step" [class.active]="tieneRutinaAsignadaGym">
+              <button type="button" class="train-step" [class.active]="tieneRutinaAsignadaGym" (click)="tieneRutinaAsignadaGym ? abrirModulo('rutinas') : solicitarRutinaAlPersonal()">
                 <span>2</span>
-                <div><small>PLANIFICACIÓN</small><b>Rutina asignada</b><p>{{tieneRutinaAsignadaGym ? rutinaActual?.nombre_rutina : 'Pendiente del entrenador'}}</p></div>
+                <div><small>PLANIFICACIÓN</small><b>Rutina asignada</b><p>{{tieneRutinaAsignadaGym ? rutinaActual?.nombre_rutina : 'Pendiente del personal'}}</p></div>
                 <em *ngIf="tieneRutinaAsignadaGym">✓</em>
-              </div>
+              </button>
               <i>›</i>
-              <div class="train-step" [class.active]="puedeEntrenarRutinaGym">
+              <button type="button" class="train-step" [class.active]="puedeEntrenarRutinaGym" (click)="accionEntrenamientoPrincipal()">
                 <span>3</span>
-                <div><small>EJECUCIÓN</small><b>Entrenar en sala</b><p>Series, repeticiones, carga y descansos</p></div>
+                <div><small>EJECUCIÓN</small><b>Entrenar en sala</b><p>{{puedeEntrenarRutinaGym ? 'Series, repeticiones, carga y descansos' : 'Completa el paso anterior para comenzar'}}</p></div>
                 <em *ngIf="puedeEntrenarRutinaGym">LISTO</em>
-              </div>
+              </button>
             </section>
           </section>
 
@@ -483,22 +483,22 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
           </section>
 
           <section class="gym-session-flow" *ngIf="!sesionCasaActiva && !sesionCasaTerminada">
-            <article>
+            <button type="button" (click)="abrirModulo('asistencias')">
               <span>1</span>
-              <div><small>INGRESO</small><b>Asistencia</b><p>Tu visita al gimnasio queda registrada en el módulo de Asistencias.</p></div>
-            </article>
-            <article>
+              <div><small>INGRESO</small><b>Asistencia</b><p>Consulta tus entradas y salidas registradas en recepción.</p></div>
+            </button>
+            <button type="button" (click)="irDetalleEntrenamiento()">
               <span>2</span>
-              <div><small>PREPARACIÓN</small><b>Calentamiento</b><p>Realiza una preparación breve antes de comenzar la rutina principal.</p></div>
-            </article>
-            <article>
+              <div><small>PREPARACIÓN</small><b>Guía de la sesión</b><p>Revisa ejercicios, descansos e indicaciones antes de comenzar.</p></div>
+            </button>
+            <button type="button" (click)="tieneRutinaAsignadaGym ? abrirModulo('rutinas') : solicitarRutinaAlPersonal()">
               <span>3</span>
-              <div><small>RUTINA EN SALA</small><b>Máquinas y pesas</b><p>Sigue ejercicios con equipo, series, repeticiones y descansos.</p></div>
-            </article>
-            <article>
+              <div><small>RUTINA EN SALA</small><b>Máquinas y pesas</b><p>{{tieneRutinaAsignadaGym ? 'Ver ejercicios asignados' : 'Solicitar rutina al personal'}}</p></div>
+            </button>
+            <button type="button" (click)="abrirModulo('progreso')">
               <span>4</span>
-              <div><small>CIERRE</small><b>Guardar sesión</b><p>Al terminar, la sesión queda registrada en tu Progreso e Historial.</p></div>
-            </article>
+              <div><small>CIERRE</small><b>Progreso e historial</b><p>Consulta las sesiones y actividades que ya fueron guardadas.</p></div>
+            </button>
           </section>
 
           <div *ngIf="errorCasa" class="home-training-alert">{{errorCasa}}</div>
