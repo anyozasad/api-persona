@@ -26,6 +26,7 @@ class PortalClienteController extends Controller
         return response()->json([
             'cliente' => $cliente,
             'membresia_actual' => $membresia,
+            'membresia_proxima' => $this->membresiaProxima($cliente->id_cliente),
             'ultimos_pagos' => PagoMembresia::query()
                 ->with('clienteMembresia.membresia')
                 ->whereHas('clienteMembresia', fn ($q) => $q->where('id_cliente', $cliente->id_cliente))
@@ -92,6 +93,7 @@ class PortalClienteController extends Controller
 
         return response()->json([
             'actual' => $this->membresiaActual($cliente->id_cliente),
+            'proxima' => $this->membresiaProxima($cliente->id_cliente),
             'historial' => ClienteMembresia::with(['membresia', 'pagos'])
                 ->where('id_cliente', $cliente->id_cliente)
                 ->orderByDesc('fecha_fin')
@@ -331,6 +333,16 @@ class PortalClienteController extends Controller
             ->whereDate('fecha_inicio', '<=', today())
             ->whereDate('fecha_fin', '>=', today())
             ->orderByDesc('fecha_fin')
+            ->first();
+    }
+
+    private function membresiaProxima(int $idCliente): ?ClienteMembresia
+    {
+        return ClienteMembresia::with(['membresia', 'pagos'])
+            ->where('id_cliente', $idCliente)
+            ->where('estado', 'Activo')
+            ->whereDate('fecha_inicio', '>', today())
+            ->orderBy('fecha_inicio')
             ->first();
     }
 }
