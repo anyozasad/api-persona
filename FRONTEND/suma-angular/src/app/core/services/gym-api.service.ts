@@ -224,14 +224,8 @@ export class GymApiService {
   membresiaClienteAdmin(id: number): Observable<any> { return this.http.get(`/api/cliente-membresias/${id}`); }
   pagosAdmin(): Observable<any[]> { return this.http.get<any[]>('/api/pagos-membresia'); }
   pagoAdmin(id: number): Observable<any> { return this.http.get(`/api/pagos-membresia/${id}`); }
-  pagosPendientes(): Observable<any[]> { return this.http.get<any[]>('/api/pagos-membresia-pendientes'); }
-
   contratarMembresia(datos: any): Observable<any> { return this.http.post('/api/membresias/contratar', datos); }
   renovarMembresia(datos: any): Observable<any> { return this.http.post('/api/membresias/renovar', datos); }
-  confirmarPago(id: number): Observable<any> { return this.http.post(`/api/pagos-membresia/${id}/confirmar`, {}); }
-  rechazarPago(id: number, motivo: string): Observable<any> {
-    return this.http.post(`/api/pagos-membresia/${id}/rechazar`, { motivo });
-  }
   estadoMembresiaCliente(idCliente: number): Observable<any> {
     return this.http.get(`/api/clientes/${idCliente}/estado-membresia`);
   }
