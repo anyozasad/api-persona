@@ -214,7 +214,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           <div class="calendar-pro-copy">
             <span class="calendar-pro-kicker"><i></i> AGENDA PERSONAL</span>
             <h1>Organiza tu entrenamiento</h1>
-            <p>Tu calendario combina clases, entrenamientos en sala y fechas de membresía para que tengas claro qué sigue.</p>
+            <p>Tu calendario combina reservas, la rutina asignada por Mallqui Gym y fechas de membresía para que tengas claro qué sigue.</p>
             <div class="calendar-head-actions">
               <button type="button" class="calendar-today-btn" (click)="irMesActual()">Hoy</button>
               <button type="button" class="calendar-refresh-btn" (click)="cargarCalendario()">↻ Sincronizar agenda</button>
@@ -353,7 +353,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
 
         <section class="calendar-upcoming-card">
           <header>
-            <div><span>PRÓXIMOS EVENTOS</span><h2>Tu agenda completa</h2><p>Información sincronizada con tus reservas y tu plan de entrenamiento.</p></div>
+            <div><span>PRÓXIMOS EVENTOS</span><h2>Tu agenda completa</h2><p>Información sincronizada con tus reservas, tu rutina asignada y tu membresía.</p></div>
             <span class="calendar-sync-status"><i></i> Actualizado</span>
           </header>
           <div class="client-calendar-list calendar-list-pro" *ngIf="calendario.length; else emptyCalendar">
@@ -379,7 +379,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             </article>
           </div>
           <ng-template #emptyCalendar>
-            <div class="client-empty-block large"><b>No tienes actividades próximas</b><p>Cuando reserves una clase o configures tu plan de entrenamiento en el gym aparecerán aquí.</p></div>
+            <div class="client-empty-block large"><b>No tienes actividades próximas</b><p>Cuando reserves una clase o tengas una rutina asignada por el gimnasio, aparecerá aquí.</p></div>
           </ng-template>
         </section>
       </ng-container>
