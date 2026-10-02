@@ -170,9 +170,10 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           </div>
           <div>
             <h4>CONTACTO</h4>
-            <p>⌖ Pucallpa, Perú</p>
-            <a class="footer-contact-link" href="tel:+51999888777">⌕ +51 999 888 777</a>
-            <a class="footer-contact-link" href="mailto:info@mallquigym.com">✉ info@mallquigym.com</a>
+            <p>⌖ {{gymInfo?.direccion || 'Jr. Los Laureles Mz 17 Lt 18'}}</p>
+            <p>{{gymInfo?.referencia || 'Referencia: Plaza de Laura Bosso'}}</p>
+            <a class="footer-contact-link" [href]="'tel:' + (gymInfo?.telefono || '939398148')">☎ {{gymInfo?.telefono || '939398148'}}</a>
+            <a *ngIf="gymInfo?.correo" class="footer-contact-link" [href]="'mailto:' + gymInfo.correo">✉ {{gymInfo.correo}}</a>
           </div>
         </div>
         <div class="copyright shell">© 2026 Mallqui Gym. Todos los derechos reservados.<span>Hecho con ♥ para tu mejor versión.</span></div>
@@ -213,8 +214,8 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           </ng-container>
 
           <ng-container *ngIf="modal.tipo==='planes'">
-            <h2>Compara nuestros planes</h2>
-            <p>Elige el plan que se adapte mejor a lo que buscas. Al seleccionarlo continuarás al inicio de sesión.</p>
+            <h2>Compara mensualidades y promociones</h2>
+            <p>Elige 1, 2 o 3 meses según el tiempo que quieras entrenar. Al seleccionarlo continuarás al inicio de sesión.</p>
             <div class="plan-compare">
               <article *ngFor="let p of planes" [class.recommended]="p.destacado">
                 <h3>{{p.nombre}}</h3>
