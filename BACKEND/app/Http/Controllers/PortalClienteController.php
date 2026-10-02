@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Asistencia;
 use App\Models\Cliente;
 use App\Models\ClienteMembresia;
+use App\Models\DetalleSesionEntrenamiento;
 use App\Models\PagoMembresia;
-use App\Models\PlanEntrenamientoCasa;
 use App\Models\Rutina;
 use App\Models\SesionEntrenamientoCasa;
 use App\Models\Venta;
@@ -179,62 +179,51 @@ class PortalClienteController extends Controller
     {
         $cliente = $this->clienteDelUsuario($request);
 
-        $plan = PlanEntrenamientoCasa::firstOrCreate(
-            ['id_cliente' => $cliente->id_cliente],
-            [
-                'dias' => ['Lunes', 'Miércoles', 'Viernes'],
-                'zonas' => ['piernas', 'brazos', 'core'],
-                'objetivo' => 'fuerza',
-                'activo' => true,
-            ]
-        );
+        $membresia = ClienteMembresia::with('membresia')
+            ->where('id_cliente', $cliente->id_cliente)
+            ->where('estado', 'Activo')
+            ->whereDate('fecha_inicio', '<=', today())
+            ->whereDate('fecha_fin', '>=', today())
+            ->orderByDesc('fecha_fin')
+            ->first();
+
+        $rutina = Rutina::with(['entrenador', 'detalles'])
+            ->where('id_cliente', $cliente->id_cliente)
+            ->where('estado', 'Activo')
+            ->whereDate('fecha_inicio', '<=', today())
+            ->where(function ($q) {
+                $q->whereNull('fecha_fin')->orWhereDate('fecha_fin', '>=', today());
+            })
+            ->orderByDesc('fecha_inicio')
+            ->first();
 
         return response()->json([
-            'plan' => $plan,
-            'catalogo' => $this->catalogoEntrenamientoCasa(),
-            'historial' => SesionEntrenamientoCasa::query()
+            'membresia' => $membresia,
+            'rutina' => $rutina,
+            'historial' => SesionEntrenamientoCasa::with(['rutina', 'detalles.detalleRutina'])
                 ->where('id_cliente', $cliente->id_cliente)
                 ->orderByDesc('fecha')
-                ->limit(12)
+                ->limit(20)
                 ->get(),
             'reglas' => [
-                'max_dias_semana' => 4,
-                'mensaje' => 'Sesiones guiadas dentro del gimnasio. Usa una carga moderada y detente si sientes dolor o mareo.',
+                'requiere_membresia' => true,
+                'requiere_rutina' => true,
+                'mensaje' => 'El entrenamiento usa únicamente la rutina activa asignada por Mallqui Gym.',
             ],
         ]);
     }
 
+    /**
+     * Ruta heredada. El cliente ya no configura rutinas por su cuenta:
+     * las rutinas se crean desde administración o desde el panel del entrenador.
+     */
     public function guardarPlanEntrenamientoCasa(Request $request)
     {
-        $cliente = $this->clienteDelUsuario($request);
-
-        $datos = $request->validate([
-            'dias' => 'required|array|min:1|max:4',
-            'dias.*' => ['required', 'string', Rule::in([
-                'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo',
-            ])],
-            'zonas' => 'required|array|min:1|max:7',
-            'zonas.*' => ['required', 'string', Rule::in(['piernas', 'brazos', 'pecho', 'espalda', 'hombros', 'gluteos', 'core'])],
-            'objetivo' => ['required', 'string', Rule::in(['fuerza', 'resistencia', 'movilidad'])],
-        ], [
-            'dias.max' => 'Puedes programar hasta 4 días de entrenamiento en el gimnasio por semana.',
-            'zonas.required' => 'Selecciona al menos una zona de entrenamiento.',
-        ]);
-
-        $plan = PlanEntrenamientoCasa::updateOrCreate(
-            ['id_cliente' => $cliente->id_cliente],
-            [
-                'dias' => array_values(array_unique($datos['dias'])),
-                'zonas' => array_values(array_unique($datos['zonas'])),
-                'objetivo' => $datos['objetivo'],
-                'activo' => true,
-            ]
-        );
+        $this->clienteDelUsuario($request);
 
         return response()->json([
-            'mensaje' => 'Plan semanal guardado correctamente.',
-            'plan' => $plan->fresh(),
-        ]);
+            'mensaje' => 'La planificación personal fue reemplazada por la rutina asignada por el entrenador.',
+        ], 410);
     }
 
     public function registrarSesionEntrenamientoCasa(Request $request)
@@ -242,31 +231,91 @@ class PortalClienteController extends Controller
         $cliente = $this->clienteDelUsuario($request);
 
         $datos = $request->validate([
-            'zona' => ['required', 'string', Rule::in(['piernas', 'brazos', 'pecho', 'espalda', 'hombros', 'gluteos', 'core'])],
-            'duracion_segundos' => 'required|integer|min:1|max:7200',
-            'ejercicios_total' => 'required|integer|min:1|max:20',
-            'ejercicios_completados' => 'required|integer|min:1|max:20',
+            'id_rutina' => 'required|integer|exists:rutinas,id_rutina',
+            'duracion_segundos' => 'required|integer|min:1|max:14400',
+            'ejercicios' => 'required|array|min:1|max:50',
+            'ejercicios.*.id_detalle_rutina' => 'required|integer|distinct|exists:detalle_rutina,id_detalle_rutina',
+            'ejercicios.*.series_realizadas' => 'required|integer|min:0|max:30',
+            'ejercicios.*.repeticiones_realizadas' => 'required|integer|min:0|max:500',
+            'ejercicios.*.peso_utilizado' => 'nullable|numeric|min:0|max:1000',
+            'ejercicios.*.completado' => 'required|boolean',
         ]);
 
-        if ($datos['ejercicios_completados'] > $datos['ejercicios_total']) {
+        $membresia = ClienteMembresia::query()
+            ->where('id_cliente', $cliente->id_cliente)
+            ->where('estado', 'Activo')
+            ->whereDate('fecha_inicio', '<=', today())
+            ->whereDate('fecha_fin', '>=', today())
+            ->first();
+
+        if (!$membresia) {
             return response()->json([
-                'mensaje' => 'Los ejercicios completados no pueden superar el total.',
+                'mensaje' => 'Necesitas una membresía vigente para guardar un entrenamiento.',
             ], 422);
         }
 
-        $sesion = SesionEntrenamientoCasa::create([
-            'id_cliente' => $cliente->id_cliente,
-            'zona' => $datos['zona'],
-            'fecha' => now(),
-            'duracion_segundos' => $datos['duracion_segundos'],
-            'ejercicios_total' => $datos['ejercicios_total'],
-            'ejercicios_completados' => $datos['ejercicios_completados'],
-            'estado' => 'Completada',
-        ]);
+        $rutina = Rutina::with('detalles')
+            ->where('id_rutina', $datos['id_rutina'])
+            ->where('id_cliente', $cliente->id_cliente)
+            ->where('estado', 'Activo')
+            ->whereDate('fecha_inicio', '<=', today())
+            ->where(function ($q) {
+                $q->whereNull('fecha_fin')->orWhereDate('fecha_fin', '>=', today());
+            })
+            ->first();
+
+        if (!$rutina) {
+            return response()->json([
+                'mensaje' => 'La rutina indicada no está activa o no pertenece a tu cuenta.',
+            ], 422);
+        }
+
+        $idsPermitidos = $rutina->detalles->pluck('id_detalle_rutina')->map(fn ($id) => (int) $id)->all();
+        $idsRecibidos = collect($datos['ejercicios'])->pluck('id_detalle_rutina')->map(fn ($id) => (int) $id)->all();
+
+        if (array_diff($idsRecibidos, $idsPermitidos)) {
+            return response()->json([
+                'mensaje' => 'Uno o más ejercicios no pertenecen a la rutina asignada.',
+            ], 422);
+        }
+
+        $completados = collect($datos['ejercicios'])->where('completado', true)->count();
+
+        if ($completados < 1) {
+            return response()->json([
+                'mensaje' => 'Debes completar al menos un ejercicio antes de guardar la sesión.',
+            ], 422);
+        }
+
+        $sesion = DB::transaction(function () use ($cliente, $rutina, $datos, $completados) {
+            $sesion = SesionEntrenamientoCasa::create([
+                'id_cliente' => $cliente->id_cliente,
+                'id_rutina' => $rutina->id_rutina,
+                'zona' => 'rutina',
+                'fecha' => now(),
+                'duracion_segundos' => $datos['duracion_segundos'],
+                'ejercicios_total' => count($datos['ejercicios']),
+                'ejercicios_completados' => $completados,
+                'estado' => $completados === count($datos['ejercicios']) ? 'Completada' : 'Parcial',
+            ]);
+
+            foreach ($datos['ejercicios'] as $ejercicio) {
+                DetalleSesionEntrenamiento::create([
+                    'id_sesion_casa' => $sesion->id_sesion_casa,
+                    'id_detalle_rutina' => $ejercicio['id_detalle_rutina'],
+                    'series_realizadas' => $ejercicio['series_realizadas'],
+                    'repeticiones_realizadas' => $ejercicio['repeticiones_realizadas'],
+                    'peso_utilizado' => $ejercicio['peso_utilizado'] ?? null,
+                    'completado' => (bool) $ejercicio['completado'],
+                ]);
+            }
+
+            return $sesion;
+        });
 
         return response()->json([
-            'mensaje' => 'Entrenamiento completado y guardado.',
-            'sesion' => $sesion,
+            'mensaje' => 'Entrenamiento registrado correctamente en tu progreso.',
+            'sesion' => $sesion->load(['rutina', 'detalles.detalleRutina']),
         ], 201);
     }
 
