@@ -56,7 +56,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             </button>
             <div class="member-mini-profile">
               <span>{{nombreCorto.charAt(0).toUpperCase()}}</span>
-              <div><b>{{nombreCorto}}</b><small>{{membresiaActual?.membresia?.nombre || 'Cliente Mallqui'}}</small></div>
+              <div><b>{{nombreCorto}}</b><small>{{membresiaActual ? nombreMembresiaVisible(membresiaActual) : 'Cliente Mallqui'}}</small></div>
             </div>
             <button class="member-logout" type="button" (click)="cerrarSesion()">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5"/><path d="M14 8l4 4-4 4M18 12H9"/></svg>
@@ -78,7 +78,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
 
           <button type="button" class="member-membership-chip" (click)="abrirModulo('pagos')">
             <span>{{membresiaActual ? '✓' : '!'}}</span>
-            <div><small>{{membresiaActual ? 'MENSUALIDAD ACTIVA' : 'MEMBRESÍA'}}</small><b>{{membresiaActual?.membresia?.nombre || 'Activar membresía'}}</b></div>
+            <div><small>{{membresiaActual ? 'MENSUALIDAD ACTIVA' : 'MEMBRESÍA'}}</small><b>{{membresiaActual ? nombreMembresiaVisible(membresiaActual) : 'Activar membresía'}}</b></div>
             <em>→</em>
           </button>
         </div>
@@ -234,7 +234,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               <div class="membership-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 7 4.2 4L12 5l4.8 6L21 7l-2 11H5z"/><path d="M6 21h12"/></svg></div>
               <div class="membership-copy">
                 <span>{{membresiaActual ? 'MEMBRESÍA ACTIVA' : 'MEMBRESÍA'}}</span>
-                <h2>{{membresiaActual?.membresia?.nombre || 'Sin membresía activa'}}</h2>
+                <h2>{{nombreMembresiaVisible(membresiaActual)}}</h2>
                 <p>{{membresiaActual ? ('Válido hasta: ' + fechaCortaPortal(membresiaActual.fecha_fin)) : 'Consulta las mensualidades disponibles para activar tu acceso.'}}</p>
               </div>
               <div class="membership-actions">
@@ -1015,7 +1015,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               <div class="membership-current-icon">{{membresiaActual ? '✓' : '!'}}</div>
               <div class="membership-current-copy">
                 <small>MEMBRESÍA ACTUAL</small>
-                <h2>{{membresiaActual?.membresia?.nombre || 'Sin mensualidad activa'}}</h2>
+                <h2>{{nombreMembresiaVisible(membresiaActual)}}</h2>
                 <p *ngIf="membresiaActual">
                   Vigente del {{fechaCortaPortal(membresiaActual.fecha_inicio)}} al {{fechaCortaPortal(membresiaActual.fecha_fin)}}
                 </p>
@@ -1024,6 +1024,19 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               <div class="membership-current-state">
                 <span [class.active]="!!membresiaActual"><i></i>{{membresiaActual ? (membresiaActual.estado || 'Activo') : 'Sin membresía'}}</span>
                 <b *ngIf="membresiaActual?.membresia?.precio">S/ {{membresiaActual.membresia.precio | number:'1.2-2'}}</b>
+              </div>
+            </article>
+
+            <article class="membership-current-card membership-next-card" *ngIf="membresiaProxima">
+              <div class="membership-current-icon">→</div>
+              <div class="membership-current-copy">
+                <small>PRÓXIMA MEMBRESÍA YA COMPRADA</small>
+                <h2>{{nombreMembresiaVisible(membresiaProxima)}}</h2>
+                <p>Programada del {{fechaCortaPortal(membresiaProxima.fecha_inicio)}} al {{fechaCortaPortal(membresiaProxima.fecha_fin)}}.</p>
+              </div>
+              <div class="membership-current-state">
+                <span class="active"><i></i>Programada</span>
+                <b *ngIf="membresiaProxima?.membresia?.precio">S/ {{membresiaProxima.membresia.precio | number:'1.2-2'}}</b>
               </div>
             </article>
           </section>
@@ -1209,7 +1222,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <div *ngFor="let p of pagos" class="member-payment-item">
                   <span class="payment-icon">▤</span>
                   <p>
-                    <b>{{p.cliente_membresia?.membresia?.nombre || 'Membresía'}}</b>
+                    <b>{{nombreMembresiaVisible(p.cliente_membresia)}}</b>
                     <small>{{fecha(p.fecha_pago)}} · {{p.metodo_pago}}</small>
                     <small *ngIf="p.numero_operacion">Op. {{p.numero_operacion}}</small>
                   </p>
@@ -1829,6 +1842,99 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const d=new Date(v);
     if(isNaN(d.getTime()))return String(v);
     return d.toLocaleDateString('es-PE',{day:'2-digit',month:'short',year:'numeric'});
+  }
+
+  nombreMembresiaVisible(relacion:any):string{
+    if(!relacion)return 'Sin membresía activa';
+    const membresia=relacion?.membresia||relacion||{};
+    const nombre=String(membresia?.nombre||'').trim();
+    const meses=Math.max(0,Number(membresia?.duracion_meses||0));
+    const oficial=/^(Mensualidad 1 mes|Promoción 2 meses|Promocion 2 meses|Promoción 3 meses|Promocion 3 meses)$/i.test(nombre);
+    if(oficial)return nombre;
+    if(meses===1)return 'Mensualidad vigente · 1 mes';
+    if(meses>1)return `Membresía vigente · ${meses} meses`;
+    return nombre || 'Membresía vigente';
+  }
+
+  get ultimoPagoCompletado():any{
+    return (this.pagos||[]).find((p:any)=>String(p?.estado_pago||'').toLowerCase()==='completado')||null;
+  }
+
+  get diasRestantesMembresia():number{
+    if(!this.membresiaActual?.fecha_fin)return 0;
+    const fin=new Date(String(this.membresiaActual.fecha_fin).slice(0,10)+'T23:59:59');
+    const hoy=new Date();
+    return Math.max(0,Math.ceil((fin.getTime()-hoy.getTime())/86400000));
+  }
+
+  accionEntrenamientoPrincipal():void{
+    if(!this.membresiaActual){
+      this.abrirModulo('pagos');
+      return;
+    }
+    if(!this.tieneRutinaAsignadaGym){
+      this.solicitarRutinaAlPersonal();
+      return;
+    }
+    this.iniciarEntrenamientoCasa();
+  }
+
+  solicitarRutinaAlPersonal():void{
+    if(!this.membresiaActual){
+      this.abrirModulo('pagos');
+      return;
+    }
+    if(this.tieneRutinaAsignadaGym){
+      this.abrirModulo('rutinas');
+      return;
+    }
+    if(this.procesandoSolicitudRutina)return;
+
+    this.procesandoSolicitudRutina=true;
+    this.errorCasa='';
+    const crear=()=>{
+      this.api.crearSoporteCliente({
+        asunto:'Solicitud de rutina',
+        mensaje:'Tengo una membresía vigente y solicito que el personal de Mallqui Gym registre mi rutina de entrenamiento en el sistema.'
+      }).subscribe({
+        next:r=>{
+          this.procesandoSolicitudRutina=false;
+          this.ok(r?.mensaje||'Solicitud de rutina enviada al personal del gimnasio.');
+          this.abrirModulo('soporte');
+        },
+        error:e=>{
+          this.procesandoSolicitudRutina=false;
+          this.errorCasa=this.errorApi(e);
+        }
+      });
+    };
+
+    this.api.soporteCliente().subscribe({
+      next:(items:any[])=>{
+        const pendiente=(items||[]).find((s:any)=>
+          String(s?.estado||'').toLowerCase()==='pendiente' &&
+          String(s?.asunto||'').toLowerCase().includes('rutina')
+        );
+        if(pendiente){
+          this.procesandoSolicitudRutina=false;
+          this.ok('Ya tienes una solicitud de rutina pendiente con el gimnasio.');
+          this.abrirModulo('soporte');
+          return;
+        }
+        crear();
+      },
+      error:()=>crear()
+    });
+  }
+
+  irDetalleEntrenamiento():void{
+    if(!this.tieneRutinaAsignadaGym){
+      this.solicitarRutinaAlPersonal();
+      return;
+    }
+    setTimeout(()=>{
+      document.querySelector('.gym-assigned-routine-real')?.scrollIntoView({behavior:'smooth',block:'start'});
+    },0);
   }
 
   nombrePersona(p:any):string{return p?[`${p.nombres||''}`,`${p.apellidos||''}`].join(' ').trim():'-';}
@@ -2504,7 +2610,12 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.api.pagosCliente().subscribe(x=>this.pagos=x);
         this.api.membresiaCliente().subscribe(x=>{
           this.membresiaActual=x?.actual||this.membresiaActual;
-          this.resumen={...(this.resumen||{}),membresia_actual:this.membresiaActual};
+          this.membresiaProxima=x?.proxima||null;
+          this.resumen={
+            ...(this.resumen||{}),
+            membresia_actual:this.membresiaActual,
+            membresia_proxima:this.membresiaProxima
+          };
         });
       },
       error:e=>{
