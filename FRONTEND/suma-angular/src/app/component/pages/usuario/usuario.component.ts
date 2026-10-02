@@ -1168,8 +1168,12 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
               <div class="profile-avatar">{{nombreCorto.charAt(0).toUpperCase()}}</div>
               <h2>{{nombreCorto}}</h2>
               <p>{{perfil?.correo || 'Cliente Mallqui Gym'}}</p>
-              <span>CLIENTE ACTIVO</span>
-              <ul><li>✓ Acceso al portal</li><li>✓ Datos sincronizados</li><li>✓ Cuenta protegida</li></ul>
+              <span>{{perfil?.estado || 'Activo'}}</span>
+              <ul>
+                <li>✓ Acceso al portal del cliente</li>
+                <li>✓ Datos sincronizados con Laravel/MySQL</li>
+                <li>✓ Cuenta protegida con sesión autenticada</li>
+              </ul>
             </aside>
 
             <article class="member-module-card profile-edit-card">
