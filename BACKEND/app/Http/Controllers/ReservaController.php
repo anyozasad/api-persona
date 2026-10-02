@@ -62,15 +62,22 @@ class ReservaController extends Controller
                 throw ValidationException::withMessages(['fecha_clase' => ['No puedes reservar una clase que ya comenzó.']]);
             }
 
-            $tieneMembresia = ClienteMembresia::query()
+            $membresiaCliente = ClienteMembresia::with('membresia')
                 ->where('id_cliente', $cliente->id_cliente)
                 ->where('estado', 'Activo')
                 ->whereDate('fecha_inicio', '<=', $fechaClase)
                 ->whereDate('fecha_fin', '>=', $fechaClase)
-                ->exists();
+                ->orderByDesc('fecha_fin')
+                ->first();
 
-            if (!$tieneMembresia) {
+            if (!$membresiaCliente) {
                 throw ValidationException::withMessages(['fecha_clase' => ['Necesitas una membresía vigente para la fecha de la clase.']]);
+            }
+
+            if ($membresiaCliente->membresia && $membresiaCliente->membresia->permite_reservas === false) {
+                throw ValidationException::withMessages([
+                    'id_clase' => ['Tu plan actual no incluye reservas de clases. Revisa los beneficios de tu membresía.'],
+                ]);
             }
 
             $duplicada = Reserva::query()
