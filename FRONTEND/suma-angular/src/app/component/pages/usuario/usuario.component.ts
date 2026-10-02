@@ -1356,7 +1356,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       calendario:'Ten tus próximas actividades y fechas importantes en un solo lugar.',
       club:'Tu credencial, clases favoritas y opinión sobre el servicio.',
       avisos:'Mensajes importantes del gimnasio y recordatorios.',
-      pagos:'Revisa tu membresía, solicitudes y comprobantes.',
+      pagos:'Revisa tu membresía, compras realizadas y boletas generadas.',
       soporte:'Escríbenos cuando necesites ayuda y revisa nuestras respuestas.',
       perfil:'Actualiza tus datos y protege tu cuenta.'
     };
