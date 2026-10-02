@@ -1071,7 +1071,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   planesMembresia: any[] = [];
   membresiasCliente: any[] = [];
   pagos: any[] = [];
-  pagosPendientes: any[] = [];
   entrenadores: any[] = [];
   clases: any[] = [];
   asistencias: any[] = [];
@@ -1439,7 +1438,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
   cargarPagos(){
     this.api.pagos().subscribe({next:r=>this.pagos=r,error:e=>this.mostrarError(e)});
-    this.pagosPendientes=[];
   }
   cargarEntrenadores(){ this.api.entrenadores().subscribe({next:r=>this.entrenadores=r,error:e=>this.mostrarError(e)}); }
   cargarClases(){ this.api.clases().subscribe({next:r=>this.clases=r,error:e=>this.mostrarError(e)}); }
@@ -1568,9 +1566,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   editarPlan(p:any){this.planEditandoId=p.id_membresia;this.planForm={nombre:p.nombre,duracion_meses:p.duracion_meses,precio:p.precio,descripcion:p.descripcion||'',estado:p.estado};}
   cancelarEdicionPlan(){this.planEditandoId=0;this.planForm={nombre:'',duracion_meses:1,precio:0,descripcion:'',estado:'Activo'};}
   desactivarPlan(id:number){if(!confirm('¿Desactivar este plan?'))return;this.api.eliminarMembresia(id).subscribe({next:r=>{this.ok(r.mensaje||'Plan desactivado');this.cargarMembresias();},error:e=>this.mostrarError(e)});}
-
-  confirmarPago(id:number){ this.api.confirmarPago(id).subscribe({next:()=>{this.ok('Pago confirmado y membresía activada');this.cargarPagos();this.cargarMembresias();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
-  rechazarPago(id:number){ const motivo=prompt('Motivo del rechazo:'); if(!motivo?.trim()) return; this.api.rechazarPago(id,motivo).subscribe({next:()=>{this.ok('Pago rechazado');this.cargarPagos();this.cargarMembresias();},error:e=>this.mostrarError(e)}); }
 
   guardarEntrenador(){
     const datos={...this.entrenadorForm};
