@@ -57,6 +57,17 @@ export class GymApiService {
     return this.http.post(`/api/mi-cuenta/reservas/${id_reserva}/cancelar`, {});
   }
 
+  comprarMembresiaCliente(datos: {
+    id_membresia: number;
+    fecha_inicio?: string;
+    metodo_pago: string;
+    numero_operacion: string;
+    observacion?: string;
+  }): Observable<any> {
+    return this.http.post('/api/mi-cuenta/pagos/comprar', datos);
+  }
+
+  // Alias heredado para no romper otros componentes mientras se migra el nombre.
   solicitarPago(datos: {
     id_membresia: number;
     fecha_inicio?: string;
@@ -64,7 +75,7 @@ export class GymApiService {
     numero_operacion: string;
     observacion?: string;
   }): Observable<any> {
-    return this.http.post('/api/mi-cuenta/pagos/solicitar', datos);
+    return this.comprarMembresiaCliente(datos);
   }
 
   cancelarSolicitudPago(id_pago: number): Observable<any> {

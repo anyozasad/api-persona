@@ -162,13 +162,13 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         <section class="ux-status-strip" aria-label="Estado operativo">
           <button type="button" (click)="cambiarSeccion('reservas')"><span>◷</span><div><b>{{dashboard?.reservas?.hoy ?? 0}}</b><small>Reservas hoy</small></div></button>
           <button type="button" (click)="cambiarSeccion('asistencias')"><span>▣</span><div><b>{{dashboard?.asistencias?.hoy ?? 0}}</b><small>Asistencias hoy</small></div></button>
-          <button type="button" [class.needs-attention]="(dashboard?.membresias?.pagos_pendientes ?? 0)>0" (click)="cambiarSeccion('pagos')"><span>▤</span><div><b>{{dashboard?.membresias?.pagos_pendientes ?? 0}}</b><small>Pagos pendientes</small></div></button>
+          <button type="button" (click)="cambiarSeccion('pagos')"><span>▤</span><div><b>{{pagos.length}}</b><small>Pagos registrados</small></div></button>
           <button type="button" [class.needs-attention]="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0" (click)="cambiarSeccion('productos')"><span>!</span><div><b>{{dashboard?.inventario?.productos_stock_bajo ?? 0}}</b><small>Stock bajo</small></div></button>
           <button type="button" [class.needs-attention]="(dashboard?.alertas?.soporte_pendiente ?? 0)>0" (click)="cambiarSeccion('soporte')"><span>?</span><div><b>{{dashboard?.alertas?.soporte_pendiente ?? 0}}</b><small>Soporte pendiente</small></div></button>
         </section>
 
         <section class="ux-alert-banner" *ngIf="(dashboard?.alertas?.total ?? 0) > 0">
-          <div><span>!</span><div><b>Hay {{dashboard?.alertas?.total}} pendientes que requieren atención.</b><small>Revisa pagos, membresías por vencer, stock bajo y consultas de soporte.</small></div></div>
+          <div><span>!</span><div><b>Hay {{dashboard?.alertas?.total}} alertas operativas.</b><small>Revisa membresías por vencer, stock bajo y consultas de soporte. Las compras de planes se registran automáticamente.</small></div></div>
           <button type="button" (click)="(dashboard?.alertas?.soporte_pendiente ?? 0)>0 ? cambiarSeccion('soporte') : cambiarSeccion('reportes')">Revisar pendientes →</button>
         </section>
 
@@ -548,16 +548,16 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
 
       <ng-container *ngIf="seccion==='pagos'">
         <section class="admin-list-card">
-          <div class="management-heading"><div><h2>Pagos pendientes</h2><p>Confirmación de Yape, Plin, transferencia o tarjeta.</p></div><span class="big-number">{{pagosPendientes.length}}</span></div>
-          <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Plan</th><th>Monto</th><th>Método</th><th>N° operación</th><th>Acciones</th></tr></thead><tbody>
-            <tr *ngFor="let p of pagosPendientes"><td>{{p.id_pago}}</td><td>{{clientePago(p)}}</td><td>{{planPago(p)}}</td><td>S/ {{p.monto | number:'1.2-2'}}</td><td>{{p.metodo_pago}}</td><td>{{p.numero_operacion}}</td><td><button class="table-action" type="button" (click)="confirmarPago(p.id_pago)">Confirmar</button> <button class="table-danger" type="button" (click)="rechazarPago(p.id_pago)">Rechazar</button></td></tr>
-            <tr *ngIf="!pagosPendientes.length"><td colspan="7">No hay pagos pendientes.</td></tr>
-          </tbody></table></div>
-        </section>
-        <section class="admin-list-card">
-          <div class="management-heading"><div><h2>Historial de pagos</h2><p>{{pagos.length}} pagos registrados.</p></div></div>
-          <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Plan</th><th>Monto</th><th>Método</th><th>Fecha</th><th>Estado</th></tr></thead><tbody>
-            <tr *ngFor="let p of pagos"><td>{{p.id_pago}}</td><td>{{clientePago(p)}}</td><td>{{planPago(p)}}</td><td>S/ {{p.monto | number:'1.2-2'}}</td><td>{{p.metodo_pago}}</td><td>{{fecha(p.fecha_pago)}}</td><td>{{p.estado_pago}}</td></tr>
+          <div class="management-heading">
+            <div>
+              <h2>Historial de pagos de membresías</h2>
+              <p>Las compras realizadas por los clientes se registran automáticamente; el administrador solo consulta el historial.</p>
+            </div>
+            <span class="big-number">{{pagos.length}}</span>
+          </div>
+          <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Plan</th><th>Monto</th><th>Método</th><th>N° operación</th><th>Fecha</th><th>Estado</th></tr></thead><tbody>
+            <tr *ngFor="let p of pagos"><td>{{p.id_pago}}</td><td>{{clientePago(p)}}</td><td>{{planPago(p)}}</td><td>S/ {{p.monto | number:'1.2-2'}}</td><td>{{p.metodo_pago}}</td><td>{{p.numero_operacion || '-'}}</td><td>{{fecha(p.fecha_pago)}}</td><td>{{p.estado_pago}}</td></tr>
+            <tr *ngIf="!pagos.length"><td colspan="8">No hay pagos registrados.</td></tr>
           </tbody></table></div>
         </section>
       </ng-container>
@@ -982,7 +982,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
               <div class="config-switches">
                 <label><div><b>Membresías por vencer</b><small>Mostrar alertas antes del vencimiento.</small></div><input type="checkbox" [(ngModel)]="configuracionForm.notificar_vencimientos" name="cfg_not_venc"><i></i></label>
                 <label><div><b>Stock bajo</b><small>Avisar cuando un producto llegue al mínimo.</small></div><input type="checkbox" [(ngModel)]="configuracionForm.notificar_stock_bajo" name="cfg_not_stock"><i></i></label>
-                <label><div><b>Pagos pendientes</b><small>Recordar validaciones pendientes.</small></div><input type="checkbox" [(ngModel)]="configuracionForm.notificar_pagos_pendientes" name="cfg_not_pagos"><i></i></label>
+                <label><div><b>Compras de membresía</b><small>Las compras del portal se registran automáticamente y quedan en el historial.</small></div><input type="checkbox" [(ngModel)]="configuracionForm.notificar_pagos_pendientes" name="cfg_not_pagos"><i></i></label>
               </div>
             </article>
           </div>
@@ -1131,7 +1131,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ];
   titulos: Record<string,[string,string]> = {
     dashboard:['Panel Administrador','Datos reales del gimnasio'], clientes:['Socios','Registro y administración de miembros'],
-    membresias:['Suscripciones','Contratación, vigencias y membresías de socios'], pagos:['Pagos','Confirmación e historial de pagos'],
+    membresias:['Suscripciones','Contratación, vigencias y membresías de socios'], pagos:['Pagos','Historial de compras automáticas de membresías'],
     planes:['Planes','Configuración de precios, duración y estados'],
     gastos:['Gastos','Registro de egresos de la caja activa'],
     inventario:['Inventario','Productos, stock y control del inventario'],
@@ -1439,7 +1439,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
   cargarPagos(){
     this.api.pagos().subscribe({next:r=>this.pagos=r,error:e=>this.mostrarError(e)});
-    this.api.pagosPendientes().subscribe({next:r=>this.pagosPendientes=r,error:e=>this.mostrarError(e)});
+    this.pagosPendientes=[];
   }
   cargarEntrenadores(){ this.api.entrenadores().subscribe({next:r=>this.entrenadores=r,error:e=>this.mostrarError(e)}); }
   cargarClases(){ this.api.clases().subscribe({next:r=>this.clases=r,error:e=>this.mostrarError(e)}); }
@@ -1475,7 +1475,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       ['Clientes registrados',this.dashboard?.clientes?.total ?? this.clientes.length],
       ['Clientes activos',this.dashboard?.clientes?.activos ?? 0],
       ['Membresías activas',this.dashboard?.membresias?.activas ?? 0],
-      ['Pagos pendientes',this.dashboard?.membresias?.pagos_pendientes ?? 0],
+      ['Pagos de membresía registrados',this.pagos.length],
       ['Ingresos membresías',this.reporteIngresos?.membresias ?? 0],
       ['Ingresos ventas',this.reporteIngresos?.ventas_productos ?? 0],
       ['Ingresos totales',this.reporteIngresos?.total_ingresos ?? this.dashboard?.ingresos?.total_mes ?? 0],

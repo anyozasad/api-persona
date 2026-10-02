@@ -907,8 +907,8 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
           <div class="member-module-hero hero-photo hero-photo-pagos">
             <div>
               <span>MEMBRESÍA</span>
-              <h1>Planes y renovación</h1>
-              <p>Elige un plan real de Mallqui Gym, revisa sus beneficios y registra tu pago.</p>
+              <h1>Compra y renovación de planes</h1>
+              <p>Elige tu plan, registra la operación y el sistema activa o programa la membresía automáticamente.</p>
             </div>
             <div class="module-hero-icon">▤</div>
           </div>
@@ -987,9 +987,9 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
           <section class="membership-checkout-layout">
             <article class="member-module-card membership-checkout-card">
               <div class="card-title-block">
-                <span>SOLICITUD DE MEMBRESÍA</span>
-                <h2>{{membresiaActual ? 'Renovar o cambiar plan' : 'Activar membresía'}}</h2>
-                <p>Completa los datos del pago del plan que elegiste.</p>
+                <span>COMPRA DE MEMBRESÍA</span>
+                <h2>{{membresiaActual ? 'Renovar o cambiar plan' : 'Comprar membresía'}}</h2>
+                <p>Completa los datos de la operación. La compra se registra sin aprobación manual del administrador.</p>
               </div>
 
               <div class="membership-selected-summary" *ngIf="planPagoSeleccionado; else seleccionaPlanPago">
@@ -1025,7 +1025,7 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
                 </div>
               </ng-template>
 
-              <form class="member-form membership-payment-form" (ngSubmit)="solicitarRenovacion()">
+              <form class="member-form membership-payment-form" (ngSubmit)="comprarMembresia()">
                 <label>Fecha solicitada de inicio
                   <input type="date"
                          [(ngModel)]="pagoForm.fecha_inicio"
@@ -1069,15 +1069,23 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
 
                 <button class="member-form-submit"
                         type="submit"
-                        [disabled]="!planPagoSeleccionado || !pagoForm.numero_operacion.trim()">
-                  {{membresiaActual ? 'Enviar renovación' : 'Solicitar activación'}}
+                        [disabled]="procesandoCompra || !planPagoSeleccionado || !pagoForm.numero_operacion.trim()">
+                  {{procesandoCompra ? 'Procesando compra...' : (membresiaActual ? 'Renovar y generar boleta' : 'Comprar y generar boleta')}}
                   <span>→</span>
                 </button>
 
                 <p class="membership-validation-note">
-                  <span>i</span>
-                  La solicitud queda <b>Pendiente</b> hasta que administración confirme el pago. El monto final se toma del plan guardado en la base de datos.
+                  <span>✓</span>
+                  Al confirmar, el sistema registra el pago como <b>Completado</b>, activa o programa el plan y genera la boleta automáticamente. No necesita aprobación del dashboard.
                 </p>
+
+                <div class="membership-payment-review" *ngIf="ultimaBoleta">
+                  <p><span>BOLETA GENERADA</span><b>N° {{ultimaBoleta.id_pago}}</b></p>
+                  <p><span>Plan</span><b>{{ultimaBoleta.membresia}}</b></p>
+                  <p><span>Periodo</span><b>{{ultimaBoleta.periodo?.inicio}} - {{ultimaBoleta.periodo?.fin}}</b></p>
+                  <p class="total"><span>Total pagado</span><b>S/ {{ultimaBoleta.monto | number:'1.2-2'}}</b></p>
+                  <button type="button" class="member-form-submit" (click)="imprimirBoleta(ultimaBoleta)">Imprimir boleta</button>
+                </div>
               </form>
             </article>
 
@@ -1098,14 +1106,14 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
                   </p>
                   <strong>S/ {{p.monto | number:'1.2-2'}}</strong>
                   <em [class.pending]="p.estado_pago==='Pendiente'">{{p.estado_pago}}</em>
-                  <button *ngIf="p.estado_pago==='Completado'" type="button" (click)="comprobante(p)">Comprobante</button>
-                  <button *ngIf="p.estado_pago==='Pendiente'" type="button" class="payment-cancel" (click)="cancelarSolicitudPago(p)">Cancelar solicitud</button>
+                  <button *ngIf="p.estado_pago==='Completado'" type="button" (click)="comprobante(p)">Ver boleta</button>
+                  <small *ngIf="p.estado_pago==='Pendiente'">Registro antiguo del flujo anterior</small>
                 </div>
 
                 <div class="member-empty-state compact-empty" *ngIf="!pagos.length">
                   <span>▤</span>
                   <h3>Sin pagos registrados</h3>
-                  <p>Cuando envíes una solicitud aparecerá aquí con su estado.</p>
+                  <p>Cuando compres o renueves una membresía, el pago completado aparecerá aquí con su boleta.</p>
                 </div>
               </div>
             </article>
@@ -1202,6 +1210,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   pagos:any[]=[]; rutinas:any[]=[]; asistencias:any[]=[]; reservas:any[]=[]; clases:any[]=[]; compras:any[]=[];
   fechasReserva:Record<number,string>={};
   pagoForm:any={id_membresia:0,fecha_inicio:new Date().toISOString().slice(0,10),metodo_pago:'Yape',numero_operacion:''};
+  ultimaBoleta:any=null;
+  procesandoCompra=false;
   seguridadForm:any={actual:'',nueva:'',confirmacion:''};
 
   diasSemanaCasa=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
@@ -1346,7 +1356,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       calendario:'Ten tus próximas actividades y fechas importantes en un solo lugar.',
       club:'Tu credencial, clases favoritas y opinión sobre el servicio.',
       avisos:'Mensajes importantes del gimnasio y recordatorios.',
-      pagos:'Revisa tu membresía, solicitudes y comprobantes.',
+      pagos:'Revisa tu membresía, compras realizadas y boletas generadas.',
       soporte:'Escríbenos cuando necesites ayuda y revisa nuestras respuestas.',
       perfil:'Actualiza tus datos y protege tu cuenta.'
     };
@@ -2205,7 +2215,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   reservar(c:any){const f=this.fechasReserva[c.id_clase];if(!f){this.error='Selecciona una fecha para la clase.';return;}this.api.reservarClase(c.id_clase,f).subscribe({next:r=>{this.ok(r.mensaje||'Reserva creada');this.cargarReservas();},error:e=>this.error=this.errorApi(e)});}
   cancelarReserva(r:any){if(!confirm('¿Cancelar esta reserva?'))return;this.api.cancelarReserva(r.id_reserva).subscribe({next:x=>{this.ok(x.mensaje||'Reserva cancelada');this.cargarReservas();},error:e=>this.error=this.errorApi(e)});}
   cargarReservas(){this.api.reservasCliente().subscribe({next:r=>this.reservas=r,error:e=>this.error=this.errorApi(e)});}
-  solicitarRenovacion(){
+  comprarMembresia(){
+    if(this.procesandoCompra)return;
     if(!this.planPagoSeleccionado){
       this.error='Selecciona uno de los planes disponibles.';
       return;
@@ -2215,25 +2226,46 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.api.solicitarPago({...this.pagoForm}).subscribe({
+    this.procesandoCompra=true;
+    this.error='';
+    this.api.comprarMembresiaCliente({...this.pagoForm}).subscribe({
       next:r=>{
-        this.ok(r.mensaje||'Solicitud enviada');
+        this.procesandoCompra=false;
+        this.ultimaBoleta=r?.comprobante||null;
+        this.ok(r.mensaje||'Compra completada');
         this.pagoForm.numero_operacion='';
         this.api.pagosCliente().subscribe(x=>this.pagos=x);
-        this.api.membresiaCliente().subscribe(x=>this.membresiaActual=x?.actual||this.membresiaActual);
+        this.api.membresiaCliente().subscribe(x=>{
+          this.membresiaActual=x?.actual||this.membresiaActual;
+          this.resumen={...(this.resumen||{}),membresia_actual:this.membresiaActual};
+        });
       },
-      error:e=>this.error=this.errorApi(e)
+      error:e=>{
+        this.procesandoCompra=false;
+        this.error=this.errorApi(e);
+      }
     });
   }
   cancelarSolicitudPago(p:any){
     if(!p?.id_pago||p.estado_pago!=='Pendiente')return;
-    if(!confirm('¿Cancelar esta solicitud de pago pendiente?'))return;
+    if(!confirm('¿Cancelar este registro pendiente del flujo anterior?'))return;
     this.api.cancelarSolicitudPago(Number(p.id_pago)).subscribe({
-      next:r=>{this.ok(r.mensaje||'Solicitud cancelada');this.api.pagosCliente().subscribe(x=>this.pagos=x);},
+      next:r=>{this.ok(r.mensaje||'Registro cancelado');this.api.pagosCliente().subscribe(x=>this.pagos=x);},
       error:e=>this.error=this.errorApi(e)
     });
   }
-  comprobante(p:any){this.api.comprobantePagoCliente(p.id_pago).subscribe({next:r=>{const c=r.comprobante;const html=`<html><body style="font-family:Arial;padding:30px"><h2>Mallqui Gym</h2><hr><p><b>Comprobante:</b> ${c.id_pago}</p><p><b>Cliente:</b> ${c.cliente} - DNI ${c.dni}</p><p><b>Membresía:</b> ${c.membresia}</p><p><b>Periodo:</b> ${c.periodo.inicio} a ${c.periodo.fin}</p><p><b>Monto:</b> S/ ${c.monto}</p><p><b>Método:</b> ${c.metodo_pago}</p><p><b>Operación:</b> ${c.numero_operacion||'-'}</p><p><b>Estado:</b> ${c.estado}</p><script>window.print()<\/script></body></html>`;const w=window.open('','_blank');if(w){w.document.write(html);w.document.close();}},error:e=>this.error=this.errorApi(e)});}
+  imprimirBoleta(c:any){
+    if(!c)return;
+    const html=`<html><head><title>Boleta Mallqui Gym</title></head><body style="font-family:Arial;padding:30px;max-width:700px;margin:auto"><h2>Mallqui Gym</h2><h3>BOLETA DE MEMBRESÍA</h3><hr><p><b>N°:</b> ${c.id_pago}</p><p><b>Fecha:</b> ${c.fecha||'-'}</p><p><b>Cliente:</b> ${c.cliente||'-'} - DNI ${c.dni||'-'}</p><p><b>Membresía:</b> ${c.membresia||'-'}</p><p><b>Periodo:</b> ${c.periodo?.inicio||'-'} a ${c.periodo?.fin||'-'}</p><p><b>Monto:</b> S/ ${c.monto}</p><p><b>Método:</b> ${c.metodo_pago||'-'}</p><p><b>Operación:</b> ${c.numero_operacion||'-'}</p><p><b>Estado:</b> ${c.estado||'Completado'}</p><hr><small>Comprobante interno generado por Mallqui Gym.</small><script>window.print()<\/script></body></html>`;
+    const w=window.open('','_blank');
+    if(w){w.document.write(html);w.document.close();}
+  }
+  comprobante(p:any){
+    this.api.comprobantePagoCliente(p.id_pago).subscribe({
+      next:r=>this.imprimirBoleta(r.comprobante),
+      error:e=>this.error=this.errorApi(e)
+    });
+  }
   cerrarSesion(){this.auth.logout().subscribe({next:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);},error:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);}});}
   ok(m:string){this.error='';this.toast='✓ '+m;setTimeout(()=>this.toast='',2600);}
   errorApi(e:any):string{const er=e?.error?.errors;if(er){const p=Object.values(er)[0];if(Array.isArray(p))return String(p[0]);}return e?.error?.mensaje??e?.error?.message??'No se pudo completar la operación.';}
