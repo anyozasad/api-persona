@@ -54,13 +54,21 @@ class SolicitudPagoMembresiaController extends Controller
                 ->get();
 
             foreach ($pendientes as $pendiente) {
-                PagoMembresia::query()
+                $pagosPendientes = PagoMembresia::query()
                     ->where('id_cliente_membresia', $pendiente->id_cliente_membresia)
                     ->where('estado_pago', 'Pendiente')
-                    ->update([
+                    ->lockForUpdate()
+                    ->get();
+
+                foreach ($pagosPendientes as $pagoPendiente) {
+                    $pagoPendiente->update([
                         'estado_pago' => 'Cancelado',
-                        'observacion' => DB::raw("CONCAT(COALESCE(observacion, ''), ' | Flujo anterior reemplazado por compra automática')"),
+                        'observacion' => trim(
+                            ($pagoPendiente->observacion ? $pagoPendiente->observacion.' | ' : '')
+                            .'Flujo anterior reemplazado por compra automática'
+                        ),
                     ]);
+                }
 
                 $pendiente->update(['estado' => 'Cancelado']);
             }
