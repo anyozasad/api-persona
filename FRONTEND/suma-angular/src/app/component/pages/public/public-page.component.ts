@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { GymApiService } from '../../../core/services/gym-api.service';
 
 type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
 
@@ -23,7 +24,7 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
           <a routerLink="/">Inicio</a>
           <a routerLink="/nosotros" [class.active]="pagina==='nosotros'">Nosotros</a>
           <a routerLink="/clases-gym" [class.active]="pagina==='clases'">Clases</a>
-          <a routerLink="/planes" [class.active]="pagina==='planes'">Planes</a>
+          <a routerLink="/planes" [class.active]="pagina==='planes'">Mensualidades</a>
           <a routerLink="/galeria" [class.active]="pagina==='galeria'">Galería</a>
           <a routerLink="/contacto" [class.active]="pagina==='contacto'">Contacto</a>
         </nav>
@@ -41,12 +42,12 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
               <h1>Más que entrenar, queremos <strong>acompañarte.</strong></h1>
               <p>Un espacio pensado para entrenar con orientación, constancia y una experiencia digital que te ayuda a organizar tu progreso.</p>
               <div class="hero-actions">
-                <a routerLink="/planes" class="primary">Conocer nuestros planes <b>→</b></a>
+                <a routerLink="/planes" class="primary">Conocer mensualidades <b>→</b></a>
                 <a routerLink="/contacto" class="secondary">Hablar con nosotros <b>↗</b></a>
               </div>
               <div class="about-hero-stats">
                 <div><b>4</b><span>modalidades</span></div>
-                <div><b>06–22h</b><span>horario amplio</span></div>
+                <div><b>6–12 / 14–21:30</b><span>horario de atención</span></div>
                 <div><b>1 portal</b><span>todo conectado</span></div>
               </div>
             </div>
@@ -79,7 +80,7 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
             <p>Elige la actividad que mejor se adapte a tu ritmo y revisa horarios antes de reservar.</p>
             <div class="classes-hero-facts">
               <span><b>{{clases.length}}</b><small>modalidades</small></span>
-              <span><b>06:00–22:00</b><small>horario amplio</small></span>
+              <span><b>6–12 / 14–21:30</b><small>horario de atención</small></span>
               <span><b>Online</b><small>reserva desde tu cuenta</small></span>
             </div>
           </div>
@@ -103,9 +104,9 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
       <ng-container *ngSwitchCase="'planes'">
         <section class="page-hero compact-hero plans-hero">
           <div class="public-shell">
-            <span class="eyebrow">PLANES MALLQUI GYM</span>
-            <h1>Elige el plan que encaje contigo</h1>
-            <p>Opciones claras, sin complicaciones. Puedes iniciar con el plan que mejor se adapte a tu objetivo.</p>
+            <span class="eyebrow">MENSUALIDADES MALLQUI GYM</span>
+            <h1>Elige cuánto tiempo quieres entrenar</h1>
+            <p>Mensualidad y promociones reales del gimnasio: 1, 2 o 3 meses.</p>
           </div>
         </section>
 
@@ -115,9 +116,9 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
               <span *ngIf="p.destacado" class="recommended">MÁS ELEGIDO</span>
               <h3>{{p.nombre}}</h3>
               <p>{{p.subtitulo}}</p>
-              <div class="price"><small>S/</small><b>{{p.precio}}</b><em>/ mes</em></div>
+              <div class="price"><small>S/</small><b>{{p.precio}}</b><em>/ {{p.duracion_meses}} mes{{p.duracion_meses===1 ? '' : 'es'}}</em></div>
               <ul><li *ngFor="let item of p.items">✓ {{item}}</li></ul>
-              <a [routerLink]="['/login']" [queryParams]="{plan:p.nombre}" [class.primary]="p.destacado" [class.secondary]="!p.destacado">Elegir {{p.nombre}}</a>
+              <a [routerLink]="['/login']" [queryParams]="{plan:p.nombre}" [class.primary]="p.destacado" [class.secondary]="!p.destacado">Elegir {{p.duracion_meses}} mes{{p.duracion_meses===1 ? '' : 'es'}}</a>
             </article>
           </div>
         </section>
@@ -181,7 +182,7 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
     <footer class="public-footer">
       <div class="public-shell footer-inner">
         <div><img src="assets/mallqui-logo.svg" alt="Mallqui Gym"><p>Entrena. Supérate. Avanza.</p></div>
-        <nav><a routerLink="/">Inicio</a><a routerLink="/nosotros">Nosotros</a><a routerLink="/clases-gym">Clases</a><a routerLink="/planes">Planes</a><a routerLink="/galeria">Galería</a><a routerLink="/contacto">Contacto</a></nav>
+        <nav><a routerLink="/">Inicio</a><a routerLink="/nosotros">Nosotros</a><a routerLink="/clases-gym">Clases</a><a routerLink="/planes">Mensualidades</a><a routerLink="/galeria">Galería</a><a routerLink="/contacto">Contacto</a></nav>
         <span>© 2026 Mallqui Gym</span>
       </div>
     </footer>
@@ -191,7 +192,7 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
 export class PublicPageComponent implements OnInit, OnDestroy {
   pagina: PaginaPublica = 'nosotros';
 
-  contacto = { nombre: '', correo: '', asunto: 'Planes', mensaje: '' };
+  contacto = { nombre: '', correo: '', asunto: 'Mensualidades', mensaje: '' };
 
   clases = [
     { nombre:'MUSCULACIÓN', desc:'Fuerza, hipertrofia y mejor rendimiento.', icon:'🏋', nivel:'Todos los niveles', dias:'Lun · Mié · Vie', hora:'6:00 AM – 10:00 PM', cupo:12, img:'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1000&q=85' },
@@ -200,10 +201,11 @@ export class PublicPageComponent implements OnInit, OnDestroy {
     { nombre:'YOGA', desc:'Movilidad, equilibrio y concentración en una sesión guiada.', icon:'🧘', nivel:'Inicial / Intermedio', dias:'Mar · Jue · Sáb', hora:'8:00 AM', cupo:14, img:'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1000&q=85' }
   ];
 
+  gymInfo:any={};
   planes = [
-    { nombre:'BÁSICO', precio:79, subtitulo:'Ideal para comenzar', destacado:false, items:['Acceso a sala de pesas','Clases grupales','Rutinas básicas'] },
-    { nombre:'PREMIUM', precio:129, subtitulo:'Para mejores resultados', destacado:true, items:['Acceso total','Clases ilimitadas','Rutinas personalizadas','Evaluación mensual'] },
-    { nombre:'PRO', precio:179, subtitulo:'Experiencia completa', destacado:false, items:['Todo Premium','Asesoría 1 a 1','Plan nutricional'] }
+    { nombre:'Mensualidad 1 mes', precio:80, duracion_meses:1, subtitulo:'Mensualidad individual', destacado:false, items:['Acceso al gimnasio durante 1 mes','Guía del personal del gym','Credencial digital y control de asistencias'] },
+    { nombre:'Promoción 2 meses', precio:120, duracion_meses:2, subtitulo:'Promoción por 2 meses', destacado:true, items:['Acceso al gimnasio durante 2 meses','Guía del personal del gym','Credencial digital y control de asistencias'] },
+    { nombre:'Promoción 3 meses', precio:150, duracion_meses:3, subtitulo:'Promoción por 3 meses', destacado:false, items:['Acceso al gimnasio durante 3 meses','Guía del personal del gym','Credencial digital y control de asistencias'] }
   ];
 
   galeria = [
@@ -214,13 +216,31 @@ export class PublicPageComponent implements OnInit, OnDestroy {
     { nombre:'Cardio', texto:'Mejora tu resistencia y condición física.', img:'https://images.unsplash.com/photo-1530137073520-4ea6e2f10a48?auto=format&fit=crop&w=1000&q=88' }
   ];
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private api: GymApiService) {}
 
   ngOnInit(): void {
     document.documentElement.classList.add('mallqui-public-scroll');
     this.route.data.subscribe(data => {
       this.pagina = (data['pagina'] || 'nosotros') as PaginaPublica;
       window.scrollTo({ top: 0, behavior: 'auto' });
+    });
+
+    this.api.informacionGym().subscribe({
+      next:(r:any)=>{
+        this.gymInfo=r||{};
+        const datos=Array.isArray(r?.membresias)?r.membresias:[];
+        if(datos.length){
+          this.planes=datos.map((m:any)=>({
+            nombre:m.nombre,
+            precio:Number(m.precio||0),
+            duracion_meses:Number(m.duracion_meses||1),
+            subtitulo:Number(m.duracion_meses||1)===1 ? 'Mensualidad individual' : `Promoción por ${m.duracion_meses} meses`,
+            destacado:Number(m.duracion_meses||1)===2,
+            items:Array.isArray(m.beneficios)?m.beneficios:[m.descripcion].filter(Boolean)
+          }));
+        }
+      },
+      error:()=>{}
     });
   }
 
