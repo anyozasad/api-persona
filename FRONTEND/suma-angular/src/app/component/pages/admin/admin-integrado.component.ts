@@ -548,16 +548,16 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
 
       <ng-container *ngIf="seccion==='pagos'">
         <section class="admin-list-card">
-          <div class="management-heading"><div><h2>Pagos pendientes</h2><p>Confirmación de Yape, Plin, transferencia o tarjeta.</p></div><span class="big-number">{{pagosPendientes.length}}</span></div>
-          <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Plan</th><th>Monto</th><th>Método</th><th>N° operación</th><th>Acciones</th></tr></thead><tbody>
-            <tr *ngFor="let p of pagosPendientes"><td>{{p.id_pago}}</td><td>{{clientePago(p)}}</td><td>{{planPago(p)}}</td><td>S/ {{p.monto | number:'1.2-2'}}</td><td>{{p.metodo_pago}}</td><td>{{p.numero_operacion}}</td><td><button class="table-action" type="button" (click)="confirmarPago(p.id_pago)">Confirmar</button> <button class="table-danger" type="button" (click)="rechazarPago(p.id_pago)">Rechazar</button></td></tr>
-            <tr *ngIf="!pagosPendientes.length"><td colspan="7">No hay pagos pendientes.</td></tr>
-          </tbody></table></div>
-        </section>
-        <section class="admin-list-card">
-          <div class="management-heading"><div><h2>Historial de pagos</h2><p>{{pagos.length}} pagos registrados.</p></div></div>
-          <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Plan</th><th>Monto</th><th>Método</th><th>Fecha</th><th>Estado</th></tr></thead><tbody>
-            <tr *ngFor="let p of pagos"><td>{{p.id_pago}}</td><td>{{clientePago(p)}}</td><td>{{planPago(p)}}</td><td>S/ {{p.monto | number:'1.2-2'}}</td><td>{{p.metodo_pago}}</td><td>{{fecha(p.fecha_pago)}}</td><td>{{p.estado_pago}}</td></tr>
+          <div class="management-heading">
+            <div>
+              <h2>Historial de pagos de membresías</h2>
+              <p>Las compras realizadas por los clientes se registran automáticamente; el administrador solo consulta el historial.</p>
+            </div>
+            <span class="big-number">{{pagos.length}}</span>
+          </div>
+          <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Plan</th><th>Monto</th><th>Método</th><th>N° operación</th><th>Fecha</th><th>Estado</th></tr></thead><tbody>
+            <tr *ngFor="let p of pagos"><td>{{p.id_pago}}</td><td>{{clientePago(p)}}</td><td>{{planPago(p)}}</td><td>S/ {{p.monto | number:'1.2-2'}}</td><td>{{p.metodo_pago}}</td><td>{{p.numero_operacion || '-'}}</td><td>{{fecha(p.fecha_pago)}}</td><td>{{p.estado_pago}}</td></tr>
+            <tr *ngIf="!pagos.length"><td colspan="8">No hay pagos registrados.</td></tr>
           </tbody></table></div>
         </section>
       </ng-container>
@@ -1131,7 +1131,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ];
   titulos: Record<string,[string,string]> = {
     dashboard:['Panel Administrador','Datos reales del gimnasio'], clientes:['Socios','Registro y administración de miembros'],
-    membresias:['Suscripciones','Contratación, vigencias y membresías de socios'], pagos:['Pagos','Confirmación e historial de pagos'],
+    membresias:['Suscripciones','Contratación, vigencias y membresías de socios'], pagos:['Pagos','Historial de compras automáticas de membresías'],
     planes:['Planes','Configuración de precios, duración y estados'],
     gastos:['Gastos','Registro de egresos de la caja activa'],
     inventario:['Inventario','Productos, stock y control del inventario'],
@@ -1439,7 +1439,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
   cargarPagos(){
     this.api.pagos().subscribe({next:r=>this.pagos=r,error:e=>this.mostrarError(e)});
-    this.api.pagosPendientes().subscribe({next:r=>this.pagosPendientes=r,error:e=>this.mostrarError(e)});
+    this.pagosPendientes=[];
   }
   cargarEntrenadores(){ this.api.entrenadores().subscribe({next:r=>this.entrenadores=r,error:e=>this.mostrarError(e)}); }
   cargarClases(){ this.api.clases().subscribe({next:r=>this.clases=r,error:e=>this.mostrarError(e)}); }
