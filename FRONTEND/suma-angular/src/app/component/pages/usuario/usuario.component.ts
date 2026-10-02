@@ -171,9 +171,9 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 </div>
               </div>
 
-              <div class="showcase-quote">
+              <div class="showcase-quote gym-owner-phrase">
                 <span>“</span>
-                <b>DISCIPLINA HOY,<br>RESULTADOS MAÑANA</b>
+                <b>{{gymInfo?.frase_publicitaria || 'Ven, entrena con Mallqui Gym con el propósito de tener una vida saludable.'}}</b>
               </div>
 
               <div class="showcase-kpis">
@@ -235,11 +235,11 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               <div class="membership-copy">
                 <span>{{membresiaActual ? 'MEMBRESÍA ACTIVA' : 'MEMBRESÍA'}}</span>
                 <h2>{{membresiaActual?.membresia?.nombre || 'Sin membresía activa'}}</h2>
-                <p>{{membresiaActual ? ('Válido hasta: ' + fechaCortaPortal(membresiaActual.fecha_fin)) : 'Consulta los planes disponibles para activar tu acceso.'}}</p>
+                <p>{{membresiaActual ? ('Válido hasta: ' + fechaCortaPortal(membresiaActual.fecha_fin)) : 'Consulta las mensualidades disponibles para activar tu acceso.'}}</p>
               </div>
               <div class="membership-actions">
-                <span><i></i>{{membresiaActual ? 'Activa' : 'Sin plan'}}</span>
-                <button type="button" (click)="abrirModulo('pagos')">{{membresiaActual ? 'Ver detalles' : 'Ver planes'}} <em>→</em></button>
+                <span><i></i>{{membresiaActual ? 'Activa' : 'Sin mensualidad'}}</span>
+                <button type="button" (click)="abrirModulo('pagos')">{{membresiaActual ? 'Ver detalles' : 'Ver mensualidades'}} <em>→</em></button>
               </div>
             </article>
 
@@ -307,6 +307,44 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               <button type="button" (click)="abrirModulo('perfil')">{{perfilCompleto ? 'Ver perfil' : 'Completar perfil'}} <span>→</span></button>
             </article>
           </section>
+        </section>
+
+        <section *ngIf="moduloActivo==='inicio'" class="gym-real-info-panel member-enter-up">
+          <div class="gym-real-info-head">
+            <div>
+              <span>INFORMACIÓN DE MALLQUI GYM</span>
+              <h2>Todo lo que necesitas antes de venir</h2>
+              <p>Datos proporcionados por el gimnasio y cargados desde el sistema.</p>
+            </div>
+            <b>{{gymInfo?.nombre_gimnasio || 'Mallqui Gym'}}</b>
+          </div>
+
+          <div class="gym-real-info-grid">
+            <article>
+              <i>⌖</i>
+              <div><small>UBICACIÓN</small><b>{{gymInfo?.direccion || 'Jr. Los Laureles Mz 17 Lt 18'}}</b><p>{{gymInfo?.referencia || 'Referencia: Plaza de Laura Bosso'}}</p></div>
+            </article>
+            <article>
+              <i>☎</i>
+              <div><small>CONTACTO</small><b>{{gymInfo?.telefono || '939398148'}}</b><p>Comunícate con el personal del gimnasio.</p></div>
+            </article>
+            <article class="wide">
+              <i>◷</i>
+              <div><small>HORARIO DE ATENCIÓN</small><b>Atención de lunes a domingo</b><p>{{gymInfo?.horario_detalle || 'Lunes a viernes: 6:00 a. m. - 12:00 p. m. y 2:00 p. m. - 9:30 p. m. | Sábado: 6:00 a. m. - 12:00 p. m. y 2:00 p. m. - 8:30 p. m. | Domingo: atención hasta el mediodía.'}}</p></div>
+            </article>
+            <article>
+              <i>S/</i>
+              <div><small>TARIFAS</small><b>{{resumenMensualidades}}</b><p>Ingreso o rutina diaria: S/ {{gymInfo?.tarifa_diaria || 6 | number:'1.2-2'}}</p></div>
+            </article>
+            <article>
+              <i>✓</i>
+              <div><small>ATENCIÓN EN SALA</small><b>Guía del personal del gym</b><p>Las instrucciones y orientación están a cargo del personal de Mallqui Gym.</p></div>
+            </article>
+            <article class="wide">
+              <i>▤</i>
+              <div><small>PRODUCTOS EN RECEPCIÓN</small><b>Productos para consumo</b><p>{{gymInfo?.mensaje_productos || 'Energizantes, bebidas y productos para consumo disponibles en recepción.'}}</p></div>
+            </article>
+          </div>
         </section>
 
         <section *ngIf="moduloActivo==='casa'" class="member-module home-training-module module-training-v34 member-enter-up">
@@ -930,8 +968,8 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
           <div class="member-module-hero hero-photo hero-photo-pagos">
             <div>
               <span>MEMBRESÍA</span>
-              <h1>Compra y renovación de planes</h1>
-              <p>Elige tu plan, registra la operación y el sistema activa o programa la membresía automáticamente.</p>
+              <h1>Mensualidades y promociones</h1>
+              <p>Elige 1, 2 o 3 meses, registra la operación y el sistema activa o programa la membresía automáticamente.</p>
             </div>
             <button type="button" class="module-refresh-btn" (click)="sincronizarDatosCliente()" [disabled]="actualizandoModulo">
               {{actualizandoModulo ? 'Actualizando...' : '↻ Actualizar'}}
@@ -948,7 +986,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <p *ngIf="membresiaActual">
                   Vigente del {{fechaCortaPortal(membresiaActual.fecha_inicio)}} al {{fechaCortaPortal(membresiaActual.fecha_fin)}}
                 </p>
-                <p *ngIf="!membresiaActual">Selecciona uno de los planes disponibles para activar tu acceso.</p>
+                <p *ngIf="!membresiaActual">Selecciona una mensualidad o promoción para activar tu acceso.</p>
               </div>
               <div class="membership-current-state">
                 <span [class.active]="!!membresiaActual"><i></i>{{membresiaActual ? (membresiaActual.estado || 'Activo') : 'Sin membresía'}}</span>
@@ -960,9 +998,9 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
           <section class="membership-plan-section">
             <div class="membership-section-head">
               <div>
-                <span>PLANES DISPONIBLES</span>
-                <h2>Elige tu membresía</h2>
-                <p>Los precios y la duración se cargan directamente desde el sistema.</p>
+                <span>MENSUALIDADES Y PROMOCIONES</span>
+                <h2>Elige cuántos meses entrenar</h2>
+                <p>Tarifas reales del gimnasio: 1 mes, 2 meses o 3 meses.</p>
               </div>
               <span class="membership-data-live"><i></i> Datos del sistema</span>
             </div>
@@ -972,10 +1010,10 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                       class="membership-real-plan"
                       *ngFor="let m of planesRenovacion"
                       [class.selected]="pagoForm.id_membresia===m.id_membresia"
-                      [class.featured]="nombrePlanNormalizado(m)==='PREMIUM'"
+                      [class.featured]="Number(m.duracion_meses)===2"
                       (click)="seleccionarPlanRenovacion(m)">
                 <span class="membership-plan-selected" *ngIf="pagoForm.id_membresia===m.id_membresia">✓ SELECCIONADO</span>
-                <span class="membership-plan-recommended" *ngIf="nombrePlanNormalizado(m)==='PREMIUM' && pagoForm.id_membresia!==m.id_membresia">MÁS ELEGIDO</span>
+                <span class="membership-plan-recommended" *ngIf="Number(m.duracion_meses)===2 && pagoForm.id_membresia!==m.id_membresia">PROMOCIÓN</span>
 
                 <div class="membership-plan-name">
                   <small>{{subtituloPlanGym(m)}}</small>
@@ -995,7 +1033,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 </ul>
 
                 <div class="membership-plan-footer">
-                  <span>{{pagoForm.id_membresia===m.id_membresia ? 'Plan elegido' : 'Elegir plan'}}</span>
+                  <span>{{pagoForm.id_membresia===m.id_membresia ? 'Opción elegida' : 'Elegir'}}</span>
                   <b>→</b>
                 </div>
               </button>
@@ -1014,15 +1052,15 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             <article class="member-module-card membership-checkout-card">
               <div class="card-title-block">
                 <span>COMPRA DE MEMBRESÍA</span>
-                <h2>{{membresiaActual ? 'Renovar o cambiar plan' : 'Comprar membresía'}}</h2>
-                <p>Completa los datos de la operación. La compra se registra sin aprobación manual del administrador.</p>
+                <h2>{{membresiaActual ? 'Renovar mensualidad' : 'Comprar mensualidad'}}</h2>
+                <p>Completa los datos de la operación. El pago corresponde al tiempo elegido y se registra automáticamente.</p>
               </div>
 
               <div class="membership-selected-summary" *ngIf="planPagoSeleccionado; else seleccionaPlanPago">
                 <div class="membership-selected-main">
                   <span>{{iconoPlanGym(planPagoSeleccionado)}}</span>
                   <div>
-                    <small>PLAN SELECCIONADO</small>
+                    <small>MENSUALIDAD SELECCIONADA</small>
                     <h3>{{planPagoSeleccionado.nombre}}</h3>
                     <p>{{planPagoSeleccionado.descripcion}}</p>
                   </div>
@@ -1047,7 +1085,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               <ng-template #seleccionaPlanPago>
                 <div class="membership-select-first">
                   <span>↑</span>
-                  <div><b>Primero elige un plan</b><p>Selecciona Básico, Premium o Pro para continuar con el pago.</p></div>
+                  <div><b>Primero elige una mensualidad</b><p>Selecciona 1 mes, 2 meses o 3 meses para continuar con el pago.</p></div>
                 </div>
               </ng-template>
 
@@ -1083,11 +1121,11 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                          name="operacionPago"
                          placeholder="Ejemplo: 548721963"
                          required>
-                  <small>Debe coincidir con la operación realizada por el monto del plan.</small>
+                  <small>Debe coincidir con la operación realizada por el monto de la mensualidad o promoción.</small>
                 </label>
 
                 <div class="membership-payment-review" *ngIf="planPagoSeleccionado">
-                  <p><span>Plan</span><b>{{planPagoSeleccionado.nombre}}</b></p>
+                  <p><span>Membresía</span><b>{{planPagoSeleccionado.nombre}}</b></p>
                   <p><span>Duración</span><b>{{planPagoSeleccionado.duracion_meses || 1}} mes{{(planPagoSeleccionado.duracion_meses || 1)>1 ? 'es' : ''}}</b></p>
                   <p><span>Método</span><b>{{pagoForm.metodo_pago}}</b></p>
                   <p class="total"><span>Total</span><b>S/ {{planPagoSeleccionado.precio | number:'1.2-2'}}</b></p>
@@ -1104,14 +1142,14 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                   <span>✓</span>
                   <div>
                     Al confirmar, el sistema registra el pago como <b>Completado</b>,
-                    activa o programa el plan y genera la boleta automáticamente.
+                    activa o programa la membresía y genera la boleta automáticamente.
                     <strong>No necesita aprobación del dashboard.</strong>
                   </div>
                 </div>
 
                 <div class="membership-payment-review receipt-preview" *ngIf="ultimaBoleta">
                   <p><span>BOLETA GENERADA</span><b>{{ultimaBoleta.numero_comprobante || ('B001-'+ultimaBoleta.id_pago)}}</b></p>
-                  <p><span>Plan</span><b>{{ultimaBoleta.membresia}}</b></p>
+                  <p><span>Membresía</span><b>{{ultimaBoleta.membresia}}</b></p>
                   <p><span>Periodo</span><b>{{ultimaBoleta.periodo?.inicio || ultimaBoleta.periodo?.fecha_inicio}} - {{ultimaBoleta.periodo?.fin || ultimaBoleta.periodo?.fecha_fin}}</b></p>
                   <p><span>Método</span><b>{{ultimaBoleta.metodo_pago}} · Op. {{ultimaBoleta.numero_operacion || '-'}}</b></p>
                   <p class="total"><span>Total pagado</span><b>S/ {{ultimaBoleta.monto | number:'1.2-2'}}</b></p>
@@ -1267,7 +1305,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   apiConectada=false;
   dbConectada=false;
   dbMotor='MySQL';
-  resumen:any=null; perfil:any={}; membresiaActual:any=null; membresiasDisponibles:any[]=[];
+  resumen:any=null; perfil:any={}; membresiaActual:any=null; membresiasDisponibles:any[]=[]; gymInfo:any={};
   pagos:any[]=[]; rutinas:any[]=[]; asistencias:any[]=[]; reservas:any[]=[]; clases:any[]=[]; compras:any[]=[];
   fechasReserva:Record<number,string>={};
   pagoForm:any={id_membresia:0,fecha_inicio:new Date().toISOString().slice(0,10),metodo_pago:'Yape',numero_operacion:''};
@@ -1334,7 +1372,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargar():void{
     this.cargando=true; this.error='';
     this.api.cargarPortalCliente().subscribe({
-      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiasDisponibles=r.membresiasDisponibles||[];this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.preseleccionarPlanActual();this.cargando=false;this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
+      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiasDisponibles=r.membresiasDisponibles||[];this.gymInfo=r.gymInfo||{};this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.preseleccionarPlanActual();this.cargando=false;this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
       error:e=>{this.error=this.errorApi(e);this.cargando=false;}
     });
   }
@@ -1402,6 +1440,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.perfil=this.normalizarPerfil(r.perfil);
         this.membresiaActual=r.membresia?.actual||null;
         this.membresiasDisponibles=r.membresiasDisponibles||[];
+        this.gymInfo=r.gymInfo||this.gymInfo||{};
         this.pagos=r.pagos||[];
         this.rutinas=r.rutinas||[];
         this.asistencias=r.asistencias||[];
@@ -1434,6 +1473,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.perfil=this.normalizarPerfil(r.perfil);
         this.membresiaActual=r.membresia?.actual;
         this.membresiasDisponibles=r.membresiasDisponibles||[];
+        this.gymInfo=r.gymInfo||this.gymInfo||{};
         this.pagos=r.pagos||[];
         this.rutinas=r.rutinas||[];
         this.asistencias=r.asistencias||[];
@@ -1495,43 +1535,28 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   get planesRenovacion():any[]{
-    const orden=['BASICO','PREMIUM','PRO'];
-    const normalizar=(valor:any)=>String(valor??'')
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g,'')
-      .trim()
-      .toUpperCase();
-
-    const porNombre=new Map<string,any>();
-    for(const membresia of this.membresiasDisponibles||[]){
-      porNombre.set(normalizar(membresia?.nombre),membresia);
-    }
-
-    const planes=orden.map(nombre=>porNombre.get(nombre)).filter(Boolean);
-    return planes.length===orden.length ? planes : (this.membresiasDisponibles||[]);
+    return [...(this.membresiasDisponibles||[])]
+      .filter((m:any)=>String(m?.estado||'Activo').toLowerCase()==='activo')
+      .sort((a:any,b:any)=>Number(a?.duracion_meses||0)-Number(b?.duracion_meses||0) || Number(a?.precio||0)-Number(b?.precio||0));
   }
 
   nombrePlanNormalizado(plan:any):string{
-    return String(plan?.nombre||'')
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g,'')
-      .trim()
-      .toUpperCase();
+    return String(plan?.nombre||'').trim().toUpperCase();
   }
 
   subtituloPlanGym(plan:any):string{
-    const nombre=this.nombrePlanNormalizado(plan);
-    if(nombre==='BASICO')return 'IDEAL PARA COMENZAR';
-    if(nombre==='PREMIUM')return 'PARA MEJORES RESULTADOS';
-    if(nombre==='PRO')return 'EXPERIENCIA COMPLETA';
-    return 'PLAN MALLQUI GYM';
+    const meses=Number(plan?.duracion_meses||1);
+    if(meses===1)return 'MENSUALIDAD';
+    if(meses===2)return 'PROMOCIÓN 2 MESES';
+    if(meses===3)return 'PROMOCIÓN 3 MESES';
+    return 'MEMBRESÍA MALLQUI GYM';
   }
 
   iconoPlanGym(plan:any):string{
-    const nombre=this.nombrePlanNormalizado(plan);
-    if(nombre==='BASICO')return '🏋';
-    if(nombre==='PREMIUM')return '★';
-    if(nombre==='PRO')return '♛';
+    const meses=Number(plan?.duracion_meses||1);
+    if(meses===1)return '1';
+    if(meses===2)return '2';
+    if(meses===3)return '3';
     return '▤';
   }
 
@@ -1542,8 +1567,22 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         .filter((x:string)=>Boolean(x));
     }
 
-    const descripcion=String(plan?.descripcion||'').trim();
-    return descripcion ? [descripcion] : ['Acceso según condiciones del plan'];
+    const meses=Number(plan?.duracion_meses||1);
+    return [
+      `Acceso al gimnasio durante ${meses} mes${meses===1?'':'es'}`,
+      'Guía e instrucciones a cargo del personal del gym',
+      'Credencial digital y control de asistencias'
+    ];
+  }
+
+  get resumenMensualidades():string{
+    const opciones=this.planesRenovacion
+      .slice(0,3)
+      .map((m:any)=>{
+        const meses=Number(m?.duracion_meses||1);
+        return `${meses} mes${meses===1?'':'es'} S/ ${Number(m?.precio||0).toFixed(0)}`;
+      });
+    return opciones.length ? opciones.join(' · ') : '1 mes S/ 80 · 2 meses S/ 120 · 3 meses S/ 150';
   }
 
   seleccionarPlanRenovacion(plan:any):void{
