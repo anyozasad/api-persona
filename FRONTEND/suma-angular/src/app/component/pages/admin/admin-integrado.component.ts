@@ -614,8 +614,54 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
 
       <ng-container *ngIf="seccion==='asistencias'">
         <section class="management-grid">
-          <article class="admin-form-card"><div class="management-heading"><div><h2>Control de asistencia</h2><p>Entrada y salida conectadas con MySQL.</p></div><span>▣</span></div><form><label>Cliente<select [(ngModel)]="asistenciaCliente" name="ascliente"><option [ngValue]="0">Seleccionar</option><option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option></select></label><div class="form-row"><button class="admin-primary" type="button" (click)="registrarEntrada()">Registrar entrada</button><button class="admin-secondary" type="button" (click)="registrarSalida()">Registrar salida</button></div></form></article>
-          <article class="admin-list-card wide-card"><div class="management-heading"><div><h2>Historial</h2><p>{{asistencias.length}} registros.</p></div></div><div class="table-wrap"><table class="management-table"><thead><tr><th>Cliente</th><th>Entrada</th><th>Salida</th><th>Estado</th></tr></thead><tbody><tr *ngFor="let a of asistencias"><td>{{nombreCliente(a.cliente)}}</td><td>{{fecha(a.fecha_hora_entrada)}}</td><td>{{fecha(a.fecha_hora_salida)}}</td><td>{{a.estado}}</td></tr></tbody></table></div></article>
+          <article class="admin-form-card">
+            <div class="management-heading">
+              <div><h2>Acceso con credencial</h2><p>Escanea el código de barras del socio o escribe su código MG/DNI.</p></div>
+              <span>▥</span>
+            </div>
+            <form (ngSubmit)="registrarAccesoPorCodigo()">
+              <label>Código de acceso
+                <input [(ngModel)]="asistenciaCodigo"
+                       name="ascodigo"
+                       autocomplete="off"
+                       placeholder="MG-000001 o DNI"
+                       maxlength="40">
+              </label>
+              <button class="admin-primary" type="submit" [disabled]="procesandoAccesoCodigo || !asistenciaCodigo.trim()">
+                {{procesandoAccesoCodigo ? 'Validando...' : 'Escanear / registrar acceso'}}
+              </button>
+            </form>
+            <div class="access-scan-result" *ngIf="ultimoAccesoCodigo">
+              <span [class.exit]="ultimoAccesoCodigo.accion==='Salida'">{{ultimoAccesoCodigo.accion==='Salida' ? 'SALIDA' : 'ACCESO OK'}}</span>
+              <div>
+                <b>{{nombreCliente(ultimoAccesoCodigo.cliente)}}</b>
+                <small>{{ultimoAccesoCodigo.codigo_socio}} · {{ultimoAccesoCodigo.membresia?.membresia?.nombre || 'Membresía validada'}}</small>
+              </div>
+            </div>
+          </article>
+
+          <article class="admin-form-card">
+            <div class="management-heading"><div><h2>Control manual</h2><p>Alternativa para recepción cuando no se usa lector.</p></div><span>▣</span></div>
+            <form>
+              <label>Cliente
+                <select [(ngModel)]="asistenciaCliente" name="ascliente">
+                  <option [ngValue]="0">Seleccionar</option>
+                  <option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option>
+                </select>
+              </label>
+              <div class="form-row">
+                <button class="admin-primary" type="button" (click)="registrarEntrada()">Registrar entrada</button>
+                <button class="admin-secondary" type="button" (click)="registrarSalida()">Registrar salida</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="admin-list-card wide-card">
+            <div class="management-heading"><div><h2>Historial</h2><p>{{asistencias.length}} registros.</p></div></div>
+            <div class="table-wrap"><table class="management-table"><thead><tr><th>Cliente</th><th>Entrada</th><th>Salida</th><th>Estado</th></tr></thead><tbody>
+              <tr *ngFor="let a of asistencias"><td>{{nombreCliente(a.cliente)}}</td><td>{{fecha(a.fecha_hora_entrada)}}</td><td>{{fecha(a.fecha_hora_salida)}}</td><td>{{a.estado}}</td></tr>
+            </tbody></table></div>
+          </article>
         </section>
       </ng-container>
 
@@ -1059,6 +1105,10 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
     .embedded-productos .productos-topbar .sesion-productos{display:none!important}
     .embedded-productos .productos-page{padding:0!important;background:transparent!important;min-height:auto!important}
     .admin-logout{width:calc(100% - 28px);margin:14px;background:none;border:0;text-align:left;cursor:pointer}
+    .access-scan-result{display:flex;gap:12px;align-items:center;margin-top:14px;padding:13px;border:1px solid #dbe9df;border-radius:12px;background:#f4fbf6}
+    .access-scan-result>span{padding:6px 9px;border-radius:999px;background:#198754;color:#fff;font-size:10px;font-weight:900;letter-spacing:.5px}
+    .access-scan-result>span.exit{background:#35536b}
+    .access-scan-result div{display:grid;gap:2px}.access-scan-result small{color:#6a7d8d}
   `]
 })
 export class AdminIntegradoComponent implements OnInit, OnDestroy {
@@ -1186,6 +1236,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   claseEditandoId = 0;
   claseForm: any = {id_entrenador:null,nombre:'',descripcion:'',dia_semana:'Lunes',hora_inicio:'08:00',hora_fin:'09:00',cupo_maximo:15,estado:'Activo'};
   asistenciaCliente = 0;
+  asistenciaCodigo = '';
+  ultimoAccesoCodigo: any = null;
+  procesandoAccesoCodigo = false;
   categoriaEditandoId = 0;
   categoriaForm: any = {nombre_categoria:'',descripcion:'',estado:'Activo'};
   rutinaEditandoId = 0;
@@ -1650,6 +1703,29 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
   desactivarClase(id:number){ if(!confirm('¿Desactivar esta clase?')) return; this.api.desactivarClase(id).subscribe({next:()=>{this.ok('Clase desactivada');this.cancelarEdicionClase();this.cargarClases();},error:e=>this.mostrarError(e)}); }
 
+  registrarAccesoPorCodigo(){
+    const codigo=String(this.asistenciaCodigo||'').trim();
+    if(!codigo){this.error='Escanea o escribe el código del socio.';return;}
+    if(this.procesandoAccesoCodigo)return;
+
+    this.procesandoAccesoCodigo=true;
+    this.error='';
+    this.api.registrarAccesoCodigo(codigo).subscribe({
+      next:r=>{
+        this.procesandoAccesoCodigo=false;
+        this.ultimoAccesoCodigo=r;
+        this.asistenciaCodigo='';
+        this.ok(r?.mensaje||'Acceso registrado');
+        this.cargarAsistencias();
+        this.cargarDashboard();
+      },
+      error:e=>{
+        this.procesandoAccesoCodigo=false;
+        this.ultimoAccesoCodigo=null;
+        this.mostrarError(e);
+      }
+    });
+  }
   registrarEntrada(){ if(!this.asistenciaCliente){this.error='Selecciona un cliente.';return;} this.api.registrarEntrada(this.asistenciaCliente).subscribe({next:r=>{this.ok(r.mensaje||'Entrada registrada');this.cargarAsistencias();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
   registrarSalida(){ if(!this.asistenciaCliente){this.error='Selecciona un cliente.';return;} this.api.registrarSalida(this.asistenciaCliente).subscribe({next:r=>{this.ok(r.mensaje||'Salida registrada');this.cargarAsistencias();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
 
