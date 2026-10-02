@@ -1119,7 +1119,10 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                     <img [src]="ultimaBoletaBarcode" alt="Código de barras de la boleta">
                   </div>
                   <small class="receipt-tax-note">{{ultimaBoleta.nota_tributaria}}</small>
-                  <button type="button" class="member-form-submit" (click)="imprimirBoleta(ultimaBoleta)">Imprimir / guardar PDF</button>
+                  <div class="receipt-actions">
+                    <button type="button" class="member-form-submit" (click)="imprimirBoleta(ultimaBoleta)">Imprimir / guardar PDF</button>
+                    <button type="button" class="member-form-submit receipt-access-button" (click)="abrirModulo('club')">Ver credencial de acceso</button>
+                  </div>
                 </div>
               </form>
             </article>
@@ -2465,7 +2468,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const periodoFin=c?.periodo?.fin||c?.periodo?.fecha_fin||'-';
     const numero=String(c?.numero_comprobante||('B001-'+String(c?.id_pago||'').padStart(8,'0')));
     const barcode=code128Svg(String(c?.codigo_barras||numero),{height:64,module:2,quiet:14,text:true});
-    const safe=(v:any)=>String(v??'').replace(/[&<>"']/g,(m:string)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]||m));
+    const entidades:Record<string,string>={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'};
+    const safe=(v:any)=>String(v??'').replace(/[&<>"']/g,(m:string)=>entidades[m]||m);
     const html=`<!doctype html><html><head><meta charset="utf-8"><title>${safe(numero)} - Mallqui Gym</title><style>
       body{font-family:Arial,sans-serif;background:#eef2f4;color:#172b3a;padding:28px}
       .receipt{max-width:720px;margin:auto;background:#fff;border:1px solid #d8e0e5;border-radius:16px;padding:28px;box-shadow:0 12px 34px rgba(20,45,65,.12)}
