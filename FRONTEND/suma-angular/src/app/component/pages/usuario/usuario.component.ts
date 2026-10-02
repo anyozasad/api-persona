@@ -1723,7 +1723,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       },
       {
         titulo:'Elegir membresía',
-        descripcion:'Selecciona el plan con el que usarás el gimnasio.',
+        descripcion:'Selecciona la mensualidad o promoción con la que usarás el gimnasio.',
         icono:'✦',
         modulo:'pagos',
         done:Boolean(this.membresiaActual),
@@ -2444,7 +2444,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   comprarMembresia(){
     if(this.procesandoCompra)return;
     if(!this.planPagoSeleccionado){
-      this.error='Selecciona uno de los planes disponibles.';
+      this.error='Selecciona una mensualidad o promoción disponible.';
       return;
     }
     if(!String(this.pagoForm.numero_operacion||'').trim()){
