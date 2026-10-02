@@ -1759,16 +1759,21 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargarEntrenamientoCasa():void{
     this.api.entrenamientoCasaCliente().subscribe({
       next:r=>{
+        const rutina=r?.rutina||null;
+        this.resumen={...(this.resumen||{}),rutina_actual:rutina};
+
+        if(rutina){
+          const resto=(this.rutinas||[]).filter((x:any)=>Number(x?.id_rutina)!==Number(rutina.id_rutina));
+          this.rutinas=[rutina,...resto];
+        }
+
         this.planCasa={
-          dias:r?.plan?.dias||['Lunes','Miércoles','Viernes'],
-          zonas:r?.plan?.zonas||['piernas','brazos','core'],
-          objetivo:r?.plan?.objetivo||'fuerza'
+          dias:[],
+          zonas:[],
+          objetivo:String(rutina?.objetivo||'')
         };
-        this.catalogoCasa=r?.catalogo||{piernas:[],gluteos:[],brazos:[],pecho:[],espalda:[],hombros:[],core:[]};
+        this.catalogoCasa={piernas:[],gluteos:[],brazos:[],pecho:[],espalda:[],hombros:[],core:[]};
         this.historialCasa=r?.historial||[];
-        this.zonaCasaSeleccionada=this.planCasa.zonas?.[0]||'piernas';
-        const tocaHoy=this.agendaCasaSemanal.find((x:any)=>x.hoy&&x.activo);
-        if(tocaHoy?.zona?.id)this.zonaCasaSeleccionada=tocaHoy.zona.id;
         this.casaCargado=true;
         this.errorCasa='';
       },
@@ -1872,6 +1877,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const detalles=Array.isArray(this.rutinaActual?.detalles) ? this.rutinaActual.detalles : [];
     return detalles.map((d:any,i:number)=>({
       id:'rutina_'+String(d?.id_detalle_rutina||i+1),
+      id_detalle_rutina:Number(d?.id_detalle_rutina||0),
       nombre:String(d?.ejercicio||('Ejercicio '+(i+1))),
       modo:'repeticiones',
       repeticiones:Math.max(1,Number(d?.repeticiones||10)),
@@ -2194,11 +2200,22 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const total=this.ejerciciosCasaActuales.length;
     const duracion=Math.max(1,this.segundosTranscurridosCasa);
 
+    const idRutina=Number(this.rutinaActual?.id_rutina||0);
+    const ejercicios=this.ejerciciosCasaActuales.map((e:any)=>({
+      id_detalle_rutina:Number(e?.id_detalle_rutina||0),
+      series_realizadas:this.seriesEjercicioCasa(e),
+      repeticiones_realizadas:Math.max(1,Number(e?.repeticiones||1)),
+      peso_utilizado:(()=>{
+        const valor=Number(this.cargaActualGym(e));
+        return Number.isFinite(valor) && valor>0 ? valor : null;
+      })(),
+      completado:true
+    }));
+
     this.api.registrarSesionCasaCliente({
-      zona:this.zonaCasaSeleccionada,
+      id_rutina:idRutina,
       duracion_segundos:duracion,
-      ejercicios_total:total,
-      ejercicios_completados:total,
+      ejercicios
     }).subscribe({
       next:r=>{
         if(r?.sesion)this.historialCasa=[r.sesion,...this.historialCasa];
