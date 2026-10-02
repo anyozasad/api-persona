@@ -148,10 +148,11 @@ class DashboardController extends Controller
         }
 
         $soportePendiente = $this->soportePendiente($tablas['soporte']);
+        // Las compras del portal del cliente se completan automáticamente.
+        // El dato heredado se conserva solo por compatibilidad, pero ya no requiere acción del administrador.
         $pagosPendientes = $suscripciones['pagos_pendientes'];
         $alertasTotal = count($suscripciones['detalle_por_vencer'])
             + $stock['productos_stock_bajo']
-            + $pagosPendientes
             + $soportePendiente;
 
         return response()->json([
