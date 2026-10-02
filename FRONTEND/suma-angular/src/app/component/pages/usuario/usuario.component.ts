@@ -334,7 +334,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             </article>
             <article>
               <i>S/</i>
-              <div><small>TARIFAS</small><b>{{resumenMensualidades}}</b><p>Ingreso o rutina diaria: S/ {{gymInfo?.tarifa_diaria || 6 | number:'1.2-2'}}</p></div>
+              <div><small>TARIFAS</small><b>{{resumenMensualidades}}</b><p>Ingreso o rutina diaria: S/ {{(gymInfo?.tarifa_diaria || 6) | number:'1.2-2'}}</p></div>
             </article>
             <article>
               <i>✓</i>
@@ -1010,10 +1010,10 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                       class="membership-real-plan"
                       *ngFor="let m of planesRenovacion"
                       [class.selected]="pagoForm.id_membresia===m.id_membresia"
-                      [class.featured]="Number(m.duracion_meses)===2"
+                      [class.featured]="m.duracion_meses==2"
                       (click)="seleccionarPlanRenovacion(m)">
                 <span class="membership-plan-selected" *ngIf="pagoForm.id_membresia===m.id_membresia">✓ SELECCIONADO</span>
-                <span class="membership-plan-recommended" *ngIf="Number(m.duracion_meses)===2 && pagoForm.id_membresia!==m.id_membresia">PROMOCIÓN</span>
+                <span class="membership-plan-recommended" *ngIf="m.duracion_meses==2 && pagoForm.id_membresia!==m.id_membresia">PROMOCIÓN</span>
 
                 <div class="membership-plan-name">
                   <small>{{subtituloPlanGym(m)}}</small>
