@@ -27561,7 +27561,7 @@
   gap:12px;
   margin:16px 0;
 }
-.gym-session-flow article{
+.gym-session-flow button{
   min-height:118px;
   display:grid;
   grid-template-columns:42px minmax(0,1fr);
@@ -27573,7 +27573,7 @@
   background:linear-gradient(145deg,rgba(8,44,72,.96),rgba(5,32,54,.97));
   box-shadow:0 10px 28px rgba(0,14,27,.17);
 }
-.gym-session-flow article>span{
+.gym-session-flow button>span{
   width:40px;
   height:40px;
   display:grid;
@@ -28035,15 +28035,15 @@
 }
 
 @media (prefers-reduced-motion:no-preference){
-  .gym-session-flow article,
+  .gym-session-flow button,
   .gym-assigned-routine,
   .gym-first-station,
   .gym-live-board{
     animation:mallquiSectionRise .55s cubic-bezier(.2,.8,.2,1) both;
   }
-  .gym-session-flow article:nth-child(2){animation-delay:.06s}
-  .gym-session-flow article:nth-child(3){animation-delay:.12s}
-  .gym-session-flow article:nth-child(4){animation-delay:.18s}
+  .gym-session-flow button:nth-child(2){animation-delay:.06s}
+  .gym-session-flow button:nth-child(3){animation-delay:.12s}
+  .gym-session-flow button:nth-child(4){animation-delay:.18s}
 }
 
 @media (max-width:1100px){
@@ -29999,4 +29999,33 @@
   .membership-unlocked-head{flex-direction:column}
   .membership-unlocked-summary,
   .membership-unlocked-actions{grid-template-columns:1fr}
+}
+
+
+.train-step{
+  appearance:none!important;
+  width:100%!important;
+  color:inherit!important;
+  font-family:inherit!important;
+  text-align:left!important;
+  cursor:pointer!important;
+}
+.train-step:focus-visible,
+.gym-session-flow button:focus-visible{
+  outline:2px solid rgba(255,91,117,.72)!important;
+  outline-offset:2px!important;
+}
+.gym-session-flow button{
+  appearance:none;
+  width:100%;
+  color:inherit;
+  font-family:inherit;
+  text-align:left;
+  cursor:pointer;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease;
+}
+.gym-session-flow button:hover{
+  transform:translateY(-3px);
+  border-color:rgba(255,75,103,.30);
+  background:linear-gradient(145deg,rgba(11,54,84,.98),rgba(7,38,62,.98));
 }
