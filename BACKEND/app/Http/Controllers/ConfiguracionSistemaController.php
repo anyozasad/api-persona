@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ConfiguracionSistema;
+use App\Models\Membresia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -93,6 +94,11 @@ class ConfiguracionSistemaController extends Controller
             'tarifa_diaria' => $config->tarifa_diaria,
             'mensaje_productos' => $config->mensaje_productos,
             'ruc' => $config->ruc,
+            'membresias' => Membresia::query()
+                ->where('estado', 'Activo')
+                ->whereIn('nombre', ['Mensualidad 1 mes', 'Promoción 2 meses', 'Promoción 3 meses'])
+                ->orderBy('duracion_meses')
+                ->get(),
         ]);
     }
 
