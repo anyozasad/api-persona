@@ -960,7 +960,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
             <div>
               <span class="config-eyebrow">CONFIGURACIÓN GENERAL</span>
               <h2>Administra Mallqui Gym desde un solo lugar</h2>
-              <p>Datos del gimnasio, horarios, reglas operativas, seguridad, respaldos y estado del sistema.</p>
+              <p>Datos reales del gimnasio, mensualidades, horarios, contacto, reglas operativas y estado del sistema.</p>
             </div>
             <div class="config-health" [class.ok]="configEstado?.mysql">
               <span></span>
@@ -991,6 +991,18 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
                 <label>Dirección
                   <input [(ngModel)]="configuracionForm.direccion" name="cfg_direccion" placeholder="Dirección del gimnasio">
                 </label>
+                <label>Referencia
+                  <input [(ngModel)]="configuracionForm.referencia" name="cfg_referencia" placeholder="Referencia del local">
+                </label>
+                <label>Tarifa diaria
+                  <input type="number" min="0" step="0.50" [(ngModel)]="configuracionForm.tarifa_diaria" name="cfg_tarifa_diaria">
+                </label>
+                <label class="span-2">Frase del gimnasio
+                  <input [(ngModel)]="configuracionForm.frase_publicitaria" name="cfg_frase" placeholder="Frase que verá el cliente">
+                </label>
+                <label class="span-2">Información de productos
+                  <textarea [(ngModel)]="configuracionForm.mensaje_productos" name="cfg_productos" rows="3"></textarea>
+                </label>
               </div>
             </article>
 
@@ -1009,6 +1021,9 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
                   {{dia.substring(0,3)}}
                 </button>
               </div>
+              <label class="config-schedule-detail">Horario detallado
+                <textarea [(ngModel)]="configuracionForm.horario_detalle" name="cfg_horario_detalle" rows="5"></textarea>
+              </label>
             </article>
           </div>
 
@@ -1162,7 +1177,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       items:[
         {id:'clientes',icono:'♙',nombre:'Socios'},
         {id:'caja',icono:'▣',nombre:'Caja'},
-        {id:'membresias',icono:'✦',nombre:'Suscripciones'},
+        {id:'membresias',icono:'✦',nombre:'Mensualidades'},
         {id:'ventas',icono:'▤',nombre:'Punto de Venta'},
         {id:'comunicacion',icono:'●',nombre:'Notificaciones'},
         {id:'historial-ventas',icono:'↺',nombre:'Historial de Ventas'}
@@ -1171,7 +1186,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     {
       titulo:'Administración',
       items:[
-        {id:'planes',icono:'◆',nombre:'Planes'},
+        {id:'planes',icono:'◆',nombre:'Tarifas'},
         {id:'gastos',icono:'↓',nombre:'Gastos'},
         {id:'inventario',icono:'▦',nombre:'Inventario'},
         {id:'categorias',icono:'◇',nombre:'Categorías'},
@@ -1208,9 +1223,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   diasSemana = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
   configuracionForm: any = {
-    nombre_gimnasio:'Mallqui Gym', ruc:'', telefono:'', correo:'', direccion:'',
-    hora_apertura:'06:00', hora_cierre:'22:00',
-    dias_atencion:['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+    nombre_gimnasio:'Mallqui Gym', ruc:'', telefono:'939398148', correo:'',
+    direccion:'Jr. Los Laureles Mz 17 Lt 18', referencia:'Referencia: Plaza de Laura Bosso',
+    frase_publicitaria:'Ven, entrena con Mallqui Gym con el propósito de tener una vida saludable.',
+    horario_detalle:'Lunes a viernes: 6:00 a. m. - 12:00 p. m. y 2:00 p. m. - 9:30 p. m. | Sábado: 6:00 a. m. - 12:00 p. m. y 2:00 p. m. - 8:30 p. m. | Domingo: atención hasta el mediodía.',
+    tarifa_diaria:6, mensaje_productos:'Energizantes, bebidas y productos para consumo disponibles en recepción.',
+    hora_apertura:'06:00', hora_cierre:'21:30',
+    dias_atencion:['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'],
     dias_aviso_vencimiento:7, minutos_cancelacion_reserva:120,
     dias_anticipacion_reserva:7, stock_minimo_default:5,
     notificar_vencimientos:true, notificar_stock_bajo:true, notificar_pagos_pendientes:true
