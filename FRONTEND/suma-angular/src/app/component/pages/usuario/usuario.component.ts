@@ -1536,9 +1536,14 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   get planesRenovacion():any[]{
+    const nombresOficiales=new Set(['MENSUALIDAD 1 MES','PROMOCIÓN 2 MESES','PROMOCION 2 MESES','PROMOCIÓN 3 MESES','PROMOCION 3 MESES']);
     return [...(this.membresiasDisponibles||[])]
       .filter((m:any)=>String(m?.estado||'Activo').toLowerCase()==='activo')
-      .sort((a:any,b:any)=>Number(a?.duracion_meses||0)-Number(b?.duracion_meses||0) || Number(a?.precio||0)-Number(b?.precio||0));
+      .filter((m:any)=>{
+        const nombre=String(m?.nombre||'').trim().toUpperCase();
+        return nombresOficiales.has(nombre);
+      })
+      .sort((a:any,b:any)=>Number(a?.duracion_meses||0)-Number(b?.duracion_meses||0));
   }
 
   nombrePlanNormalizado(plan:any):string{
