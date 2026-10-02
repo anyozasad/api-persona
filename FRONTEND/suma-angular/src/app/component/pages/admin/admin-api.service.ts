@@ -93,6 +93,9 @@ export class AdminApiService {
   registrarSalida(id_cliente: number, observacion?: string): Observable<any> {
     return this.http.post('/api/asistencias/salida', { id_cliente, observacion });
   }
+  registrarAccesoCodigo(codigo: string): Observable<any> {
+    return this.http.post('/api/asistencias/acceso', { codigo });
+  }
   historialAsistencias(idCliente: number): Observable<any[]> {
     return this.http.get<any[]>(`/api/clientes/${idCliente}/asistencias`);
   }
