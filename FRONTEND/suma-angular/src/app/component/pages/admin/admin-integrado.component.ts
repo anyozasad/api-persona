@@ -520,6 +520,8 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
               <label>Nombre<input [(ngModel)]="planForm.nombre" name="pnombre" required></label>
               <div class="form-row"><label>Duración (meses)<input type="number" min="1" [(ngModel)]="planForm.duracion_meses" name="pduracion" required></label><label>Precio S/<input type="number" min="0" step="0.01" [(ngModel)]="planForm.precio" name="pprecio" required></label></div>
               <label>Descripción<textarea [(ngModel)]="planForm.descripcion" name="pdescripcion"></textarea></label>
+              <label>Beneficios (uno por línea)<textarea [(ngModel)]="planForm.beneficios_texto" name="pbeneficios" placeholder="Acceso a sala&#10;Clases grupales&#10;Rutina personalizada"></textarea></label>
+              <label><input type="checkbox" [(ngModel)]="planForm.permite_reservas" name="preservas"> Permite reservar clases</label>
               <label>Estado<select [(ngModel)]="planForm.estado" name="pestado"><option>Activo</option><option>Inactivo</option></select></label>
               <div class="form-row"><button class="admin-primary" type="submit">{{planEditandoId ? 'Guardar cambios' : 'Crear plan'}}</button><button *ngIf="planEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionPlan()">Cancelar</button></div>
             </form>
@@ -727,6 +729,8 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
                 <label>Precio S/<input type="number" min="0" step="0.01" [(ngModel)]="planForm.precio" name="plan_precio" required></label>
               </div>
               <label>Descripción<textarea [(ngModel)]="planForm.descripcion" name="plan_descripcion"></textarea></label>
+              <label>Beneficios (uno por línea)<textarea [(ngModel)]="planForm.beneficios_texto" name="plan_beneficios"></textarea></label>
+              <label><input type="checkbox" [(ngModel)]="planForm.permite_reservas" name="plan_reservas"> Permite reservar clases</label>
               <label>Estado<select [(ngModel)]="planForm.estado" name="plan_estado"><option>Activo</option><option>Inactivo</option></select></label>
               <div class="form-row">
                 <button class="admin-primary" type="submit">{{planEditandoId ? 'Guardar cambios' : 'Crear plan'}}</button>
@@ -1196,7 +1200,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ventaForm: any = {id_cliente:0,id_producto:0,cantidad:1,tipo_comprobante:'Boleta',numero_comprobante:'',metodo_pago:'Efectivo',numero_operacion:'',igv_porcentaje:18};
   ventaItems: any[] = [];
   planEditandoId = 0;
-  planForm: any = {nombre:'',duracion_meses:1,precio:0,descripcion:'',estado:'Activo'};
+  planForm: any = {nombre:'',duracion_meses:1,precio:0,descripcion:'',beneficios_texto:'',permite_reservas:true,estado:'Activo'};
   ajusteForm: any = {id_producto:0,tipo:'Entrada',cantidad:1,motivo:''};
   cajaAbrirForm: any = {monto_inicial:0,observacion:''};
   movCajaForm: any = {tipo:'Ingreso',monto:0,descripcion:'',origen:'Manual'};
@@ -1562,9 +1566,43 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.api.contratarMembresia(datos).subscribe({next:()=>{this.ok('Membresía contratada y pago registrado');this.cargarMembresias();this.cargarPagos();this.cargarDashboard();this.cargarCaja();},error:e=>this.mostrarError(e)});
   }
 
-  guardarPlan(){const datos={...this.planForm};const req=this.planEditandoId?this.api.actualizarMembresia(this.planEditandoId,datos):this.api.crearMembresia(datos);req.subscribe({next:()=>{this.ok(this.planEditandoId?'Plan actualizado':'Plan creado');this.cancelarEdicionPlan();this.cargarMembresias();},error:e=>this.mostrarError(e)});}
-  editarPlan(p:any){this.planEditandoId=p.id_membresia;this.planForm={nombre:p.nombre,duracion_meses:p.duracion_meses,precio:p.precio,descripcion:p.descripcion||'',estado:p.estado};}
-  cancelarEdicionPlan(){this.planEditandoId=0;this.planForm={nombre:'',duracion_meses:1,precio:0,descripcion:'',estado:'Activo'};}
+  guardarPlan(){
+    const datos:any={...this.planForm};
+    datos.beneficios=String(datos.beneficios_texto||'')
+      .split('\n')
+      .map((x:string)=>x.trim())
+      .filter((x:string)=>Boolean(x));
+    delete datos.beneficios_texto;
+
+    const req=this.planEditandoId
+      ? this.api.actualizarMembresia(this.planEditandoId,datos)
+      : this.api.crearMembresia(datos);
+
+    req.subscribe({
+      next:()=>{
+        this.ok(this.planEditandoId?'Plan actualizado':'Plan creado');
+        this.cancelarEdicionPlan();
+        this.cargarMembresias();
+      },
+      error:e=>this.mostrarError(e)
+    });
+  }
+  editarPlan(p:any){
+    this.planEditandoId=p.id_membresia;
+    this.planForm={
+      nombre:p.nombre,
+      duracion_meses:p.duracion_meses,
+      precio:p.precio,
+      descripcion:p.descripcion||'',
+      beneficios_texto:Array.isArray(p.beneficios)?p.beneficios.join('\n'):'',
+      permite_reservas:p.permite_reservas!==false,
+      estado:p.estado
+    };
+  }
+  cancelarEdicionPlan(){
+    this.planEditandoId=0;
+    this.planForm={nombre:'',duracion_meses:1,precio:0,descripcion:'',beneficios_texto:'',permite_reservas:true,estado:'Activo'};
+  }
   desactivarPlan(id:number){if(!confirm('¿Desactivar este plan?'))return;this.api.eliminarMembresia(id).subscribe({next:r=>{this.ok(r.mensaje||'Plan desactivado');this.cargarMembresias();},error:e=>this.mostrarError(e)});}
 
   guardarEntrenador(){
