@@ -196,35 +196,50 @@ class ExperienciaClienteController extends Controller
             ]);
         }
 
-        $plan = PlanEntrenamientoCasa::where('id_cliente', $cliente->id_cliente)
-            ->where('activo', true)
+        // El calendario del cliente usa la rutina realmente asignada por el gimnasio.
+        // Ya no genera sesiones genéricas desde PlanEntrenamientoCasa.
+        $rutina = Rutina::with('entrenador')
+            ->where('id_cliente', $cliente->id_cliente)
+            ->where('estado', 'Activo')
+            ->orderByDesc('fecha_inicio')
             ->first();
 
-        $diasPlan = $plan?->dias ?? [];
-        $zonas = $plan?->zonas ?? [];
-        $indiceZona = 0;
+        if ($rutina) {
+            $inicioRutina = $rutina->fecha_inicio ? Carbon::parse($rutina->fecha_inicio)->startOfDay() : null;
+            $finRutina = $rutina->fecha_fin ? Carbon::parse($rutina->fecha_fin)->startOfDay() : null;
+            $entrenador = trim(
+                ($rutina->entrenador?->nombres ?? '').' '.($rutina->entrenador?->apellidos ?? '')
+            );
 
-        $mapaDias = [
-            1 => 'Lunes', 2 => 'Martes', 3 => 'Miércoles', 4 => 'Jueves',
-            5 => 'Viernes', 6 => 'Sábado', 7 => 'Domingo',
-        ];
-
-        for ($i = 0; $i <= 13; $i++) {
-            $fecha = today()->copy()->addDays($i);
-            $nombreDia = $mapaDias[$fecha->isoWeekday()] ?? '';
-            if (!in_array($nombreDia, $diasPlan, true)) {
-                continue;
+            if ($inicioRutina && $inicioRutina->between($desde, $hasta)) {
+                $eventos->push([
+                    'tipo' => 'casa',
+                    'fecha' => $inicioRutina->toDateString(),
+                    'titulo' => 'Inicio de rutina: '.($rutina->nombre_rutina ?? 'Rutina asignada'),
+                    'detalle' => trim(($rutina->objetivo ?? 'Entrenamiento').' · '.$entrenador, ' ·'),
+                ]);
             }
 
-            $zona = count($zonas) ? $zonas[$indiceZona % count($zonas)] : 'sesión guiada';
-            $indiceZona++;
+            $rutinaVigenteHoy = (!$inicioRutina || $inicioRutina->lte(today()))
+                && (!$finRutina || $finRutina->gte(today()));
 
-            $eventos->push([
-                'tipo' => 'casa',
-                'fecha' => $fecha->toDateString(),
-                'titulo' => 'Entrenamiento en el gimnasio',
-                'detalle' => ucfirst((string) $zona),
-            ]);
+            if ($rutinaVigenteHoy) {
+                $eventos->push([
+                    'tipo' => 'casa',
+                    'fecha' => today()->toDateString(),
+                    'titulo' => $rutina->nombre_rutina ?? 'Rutina activa',
+                    'detalle' => trim(($rutina->objetivo ?? 'Entrenamiento').' · '.($entrenador ?: 'Mallqui Gym'), ' ·'),
+                ]);
+            }
+
+            if ($finRutina && $finRutina->between($desde, $hasta)) {
+                $eventos->push([
+                    'tipo' => 'casa',
+                    'fecha' => $finRutina->toDateString(),
+                    'titulo' => 'Fin de rutina: '.($rutina->nombre_rutina ?? 'Rutina asignada'),
+                    'detalle' => 'Revisa tu progreso y consulta la siguiente asignación.',
+                ]);
+            }
         }
 
         return response()->json(
