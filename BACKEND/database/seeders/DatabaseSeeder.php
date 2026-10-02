@@ -11,7 +11,10 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        Membresia::whereIn('nombre', ['Básico', 'Premium', 'Pro'])
+        $membresiasOficiales = ['Mensualidad 1 mes', 'Promoción 2 meses', 'Promoción 3 meses'];
+
+        Membresia::whereNotIn('nombre', $membresiasOficiales)
+            ->where('estado', 'Activo')
             ->update(['estado' => 'Inactivo']);
 
         foreach ([

@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, HostListener, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { GymApiService } from '../../../core/services/gym-api.service';
 
 @Component({
   selector: 'app-landing',
@@ -21,7 +22,7 @@ import { RouterLink } from '@angular/router';
             <a routerLink="/" class="active">Inicio</a>
             <a routerLink="/nosotros">Nosotros</a>
             <a routerLink="/clases-gym">Clases</a>
-            <a routerLink="/planes">Planes</a>
+            <a routerLink="/planes">Mensualidades</a>
             <a routerLink="/galeria">Galería</a>
             <a routerLink="/contacto">Contacto</a>
           </nav>
@@ -35,7 +36,7 @@ import { RouterLink } from '@angular/router';
             <p>Entrena con una experiencia clara, moderna y acompañada. Rutinas, clases y seguimiento para que cada visita tenga un propósito.</p>
             <div class="hero-actions">
               <a routerLink="/login" class="primary-button"><span>Comenzar ahora</span><b>→</b></a>
-              <a routerLink="/planes" class="ghost-button"><span>Ver planes</span><b>↗</b></a>
+              <a routerLink="/planes" class="ghost-button"><span>Ver mensualidades</span><b>↗</b></a>
             </div>
             <div class="hero-trust">
               <span><i>✓</i> Entrenamiento guiado</span>
@@ -50,10 +51,10 @@ import { RouterLink } from '@angular/router';
             </div>
             <div class="hero-photo-message">
               <small>ENTRENA CON PROPÓSITO</small>
-              <b>Disciplina hoy.<br>Resultados mañana.</b>
+              <b>{{gymInfo?.frase_publicitaria || 'Ven, entrena con Mallqui Gym con el propósito de tener una vida saludable.'}}</b>
             </div>
             <div class="hero-photo-info">
-              <article><small>HORARIO</small><b>06:00 - 22:00</b></article>
+              <article><small>HORARIO</small><b>6–12 / 14–21:30</b></article>
               <article><small>CLASES</small><b>{{clases.length}} modalidades</b></article>
               <article><small>ACCESO</small><b>Todos los días</b></article>
             </div>
@@ -73,7 +74,7 @@ import { RouterLink } from '@angular/router';
           <div class="landing-about-copy">
             <span class="eyebrow">CONOCE MALLQUI GYM</span>
             <h2>Un gimnasio pensado para <strong>acompañarte de verdad</strong></h2>
-            <p>Mallqui Gym combina entrenamiento, seguimiento y atención personalizada en un solo lugar. El sistema te permite conocer tus clases, elegir un plan y continuar luego desde tu propia cuenta.</p>
+            <p>Mallqui Gym combina entrenamiento, seguimiento y atención personalizada en un solo lugar. El sistema te permite conocer tus clases, elegir una mensualidad y continuar luego desde tu propia cuenta.</p>
           </div>
           <div class="about-points">
             <article><span>🏋</span><b>Entrenamiento</b><small>Rutinas y clases para distintos objetivos.</small></article>
@@ -107,14 +108,14 @@ import { RouterLink } from '@angular/router';
 
         <section id="planes" class="landing-section plans-section mq-reveal">
           <div class="section-heading">
-            <div><span></span><h2>PLANES QUE SE ADAPTAN A TI</h2></div>
-            <a routerLink="/planes">Ver todos los planes →</a>
+            <div><span></span><h2>MENSUALIDADES Y PROMOCIONES</h2></div>
+            <a routerLink="/planes">Ver mensualidades →</a>
           </div>
           <div class="plan-cards">
             <article *ngFor="let p of planes" [class.recommended]="p.destacado">
               <div *ngIf="p.destacado" class="popular-label">MÁS POPULAR</div>
               <h3>{{ p.nombre }}</h3>
-              <div class="plan-price"><span>S/</span><b>{{ p.precio }}</b><small>/mes</small></div>
+              <div class="plan-price"><span>S/</span><b>{{ p.precio }}</b><small>/ {{p.duracion_meses}} mes{{p.duracion_meses===1 ? '' : 'es'}}</small></div>
               <p class="plan-subtitle">{{ p.subtitulo }}</p>
               <ul><li *ngFor="let item of p.items">✓ {{ item }}</li></ul>
               <a
@@ -122,7 +123,7 @@ import { RouterLink } from '@angular/router';
                 [queryParams]="{ plan: p.nombre }"
                 [class.primary-button]="p.destacado"
                 [class.ghost-button]="!p.destacado">
-                Elegir plan
+                Elegir membresía
               </a>
             </article>
           </div>
@@ -155,7 +156,7 @@ import { RouterLink } from '@angular/router';
             <a routerLink="/">Inicio</a>
             <a routerLink="/nosotros">Nosotros</a>
             <a routerLink="/clases-gym">Clases</a>
-            <a routerLink="/planes">Planes</a>
+            <a routerLink="/planes">Mensualidades</a>
             <a routerLink="/galeria">Galería</a>
           </div>
           <div>
@@ -169,9 +170,10 @@ import { RouterLink } from '@angular/router';
           </div>
           <div>
             <h4>CONTACTO</h4>
-            <p>⌖ Pucallpa, Perú</p>
-            <a class="footer-contact-link" href="tel:+51999888777">⌕ +51 999 888 777</a>
-            <a class="footer-contact-link" href="mailto:info@mallquigym.com">✉ info@mallquigym.com</a>
+            <p>⌖ {{gymInfo?.direccion || 'Jr. Los Laureles Mz 17 Lt 18'}}</p>
+            <p>{{gymInfo?.referencia || 'Referencia: Plaza de Laura Bosso'}}</p>
+            <a class="footer-contact-link" [href]="'tel:' + (gymInfo?.telefono || '939398148')">☎ {{gymInfo?.telefono || '939398148'}}</a>
+            <a *ngIf="gymInfo?.correo" class="footer-contact-link" [href]="'mailto:' + gymInfo.correo">✉ {{gymInfo.correo}}</a>
           </div>
         </div>
         <div class="copyright shell">© 2026 Mallqui Gym. Todos los derechos reservados.<span>Hecho con ♥ para tu mejor versión.</span></div>
@@ -212,15 +214,15 @@ import { RouterLink } from '@angular/router';
           </ng-container>
 
           <ng-container *ngIf="modal.tipo==='planes'">
-            <h2>Compara nuestros planes</h2>
-            <p>Elige el plan que se adapte mejor a lo que buscas. Al seleccionarlo continuarás al inicio de sesión.</p>
+            <h2>Compara mensualidades y promociones</h2>
+            <p>Elige 1, 2 o 3 meses según el tiempo que quieras entrenar. Al seleccionarlo continuarás al inicio de sesión.</p>
             <div class="plan-compare">
               <article *ngFor="let p of planes" [class.recommended]="p.destacado">
                 <h3>{{p.nombre}}</h3>
                 <strong>S/ {{p.precio}}</strong>
                 <small>{{p.subtitulo}}</small>
                 <ul><li *ngFor="let item of p.items">{{item}}</li></ul>
-                <a [routerLink]="['/login']" [queryParams]="{plan:p.nombre}" [class.primary-button]="p.destacado" [class.ghost-button]="!p.destacado" (click)="cerrarModal()">Elegir plan</a>
+                <a [routerLink]="['/login']" [queryParams]="{plan:p.nombre}" [class.primary-button]="p.destacado" [class.ghost-button]="!p.destacado" (click)="cerrarModal()">Elegir membresía</a>
               </article>
             </div>
           </ng-container>
@@ -239,7 +241,7 @@ import { RouterLink } from '@angular/router';
     </div>
   `
 })
-export class LandingComponent implements AfterViewInit, OnDestroy {
+export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   seccionActiva = 'inicio';
   modal: { tipo: 'clase' | 'clases' | 'planes'; data?: any } | null = null;
   toast = '';
@@ -255,11 +257,34 @@ export class LandingComponent implements AfterViewInit, OnDestroy {
     { nombre: 'YOGA', desc: 'Equilibra tu cuerpo y mente.', icon: '🧘', color: 'green', dias: 'Mar · Jue · Sáb', hora: '8:00 AM', nivel: 'Inicial / Intermedio', cupo: 14, img: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=700&q=85' }
   ];
 
+  gymInfo:any={};
   planes = [
-    { nombre: 'BÁSICO', precio: 79, subtitulo: 'Ideal para comenzar', destacado: false, items: ['Acceso a sala de pesas', 'Clases grupales', 'Rutinas básicas'] },
-    { nombre: 'PREMIUM', precio: 129, subtitulo: 'Para mejores resultados', destacado: true, items: ['Acceso total', 'Clases ilimitadas', 'Rutinas personalizadas', 'Evaluación mensual'] },
-    { nombre: 'PRO', precio: 179, subtitulo: 'Experiencia completa', destacado: false, items: ['Todo Premium', 'Asesoría 1 a 1', 'Plan nutricional'] }
+    { nombre: 'Mensualidad 1 mes', precio: 80, duracion_meses: 1, subtitulo: 'Mensualidad individual', destacado: false, items: ['Acceso al gimnasio durante 1 mes', 'Guía del personal del gym', 'Credencial digital y control de asistencias'] },
+    { nombre: 'Promoción 2 meses', precio: 120, duracion_meses: 2, subtitulo: 'Promoción por 2 meses', destacado: true, items: ['Acceso al gimnasio durante 2 meses', 'Guía del personal del gym', 'Credencial digital y control de asistencias'] },
+    { nombre: 'Promoción 3 meses', precio: 150, duracion_meses: 3, subtitulo: 'Promoción por 3 meses', destacado: false, items: ['Acceso al gimnasio durante 3 meses', 'Guía del personal del gym', 'Credencial digital y control de asistencias'] }
   ];
+
+  constructor(private api: GymApiService) {}
+
+  ngOnInit(): void {
+    this.api.informacionGym().subscribe({
+      next:(r:any)=>{
+        this.gymInfo=r||{};
+        const datos=Array.isArray(r?.membresias)?r.membresias:[];
+        if(datos.length){
+          this.planes=datos.map((m:any)=>({
+            nombre:m.nombre,
+            precio:Number(m.precio||0),
+            duracion_meses:Number(m.duracion_meses||1),
+            subtitulo:Number(m.duracion_meses||1)===1 ? 'Mensualidad individual' : `Promoción por ${m.duracion_meses} meses`,
+            destacado:Number(m.duracion_meses||1)===2,
+            items:Array.isArray(m.beneficios)?m.beneficios:[m.descripcion].filter(Boolean)
+          }));
+        }
+      },
+      error:()=>{}
+    });
+  }
 
   ngAfterViewInit(): void {
     document.documentElement.classList.add('mallqui-public-scroll');
