@@ -106,6 +106,63 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           </div>
         </section>
 
+        <section class="landing-real-business mq-reveal">
+          <div class="landing-real-business-head">
+            <div>
+              <span>DATOS REALES DEL GIMNASIO</span>
+              <h2>Información para entrenar en Mallqui Gym</h2>
+            </div>
+            <a [href]="'tel:' + (gymInfo?.telefono || '939398148')">☎ {{gymInfo?.telefono || '939398148'}}</a>
+          </div>
+
+          <div class="landing-real-business-grid">
+            <article class="wide">
+              <span>◷</span>
+              <div>
+                <small>HORARIO DE ATENCIÓN</small>
+                <b>Lunes a domingo</b>
+                <p>{{gymInfo?.horario_detalle || 'Lunes a viernes: 6:00 a. m. - 12:00 p. m. y 2:00 p. m. - 9:30 p. m. | Sábado: 6:00 a. m. - 12:00 p. m. y 2:00 p. m. - 8:30 p. m. | Domingo: atención hasta el mediodía.'}}</p>
+              </div>
+            </article>
+
+            <article>
+              <span>S/</span>
+              <div>
+                <small>MENSUALIDADES</small>
+                <b>1 mes S/80 · 2 meses S/120 · 3 meses S/150</b>
+                <p>Promoción mensual por persona según el tiempo elegido.</p>
+              </div>
+            </article>
+
+            <article>
+              <span>6</span>
+              <div>
+                <small>RUTINA DIARIA</small>
+                <b>S/ {{(gymInfo?.tarifa_diaria || 6) | number:'1.2-2'}}</b>
+                <p>Tarifa diaria informada por Mallqui Gym.</p>
+              </div>
+            </article>
+
+            <article>
+              <span>✓</span>
+              <div>
+                <small>GUÍA E INSTRUCCIONES</small>
+                <b>A cargo del personal del gym</b>
+                <p>La orientación durante el entrenamiento la brinda el mismo personal de Mallqui Gym.</p>
+              </div>
+            </article>
+
+            <article>
+              <span>⌖</span>
+              <div>
+                <small>UBICACIÓN</small>
+                <b>{{gymInfo?.direccion || 'Jr. Los Laureles Mz 17 Lt 18'}}</b>
+                <p>{{gymInfo?.referencia || 'Referencia: Plaza de Laura Bosso'}}</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
         <section id="planes" class="landing-section plans-section mq-reveal">
           <div class="section-heading">
             <div><span></span><h2>MENSUALIDADES Y PROMOCIONES</h2></div>
