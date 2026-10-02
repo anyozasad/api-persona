@@ -6,6 +6,7 @@ use App\Models\Cliente;
 use App\Models\ClienteMembresia;
 use App\Models\Membresia;
 use App\Models\PagoMembresia;
+use App\Services\ComprobanteMembresiaService;
 use App\Services\CajaService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -244,12 +245,12 @@ class MembresiaProcesoController extends Controller
         return response()->json($pagos);
     }
 
-    public function comprobante(string $idPago)
+    public function comprobante(string $idPago, ComprobanteMembresiaService $comprobantes)
     {
         $pago = PagoMembresia::with(['clienteMembresia.cliente', 'clienteMembresia.membresia'])
             ->findOrFail($idPago);
 
-        return response()->json($this->formatearComprobante($pago));
+        return response()->json($comprobantes->formatear($pago));
     }
 
     private function validarNumeroOperacion(string $metodoPago, ?string $numeroOperacion): void

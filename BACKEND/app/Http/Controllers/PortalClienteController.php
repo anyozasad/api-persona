@@ -10,6 +10,7 @@ use App\Models\PagoMembresia;
 use App\Models\Rutina;
 use App\Models\SesionEntrenamientoCasa;
 use App\Models\Venta;
+use App\Services\ComprobanteMembresiaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -111,7 +112,7 @@ class PortalClienteController extends Controller
         );
     }
 
-    public function comprobante(Request $request, string $idPago)
+    public function comprobante(Request $request, string $idPago, ComprobanteMembresiaService $comprobantes)
     {
         $cliente = $this->clienteDelUsuario($request);
 
@@ -121,22 +122,8 @@ class PortalClienteController extends Controller
             ->firstOrFail();
 
         return response()->json([
-            'empresa' => ['nombre' => 'Mallqui Gym', 'moneda' => 'PEN'],
-            'comprobante' => [
-                'id_pago' => $pago->id_pago,
-                'fecha' => optional($pago->fecha_pago)->toDateTimeString(),
-                'cliente' => trim($cliente->nombres.' '.$cliente->apellidos),
-                'dni' => $cliente->dni,
-                'membresia' => $pago->clienteMembresia?->membresia?->nombre,
-                'periodo' => [
-                    'inicio' => optional($pago->clienteMembresia?->fecha_inicio)->toDateString(),
-                    'fin' => optional($pago->clienteMembresia?->fecha_fin)->toDateString(),
-                ],
-                'monto' => $pago->monto,
-                'metodo_pago' => $pago->metodo_pago,
-                'numero_operacion' => $pago->numero_operacion,
-                'estado' => $pago->estado_pago,
-            ],
+            'empresa' => $comprobantes->formatear($pago)['empresa'],
+            'comprobante' => $comprobantes->formatear($pago),
         ]);
     }
 

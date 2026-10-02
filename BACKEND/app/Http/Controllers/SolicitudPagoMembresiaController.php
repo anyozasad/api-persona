@@ -6,6 +6,7 @@ use App\Models\Cliente;
 use App\Models\ClienteMembresia;
 use App\Models\Membresia;
 use App\Models\PagoMembresia;
+use App\Services\ComprobanteMembresiaService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,7 @@ class SolicitudPagoMembresiaController extends Controller
 {
     private const METODOS_DIGITALES = ['Yape', 'Plin', 'Transferencia', 'Tarjeta'];
 
-    public function comprar(Request $request)
+    public function comprar(Request $request, ComprobanteMembresiaService $comprobantes)
     {
         $datos = $request->validate([
             'id_membresia' => 'required|integer|exists:membresias,id_membresia',
@@ -185,21 +186,7 @@ class SolicitudPagoMembresiaController extends Controller
                 : 'Membresía comprada y activada correctamente.',
             'membresia_cliente' => $resultado['relacion']->load('membresia'),
             'pago' => $pagoCompleto,
-            'comprobante' => [
-                'id_pago' => $pagoCompleto->id_pago,
-                'fecha' => optional($pagoCompleto->fecha_pago)->toDateTimeString(),
-                'cliente' => trim($cliente->nombres.' '.$cliente->apellidos),
-                'dni' => $cliente->dni,
-                'membresia' => $pagoCompleto->clienteMembresia?->membresia?->nombre,
-                'periodo' => [
-                    'inicio' => optional($pagoCompleto->clienteMembresia?->fecha_inicio)->toDateString(),
-                    'fin' => optional($pagoCompleto->clienteMembresia?->fecha_fin)->toDateString(),
-                ],
-                'monto' => $pagoCompleto->monto,
-                'metodo_pago' => $pagoCompleto->metodo_pago,
-                'numero_operacion' => $pagoCompleto->numero_operacion,
-                'estado' => $pagoCompleto->estado_pago,
-            ],
+            'comprobante' => $comprobantes->formatear($pagoCompleto),
         ], 201);
     }
 

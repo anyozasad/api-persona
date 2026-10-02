@@ -8,6 +8,7 @@ use App\Models\OpinionCliente;
 use App\Models\Clase;
 use App\Models\ClaseFavorita;
 use App\Models\ClienteMembresia;
+use App\Models\ConfiguracionSistema;
 use App\Models\NotificacionCliente;
 use App\Models\MetaCliente;
 use App\Models\PagoMembresia;
@@ -429,8 +430,24 @@ class ExperienciaClienteController extends Controller
             ->orderByDesc('fecha_fin')
             ->first();
 
+        $codigoSocio = 'MG-'.str_pad((string) $cliente->id_cliente, 6, '0', STR_PAD_LEFT);
+        $asistenciaActual = Asistencia::where('id_cliente', $cliente->id_cliente)
+            ->whereNull('fecha_hora_salida')
+            ->orderByDesc('fecha_hora_entrada')
+            ->first();
+        $config = ConfiguracionSistema::first();
+
         return response()->json([
-            'codigo_socio' => 'MG-'.str_pad((string) $cliente->id_cliente, 6, '0', STR_PAD_LEFT),
+            'codigo_socio' => $codigoSocio,
+            'codigo_barras' => $codigoSocio,
+            'acceso_habilitado' => (bool) $membresia,
+            'estado_acceso' => $asistenciaActual ? 'Dentro del gimnasio' : ($membresia ? 'Listo para ingresar' : 'Membresía no vigente'),
+            'asistencia_actual' => $asistenciaActual,
+            'gimnasio' => [
+                'nombre' => $config?->nombre_gimnasio ?: 'Mallqui Gym',
+                'ruc' => $config?->ruc,
+                'direccion' => $config?->direccion,
+            ],
             'cliente' => [
                 'nombres' => $cliente->nombres,
                 'apellidos' => $cliente->apellidos,

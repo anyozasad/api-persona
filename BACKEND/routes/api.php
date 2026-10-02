@@ -211,6 +211,7 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
     Route::apiResource('/asistencias', AsistenciaController::class)->only(['index', 'show']);
     Route::post('/asistencias/entrada', [AsistenciaController::class, 'entrada']);
     Route::post('/asistencias/salida', [AsistenciaController::class, 'salida']);
+    Route::post('/asistencias/acceso', [AsistenciaController::class, 'accesoPorCodigo']);
     Route::get('/clientes/{idCliente}/asistencias', [AsistenciaController::class, 'historial']);
 
     Route::apiResource('/cliente-membresias', ClienteMembresiaController::class)->only(['index', 'show']);
