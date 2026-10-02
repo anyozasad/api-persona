@@ -29761,3 +29761,53 @@
   .gym-real-info-grid{grid-template-columns:1fr}
   .gym-real-info-grid article.wide{grid-column:auto}
 }
+
+
+.client-support-contact-strip{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin:0 0 16px;
+}
+.client-support-contact-strip article{
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  gap:11px;
+  align-items:flex-start;
+  padding:16px;
+  border:1px solid #dfe9ef;
+  border-radius:15px;
+  background:#fff;
+}
+.client-support-contact-strip article>span{
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:#eef5f9;
+  color:#173b58;
+  font-weight:950;
+}
+.client-support-contact-strip small{
+  display:block;
+  color:#8599a7;
+  font-size:8px;
+  font-weight:950;
+  letter-spacing:.7px;
+}
+.client-support-contact-strip b{
+  display:block;
+  margin-top:3px;
+  color:#173b58;
+  font-size:12px;
+}
+.client-support-contact-strip p{
+  margin:4px 0 0;
+  color:#718694;
+  font-size:10px;
+  line-height:1.4;
+}
+@media(max-width:900px){
+  .client-support-contact-strip{grid-template-columns:1fr}
+}
