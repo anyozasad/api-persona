@@ -108,6 +108,41 @@ El proyecto separa la aplicación en:
 - **Modelos Laravel:** `BACKEND/app/Models`
 - **API:** `BACKEND/routes/api.php`
 
-## Estado actual
+## Estado funcional
 
-El sistema cuenta con los módulos principales integrados con Laravel y MySQL. La siguiente etapa recomendada es fortalecer pruebas automatizadas, edición completa de registros, paginación/búsqueda y documentación de evidencias para la entrega académica.
+Mallqui Gym trabaja con una sola fuente principal de datos para clientes, membresías, rutinas, clases, reservas, asistencias, inventario, ventas y caja.
+
+Flujo principal del cliente:
+
+```text
+Cliente -> Membresía -> Rutina asignada -> Entrenamiento -> Progreso
+        -> Clases/Reservas -> Asistencias -> Calendario -> Mi club/Ayuda/Perfil
+```
+
+El entrenamiento del cliente usa únicamente la rutina activa registrada por el entrenador. Al finalizar una sesión se guarda la rutina realizada y el detalle de sus ejercicios, series, repeticiones y carga utilizada.
+
+La compra de membresía desde el portal del cliente se registra automáticamente en el sistema y genera un comprobante interno. Para un entorno comercial real, la confirmación de Yape/Plin/Tarjeta debe integrarse con un proveedor de pagos autorizado.
+
+## Verificación antes de entregar
+
+En el backend:
+
+```bash
+cd BACKEND
+php artisan db:sincronizar
+php artisan migrate
+php artisan db:seed
+php artisan db:verificar
+php artisan test
+```
+
+En el frontend:
+
+```bash
+cd FRONTEND/suma-angular
+npm install
+npm run build
+ng serve
+```
+
+La entrega debe considerarse lista cuando `db:verificar`, `php artisan test` y `npm run build` terminen sin errores.
