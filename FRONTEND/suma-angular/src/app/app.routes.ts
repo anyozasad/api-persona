@@ -4,7 +4,7 @@ import { PublicPageComponent } from './component/pages/public/public-page.compon
 import { LoginComponent } from './component/pages/login/login.component';
 import { RegisterComponent } from './component/pages/register/register.component';
 import { ResetPasswordComponent } from './component/pages/reset-password/reset-password.component';
-import { UsuarioComponent } from './component/pages/usuario/usuario.component';
+import { UsuarioGymComponent } from './component/pages/usuario/usuario-gym.component';
 import { EntrenadorPanelComponent } from './component/pages/panel-entrenador/entrenador-panel.component';
 import { AdminComponent } from './component/pages/admin/admin.component';
 import { AdminIntegradoComponent } from './component/pages/admin/admin-integrado.component';
@@ -38,7 +38,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [logoutOnLoginGuard] },
   { path: 'registro', component: RegisterComponent },
   { path: 'restablecer', component: ResetPasswordComponent },
-  { path: 'usuario', component: UsuarioComponent, canActivate: [authGuard, roleGuard(['Cliente'])] },
+  { path: 'usuario', component: UsuarioGymComponent, canActivate: [authGuard, roleGuard(['Cliente'])] },
   { path: 'entrenador', component: EntrenadorPanelComponent, canActivate: [authGuard, roleGuard(['Entrenador'])] },
   { path: 'admin', component: AdminIntegradoComponent, canActivate: [authGuard, roleGuard(['Administrador'])] },
   { path: 'admin-diseno', component: AdminComponent, canActivate: [authGuard, roleGuard(['Administrador'])] },
