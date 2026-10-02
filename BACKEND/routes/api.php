@@ -147,13 +147,7 @@ Route::middleware(['auth:sanctum', 'rol:Cliente', 'auditoria'])->prefix('mi-cuen
 
     // Flujo actual: entrenamiento guiado dentro del gimnasio.
     Route::get('/entrenamiento-gym', [PortalClienteController::class, 'entrenamientoCasa']);
-    Route::put('/entrenamiento-gym/plan', [PortalClienteController::class, 'guardarPlanEntrenamientoCasa']);
     Route::post('/entrenamiento-gym/sesiones', [PortalClienteController::class, 'registrarSesionEntrenamientoCasa']);
-
-    // Alias heredados para no romper instalaciones o clientes anteriores.
-    Route::get('/entrenamiento-casa', [PortalClienteController::class, 'entrenamientoCasa']);
-    Route::put('/entrenamiento-casa/plan', [PortalClienteController::class, 'guardarPlanEntrenamientoCasa']);
-    Route::post('/entrenamiento-casa/sesiones', [PortalClienteController::class, 'registrarSesionEntrenamientoCasa']);
 
     Route::post('/pagos/comprar', [SolicitudPagoMembresiaController::class, 'comprar']);
     // Alias temporal para clientes antiguos del frontend.
