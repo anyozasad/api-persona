@@ -17,7 +17,7 @@ class SolicitudPagoMembresiaController extends Controller
 {
     private const METODOS_DIGITALES = ['Yape', 'Plin', 'Transferencia', 'Tarjeta'];
 
-    public function solicitar(Request $request)
+    public function comprar(Request $request)
     {
         $datos = $request->validate([
             'id_membresia' => 'required|integer|exists:membresias,id_membresia',
@@ -31,40 +31,57 @@ class SolicitudPagoMembresiaController extends Controller
 
         $resultado = DB::transaction(function () use ($datos, $cliente) {
             if (PagoMembresia::where('numero_operacion', $datos['numero_operacion'])->exists()) {
-                throw ValidationException::withMessages(['numero_operacion' => ['Ese número de operación ya fue registrado.']]);
+                throw ValidationException::withMessages([
+                    'numero_operacion' => ['Ese número de operación ya fue registrado.'],
+                ]);
             }
 
-            $pendiente = ClienteMembresia::query()
-                ->where('id_cliente', $cliente->id_cliente)
-                ->where('estado', 'PendientePago')
-                ->exists();
-
-            if ($pendiente) {
-                throw ValidationException::withMessages(['id_membresia' => ['Ya tienes una solicitud de pago pendiente de revisión.']]);
-            }
-
-            $membresia = Membresia::where('id_membresia', $datos['id_membresia'])->lockForUpdate()->firstOrFail();
+            $membresia = Membresia::where('id_membresia', $datos['id_membresia'])
+                ->lockForUpdate()
+                ->firstOrFail();
 
             if (mb_strtolower((string) $membresia->estado) !== 'activo') {
-                throw ValidationException::withMessages(['id_membresia' => ['La membresía seleccionada no está disponible.']]);
+                throw ValidationException::withMessages([
+                    'id_membresia' => ['La membresía seleccionada no está disponible.'],
+                ]);
+            }
+
+            // Las solicitudes antiguas del flujo manual ya no deben bloquear una nueva compra.
+            $pendientes = ClienteMembresia::query()
+                ->where('id_cliente', $cliente->id_cliente)
+                ->where('estado', 'PendientePago')
+                ->lockForUpdate()
+                ->get();
+
+            foreach ($pendientes as $pendiente) {
+                PagoMembresia::query()
+                    ->where('id_cliente_membresia', $pendiente->id_cliente_membresia)
+                    ->where('estado_pago', 'Pendiente')
+                    ->update([
+                        'estado_pago' => 'Cancelado',
+                        'observacion' => DB::raw("CONCAT(COALESCE(observacion, ''), ' | Flujo anterior reemplazado por compra automática')"),
+                    ]);
+
+                $pendiente->update(['estado' => 'Cancelado']);
             }
 
             $fechaInicio = Carbon::parse($datos['fecha_inicio'] ?? now())->startOfDay();
 
-            // Si ya existe una membresía vigente, esta solicitud se programa como RENOVACIÓN
-            // para el día siguiente a su vencimiento, evitando solapamientos.
+            // Si existe una membresía vigente, la nueva compra se programa automáticamente
+            // para iniciar al día siguiente de su vencimiento.
             $vigente = ClienteMembresia::query()
                 ->where('id_cliente', $cliente->id_cliente)
                 ->where('estado', 'Activo')
+                ->whereDate('fecha_inicio', '<=', today())
                 ->whereDate('fecha_fin', '>=', today())
                 ->orderByDesc('fecha_fin')
                 ->lockForUpdate()
                 ->first();
 
             if ($vigente) {
-                $diaSiguiente = Carbon::parse($vigente->fecha_fin)->addDay()->startOfDay();
-                if ($fechaInicio->lt($diaSiguiente)) {
-                    $fechaInicio = $diaSiguiente;
+                $siguienteInicio = Carbon::parse($vigente->fecha_fin)->addDay()->startOfDay();
+                if ($fechaInicio->lt($siguienteInicio)) {
+                    $fechaInicio = $siguienteInicio;
                 }
             }
 
@@ -77,7 +94,7 @@ class SolicitudPagoMembresiaController extends Controller
                 'id_membresia' => $membresia->id_membresia,
                 'fecha_inicio' => $fechaInicio->toDateString(),
                 'fecha_fin' => $fechaFin->toDateString(),
-                'estado' => 'PendientePago',
+                'estado' => 'Activo',
             ]);
 
             $pago = PagoMembresia::create([
@@ -86,19 +103,39 @@ class SolicitudPagoMembresiaController extends Controller
                 'monto' => $membresia->precio,
                 'metodo_pago' => $datos['metodo_pago'],
                 'numero_operacion' => $datos['numero_operacion'],
-                'observacion' => $datos['observacion'] ?? ($vigente ? 'Renovación solicitada por el cliente' : null),
-                'estado_pago' => 'Pendiente',
+                'observacion' => $datos['observacion']
+                    ?? ($vigente
+                        ? 'Renovación registrada automáticamente por el cliente'
+                        : 'Compra registrada automáticamente por el cliente'),
+                'estado_pago' => 'Completado',
             ]);
 
             return compact('relacion', 'pago', 'vigente');
         });
 
+        $pagoCompleto = $resultado['pago']->fresh(['clienteMembresia.membresia']);
+
         return response()->json([
             'mensaje' => $resultado['vigente']
-                ? 'Renovación enviada. Se activará después de la membresía actual cuando administración confirme el pago.'
-                : 'Solicitud enviada. El pago debe ser confirmado por administración antes de activar la membresía.',
+                ? 'Renovación comprada correctamente. El nuevo periodo quedó programado automáticamente.'
+                : 'Membresía comprada y activada correctamente.',
             'membresia_cliente' => $resultado['relacion']->load('membresia'),
-            'pago' => $resultado['pago'],
+            'pago' => $pagoCompleto,
+            'comprobante' => [
+                'id_pago' => $pagoCompleto->id_pago,
+                'fecha' => optional($pagoCompleto->fecha_pago)->toDateTimeString(),
+                'cliente' => trim($cliente->nombres.' '.$cliente->apellidos),
+                'dni' => $cliente->dni,
+                'membresia' => $pagoCompleto->clienteMembresia?->membresia?->nombre,
+                'periodo' => [
+                    'inicio' => optional($pagoCompleto->clienteMembresia?->fecha_inicio)->toDateString(),
+                    'fin' => optional($pagoCompleto->clienteMembresia?->fecha_fin)->toDateString(),
+                ],
+                'monto' => $pagoCompleto->monto,
+                'metodo_pago' => $pagoCompleto->metodo_pago,
+                'numero_operacion' => $pagoCompleto->numero_operacion,
+                'estado' => $pagoCompleto->estado_pago,
+            ],
         ], 201);
     }
 
