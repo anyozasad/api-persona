@@ -111,6 +111,21 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
         </section>
 
         <section class="public-shell content-section">
+          <div class="official-gym-facts">
+            <article>
+              <span>◷</span>
+              <div><small>HORARIO</small><b>L-V 6:00–12:00 / 14:00–21:30</b><p>Sábado hasta 20:30 · Domingo hasta el mediodía.</p></div>
+            </article>
+            <article>
+              <span>S/</span>
+              <div><small>RUTINA DIARIA</small><b>S/ {{(gymInfo?.tarifa_diaria || 6) | number:'1.2-2'}}</b><p>Tarifa diaria informada por Mallqui Gym.</p></div>
+            </article>
+            <article>
+              <span>✓</span>
+              <div><small>GUÍA E INSTRUCCIONES</small><b>Personal del gimnasio</b><p>La orientación está a cargo del mismo personal del gym.</p></div>
+            </article>
+          </div>
+
           <div class="plans-page-grid">
             <article *ngFor="let p of planes" [class.featured]="p.destacado">
               <span *ngIf="p.destacado" class="recommended">MÁS ELEGIDO</span>
