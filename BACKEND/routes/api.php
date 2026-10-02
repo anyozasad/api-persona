@@ -58,7 +58,7 @@ Route::get('/estado-sistema', function () {
             $gym->getPdo();
             $gymConectada = true;
             $schema = $gym->getSchemaBuilder();
-            foreach (['socios','planes','suscripciones','ventas','detalle_ventas','gastos','productos','asistencias','cajas','usuarios'] as $tabla) {
+            foreach (['clientes','membresias','cliente_membresia','pagos_membresia','rutinas','detalle_rutina','clases','reservas','asistencias','productos','ventas','cajas','usuarios'] as $tabla) {
                 if ($schema->hasTable($tabla)) {
                     $gymTablas[] = $tabla;
                 }
@@ -78,8 +78,8 @@ Route::get('/estado-sistema', function () {
                 'tablas_detectadas' => $gymTablas,
             ],
             'mensaje' => $gymConectada
-                ? 'Sistema conectado correctamente con gym_system.'
-                : 'La API responde, pero no se pudo abrir gym_system.',
+                ? 'Sistema conectado correctamente con la base de datos de Mallqui Gym.'
+                : 'La API responde, pero no se pudo abrir la base de datos de Mallqui Gym.',
         ]);
     } catch (\Throwable $e) {
         return response()->json([
