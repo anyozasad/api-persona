@@ -149,7 +149,7 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
           <div class="public-shell">
             <span class="eyebrow">ESTAMOS PARA AYUDARTE</span>
             <h1>Hablemos sobre tu próximo entrenamiento</h1>
-            <p>Consulta planes, clases, horarios o cualquier duda sobre Mallqui Gym.</p>
+            <p>Consulta mensualidades, clases, horarios o cualquier duda sobre Mallqui Gym.</p>
           </div>
         </section>
 
@@ -159,10 +159,10 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
             <h2>Escríbenos o visítanos</h2>
             <p>Te respondemos con información clara para que puedas elegir lo que necesitas.</p>
             <div class="contact-cards">
-              <a href="tel:+51999888777"><span>☎</span><div><small>Teléfono</small><b>+51 999 888 777</b></div></a>
-              <a href="mailto:info@mallquigym.com"><span>✉</span><div><small>Correo</small><b>info@mallquigym.com</b></div></a>
-              <div><span>⌖</span><div><small>Ubicación</small><b>Pucallpa, Perú</b></div></div>
-              <div><span>◷</span><div><small>Horario referencial</small><b>06:00 AM – 10:00 PM</b></div></div>
+              <a [href]="'tel:' + (gymInfo?.telefono || '939398148')"><span>☎</span><div><small>Teléfono</small><b>{{gymInfo?.telefono || '939398148'}}</b></div></a>
+              <a *ngIf="gymInfo?.correo" [href]="'mailto:' + gymInfo.correo"><span>✉</span><div><small>Correo</small><b>{{gymInfo.correo}}</b></div></a>
+              <div><span>⌖</span><div><small>Ubicación</small><b>{{gymInfo?.direccion || 'Jr. Los Laureles Mz 17 Lt 18'}}</b><small>{{gymInfo?.referencia || 'Referencia: Plaza de Laura Bosso'}}</small></div></div>
+              <div><span>◷</span><div><small>Horario</small><b>L-V 6–12 / 14–21:30</b><small>Sábado hasta 20:30 · Domingo hasta mediodía</small></div></div>
             </div>
           </div>
 
@@ -170,10 +170,10 @@ type PaginaPublica = 'nosotros' | 'clases' | 'planes' | 'galeria' | 'contacto';
             <div><span class="eyebrow dark">ENVÍANOS TU CONSULTA</span><h3>Cuéntanos qué necesitas</h3></div>
             <label>Nombre<input name="nombre" [(ngModel)]="contacto.nombre" placeholder="Tu nombre" required></label>
             <label>Correo<input type="email" name="correo" [(ngModel)]="contacto.correo" placeholder="tunombre@gmail.com" required></label>
-            <label>Asunto<select name="asunto" [(ngModel)]="contacto.asunto"><option>Planes</option><option>Clases</option><option>Horarios</option><option>Otro</option></select></label>
+            <label>Asunto<select name="asunto" [(ngModel)]="contacto.asunto"><option>Mensualidades</option><option>Clases</option><option>Horarios</option><option>Otro</option></select></label>
             <label>Mensaje<textarea name="mensaje" [(ngModel)]="contacto.mensaje" placeholder="Escribe tu consulta..." required></textarea></label>
-            <button type="submit" class="primary">Preparar mensaje</button>
-            <small class="form-note">Se abrirá tu aplicación de correo con el mensaje preparado.</small>
+            <button type="submit" class="primary">Preparar consulta</button>
+            <small class="form-note">{{gymInfo?.correo ? 'Se abrirá tu aplicación de correo.' : 'La consulta se copiará para que puedas comunicarte al teléfono del gimnasio.'}}</small>
           </form>
         </section>
       </ng-container>
@@ -250,8 +250,16 @@ export class PublicPageComponent implements OnInit, OnDestroy {
 
   enviarConsulta(event: Event): void {
     event.preventDefault();
-    const asunto = encodeURIComponent(`Consulta Mallqui Gym - ${this.contacto.asunto}`);
-    const cuerpo = encodeURIComponent(`Hola Mallqui Gym,\n\nSoy ${this.contacto.nombre}.\n\n${this.contacto.mensaje}\n\nCorreo: ${this.contacto.correo}`);
-    window.location.href = `mailto:info@mallquigym.com?subject=${asunto}&body=${cuerpo}`;
+    const texto=`Hola Mallqui Gym,\n\nSoy ${this.contacto.nombre}.\n\n${this.contacto.mensaje}\n\nCorreo: ${this.contacto.correo}`;
+    const correoGym=String(this.gymInfo?.correo||'').trim();
+
+    if(correoGym){
+      const asunto=encodeURIComponent(`Consulta Mallqui Gym - ${this.contacto.asunto}`);
+      window.location.href=`mailto:${correoGym}?subject=${asunto}&body=${encodeURIComponent(texto)}`;
+      return;
+    }
+
+    navigator.clipboard?.writeText(texto);
+    alert(`Consulta copiada. Comunícate con Mallqui Gym al ${this.gymInfo?.telefono || '939398148'}.`);
   }
 }
