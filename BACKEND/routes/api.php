@@ -91,6 +91,8 @@ Route::get('/estado-sistema', function () {
     }
 });
 
+Route::get('/informacion-gym', [ConfiguracionSistemaController::class, 'publico']);
+
 // AUTENTICACIÓN PRINCIPAL DEL SISTEMA: SANCTUM
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:3,1');
