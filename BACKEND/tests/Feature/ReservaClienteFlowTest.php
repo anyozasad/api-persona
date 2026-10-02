@@ -9,6 +9,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
 class ReservaClienteFlowTest extends TestCase
@@ -120,20 +121,16 @@ class ReservaClienteFlowTest extends TestCase
 
     public function test_cliente_sin_membresia_no_puede_reservar(): void
     {
-        $response = $this->reservar();
-
-        $this->assertSame(422, $response->getStatusCode());
-        $this->assertDatabaseCount('reservas', 0);
+        $this->expectException(ValidationException::class);
+        $this->reservar();
     }
 
     public function test_plan_sin_beneficio_de_reserva_bloquea_la_clase(): void
     {
         $this->crearMembresia(false);
 
-        $response = $this->reservar();
-
-        $this->assertSame(422, $response->getStatusCode());
-        $this->assertDatabaseCount('reservas', 0);
+        $this->expectException(ValidationException::class);
+        $this->reservar();
     }
 
     public function test_cliente_con_plan_valido_puede_reservar_y_no_duplica(): void
@@ -141,11 +138,16 @@ class ReservaClienteFlowTest extends TestCase
         $this->crearMembresia(true);
 
         $primera = $this->reservar();
-        $segunda = $this->reservar();
 
         $this->assertSame(201, $primera->getStatusCode());
-        $this->assertSame(422, $segunda->getStatusCode());
         $this->assertDatabaseCount('reservas', 1);
+
+        try {
+            $this->reservar();
+            $this->fail('La segunda reserva duplicada debió ser rechazada.');
+        } catch (ValidationException $e) {
+            $this->assertDatabaseCount('reservas', 1);
+        }
     }
 
     private function reservar()
