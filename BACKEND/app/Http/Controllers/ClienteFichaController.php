@@ -49,7 +49,8 @@ class ClienteFichaController extends Controller
             ->limit(10)
             ->get();
 
-        $sesionesCasa = SesionEntrenamientoCasa::where('id_cliente', $cliente->id_cliente)
+        $sesionesCasa = SesionEntrenamientoCasa::with(['rutina', 'detalles.detalleRutina'])
+            ->where('id_cliente', $cliente->id_cliente)
             ->orderByDesc('fecha')
             ->limit(10)
             ->get();
@@ -83,6 +84,10 @@ class ClienteFichaController extends Controller
                     ->whereMonth('fecha', now()->month)
                     ->whereYear('fecha', now()->year)
                     ->where('estado', 'Completada')->count(),
+                'sesiones_gym_mes' => SesionEntrenamientoCasa::where('id_cliente', $cliente->id_cliente)
+                    ->whereMonth('fecha', now()->month)
+                    ->whereYear('fecha', now()->year)
+                    ->where('estado', 'Completada')->count(),
                 'total_ventas' => (float) Venta::where('id_cliente', $cliente->id_cliente)
                     ->where(function ($q) {
                         $q->whereNull('estado')->orWhere('estado', '!=', 'Anulado');
@@ -94,6 +99,7 @@ class ClienteFichaController extends Controller
             'asistencias' => $asistencias,
             'rutinas' => $rutinas,
             'reservas' => $reservas,
+            'sesiones_gym' => $sesionesCasa,
             'sesiones_casa' => $sesionesCasa,
             'ventas' => $ventas,
             'soporte' => $soporte,
