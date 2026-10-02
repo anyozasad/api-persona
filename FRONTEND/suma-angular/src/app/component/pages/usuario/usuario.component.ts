@@ -1074,10 +1074,14 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
                   <span>→</span>
                 </button>
 
-                <p class="membership-validation-note">
+                <div class="membership-validation-note">
                   <span>✓</span>
-                  Al confirmar, el sistema registra el pago como <b>Completado</b>, activa o programa el plan y genera la boleta automáticamente. No necesita aprobación del dashboard.
-                </p>
+                  <div>
+                    Al confirmar, el sistema registra el pago como <b>Completado</b>,
+                    activa o programa el plan y genera la boleta automáticamente.
+                    <strong>No necesita aprobación del dashboard.</strong>
+                  </div>
+                </div>
 
                 <div class="membership-payment-review" *ngIf="ultimaBoleta">
                   <p><span>BOLETA GENERADA</span><b>N° {{ultimaBoleta.id_pago}}</b></p>
@@ -1107,7 +1111,12 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
                   <strong>S/ {{p.monto | number:'1.2-2'}}</strong>
                   <em [class.pending]="p.estado_pago==='Pendiente'">{{p.estado_pago}}</em>
                   <button *ngIf="p.estado_pago==='Completado'" type="button" (click)="comprobante(p)">Ver boleta</button>
-                  <small *ngIf="p.estado_pago==='Pendiente'">Registro antiguo del flujo anterior</small>
+                  <button *ngIf="p.estado_pago==='Pendiente'"
+                          type="button"
+                          class="payment-cancel"
+                          (click)="usarPagoPendiente(p)">
+                    Completar compra
+                  </button>
                 </div>
 
                 <div class="member-empty-state compact-empty" *ngIf="!pagos.length">
@@ -1281,8 +1290,26 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
     const idActual=Number(this.membresiaActual?.membresia?.id_membresia||this.membresiaActual?.id_membresia||0);
     const actual=this.planesRenovacion.find((m:any)=>Number(m?.id_membresia)===idActual);
-    if(actual){
-      this.pagoForm={...this.pagoForm,id_membresia:Number(actual.id_membresia)};
+
+    const pagoPendiente=this.pagos.find((p:any)=>p?.estado_pago==='Pendiente');
+    const idPendiente=Number(
+      pagoPendiente?.cliente_membresia?.membresia?.id_membresia||
+      pagoPendiente?.cliente_membresia?.id_membresia||
+      0
+    );
+    const planPendiente=this.planesRenovacion.find((m:any)=>Number(m?.id_membresia)===idPendiente);
+
+    const planInicial=actual||planPendiente||this.planesRenovacion[0]||null;
+    if(planInicial){
+      this.pagoForm={
+        ...this.pagoForm,
+        id_membresia:Number(planInicial.id_membresia),
+        numero_operacion:String(
+          planPendiente && pagoPendiente?.numero_operacion
+            ? pagoPendiente.numero_operacion
+            : (this.pagoForm?.numero_operacion||'')
+        )
+      };
     }
   }
 
@@ -2245,6 +2272,27 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.error=this.errorApi(e);
       }
     });
+  }
+  usarPagoPendiente(p:any){
+    if(!p || p.estado_pago!=='Pendiente')return;
+    const idPlan=Number(
+      p?.cliente_membresia?.membresia?.id_membresia||
+      p?.cliente_membresia?.id_membresia||
+      0
+    );
+    if(idPlan){
+      this.pagoForm={
+        ...this.pagoForm,
+        id_membresia:idPlan,
+        numero_operacion:String(p?.numero_operacion||'')
+      };
+    }
+    this.error='';
+    this.toast='✓ Pago anterior cargado. Pulsa Comprar y generar boleta.';
+    setTimeout(()=>this.toast='',2600);
+    setTimeout(()=>{
+      document.querySelector('.membership-checkout-card')?.scrollIntoView({behavior:'smooth',block:'start'});
+    },0);
   }
   cancelarSolicitudPago(p:any){
     if(!p?.id_pago||p.estado_pago!=='Pendiente')return;
