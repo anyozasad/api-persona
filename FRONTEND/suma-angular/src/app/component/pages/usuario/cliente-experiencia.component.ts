@@ -438,7 +438,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               </div>
             </div>
             <div class="client-card-plan">
-              <div><small>PLAN</small><b>{{credencial?.membresia?.membresia?.nombre || 'Sin membresía activa'}}</b></div>
+              <div><small>MEMBRESÍA</small><b>{{credencial?.membresia?.membresia?.nombre || 'Sin membresía activa'}}</b></div>
               <div><small>VIGENCIA</small><b>{{credencial?.membresia ? fechaCorta(credencial.membresia.fecha_fin) : '-'}}</b></div>
               <div><small>DÍAS RESTANTES</small><b>{{credencial?.dias_restantes || 0}}</b></div>
             </div>
@@ -521,6 +521,12 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
           </div>
         </header>
 
+        <section class="client-support-contact-strip">
+          <article><span>☎</span><div><small>CONTACTO DIRECTO</small><b>{{gymInfo?.telefono || '939398148'}}</b><p>Personal de Mallqui Gym</p></div></article>
+          <article><span>⌖</span><div><small>UBICACIÓN</small><b>{{gymInfo?.direccion || 'Jr. Los Laureles Mz 17 Lt 18'}}</b><p>{{gymInfo?.referencia || 'Referencia: Plaza de Laura Bosso'}}</p></div></article>
+          <article><span>◷</span><div><small>HORARIO</small><b>Atención semanal</b><p>{{gymInfo?.horario_detalle || 'Consulta el horario de atención de Mallqui Gym.'}}</p></div></article>
+        </section>
+
         <section class="client-extra-grid support-grid">
           <article class="client-extra-card">
             <div class="client-card-head"><div><span>NUEVA CONSULTA</span><h2>Contactar al gimnasio</h2></div></div>
@@ -558,6 +564,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
 })
 export class ClienteExperienciaComponent implements OnInit, OnChanges {
   @Input() modulo = 'progreso';
+  @Input() gymInfo: any = {};
   @Output() notificacionesCambio = new EventEmitter<number>();
 
   cargando = false;
@@ -938,7 +945,7 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
       <div class="grid">
         <div class="item"><small>SOCIO</small><b>${this.nombreSocio}</b></div>
         <div class="item"><small>CÓDIGO</small><b>${codigo}</b></div>
-        <div class="item"><small>PLAN</small><b>${plan}</b></div>
+        <div class="item"><small>MEMBRESÍA</small><b>${plan}</b></div>
         <div class="item"><small>VIGENCIA</small><b>${vigencia}</b></div>
       </div>
       <div class="barcode">${barcode}<div class="muted">Presentar en recepción</div></div>
