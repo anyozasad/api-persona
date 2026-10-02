@@ -77,7 +77,8 @@ class VerificarMallquiBd extends Command
                 'fecha_inicio', 'fecha_fin', 'estado',
             ],
             'membresias' => [
-                'id_membresia', 'nombre', 'duracion_meses', 'precio', 'descripcion', 'estado',
+                'id_membresia', 'nombre', 'duracion_meses', 'precio', 'descripcion',
+                'beneficios', 'permite_reservas', 'estado',
             ],
             'pagos_membresia' => [
                 'id_pago', 'id_cliente_membresia', 'fecha_pago', 'monto', 'metodo_pago',
@@ -155,6 +156,14 @@ class VerificarMallquiBd extends Command
             ],
             'auditorias' => [
                 'id_auditoria', 'id_usuario', 'usuario', 'rol', 'metodo', 'ruta', 'ip', 'status', 'fecha',
+            ],
+            'sesiones_entrenamiento_casa' => [
+                'id_sesion_casa', 'id_cliente', 'id_rutina', 'zona', 'fecha',
+                'duracion_segundos', 'ejercicios_total', 'ejercicios_completados', 'estado',
+            ],
+            'detalle_sesion_entrenamiento' => [
+                'id_detalle_sesion', 'id_sesion_casa', 'id_detalle_rutina',
+                'series_realizadas', 'repeticiones_realizadas', 'peso_utilizado', 'completado',
             ],
             'personal_access_tokens' => [
                 'id', 'tokenable_type', 'tokenable_id', 'name', 'token', 'abilities',
