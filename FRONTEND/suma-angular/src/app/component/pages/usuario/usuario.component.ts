@@ -858,8 +858,17 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
         <section *ngIf="moduloActivo==='reservas'" class="member-module member-enter-up">
           <div class="member-module-hero reservations-hero">
             <div><span>AGENDA PERSONAL</span><h1>Mis reservas</h1><p>Consulta y administra las clases que reservaste.</p></div>
+            <button type="button" class="module-refresh-btn" (click)="sincronizarDatosCliente()" [disabled]="actualizandoModulo">
+              {{actualizandoModulo ? 'Actualizando...' : '↻ Actualizar'}}
+            </button>
             <div class="module-hero-icon">◷</div>
           </div>
+
+          <section class="client-rf-summary">
+            <article><small>ACTIVAS</small><b>{{reservasActivas.length}}</b><span>Reservadas</span></article>
+            <article><small>ASISTIDAS</small><b>{{reservasAsistidas}}</b><span>Clases completadas</span></article>
+            <article><small>CANCELADAS</small><b>{{reservasCanceladas}}</b><span>Historial</span></article>
+          </section>
 
           <div class="member-reservation-list">
             <article *ngFor="let r of reservas">
@@ -882,14 +891,27 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
         <section *ngIf="moduloActivo==='asistencias'" class="member-module member-enter-up">
           <div class="member-module-hero hero-photo hero-photo-asistencias">
             <div><span>HISTORIAL</span><h1>Mis asistencias</h1><p>Consulta tus entradas y salidas registradas en el gimnasio.</p></div>
+            <button type="button" class="module-refresh-btn" (click)="sincronizarDatosCliente()" [disabled]="actualizandoModulo">
+              {{actualizandoModulo ? 'Actualizando...' : '↻ Actualizar'}}
+            </button>
             <div class="module-hero-icon">✓</div>
           </div>
+
+          <section class="client-rf-summary">
+            <article><small>ESTE MES</small><b>{{asistenciasMesActual}}</b><span>Visitas registradas</span></article>
+            <article><small>TOTAL</small><b>{{asistencias.length}}</b><span>Historial completo</span></article>
+            <article><small>ESTADO ACTUAL</small><b>{{asistenciaAbierta ? 'Dentro' : 'Fuera'}}</b><span>{{asistenciaAbierta ? 'Ingreso abierto' : 'Sin ingreso abierto'}}</span></article>
+          </section>
 
           <div class="attendance-timeline">
             <article *ngFor="let a of asistencias">
               <span class="timeline-dot"></span>
-              <div><small>ENTRADA</small><h3>{{fecha(a.fecha_hora_entrada)}}</h3><p>Salida: {{fecha(a.fecha_hora_salida)}}</p></div>
-              <em>{{a.estado}}</em>
+              <div>
+                <small>ENTRADA</small>
+                <h3>{{fecha(a.fecha_hora_entrada)}}</h3>
+                <p>{{a.fecha_hora_salida ? ('Salida: '+fecha(a.fecha_hora_salida)) : 'Salida pendiente · actualmente dentro del gimnasio'}}</p>
+              </div>
+              <em>{{a.estado || (a.fecha_hora_salida ? 'Completada' : 'En curso')}}</em>
             </article>
 
             <article class="member-empty-card member-empty-guided" *ngIf="!asistencias.length">
@@ -910,6 +932,9 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
               <h1>Compra y renovación de planes</h1>
               <p>Elige tu plan, registra la operación y el sistema activa o programa la membresía automáticamente.</p>
             </div>
+            <button type="button" class="module-refresh-btn" (click)="sincronizarDatosCliente()" [disabled]="actualizandoModulo">
+              {{actualizandoModulo ? 'Actualizando...' : '↻ Actualizar'}}
+            </button>
             <div class="module-hero-icon">▤</div>
           </div>
 
@@ -1131,7 +1156,10 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
 
         <section *ngIf="moduloActivo==='perfil'" class="member-module member-enter-up">
           <div class="member-module-hero hero-photo hero-photo-perfil">
-            <div><span>CUENTA PERSONAL</span><h1>Mi perfil</h1><p>Mantén actualizada tu información de contacto.</p></div>
+            <div><span>CUENTA PERSONAL</span><h1>Mi perfil</h1><p>Mantén actualizada tu información de contacto y seguridad.</p></div>
+            <button type="button" class="module-refresh-btn" (click)="sincronizarDatosCliente()" [disabled]="actualizandoModulo">
+              {{actualizandoModulo ? 'Actualizando...' : '↻ Actualizar'}}
+            </button>
             <div class="module-hero-icon">♙</div>
           </div>
 
@@ -1147,10 +1175,21 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
             <article class="member-module-card profile-edit-card">
               <div class="card-title-block"><span>DATOS PERSONALES</span><h2>Actualizar información</h2><p>Modifica tus datos y guarda los cambios.</p></div>
               <form class="member-form profile-form-grid" (ngSubmit)="guardarPerfil()">
+                <label>DNI<input [value]="perfil.dni || ''" name="dni" disabled></label>
+                <label>Estado<input [value]="perfil.estado || 'Activo'" name="estadoCliente" disabled></label>
                 <label>Nombres<input [(ngModel)]="perfil.nombres" name="nombres" required></label>
                 <label>Apellidos<input [(ngModel)]="perfil.apellidos" name="apellidos" required></label>
                 <label>Correo<input type="email" [(ngModel)]="perfil.correo" name="correo" required></label>
                 <label>Teléfono<input [(ngModel)]="perfil.telefono" name="telefono"></label>
+                <label>Fecha de nacimiento<input type="date" [(ngModel)]="perfil.fecha_nacimiento" name="fechaNacimiento"></label>
+                <label>Sexo
+                  <select [(ngModel)]="perfil.sexo" name="sexo">
+                    <option value="">No especificado</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </label>
                 <label class="full">Dirección<input [(ngModel)]="perfil.direccion" name="direccion"></label>
                 <button class="member-form-submit full" type="submit">Guardar cambios <span>→</span></button>
               </form>
@@ -1221,6 +1260,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   pagoForm:any={id_membresia:0,fecha_inicio:new Date().toISOString().slice(0,10),metodo_pago:'Yape',numero_operacion:''};
   ultimaBoleta:any=null;
   procesandoCompra=false;
+  actualizandoModulo=false;
   seguridadForm:any={actual:'',nueva:'',confirmacion:''};
 
   diasSemanaCasa=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
@@ -1281,7 +1321,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargar():void{
     this.cargando=true; this.error='';
     this.api.cargarPortalCliente().subscribe({
-      next:r=>{this.resumen=r.resumen;this.perfil={...r.perfil};this.membresiaActual=r.membresia?.actual;this.membresiasDisponibles=r.membresiasDisponibles||[];this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.preseleccionarPlanActual();this.cargando=false;this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
+      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiasDisponibles=r.membresiasDisponibles||[];this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.preseleccionarPlanActual();this.cargando=false;this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
       error:e=>{this.error=this.errorApi(e);this.cargando=false;}
     });
   }
@@ -1313,7 +1353,58 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     }
   }
 
-  abrirModulo(m:string){this.mobileMenuAbierto=false;this.moduloActivo=m;if(m==='casa'&&!this.casaCargado)this.cargarEntrenamientoCasa();if(m==='avisos')this.cargarContadorAvisos();window.scrollTo({top:0,behavior:'smooth'});}
+  abrirModulo(m:string){
+    this.mobileMenuAbierto=false;
+    this.moduloActivo=m;
+    this.error='';
+
+    if(m==='casa'&&!this.casaCargado)this.cargarEntrenamientoCasa();
+    if(m==='avisos')this.cargarContadorAvisos();
+
+    // Reservas, asistencias, membresía y perfil siempre se vuelven a consultar
+    // al abrir el módulo para que la interfaz no muestre información antigua.
+    if(['reservas','asistencias','pagos','perfil'].includes(m)){
+      this.sincronizarDatosCliente(false);
+    }
+
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  normalizarPerfil(datos:any):any{
+    const p={...(datos||{})};
+    if(p.fecha_nacimiento){
+      p.fecha_nacimiento=String(p.fecha_nacimiento).slice(0,10);
+    }
+    return p;
+  }
+
+  sincronizarDatosCliente(mostrarAviso=true):void{
+    if(this.actualizandoModulo)return;
+    this.actualizandoModulo=true;
+    this.error='';
+
+    this.api.cargarPortalCliente().subscribe({
+      next:r=>{
+        this.resumen=r.resumen;
+        this.perfil=this.normalizarPerfil(r.perfil);
+        this.membresiaActual=r.membresia?.actual||null;
+        this.membresiasDisponibles=r.membresiasDisponibles||[];
+        this.pagos=r.pagos||[];
+        this.rutinas=r.rutinas||[];
+        this.asistencias=r.asistencias||[];
+        this.reservas=r.reservas||[];
+        this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');
+        this.compras=r.compras||[];
+        this.preseleccionarPlanActual();
+        this.actualizandoModulo=false;
+        if(mostrarAviso)this.ok('Información actualizada');
+      },
+      error:e=>{
+        this.actualizandoModulo=false;
+        this.error=this.errorApi(e);
+      }
+    });
+  }
 
   irConfigCasa():void{
     setTimeout(()=>{
@@ -1327,7 +1418,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.api.cargarPortalCliente().subscribe({
       next:r=>{
         this.resumen=r.resumen;
-        this.perfil={...r.perfil};
+        this.perfil=this.normalizarPerfil(r.perfil);
         this.membresiaActual=r.membresia?.actual;
         this.membresiasDisponibles=r.membresiasDisponibles||[];
         this.pagos=r.pagos||[];
@@ -1540,6 +1631,18 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   get rutinaActual():any{return this.resumen?.rutina_actual || this.rutinas.find(r=>r.estado==='Activo') || null;}
   get nombreEntrenador():string{return this.nombrePersona(this.rutinaActual?.entrenador) || 'Sin entrenador asignado';}
   get reservasActivas():any[]{return this.reservas.filter(r=>r.estado==='Reservada');}
+  get reservasAsistidas():number{return this.reservas.filter(r=>r.estado==='Asistio').length;}
+  get reservasCanceladas():number{return this.reservas.filter(r=>r.estado==='Cancelada').length;}
+  get asistenciasMesActual():number{
+    const hoy=new Date();
+    return this.asistencias.filter((a:any)=>{
+      const d=new Date(a?.fecha_hora_entrada);
+      return !isNaN(d.getTime()) && d.getFullYear()===hoy.getFullYear() && d.getMonth()===hoy.getMonth();
+    }).length;
+  }
+  get asistenciaAbierta():any{
+    return this.asistencias.find((a:any)=>a?.fecha_hora_entrada && !a?.fecha_hora_salida)||null;
+  }
 
   get perfilCompleto():boolean{
     return Boolean(
@@ -2222,7 +2325,15 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     if(img)img.style.display='none';
   }
 
-  guardarPerfil(){this.api.actualizarPerfilCliente(this.perfil).subscribe({next:r=>{this.perfil={...r.cliente};this.ok('Perfil actualizado');},error:e=>this.error=this.errorApi(e)});}
+  guardarPerfil(){
+    this.api.actualizarPerfilCliente(this.perfil).subscribe({
+      next:r=>{
+        this.perfil=this.normalizarPerfil(r.cliente);
+        this.ok('Perfil actualizado');
+      },
+      error:e=>this.error=this.errorApi(e)
+    });
+  }
   cambiarContrasenaCliente(){
     if(!this.seguridadForm.actual||!this.seguridadForm.nueva){this.error='Completa la contraseña actual y la nueva.';return;}
     if(String(this.seguridadForm.nueva).length<8){this.error='La nueva contraseña debe tener mínimo 8 caracteres.';return;}
@@ -2239,9 +2350,34 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       error:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);}
     });
   }
-  reservar(c:any){const f=this.fechasReserva[c.id_clase];if(!f){this.error='Selecciona una fecha para la clase.';return;}this.api.reservarClase(c.id_clase,f).subscribe({next:r=>{this.ok(r.mensaje||'Reserva creada');this.cargarReservas();},error:e=>this.error=this.errorApi(e)});}
-  cancelarReserva(r:any){if(!confirm('¿Cancelar esta reserva?'))return;this.api.cancelarReserva(r.id_reserva).subscribe({next:x=>{this.ok(x.mensaje||'Reserva cancelada');this.cargarReservas();},error:e=>this.error=this.errorApi(e)});}
-  cargarReservas(){this.api.reservasCliente().subscribe({next:r=>this.reservas=r,error:e=>this.error=this.errorApi(e)});}
+  reservar(c:any){
+    const f=this.fechasReserva[c.id_clase];
+    if(!f){this.error='Selecciona una fecha para la clase.';return;}
+    this.api.reservarClase(c.id_clase,f).subscribe({
+      next:r=>{
+        this.ok(r.mensaje||'Reserva creada');
+        this.fechasReserva[c.id_clase]='';
+        this.sincronizarDatosCliente(false);
+      },
+      error:e=>this.error=this.errorApi(e)
+    });
+  }
+  cancelarReserva(r:any){
+    if(!confirm('¿Cancelar esta reserva?'))return;
+    this.api.cancelarReserva(r.id_reserva).subscribe({
+      next:x=>{
+        this.ok(x.mensaje||'Reserva cancelada');
+        this.sincronizarDatosCliente(false);
+      },
+      error:e=>this.error=this.errorApi(e)
+    });
+  }
+  cargarReservas(){
+    this.api.reservasCliente().subscribe({
+      next:r=>this.reservas=r,
+      error:e=>this.error=this.errorApi(e)
+    });
+  }
   comprarMembresia(){
     if(this.procesandoCompra)return;
     if(!this.planPagoSeleccionado){
