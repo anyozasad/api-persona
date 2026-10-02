@@ -152,8 +152,9 @@ class EntrenamientoClienteFlowTest extends TestCase
     public function test_no_guarda_entrenamiento_sin_rutina_activa_del_cliente(): void
     {
         $this->crearMembresia();
+        [$rutina, $detalle] = $this->crearRutina('Finalizado');
 
-        $response = $this->registrarSesion(999, 999);
+        $response = $this->registrarSesion($rutina, $detalle);
 
         $this->assertSame(422, $response->getStatusCode());
         $this->assertDatabaseCount('sesiones_entrenamiento_casa', 0);
@@ -220,7 +221,7 @@ class EntrenamientoClienteFlowTest extends TestCase
         ]);
     }
 
-    private function crearRutina(): array
+    private function crearRutina(string $estado = 'Activo'): array
     {
         $rutina = DB::table('rutinas')->insertGetId([
             'id_cliente' => 1,
@@ -229,7 +230,7 @@ class EntrenamientoClienteFlowTest extends TestCase
             'objetivo' => 'Fuerza',
             'fecha_inicio' => today()->subDay()->toDateString(),
             'fecha_fin' => today()->addMonth()->toDateString(),
-            'estado' => 'Activo',
+            'estado' => $estado,
         ]);
 
         $detalle = DB::table('detalle_rutina')->insertGetId([
