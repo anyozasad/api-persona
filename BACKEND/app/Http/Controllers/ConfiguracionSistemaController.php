@@ -21,7 +21,7 @@ class ConfiguracionSistemaController extends Controller
             'frase_publicitaria' => 'Ven, entrena con Mallqui Gym con el propósito de tener una vida saludable.',
             'horario_detalle' => 'Lunes a viernes: 6:00 a. m. - 12:00 p. m. y 2:00 p. m. - 9:30 p. m. | Sábado: 6:00 a. m. - 12:00 p. m. y 2:00 p. m. - 8:30 p. m. | Domingo: atención hasta el mediodía.',
             'tarifa_diaria' => 6.00,
-            'mensaje_productos' => 'Bebidas y productos para consumo disponibles en recepción.',
+            'mensaje_productos' => 'Energizantes, bebidas y productos para consumo disponibles en recepción.',
             'hora_apertura' => '06:00:00',
             'hora_cierre' => '21:30:00',
             'dias_atencion' => ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
