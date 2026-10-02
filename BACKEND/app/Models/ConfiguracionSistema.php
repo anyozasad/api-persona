@@ -14,6 +14,11 @@ class ConfiguracionSistema extends Model
         'telefono',
         'correo',
         'direccion',
+        'referencia',
+        'frase_publicitaria',
+        'horario_detalle',
+        'tarifa_diaria',
+        'mensaje_productos',
         'hora_apertura',
         'hora_cierre',
         'dias_atencion',
@@ -28,6 +33,7 @@ class ConfiguracionSistema extends Model
 
     protected $casts = [
         'dias_atencion' => 'array',
+        'tarifa_diaria' => 'decimal:2',
         'notificar_vencimientos' => 'boolean',
         'notificar_stock_bajo' => 'boolean',
         'notificar_pagos_pendientes' => 'boolean',
