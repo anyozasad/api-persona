@@ -1306,12 +1306,13 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   apiConectada=false;
   dbConectada=false;
   dbMotor='MySQL';
-  resumen:any=null; perfil:any={}; membresiaActual:any=null; membresiasDisponibles:any[]=[]; gymInfo:any={};
+  resumen:any=null; perfil:any={}; membresiaActual:any=null; membresiaProxima:any=null; membresiasDisponibles:any[]=[]; gymInfo:any={};
   pagos:any[]=[]; rutinas:any[]=[]; asistencias:any[]=[]; reservas:any[]=[]; clases:any[]=[]; compras:any[]=[];
   fechasReserva:Record<number,string>={};
   pagoForm:any={id_membresia:0,fecha_inicio:new Date().toISOString().slice(0,10),metodo_pago:'Yape',numero_operacion:''};
   ultimaBoleta:any=null;
   procesandoCompra=false;
+  procesandoSolicitudRutina=false;
   actualizandoModulo=false;
   seguridadForm:any={actual:'',nueva:'',confirmacion:''};
 
@@ -1373,7 +1374,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargar():void{
     this.cargando=true; this.error='';
     this.api.cargarPortalCliente().subscribe({
-      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiasDisponibles=r.membresiasDisponibles||[];this.gymInfo=r.gymInfo||{};this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.preseleccionarPlanActual();this.cargando=false;this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
+      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=r.membresiasDisponibles||[];this.gymInfo=r.gymInfo||{};this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.preseleccionarPlanActual();this.cargando=false;this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
       error:e=>{this.error=this.errorApi(e);this.cargando=false;}
     });
   }
@@ -1440,6 +1441,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.resumen=r.resumen;
         this.perfil=this.normalizarPerfil(r.perfil);
         this.membresiaActual=r.membresia?.actual||null;
+        this.membresiaProxima=r.membresia?.proxima||null;
         this.membresiasDisponibles=r.membresiasDisponibles||[];
         this.gymInfo=r.gymInfo||this.gymInfo||{};
         this.pagos=r.pagos||[];
@@ -1473,6 +1475,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.resumen=r.resumen;
         this.perfil=this.normalizarPerfil(r.perfil);
         this.membresiaActual=r.membresia?.actual;
+        this.membresiaProxima=r.membresia?.proxima||null;
         this.membresiasDisponibles=r.membresiasDisponibles||[];
         this.gymInfo=r.gymInfo||this.gymInfo||{};
         this.pagos=r.pagos||[];
