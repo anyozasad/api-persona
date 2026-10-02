@@ -78,7 +78,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
 
           <button type="button" class="member-membership-chip" (click)="abrirModulo('pagos')">
             <span>{{membresiaActual ? '✓' : '!'}}</span>
-            <div><small>{{membresiaActual ? 'PLAN ACTIVO' : 'MEMBRESÍA'}}</small><b>{{membresiaActual?.membresia?.nombre || 'Activar plan'}}</b></div>
+            <div><small>{{membresiaActual ? 'MENSUALIDAD ACTIVA' : 'MEMBRESÍA'}}</small><b>{{membresiaActual?.membresia?.nombre || 'Activar membresía'}}</b></div>
             <em>→</em>
           </button>
         </div>
@@ -431,7 +431,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             <section class="train-ux-stepbar">
               <div class="train-step" [class.active]="!!membresiaActual">
                 <span>1</span>
-                <div><small>ACCESO</small><b>Membresía</b><p>{{membresiaActual ? 'Plan activo' : 'Sin plan activo'}}</p></div>
+                <div><small>ACCESO</small><b>Membresía</b><p>{{membresiaActual ? 'Membresía activa' : 'Sin membresía activa'}}</p></div>
                 <em *ngIf="membresiaActual">✓</em>
               </div>
               <i>›</i>
@@ -982,7 +982,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               <div class="membership-current-icon">{{membresiaActual ? '✓' : '!'}}</div>
               <div class="membership-current-copy">
                 <small>MEMBRESÍA ACTUAL</small>
-                <h2>{{membresiaActual?.membresia?.nombre || 'Sin plan activo'}}</h2>
+                <h2>{{membresiaActual?.membresia?.nombre || 'Sin mensualidad activa'}}</h2>
                 <p *ngIf="membresiaActual">
                   Vigente del {{fechaCortaPortal(membresiaActual.fecha_inicio)}} al {{fechaCortaPortal(membresiaActual.fecha_fin)}}
                 </p>
@@ -1042,7 +1042,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             <ng-template #sinPlanesGym>
               <div class="member-empty-state">
                 <span>!</span>
-                <h3>No se pudieron cargar los planes</h3>
+                <h3>No se pudieron cargar las mensualidades</h3>
                 <p>Verifica que Laravel y la base de datos estén conectados.</p>
               </div>
             </ng-template>
@@ -1271,6 +1271,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
         <app-cliente-experiencia
           *ngIf="moduloActivo==='progreso' || moduloActivo==='calendario' || moduloActivo==='club' || moduloActivo==='avisos' || moduloActivo==='soporte'"
           [modulo]="moduloActivo"
+          [gymInfo]="gymInfo"
           (notificacionesCambio)="avisosNoLeidos=$event">
         </app-cliente-experiencia>
       </main>
@@ -1637,7 +1638,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   get siguientePasoTitulo():string{
     const m=this.siguientePasoModulo;
     if(m==='perfil')return 'Completa tus datos';
-    if(m==='pagos')return 'Activa tu membresía';
+    if(m==='pagos')return 'Activa tu mensualidad';
     if(m==='rutinas')return 'Revisa tu rutina asignada';
     if(m==='clases')return 'Reserva tu próxima clase';
     return 'Revisa tu progreso';
@@ -1645,7 +1646,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   get siguientePasoDescripcion():string{
     const m=this.siguientePasoModulo;
     if(m==='perfil')return 'Agrega teléfono y dirección para dejar tu cuenta lista.';
-    if(m==='pagos')return 'Elige un plan y registra tu pago para comenzar a usar el gimnasio.';
+    if(m==='pagos')return 'Elige una mensualidad o promoción y registra tu pago para comenzar a usar el gimnasio.';
     if(m==='rutinas')return 'Tu entrenador debe registrar la rutina que usarás dentro de Mallqui Gym.';
     if(m==='clases')return 'Explora horarios disponibles y reserva una clase que te convenga.';
     return 'Mira tus sesiones, asistencias, calendario y actividad reciente.';
