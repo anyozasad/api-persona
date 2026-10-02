@@ -313,45 +313,51 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
             <section class="train-ux-intro">
               <article class="train-ux-copy-card">
                 <div class="train-ux-kicker"><i></i> ENTRENAMIENTO DENTRO DE MALLQUI GYM</div>
-                <h1>Entrena con <strong>máquinas y pesas</strong></h1>
-                <p>Elige el grupo muscular y sigue una sesión del gimnasio con máquinas, poleas, banco y mancuernas. El sistema te guía por series, repeticiones y descansos.</p>
+                <h1>Tu <strong>rutina registrada</strong> en el gimnasio</h1>
+                <p>Esta pantalla usa la rutina activa que Mallqui Gym tiene registrada para tu cuenta. Aquí se muestran exactamente los ejercicios, series, repeticiones, carga recomendada, descansos e indicaciones de tu entrenador.</p>
 
                 <div class="train-gym-context-strip">
-                  <span>🏋 Máquinas</span>
-                  <span>◉ Poleas</span>
-                  <span>◆ Mancuernas</span>
-                  <span>▰ Banco</span>
+                  <span>🏋 Rutina asignada</span>
+                  <span>✓ Datos del cliente</span>
+                  <span>◷ Descansos</span>
+                  <span>▦ Progreso</span>
                 </div>
 
                 <div class="train-gym-statusbar">
                   <div>
                     <small>MEMBRESÍA</small>
-                    <b>{{membresiaActual ? 'Acceso activo' : 'Revisar membresía'}}</b>
+                    <b>{{membresiaActual?.membresia?.nombre || 'Sin membresía activa'}}</b>
                   </div>
                   <div>
                     <small>RUTINA</small>
-                    <b>{{rutinaActual?.nombre_rutina || 'Sesión guiada Mallqui'}}</b>
+                    <b>{{rutinaActual?.nombre_rutina || 'Sin rutina asignada'}}</b>
                   </div>
                   <div>
                     <small>ENTRENADOR</small>
-                    <b>{{rutinaActual?.entrenador ? nombreEntrenador : 'Disponible en sala'}}</b>
+                    <b>{{rutinaActual?.entrenador ? nombreEntrenador : 'Sin entrenador asignado'}}</b>
                   </div>
                 </div>
 
                 <div class="train-ux-summary">
-                  <div><span>◎</span><p><small>ZONA ACTUAL</small><b>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</b></p></div>
-                  <div><span>◷</span><p><small>DURACIÓN</small><b>{{duracionEstimadaCasa(zonaCasaSeleccionada)}} min</b></p></div>
+                  <div><span>◎</span><p><small>OBJETIVO</small><b>{{rutinaActual?.objetivo || 'Por definir'}}</b></p></div>
+                  <div><span>◷</span><p><small>DURACIÓN ESTIMADA</small><b>{{tieneRutinaAsignadaGym ? (duracionEstimadaCasa(zonaCasaSeleccionada)+' min') : '-'}}</b></p></div>
                   <div><span>▦</span><p><small>EJERCICIOS</small><b>{{ejerciciosCasaActuales.length}}</b></p></div>
                 </div>
 
                 <div class="train-ux-actions">
-                  <button type="button" class="train-ux-primary" (click)="irConfigCasa()">
+                  <button type="button"
+                          class="train-ux-primary"
+                          (click)="iniciarEntrenamientoCasa()"
+                          [disabled]="!puedeEntrenarRutinaGym">
                     <span>▶</span>
-                    <div><b>Preparar sesión en el gym</b><small>Días, grupo muscular y equipo</small></div>
+                    <div>
+                      <b>{{puedeEntrenarRutinaGym ? 'Iniciar mi rutina' : 'Rutina no disponible'}}</b>
+                      <small>{{!membresiaActual ? 'Necesitas una membresía activa' : (!tieneRutinaAsignadaGym ? 'El entrenador debe asignarte una rutina' : 'Entrenamiento registrado en Mallqui Gym')}}</small>
+                    </div>
                     <em>→</em>
                   </button>
                   <button type="button" class="train-ux-secondary" (click)="abrirModulo('rutinas')">
-                    <span>🏋</span><b>Ver mis rutinas</b>
+                    <span>🏋</span><b>Ver mi rutina registrada</b>
                   </button>
                 </div>
               </article>
@@ -373,9 +379,10 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
                 <div class="train-ux-live-badge"><i></i> GUÍA VISUAL</div>
 
                 <div class="train-ux-visual-info">
-                  <small>SESIÓN EN SALA DE MUSCULACIÓN</small>
-                  <h2>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</h2>
-                  <p>{{ejerciciosCasaActuales.length}} ejercicios · {{duracionEstimadaCasa(zonaCasaSeleccionada)}} min aprox.</p>
+                  <small>RUTINA ACTIVA DEL CLIENTE</small>
+                  <h2>{{rutinaActual?.nombre_rutina || 'Aún sin rutina asignada'}}</h2>
+                  <p *ngIf="tieneRutinaAsignadaGym">{{ejerciciosCasaActuales.length}} ejercicios · {{duracionEstimadaCasa(zonaCasaSeleccionada)}} min aprox.</p>
+                  <p *ngIf="!tieneRutinaAsignadaGym">Cuando el entrenador registre tu rutina, aparecerá aquí automáticamente.</p>
                 </div>
 
                 <div class="train-ux-no-equipment">✓ Equipamiento del gimnasio</div>
@@ -383,20 +390,22 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
             </section>
 
             <section class="train-ux-stepbar">
-              <div class="train-step active">
+              <div class="train-step" [class.active]="!!membresiaActual">
                 <span>1</span>
-                <div><small>PASO ACTUAL</small><b>Planifica</b><p>Objetivo y días</p></div>
-                <em>ACTUAL</em>
+                <div><small>ACCESO</small><b>Membresía</b><p>{{membresiaActual ? 'Plan activo' : 'Sin plan activo'}}</p></div>
+                <em *ngIf="membresiaActual">✓</em>
               </div>
               <i>›</i>
-              <div class="train-step">
+              <div class="train-step" [class.active]="tieneRutinaAsignadaGym">
                 <span>2</span>
-                <div><small>DESPUÉS</small><b>Elige tu sesión</b><p>Zona y ejercicios</p></div>
+                <div><small>PLANIFICACIÓN</small><b>Rutina asignada</b><p>{{tieneRutinaAsignadaGym ? rutinaActual?.nombre_rutina : 'Pendiente del entrenador'}}</p></div>
+                <em *ngIf="tieneRutinaAsignadaGym">✓</em>
               </div>
               <i>›</i>
-              <div class="train-step">
+              <div class="train-step" [class.active]="puedeEntrenarRutinaGym">
                 <span>3</span>
-                <div><small>FINAL</small><b>Entrena</b><p>Guía y descansos</p></div>
+                <div><small>EJECUCIÓN</small><b>Entrenar en sala</b><p>Series, repeticiones, carga y descansos</p></div>
+                <em *ngIf="puedeEntrenarRutinaGym">LISTO</em>
               </div>
             </section>
           </section>
@@ -453,175 +462,25 @@ import { ClienteExperienciaComponent } from './cliente-experiencia.component';
                 <small>LISTA PARA ENTRENAR</small>
                 <b>{{totalSeriesCasaActuales}} series programadas · {{duracionEstimadaCasa(zonaCasaSeleccionada)}} min aprox.</b>
               </div>
-              <button type="button" class="gym-assigned-start" (click)="iniciarEntrenamientoCasa()">
+              <button type="button" class="gym-assigned-start" (click)="iniciarEntrenamientoCasa()" [disabled]="!membresiaActual">
                 <span>▶</span>
-                Iniciar rutina asignada
+                {{membresiaActual ? 'Iniciar rutina asignada' : 'Membresía no activa'}}
               </button>
             </div>
           </section>
 
-          <section id="config-entreno-casa" *ngIf="!sesionCasaActiva && !sesionCasaTerminada && !tieneRutinaAsignadaGym" class="home-plan-layout">
-            <article class="member-module-card home-plan-card">
-              <div class="card-title-block">
-                <span>PLAN DE ENTRENAMIENTO EN GIMNASIO</span>
-                <h2>Configura tu sesión en sala</h2>
-                <p>Elige tu objetivo y hasta 4 días por semana. Cada sesión usa equipamiento real del gimnasio y controla series, repeticiones y descansos.</p>
-              </div>
-
-              <div class="home-goal-selector">
-                <button *ngFor="let objetivo of objetivosCasaMeta"
-                        type="button"
-                        [class.active]="planCasa.objetivo===objetivo.id"
-                        (click)="seleccionarObjetivoCasa(objetivo.id)">
-                  <span>{{objetivo.icono}}</span>
-                  <div><b>{{objetivo.nombre}}</b><small>{{objetivo.descripcion}}</small></div>
-                  <i>{{planCasa.objetivo===objetivo.id ? '✓' : ''}}</i>
-                </button>
-              </div>
-
-              <div class="home-days-selector">
-                <button *ngFor="let dia of diasSemanaCasa"
-                        type="button"
-                        [class.active]="planCasa.dias.includes(dia)"
-                        (click)="toggleDiaCasa(dia)">
-                  <b>{{dia.slice(0,3)}}</b>
-                  <small>{{planCasa.dias.includes(dia) ? 'Entreno' : 'Descanso'}}</small>
-                </button>
-              </div>
-
-              <div class="home-plan-zones">
-                <span>GRUPOS PARA TU SEMANA</span>
-                <div>
-                  <button *ngFor="let zona of zonasCasaMeta"
-                          type="button"
-                          [class.active]="planCasa.zonas.includes(zona.id)"
-                          (click)="toggleZonaCasa(zona.id)">
-                    <i>{{zona.icono}}</i>{{zona.nombre}}
-                  </button>
-                </div>
-              </div>
-
-              <button type="button" class="home-save-plan" (click)="guardarPlanCasa()">Guardar plan semanal</button>
-            </article>
-
-            <article class="member-module-card home-week-card">
-              <div class="card-title-block">
-                <span>ESTA SEMANA</span>
-                <h2>Tu agenda en el gym</h2>
-                <p>{{planCasa.dias.length}} días programados</p>
-              </div>
-
-              <div class="home-week-list">
-                <div *ngFor="let item of agendaCasaSemanal" [class.active]="item.activo" [class.today]="item.hoy">
-                  <span class="week-day">{{item.dia.slice(0,3)}}</span>
-                  <div *ngIf="item.activo; else descansoCasa">
-                    <b>{{item.zona?.icono}} {{item.zona?.nombre}}</b>
-                    <small>{{item.ejercicios}} ejercicios · {{item.minutos}} min aprox.</small>
-                  </div>
-                  <ng-template #descansoCasa>
-                    <div><b>Recuperación</b><small>Sin sesión programada</small></div>
-                  </ng-template>
-                  <em *ngIf="item.hoy">HOY</em>
-                </div>
-              </div>
-            </article>
-          </section>
-
-          <section *ngIf="!sesionCasaActiva && !sesionCasaTerminada && !tieneRutinaAsignadaGym" class="home-workout-picker">
-            <div class="home-picker-head">
-              <div>
-                <span>GRUPO MUSCULAR</span>
-                <h2>¿Qué quieres entrenar?</h2>
-                <p>Selecciona un grupo muscular. Verás los ejercicios, la máquina o equipo que debes usar, las series, repeticiones y el descanso.</p>
-              </div>
-              <div class="home-picker-summary">
-                <b>{{ejerciciosCasaActuales.length}}</b>
-                <span>ejercicios</span>
-                <small>{{duracionEstimadaCasa(zonaCasaSeleccionada)}} min aprox.</small>
-              </div>
-            </div>
-
-            <div class="home-area-cards muscle-area-grid">
-              <button *ngFor="let zona of zonasCasaMeta"
-                      type="button"
-                      [class.active]="zonaCasaSeleccionada===zona.id"
-                      (click)="seleccionarZonaCasa(zona.id)">
-                <span>{{zona.icono}}</span>
-                <div>
-                  <small>{{zona.subtitulo}}</small>
-                  <h3>{{zona.nombre}}</h3>
-                  <p>{{zona.descripcion}}</p>
-                </div>
-                <em>{{ejerciciosZonaCasa(zona.id).length}} ejercicios</em>
+          <section *ngIf="!sesionCasaActiva && !sesionCasaTerminada && !tieneRutinaAsignadaGym"
+                   class="member-empty-card member-empty-guided empty-routines-panel">
+            <span class="empty-state-icon" aria-hidden="true">🏋</span>
+            <small class="empty-state-kicker">RUTINA DEL CLIENTE</small>
+            <h3>Aún no tienes una rutina activa asignada</h3>
+            <p>La sección Entrenar no crea ejercicios por su cuenta. Para que los requisitos funcionales sean reales, la rutina debe estar registrada para tu cliente por el administrador o entrenador. Cuando la asignen, aquí aparecerán sus ejercicios, series, repeticiones, carga, descanso e indicaciones.</p>
+            <div class="empty-actions">
+              <button type="button" class="empty-primary" (click)="abrirModulo('rutinas')">
+                <span>🏋</span><b>Revisar mis rutinas</b>
               </button>
-            </div>
-
-            <div class="home-exercise-preview">
-              <div class="home-exercise-preview-head">
-                <div>
-                  <span>SESIÓN DE MUSCULACIÓN</span>
-                  <h3>{{metaZonaCasa(zonaCasaSeleccionada).nombre}}</h3>
-                </div>
-                <span class="home-no-equipment">Equipo del gimnasio</span>
-              </div>
-
-              <div class="gym-first-station" *ngIf="ejerciciosCasaActuales[0]">
-                <div class="gym-first-station-photo">
-                  <img [src]="imagenEjercicioCasa(ejerciciosCasaActuales[0])"
-                       (error)="ocultarImagenEjercicio($event)"
-                       [alt]="ejerciciosCasaActuales[0].nombre">
-                  <span>PRIMERA ESTACIÓN</span>
-                </div>
-                <div class="gym-first-station-copy">
-                  <span>RUTINA EN SALA</span>
-                  <h3>{{ejerciciosCasaActuales[0].nombre}}</h3>
-                  <p>Empieza en <b>{{ejerciciosCasaActuales[0].equipo || 'el área funcional'}}</b>. Revisa la técnica antes de iniciar y completa todas las series.</p>
-                  <div class="gym-first-station-metrics">
-                    <article><small>SERIES</small><b>{{ejerciciosCasaActuales[0].series || 3}}</b></article>
-                    <article><small>REPETICIONES</small><b>{{prescripcionEjercicioCasa(ejerciciosCasaActuales[0])}}</b></article>
-                    <article><small>DESCANSO</small><b>{{ejerciciosCasaActuales[0].descanso}} s</b></article>
-                  </div>
-                </div>
-              </div>
-
-              <div class="home-exercise-list">
-                <article *ngFor="let ejercicio of ejerciciosCasaActuales; let i=index">
-                  <span class="exercise-number">{{i+1}}</span>
-                  <div class="exercise-thumb">
-                    <img *ngIf="imagenEjercicioCasa(ejercicio)"
-                         [src]="imagenEjercicioCasa(ejercicio)"
-                         (error)="ocultarImagenEjercicio($event)"
-                         [alt]="'Demostración de '+ejercicio.nombre">
-                    <span>{{ejercicio.icono}}</span>
-                  </div>
-                  <div class="exercise-list-copy">
-                    <b>{{ejercicio.nombre}}</b>
-                    <small>{{ejercicio.series || 3}} series · {{prescripcionEjercicioCasa(ejercicio)}} · descanso {{ejercicio.descanso}} s</small>
-                    <em>Equipo: {{ejercicio.equipo || 'Área funcional'}}</em>
-                  </div>
-                  <button type="button" (click)="verEjercicioCasa=verEjercicioCasa===ejercicio.id?'':ejercicio.id">
-                    {{verEjercicioCasa===ejercicio.id ? 'Ocultar pasos' : 'Ver técnica'}}
-                  </button>
-                  <div class="exercise-howto" *ngIf="verEjercicioCasa===ejercicio.id">
-                    <p class="gym-equipment-instruction"><span>🏋</span><b>Equipo: {{ejercicio.equipo || 'Área funcional del gimnasio'}}</b></p>
-                    <p *ngIf="ejercicio.por_lado" class="side-instruction"><span>↔</span><b>Completa el lado derecho y luego el izquierdo.</b></p>
-                    <p *ngFor="let paso of ejercicio.instrucciones; let p=index"><span>{{p+1}}</span>{{paso}}</p>
-                  </div>
-                </article>
-              </div>
-
-              <div class="home-safety-note">
-                <span>✓</span>
-                <p>Haz cada movimiento con control. Si aparece dolor o mareo, detén la sesión y descansa.</p>
-              </div>
-
-              <button type="button" class="home-start-session" (click)="iniciarEntrenamientoCasa()">
-                <span>▶</span>
-                <div>
-                  <b>Comenzar {{metaZonaCasa(zonaCasaSeleccionada).nombre}}</b>
-                  <small>{{ejerciciosCasaActuales.length}} ejercicios · máquinas/pesas · series, repeticiones y descansos</small>
-                </div>
-                <em>Empezar →</em>
+              <button type="button" class="empty-secondary" (click)="abrirModulo('soporte')">
+                <span>?</span><b>Consultar al gimnasio</b>
               </button>
             </div>
           </section>
@@ -1689,11 +1548,11 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         done:Boolean(this.membresiaActual),
       },
       {
-        titulo:'Configurar entrenamiento en el gym',
-        descripcion:'Elige días, objetivo y grupos musculares para tus entrenamientos en sala.',
+        titulo:'Tener una rutina asignada',
+        descripcion:'Tu entrenador registra los ejercicios, series, repeticiones, carga y descansos.',
         icono:'⚡',
-        modulo:'casa',
-        done:this.planCasaConfigurado,
+        modulo:'rutinas',
+        done:this.tieneRutinaAsignadaGym,
       },
       {
         titulo:'Registrar tu primera actividad',
@@ -1723,7 +1582,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const pasos=[
       this.perfilCompleto,
       !!this.membresiaActual,
-      this.casaCargado,
+      this.tieneRutinaAsignadaGym,
       this.reservasActivas.length>0,
       this.actividadRegistrada
     ];
@@ -1882,19 +1741,17 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       observaciones:String(d?.observaciones||'').trim(),
       instrucciones:String(d?.observaciones||'').trim()
         ? [String(d.observaciones)]
-        : [
-            'Ajusta correctamente el equipo antes de comenzar.',
-            'Completa la serie con técnica controlada.',
-            'Respeta el descanso indicado antes de la siguiente serie.'
-          ],
+        : ['No hay indicaciones adicionales registradas por el entrenador para este ejercicio.'],
       origen:'rutina_asignada'
     }));
   }
 
   get ejerciciosCasaActuales():any[]{
-    return this.tieneRutinaAsignadaGym
-      ? this.ejerciciosRutinaAsignadaGym
-      : this.ejerciciosZonaCasa(this.zonaCasaSeleccionada);
+    return this.tieneRutinaAsignadaGym ? this.ejerciciosRutinaAsignadaGym : [];
+  }
+
+  get puedeEntrenarRutinaGym():boolean{
+    return Boolean(this.membresiaActual && this.tieneRutinaAsignadaGym);
   }
 
   get ejercicioCasaActual():any{return this.ejerciciosCasaActuales[this.indiceEjercicioCasa]||null;}
@@ -1908,7 +1765,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   get nombreRutinaSesionGym():string{
     return this.tieneRutinaAsignadaGym
       ? String(this.rutinaActual?.nombre_rutina||'Rutina asignada')
-      : ('Entrenamiento de '+this.metaZonaCasa(this.zonaCasaSeleccionada).nombre);
+      : 'Sin rutina asignada';
   }
 
   claveEjercicioGym(e:any):string{
@@ -1970,16 +1827,16 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   prescripcionEjercicioCasa(e:any):string{
     if(!e)return '-';
     if(e.modo==='repeticiones'){
-      const reps=this.repeticionesObjetivoCasa(e);
+      const reps=e?.origen==='rutina_asignada'
+        ? Math.max(1,Number(e?.repeticiones||1))
+        : this.repeticionesObjetivoCasa(e);
       return e.por_lado ? (reps+' por cada lado') : (reps+' repeticiones');
     }
     return this.segundosObjetivoCasa(e)+' segundos';
   }
 
   duracionEstimadaCasa(zona:string):number{
-    const lista=this.tieneRutinaAsignadaGym
-      ? this.ejerciciosRutinaAsignadaGym
-      : this.ejerciciosZonaCasa(zona);
+    const lista=this.tieneRutinaAsignadaGym ? this.ejerciciosRutinaAsignadaGym : [];
     const total=lista.reduce((s:number,e:any)=>{
       const trabajo=e?.modo==='repeticiones'
         ? Math.max(30,this.repeticionesObjetivoCasa(e)*(e?.por_lado?4:3))
@@ -2078,8 +1935,16 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   iniciarEntrenamientoCasa():void{
+    if(!this.membresiaActual){
+      this.errorCasa='No puedes iniciar una sesión porque no tienes una membresía activa registrada.';
+      return;
+    }
+    if(!this.tieneRutinaAsignadaGym){
+      this.errorCasa='Aún no tienes una rutina activa asignada. El entrenador o administrador debe registrarla primero.';
+      return;
+    }
     if(!this.ejerciciosCasaActuales.length){
-      this.errorCasa='Todavía no hay ejercicios disponibles para esta zona.';
+      this.errorCasa='La rutina asignada todavía no tiene ejercicios registrados.';
       return;
     }
 
