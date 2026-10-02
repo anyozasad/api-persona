@@ -29511,3 +29511,56 @@
   .gym-workout-prescription{grid-template-columns:1fr}
   .gym-workout-actions{grid-template-columns:1fr}
 }
+
+
+/* PORTAL CLIENTE · SPRINTS FUNCIONALES COMPLETOS */
+.module-refresh-btn{
+  align-self:center;
+  min-height:42px;
+  padding:0 16px;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:12px;
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  font-size:11px;
+  font-weight:900;
+  cursor:pointer;
+  backdrop-filter:blur(6px);
+}
+.module-refresh-btn:hover{background:rgba(255,255,255,.2)}
+.module-refresh-btn:disabled{opacity:.55;cursor:wait}
+
+.client-rf-summary{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin:14px 0 18px;
+}
+.client-rf-summary article{
+  padding:16px 18px;
+  border:1px solid #dfe8ef;
+  border-radius:15px;
+  background:#fff;
+  box-shadow:0 8px 24px rgba(16,47,75,.05);
+}
+.client-rf-summary small{
+  display:block;
+  color:#8398a9;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.7px;
+}
+.client-rf-summary b{
+  display:block;
+  margin:5px 0 2px;
+  color:#102f4b;
+  font-size:24px;
+}
+.client-rf-summary span{
+  color:#71899b;
+  font-size:10px;
+}
+@media(max-width:760px){
+  .client-rf-summary{grid-template-columns:1fr}
+  .module-refresh-btn{width:100%;margin-top:10px}
+}
