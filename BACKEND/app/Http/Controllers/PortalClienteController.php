@@ -179,15 +179,6 @@ class PortalClienteController extends Controller
     {
         $cliente = $this->clienteDelUsuario($request);
 
-        // La sesión guiada solo se habilita cuando el cliente está físicamente
-        // dentro de Mallqui Gym y recepción ya registró su ingreso del día.
-        $asistenciaActiva = Asistencia::query()
-            ->where('id_cliente', $cliente->id_cliente)
-            ->whereDate('fecha_hora_entrada', today())
-            ->whereNull('fecha_hora_salida')
-            ->orderByDesc('fecha_hora_entrada')
-            ->first();
-
         $plan = PlanEntrenamientoCasa::firstOrCreate(
             ['id_cliente' => $cliente->id_cliente],
             [
@@ -199,13 +190,6 @@ class PortalClienteController extends Controller
         );
 
         return response()->json([
-            'presencia' => [
-                'dentro_gym' => (bool) $asistenciaActiva,
-                'asistencia' => $asistenciaActiva,
-                'mensaje' => $asistenciaActiva
-                    ? 'Ingreso confirmado. El entrenamiento dentro de Mallqui Gym está habilitado.'
-                    : 'Primero registra tu ingreso en recepción para habilitar el entrenamiento dentro del gimnasio.',
-            ],
             'plan' => $plan,
             'catalogo' => $this->catalogoEntrenamientoCasa(),
             'historial' => SesionEntrenamientoCasa::query()
@@ -256,19 +240,6 @@ class PortalClienteController extends Controller
     public function registrarSesionEntrenamientoCasa(Request $request)
     {
         $cliente = $this->clienteDelUsuario($request);
-
-        $asistenciaActiva = Asistencia::query()
-            ->where('id_cliente', $cliente->id_cliente)
-            ->whereDate('fecha_hora_entrada', today())
-            ->whereNull('fecha_hora_salida')
-            ->orderByDesc('fecha_hora_entrada')
-            ->first();
-
-        if (!$asistenciaActiva) {
-            return response()->json([
-                'mensaje' => 'Esta sesión solo puede guardarse mientras estás dentro de Mallqui Gym. Registra primero tu ingreso en recepción.',
-            ], 422);
-        }
 
         $datos = $request->validate([
             'zona' => ['required', 'string', Rule::in(['piernas', 'brazos', 'pecho', 'espalda', 'hombros', 'gluteos', 'core'])],
