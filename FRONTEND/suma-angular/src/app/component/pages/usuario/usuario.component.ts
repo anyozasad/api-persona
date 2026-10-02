@@ -1527,23 +1527,11 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   beneficiosPlanGym(plan:any):string[]{
-    const nombre=this.nombrePlanNormalizado(plan);
-    if(nombre==='BASICO')return [
-      'Acceso a sala de pesas',
-      'Clases grupales',
-      'Rutinas básicas'
-    ];
-    if(nombre==='PREMIUM')return [
-      'Acceso total al gimnasio',
-      'Clases ilimitadas',
-      'Rutinas personalizadas',
-      'Evaluación mensual'
-    ];
-    if(nombre==='PRO')return [
-      'Todo lo incluido en Premium',
-      'Asesoría personalizada 1 a 1',
-      'Plan nutricional'
-    ];
+    if(Array.isArray(plan?.beneficios) && plan.beneficios.length){
+      return plan.beneficios
+        .map((x:any)=>String(x||'').trim())
+        .filter((x:string)=>Boolean(x));
+    }
 
     const descripcion=String(plan?.descripcion||'').trim();
     return descripcion ? [descripcion] : ['Acceso según condiciones del plan'];
