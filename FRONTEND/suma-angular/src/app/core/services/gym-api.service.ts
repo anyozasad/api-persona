@@ -95,10 +95,15 @@ export class GymApiService {
   }
 
   registrarSesionCasaCliente(datos: {
-    zona: string;
+    id_rutina: number;
     duracion_segundos: number;
-    ejercicios_total: number;
-    ejercicios_completados: number;
+    ejercicios: Array<{
+      id_detalle_rutina: number;
+      series_realizadas: number;
+      repeticiones_realizadas: number;
+      peso_utilizado: number | null;
+      completado: boolean;
+    }>;
   }): Observable<any> {
     return this.http.post('/api/mi-cuenta/entrenamiento-gym/sesiones', datos);
   }
