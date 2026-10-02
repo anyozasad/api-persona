@@ -11,6 +11,8 @@ export class GymApiService {
     return this.http.get('/api/estado-sistema');
   }
 
+  informacionGym(): Observable<any> { return this.http.get('/api/informacion-gym'); }
+
   // =========================================================
   // PORTAL DEL CLIENTE
   // =========================================================
@@ -46,6 +48,7 @@ export class GymApiService {
       reservas: seguro(this.reservasCliente(), []),
       clases: seguro(this.clases(), []),
       membresiasDisponibles: seguro(this.membresias(), []),
+      gymInfo: seguro(this.informacionGym(), {}),
     });
   }
 

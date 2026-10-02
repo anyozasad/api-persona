@@ -15,9 +15,16 @@ class ConfiguracionSistemaController extends Controller
     {
         return ConfiguracionSistema::firstOrCreate([], [
             'nombre_gimnasio' => 'Mallqui Gym',
+            'telefono' => '939398148',
+            'direccion' => 'Jr. Los Laureles Mz 17 Lt 18',
+            'referencia' => 'Referencia: Plaza de Laura Bosso',
+            'frase_publicitaria' => 'Ven, entrena con Mallqui Gym con el propósito de tener una vida saludable.',
+            'horario_detalle' => 'Lunes a viernes: 6:00 a. m. - 12:00 p. m. y 2:00 p. m. - 9:30 p. m. | Sábado: 6:00 a. m. - 12:00 p. m. y 2:00 p. m. - 8:30 p. m. | Domingo: atención hasta el mediodía.',
+            'tarifa_diaria' => 6.00,
+            'mensaje_productos' => 'Energizantes, bebidas y productos para consumo disponibles en recepción.',
             'hora_apertura' => '06:00:00',
-            'hora_cierre' => '22:00:00',
-            'dias_atencion' => ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            'hora_cierre' => '21:30:00',
+            'dias_atencion' => ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
             'dias_aviso_vencimiento' => 7,
             'minutos_cancelacion_reserva' => 120,
             'dias_anticipacion_reserva' => 7,
@@ -45,6 +52,11 @@ class ConfiguracionSistemaController extends Controller
             'telefono' => 'nullable|string|max:30',
             'correo' => 'nullable|email|max:150',
             'direccion' => 'nullable|string|max:255',
+            'referencia' => 'nullable|string|max:255',
+            'frase_publicitaria' => 'nullable|string|max:255',
+            'horario_detalle' => 'nullable|string|max:1000',
+            'tarifa_diaria' => 'nullable|numeric|min:0|max:9999',
+            'mensaje_productos' => 'nullable|string|max:1000',
             'hora_apertura' => 'required|date_format:H:i',
             'hora_cierre' => 'required|date_format:H:i',
             'dias_atencion' => 'required|array|min:1',
@@ -64,6 +76,23 @@ class ConfiguracionSistemaController extends Controller
         return response()->json([
             'mensaje' => 'Configuración guardada correctamente.',
             'configuracion' => $configuracion->fresh(),
+        ]);
+    }
+
+    public function publico()
+    {
+        $config = $this->configuracion();
+
+        return response()->json([
+            'nombre_gimnasio' => $config->nombre_gimnasio,
+            'telefono' => $config->telefono,
+            'direccion' => $config->direccion,
+            'referencia' => $config->referencia,
+            'frase_publicitaria' => $config->frase_publicitaria,
+            'horario_detalle' => $config->horario_detalle,
+            'tarifa_diaria' => $config->tarifa_diaria,
+            'mensaje_productos' => $config->mensaje_productos,
+            'ruc' => $config->ruc,
         ]);
     }
 

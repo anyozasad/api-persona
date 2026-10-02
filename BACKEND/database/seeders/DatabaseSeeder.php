@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Categoria;
+use App\Models\ConfiguracionSistema;
 use App\Models\Membresia;
 use Illuminate\Database\Seeder;
 
@@ -10,40 +11,61 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        Membresia::whereIn('nombre', ['Básico', 'Premium', 'Pro'])
+            ->update(['estado' => 'Inactivo']);
+
         foreach ([
             [
-                'nombre' => 'Básico',
+                'nombre' => 'Mensualidad 1 mes',
                 'duracion_meses' => 1,
-                'precio' => 79.00,
-                'descripcion' => 'Acceso al gimnasio con credencial digital, rutina asignada, clases y control de asistencias.',
-                'beneficios' => ['Acceso al gimnasio', 'Credencial digital con código de barras', 'Rutina asignada por entrenador', 'Clases y reservas', 'Historial de asistencias'],
+                'precio' => 80.00,
+                'descripcion' => 'Mensualidad individual de Mallqui Gym.',
+                'beneficios' => ['Acceso al gimnasio durante 1 mes', 'Guía e instrucciones a cargo del personal del gym', 'Credencial digital', 'Rutina y control de asistencias'],
                 'permite_reservas' => true,
                 'estado' => 'Activo',
             ],
             [
-                'nombre' => 'Premium',
-                'duracion_meses' => 1,
-                'precio' => 129.00,
-                'descripcion' => 'Incluye el acceso completo al gimnasio, reservas, rutina personalizada y seguimiento desde el portal.',
-                'beneficios' => ['Todo lo incluido en Básico', 'Rutina personalizada', 'Reservas de clases', 'Progreso de entrenamientos', 'Calendario de actividades'],
+                'nombre' => 'Promoción 2 meses',
+                'duracion_meses' => 2,
+                'precio' => 120.00,
+                'descripcion' => 'Promoción por dos meses de entrenamiento en Mallqui Gym.',
+                'beneficios' => ['Acceso al gimnasio durante 2 meses', 'Guía e instrucciones a cargo del personal del gym', 'Credencial digital', 'Rutina y control de asistencias'],
                 'permite_reservas' => true,
                 'estado' => 'Activo',
             ],
             [
-                'nombre' => 'Pro',
-                'duracion_meses' => 1,
-                'precio' => 179.00,
-                'descripcion' => 'Experiencia completa del portal Mallqui Gym con historial, avisos, soporte y seguimiento de actividad.',
-                'beneficios' => ['Todo lo incluido en Premium', 'Historial completo de actividad', 'Avisos de membresía y clases', 'Soporte desde la cuenta', 'Seguimiento de entrenador y rutina'],
+                'nombre' => 'Promoción 3 meses',
+                'duracion_meses' => 3,
+                'precio' => 150.00,
+                'descripcion' => 'Promoción por tres meses de entrenamiento en Mallqui Gym.',
+                'beneficios' => ['Acceso al gimnasio durante 3 meses', 'Guía e instrucciones a cargo del personal del gym', 'Credencial digital', 'Rutina y control de asistencias'],
                 'permite_reservas' => true,
                 'estado' => 'Activo',
             ],
-        ] as $plan) {
-            Membresia::updateOrCreate(['nombre' => $plan['nombre']], $plan);
+        ] as $membresia) {
+            Membresia::updateOrCreate(['nombre' => $membresia['nombre']], $membresia);
         }
+
+        ConfiguracionSistema::updateOrCreate(
+            ['id' => 1],
+            [
+                'nombre_gimnasio' => 'Mallqui Gym',
+                'telefono' => '939398148',
+                'direccion' => 'Jr. Los Laureles Mz 17 Lt 18',
+                'referencia' => 'Referencia: Plaza de Laura Bosso',
+                'frase_publicitaria' => 'Ven, entrena con Mallqui Gym con el propósito de tener una vida saludable.',
+                'horario_detalle' => 'Lunes a viernes: 6:00 a. m. - 12:00 p. m. y 2:00 p. m. - 9:30 p. m. | Sábado: 6:00 a. m. - 12:00 p. m. y 2:00 p. m. - 8:30 p. m. | Domingo: atención hasta el mediodía.',
+                'tarifa_diaria' => 6.00,
+                'mensaje_productos' => 'Energizantes, bebidas y productos para consumo disponibles en recepción.',
+                'hora_apertura' => '06:00:00',
+                'hora_cierre' => '21:30:00',
+                'dias_atencion' => ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'],
+            ]
+        );
 
         foreach ([
             ['nombre_categoria' => 'Bebidas', 'descripcion' => 'Agua y bebidas para entrenamiento', 'estado' => 'Activo'],
+            ['nombre_categoria' => 'Energizantes', 'descripcion' => 'Productos energizantes disponibles en recepción', 'estado' => 'Activo'],
             ['nombre_categoria' => 'Accesorios', 'descripcion' => 'Accesorios deportivos', 'estado' => 'Activo'],
             ['nombre_categoria' => 'Nutrición', 'descripcion' => 'Productos de nutrición deportiva', 'estado' => 'Activo'],
         ] as $categoria) {
