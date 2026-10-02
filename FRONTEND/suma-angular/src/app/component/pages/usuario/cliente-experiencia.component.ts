@@ -416,9 +416,9 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
       <ng-container *ngIf="modulo==='club'">
         <header class="client-extra-hero club-hero hero-photo hero-photo-club">
           <div>
-            <span>MI CLUB</span>
-            <h1>Tu espacio dentro de Mallqui Gym</h1>
-            <p>Consulta tu credencial digital, guarda clases favoritas y comparte una opinión sobre tu experiencia.</p>
+            <span>ACCESO AL GIMNASIO</span>
+            <h1>Tu credencial para ingresar a Mallqui Gym</h1>
+            <p>Presenta el código de barras en recepción para validar tu membresía y registrar automáticamente tu entrada o salida.</p>
           </div>
           <button type="button" (click)="cargarClub()">↻ Actualizar</button>
         </header>
