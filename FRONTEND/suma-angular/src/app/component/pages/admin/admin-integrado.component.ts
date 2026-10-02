@@ -1652,7 +1652,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
     req.subscribe({
       next:()=>{
-        this.ok(this.planEditandoId?'Plan actualizado':'Plan creado');
+        this.ok(this.planEditandoId?'Tarifa actualizada':'Tarifa creada');
         this.cancelarEdicionPlan();
         this.cargarMembresias();
       },
@@ -1675,7 +1675,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.planEditandoId=0;
     this.planForm={nombre:'',duracion_meses:1,precio:0,descripcion:'',beneficios_texto:'',permite_reservas:true,estado:'Activo'};
   }
-  desactivarPlan(id:number){if(!confirm('¿Desactivar este plan?'))return;this.api.eliminarMembresia(id).subscribe({next:r=>{this.ok(r.mensaje||'Plan desactivado');this.cargarMembresias();},error:e=>this.mostrarError(e)});}
+  desactivarPlan(id:number){if(!confirm('¿Desactivar esta tarifa?'))return;this.api.eliminarMembresia(id).subscribe({next:r=>{this.ok(r.mensaje||'Tarifa desactivada');this.cargarMembresias();},error:e=>this.mostrarError(e)});}
 
   guardarEntrenador(){
     const datos={...this.entrenadorForm};
