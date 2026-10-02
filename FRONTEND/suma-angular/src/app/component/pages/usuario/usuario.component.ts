@@ -1590,7 +1590,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   get siguientePasoModulo():string{
     if(!this.perfilCompleto)return 'perfil';
     if(!this.membresiaActual)return 'pagos';
-    if(!this.planCasaConfigurado)return 'casa';
+    if(!this.tieneRutinaAsignadaGym)return 'rutinas';
     if(!this.reservasActivas.length)return 'clases';
     return 'progreso';
   }
@@ -1598,7 +1598,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const m=this.siguientePasoModulo;
     if(m==='perfil')return 'Completa tus datos';
     if(m==='pagos')return 'Activa tu membresía';
-    if(m==='casa')return 'Configura tu entrenamiento en el gym';
+    if(m==='rutinas')return 'Revisa tu rutina asignada';
     if(m==='clases')return 'Reserva tu próxima clase';
     return 'Revisa tu progreso';
   }
@@ -1606,7 +1606,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const m=this.siguientePasoModulo;
     if(m==='perfil')return 'Agrega teléfono y dirección para dejar tu cuenta lista.';
     if(m==='pagos')return 'Elige un plan y registra tu pago para comenzar a usar el gimnasio.';
-    if(m==='casa')return 'Elige días y grupos musculares para organizar tus sesiones dentro del gimnasio.';
+    if(m==='rutinas')return 'Tu entrenador debe registrar la rutina que usarás dentro de Mallqui Gym.';
     if(m==='clases')return 'Explora horarios disponibles y reserva una clase que te convenga.';
     return 'Mira tus sesiones, asistencias, calendario y actividad reciente.';
   }
@@ -1614,7 +1614,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const m=this.siguientePasoModulo;
     if(m==='perfil')return 'Completar perfil';
     if(m==='pagos')return 'Ver membresías';
-    if(m==='casa')return 'Configurar ahora';
+    if(m==='rutinas')return 'Ver mis rutinas';
     if(m==='clases')return 'Explorar clases';
     return 'Ver progreso';
   }
@@ -1622,7 +1622,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const m=this.siguientePasoModulo;
     if(m==='perfil')return '♙';
     if(m==='pagos')return '✦';
-    if(m==='casa')return '⚡';
+    if(m==='rutinas')return '🏋';
     if(m==='clases')return '▣';
     return '◎';
   }
