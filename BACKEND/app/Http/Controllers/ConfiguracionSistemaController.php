@@ -87,6 +87,7 @@ class ConfiguracionSistemaController extends Controller
         return response()->json([
             'nombre_gimnasio' => $config->nombre_gimnasio,
             'telefono' => $config->telefono,
+            'correo' => $config->correo,
             'direccion' => $config->direccion,
             'referencia' => $config->referencia,
             'frase_publicitaria' => $config->frase_publicitaria,
