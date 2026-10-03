@@ -30134,3 +30134,89 @@
   outline:2px solid rgba(126,215,255,.95)!important;
   outline-offset:2px!important;
 }
+
+
+/* BOTONES VISIBLES V98 · MISMO DISEÑO, SOLO MEJOR AFFORDANCE
+   No cambia estructura, tamaños generales ni colores del dashboard. */
+.member-page .dashboard-showcase-v30 .showcase-kpi{
+  border-color:rgba(190,220,241,.46)!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.06)!important;
+}
+.member-page .dashboard-showcase-v30 .showcase-kpi mark{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:46px!important;
+  min-height:25px!important;
+  padding:0 9px!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+  border-radius:8px!important;
+  background:#ef233c!important;
+  color:#fff!important;
+  font-size:7.5px!important;
+  font-weight:950!important;
+  box-shadow:0 7px 15px rgba(239,35,60,.22)!important;
+}
+.member-page .dashboard-showcase-v30 .showcase-kpi:hover{
+  border-color:rgba(255,255,255,.72)!important;
+  background:rgba(11,47,77,.96)!important;
+}
+
+/* Guía en sala: conservar las tres cajas, solo hacerlas más visibles. */
+.member-page .dashboard-showcase-v30 .showcase-coach-tools button{
+  border:1px solid rgba(206,229,245,.42)!important;
+  background:rgba(255,255,255,.075)!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.16)!important;
+}
+.member-page .dashboard-showcase-v30 .showcase-coach-tools button:hover{
+  border-color:rgba(255,255,255,.70)!important;
+  background:rgba(255,255,255,.12)!important;
+}
+
+/* Ver todas / Ver más: CTA claro sin tocar la tarjeta. */
+.member-page .dashboard-showcase-v30 .showcase-card-head button{
+  min-height:30px!important;
+  padding:0 11px!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  background:#ef233c!important;
+  color:#fff!important;
+  box-shadow:0 7px 16px rgba(239,35,60,.20)!important;
+}
+.member-page .dashboard-showcase-v30 .showcase-card-head button:hover{
+  background:#ff304c!important;
+  border-color:#fff!important;
+}
+
+/* Accesos rápidos: mismos cuadros oscuros, con borde y relieve más claros.
+   Sin flechas, cuadritos ni texto añadido. */
+.member-page .dashboard-showcase-v30 .showcase-quick-grid button{
+  border:1px solid rgba(191,221,242,.40)!important;
+  background:rgba(8,39,64,.88)!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+.member-page .dashboard-showcase-v30 .showcase-quick-grid button::after{
+  content:none!important;
+  display:none!important;
+}
+.member-page .dashboard-showcase-v30 .showcase-quick-grid button:hover{
+  border-color:rgba(255,255,255,.68)!important;
+  background:rgba(14,55,86,.96)!important;
+  transform:translateY(-2px)!important;
+}
+
+/* CTA de perfil y membresía: mantener forma original, reforzar solamente contraste. */
+.member-page .dashboard-showcase-v30 .showcase-profile-card>button,
+.member-page .dashboard-showcase-v30 .membership-actions button{
+  border-color:rgba(255,255,255,.28)!important;
+  box-shadow:0 10px 21px rgba(239,35,60,.24)!important;
+}
+
+/* En laptop no ocultar el pequeño CTA "Ver" de los indicadores. */
+@media(max-width:1280px) and (min-width:901px){
+  .member-page .dashboard-showcase-v30 .showcase-kpi{
+    grid-template-columns:42px minmax(0,1fr) auto!important;
+  }
+  .member-page .dashboard-showcase-v30 .showcase-kpi>mark{
+    display:inline-flex!important;
+  }
+}
