@@ -36,6 +36,10 @@ class PortalClienteController extends Controller
             'rutina_actual' => Rutina::with(['entrenador', 'detalles'])
                 ->where('id_cliente', $cliente->id_cliente)
                 ->where('estado', 'Activo')
+                ->whereDate('fecha_inicio', '<=', today())
+                ->where(function ($q) {
+                    $q->whereNull('fecha_fin')->orWhereDate('fecha_fin', '>=', today());
+                })
                 ->orderByDesc('fecha_inicio')
                 ->first(),
             'asistencias_mes' => Asistencia::where('id_cliente', $cliente->id_cliente)

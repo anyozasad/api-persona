@@ -205,26 +205,28 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
 
             <aside class="showcase-coach-panel">
               <div class="showcase-coach-head">
-                <b><svg class="coach-title-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/></svg> Mi entrenador</b>
-                <span><i></i>{{rutinaActual?.entrenador ? 'Asignado' : 'Sin asignar'}}</span>
+                <b><svg class="coach-title-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/></svg> Guía en sala</b>
+                <span><i></i>{{rutinaActual?.entrenador ? 'Entrenador asignado' : 'Personal del gym'}}</span>
               </div>
 
               <div class="showcase-coach-profile">
-                <img src="https://images.unsplash.com/photo-1581009137042-c552e485697a?auto=format&fit=crop&w=500&q=86" alt="Entrenador de gimnasio">
+                <img src="https://images.unsplash.com/photo-1581009137042-c552e485697a?auto=format&fit=crop&w=500&q=86" alt="Personal de Mallqui Gym">
                 <div>
-                  <h3>{{rutinaActual?.entrenador ? nombreEntrenador : 'Sin entrenador asignado'}}</h3>
-                  <p>{{rutinaActual?.entrenador ? 'Consulta la rutina e indicaciones registradas por tu entrenador.' : 'Cuando el gimnasio te asigne un entrenador, sus datos y rutina aparecerán aquí.'}}</p>
+                  <h3>{{rutinaActual?.entrenador ? nombreEntrenador : 'Personal de Mallqui Gym'}}</h3>
+                  <p>{{rutinaActual?.entrenador ? 'Consulta la rutina e indicaciones registradas para tu entrenamiento.' : 'La guía e instrucciones están a cargo del personal del gimnasio. Si aún no tienes rutina, puedes solicitarla desde tu cuenta.'}}</p>
                 </div>
               </div>
 
               <div class="showcase-coach-tools">
                 <button type="button" (click)="abrirModulo('soporte')"><i><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8 9 9 0 0 1-4-.9L3 21l1.8-5A8 8 0 1 1 21 12z"/></svg></i><span>Chat</span></button>
                 <button type="button" (click)="abrirModulo('calendario')"><i><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3"/></svg></i><span>Agendar</span></button>
-                <button type="button" (click)="abrirModulo('rutinas')"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/><path d="M8 13h8"/></svg></i><span>Ver rutinas</span></button>
+                <button type="button" (click)="tieneRutinaAsignadaGym ? abrirModulo('rutinas') : solicitarRutinaAlPersonal()"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/><path d="M8 13h8"/></svg></i><span>{{tieneRutinaAsignadaGym ? 'Ver rutina' : 'Solicitar rutina'}}</span></button>
               </div>
 
-              <button type="button" class="showcase-coach-start" (click)="abrirModulo('casa')">
-                <i>▶</i><span>Iniciar entrenamiento</span><em>→</em>
+              <button type="button" class="showcase-coach-start" (click)="accionEntrenamientoPrincipal()" [disabled]="procesandoSolicitudRutina">
+                <i>{{puedeEntrenarRutinaGym ? '▶' : (membresiaActual ? '✉' : '▤')}}</i>
+                <span>{{puedeEntrenarRutinaGym ? 'Iniciar entrenamiento' : (!membresiaActual ? 'Activar membresía' : 'Solicitar rutina')}}</span>
+                <em>→</em>
               </button>
             </aside>
           </section>
@@ -235,7 +237,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               <div class="membership-copy">
                 <span>{{membresiaActual ? 'MEMBRESÍA ACTIVA' : 'MEMBRESÍA'}}</span>
                 <h2>{{nombreMembresiaVisible(membresiaActual)}}</h2>
-                <p>{{membresiaActual ? ('Válido hasta: ' + fechaCortaPortal(membresiaActual.fecha_fin)) : 'Consulta las mensualidades disponibles para activar tu acceso.'}}</p>
+                <p>{{membresiaActual ? ('Válido hasta: ' + fechaCortaPortal(membresiaActual.fecha_fin) + ' · ' + diasRestantesMembresia + ' días restantes') : 'Consulta las mensualidades disponibles para activar tu acceso.'}}</p>
               </div>
               <div class="membership-actions">
                 <span><i></i>{{membresiaActual ? 'Activa' : 'Sin mensualidad'}}</span>
@@ -1457,12 +1459,15 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.moduloActivo=m;
     this.error='';
 
-    if(m==='casa'&&!this.casaCargado)this.cargarEntrenamientoCasa();
+    if(m==='casa'){
+      // Entrenar siempre vuelve a consultar rutina y membresía para reflejar
+      // asignaciones hechas por el personal sin obligar al cliente a recargar la página.
+      this.cargarEntrenamientoCasa();
+    }
     if(m==='avisos')this.cargarContadorAvisos();
 
-    // Reservas, asistencias, membresía y perfil siempre se vuelven a consultar
-    // al abrir el módulo para que la interfaz no muestre información antigua.
-    if(['reservas','asistencias','pagos','perfil'].includes(m)){
+    // Los módulos operativos siempre consultan datos actuales al abrirse.
+    if(['casa','rutinas','clases','reservas','asistencias','pagos','perfil'].includes(m)){
       this.sincronizarDatosCliente(false);
     }
 
@@ -1723,8 +1728,18 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
   irSiguientePaso(){this.abrirModulo(this.siguientePasoModulo);}
 
-  get rutinaActual():any{return this.resumen?.rutina_actual || this.rutinas.find(r=>r.estado==='Activo') || null;}
-  get nombreEntrenador():string{return this.nombrePersona(this.rutinaActual?.entrenador) || 'Sin entrenador asignado';}
+  get rutinaActual():any{
+    if(this.resumen?.rutina_actual)return this.resumen.rutina_actual;
+    const hoy=new Date();
+    hoy.setHours(0,0,0,0);
+    return this.rutinas.find((r:any)=>{
+      if(String(r?.estado||'').toLowerCase()!=='activo')return false;
+      const inicio=r?.fecha_inicio ? new Date(String(r.fecha_inicio).slice(0,10)+'T00:00:00') : null;
+      const fin=r?.fecha_fin ? new Date(String(r.fecha_fin).slice(0,10)+'T23:59:59') : null;
+      return (!inicio || inicio.getTime()<=hoy.getTime()) && (!fin || fin.getTime()>=hoy.getTime());
+    }) || null;
+  }
+  get nombreEntrenador():string{return this.nombrePersona(this.rutinaActual?.entrenador) || 'Personal de Mallqui Gym';}
   get reservasActivas():any[]{return this.reservas.filter(r=>r.estado==='Reservada');}
   get reservasAsistidas():number{return this.reservas.filter(r=>r.estado==='Asistio').length;}
   get reservasCanceladas():number{return this.reservas.filter(r=>r.estado==='Cancelada').length;}
@@ -1944,7 +1959,12 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.api.entrenamientoCasaCliente().subscribe({
       next:r=>{
         const rutina=r?.rutina||null;
-        this.resumen={...(this.resumen||{}),rutina_actual:rutina};
+        this.membresiaActual=r?.membresia||this.membresiaActual||null;
+        this.resumen={
+          ...(this.resumen||{}),
+          rutina_actual:rutina,
+          membresia_actual:this.membresiaActual
+        };
 
         if(rutina){
           const resto=(this.rutinas||[]).filter((x:any)=>Number(x?.id_rutina)!==Number(rutina.id_rutina));
