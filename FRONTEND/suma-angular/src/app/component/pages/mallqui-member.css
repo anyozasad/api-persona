@@ -30029,3 +30029,220 @@
   border-color:rgba(255,75,103,.30);
   background:linear-gradient(145deg,rgba(11,54,84,.98),rgba(7,38,62,.98));
 }
+
+
+/* PORTAL CLIENTE V96 · BOTONES CLAROS Y VISIBLES
+   Mejora de affordance: toda acción clicable debe parecer botón. */
+.showcase-btn,
+.showcase-kpi,
+.showcase-coach-tools button,
+.showcase-coach-start,
+.membership-actions button,
+.showcase-card-head button,
+.showcase-quick-grid button,
+.showcase-profile-card>button{
+  -webkit-tap-highlight-color:transparent!important;
+}
+
+.showcase-btn-secondary{
+  border:2px solid rgba(224,239,250,.62)!important;
+  background:rgba(7,38,64,.88)!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.12)!important;
+}
+.showcase-btn-secondary:hover{
+  border-color:#fff!important;
+  background:#123f63!important;
+  box-shadow:0 14px 30px rgba(0,0,0,.32)!important;
+}
+
+.showcase-kpi{
+  border:1.5px solid rgba(188,215,235,.40)!important;
+  background:linear-gradient(145deg,rgba(7,35,60,.97),rgba(9,48,78,.94))!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.06)!important;
+}
+.showcase-kpi:hover{
+  transform:translateY(-3px)!important;
+  border-color:rgba(255,255,255,.66)!important;
+  box-shadow:0 16px 32px rgba(0,0,0,.31)!important;
+}
+
+.showcase-coach-tools button{
+  min-height:84px!important;
+  border:1.5px solid rgba(206,228,245,.42)!important;
+  background:linear-gradient(145deg,rgba(19,65,96,.92),rgba(9,43,72,.98))!important;
+  box-shadow:0 9px 20px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.07)!important;
+}
+.showcase-coach-tools button:hover{
+  transform:translateY(-3px)!important;
+  border-color:rgba(255,255,255,.72)!important;
+  background:linear-gradient(145deg,#174d72,#0d3e63)!important;
+  box-shadow:0 13px 25px rgba(0,0,0,.29)!important;
+}
+.showcase-coach-tools button::after{
+  content:'ABRIR →'!important;
+  display:block!important;
+  margin-top:1px!important;
+  color:#88dbff!important;
+  font-size:6.8px!important;
+  font-weight:950!important;
+  letter-spacing:.65px!important;
+}
+.showcase-coach-tools span{
+  color:#fff!important;
+  font-size:9.5px!important;
+  font-weight:850!important;
+}
+
+.showcase-coach-start{
+  min-height:57px!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  box-shadow:0 14px 30px rgba(239,35,60,.34),inset 0 1px 0 rgba(255,255,255,.15)!important;
+}
+.showcase-coach-start:hover{
+  transform:translateY(-2px)!important;
+  filter:brightness(1.06)!important;
+  box-shadow:0 18px 35px rgba(239,35,60,.42)!important;
+}
+
+.membership-actions button{
+  min-height:43px!important;
+  padding:0 15px!important;
+  border:1.5px solid rgba(255,255,255,.50)!important;
+  background:linear-gradient(135deg,#ff304a,#e91636)!important;
+  box-shadow:0 10px 22px rgba(0,0,0,.25)!important;
+  font-size:9.5px!important;
+}
+.membership-actions button:hover{
+  transform:translateY(-2px)!important;
+  border-color:#fff!important;
+  filter:brightness(1.06)!important;
+}
+
+.showcase-card-head button{
+  min-height:31px!important;
+  padding:0 10px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  border:1px solid rgba(255,86,110,.46)!important;
+  border-radius:9px!important;
+  background:rgba(255,39,70,.16)!important;
+  color:#ff6b80!important;
+  font-size:8.2px!important;
+  font-weight:900!important;
+  cursor:pointer!important;
+  transition:transform .16s ease,background .16s ease,border-color .16s ease!important;
+}
+.showcase-card-head button:hover{
+  transform:translateY(-2px)!important;
+  border-color:#ff7285!important;
+  background:#ed2340!important;
+  color:#fff!important;
+}
+
+.showcase-quick-card{
+  padding:15px!important;
+  border:1px solid #cbdbe7!important;
+  box-shadow:0 16px 34px rgba(11,35,55,.18)!important;
+}
+.showcase-quick-card h2{
+  margin:0 0 4px!important;
+  font-size:14px!important;
+}
+.showcase-quick-card h2::after{
+  content:' · selecciona una opción'!important;
+  color:#6f8799!important;
+  font-size:8.5px!important;
+  font-weight:650!important;
+}
+
+.showcase-quick-grid{
+  margin-top:11px!important;
+  gap:9px!important;
+}
+.showcase-quick-grid button{
+  position:relative!important;
+  min-height:96px!important;
+  padding:10px 8px 24px!important;
+  border:1.5px solid #cddce7!important;
+  border-radius:13px!important;
+  background:linear-gradient(180deg,#fff 0%,#f4f8fb 100%)!important;
+  color:#102f4b!important;
+  box-shadow:0 8px 17px rgba(16,47,75,.09)!important;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease!important;
+}
+.showcase-quick-grid button::after{
+  content:'ABRIR →'!important;
+  position:absolute!important;
+  left:8px!important;
+  right:8px!important;
+  bottom:7px!important;
+  padding-top:5px!important;
+  border-top:1px solid #dde7ee!important;
+  color:#ef2441!important;
+  font-size:6.8px!important;
+  font-weight:950!important;
+  letter-spacing:.65px!important;
+  text-align:center!important;
+}
+.showcase-quick-grid button:hover{
+  transform:translateY(-3px)!important;
+  border-color:#ef5269!important;
+  background:#fff!important;
+  box-shadow:0 14px 26px rgba(16,47,75,.15)!important;
+}
+.showcase-quick-grid i{
+  width:34px!important;
+  height:34px!important;
+  border:1px solid currentColor!important;
+  font-size:17px!important;
+}
+.showcase-quick-grid b{
+  margin-top:4px!important;
+  color:#102f4b!important;
+  font-size:9.5px!important;
+  font-weight:900!important;
+}
+.showcase-quick-grid small{
+  color:#637c8f!important;
+  font-size:7.7px!important;
+  line-height:1.3!important;
+}
+
+.showcase-profile-card>button{
+  min-height:46px!important;
+  padding:0 17px!important;
+  border:1px solid rgba(255,255,255,.28)!important;
+  font-size:9.5px!important;
+  box-shadow:0 12px 24px rgba(239,35,60,.27)!important;
+}
+.showcase-profile-card>button:hover{
+  transform:translateY(-2px)!important;
+  filter:brightness(1.05)!important;
+}
+
+.showcase-btn:focus-visible,
+.showcase-kpi:focus-visible,
+.showcase-coach-tools button:focus-visible,
+.showcase-coach-start:focus-visible,
+.membership-actions button:focus-visible,
+.showcase-card-head button:focus-visible,
+.showcase-quick-grid button:focus-visible,
+.showcase-profile-card>button:focus-visible{
+  outline:3px solid #7ed7ff!important;
+  outline-offset:3px!important;
+}
+
+@media(max-width:1280px){
+  .showcase-quick-grid button{
+    min-height:100px!important;
+  }
+}
+@media(max-width:560px){
+  .showcase-quick-grid button{
+    min-height:102px!important;
+  }
+  .showcase-coach-tools button{
+    min-height:80px!important;
+  }
+}
