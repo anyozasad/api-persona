@@ -30269,3 +30269,124 @@
     display:none!important;
   }
 }
+
+
+/* BOTONES MUY VISIBLES V100 · AREAS MARCADAS POR EL USUARIO */
+/* No cambia el layout del inicio; solo hace que las acciones se reconozcan como botones. */
+
+/* Indicadores superiores: flecha roja visible sin reemplazar el estado. */
+.member-page .dashboard-showcase-v30 .showcase-kpi::after{
+  content:'→'!important;
+  width:24px!important;
+  height:24px!important;
+  right:9px!important;
+  bottom:8px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid #ff6c82!important;
+  border-radius:8px!important;
+  background:linear-gradient(135deg,#ff3853,#ef1736)!important;
+  color:#fff!important;
+  font-size:11px!important;
+  font-weight:950!important;
+  opacity:1!important;
+  box-shadow:0 7px 14px rgba(239,35,60,.30)!important;
+}
+.member-page .dashboard-showcase-v30 .showcase-kpi:hover::after{
+  background:linear-gradient(135deg,#ff536a,#f01c3b)!important;
+  border-color:#fff!important;
+  transform:translateX(1px)!important;
+}
+
+/* Guía en sala: las tres acciones se ven como botones reales. */
+.member-page .dashboard-showcase-v30 .showcase-coach-tools button{
+  border:1px solid rgba(214,235,249,.52)!important;
+  background:linear-gradient(180deg,rgba(8,38,64,.88),rgba(5,29,51,.82))!important;
+  box-shadow:0 7px 15px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.07)!important;
+}
+.member-page .dashboard-showcase-v30 .showcase-coach-tools button span{
+  color:#fff!important;
+  font-weight:900!important;
+}
+.member-page .dashboard-showcase-v30 .showcase-coach-tools button:hover{
+  border-color:#ff657b!important;
+  background:linear-gradient(180deg,rgba(18,57,88,.98),rgba(8,37,63,.96))!important;
+  box-shadow:0 9px 18px rgba(0,0,0,.22)!important;
+}
+
+/* Ver todas / Ver más: CTA rojo sólido, fácil de identificar. */
+.member-page .dashboard-showcase-v30 .showcase-card-head button{
+  min-width:82px!important;
+  min-height:30px!important;
+  padding:0 12px!important;
+  border:1px solid #ff667b!important;
+  border-radius:9px!important;
+  background:linear-gradient(135deg,#ff3853 0%,#ef1736 100%)!important;
+  color:#fff!important;
+  font-weight:950!important;
+  box-shadow:0 7px 15px rgba(239,35,60,.27)!important;
+}
+.member-page .dashboard-showcase-v30 .showcase-card-head button span{
+  color:#fff!important;
+}
+.member-page .dashboard-showcase-v30 .showcase-card-head button:hover{
+  border-color:#fff!important;
+  background:linear-gradient(135deg,#ff536a,#f01c3b)!important;
+  color:#fff!important;
+}
+
+/* Accesos rápidos: borde, relieve y flecha roja sin cambiar tamaños. */
+.member-page .dashboard-showcase-v30 .showcase-quick-grid button{
+  border:1px solid rgba(195,222,240,.46)!important;
+  background:linear-gradient(145deg,rgba(11,47,77,.94),rgba(7,34,59,.90))!important;
+  box-shadow:0 7px 14px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.06)!important;
+}
+.member-page .dashboard-showcase-v30 .showcase-quick-grid button::after{
+  content:'→'!important;
+  width:21px!important;
+  height:21px!important;
+  right:7px!important;
+  top:7px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid #ff667b!important;
+  border-radius:7px!important;
+  background:linear-gradient(135deg,#ff3853,#ef1736)!important;
+  color:#fff!important;
+  font-size:10px!important;
+  font-weight:950!important;
+  box-shadow:0 5px 11px rgba(239,35,60,.24)!important;
+}
+.member-page .dashboard-showcase-v30 .showcase-quick-grid button:hover{
+  border-color:rgba(255,255,255,.72)!important;
+  background:linear-gradient(145deg,rgba(16,59,92,.98),rgba(9,42,70,.96))!important;
+  box-shadow:0 10px 21px rgba(0,0,0,.22)!important;
+}
+
+/* Completar perfil y botones principales de las tarjetas inferiores. */
+.member-page .dashboard-showcase-v30 .showcase-profile-card>button{
+  min-height:42px!important;
+  min-width:132px!important;
+  padding:0 16px!important;
+  border:1px solid #ff7185!important;
+  border-radius:10px!important;
+  background:linear-gradient(135deg,#ff3853,#ef1736)!important;
+  color:#fff!important;
+  font-weight:950!important;
+  box-shadow:0 8px 18px rgba(239,35,60,.28)!important;
+}
+.member-page .dashboard-showcase-v30 .showcase-profile-card>button span{
+  color:#fff!important;
+}
+.member-page .dashboard-showcase-v30 .showcase-profile-card>button:hover{
+  border-color:#fff!important;
+  background:linear-gradient(135deg,#ff536a,#f01c3b)!important;
+}
+
+/* Mantener visible el CTA grande de solicitud de rutina. */
+.member-page .dashboard-showcase-v30 .showcase-coach-start{
+  border:1px solid #ff7185!important;
+  background:linear-gradient(135deg,#ff3853,#ef1736)!important;
+  color:#fff!important;
+  box-shadow:0 9px 20px rgba(239,35,60,.30)!important;
+}
