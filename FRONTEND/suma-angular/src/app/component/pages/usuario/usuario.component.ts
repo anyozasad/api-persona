@@ -180,25 +180,25 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <button type="button" class="showcase-kpi kpi-red" (click)="abrirModulo('asistencias')">
                   <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m8 15 2 2 5-5"/></svg></i>
                   <span><small>Asistencias</small><b>{{showcaseAsistencias}}</b><em>este mes</em></span>
-                  <mark>Ver →</mark>
+                  <mark>Mes actual</mark>
                 </button>
 
                 <button type="button" class="showcase-kpi kpi-orange" (click)="abrirModulo('rutinas')">
                   <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg></i>
                   <span><small>Rutinas</small><b>{{showcaseRutinas}}</b><em>asignadas</em></span>
-                  <mark>Ver →</mark>
+                  <mark>Asignadas</mark>
                 </button>
 
                 <button type="button" class="showcase-kpi kpi-purple" (click)="abrirModulo('reservas')">
                   <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3"/></svg></i>
                   <span><small>Reservas</small><b>{{showcaseReservas}}</b><em>activas</em></span>
-                  <mark>Ver →</mark>
+                  <mark>Vigentes</mark>
                 </button>
 
                 <button type="button" class="showcase-kpi kpi-green" (click)="abrirModulo('progreso')">
                   <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><path d="M4 20V11h4v9zM10 20V6h4v14zM16 20V3h4v17z"/></svg></i>
                   <span><small>Progreso</small><b>{{showcaseProgreso}}%</b><em>actividad mensual</em></span>
-                  <mark>Ver →</mark>
+                  <mark>Calculado</mark>
                 </button>
               </div>
             </article>
