@@ -30030,181 +30030,99 @@
   background:linear-gradient(145deg,rgba(11,54,84,.98),rgba(7,38,62,.98));
 }
 
-/* PORTAL CLIENTE V97 · BOTONES VISIBLES SIN CAMBIAR EL DISEÑO
-   Ajuste visual discreto: se mantienen las tarjetas y colores originales,
-   pero las acciones se distinguen claramente como botones. */
+/* BOTONES DEL DASHBOARD · VISIBLES SIN REDISEÑAR LA INTERFAZ
+   Solo se refuerzan los controles que ya existen. */
 
-.showcase-btn,
-.showcase-kpi,
-.showcase-coach-tools button,
-.showcase-coach-start,
-.membership-actions button,
-.showcase-card-head button,
-.showcase-quick-grid button,
-.showcase-profile-card>button{
-  -webkit-tap-highlight-color:transparent!important;
-}
-
-/* Acciones principales del banner */
-.showcase-btn-primary{
-  border:1px solid rgba(255,255,255,.20)!important;
-  box-shadow:0 12px 28px rgba(239,35,60,.34)!important;
-}
-.showcase-btn-primary:hover{
-  transform:translateY(-2px)!important;
-  filter:brightness(1.05)!important;
-}
-.showcase-btn-secondary{
-  border:1.5px solid rgba(218,235,248,.48)!important;
-  background:rgba(7,38,64,.72)!important;
-  box-shadow:0 8px 20px rgba(0,0,0,.20)!important;
-}
-.showcase-btn-secondary:hover{
-  border-color:rgba(255,255,255,.82)!important;
-  background:rgba(17,62,95,.90)!important;
-}
-
-/* Indicadores: siguen siendo tarjetas, pero se nota que son clicables */
+/* KPIs superiores: siguen siendo las mismas tarjetas oscuras */
 .showcase-kpi{
-  border:1px solid rgba(170,207,235,.32)!important;
-  box-shadow:0 9px 21px rgba(0,0,0,.18)!important;
+  border:1px solid rgba(187,218,240,.34)!important;
+  background:rgba(5,28,50,.88)!important;
+  box-shadow:0 9px 22px rgba(0,0,0,.20), inset 0 0 0 1px rgba(255,255,255,.025)!important;
+  cursor:pointer!important;
 }
 .showcase-kpi:hover{
   transform:translateY(-2px)!important;
-  border-color:rgba(255,255,255,.50)!important;
+  border-color:rgba(255,255,255,.55)!important;
+  background:rgba(10,42,70,.94)!important;
 }
 
-/* Panel guía: botones visibles pero sin etiquetas repetidas */
+/* Chat / Agendar / Solicitar rutina: mantener panel original */
 .showcase-coach-tools button{
-  min-height:76px!important;
-  border:1px solid rgba(177,211,236,.32)!important;
+  border:1px solid rgba(190,218,239,.30)!important;
   background:rgba(255,255,255,.055)!important;
-  box-shadow:0 7px 16px rgba(0,0,0,.14)!important;
-}
-.showcase-coach-tools button::after{
-  content:''!important;
-  display:none!important;
+  box-shadow:0 6px 15px rgba(0,0,0,.12)!important;
+  cursor:pointer!important;
 }
 .showcase-coach-tools button:hover{
   transform:translateY(-2px)!important;
   border-color:rgba(255,255,255,.58)!important;
   background:rgba(255,255,255,.09)!important;
 }
-.showcase-coach-tools span{
-  color:#fff!important;
-  font-size:9px!important;
-  font-weight:850!important;
-}
-.showcase-coach-start{
-  min-height:54px!important;
-  border:1px solid rgba(255,255,255,.16)!important;
-  box-shadow:0 11px 25px rgba(239,35,60,.28)!important;
+.showcase-coach-tools button::after{
+  content:none!important;
 }
 
-/* Botón de membresía */
-.membership-actions button{
-  min-height:39px!important;
-  padding:0 13px!important;
-  border:1px solid rgba(255,126,145,.48)!important;
-  background:rgba(112,7,31,.64)!important;
-  color:#fff!important;
-  box-shadow:0 7px 16px rgba(0,0,0,.16)!important;
-}
-.membership-actions button:hover{
-  transform:translateY(-1px)!important;
-  background:rgba(154,12,43,.82)!important;
-  border-color:rgba(255,255,255,.62)!important;
-}
-
-/* Ver todas / Ver más */
+/* Ver todas / Ver más: que sí parezcan botones sin alterar la tarjeta */
 .showcase-card-head button{
-  min-height:30px!important;
-  padding:0 9px!important;
-  border:1px solid rgba(255,92,116,.26)!important;
+  min-height:28px!important;
+  padding:0 10px!important;
+  border:1px solid rgba(255,72,99,.42)!important;
   border-radius:8px!important;
-  background:rgba(255,39,70,.08)!important;
-  color:#ff6077!important;
-  font-size:8px!important;
+  background:rgba(239,35,60,.16)!important;
+  color:#ff657c!important;
   font-weight:900!important;
   cursor:pointer!important;
 }
 .showcase-card-head button:hover{
-  background:rgba(255,39,70,.15)!important;
-  border-color:rgba(255,104,127,.52)!important;
-  color:#ff8394!important;
+  background:#ef233c!important;
+  border-color:#ef233c!important;
+  color:#fff!important;
 }
 
-/* Accesos rápidos: mismo estilo del dashboard, ahora con affordance clara */
-.showcase-quick-card{
-  border:1px solid #d9e4ec!important;
-  box-shadow:0 12px 27px rgba(12,37,58,.12)!important;
-}
-.showcase-quick-card h2{
-  margin-bottom:10px!important;
-}
-.showcase-quick-card h2::after{
-  content:''!important;
-  display:none!important;
-}
-.showcase-quick-grid{
-  gap:8px!important;
-}
+/* Accesos rápidos: conservar el look oscuro/transparente.
+   Se eliminan las flechitas/cuadritos añadidos anteriormente. */
 .showcase-quick-grid button{
   position:relative!important;
-  min-height:82px!important;
-  padding:9px 7px 10px!important;
-  border:1px solid #d7e2ea!important;
-  border-radius:12px!important;
-  background:linear-gradient(180deg,#ffffff 0%,#f7fafc 100%)!important;
-  color:#12334e!important;
-  box-shadow:0 5px 13px rgba(16,47,75,.07)!important;
+  border:1px solid rgba(173,207,232,.26)!important;
+  background:rgba(8,39,64,.78)!important;
+  color:#fff!important;
+  box-shadow:0 6px 15px rgba(0,0,0,.14)!important;
+  cursor:pointer!important;
 }
 .showcase-quick-grid button::after{
-  content:'→'!important;
-  display:grid!important;
-  place-items:center!important;
-  position:absolute!important;
-  right:7px!important;
-  top:7px!important;
-  width:18px!important;
-  height:18px!important;
-  border:1px solid #e5a4af!important;
-  border-radius:7px!important;
-  background:#fff4f6!important;
-  color:#eb2944!important;
-  font-size:10px!important;
-  font-weight:950!important;
-  line-height:1!important;
+  content:none!important;
+  display:none!important;
 }
 .showcase-quick-grid button:hover{
   transform:translateY(-2px)!important;
-  border-color:#f2a4b0!important;
-  background:#fff!important;
-  box-shadow:0 9px 20px rgba(16,47,75,.12)!important;
+  border-color:rgba(255,255,255,.48)!important;
+  background:rgba(14,54,84,.92)!important;
+  box-shadow:0 9px 20px rgba(0,0,0,.20)!important;
 }
-.showcase-quick-grid i{
-  width:31px!important;
-  height:31px!important;
+.showcase-quick-grid button b{
+  color:#fff!important;
 }
-.showcase-quick-grid b{
-  color:#12334e!important;
-  font-size:8.7px!important;
-  font-weight:900!important;
-}
-.showcase-quick-grid small{
-  color:#748b9d!important;
-  font-size:7px!important;
+.showcase-quick-grid button small{
+  color:#a9bdcb!important;
 }
 
-/* CTA perfil */
+/* Completar perfil: mantener CTA rojo original */
 .showcase-profile-card>button{
-  min-height:42px!important;
-  padding:0 15px!important;
-  border:1px solid rgba(255,255,255,.24)!important;
-  box-shadow:0 9px 19px rgba(239,35,60,.20)!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  box-shadow:0 9px 20px rgba(239,35,60,.24)!important;
+  cursor:pointer!important;
+}
+.showcase-profile-card>button:hover{
+  transform:translateY(-1px)!important;
+  filter:brightness(1.06)!important;
 }
 
-/* Estados de teclado y botones deshabilitados */
+/* Botones principales y guía */
+.showcase-btn,
+.showcase-coach-start,
+.membership-actions button{
+  cursor:pointer!important;
+}
 .showcase-btn:focus-visible,
 .showcase-kpi:focus-visible,
 .showcase-coach-tools button:focus-visible,
@@ -30213,22 +30131,6 @@
 .showcase-card-head button:focus-visible,
 .showcase-quick-grid button:focus-visible,
 .showcase-profile-card>button:focus-visible{
-  outline:2px solid #7ed7ff!important;
+  outline:2px solid rgba(126,215,255,.95)!important;
   outline-offset:2px!important;
-}
-.showcase-btn:disabled,
-.showcase-coach-tools button:disabled,
-.showcase-coach-start:disabled,
-.showcase-quick-grid button:disabled,
-.showcase-profile-card>button:disabled{
-  opacity:.58!important;
-  cursor:not-allowed!important;
-  transform:none!important;
-}
-
-@media(max-width:1280px){
-  .showcase-quick-grid button{min-height:84px!important}
-}
-@media(max-width:560px){
-  .showcase-quick-grid button{min-height:88px!important}
 }
