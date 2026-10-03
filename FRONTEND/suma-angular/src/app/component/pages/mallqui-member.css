@@ -30490,7 +30490,7 @@
   width:104%!important;
   height:104%!important;
   object-fit:cover!important;
-  opacity:0!important;
+  opacity:0;
   will-change:opacity,transform!important;
   backface-visibility:hidden!important;
   animation:mallquiHeroAutoSlide 28s linear infinite!important;
@@ -31155,4 +31155,233 @@
   }
   .member-page .home-profile-icon-v120{width:44px!important;height:44px!important}
   .member-page .home-profile-card-v120>button{display:none!important}
+}
+
+
+/* PORTAL CLIENTE V121 · PROFUNDIDAD VISUAL */
+/* Pulido del inicio sin agregar más botones. La jerarquía se consigue con
+   fotografía visible, glass suave, sombras y acentos de marca. */
+
+.member-page{
+  background:
+    radial-gradient(circle at 12% 7%,rgba(255,55,82,.055),transparent 20%),
+    radial-gradient(circle at 88% 18%,rgba(38,118,184,.055),transparent 24%),
+    linear-gradient(180deg,#f7f9fb 0%,#eef3f7 100%)!important;
+}
+
+/* Cabecera con más presencia */
+.member-page .member-topbar-v120{
+  border-bottom:1px solid rgba(213,224,232,.92)!important;
+  box-shadow:
+    0 7px 22px rgba(18,45,66,.07),
+    inset 0 -1px 0 rgba(255,255,255,.85)!important;
+}
+.member-page .home-nav-v120{
+  min-height:82px!important;
+}
+.member-page .home-brand-v120 img{
+  filter:drop-shadow(0 5px 10px rgba(239,35,60,.10))!important;
+}
+.member-page .home-primary-v120 button:not(.active):hover{
+  border-color:#e1e9ef!important;
+  background:#f7f9fb!important;
+}
+
+/* Guía: menos vacío y más aspecto de tarjeta premium */
+.member-page .home-guide-v120{
+  min-height:88px!important;
+  padding:11px 18px!important;
+  border-color:rgba(215,226,234,.96)!important;
+  background:
+    radial-gradient(circle at 92% 10%,rgba(255,45,76,.07),transparent 23%),
+    linear-gradient(135deg,rgba(255,255,255,.99),rgba(246,249,251,.96))!important;
+  box-shadow:
+    0 13px 30px rgba(12,38,59,.08),
+    inset 0 1px 0 #fff!important;
+}
+.member-page .home-guide-v120::before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  top:20px!important;
+  bottom:20px!important;
+  width:3px!important;
+  border-radius:0 4px 4px 0!important;
+  background:linear-gradient(180deg,#ff3b58,#ef233c)!important;
+}
+.member-page .home-guide-v120{
+  position:relative!important;
+  overflow:hidden!important;
+}
+.member-page .home-guide-action-v120{
+  box-shadow:
+    0 11px 24px rgba(239,35,60,.23),
+    inset 0 1px 0 rgba(255,255,255,.18)!important;
+}
+
+/* HERO: imagen realmente visible + profundidad similar al landing principal */
+.member-page .home-hero-v120{
+  min-height:360px!important;
+  border:1px solid rgba(7,31,50,.18)!important;
+  box-shadow:
+    0 22px 46px rgba(3,22,38,.22),
+    inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+.member-page .home-hero-v120 .showcase-bg-slide{
+  filter:saturate(1.05) contrast(1.03)!important;
+}
+.member-page .home-hero-overlay-v120{
+  background:
+    linear-gradient(90deg,rgba(1,12,23,.94) 0%,rgba(2,16,29,.80) 28%,rgba(2,15,28,.20) 58%,rgba(2,15,28,.38) 100%),
+    linear-gradient(180deg,rgba(2,15,28,.03) 0%,rgba(2,15,28,.12) 58%,rgba(2,15,28,.30) 100%)!important;
+}
+.member-page .home-hero-v120::after{
+  content:""!important;
+  position:absolute!important;
+  z-index:2!important;
+  inset:0!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(circle at 77% 18%,rgba(255,47,78,.10),transparent 17%),
+    linear-gradient(115deg,rgba(255,255,255,.035),transparent 34%)!important;
+}
+.member-page .home-hero-copy-v120,
+.member-page .home-hero-quote-v120,
+.member-page .home-carousel-dots-v120{
+  z-index:4!important;
+}
+.member-page .home-hero-copy-v120>span{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:7px!important;
+}
+.member-page .home-hero-copy-v120>span::before{
+  content:""!important;
+  width:20px!important;
+  height:2px!important;
+  border-radius:4px!important;
+  background:#ff3653!important;
+}
+.member-page .home-hero-copy-v120 h1{
+  font-size:50px!important;
+  text-shadow:0 10px 30px rgba(0,0,0,.34)!important;
+}
+.member-page .home-hero-copy-v120 p{
+  color:#dbe6ee!important;
+  text-shadow:0 4px 14px rgba(0,0,0,.24)!important;
+}
+.member-page .home-hero-quote-v120{
+  padding:16px 16px 16px 34px!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  border-radius:14px!important;
+  background:rgba(4,22,38,.27)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05)!important;
+  backdrop-filter:blur(7px)!important;
+  -webkit-backdrop-filter:blur(7px)!important;
+}
+
+/* KPIs: más detalle sin sumar acciones */
+.member-page .home-stats-v120 .stat{
+  position:relative!important;
+  overflow:hidden!important;
+  min-height:116px!important;
+  border-color:rgba(215,226,234,.96)!important;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(255,255,255,.95),transparent 40%),
+    linear-gradient(145deg,#fff,#f4f8fa)!important;
+  box-shadow:
+    0 13px 28px rgba(12,38,59,.085),
+    inset 0 1px 0 #fff!important;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important;
+}
+.member-page .home-stats-v120 .stat::before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  top:18px!important;
+  bottom:18px!important;
+  width:3px!important;
+  border-radius:0 5px 5px 0!important;
+  opacity:.9!important;
+}
+.member-page .home-stats-v120 .stat-red::before{background:#ff3854!important}
+.member-page .home-stats-v120 .stat-purple::before{background:#8145f3!important}
+.member-page .home-stats-v120 .stat-green::before{background:#16bb80!important}
+.member-page .home-stats-v120 .stat:hover{
+  transform:translateY(-4px)!important;
+  border-color:#cbd9e2!important;
+  box-shadow:0 18px 34px rgba(12,38,59,.12)!important;
+}
+.member-page .home-stats-v120 .stat>i{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    0 7px 15px rgba(12,38,59,.06)!important;
+}
+
+/* Tarjetas inferiores con mejor acabado */
+.member-page .home-membership-v120{
+  box-shadow:
+    0 15px 31px rgba(105,7,28,.18),
+    inset 0 1px 0 rgba(255,255,255,.10)!important;
+}
+.member-page .home-class-v120,
+.member-page .home-profile-card-v120{
+  border-color:rgba(215,226,234,.96)!important;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(255,255,255,.95),transparent 43%),
+    linear-gradient(145deg,#fff,#f3f7fa)!important;
+  box-shadow:
+    0 13px 28px rgba(12,38,59,.085),
+    inset 0 1px 0 #fff!important;
+}
+.member-page .home-class-v120{
+  position:relative!important;
+  overflow:hidden!important;
+}
+.member-page .home-class-v120::before{
+  content:""!important;
+  position:absolute!important;
+  top:0!important;
+  left:22px!important;
+  width:54px!important;
+  height:3px!important;
+  border-radius:0 0 5px 5px!important;
+  background:linear-gradient(90deg,#ff3653,#ff7a8e)!important;
+}
+.member-page .home-profile-card-v120{
+  position:relative!important;
+  overflow:hidden!important;
+}
+.member-page .home-profile-card-v120::before{
+  content:""!important;
+  position:absolute!important;
+  top:0!important;
+  left:22px!important;
+  width:54px!important;
+  height:3px!important;
+  border-radius:0 0 5px 5px!important;
+  background:linear-gradient(90deg,#1ebd82,#72dfb7)!important;
+}
+
+/* Proporciones más llenas para desktop grande */
+@media(min-width:1281px){
+  .member-page .dashboard-home-v120{
+    gap:14px!important;
+  }
+  .member-page .home-details-v120{
+    grid-template-columns:1.06fr 1.04fr .90fr!important;
+  }
+}
+
+/* El carrusel conserva movimiento, pero si el SO pide menos animación,
+   deja visible la primera foto en lugar de mostrar un bloque oscuro. */
+@media(prefers-reduced-motion:reduce){
+  .member-page .home-hero-v120 .showcase-bg-slide{
+    animation:none!important;
+    opacity:0!important;
+    transform:none!important;
+  }
+  .member-page .home-hero-v120 .showcase-bg-slide-1{
+    opacity:1!important;
+  }
 }
