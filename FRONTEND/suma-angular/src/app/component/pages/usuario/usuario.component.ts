@@ -15,72 +15,45 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="member-page">
-      <header class="member-topbar member-enter-down">
-        <div class="member-top-row">
-          <button type="button" class="member-brand" (click)="abrirModulo('inicio')" aria-label="Ir al inicio del portal">
+      <header class="member-topbar member-topbar-v120 member-enter-down">
+        <div class="home-nav-v120">
+          <button type="button" class="home-brand-v120" (click)="abrirModulo('inicio')" aria-label="Ir al inicio de Mallqui Gym">
             <img src="assets/mallqui-logo.svg" alt="Mallqui Gym">
-            <span><b>MALLQUI <strong>GYM</strong></b><small>Tu espacio de entrenamiento</small></span>
+            <span><b>Mallqui Gym</b><small>Tu espacio de entrenamiento</small></span>
           </button>
 
-          <nav class="member-nav member-nav-primary" aria-label="Navegación principal del cliente">
-            <button type="button" class="nav-step nav-step-inicio" [class.active]="navPrincipalActivo==='inicio'" [attr.aria-current]="navPrincipalActivo==='inicio' ? 'page' : null" (click)="abrirModulo('inicio')">
-              <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-7h5v7"/></svg></i><span>Inicio</span>
+          <nav class="home-primary-v120" aria-label="Navegación principal del cliente">
+            <button type="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')">
+              <i><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-7h5v7"/></svg></i>
+              <span>Inicio</span>
             </button>
-            <button type="button" class="nav-step nav-step-entrenar" [class.active]="navPrincipalActivo==='entrenar'" [attr.aria-current]="navPrincipalActivo==='entrenar' ? 'page' : null" (click)="abrirModulo('casa')">
-              <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-7 12h6l-1 8 7-12h-6z"/></svg></i><span>Entrenar</span>
+            <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')">
+              <i><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3"/></svg></i>
+              <span>Reservas</span>
             </button>
-            <button type="button" class="nav-step nav-step-rutinas" [class.active]="navPrincipalActivo==='rutinas'" [attr.aria-current]="navPrincipalActivo==='rutinas' ? 'page' : null" (click)="abrirModulo('rutinas')">
-              <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg></i><span>Rutinas</span>
+            <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')">
+              <i><svg viewBox="0 0 24 24"><path d="M4 20V10h4v10zM10 20V4h4v16zM16 20V7h4v13z"/></svg></i>
+              <span>Mi progreso</span>
             </button>
-            <button type="button" class="nav-step nav-step-clases nav-step-polished" [class.active]="navPrincipalActivo==='clases'" [attr.aria-current]="navPrincipalActivo==='clases' ? 'page' : null" (click)="abrirModulo('clases')">
-              <i><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg></i><span>Clases</span>
-            </button>
-            <button type="button" class="nav-step nav-step-progreso" [class.active]="navPrincipalActivo==='progreso'" [attr.aria-current]="navPrincipalActivo==='progreso' ? 'page' : null" (click)="abrirModulo('progreso')">
-              <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10h4v10zM10 20V4h4v16zM16 20V7h4v13z"/><path d="m4 7 5-3 4 2 6-4"/></svg></i><span>Progreso</span>
+            <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')">
+              <i><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg></i>
+              <span>Membresía</span>
             </button>
           </nav>
 
-          <div class="member-user-actions">
-            <div class="member-system-status" [class.offline]="!dbConectada" [title]="dbConectada ? 'Angular conectado con Laravel y '+dbMotor : 'Sin conexión con la base de datos'">
-              <i></i>
-              <span>{{dbConectada ? 'Datos en línea' : 'Sin conexión'}}</span>
-            </div>
-            <button type="button" class="member-alert-button" [class.active]="moduloActivo==='avisos'" (click)="abrirModulo('avisos')" aria-label="Abrir avisos">
-              <span class="member-bell-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M10 21h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                </svg>
-              </span>
+          <div class="home-nav-actions-v120">
+            <button type="button" class="home-alert-v120" [class.active]="moduloActivo==='avisos'" (click)="abrirModulo('avisos')" aria-label="Abrir avisos">
+              <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10 21h4"/></svg>
               <b *ngIf="avisosNoLeidos>0">{{avisosNoLeidos>9 ? '9+' : avisosNoLeidos}}</b>
             </button>
-            <div class="member-mini-profile">
+            <button type="button" class="home-profile-v120" (click)="abrirModulo('perfil')">
               <span>{{nombreCorto.charAt(0).toUpperCase()}}</span>
-              <div><b>{{nombreCorto}}</b><small>{{membresiaActual ? nombreMembresiaVisible(membresiaActual) : 'Cliente Mallqui'}}</small></div>
-            </div>
-            <button class="member-logout" type="button" (click)="cerrarSesion()">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5"/><path d="M14 8l4 4-4 4M18 12H9"/></svg>
-              <span>Salir</span>
+              <div><b>{{nombreCorto}}</b><small>{{membresiaActual ? 'Miembro activo' : 'Cliente Mallqui'}}</small></div>
+            </button>
+            <button type="button" class="home-logout-v120" (click)="cerrarSesion()" aria-label="Cerrar sesión">
+              <svg viewBox="0 0 24 24"><path d="M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5"/><path d="M14 8l4 4-4 4M18 12H9"/></svg>
             </button>
           </div>
-        </div>
-
-        <div class="member-subnav">
-          <div class="member-subnav-scroll">
-            <button type="button" [class.active]="moduloActivo==='calendario'" (click)="abrirModulo('calendario')"><i><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg></i> Calendario</button>
-            <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></i> Reservas</button>
-            <button type="button" [class.active]="moduloActivo==='asistencias'" (click)="abrirModulo('asistencias')"><i><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10"/></svg></i> Asistencias</button>
-            <button type="button" [class.active]="moduloActivo==='club'" (click)="abrirModulo('club')"><i><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></i> Acceso al gym</button>
-            <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')"><i><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg></i> Membresía</button>
-            <button type="button" [class.active]="moduloActivo==='soporte'" (click)="abrirModulo('soporte')"><i><svg viewBox="0 0 24 24"><path d="M9.5 9a3 3 0 1 1 4.8 2.4c-1.5 1.1-2.3 1.8-2.3 3.1"/><path d="M12 18h.01"/></svg></i> Ayuda</button>
-            <button type="button" [class.active]="moduloActivo==='perfil'" (click)="abrirModulo('perfil')"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/></svg></i> Perfil</button>
-          </div>
-
-          <button type="button" class="member-membership-chip" (click)="abrirModulo('pagos')">
-            <span>{{membresiaActual ? '✓' : '!'}}</span>
-            <div><small>{{membresiaActual ? 'MENSUALIDAD ACTIVA' : 'MEMBRESÍA'}}</small><b>{{membresiaActual ? nombreMembresiaVisible(membresiaActual) : 'Activar membresía'}}</b></div>
-            <em>→</em>
-          </button>
         </div>
       </header>
 
@@ -125,188 +98,126 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
           <button type="button" (click)="abrirModulo('inicio')">⌂ Volver al inicio</button>
         </section>
 
-        <section *ngIf="moduloActivo==='inicio'" class="member-dashboard dashboard-showcase-v30">
-          <div class="showcase-bg-carousel" aria-hidden="true">
-            <img class="showcase-bg-slide showcase-bg-slide-1"
-                 src="https://images.unsplash.com/photo-1641337221253-fdc7237f6b61?auto=format&fit=crop&w=3200&q=95"
-                 alt=""
-                 fetchpriority="high"
-                 decoding="async">
-            <img class="showcase-bg-slide showcase-bg-slide-2"
-                 src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=3200&q=92"
-                 alt=""
-                 decoding="async">
-            <img class="showcase-bg-slide showcase-bg-slide-3"
-                 src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=3200&q=92"
-                 alt=""
-                 decoding="async">
-            <img class="showcase-bg-slide showcase-bg-slide-4"
-                 src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=3200&q=92"
-                 alt=""
-                 decoding="async">
-          </div>
-          <div class="showcase-bg-vignette" aria-hidden="true"></div>
+        <section *ngIf="moduloActivo==='inicio'" class="member-dashboard dashboard-home-v120 member-enter-up">
 
-          <section class="showcase-hero-grid">
-            <article class="showcase-hero-main">
-              <img class="showcase-hero-photo" src="https://images.unsplash.com/photo-1641337221253-fdc7237f6b61?auto=format&fit=crop&w=3200&q=95" alt="" aria-hidden="true">
-              <div class="showcase-hero-shade"></div>
-              <div class="showcase-hero-copy">
-                <span class="showcase-eyebrow">TU ESPACIO PERSONAL</span>
-                <h1>Bienvenido, <strong>{{nombreCorto}}</strong></h1>
-                <p>Entrena, revisa tu progreso y organiza tus próximas actividades desde un solo lugar.</p>
-
-                <div class="showcase-hero-actions">
-                  <button type="button" class="showcase-btn showcase-btn-primary" (click)="abrirModulo('casa')">
-                    <i>▶</i>
-                    <span><b>Entrenar en el gym</b><small>Sesión guiada en sala</small></span>
-                    <em>→</em>
-                  </button>
-                  <button type="button" class="showcase-btn showcase-btn-secondary" (click)="abrirModulo('rutinas')">
-                    <i class="showcase-line-icon"><svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg></i><b>Mis rutinas</b>
-                  </button>
-                  <button type="button" class="showcase-btn showcase-btn-secondary" (click)="abrirModulo('clases')">
-                    <i class="showcase-line-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg></i><b>Ver clases</b>
-                  </button>
+          <section class="home-guide-v120">
+            <div class="home-guide-person-v120">
+              <img src="https://images.unsplash.com/photo-1581009137042-c552e485697a?auto=format&fit=crop&w=500&q=86" alt="Personal de Mallqui Gym">
+              <div>
+                <div class="home-guide-title-v120">
+                  <h2>Guía en sala</h2>
+                  <span><i></i>{{rutinaActual?.entrenador ? 'Entrenador asignado' : 'Disponible'}}</span>
                 </div>
+                <p>{{rutinaActual?.entrenador ? 'Tu entrenador puede orientarte durante la sesión y revisar tu rutina.' : 'La guía e instrucciones están a cargo del personal del gimnasio. Si necesitas una rutina, puedes solicitarla desde tu cuenta.'}}</p>
               </div>
-
-              <div class="showcase-quote gym-owner-phrase">
-                <span>“</span>
-                <b>{{gymInfo?.frase_publicitaria || 'Ven, entrena con Mallqui Gym con el propósito de tener una vida saludable.'}}</b>
-              </div>
-
-              <div class="showcase-kpis">
-                <button type="button" class="showcase-kpi kpi-red" (click)="abrirModulo('asistencias')">
-                  <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m8 15 2 2 5-5"/></svg></i>
-                  <span><small>Asistencias</small><b>{{showcaseAsistencias}}</b><em>este mes</em></span>
-                  <mark>Mes actual</mark>
-                </button>
-
-                <button type="button" class="showcase-kpi kpi-orange" (click)="abrirModulo('rutinas')">
-                  <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg></i>
-                  <span><small>Rutinas</small><b>{{showcaseRutinas}}</b><em>asignadas</em></span>
-                  <mark>Asignadas</mark>
-                </button>
-
-                <button type="button" class="showcase-kpi kpi-purple" (click)="abrirModulo('reservas')">
-                  <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3"/></svg></i>
-                  <span><small>Reservas</small><b>{{showcaseReservas}}</b><em>activas</em></span>
-                  <mark>Vigentes</mark>
-                </button>
-
-                <button type="button" class="showcase-kpi kpi-green" (click)="abrirModulo('progreso')">
-                  <i class="showcase-kpi-icon"><svg viewBox="0 0 24 24"><path d="M4 20V11h4v9zM10 20V6h4v14zM16 20V3h4v17z"/></svg></i>
-                  <span><small>Progreso</small><b>{{showcaseProgreso}}%</b><em>actividad mensual</em></span>
-                  <mark>Calculado</mark>
-                </button>
-              </div>
-            </article>
-
-            <aside class="showcase-coach-panel">
-              <div class="showcase-coach-head">
-                <b><svg class="coach-title-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/></svg> Guía en sala</b>
-                <span><i></i>{{rutinaActual?.entrenador ? 'Entrenador asignado' : 'Personal del gym'}}</span>
-              </div>
-
-              <div class="showcase-coach-profile">
-                <img src="https://images.unsplash.com/photo-1581009137042-c552e485697a?auto=format&fit=crop&w=500&q=86" alt="Personal de Mallqui Gym">
-                <div>
-                  <h3>{{rutinaActual?.entrenador ? nombreEntrenador : 'Personal de Mallqui Gym'}}</h3>
-                  <p>{{rutinaActual?.entrenador ? 'Consulta la rutina e indicaciones registradas para tu entrenamiento.' : 'La guía e instrucciones están a cargo del personal del gimnasio. Si aún no tienes rutina, puedes solicitarla desde tu cuenta.'}}</p>
-                </div>
-              </div>
-
-              <div class="showcase-coach-tools">
-                <button type="button" (click)="abrirModulo('soporte')"><i><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8 9 9 0 0 1-4-.9L3 21l1.8-5A8 8 0 1 1 21 12z"/></svg></i><span>Chat</span></button>
-                <button type="button" (click)="abrirModulo('calendario')"><i><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3"/></svg></i><span>Agendar</span></button>
-                <button type="button" (click)="tieneRutinaAsignadaGym ? abrirModulo('rutinas') : solicitarRutinaAlPersonal()"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/><path d="M8 13h8"/></svg></i><span>{{tieneRutinaAsignadaGym ? 'Ver rutina' : 'Solicitar rutina'}}</span></button>
-              </div>
-
-              <button type="button" class="showcase-coach-start" (click)="accionEntrenamientoPrincipal()" [disabled]="procesandoSolicitudRutina">
-                <i>{{puedeEntrenarRutinaGym ? '▶' : (membresiaActual ? '✉' : '▤')}}</i>
-                <span>{{puedeEntrenarRutinaGym ? 'Iniciar entrenamiento' : (!membresiaActual ? 'Activar membresía' : 'Solicitar rutina')}}</span>
-                <em>→</em>
-              </button>
-            </aside>
+            </div>
+            <button type="button" class="home-guide-action-v120" (click)="tieneRutinaAsignadaGym ? abrirModulo('rutinas') : solicitarRutinaAlPersonal()" [disabled]="procesandoSolicitudRutina">
+              <svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
+              <span>{{tieneRutinaAsignadaGym ? 'Ver mi rutina' : 'Solicitar rutina'}}</span>
+              <em>→</em>
+            </button>
           </section>
 
-          <section class="showcase-overview-grid">
-            <article class="showcase-membership-card">
-              <div class="membership-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 7 4.2 4L12 5l4.8 6L21 7l-2 11H5z"/><path d="M6 21h12"/></svg></div>
-              <div class="membership-copy">
-                <span>{{membresiaActual ? 'MEMBRESÍA ACTIVA' : 'MEMBRESÍA'}}</span>
-                <h2>{{nombreMembresiaVisible(membresiaActual)}}</h2>
-                <p>{{membresiaActual ? ('Válido hasta: ' + fechaCortaPortal(membresiaActual.fecha_fin) + ' · ' + diasRestantesMembresia + ' días restantes') : 'Consulta las mensualidades disponibles para activar tu acceso.'}}</p>
+          <section class="home-hero-v120">
+            <div class="showcase-bg-carousel" aria-hidden="true">
+              <img class="showcase-bg-slide showcase-bg-slide-1"
+                   src="https://images.unsplash.com/photo-1641337221253-fdc7237f6b61?auto=format&fit=crop&w=3200&q=95"
+                   alt="" fetchpriority="high" decoding="async">
+              <img class="showcase-bg-slide showcase-bg-slide-2"
+                   src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=3200&q=92"
+                   alt="" decoding="async">
+              <img class="showcase-bg-slide showcase-bg-slide-3"
+                   src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=3200&q=92"
+                   alt="" decoding="async">
+              <img class="showcase-bg-slide showcase-bg-slide-4"
+                   src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=3200&q=92"
+                   alt="" decoding="async">
+            </div>
+            <div class="home-hero-overlay-v120" aria-hidden="true"></div>
+
+            <div class="home-hero-copy-v120">
+              <span>TU ESPACIO PERSONAL</span>
+              <h1>Bienvenido, <strong>{{nombreCorto}}</strong></h1>
+              <p>Entrena, revisa tu progreso y organiza tus próximas actividades desde un solo lugar.</p>
+              <div class="home-hero-actions-v120">
+                <button type="button" class="primary" (click)="abrirModulo('casa')">
+                  <i>▶</i><b>Entrenar ahora</b><em>→</em>
+                </button>
+                <button type="button" class="secondary" (click)="abrirModulo('rutinas')">
+                  <i><svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg></i>
+                  <b>Ver rutina</b>
+                </button>
               </div>
-              <div class="membership-actions">
-                <span><i></i>{{membresiaActual ? 'Activa' : 'Sin mensualidad'}}</span>
-                <button type="button" (click)="abrirModulo('pagos')">{{membresiaActual ? 'Ver detalles' : 'Ver mensualidades'}} <em>→</em></button>
+            </div>
+
+            <div class="home-hero-quote-v120">
+              <span>“</span>
+              <b>{{gymInfo?.frase_publicitaria || 'Disciplina hoy, resultados mañana.'}}</b>
+            </div>
+
+            <div class="home-carousel-dots-v120" aria-hidden="true"><i></i><i></i><i></i></div>
+          </section>
+
+          <section class="home-stats-v120">
+            <button type="button" class="stat stat-red" (click)="abrirModulo('asistencias')">
+              <i><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m8 15 2 2 5-5"/></svg></i>
+              <div><small>Asistencias</small><b>{{showcaseAsistencias}}</b><span>este mes</span></div>
+              <em><span></span><span></span><span></span><span></span></em>
+            </button>
+            <button type="button" class="stat stat-purple" (click)="abrirModulo('reservas')">
+              <i><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3"/></svg></i>
+              <div><small>Reservas</small><b>{{showcaseReservas}}</b><span>próximas clases</span></div>
+              <em><span></span><span></span><span></span><span></span></em>
+            </button>
+            <button type="button" class="stat stat-green" (click)="abrirModulo('progreso')">
+              <i><svg viewBox="0 0 24 24"><path d="M4 20V11h4v9zM10 20V6h4v14zM16 20V3h4v17z"/></svg></i>
+              <div><small>Progreso</small><b>{{showcaseProgreso}}%</b><span>de tu meta mensual</span></div>
+              <em class="trend">↗</em>
+            </button>
+          </section>
+
+          <section class="home-details-v120">
+            <article class="home-membership-v120">
+              <div class="membership-icon-v120">
+                <svg viewBox="0 0 24 24"><path d="m3 7 4.2 4L12 5l4.8 6L21 7l-2 11H5z"/><path d="M6 21h12"/></svg>
+              </div>
+              <div class="membership-copy-v120">
+                <span>{{membresiaActual ? 'MEMBRESÍA ACTIVA' : 'MEMBRESÍA'}}</span>
+                <h2>{{membresiaActual ? nombreMembresiaVisible(membresiaActual) : 'Activa tu membresía'}}</h2>
+                <p>{{membresiaActual ? ('Válida hasta el ' + fechaCortaPortal(membresiaActual.fecha_fin) + ' · ' + diasRestantesMembresia + ' días restantes') : 'Consulta los planes disponibles para activar tu acceso.'}}</p>
+              </div>
+              <div class="membership-side-v120">
+                <span [class.off]="!membresiaActual"><i></i>{{membresiaActual ? 'Activa' : 'Sin plan'}}</span>
+                <button type="button" (click)="abrirModulo('pagos')" aria-label="Ver membresía">›</button>
               </div>
             </article>
 
-            <article class="showcase-class-card">
-              <div class="showcase-card-head">
-                <b>◫ Próxima clase reservada</b>
+            <article class="home-class-v120">
+              <div class="home-card-head-v120">
+                <b><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg> Próxima clase reservada</b>
                 <button type="button" (click)="abrirModulo('reservas')">Ver todas <span>→</span></button>
               </div>
-
-              <div class="showcase-class-content">
-                <img src="assets/showcase/class-showcase.svg" alt="Clase de entrenamiento">
-                <div class="showcase-class-info">
+              <div class="home-class-body-v120">
+                <img src="assets/showcase/class-showcase.svg" alt="Próxima clase">
+                <div>
                   <h3>{{reservasActivas[0]?.clase?.nombre || 'Sin reserva próxima'}}</h3>
-                  <div class="showcase-class-meta">
-                    <p><span>◫</span>{{reservasActivas.length ? fechaCortaPortal(reservasActivas[0]?.fecha_clase) : 'Reserva una clase'}}</p>
-                    <p><span>◷</span>{{reservasActivas[0]?.clase?.hora_inicio || 'Horario por confirmar'}}</p>
-                    <p><span>⌖</span>{{reservasActivas[0]?.clase?.sala || 'Sala por confirmar'}}</p>
-                  </div>
+                  <p><span>◫</span>{{reservasActivas.length ? fechaCortaPortal(reservasActivas[0]?.fecha_clase) : 'Reserva una clase'}}</p>
+                  <p><span>◷</span>{{reservasActivas[0]?.clase?.hora_inicio || 'Horario por confirmar'}} <em>·</em> {{reservasActivas[0]?.clase?.sala || 'Sala por confirmar'}}</p>
                 </div>
               </div>
             </article>
 
-            <article class="showcase-progress-card">
-              <div class="showcase-card-head">
-                <b>Tu progreso mensual</b>
-                <button type="button" (click)="abrirModulo('progreso')">Ver más <span>→</span></button>
+            <article class="home-profile-card-v120" (click)="abrirModulo('perfil')">
+              <div class="home-profile-icon-v120">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/></svg>
               </div>
-              <div class="showcase-progress-body">
-                <div class="showcase-progress-ring" [style.background]="'conic-gradient(#ff2746 0 '+showcaseProgreso+'%, #193a58 '+showcaseProgreso+'% 100%)'">
-                  <div><b>{{showcaseProgreso}}%</b></div>
-                </div>
-                <div class="showcase-progress-list">
-                  <p><i class="dot-blue"></i><span>Sesiones completadas</span><b>{{historialCasa.length}}</b></p>
-                  <p><i class="dot-green"></i><span>Asistencias este mes</span><b>{{showcaseAsistencias}}</b></p>
-                  <p><i class="dot-red"></i><span>Reservas activas</span><b>{{showcaseReservas}}</b></p>
-                </div>
+              <div class="home-profile-copy-v120">
+                <h2>{{perfilCompleto ? 'Tu perfil está completo' : 'Completa tu perfil'}}</h2>
+                <p>{{perfilCompleto ? 'Mantén tus datos actualizados para una mejor experiencia.' : 'Agrega tu información para una mejor experiencia en Mallqui Gym.'}}</p>
+                <div><i [style.width.%]="porcentajeInicio"></i></div>
               </div>
-            </article>
-          </section>
-
-          <section class="showcase-bottom-grid">
-            <article class="showcase-quick-card">
-              <h2>Accesos rápidos</h2>
-              <div class="showcase-quick-grid">
-                <button type="button" (click)="abrirModulo('calendario')"><i class="quick-red"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg></i><b>Calendario</b><small>Ver horarios</small></button>
-                <button type="button" (click)="abrirModulo('reservas')"><i class="quick-blue"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></i><b>Reservas</b><small>Mis reservas</small></button>
-                <button type="button" (click)="abrirModulo('rutinas')"><i class="quick-orange"><svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg></i><b>Mis rutinas</b><small>Ver y entrenar</small></button>
-                <button type="button" (click)="abrirModulo('clases')"><i class="quick-purple"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2.5 20c.5-4 2.5-6 5.5-6s5 2 5.5 6M10.5 20c.5-4 2.5-6 5.5-6s5 2 5.5 6"/></svg></i><b>Clases</b><small>Explorar clases</small></button>
-                <button type="button" (click)="abrirModulo('progreso')"><i class="quick-green"><svg viewBox="0 0 24 24"><path d="M4 20V11h4v9zM10 20V6h4v14zM16 20V3h4v17z"/></svg></i><b>Mi progreso</b><small>Estadísticas</small></button>
-                <button type="button" (click)="abrirModulo('club')"><i class="quick-gold"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></i><b>Acceso al gym</b><small>Credencial y beneficios</small></button>
-                <button type="button" (click)="abrirModulo('soporte')"><i class="quick-cyan"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.7 9.4a2.6 2.6 0 1 1 4.2 2.1c-1.3 1-1.9 1.6-1.9 2.8"/><path d="M12 17.6h.01"/></svg></i><b>Ayuda</b><small>Soporte</small></button>
-              </div>
-            </article>
-
-            <article class="showcase-profile-card">
-              <div class="showcase-profile-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/></svg></div>
-              <div class="showcase-profile-copy">
-                <h2>{{perfilCompleto ? 'Tu perfil está completo' : 'Completa tus datos'}}</h2>
-                <p>{{perfilCompleto ? 'Tu información está lista para usar todas las funciones.' : 'Agrega teléfono y dirección para una mejor experiencia.'}}</p>
-                <div class="showcase-profile-progress">
-                  <i [style.width.%]="porcentajeInicio"></i>
-                </div>
-              </div>
-              <b class="showcase-profile-percent">{{porcentajeInicio}}%</b>
-              <button type="button" (click)="abrirModulo('perfil')">{{perfilCompleto ? 'Ver perfil' : 'Completar perfil'}} <span>→</span></button>
+              <b>{{porcentajeInicio}}%</b>
+              <button type="button" aria-label="Abrir perfil">›</button>
             </article>
           </section>
         </section>
