@@ -34226,3 +34226,131 @@
   .member-page .mallqui-apex-section-title h2,
   .member-page .membership-section-head h2{font-size:32px!important}
 }
+
+
+/* PORTAL CLIENTE V127 · RESTAURAR IDENTIDAD ROJA MALLQUI */
+/* Se conserva el diseño editorial inspirado en la referencia,
+   pero el color de marca vuelve a Mallqui Gym: rojo + negro + blanco. */
+
+.member-page{
+  --apex-gold:#ff3150!important;
+}
+
+/* Header */
+.member-page .mallqui-apex-brand strong,
+.member-page .mallqui-apex-menu button::after{
+  color:#ff3150!important;
+  background:#ff3150!important;
+}
+
+/* Home */
+.member-page .mallqui-apex-kicker,
+.member-page .mallqui-apex-copy h2{
+  color:#ff3150!important;
+}
+.member-page .mallqui-apex-kicker::before{
+  background:#ff3150!important;
+}
+.member-page .mallqui-apex-actions .apex-primary{
+  background:#ff3150!important;
+  border-color:#ff3150!important;
+  color:#fff!important;
+}
+.member-page .mallqui-apex-proof i{
+  background:rgba(255,49,80,.14)!important;
+  color:#ff3150!important;
+}
+.member-page .mallqui-apex-social span{
+  border-color:rgba(255,49,80,.50)!important;
+  color:#ff3150!important;
+}
+.member-page .mallqui-apex-section-title span,
+.member-page .apex-card-head>span,
+.member-page .apex-membership>span,
+.member-page .apex-profile-card>span{
+  color:#ff3150!important;
+}
+.member-page .apex-membership>button{
+  border-color:#ff3150!important;
+  color:#ff3150!important;
+}
+.member-page .apex-profile-icon{
+  border-color:rgba(255,49,80,.28)!important;
+  background:rgba(255,49,80,.08)!important;
+  color:#ff3150!important;
+}
+.member-page .apex-profile-progress i{
+  background:#ff3150!important;
+}
+
+/* Reservas */
+.member-page .apex-reservations-kicker,
+.member-page .apex-reservations-phrase span,
+.member-page .apex-reservations-heading>div>span,
+.member-page .apex-reservation-main small,
+.member-page .apex-reservations-empty>span{
+  color:#ff3150!important;
+}
+.member-page .apex-reservations-kicker::before,
+.member-page .apex-reservations-phrase{
+  border-color:#ff3150!important;
+}
+.member-page .apex-reservations-kicker::before{
+  background:#ff3150!important;
+}
+.member-page .apex-reservations-copy h1 strong{
+  color:#ff3150!important;
+}
+.member-page .apex-reservations-refresh{
+  background:#ff3150!important;
+  border-color:#ff3150!important;
+  color:#fff!important;
+}
+
+/* Rutinas */
+.member-page .module-routines-v34 .module-portal-copy>span,
+.member-page .module-routines-v34 .module-window-title span,
+.member-page .module-routines-v34 .routine-card-head span,
+.member-page .module-routines-v34 .empty-state-kicker{
+  color:#ff3150!important;
+}
+.member-page .module-routines-v34 .portal-action-primary{
+  background:#ff3150!important;
+  border-color:#ff3150!important;
+  color:#fff!important;
+}
+.member-page .module-routines-v34 .portal-action-primary i{
+  color:#fff!important;
+}
+
+/* Membresía */
+.member-page .membership-real-module .member-module-hero>div:first-child>span,
+.member-page .membership-current-copy small,
+.member-page .membership-section-head>div>span,
+.member-page .membership-plan-name small,
+.member-page .membership-plan-price strong,
+.member-page .membership-real-plan li>span,
+.member-page .membership-checkout-card .card-title-block span{
+  color:#ff3150!important;
+}
+.member-page .membership-real-module .module-refresh-btn,
+.member-page .membership-plan-selected,
+.member-page .membership-plan-recommended,
+.member-page .membership-plan-footer b,
+.member-page .member-form-submit{
+  background:#ff3150!important;
+  border-color:#ff3150!important;
+  color:#fff!important;
+}
+.member-page .membership-current-icon{
+  border-color:rgba(255,49,80,.28)!important;
+  background:rgba(255,49,80,.07)!important;
+  color:#ff3150!important;
+}
+.member-page .membership-real-plan:hover,
+.member-page .membership-real-plan.selected{
+  background:rgba(255,49,80,.055)!important;
+}
+.member-page .membership-real-plan.selected{
+  outline-color:#ff3150!important;
+}
