@@ -15,42 +15,31 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="member-page">
-      <header class="member-topbar member-topbar-v120 member-enter-down">
-        <div class="home-nav-v120">
-          <button type="button" class="home-brand-v120" (click)="abrirModulo('inicio')" aria-label="Ir al inicio de Mallqui Gym">
+      <header class="member-topbar mallqui-apex-header member-enter-down">
+        <div class="mallqui-apex-nav">
+          <button type="button" class="mallqui-apex-brand" (click)="abrirModulo('inicio')" aria-label="Ir al inicio de Mallqui Gym">
             <img src="assets/mallqui-logo.svg" alt="Mallqui Gym">
-            <span><b>Mallqui Gym</b><small>Tu espacio de entrenamiento</small></span>
+            <span><b>MALLQUI <strong>GYM</strong></b><small>PUCALLPA · PERÚ</small></span>
           </button>
 
-          <nav class="home-primary-v120" aria-label="Navegación principal del cliente">
-            <button type="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')">
-              <i><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-7h5v7"/></svg></i>
-              <span>Inicio</span>
-            </button>
-            <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')">
-              <i><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3"/></svg></i>
-              <span>Reservas</span>
-            </button>
-            <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')">
-              <i><svg viewBox="0 0 24 24"><path d="M4 20V10h4v10zM10 20V4h4v16zM16 20V7h4v13z"/></svg></i>
-              <span>Mi progreso</span>
-            </button>
-            <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')">
-              <i><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg></i>
-              <span>Membresía</span>
-            </button>
+          <nav class="mallqui-apex-menu" aria-label="Navegación principal">
+            <button type="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')">Inicio</button>
+            <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')">Reservas</button>
+            <button type="button" [class.active]="moduloActivo==='rutinas'" (click)="abrirModulo('rutinas')">Rutinas</button>
+            <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')">Progreso</button>
+            <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')">Membresía</button>
           </nav>
 
-          <div class="home-nav-actions-v120">
-            <button type="button" class="home-alert-v120" [class.active]="moduloActivo==='avisos'" (click)="abrirModulo('avisos')" aria-label="Abrir avisos">
+          <div class="mallqui-apex-user">
+            <button type="button" class="mallqui-apex-bell" (click)="abrirModulo('avisos')" aria-label="Avisos">
               <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10 21h4"/></svg>
               <b *ngIf="avisosNoLeidos>0">{{avisosNoLeidos>9 ? '9+' : avisosNoLeidos}}</b>
             </button>
-            <button type="button" class="home-profile-v120" (click)="abrirModulo('perfil')">
+            <button type="button" class="mallqui-apex-profile" (click)="abrirModulo('perfil')">
               <span>{{nombreCorto.charAt(0).toUpperCase()}}</span>
               <div><b>{{nombreCorto}}</b><small>{{membresiaActual ? 'Miembro activo' : 'Cliente Mallqui'}}</small></div>
             </button>
-            <button type="button" class="home-logout-v120" (click)="cerrarSesion()" aria-label="Cerrar sesión">
+            <button type="button" class="mallqui-apex-logout" (click)="cerrarSesion()" aria-label="Cerrar sesión">
               <svg viewBox="0 0 24 24"><path d="M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5"/><path d="M14 8l4 4-4 4M18 12H9"/></svg>
             </button>
           </div>
@@ -98,152 +87,136 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
           <button type="button" (click)="abrirModulo('inicio')">⌂ Volver al inicio</button>
         </section>
 
-        <section *ngIf="moduloActivo==='inicio'" class="member-dashboard dashboard-home-v120 member-enter-up">
+        <section *ngIf="moduloActivo==='inicio'" class="member-dashboard mallqui-apex-home member-enter-up">
 
-          <section class="home-guide-v120">
-            <div class="home-guide-person-v120">
-              <img src="https://images.unsplash.com/photo-1581009137042-c552e485697a?auto=format&fit=crop&w=500&q=86" alt="Personal de Mallqui Gym">
-              <div>
-                <div class="home-guide-title-v120">
-                  <h2>Guía en sala</h2>
-                  <span><i></i>{{rutinaActual?.entrenador ? 'Entrenador asignado' : 'Disponible'}}</span>
-                </div>
-                <p>{{rutinaActual?.entrenador ? 'Tu entrenador puede orientarte durante la sesión y revisar tu rutina.' : 'La guía e instrucciones están a cargo del personal del gimnasio. Si necesitas una rutina, puedes solicitarla desde tu cuenta.'}}</p>
-                <div class="home-guide-highlights-v122" aria-hidden="true">
-                  <span><i>✓</i> Orientación</span>
-                  <span><i>✓</i> Técnica</span>
-                  <span><i>✓</i> Rutina</span>
-                </div>
-              </div>
+          <section class="mallqui-apex-hero">
+            <img class="mallqui-apex-static" src="assets/showcase/hero-showcase.svg" alt="" aria-hidden="true">
+            <div class="mallqui-apex-carousel" aria-hidden="true">
+              <img class="mallqui-apex-slide slide-1" src="assets/showcase/hero-showcase.svg" alt="" fetchpriority="high" decoding="async">
+              <img class="mallqui-apex-slide slide-2" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2400&q=92" alt="" decoding="async">
+              <img class="mallqui-apex-slide slide-3" src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=2400&q=92" alt="" decoding="async">
+              <img class="mallqui-apex-slide slide-4" src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=2400&q=92" alt="" decoding="async">
             </div>
-            <button type="button" class="home-guide-action-v120" (click)="tieneRutinaAsignadaGym ? abrirModulo('rutinas') : solicitarRutinaAlPersonal()" [disabled]="procesandoSolicitudRutina">
-              <svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg>
-              <span>{{tieneRutinaAsignadaGym ? 'Ver mi rutina' : 'Solicitar rutina'}}</span>
-              <em>→</em>
-            </button>
-          </section>
+            <div class="mallqui-apex-shade" aria-hidden="true"></div>
 
-          <section class="home-hero-v120">
-            <img class="home-hero-static-v123" src="assets/showcase/hero-showcase.svg" alt="" aria-hidden="true">
-            <div class="showcase-bg-carousel" aria-hidden="true">
-              <img class="showcase-bg-slide showcase-bg-slide-1"
-                   src="assets/showcase/hero-showcase.svg"
-                   alt="" fetchpriority="high" decoding="async">
-              <img class="showcase-bg-slide showcase-bg-slide-2"
-                   src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=3200&q=92"
-                   alt="" decoding="async">
-              <img class="showcase-bg-slide showcase-bg-slide-3"
-                   src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=3200&q=92"
-                   alt="" decoding="async">
-              <img class="showcase-bg-slide showcase-bg-slide-4"
-                   src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=3200&q=92"
-                   alt="" decoding="async">
+            <div class="mallqui-apex-social" aria-hidden="true">
+              <span>MG</span><i></i><small>MALLQUI GYM</small>
             </div>
-            <div class="home-hero-overlay-v120" aria-hidden="true"></div>
 
-            <div class="home-hero-copy-v120">
-              <span>TU ESPACIO PERSONAL</span>
-              <h1>Bienvenido, <strong>{{nombreCorto}}</strong></h1>
-              <p>Entrena, revisa tu progreso y organiza tus próximas actividades desde un solo lugar.</p>
-              <div class="home-hero-actions-v120">
-                <button type="button" class="primary" (click)="abrirModulo('casa')">
-                  <i>▶</i><b>Entrenar ahora</b><em>→</em>
+            <div class="mallqui-apex-copy">
+              <span class="mallqui-apex-kicker">TU ESPACIO · MALLQUI GYM</span>
+              <h1>ENTRENA.<br>AVANZA.<br><strong>SUPÉRATE.</strong></h1>
+              <p>Hola, <b>{{nombreCorto}}</b>. Organiza tu entrenamiento, revisa tu progreso y sigue construyendo una mejor versión de ti.</p>
+
+              <div class="mallqui-apex-actions">
+                <button type="button" class="apex-primary" (click)="abrirModulo('casa')">
+                  <span>Entrenar ahora</span><em>→</em>
                 </button>
-                <button type="button" class="secondary" (click)="abrirModulo('rutinas')">
-                  <i><svg viewBox="0 0 24 24"><path d="M5 8v8M3 10v4M19 8v8M21 10v4M7 12h10"/></svg></i>
-                  <b>Ver rutina</b>
+                <button type="button" class="apex-secondary" (click)="abrirModulo('rutinas')">
+                  <span>Ver mi rutina</span><em>↗</em>
                 </button>
               </div>
+
+              <div class="mallqui-apex-proof">
+                <span><i>✓</i>Entrenamiento guiado</span>
+                <span><i>✓</i>Reservas desde tu cuenta</span>
+                <span><i>✓</i>Seguimiento personal</span>
+              </div>
             </div>
 
-            <div class="home-hero-quote-v120">
-              <span>“</span>
-              <b>{{gymInfo?.frase_publicitaria || 'Disciplina hoy, resultados mañana.'}}</b>
-            </div>
-
-            <div class="home-hero-insight-v123" aria-hidden="true">
-              <span>HOY EN MALLQUI</span>
-              <div>
-                <b>{{membresiaActual ? 'Acceso activo' : 'Activa tu acceso'}}</b>
-                <small>{{membresiaActual ? (diasRestantesMembresia + ' días de membresía') : 'Revisa tus planes disponibles'}}</small>
+            <aside class="mallqui-apex-coach">
+              <div class="apex-coach-top">
+                <span>GUÍA EN SALA</span>
+                <b><i></i>{{rutinaActual?.entrenador ? 'Entrenador asignado' : 'Disponible'}}</b>
               </div>
-              <i></i>
-            </div>
-
-            <div class="home-hero-status-v122">
-              <span><i></i>{{membresiaActual ? 'Membresía activa' : 'Membresía pendiente'}}</span>
-              <b>{{membresiaActual ? (diasRestantesMembresia + ' días restantes') : 'Activa tu acceso'}}</b>
-            </div>
-
-            <div class="home-carousel-dots-v120" aria-hidden="true"><i></i><i></i><i></i></div>
-          </section>
-
-          <div class="home-section-heading-v122">
-            <div><span>RESUMEN PERSONAL</span><h2>Tu actividad en Mallqui Gym</h2></div>
-            <p>Lo importante de tu cuenta, en un solo vistazo.</p>
-          </div>
-
-          <section class="home-stats-v120">
-            <button type="button" class="stat stat-red" (click)="abrirModulo('asistencias')">
-              <i><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m8 15 2 2 5-5"/></svg></i>
-              <div><small>Asistencias</small><b>{{showcaseAsistencias}}</b><span>este mes</span></div>
-              <em><span></span><span></span><span></span><span></span></em>
-            </button>
-            <button type="button" class="stat stat-purple" (click)="abrirModulo('reservas')">
-              <i><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3"/></svg></i>
-              <div><small>Reservas</small><b>{{showcaseReservas}}</b><span>próximas clases</span></div>
-              <em><span></span><span></span><span></span><span></span></em>
-            </button>
-            <button type="button" class="stat stat-green" (click)="abrirModulo('progreso')">
-              <i><svg viewBox="0 0 24 24"><path d="M4 20V11h4v9zM10 20V6h4v14zM16 20V3h4v17z"/></svg></i>
-              <div><small>Progreso</small><b>{{showcaseProgreso}}%</b><span>de tu meta mensual</span></div>
-              <em class="trend">↗</em>
-            </button>
-          </section>
-
-          <section class="home-details-v120">
-            <article class="home-membership-v120">
-              <div class="membership-icon-v120">
-                <svg viewBox="0 0 24 24"><path d="m3 7 4.2 4L12 5l4.8 6L21 7l-2 11H5z"/><path d="M6 21h12"/></svg>
-              </div>
-              <div class="membership-copy-v120">
-                <span>{{membresiaActual ? 'MEMBRESÍA ACTIVA' : 'MEMBRESÍA'}}</span>
-                <h2>{{membresiaActual ? nombreMembresiaVisible(membresiaActual) : 'Activa tu membresía'}}</h2>
-                <p>{{membresiaActual ? ('Válida hasta el ' + fechaCortaPortal(membresiaActual.fecha_fin) + ' · ' + diasRestantesMembresia + ' días restantes') : 'Consulta los planes disponibles para activar tu acceso.'}}</p>
-              </div>
-              <div class="membership-side-v120">
-                <span [class.off]="!membresiaActual"><i></i>{{membresiaActual ? 'Activa' : 'Sin plan'}}</span>
-                <button type="button" (click)="abrirModulo('pagos')" aria-label="Ver membresía">›</button>
-              </div>
-            </article>
-
-            <article class="home-class-v120">
-              <div class="home-card-head-v120">
-                <b><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg> Próxima clase reservada</b>
-                <button type="button" (click)="abrirModulo('reservas')">Ver todas <span>→</span></button>
-              </div>
-              <div class="home-class-body-v120">
-                <img src="assets/showcase/class-showcase.svg" alt="Próxima clase">
+              <div class="apex-coach-body">
+                <img src="https://images.unsplash.com/photo-1581009137042-c552e485697a?auto=format&fit=crop&w=500&q=86" alt="Personal de Mallqui Gym">
                 <div>
-                  <h3>{{reservasActivas[0]?.clase?.nombre || 'Sin reserva próxima'}}</h3>
-                  <p><span>◫</span>{{reservasActivas.length ? fechaCortaPortal(reservasActivas[0]?.fecha_clase) : 'Reserva una clase'}}</p>
-                  <p><span>◷</span>{{reservasActivas[0]?.clase?.hora_inicio || 'Horario por confirmar'}} <em>·</em> {{reservasActivas[0]?.clase?.sala || 'Sala por confirmar'}}</p>
+                  <h3>{{rutinaActual?.entrenador ? nombreEntrenador : 'Personal de Mallqui Gym'}}</h3>
+                  <p>{{rutinaActual?.entrenador ? 'Tu entrenador puede orientarte durante la sesión y revisar tu rutina.' : 'Recibe orientación del personal y solicita tu rutina desde tu cuenta.'}}</p>
                 </div>
               </div>
-            </article>
+              <button type="button" (click)="tieneRutinaAsignadaGym ? abrirModulo('rutinas') : solicitarRutinaAlPersonal()" [disabled]="procesandoSolicitudRutina">
+                {{tieneRutinaAsignadaGym ? 'Ver mi rutina' : 'Solicitar rutina'}} <span>→</span>
+              </button>
+            </aside>
 
-            <article class="home-profile-card-v120" (click)="abrirModulo('perfil')">
-              <div class="home-profile-icon-v120">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/></svg>
+            <div class="mallqui-apex-bottom">
+              <div>
+                <small>ASISTENCIAS</small>
+                <b>{{showcaseAsistencias}}</b>
+                <span>este mes</span>
               </div>
-              <div class="home-profile-copy-v120">
-                <h2>{{perfilCompleto ? 'Tu perfil está completo' : 'Completa tu perfil'}}</h2>
-                <p>{{perfilCompleto ? 'Mantén tus datos actualizados para una mejor experiencia.' : 'Agrega tu información para una mejor experiencia en Mallqui Gym.'}}</p>
-                <div><i [style.width.%]="porcentajeInicio"></i></div>
+              <div>
+                <small>RESERVAS</small>
+                <b>{{showcaseReservas}}</b>
+                <span>activas</span>
               </div>
-              <b>{{porcentajeInicio}}%</b>
-              <button type="button" aria-label="Abrir perfil">›</button>
-            </article>
+              <div>
+                <small>PROGRESO</small>
+                <b>{{showcaseProgreso}}%</b>
+                <span>meta mensual</span>
+              </div>
+              <div>
+                <small>MEMBRESÍA</small>
+                <b>{{membresiaActual ? 'ACTIVA' : 'PENDIENTE'}}</b>
+                <span>{{membresiaActual ? (diasRestantesMembresia + ' días restantes') : 'Revisa tus planes'}}</span>
+              </div>
+            </div>
+
+            <div class="mallqui-apex-scroll" aria-hidden="true"><span>SCROLL</span><i>↓</i></div>
+          </section>
+
+          <section class="mallqui-apex-dashboard">
+            <div class="mallqui-apex-section-title">
+              <div><span>MI ACTIVIDAD</span><h2>Lo importante, sin distracciones.</h2></div>
+              <p>Tu siguiente acción y el estado de tu cuenta en un solo lugar.</p>
+            </div>
+
+            <div class="mallqui-apex-grid">
+              <article class="apex-next-class">
+                <div class="apex-card-head">
+                  <span>PRÓXIMA CLASE</span>
+                  <button type="button" (click)="abrirModulo('reservas')">Ver reservas ↗</button>
+                </div>
+                <div class="apex-next-body">
+                  <img src="assets/showcase/class-showcase.svg" alt="Próxima clase">
+                  <div>
+                    <h3>{{reservasActivas[0]?.clase?.nombre || 'Sin reserva próxima'}}</h3>
+                    <p>{{reservasActivas.length ? fechaCortaPortal(reservasActivas[0]?.fecha_clase) : 'Reserva una clase cuando estés listo.'}}</p>
+                    <small>{{reservasActivas[0]?.clase?.hora_inicio || 'Horario por confirmar'}} · {{reservasActivas[0]?.clase?.sala || 'Sala por confirmar'}}</small>
+                  </div>
+                </div>
+              </article>
+
+              <article class="apex-membership">
+                <span>MEMBRESÍA</span>
+                <div class="apex-membership-main">
+                  <div>
+                    <small>{{membresiaActual ? 'PLAN ACTIVO' : 'SIN PLAN ACTIVO'}}</small>
+                    <h3>{{membresiaActual ? nombreMembresiaVisible(membresiaActual) : 'Activa tu membresía'}}</h3>
+                    <p>{{membresiaActual ? ('Válida hasta ' + fechaCortaPortal(membresiaActual.fecha_fin)) : 'Consulta los planes disponibles.'}}</p>
+                  </div>
+                  <b [class.off]="!membresiaActual"><i></i>{{membresiaActual ? 'Activa' : 'Pendiente'}}</b>
+                </div>
+                <button type="button" (click)="abrirModulo('pagos')">Ver detalles <span>→</span></button>
+              </article>
+
+              <article class="apex-profile-card" (click)="abrirModulo('perfil')">
+                <span>PERFIL</span>
+                <div class="apex-profile-main">
+                  <div class="apex-profile-icon">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6"/></svg>
+                  </div>
+                  <div>
+                    <h3>{{perfilCompleto ? 'Perfil completo' : 'Completa tu perfil'}}</h3>
+                    <p>{{perfilCompleto ? 'Tus datos están listos.' : 'Agrega tus datos para personalizar mejor tu experiencia.'}}</p>
+                  </div>
+                  <b>{{porcentajeInicio}}%</b>
+                </div>
+                <div class="apex-profile-progress"><i [style.width.%]="porcentajeInicio"></i></div>
+              </article>
+            </div>
           </section>
         </section>
 
