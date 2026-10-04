@@ -625,7 +625,28 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
         if (mostrarAviso) this.mostrarToast('Progreso actualizado.');
       },
       error: e => {
-        this.error = this.mensajeError(e);
+        if (e?.status === 401 || e?.status === 403) {
+          this.error = this.mensajeError(e);
+        } else {
+          this.progreso = this.progreso || {
+            semana: {
+              meta_sesiones: Number(this.meta?.sesiones_semanales || 3),
+              sesiones_casa: 0,
+              sesiones_gym: 0,
+              asistencias_gimnasio: 0,
+              cumplimiento: 0,
+              dias: []
+            },
+            mes: {
+              sesiones_casa: 0,
+              sesiones_gym: 0,
+              minutos_entrenados: 0,
+              asistencias_gimnasio: 0
+            },
+            ultimas_actividades: []
+          };
+          this.error = '';
+        }
         this.cargando = false;
       }
     });
@@ -977,7 +998,16 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
         this.notificacionesCambio.emit(Number(this.notificaciones?.no_leidas || 0));
         this.cargando = false;
       },
-      error: e => { this.error = this.mensajeError(e); this.cargando = false; }
+      error: e => {
+        if (e?.status === 401 || e?.status === 403) {
+          this.error = this.mensajeError(e);
+        } else {
+          this.notificaciones = { no_leidas: 0, items: [] };
+          this.notificacionesCambio.emit(0);
+          this.error = '';
+        }
+        this.cargando = false;
+      }
     });
   }
 
