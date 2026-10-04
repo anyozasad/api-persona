@@ -78,7 +78,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
         <div *ngIf="error" class="member-toast member-toast-error"><span aria-hidden="true">!</span><b>{{error}}</b></div>
         <div *ngIf="toast" class="member-toast member-toast-success"><span aria-hidden="true">✓</span><b>{{toast}}</b></div>
 
-        <section *ngIf="!['inicio','casa','rutinas','clases','progreso'].includes(moduloActivo)" class="member-page-context">
+        <section *ngIf="!['inicio','casa','rutinas','clases','progreso','reservas'].includes(moduloActivo)" class="member-page-context">
           <div>
             <span>MI ESPACIO · MALLQUI GYM</span>
             <h2>{{tituloModuloActual}}</h2>
@@ -838,37 +838,69 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
           </div>
         </section>
 
-        <section *ngIf="moduloActivo==='reservas'" class="member-module member-enter-up">
-          <div class="member-module-hero reservations-hero">
-            <div><span>AGENDA PERSONAL</span><h1>Mis reservas</h1><p>Consulta y administra las clases que reservaste.</p></div>
-            <button type="button" class="module-refresh-btn" (click)="sincronizarDatosCliente()" [disabled]="actualizandoModulo">
-              {{actualizandoModulo ? 'Actualizando...' : '↻ Actualizar'}}
-            </button>
-            <div class="module-hero-icon">◷</div>
-          </div>
+        <section *ngIf="moduloActivo==='reservas'" class="member-module apex-reservations-page member-enter-up">
+          <section class="apex-reservations-hero">
+            <img class="apex-reservations-photo"
+                 src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=2400&q=92"
+                 alt="" aria-hidden="true">
+            <div class="apex-reservations-shade" aria-hidden="true"></div>
 
-          <section class="client-rf-summary">
-            <article><small>ACTIVAS</small><b>{{reservasActivas.length}}</b><span>Reservadas</span></article>
-            <article><small>ASISTIDAS</small><b>{{reservasAsistidas}}</b><span>Clases completadas</span></article>
-            <article><small>CANCELADAS</small><b>{{reservasCanceladas}}</b><span>Historial</span></article>
+            <div class="apex-reservations-side" aria-hidden="true">
+              <span>MG</span><i></i><small>RESERVAS</small>
+            </div>
+
+            <div class="apex-reservations-copy">
+              <span class="apex-reservations-kicker">AGENDA PERSONAL · MALLQUI GYM</span>
+              <h1>ORGANIZA<br>TU <strong>RITMO.</strong></h1>
+              <p>Consulta tus próximas clases, administra tus reservas y mantén tu entrenamiento bajo control.</p>
+              <button type="button" class="apex-reservations-refresh" (click)="sincronizarDatosCliente()" [disabled]="actualizandoModulo">
+                <span>{{actualizandoModulo ? 'Actualizando...' : 'Actualizar reservas'}}</span><em>↻</em>
+              </button>
+            </div>
+
+            <div class="apex-reservations-phrase">
+              <span>PLANIFICA CON PROPÓSITO</span>
+              <b>Tu próxima sesión empieza con una buena organización.</b>
+            </div>
+
+            <div class="apex-reservations-metrics">
+              <div><small>ACTIVAS</small><b>{{reservasActivas.length}}</b><span>reservadas</span></div>
+              <div><small>ASISTIDAS</small><b>{{reservasAsistidas}}</b><span>completadas</span></div>
+              <div><small>CANCELADAS</small><b>{{reservasCanceladas}}</b><span>historial</span></div>
+            </div>
+
+            <div class="apex-reservations-scroll" aria-hidden="true"><span>SCROLL</span><i>↓</i></div>
           </section>
 
-          <div class="member-reservation-list">
-            <article *ngFor="let r of reservas">
-              <span class="reservation-mark">◷</span>
-              <div><small>CLASE</small><h3>{{r.clase?.nombre || 'Clase'}}</h3><p>{{fecha(r.fecha_clase)}} · {{r.clase?.hora_inicio}}</p></div>
-              <em [class.cancelled]="r.estado!=='Reservada'">{{r.estado}}</em>
-              <button *ngIf="r.estado==='Reservada'" type="button" (click)="cancelarReserva(r)">Cancelar reserva</button>
-            </article>
+          <section class="apex-reservations-content">
+            <div class="apex-reservations-heading">
+              <div><span>MIS CLASES</span><h2>Próximas reservas</h2></div>
+              <button type="button" (click)="abrirModulo('clases')">Explorar clases <span>↗</span></button>
+            </div>
 
-            <article class="member-empty-card member-empty-guided" *ngIf="!reservas.length">
-              <span>◷</span><h3>Todavía no tienes reservas</h3><p>Elige una clase disponible o continúa con tu entrenamiento en el gimnasio.</p>
-              <div class="empty-actions">
-                <button type="button" class="empty-primary" (click)="abrirModulo('clases')">Ver clases</button>
-                <button type="button" class="empty-secondary" (click)="abrirModulo('casa')">Entrenar en el gym</button>
+            <div class="apex-reservation-list" *ngIf="reservas.length">
+              <article *ngFor="let r of reservas">
+                <div class="apex-reservation-number">◷</div>
+                <div class="apex-reservation-main">
+                  <small>CLASE</small>
+                  <h3>{{r.clase?.nombre || 'Clase'}}</h3>
+                  <p>{{fecha(r.fecha_clase)}} · {{r.clase?.hora_inicio}}</p>
+                </div>
+                <em [class.cancelled]="r.estado!=='Reservada'">{{r.estado}}</em>
+                <button *ngIf="r.estado==='Reservada'" type="button" (click)="cancelarReserva(r)">Cancelar <span>→</span></button>
+              </article>
+            </div>
+
+            <article class="apex-reservations-empty" *ngIf="!reservas.length">
+              <span>AGENDA VACÍA</span>
+              <h3>Tu próxima clase todavía no está reservada.</h3>
+              <p>Explora las clases disponibles y elige el horario que mejor encaje con tu entrenamiento.</p>
+              <div>
+                <button type="button" class="primary" (click)="abrirModulo('clases')">Ver clases <span>→</span></button>
+                <button type="button" class="secondary" (click)="abrirModulo('casa')">Entrenar ahora <span>↗</span></button>
               </div>
             </article>
-          </div>
+          </section>
         </section>
 
         <section *ngIf="moduloActivo==='asistencias'" class="member-module member-enter-up">
