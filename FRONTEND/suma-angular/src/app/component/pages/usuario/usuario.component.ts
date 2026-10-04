@@ -78,7 +78,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
         <div *ngIf="error" class="member-toast member-toast-error"><span aria-hidden="true">!</span><b>{{error}}</b></div>
         <div *ngIf="toast" class="member-toast member-toast-success"><span aria-hidden="true">✓</span><b>{{toast}}</b></div>
 
-        <section *ngIf="!['inicio','casa','rutinas','clases','progreso','reservas'].includes(moduloActivo)" class="member-page-context">
+        <section *ngIf="!['inicio','casa','rutinas','clases','progreso','reservas','pagos'].includes(moduloActivo)" class="member-page-context">
           <div>
             <span>MI ESPACIO · MALLQUI GYM</span>
             <h2>{{tituloModuloActual}}</h2>
@@ -105,7 +105,8 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
 
             <div class="mallqui-apex-copy">
               <span class="mallqui-apex-kicker">TU ESPACIO · MALLQUI GYM</span>
-              <h1>ENTRENA.<br>AVANZA.<br><strong>SUPÉRATE.</strong></h1>
+              <h1>ALCANZA TU<br>MÁXIMO <strong>POTENCIAL.</strong></h1>
+              <h2>Entrenamiento y seguimiento para superar tus metas.</h2>
               <p>Hola, <b>{{nombreCorto}}</b>. Organiza tu entrenamiento, revisa tu progreso y sigue construyendo una mejor versión de ti.</p>
 
               <div class="mallqui-apex-actions">
