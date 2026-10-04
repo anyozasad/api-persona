@@ -124,6 +124,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
           </section>
 
           <section class="home-hero-v120">
+            <img class="home-hero-static-v123" src="assets/showcase/hero-showcase.svg" alt="" aria-hidden="true">
             <div class="showcase-bg-carousel" aria-hidden="true">
               <img class="showcase-bg-slide showcase-bg-slide-1"
                    src="assets/showcase/hero-showcase.svg"
@@ -158,6 +159,15 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             <div class="home-hero-quote-v120">
               <span>“</span>
               <b>{{gymInfo?.frase_publicitaria || 'Disciplina hoy, resultados mañana.'}}</b>
+            </div>
+
+            <div class="home-hero-insight-v123" aria-hidden="true">
+              <span>HOY EN MALLQUI</span>
+              <div>
+                <b>{{membresiaActual ? 'Acceso activo' : 'Activa tu acceso'}}</b>
+                <small>{{membresiaActual ? (diasRestantesMembresia + ' días de membresía') : 'Revisa tus planes disponibles'}}</small>
+              </div>
+              <i></i>
             </div>
 
             <div class="home-hero-status-v122">
