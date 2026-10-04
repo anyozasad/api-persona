@@ -78,7 +78,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
         <div *ngIf="error" class="member-toast member-toast-error"><span aria-hidden="true">!</span><b>{{error}}</b></div>
         <div *ngIf="toast" class="member-toast member-toast-success"><span aria-hidden="true">✓</span><b>{{toast}}</b></div>
 
-        <section *ngIf="!['inicio','casa','rutinas','clases','progreso','reservas','pagos'].includes(moduloActivo)" class="member-page-context">
+        <section *ngIf="!['inicio','casa','rutinas','clases','progreso','reservas','pagos','avisos'].includes(moduloActivo)" class="member-page-context">
           <div>
             <span>MI ESPACIO · MALLQUI GYM</span>
             <h2>{{tituloModuloActual}}</h2>
