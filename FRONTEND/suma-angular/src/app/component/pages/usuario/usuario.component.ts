@@ -109,6 +109,11 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                   <span><i></i>{{rutinaActual?.entrenador ? 'Entrenador asignado' : 'Disponible'}}</span>
                 </div>
                 <p>{{rutinaActual?.entrenador ? 'Tu entrenador puede orientarte durante la sesión y revisar tu rutina.' : 'La guía e instrucciones están a cargo del personal del gimnasio. Si necesitas una rutina, puedes solicitarla desde tu cuenta.'}}</p>
+                <div class="home-guide-highlights-v122" aria-hidden="true">
+                  <span><i>✓</i> Orientación</span>
+                  <span><i>✓</i> Técnica</span>
+                  <span><i>✓</i> Rutina</span>
+                </div>
               </div>
             </div>
             <button type="button" class="home-guide-action-v120" (click)="tieneRutinaAsignadaGym ? abrirModulo('rutinas') : solicitarRutinaAlPersonal()" [disabled]="procesandoSolicitudRutina">
@@ -121,7 +126,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
           <section class="home-hero-v120">
             <div class="showcase-bg-carousel" aria-hidden="true">
               <img class="showcase-bg-slide showcase-bg-slide-1"
-                   src="https://images.unsplash.com/photo-1641337221253-fdc7237f6b61?auto=format&fit=crop&w=3200&q=95"
+                   src="assets/showcase/hero-showcase.svg"
                    alt="" fetchpriority="high" decoding="async">
               <img class="showcase-bg-slide showcase-bg-slide-2"
                    src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=3200&q=92"
@@ -155,8 +160,18 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               <b>{{gymInfo?.frase_publicitaria || 'Disciplina hoy, resultados mañana.'}}</b>
             </div>
 
+            <div class="home-hero-status-v122">
+              <span><i></i>{{membresiaActual ? 'Membresía activa' : 'Membresía pendiente'}}</span>
+              <b>{{membresiaActual ? (diasRestantesMembresia + ' días restantes') : 'Activa tu acceso'}}</b>
+            </div>
+
             <div class="home-carousel-dots-v120" aria-hidden="true"><i></i><i></i><i></i></div>
           </section>
+
+          <div class="home-section-heading-v122">
+            <div><span>RESUMEN PERSONAL</span><h2>Tu actividad en Mallqui Gym</h2></div>
+            <p>Lo importante de tu cuenta, en un solo vistazo.</p>
+          </div>
 
           <section class="home-stats-v120">
             <button type="button" class="stat stat-red" (click)="abrirModulo('asistencias')">
