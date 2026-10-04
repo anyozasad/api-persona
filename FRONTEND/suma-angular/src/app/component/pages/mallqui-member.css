@@ -31805,3 +31805,289 @@
   .member-page .home-hero-status-v122{display:none!important}
   .member-page .home-section-heading-v122{align-items:flex-start!important;flex-direction:column!important;gap:4px!important}
 }
+
+
+/* PORTAL CLIENTE V123 · HERO VIVO Y DASHBOARD PREMIUM */
+/* La versión anterior ocultaba la foto con un gradiente totalmente opaco.
+   Esta capa corrige eso y cambia la sensación general del inicio. */
+
+.member-page{
+  background:
+    radial-gradient(circle at 10% 0%,rgba(255,49,80,.07),transparent 20%),
+    radial-gradient(circle at 88% 12%,rgba(30,117,181,.055),transparent 24%),
+    linear-gradient(180deg,#f8fafc 0%,#eef3f7 100%)!important;
+}
+
+/* HERO: foto protagonista, no bloque azul vacío */
+.member-page .home-hero-v120{
+  position:relative!important;
+  min-height:410px!important;
+  overflow:hidden!important;
+  border-radius:24px!important;
+  border:1px solid rgba(16,42,62,.20)!important;
+  background:
+    linear-gradient(90deg,rgba(2,14,25,.25),rgba(2,14,25,.08)),
+    url('/assets/showcase/hero-showcase.svg') center 42%/cover no-repeat!important;
+  box-shadow:
+    0 25px 55px rgba(3,22,38,.24),
+    inset 0 1px 0 rgba(255,255,255,.06)!important;
+}
+.member-page .home-hero-static-v123{
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center 42%!important;
+  filter:saturate(1.08) contrast(1.04) brightness(.96)!important;
+}
+.member-page .home-hero-v120 .showcase-bg-carousel{
+  z-index:1!important;
+}
+.member-page .home-hero-v120 .showcase-bg-slide{
+  z-index:1!important;
+  filter:saturate(1.08) contrast(1.04) brightness(.97)!important;
+}
+.member-page .home-hero-overlay-v120{
+  z-index:2!important;
+  background:
+    linear-gradient(90deg,
+      rgba(1,11,21,.96) 0%,
+      rgba(1,13,24,.90) 24%,
+      rgba(2,15,28,.57) 42%,
+      rgba(2,15,28,.16) 66%,
+      rgba(2,15,28,.22) 100%),
+    linear-gradient(180deg,rgba(0,0,0,.02),rgba(1,12,23,.18))!important;
+}
+.member-page .home-hero-v120::before{
+  z-index:3!important;
+  width:52%!important;
+  background:
+    radial-gradient(circle at 18% 40%,rgba(239,35,60,.12),transparent 22%),
+    linear-gradient(135deg,rgba(255,255,255,.035),transparent 50%)!important;
+}
+.member-page .home-hero-v120::after{
+  z-index:3!important;
+  background:
+    radial-gradient(circle at 79% 18%,rgba(255,48,78,.11),transparent 15%),
+    radial-gradient(circle at 66% 96%,rgba(30,118,181,.11),transparent 24%)!important;
+}
+.member-page .home-hero-copy-v120,
+.member-page .home-hero-quote-v120,
+.member-page .home-hero-status-v122,
+.member-page .home-hero-insight-v123,
+.member-page .home-carousel-dots-v120{
+  z-index:5!important;
+}
+
+/* Copy más editorial */
+.member-page .home-hero-copy-v120{
+  left:46px!important;
+  width:min(610px,46%)!important;
+}
+.member-page .home-hero-copy-v120 h1{
+  margin:13px 0 12px!important;
+  font-size:56px!important;
+  line-height:.94!important;
+  letter-spacing:-2.2px!important;
+}
+.member-page .home-hero-copy-v120 p{
+  max-width:500px!important;
+  color:#e5edf3!important;
+  font-size:13.6px!important;
+  line-height:1.62!important;
+}
+.member-page .home-hero-actions-v120{
+  margin-top:25px!important;
+}
+.member-page .home-hero-actions-v120 .primary,
+.member-page .home-hero-actions-v120 .secondary{
+  min-height:62px!important;
+  border-radius:15px!important;
+}
+
+/* Panel de información del hero */
+.member-page .home-hero-insight-v123{
+  position:absolute!important;
+  right:34px!important;
+  bottom:28px!important;
+  width:235px!important;
+  padding:13px 14px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 10px!important;
+  gap:10px!important;
+  align-items:center!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  border-radius:15px!important;
+  background:rgba(4,22,38,.48)!important;
+  color:#fff!important;
+  box-shadow:0 13px 28px rgba(0,0,0,.16)!important;
+  backdrop-filter:blur(12px)!important;
+  -webkit-backdrop-filter:blur(12px)!important;
+}
+.member-page .home-hero-insight-v123>span{
+  grid-column:1/-1!important;
+  color:#ff7288!important;
+  font-size:7px!important;
+  font-weight:950!important;
+  letter-spacing:1.1px!important;
+}
+.member-page .home-hero-insight-v123 div{
+  display:flex!important;
+  flex-direction:column!important;
+}
+.member-page .home-hero-insight-v123 b{
+  color:#fff!important;
+  font-size:10px!important;
+  font-weight:950!important;
+}
+.member-page .home-hero-insight-v123 small{
+  margin-top:3px!important;
+  color:#aec2d1!important;
+  font-size:7.5px!important;
+}
+.member-page .home-hero-insight-v123>i{
+  width:9px!important;
+  height:9px!important;
+  border-radius:50%!important;
+  background:#20d89a!important;
+  box-shadow:0 0 0 5px rgba(32,216,154,.10)!important;
+}
+.member-page .home-hero-status-v122{
+  display:none!important;
+}
+
+/* Frase superior derecha más contenida */
+.member-page .home-hero-quote-v120{
+  right:34px!important;
+  top:31px!important;
+  width:230px!important;
+  padding:17px 17px 17px 38px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  background:rgba(4,22,38,.38)!important;
+  box-shadow:0 12px 25px rgba(0,0,0,.13)!important;
+}
+
+/* Guía en sala más llena, menos espacio muerto */
+.member-page .home-guide-v120{
+  min-height:100px!important;
+  padding:13px 18px!important;
+  border-radius:21px!important;
+  background:
+    radial-gradient(circle at 88% 0%,rgba(255,46,78,.10),transparent 24%),
+    linear-gradient(135deg,#fff 0%,#f8fafc 68%,#f0f5f8 100%)!important;
+  box-shadow:
+    0 17px 36px rgba(12,38,59,.09),
+    inset 0 1px 0 #fff!important;
+}
+.member-page .home-guide-highlights-v122{
+  gap:7px!important;
+}
+.member-page .home-guide-highlights-v122 span{
+  background:#f8fbfd!important;
+  border-color:#dfe8ee!important;
+  box-shadow:inset 0 1px 0 #fff!important;
+}
+
+/* Encabezado de actividad: visualmente separa el dashboard */
+.member-page .home-section-heading-v122{
+  margin-top:2px!important;
+  padding:7px 5px 2px!important;
+}
+.member-page .home-section-heading-v122 h2{
+  font-size:20px!important;
+  letter-spacing:-.55px!important;
+}
+.member-page .home-section-heading-v122 p{
+  font-size:8.8px!important;
+}
+
+/* KPIs con gradiente propio para que no sean tres cajas blancas iguales */
+.member-page .home-stats-v120 .stat{
+  min-height:128px!important;
+  border-radius:20px!important;
+  box-shadow:
+    0 16px 34px rgba(12,38,59,.095),
+    inset 0 1px 0 #fff!important;
+}
+.member-page .home-stats-v120 .stat-red{
+  background:
+    radial-gradient(circle at 94% 12%,rgba(255,56,84,.10),transparent 29%),
+    linear-gradient(145deg,#fff,#fff6f8)!important;
+}
+.member-page .home-stats-v120 .stat-purple{
+  background:
+    radial-gradient(circle at 94% 12%,rgba(129,69,243,.10),transparent 29%),
+    linear-gradient(145deg,#fff,#f8f5ff)!important;
+}
+.member-page .home-stats-v120 .stat-green{
+  background:
+    radial-gradient(circle at 94% 12%,rgba(22,187,128,.10),transparent 29%),
+    linear-gradient(145deg,#fff,#f2fbf7)!important;
+}
+.member-page .home-stats-v120 .stat div>b{
+  font-size:30px!important;
+}
+
+/* Fila inferior: sensación de producto terminado */
+.member-page .home-details-v120{
+  gap:15px!important;
+}
+.member-page .home-membership-v120,
+.member-page .home-class-v120,
+.member-page .home-profile-card-v120{
+  min-height:165px!important;
+  border-radius:20px!important;
+}
+.member-page .home-membership-v120{
+  box-shadow:
+    0 18px 38px rgba(115,7,29,.20),
+    inset 0 1px 0 rgba(255,255,255,.11)!important;
+}
+.member-page .home-class-v120,
+.member-page .home-profile-card-v120{
+  box-shadow:
+    0 15px 32px rgba(12,38,59,.09),
+    inset 0 1px 0 #fff!important;
+}
+.member-page .home-class-v120{
+  padding:14px 15px!important;
+}
+.member-page .home-class-body-v120 img{
+  width:142px!important;
+  height:90px!important;
+}
+.member-page .home-profile-icon-v120{
+  width:56px!important;
+  height:56px!important;
+}
+
+/* Más densidad visual sin añadir botones */
+.member-page .home-card-head-v120{
+  padding-bottom:10px!important;
+}
+.member-page .home-card-head-v120>b{
+  font-size:9.5px!important;
+}
+.member-page .home-profile-copy-v120 h2{
+  font-size:12.5px!important;
+}
+
+/* Desktop */
+@media(min-width:1350px){
+  .member-page .dashboard-home-v120{
+    width:min(1540px,calc(100% - 44px))!important;
+    gap:16px!important;
+  }
+}
+
+/* Tablet y móvil */
+@media(max-width:1000px){
+  .member-page .home-hero-v120{
+    min-height:500px!important;
+  }
+  .member-page .home-hero-insight-v123{
+    display:none!important;
+  }
+}
