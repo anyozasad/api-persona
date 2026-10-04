@@ -34354,3 +34354,369 @@
 .member-page .membership-real-plan.selected{
   outline-color:#ff3150!important;
 }
+
+
+/* PORTAL CLIENTE V128 · PROGRESO, AVISOS Y CARGA COHERENTES */
+/* Corrige tres puntos visibles en las capturas:
+   1) elimina el azul en Progreso/Avisos,
+   2) evita el logo GYM con bloque de fondo,
+   3) hace que la carga inicial no sea una tarjeta blanca gigante. */
+
+.member-page .mallqui-apex-brand strong{
+  color:#ff3150!important;
+  background:transparent!important;
+}
+
+/* CARGA INICIAL */
+.member-page .member-loading-card{
+  min-height:520px!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:
+    radial-gradient(circle at 50% 38%,rgba(255,49,80,.08),transparent 18%),
+    #0b0d0f!important;
+  box-shadow:none!important;
+  color:#fff!important;
+}
+.member-page .member-loading-card h2{
+  color:#fff!important;
+  font-size:24px!important;
+  letter-spacing:-.5px!important;
+}
+.member-page .member-loading-card p{
+  color:#8f989f!important;
+}
+.member-page .loading-ring{
+  border-color:#2d3338!important;
+  border-top-color:#ff3150!important;
+}
+
+/* ===== PROGRESO ===== */
+.member-page .progress-experience-v34{
+  background:#0b0d0f!important;
+}
+.member-page .progress-portal-head{
+  gap:0!important;
+  grid-template-columns:minmax(0,1.8fr) minmax(320px,.72fr)!important;
+  background:#0b0d0f!important;
+}
+.member-page .progress-portal-head .progress-hero{
+  min-height:560px!important;
+  padding:72px max(80px,6vw)!important;
+  border:0!important;
+  border-radius:0!important;
+  background:
+    linear-gradient(90deg,rgba(7,8,9,.96) 0%,rgba(7,8,9,.82) 32%,rgba(7,8,9,.39) 60%,rgba(7,8,9,.16) 100%),
+    url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=2200&q=92') center 47%/cover no-repeat!important;
+  filter:grayscale(1)!important;
+  box-shadow:none!important;
+}
+.member-page .progress-portal-head .progress-hero>div{
+  position:relative!important;
+  z-index:2!important;
+  max-width:650px!important;
+}
+.member-page .progress-portal-head .progress-hero>div>span{
+  color:#ff3150!important;
+  font-size:9px!important;
+  letter-spacing:2px!important;
+}
+.member-page .progress-portal-head .progress-hero h1{
+  margin:14px 0 14px!important;
+  color:#fff!important;
+  font-size:68px!important;
+  line-height:.9!important;
+  letter-spacing:-2.6px!important;
+  text-transform:uppercase!important;
+}
+.member-page .progress-portal-head .progress-hero p{
+  max-width:540px!important;
+  color:#c7cdd1!important;
+  font-size:12.5px!important;
+  line-height:1.6!important;
+}
+.member-page .progress-refresh-btn{
+  min-height:50px!important;
+  margin-top:24px!important;
+  padding:0 16px!important;
+  border:1px solid #ff3150!important;
+  border-radius:0!important;
+  background:#ff3150!important;
+  color:#fff!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  text-transform:uppercase!important;
+}
+.member-page .progress-portal-side{
+  min-height:560px!important;
+  padding:36px 30px!important;
+  border:0!important;
+  border-left:1px solid rgba(255,255,255,.10)!important;
+  border-radius:0!important;
+  background:#11151a!important;
+  box-shadow:none!important;
+}
+.member-page .progress-side-head>span{
+  color:#ff3150!important;
+  letter-spacing:1.7px!important;
+}
+.member-page .progress-side-head h2{
+  color:#fff!important;
+  font-size:28px!important;
+}
+.member-page .progress-side-head p{
+  color:#929aa0!important;
+}
+.member-page .progress-side-score,
+.member-page .progress-side-mini article{
+  border-radius:0!important;
+  border-color:rgba(255,255,255,.10)!important;
+  background:#171c21!important;
+  box-shadow:none!important;
+}
+.member-page .progress-side-score strong,
+.member-page .progress-side-mini b{
+  color:#fff!important;
+}
+.member-page .progress-side-score span,
+.member-page .progress-side-mini small{
+  color:#929aa0!important;
+}
+.member-page .progress-side-score div{
+  background:#2a3035!important;
+}
+.member-page .progress-side-score div i{
+  background:#ff3150!important;
+}
+.member-page .progress-window-title{
+  margin:0!important;
+  padding:44px max(70px,6vw) 22px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#101316!important;
+}
+.member-page .progress-window-title span{
+  color:#ff3150!important;
+}
+.member-page .progress-window-title h2{
+  color:#fff!important;
+  font-size:34px!important;
+}
+.member-page .progress-window-title p{
+  color:#8e979e!important;
+}
+.member-page .client-progress-kpis{
+  gap:0!important;
+  padding:0 max(70px,6vw) 42px!important;
+  background:#101316!important;
+}
+.member-page .client-progress-kpis article{
+  min-height:190px!important;
+  padding:25px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-right:0!important;
+  border-radius:0!important;
+  background:#0d1013!important;
+  box-shadow:none!important;
+}
+.member-page .client-progress-kpis article:last-child{
+  border-right:1px solid rgba(255,255,255,.10)!important;
+}
+.member-page .client-progress-kpis article>span{
+  color:#ff3150!important;
+  background:rgba(255,49,80,.08)!important;
+  border-color:rgba(255,49,80,.20)!important;
+}
+.member-page .client-progress-kpis small{
+  color:#ff758b!important;
+}
+.member-page .client-progress-kpis strong{
+  color:#fff!important;
+}
+.member-page .client-progress-kpis p{
+  color:#8e979e!important;
+}
+.member-page .client-goal-card{
+  margin:0!important;
+  padding:46px max(70px,6vw)!important;
+  border:0!important;
+  border-top:1px solid rgba(255,255,255,.10)!important;
+  border-radius:0!important;
+  background:#101316!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.member-page .client-goal-copy>span{
+  color:#ff3150!important;
+}
+.member-page .client-goal-copy h2{
+  color:#fff!important;
+}
+.member-page .client-goal-copy p{
+  color:#90989f!important;
+}
+.member-page .goal-session-options button,
+.member-page .client-reminder-toggle{
+  border-radius:0!important;
+}
+
+/* ===== AVISOS ===== */
+.member-page .client-extra-shell{
+  background:#0b0d0f!important;
+}
+.member-page .notices-hero{
+  min-height:500px!important;
+  padding:72px max(80px,6vw)!important;
+  border:0!important;
+  border-radius:0!important;
+  background:
+    linear-gradient(90deg,rgba(7,8,9,.96) 0%,rgba(7,8,9,.82) 35%,rgba(7,8,9,.40) 62%,rgba(7,8,9,.18) 100%),
+    url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2200&q=92') center 48%/cover no-repeat!important;
+  filter:grayscale(1)!important;
+  box-shadow:none!important;
+}
+.member-page .notices-hero>div{
+  max-width:650px!important;
+}
+.member-page .notices-hero>div>span{
+  color:#ff3150!important;
+  font-size:9px!important;
+  letter-spacing:2px!important;
+}
+.member-page .notices-hero h1{
+  margin:14px 0!important;
+  color:#fff!important;
+  font-size:68px!important;
+  line-height:.9!important;
+  letter-spacing:-2.6px!important;
+  text-transform:uppercase!important;
+}
+.member-page .notices-hero p{
+  max-width:540px!important;
+  color:#c7cdd1!important;
+  font-size:12.5px!important;
+}
+.member-page .notices-hero>button{
+  min-height:48px!important;
+  padding:0 15px!important;
+  border:1px solid rgba(255,255,255,.28)!important;
+  border-radius:0!important;
+  background:rgba(7,8,9,.34)!important;
+  color:#fff!important;
+}
+.member-page .client-notice-list{
+  padding:42px max(70px,6vw) 60px!important;
+  background:#101316!important;
+}
+.member-page .client-notice-list>article{
+  min-height:105px!important;
+  padding:18px 0!important;
+  display:grid!important;
+  grid-template-columns:52px minmax(0,1fr) auto!important;
+  gap:18px!important;
+  align-items:center!important;
+  border:0!important;
+  border-bottom:1px solid rgba(255,255,255,.10)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.member-page .client-notice-icon{
+  width:50px!important;
+  height:50px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(255,49,80,.28)!important;
+  border-radius:0!important;
+  background:rgba(255,49,80,.07)!important;
+  color:#ff3150!important;
+}
+.member-page .client-notice-list h3{
+  color:#fff!important;
+}
+.member-page .client-notice-list p,
+.member-page .client-notice-list small{
+  color:#90989f!important;
+}
+.member-page .client-notice-list em{
+  color:#8f989f!important;
+}
+.member-page .client-empty-block.large{
+  min-height:220px!important;
+  margin:0!important;
+  padding:50px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:0!important;
+  background:#0d1013!important;
+  color:#fff!important;
+}
+.member-page .client-empty-block.large b{
+  color:#fff!important;
+  font-size:21px!important;
+}
+.member-page .client-empty-block.large p{
+  color:#8f989f!important;
+}
+
+/* Error de componentes: no ocupar toda la pantalla con una barra rosa */
+.member-page .client-extra-alert.error{
+  margin:0!important;
+  padding:12px max(70px,6vw)!important;
+  border:0!important;
+  border-bottom:1px solid rgba(255,49,80,.22)!important;
+  border-radius:0!important;
+  background:#160d10!important;
+  color:#ff8b9d!important;
+}
+
+/* Child loading */
+.member-page .client-extra-loading{
+  min-height:420px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#0b0d0f!important;
+  color:#fff!important;
+}
+.member-page .client-extra-loading b{
+  color:#fff!important;
+}
+
+@media(max-width:900px){
+  .member-page .progress-portal-head{
+    grid-template-columns:1fr!important;
+  }
+  .member-page .progress-portal-head .progress-hero,
+  .member-page .progress-portal-side,
+  .member-page .notices-hero{
+    min-height:auto!important;
+  }
+  .member-page .progress-portal-head .progress-hero,
+  .member-page .notices-hero{
+    padding:54px 28px!important;
+  }
+  .member-page .progress-portal-head .progress-hero h1,
+  .member-page .notices-hero h1{
+    font-size:50px!important;
+  }
+  .member-page .client-progress-kpis{
+    grid-template-columns:1fr 1fr!important;
+    padding-left:28px!important;
+    padding-right:28px!important;
+  }
+  .member-page .client-notice-list,
+  .member-page .client-goal-card,
+  .member-page .progress-window-title{
+    padding-left:28px!important;
+    padding-right:28px!important;
+  }
+}
+@media(max-width:560px){
+  .member-page .progress-portal-head .progress-hero h1,
+  .member-page .notices-hero h1{
+    font-size:42px!important;
+  }
+  .member-page .client-progress-kpis{
+    grid-template-columns:1fr!important;
+  }
+}
