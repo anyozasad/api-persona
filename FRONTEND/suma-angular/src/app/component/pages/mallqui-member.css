@@ -33011,3 +33011,557 @@
     opacity:1!important;
   }
 }
+
+
+/* PORTAL CLIENTE V125 · SECONDARY PAGES EDITORIAL */
+/* Coherencia visual con la referencia editorial deportiva:
+   negro/gris, fotografía protagonista, tipografía grande, acento dorado
+   y componentes con esquinas mínimas. */
+
+.member-page .mallqui-apex-header{
+  background:#0a0d10!important;
+  border-bottom:1px solid rgba(255,255,255,.06)!important;
+}
+.member-page .mallqui-apex-nav{
+  min-height:94px!important;
+}
+.member-page .mallqui-apex-menu button{
+  color:#d2d5d8!important;
+  letter-spacing:1.15px!important;
+}
+.member-page .mallqui-apex-menu button::after{
+  background:#e6b94f!important;
+}
+.member-page .mallqui-apex-menu button.active{
+  color:#fff!important;
+}
+.member-page .mallqui-apex-brand strong{
+  color:#e6b94f!important;
+}
+
+/* Evita la doble cabecera en módulos secundarios */
+.member-page .member-page-context{
+  border:0!important;
+  background:#0a0d10!important;
+  box-shadow:none!important;
+}
+.member-page .member-page-context>div>span{
+  color:#e6b94f!important;
+}
+.member-page .member-page-context h2{
+  color:#fff!important;
+}
+.member-page .member-page-context p{
+  color:#8f989f!important;
+}
+.member-page .member-page-context>button{
+  border:1px solid rgba(255,255,255,.18)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#fff!important;
+}
+
+/* ===== RESERVAS ===== */
+.member-page .apex-reservations-page{
+  margin:0!important;
+  padding:0!important;
+  background:#0a0d10!important;
+}
+.member-page .apex-reservations-hero{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  min-height:650px!important;
+  background:#0b0d0f!important;
+}
+.member-page .apex-reservations-photo{
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center 48%!important;
+  filter:grayscale(1) contrast(1.08) brightness(.60)!important;
+  transform:scale(1.015)!important;
+}
+.member-page .apex-reservations-shade{
+  position:absolute!important;
+  inset:0!important;
+  z-index:1!important;
+  background:
+    linear-gradient(90deg,rgba(7,8,9,.96) 0%,rgba(7,8,9,.84) 26%,rgba(7,8,9,.48) 51%,rgba(7,8,9,.18) 72%,rgba(7,8,9,.36) 100%),
+    linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.25))!important;
+}
+.member-page .apex-reservations-hero::after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:2!important;
+  background:
+    radial-gradient(circle at 25% 32%,rgba(230,185,79,.09),transparent 18%),
+    linear-gradient(112deg,rgba(255,255,255,.025),transparent 33%)!important;
+  pointer-events:none!important;
+}
+.member-page .apex-reservations-copy{
+  position:absolute!important;
+  z-index:4!important;
+  left:max(95px,8vw)!important;
+  top:48%!important;
+  width:min(720px,55vw)!important;
+  transform:translateY(-50%)!important;
+}
+.member-page .apex-reservations-kicker{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:9px!important;
+  color:#e6b94f!important;
+  font-size:9px!important;
+  font-weight:950!important;
+  letter-spacing:2.3px!important;
+}
+.member-page .apex-reservations-kicker::before{
+  content:""!important;
+  width:30px!important;
+  height:2px!important;
+  background:#e6b94f!important;
+}
+.member-page .apex-reservations-copy h1{
+  margin:18px 0 18px!important;
+  color:#fff!important;
+  font-size:78px!important;
+  line-height:.88!important;
+  font-weight:950!important;
+  letter-spacing:-3px!important;
+  text-transform:uppercase!important;
+}
+.member-page .apex-reservations-copy h1 strong{
+  color:#e6b94f!important;
+  font-weight:950!important;
+}
+.member-page .apex-reservations-copy p{
+  max-width:560px!important;
+  margin:0!important;
+  color:#c8ced2!important;
+  font-size:13px!important;
+  line-height:1.65!important;
+}
+.member-page .apex-reservations-refresh{
+  min-width:210px!important;
+  min-height:52px!important;
+  margin-top:26px!important;
+  padding:0 16px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:22px!important;
+  border:1px solid #e6b94f!important;
+  border-radius:0!important;
+  background:#e6b94f!important;
+  color:#111!important;
+  font-size:8.5px!important;
+  font-weight:950!important;
+  letter-spacing:.8px!important;
+  text-transform:uppercase!important;
+  cursor:pointer!important;
+}
+.member-page .apex-reservations-refresh em{
+  font-style:normal!important;
+  font-size:16px!important;
+}
+.member-page .apex-reservations-phrase{
+  position:absolute!important;
+  z-index:4!important;
+  right:max(70px,6vw)!important;
+  top:105px!important;
+  width:290px!important;
+  padding:0 0 0 22px!important;
+  border-left:2px solid #e6b94f!important;
+}
+.member-page .apex-reservations-phrase span{
+  color:#e6b94f!important;
+  font-size:7px!important;
+  font-weight:950!important;
+  letter-spacing:1.4px!important;
+}
+.member-page .apex-reservations-phrase b{
+  display:block!important;
+  margin-top:8px!important;
+  color:#fff!important;
+  font-size:16px!important;
+  line-height:1.28!important;
+}
+.member-page .apex-reservations-side{
+  position:absolute!important;
+  z-index:4!important;
+  left:26px!important;
+  top:50%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  gap:11px!important;
+  transform:translateY(-50%)!important;
+}
+.member-page .apex-reservations-side>span{
+  width:33px!important;
+  height:33px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+  color:#fff!important;
+  font-size:8px!important;
+  font-weight:950!important;
+}
+.member-page .apex-reservations-side i{
+  width:1px!important;
+  height:64px!important;
+  background:rgba(255,255,255,.18)!important;
+}
+.member-page .apex-reservations-side small{
+  color:#818a91!important;
+  font-size:6px!important;
+  font-weight:900!important;
+  letter-spacing:1.7px!important;
+  writing-mode:vertical-rl!important;
+  transform:rotate(180deg)!important;
+}
+.member-page .apex-reservations-metrics{
+  position:absolute!important;
+  z-index:4!important;
+  left:max(95px,8vw)!important;
+  right:max(80px,7vw)!important;
+  bottom:30px!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  border-top:1px solid rgba(255,255,255,.18)!important;
+}
+.member-page .apex-reservations-metrics>div{
+  min-height:78px!important;
+  padding:15px 26px 0 0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  border-right:1px solid rgba(255,255,255,.12)!important;
+}
+.member-page .apex-reservations-metrics>div+div{
+  padding-left:26px!important;
+}
+.member-page .apex-reservations-metrics>div:last-child{
+  border-right:0!important;
+}
+.member-page .apex-reservations-metrics small{
+  color:#858e95!important;
+  font-size:6.5px!important;
+  font-weight:950!important;
+  letter-spacing:1.2px!important;
+}
+.member-page .apex-reservations-metrics b{
+  margin-top:5px!important;
+  color:#fff!important;
+  font-size:24px!important;
+  line-height:1!important;
+  font-weight:950!important;
+}
+.member-page .apex-reservations-metrics span{
+  margin-top:4px!important;
+  color:#a1a9af!important;
+  font-size:7px!important;
+}
+.member-page .apex-reservations-scroll{
+  position:absolute!important;
+  z-index:4!important;
+  right:18px!important;
+  top:50%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  gap:10px!important;
+  transform:translateY(-50%)!important;
+}
+.member-page .apex-reservations-scroll span{
+  color:#8c959b!important;
+  font-size:6px!important;
+  font-weight:900!important;
+  letter-spacing:1.4px!important;
+  writing-mode:vertical-rl!important;
+}
+.member-page .apex-reservations-scroll i{
+  color:#fff!important;
+  font-size:16px!important;
+  font-style:normal!important;
+}
+
+/* Contenido de reservas */
+.member-page .apex-reservations-content{
+  padding:48px max(70px,6vw) 70px!important;
+  background:#f3f3f1!important;
+}
+.member-page .apex-reservations-heading{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:30px!important;
+  margin-bottom:24px!important;
+}
+.member-page .apex-reservations-heading>div>span{
+  color:#a77c19!important;
+  font-size:7px!important;
+  font-weight:950!important;
+  letter-spacing:1.5px!important;
+}
+.member-page .apex-reservations-heading h2{
+  margin:6px 0 0!important;
+  color:#111!important;
+  font-size:34px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  letter-spacing:-1.3px!important;
+}
+.member-page .apex-reservations-heading>button{
+  padding:0 0 5px!important;
+  border:0!important;
+  border-bottom:1px solid #111!important;
+  background:transparent!important;
+  color:#111!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  text-transform:uppercase!important;
+  letter-spacing:.8px!important;
+  cursor:pointer!important;
+}
+.member-page .apex-reservation-list{
+  border-top:1px solid #cfd2d4!important;
+}
+.member-page .apex-reservation-list article{
+  min-height:105px!important;
+  padding:16px 0!important;
+  display:grid!important;
+  grid-template-columns:52px minmax(0,1fr) auto auto!important;
+  gap:18px!important;
+  align-items:center!important;
+  border-bottom:1px solid #cfd2d4!important;
+  background:transparent!important;
+}
+.member-page .apex-reservation-number{
+  width:50px!important;
+  height:50px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid #bbbfc2!important;
+  color:#111!important;
+  font-size:20px!important;
+}
+.member-page .apex-reservation-main small{
+  color:#a77c19!important;
+  font-size:6.5px!important;
+  font-weight:950!important;
+  letter-spacing:1.2px!important;
+}
+.member-page .apex-reservation-main h3{
+  margin:4px 0 5px!important;
+  color:#111!important;
+  font-size:18px!important;
+  font-weight:950!important;
+}
+.member-page .apex-reservation-main p{
+  margin:0!important;
+  color:#6e7377!important;
+  font-size:8px!important;
+}
+.member-page .apex-reservation-list article>em{
+  min-width:85px!important;
+  padding:8px 10px!important;
+  border:1px solid #bfd6cc!important;
+  background:#eaf6f1!important;
+  color:#19835d!important;
+  font-size:7px!important;
+  font-style:normal!important;
+  font-weight:950!important;
+  text-align:center!important;
+  text-transform:uppercase!important;
+}
+.member-page .apex-reservation-list article>em.cancelled{
+  border-color:#e1c7cc!important;
+  background:#f8ebee!important;
+  color:#a83b51!important;
+}
+.member-page .apex-reservation-list article>button{
+  min-width:120px!important;
+  min-height:42px!important;
+  padding:0 12px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  border:1px solid #111!important;
+  border-radius:0!important;
+  background:#111!important;
+  color:#fff!important;
+  font-size:7px!important;
+  font-weight:950!important;
+  text-transform:uppercase!important;
+  cursor:pointer!important;
+}
+.member-page .apex-reservations-empty{
+  min-height:260px!important;
+  padding:38px!important;
+  border:1px solid #d2d4d5!important;
+  background:#fff!important;
+}
+.member-page .apex-reservations-empty>span{
+  color:#a77c19!important;
+  font-size:7px!important;
+  font-weight:950!important;
+  letter-spacing:1.4px!important;
+}
+.member-page .apex-reservations-empty h3{
+  max-width:600px!important;
+  margin:12px 0 10px!important;
+  color:#111!important;
+  font-size:31px!important;
+  line-height:1.05!important;
+  font-weight:950!important;
+  letter-spacing:-1px!important;
+}
+.member-page .apex-reservations-empty p{
+  max-width:600px!important;
+  margin:0!important;
+  color:#74797d!important;
+  font-size:10px!important;
+  line-height:1.55!important;
+}
+.member-page .apex-reservations-empty>div{
+  display:flex!important;
+  gap:10px!important;
+  margin-top:28px!important;
+}
+.member-page .apex-reservations-empty button{
+  min-height:46px!important;
+  padding:0 16px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:28px!important;
+  border-radius:0!important;
+  font-size:7.5px!important;
+  font-weight:950!important;
+  text-transform:uppercase!important;
+  cursor:pointer!important;
+}
+.member-page .apex-reservations-empty button.primary{
+  border:1px solid #111!important;
+  background:#111!important;
+  color:#fff!important;
+}
+.member-page .apex-reservations-empty button.secondary{
+  border:1px solid #111!important;
+  background:transparent!important;
+  color:#111!important;
+}
+
+/* ===== RESTO DE MÓDULOS: MISMO LENGUAJE ===== */
+.member-page .member-module:not(.apex-reservations-page){
+  background:#0a0d10!important;
+}
+.member-page .module-portal-hero,
+.member-page .member-module-hero.hero-photo,
+.member-page .progress-portal-head .progress-hero{
+  border-radius:0!important;
+  border:0!important;
+  filter:grayscale(.18)!important;
+  box-shadow:none!important;
+}
+.member-page .module-portal-copy>span,
+.member-page .member-module-hero>div:first-child>span,
+.member-page .progress-portal-head .progress-hero>div>span{
+  color:#e6b94f!important;
+  letter-spacing:1.8px!important;
+}
+.member-page .module-portal-copy h1,
+.member-page .member-module-hero h1,
+.member-page .progress-portal-head .progress-hero h1{
+  color:#fff!important;
+  font-size:52px!important;
+  letter-spacing:-1.6px!important;
+  text-transform:uppercase!important;
+}
+.member-page .module-portal-copy p,
+.member-page .member-module-hero p,
+.member-page .progress-portal-head .progress-hero p{
+  color:#b7c0c6!important;
+}
+.member-page .module-portal-side,
+.member-page .progress-portal-side{
+  border-radius:0!important;
+  background:#11161b!important;
+  box-shadow:none!important;
+}
+.member-page .member-module-card,
+.member-page .routine-card,
+.member-page .member-class-card,
+.member-page .client-rf-summary article,
+.member-page .attendance-timeline article,
+.member-page .member-payment-item{
+  border-radius:0!important;
+}
+
+/* Responsive */
+@media(max-width:900px){
+  .member-page .apex-reservations-hero{min-height:740px!important}
+  .member-page .apex-reservations-copy{
+    left:34px!important;
+    right:34px!important;
+    top:43%!important;
+    width:auto!important;
+  }
+  .member-page .apex-reservations-copy h1{font-size:58px!important}
+  .member-page .apex-reservations-phrase{
+    right:34px!important;
+    top:74px!important;
+    width:230px!important;
+  }
+  .member-page .apex-reservations-metrics{
+    left:34px!important;
+    right:34px!important;
+  }
+  .member-page .apex-reservations-side,
+  .member-page .apex-reservations-scroll{display:none!important}
+  .member-page .apex-reservations-content{padding:36px 24px 50px!important}
+  .member-page .apex-reservation-list article{
+    grid-template-columns:48px minmax(0,1fr) auto!important;
+  }
+  .member-page .apex-reservation-list article>button{
+    grid-column:2/-1!important;
+    width:100%!important;
+  }
+}
+@media(max-width:560px){
+  .member-page .apex-reservations-hero{min-height:720px!important}
+  .member-page .apex-reservations-copy{left:22px!important;right:22px!important}
+  .member-page .apex-reservations-copy h1{font-size:44px!important;letter-spacing:-2px!important}
+  .member-page .apex-reservations-copy p{font-size:11px!important}
+  .member-page .apex-reservations-phrase{display:none!important}
+  .member-page .apex-reservations-metrics{
+    left:22px!important;
+    right:22px!important;
+    grid-template-columns:repeat(3,1fr)!important;
+  }
+  .member-page .apex-reservations-metrics>div,
+  .member-page .apex-reservations-metrics>div+div{padding:12px 8px 0!important}
+  .member-page .apex-reservations-metrics b{font-size:18px!important}
+  .member-page .apex-reservations-heading{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+  .member-page .apex-reservation-list article{
+    grid-template-columns:42px minmax(0,1fr)!important;
+  }
+  .member-page .apex-reservation-list article>em{
+    grid-column:2!important;
+    justify-self:start!important;
+  }
+  .member-page .apex-reservation-list article>button{
+    grid-column:1/-1!important;
+  }
+  .member-page .apex-reservations-empty{padding:26px 20px!important}
+  .member-page .apex-reservations-empty h3{font-size:25px!important}
+  .member-page .apex-reservations-empty>div{display:grid!important;grid-template-columns:1fr!important}
+}
