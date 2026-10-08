@@ -35955,3 +35955,195 @@
     width:100%!important;
   }
 }
+
+
+/* PORTAL CLIENTE V133 · EMPTY RUTINA + HISTORIAL NEGRO ROJO */
+/* Corrige exactamente la parte mostrada en la captura:
+   elimina el panel blanco de "Aún no tienes rutina" y el bloque azul del historial. */
+
+.member-page .module-training-v34 .empty-routines-panel{
+  min-height:300px!important;
+  margin:18px 0 0!important;
+  padding:42px 34px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:0!important;
+  background:
+    radial-gradient(circle at 50% 10%,rgba(255,49,80,.06),transparent 22%),
+    #0d1013!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.member-page .module-training-v34 .empty-routines-panel .empty-state-icon{
+  width:54px!important;
+  height:54px!important;
+  display:grid!important;
+  place-items:center!important;
+  margin-bottom:14px!important;
+  border:1px solid rgba(255,49,80,.28)!important;
+  border-radius:0!important;
+  background:rgba(255,49,80,.07)!important;
+  color:#ff3150!important;
+}
+.member-page .module-training-v34 .empty-routines-panel .empty-state-kicker{
+  color:#ff3150!important;
+  font-size:7px!important;
+  font-weight:950!important;
+  letter-spacing:1.6px!important;
+}
+.member-page .module-training-v34 .empty-routines-panel h3{
+  margin:8px 0 8px!important;
+  color:#fff!important;
+  font-size:24px!important;
+  line-height:1.05!important;
+  font-weight:950!important;
+  letter-spacing:-.5px!important;
+}
+.member-page .module-training-v34 .empty-routines-panel p{
+  max-width:820px!important;
+  margin:0!important;
+  color:#8f989f!important;
+  font-size:9.5px!important;
+  line-height:1.65!important;
+}
+.member-page .module-training-v34 .empty-routines-panel .empty-actions{
+  display:flex!important;
+  gap:10px!important;
+  margin-top:24px!important;
+}
+.member-page .module-training-v34 .empty-routines-panel .empty-actions button{
+  min-height:46px!important;
+  padding:0 16px!important;
+  border-radius:0!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  text-transform:uppercase!important;
+  box-shadow:none!important;
+}
+.member-page .module-training-v34 .empty-routines-panel .empty-primary{
+  border:1px solid #ff3150!important;
+  background:#ff3150!important;
+  color:#fff!important;
+}
+.member-page .module-training-v34 .empty-routines-panel .empty-secondary{
+  border:1px solid rgba(255,255,255,.20)!important;
+  background:transparent!important;
+  color:#fff!important;
+}
+.member-page .module-training-v34 .empty-routines-panel .empty-actions span{
+  background:transparent!important;
+  color:inherit!important;
+}
+
+/* Historial inferior */
+.member-page .module-training-v34 .home-history-card{
+  margin:18px 0 0!important;
+  padding:0!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:0!important;
+  background:#0d1013!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.member-page .module-training-v34 .home-history-card .card-title-block{
+  padding:26px 28px 18px!important;
+  border-bottom:1px solid rgba(255,255,255,.10)!important;
+  background:transparent!important;
+}
+.member-page .module-training-v34 .home-history-card .card-title-block>span{
+  color:#ff3150!important;
+  font-size:7.5px!important;
+  font-weight:950!important;
+  letter-spacing:1.5px!important;
+}
+.member-page .module-training-v34 .home-history-card .card-title-block h2{
+  margin:6px 0 5px!important;
+  color:#fff!important;
+  font-size:26px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  letter-spacing:-.65px!important;
+}
+.member-page .module-training-v34 .home-history-card .card-title-block p{
+  margin:0!important;
+  color:#8d969d!important;
+  font-size:8.5px!important;
+}
+.member-page .module-training-v34 .home-history-list{
+  padding:0 28px!important;
+  background:transparent!important;
+}
+.member-page .module-training-v34 .home-history-list>div{
+  min-height:84px!important;
+  padding:14px 0!important;
+  display:grid!important;
+  grid-template-columns:48px minmax(0,1fr) auto!important;
+  gap:14px!important;
+  align-items:center!important;
+  border:0!important;
+  border-bottom:1px solid rgba(255,255,255,.09)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.member-page .module-training-v34 .home-history-list>div:last-child{
+  border-bottom:0!important;
+}
+.member-page .module-training-v34 .home-history-list>div>span{
+  width:44px!important;
+  height:44px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(255,49,80,.22)!important;
+  border-radius:0!important;
+  background:rgba(255,49,80,.07)!important;
+  color:#ff3150!important;
+  font-size:15px!important;
+}
+.member-page .module-training-v34 .home-history-list b{
+  color:#fff!important;
+  font-size:10px!important;
+}
+.member-page .module-training-v34 .home-history-list small{
+  display:block!important;
+  margin-top:4px!important;
+  color:#818a91!important;
+  font-size:7.5px!important;
+}
+.member-page .module-training-v34 .home-history-list em{
+  color:#ff7087!important;
+  font-size:9px!important;
+  font-style:normal!important;
+  font-weight:950!important;
+}
+
+/* Quitar cualquier fondo azul heredado que sobreviva en Entrenar */
+.member-page .module-training-v34 .member-module-card,
+.member-page .module-training-v34 .home-history-card,
+.member-page .module-training-v34 .empty-routines-panel{
+  background-color:#0d1013!important;
+  background-image:none!important;
+}
+
+/* En pantallas pequeñas */
+@media(max-width:650px){
+  .member-page .module-training-v34 .empty-routines-panel{
+    padding:30px 20px!important;
+  }
+  .member-page .module-training-v34 .empty-routines-panel .empty-actions{
+    width:100%!important;
+    flex-direction:column!important;
+  }
+  .member-page .module-training-v34 .empty-routines-panel .empty-actions button{
+    width:100%!important;
+  }
+  .member-page .module-training-v34 .home-history-card .card-title-block,
+  .member-page .module-training-v34 .home-history-list{
+    padding-left:18px!important;
+    padding-right:18px!important;
+  }
+}
