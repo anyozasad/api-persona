@@ -35506,3 +35506,452 @@
     border-bottom:0!important;
   }
 }
+
+
+/* PORTAL CLIENTE V132 · ENTRENAR NEGRO ROJO EDITORIAL */
+/* Unifica la pantalla Entrenar con Inicio, Rutinas, Progreso y Membresía.
+   Se eliminan azules/teal, tarjetas pesadas y exceso de redondeo. */
+
+.member-page .module-training-v34{
+  padding:24px max(34px,2.2vw) 54px!important;
+  background:#0b0d0f!important;
+}
+
+/* Bloque principal */
+.member-page .module-training-v34 .train-ux-shell{
+  gap:0!important;
+}
+.member-page .module-training-v34 .train-ux-intro{
+  gap:0!important;
+  grid-template-columns:minmax(0,1.55fr) minmax(360px,.82fr)!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  background:#0d1013!important;
+}
+.member-page .module-training-v34 .train-ux-copy-card,
+.member-page .module-training-v34 .train-ux-visual-card{
+  min-height:590px!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.member-page .module-training-v34 .train-ux-copy-card{
+  padding:48px 52px!important;
+  background:
+    radial-gradient(circle at 88% 10%,rgba(255,49,80,.08),transparent 24%),
+    #0d1013!important;
+}
+.member-page .module-training-v34 .train-ux-copy-card::before,
+.member-page .module-training-v34 .train-ux-copy-card::after{
+  display:none!important;
+}
+
+/* Titular */
+.member-page .module-training-v34 .train-ux-kicker{
+  color:#ff3150!important;
+  font-size:8.5px!important;
+  letter-spacing:1.9px!important;
+  animation:none!important;
+}
+.member-page .module-training-v34 .train-ux-kicker i{
+  width:18px!important;
+  height:2px!important;
+  border-radius:0!important;
+  background:#ff3150!important;
+  box-shadow:none!important;
+}
+.member-page .module-training-v34 .train-ux-copy-card h1{
+  max-width:760px!important;
+  margin:16px 0 14px!important;
+  color:#fff!important;
+  font-size:54px!important;
+  line-height:.94!important;
+  letter-spacing:-2px!important;
+  animation:none!important;
+  text-shadow:none!important;
+}
+.member-page .module-training-v34 .train-ux-copy-card h1 strong{
+  color:#ff3150!important;
+}
+.member-page .module-training-v34 .train-ux-copy-card>p{
+  max-width:690px!important;
+  color:#aeb6bc!important;
+  font-size:11.5px!important;
+  line-height:1.7!important;
+}
+
+/* Barra de accesos: visualmente secundaria */
+.member-page .module-training-v34 .train-gym-context-strip{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:0!important;
+  margin:24px 0 0!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+}
+.member-page .module-training-v34 .train-gym-context-strip button{
+  min-height:48px!important;
+  padding:0 12px!important;
+  border:0!important;
+  border-right:1px solid rgba(255,255,255,.08)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#c4cacf!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  font-size:8px!important;
+  font-weight:850!important;
+}
+.member-page .module-training-v34 .train-gym-context-strip button:last-child{
+  border-right:0!important;
+}
+.member-page .module-training-v34 .train-gym-context-strip button:hover{
+  transform:none!important;
+  background:rgba(255,49,80,.06)!important;
+  color:#fff!important;
+}
+
+/* Estado de membresía/rutina/guía */
+.member-page .module-training-v34 .train-gym-statusbar{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:0!important;
+  margin-top:14px!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+  background:transparent!important;
+}
+.member-page .module-training-v34 .train-gym-statusbar>div{
+  min-height:78px!important;
+  padding:15px 16px!important;
+  border:0!important;
+  border-right:1px solid rgba(255,255,255,.08)!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+.member-page .module-training-v34 .train-gym-statusbar>div:last-child{
+  border-right:0!important;
+}
+.member-page .module-training-v34 .train-gym-statusbar small{
+  color:#ff6f86!important;
+  font-size:7px!important;
+}
+.member-page .module-training-v34 .train-gym-statusbar b{
+  margin-top:6px!important;
+  color:#fff!important;
+  font-size:10px!important;
+}
+
+/* Tres KPIs */
+.member-page .module-training-v34 .train-ux-summary{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:0!important;
+  margin-top:14px!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+}
+.member-page .module-training-v34 .train-ux-summary>div{
+  min-height:86px!important;
+  padding:14px!important;
+  border:0!important;
+  border-right:1px solid rgba(255,255,255,.08)!important;
+  border-radius:0!important;
+  background:#111519!important;
+  box-shadow:none!important;
+  animation:none!important;
+}
+.member-page .module-training-v34 .train-ux-summary>div:last-child{
+  border-right:0!important;
+}
+.member-page .module-training-v34 .train-ux-summary>div>span{
+  border-radius:0!important;
+  border:1px solid rgba(255,49,80,.20)!important;
+  background:rgba(255,49,80,.07)!important;
+  color:#ff3150!important;
+}
+.member-page .module-training-v34 .train-ux-summary small{
+  color:#7e878e!important;
+}
+.member-page .module-training-v34 .train-ux-summary b{
+  color:#fff!important;
+}
+
+/* Acciones principales */
+.member-page .module-training-v34 .train-ux-actions{
+  gap:10px!important;
+  margin-top:20px!important;
+}
+.member-page .module-training-v34 .train-ux-actions button{
+  min-height:56px!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.member-page .module-training-v34 .train-ux-primary{
+  min-width:330px!important;
+  border:1px solid #ff3150!important;
+  background:#ff3150!important;
+}
+.member-page .module-training-v34 .train-ux-primary>span{
+  border-radius:0!important;
+  background:#fff!important;
+  color:#ff3150!important;
+}
+.member-page .module-training-v34 .train-ux-secondary{
+  border:1px solid rgba(255,255,255,.20)!important;
+  background:transparent!important;
+  color:#fff!important;
+}
+.member-page .module-training-v34 .train-ux-secondary>span{
+  border-radius:0!important;
+  background:rgba(255,255,255,.05)!important;
+}
+
+/* Panel fotográfico */
+.member-page .module-training-v34 .train-ux-visual-card{
+  border-left:1px solid rgba(255,255,255,.10)!important;
+  background:
+    linear-gradient(180deg,rgba(5,7,9,.02),rgba(5,7,9,.40)),
+    url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1600&q=92')
+    center 42%/cover no-repeat!important;
+  animation:none!important;
+}
+.member-page .module-training-v34 .train-ux-slide{
+  filter:grayscale(.55) contrast(1.06) brightness(.78)!important;
+}
+.member-page .module-training-v34 .train-ux-visual-shade{
+  background:
+    linear-gradient(180deg,rgba(7,8,9,.04) 0%,rgba(7,8,9,.18) 48%,rgba(7,8,9,.80) 100%)!important;
+}
+.member-page .module-training-v34 .train-ux-live-badge{
+  border-radius:0!important;
+  border:1px solid rgba(255,49,80,.24)!important;
+  background:rgba(10,12,14,.72)!important;
+  color:#ff7087!important;
+}
+.member-page .module-training-v34 .train-ux-live-badge i{
+  background:#ff3150!important;
+}
+.member-page .module-training-v34 .train-ux-no-equipment{
+  border-radius:0!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  background:rgba(10,12,14,.62)!important;
+  color:#fff!important;
+  animation:none!important;
+}
+.member-page .module-training-v34 .train-ux-visual-info{
+  left:20px!important;
+  right:20px!important;
+  bottom:20px!important;
+  padding:17px 18px!important;
+  border-radius:0!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  background:rgba(10,12,14,.74)!important;
+  box-shadow:none!important;
+  animation:none!important;
+}
+.member-page .module-training-v34 .train-ux-visual-info small{
+  color:#ff7087!important;
+}
+.member-page .module-training-v34 .train-ux-visual-info h2{
+  color:#fff!important;
+}
+.member-page .module-training-v34 .train-ux-visual-info p{
+  color:#aeb6bc!important;
+}
+
+/* Paso 1-2-3 */
+.member-page .module-training-v34 .train-ux-stepbar{
+  gap:0!important;
+  margin-top:0!important;
+  padding:0!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-top:0!important;
+  border-radius:0!important;
+  background:#101316!important;
+}
+.member-page .module-training-v34 .train-step{
+  min-height:92px!important;
+  padding:16px!important;
+  border:0!important;
+  border-right:1px solid rgba(255,255,255,.08)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  animation:none!important;
+}
+.member-page .module-training-v34 .train-step:last-of-type{
+  border-right:0!important;
+}
+.member-page .module-training-v34 .train-step:hover{
+  transform:none!important;
+  background:rgba(255,255,255,.02)!important;
+}
+.member-page .module-training-v34 .train-step.active{
+  background:rgba(255,49,80,.05)!important;
+}
+.member-page .module-training-v34 .train-step>span{
+  border-radius:0!important;
+  background:#181d21!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.member-page .module-training-v34 .train-step.active>span{
+  background:#ff3150!important;
+  color:#fff!important;
+  animation:none!important;
+}
+.member-page .module-training-v34 .train-step small{
+  color:#ff6f86!important;
+}
+.member-page .module-training-v34 .train-step b{
+  color:#fff!important;
+}
+.member-page .module-training-v34 .train-step p{
+  color:#818a91!important;
+}
+.member-page .module-training-v34 .train-step em{
+  border-radius:0!important;
+  background:#ff3150!important;
+  color:#fff!important;
+}
+
+/* Panel membresía habilitada */
+.member-page .module-training-v34 .membership-unlocked-panel{
+  margin:18px 0 0!important;
+  padding:26px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:0!important;
+  background:#0d1013!important;
+  box-shadow:none!important;
+}
+.member-page .module-training-v34 .membership-unlocked-head small{
+  color:#ff3150!important;
+}
+.member-page .module-training-v34 .membership-unlocked-head h2{
+  color:#fff!important;
+}
+.member-page .module-training-v34 .membership-unlocked-head p{
+  color:#8e979d!important;
+}
+.member-page .module-training-v34 .membership-unlocked-head>span{
+  border-radius:0!important;
+  border-color:rgba(255,49,80,.22)!important;
+  background:rgba(255,49,80,.07)!important;
+  color:#ff7087!important;
+}
+.member-page .module-training-v34 .membership-unlocked-summary{
+  gap:0!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+}
+.member-page .module-training-v34 .membership-unlocked-summary article{
+  border:0!important;
+  border-right:1px solid rgba(255,255,255,.08)!important;
+  border-radius:0!important;
+  background:#111519!important;
+}
+.member-page .module-training-v34 .membership-unlocked-summary article:last-child{
+  border-right:0!important;
+}
+.member-page .module-training-v34 .membership-unlocked-summary small{
+  color:#ff6f86!important;
+}
+.member-page .module-training-v34 .membership-unlocked-summary b{
+  color:#fff!important;
+}
+.member-page .module-training-v34 .membership-unlocked-summary p{
+  color:#838c93!important;
+}
+.member-page .module-training-v34 .membership-unlocked-actions{
+  gap:0!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+}
+.member-page .module-training-v34 .membership-unlocked-actions button{
+  border:0!important;
+  border-right:1px solid rgba(255,255,255,.08)!important;
+  border-bottom:1px solid rgba(255,255,255,.08)!important;
+  border-radius:0!important;
+  background:#101418!important;
+  color:#fff!important;
+}
+.member-page .module-training-v34 .membership-unlocked-actions button:hover{
+  background:rgba(255,49,80,.05)!important;
+}
+.member-page .module-training-v34 .membership-unlocked-actions span{
+  border-radius:0!important;
+  background:rgba(255,49,80,.08)!important;
+  color:#ff3150!important;
+}
+.member-page .module-training-v34 .membership-unlocked-actions b{
+  color:#fff!important;
+}
+.member-page .module-training-v34 .membership-unlocked-actions small{
+  color:#818a91!important;
+}
+
+/* Flujo inferior */
+.member-page .module-training-v34 .gym-session-flow{
+  gap:0!important;
+  margin:18px 0!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+}
+.member-page .module-training-v34 .gym-session-flow button{
+  min-height:110px!important;
+  border:0!important;
+  border-right:1px solid rgba(255,255,255,.08)!important;
+  border-radius:0!important;
+  background:#0f1317!important;
+  box-shadow:none!important;
+}
+.member-page .module-training-v34 .gym-session-flow button:last-child{
+  border-right:0!important;
+}
+.member-page .module-training-v34 .gym-session-flow button>span{
+  border-radius:0!important;
+  background:#ff3150!important;
+  box-shadow:none!important;
+}
+.member-page .module-training-v34 .gym-session-flow small{
+  color:#ff6f86!important;
+}
+.member-page .module-training-v34 .gym-session-flow b{
+  color:#fff!important;
+}
+.member-page .module-training-v34 .gym-session-flow p{
+  color:#838c93!important;
+}
+
+@media(max-width:1180px){
+  .member-page .module-training-v34 .train-ux-intro{
+    grid-template-columns:1fr!important;
+  }
+  .member-page .module-training-v34 .train-ux-visual-card{
+    min-height:420px!important;
+    border-left:0!important;
+    border-top:1px solid rgba(255,255,255,.10)!important;
+  }
+}
+@media(max-width:850px){
+  .member-page .module-training-v34{
+    padding:14px!important;
+  }
+  .member-page .module-training-v34 .train-ux-copy-card{
+    padding:30px 22px!important;
+  }
+  .member-page .module-training-v34 .train-ux-copy-card h1{
+    font-size:40px!important;
+  }
+  .member-page .module-training-v34 .train-gym-context-strip,
+  .member-page .module-training-v34 .train-gym-statusbar,
+  .member-page .module-training-v34 .train-ux-summary{
+    grid-template-columns:1fr 1fr!important;
+  }
+}
+@media(max-width:560px){
+  .member-page .module-training-v34 .train-ux-copy-card h1{
+    font-size:34px!important;
+  }
+  .member-page .module-training-v34 .train-gym-context-strip,
+  .member-page .module-training-v34 .train-gym-statusbar,
+  .member-page .module-training-v34 .train-ux-summary{
+    grid-template-columns:1fr!important;
+  }
+  .member-page .module-training-v34 .train-ux-primary{
+    min-width:0!important;
+    width:100%!important;
+  }
+}
