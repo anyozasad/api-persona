@@ -36391,3 +36391,103 @@
     margin-right:14px!important;
   }
 }
+
+
+/* PORTAL CLIENTE V136 · QUITAR FRANJA Y MÁRGENES RUTINAS/PROGRESO */
+/* Quita exactamente los espacios marcados en rojo debajo del header y en los laterales.
+   Rutinas, Progreso y Entrenar quedan pegados al ancho útil del portal. */
+
+/* El contenedor principal no debe conservar el ancho antiguo de calc(100% - 52px). */
+.member-page .member-main:has(.module-routines-v34),
+.member-page .member-main:has(.progress-experience-v34),
+.member-page .member-main:has(.module-training-v34){
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  background:#0b0d0f!important;
+  background-image:none!important;
+  animation:none!important;
+}
+
+/* RUTINAS: hero a ras del header y sin canal lateral azul. */
+.member-page .module-routines-v34{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  gap:0!important;
+  background:#0b0d0f!important;
+}
+.member-page .module-routines-v34 .module-portal-head{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+}
+.member-page .module-routines-v34 .module-portal-hero{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  border-left:0!important;
+  border-right:0!important;
+}
+.member-page .module-routines-v34 .module-window-title{
+  margin-top:0!important;
+}
+
+/* PROGRESO: el componente hijo también ocupa todo el ancho sin separación superior. */
+.member-page app-cliente-experiencia{
+  display:block!important;
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+}
+.member-page .progress-experience-v34{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  background:#0b0d0f!important;
+}
+.member-page .progress-experience-v34 .progress-portal-head{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+}
+.member-page .progress-experience-v34 .progress-hero,
+.member-page .progress-experience-v34 .progress-portal-side{
+  margin:0!important;
+}
+
+/* Evita una línea/imagen de fondo vieja entre navegación y contenido. */
+.member-page .member-main:has(.module-routines-v34)::before,
+.member-page .member-main:has(.progress-experience-v34)::before,
+.member-page .member-main:has(.module-training-v34)::before,
+.member-page .member-main:has(.module-routines-v34)::after,
+.member-page .member-main:has(.progress-experience-v34)::after,
+.member-page .member-main:has(.module-training-v34)::after{
+  display:none!important;
+  content:none!important;
+}
+
+/* Mantener aire solo dentro del contenido, no fuera del módulo. */
+.member-page .module-routines-v34 .module-portal-copy{
+  padding-left:0!important;
+}
+.member-page .progress-experience-v34 .progress-hero>div{
+  margin-left:0!important;
+}
+
+/* Responsive */
+@media(max-width:900px){
+  .member-page .member-main:has(.module-routines-v34),
+  .member-page .member-main:has(.progress-experience-v34),
+  .member-page .member-main:has(.module-training-v34){
+    width:100%!important;
+    margin:0!important;
+    padding:0!important;
+  }
+}
