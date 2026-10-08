@@ -36491,3 +36491,326 @@
     padding:0!important;
   }
 }
+
+/* PORTAL CLIENTE V137 · PERFIL MALLQUI REDISEÑADO */
+/* Perfil alineado con la identidad actual de Mallqui Gym:
+   negro + rojo + blanco, mejor jerarquía y menos espacio vacío. */
+
+.member-page .hero-photo-perfil{
+  min-height:270px!important;
+  margin:0!important;
+  padding:46px max(62px,5vw)!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:28px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:
+    linear-gradient(90deg,rgba(5,7,9,.96) 0%,rgba(5,7,9,.82) 38%,rgba(5,7,9,.42) 68%,rgba(5,7,9,.72) 100%),
+    url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=2400&q=92') center 38%/cover no-repeat!important;
+  filter:grayscale(.35)!important;
+  box-shadow:none!important;
+}
+.member-page .hero-photo-perfil>div:first-child{
+  max-width:760px!important;
+}
+.member-page .hero-photo-perfil>div:first-child>span{
+  display:flex!important;
+  align-items:center!important;
+  gap:9px!important;
+  color:#ff3150!important;
+  font-size:10px!important;
+  font-weight:950!important;
+  letter-spacing:2px!important;
+}
+.member-page .hero-photo-perfil>div:first-child>span::before{
+  content:""!important;
+  width:28px!important;
+  height:2px!important;
+  background:#ff3150!important;
+}
+.member-page .hero-photo-perfil h1{
+  margin:10px 0 9px!important;
+  color:#fff!important;
+  font-size:54px!important;
+  line-height:.95!important;
+  font-weight:950!important;
+  letter-spacing:-2px!important;
+  text-transform:uppercase!important;
+}
+.member-page .hero-photo-perfil p{
+  max-width:610px!important;
+  margin:0!important;
+  color:#b8c0c5!important;
+  font-size:13px!important;
+  line-height:1.55!important;
+}
+.member-page .hero-photo-perfil .module-refresh-btn{
+  min-width:150px!important;
+  min-height:48px!important;
+  padding:0 20px!important;
+  border:1px solid #ff3150!important;
+  border-radius:0!important;
+  background:#ff3150!important;
+  color:#fff!important;
+  font-size:11px!important;
+  letter-spacing:.2px!important;
+  box-shadow:none!important;
+}
+.member-page .hero-photo-perfil .module-refresh-btn:hover{
+  background:#e82946!important;
+  border-color:#e82946!important;
+}
+.member-page .hero-photo-perfil .module-hero-icon{
+  display:none!important;
+}
+
+/* Área principal */
+.member-page .hero-photo-perfil + .profile-layout{
+  grid-template-columns:330px minmax(0,1fr)!important;
+  gap:18px!important;
+  margin:0!important;
+  padding:34px max(48px,4vw) 18px!important;
+  background:#0b0d0f!important;
+}
+.member-page .profile-summary-card{
+  min-height:0!important;
+  padding:28px 25px!important;
+  border:1px solid #242a2f!important;
+  border-radius:0!important;
+  background:
+    linear-gradient(180deg,rgba(255,49,80,.055),transparent 36%),
+    #101316!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.member-page .profile-avatar{
+  width:74px!important;
+  height:74px!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  border-radius:0!important;
+  background:#ff3150!important;
+  color:#fff!important;
+  font-size:27px!important;
+  box-shadow:0 10px 28px rgba(255,49,80,.18)!important;
+}
+.member-page .profile-summary-card h2{
+  margin:18px 0 5px!important;
+  color:#fff!important;
+  font-size:25px!important;
+  line-height:1!important;
+}
+.member-page .profile-summary-card>p{
+  margin:0 0 13px!important;
+  color:#9aa4ab!important;
+  font-size:11px!important;
+}
+.member-page .profile-summary-card>span{
+  padding:6px 9px!important;
+  border:1px solid rgba(57,201,123,.24)!important;
+  border-radius:0!important;
+  background:rgba(57,201,123,.08)!important;
+  color:#76dca4!important;
+  font-size:9px!important;
+}
+.member-page .profile-summary-card ul{
+  margin:24px 0 0!important;
+  padding-top:21px!important;
+  gap:12px!important;
+  border-top:1px solid #272d32!important;
+}
+.member-page .profile-summary-card li{
+  color:#aeb7bd!important;
+  font-size:10.5px!important;
+  line-height:1.4!important;
+}
+
+/* Formulario */
+.member-page .profile-edit-card{
+  padding:28px!important;
+  border:1px solid #242a2f!important;
+  border-radius:0!important;
+  background:#0d1013!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.member-page .profile-edit-card .card-title-block>span,
+.member-page .profile-security-grid .card-title-block>span{
+  color:#ff3150!important;
+  font-size:9px!important;
+  letter-spacing:1.5px!important;
+}
+.member-page .profile-edit-card .card-title-block h2,
+.member-page .profile-security-grid .card-title-block h2{
+  margin:7px 0 4px!important;
+  color:#fff!important;
+  font-size:27px!important;
+  line-height:1.05!important;
+  letter-spacing:-.5px!important;
+}
+.member-page .profile-edit-card .card-title-block p,
+.member-page .profile-security-grid .card-title-block p{
+  color:#89939a!important;
+  font-size:11px!important;
+}
+.member-page .profile-form-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  column-gap:16px!important;
+  row-gap:14px!important;
+  margin-top:24px!important;
+}
+.member-page .profile-edit-card .member-form label,
+.member-page .profile-security-grid .member-form label{
+  gap:7px!important;
+  color:#c9d0d4!important;
+  font-size:10px!important;
+  font-weight:850!important;
+}
+.member-page .profile-edit-card input,
+.member-page .profile-edit-card select,
+.member-page .profile-security-grid input,
+.member-page .profile-security-grid select{
+  min-height:49px!important;
+  box-sizing:border-box!important;
+  padding:0 14px!important;
+  border:1px solid #30363b!important;
+  border-radius:0!important;
+  outline:none!important;
+  background:#14191e!important;
+  color:#fff!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  box-shadow:none!important;
+}
+.member-page .profile-edit-card input:focus,
+.member-page .profile-edit-card select:focus,
+.member-page .profile-security-grid input:focus{
+  border-color:#ff3150!important;
+  box-shadow:0 0 0 2px rgba(255,49,80,.10)!important;
+}
+.member-page .profile-edit-card input:disabled{
+  border-color:#272d32!important;
+  background:#101316!important;
+  color:#7f898f!important;
+  opacity:1!important;
+}
+.member-page .profile-edit-card .member-form-submit,
+.member-page .profile-security-grid .member-form-submit{
+  min-height:50px!important;
+  margin-top:3px!important;
+  border:1px solid #ff3150!important;
+  border-radius:0!important;
+  background:#ff3150!important;
+  color:#fff!important;
+  font-size:10.5px!important;
+  font-weight:950!important;
+  text-transform:uppercase!important;
+  letter-spacing:.55px!important;
+  box-shadow:none!important;
+}
+.member-page .profile-edit-card .member-form-submit:hover,
+.member-page .profile-security-grid .member-form-submit:hover{
+  transform:none!important;
+  background:#e82946!important;
+}
+
+/* Seguridad */
+.member-page .profile-security-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:18px!important;
+  margin:0!important;
+  padding:0 max(48px,4vw) 54px!important;
+  background:#0b0d0f!important;
+}
+.member-page .profile-security-grid .member-module-card{
+  padding:28px!important;
+  border:1px solid #242a2f!important;
+  border-radius:0!important;
+  background:#0d1013!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.member-page .profile-security-grid .member-form{
+  margin-top:22px!important;
+}
+.member-page .session-security-info{
+  margin:22px 0!important;
+  padding:16px!important;
+  border:1px solid #2b3136!important;
+  border-radius:0!important;
+  background:#12171b!important;
+}
+.member-page .session-security-info>span{
+  background:rgba(255,49,80,.10)!important;
+  color:#ff3150!important;
+}
+.member-page .session-security-info b{
+  color:#fff!important;
+  font-size:11px!important;
+}
+.member-page .session-security-info p{
+  color:#8f989f!important;
+  font-size:10px!important;
+}
+.member-page .member-danger-action{
+  min-height:48px!important;
+  border:1px solid rgba(255,49,80,.5)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#ff5c73!important;
+  font-size:10px!important;
+  font-weight:900!important;
+}
+.member-page .member-danger-action:hover{
+  background:rgba(255,49,80,.08)!important;
+}
+
+/* Responsive */
+@media(max-width:980px){
+  .member-page .hero-photo-perfil{
+    min-height:250px!important;
+    padding:38px 28px!important;
+  }
+  .member-page .hero-photo-perfil h1{
+    font-size:46px!important;
+  }
+  .member-page .hero-photo-perfil + .profile-layout,
+  .member-page .profile-security-grid{
+    grid-template-columns:1fr!important;
+    padding-left:22px!important;
+    padding-right:22px!important;
+  }
+}
+@media(max-width:620px){
+  .member-page .hero-photo-perfil{
+    grid-template-columns:1fr!important;
+    gap:20px!important;
+    padding:32px 20px!important;
+  }
+  .member-page .hero-photo-perfil h1{
+    font-size:39px!important;
+  }
+  .member-page .hero-photo-perfil .module-refresh-btn{
+    width:100%!important;
+  }
+  .member-page .hero-photo-perfil + .profile-layout{
+    padding:18px 14px 12px!important;
+  }
+  .member-page .profile-security-grid{
+    padding:0 14px 94px!important;
+  }
+  .member-page .profile-form-grid{
+    grid-template-columns:1fr!important;
+  }
+  .member-page .profile-form-grid .full{
+    grid-column:auto!important;
+  }
+  .member-page .profile-edit-card,
+  .member-page .profile-security-grid .member-module-card,
+  .member-page .profile-summary-card{
+    padding:20px!important;
+  }
+}
+
