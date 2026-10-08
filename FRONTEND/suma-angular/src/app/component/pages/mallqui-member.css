@@ -34720,3 +34720,228 @@
     grid-template-columns:1fr!important;
   }
 }
+
+
+/* PORTAL CLIENTE V129 · ENFOQUES Y PROVEEDORES */
+.member-page .mallqui-focus-section{
+  padding:66px max(90px,7vw) 72px!important;
+  background:#0b0d0f!important;
+  color:#fff!important;
+  border-top:1px solid rgba(255,255,255,.08)!important;
+}
+.member-page .mallqui-focus-head{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:34px!important;
+  margin-bottom:30px!important;
+}
+.member-page .mallqui-focus-head>div>span{
+  color:#ff3150!important;
+  font-size:7px!important;
+  font-weight:950!important;
+  letter-spacing:2px!important;
+}
+.member-page .mallqui-focus-head h2{
+  margin:7px 0 0!important;
+  color:#fff!important;
+  font-size:42px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  letter-spacing:-1.5px!important;
+}
+.member-page .mallqui-focus-head>p{
+  max-width:430px!important;
+  margin:0!important;
+  color:#8f989f!important;
+  font-size:9px!important;
+  line-height:1.6!important;
+  text-align:right!important;
+}
+.member-page .mallqui-focus-grid{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:0!important;
+  border-top:1px solid rgba(255,255,255,.11)!important;
+  border-bottom:1px solid rgba(255,255,255,.11)!important;
+}
+.member-page .mallqui-focus-grid article{
+  position:relative!important;
+  min-height:245px!important;
+  padding:25px 22px!important;
+  border-right:1px solid rgba(255,255,255,.10)!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.018),rgba(255,255,255,0))!important;
+  transition:background .2s ease,transform .2s ease!important;
+}
+.member-page .mallqui-focus-grid article:last-child{
+  border-right:0!important;
+}
+.member-page .mallqui-focus-grid article:hover{
+  background:rgba(255,49,80,.045)!important;
+  transform:translateY(-2px)!important;
+}
+.member-page .focus-index{
+  position:absolute!important;
+  top:18px!important;
+  right:18px!important;
+  color:#3e464c!important;
+  font-size:8px!important;
+  font-weight:950!important;
+  letter-spacing:1px!important;
+}
+.member-page .focus-icon{
+  width:48px!important;
+  height:48px!important;
+  margin-bottom:25px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(255,49,80,.32)!important;
+  background:rgba(255,49,80,.08)!important;
+  color:#ff3150!important;
+  font-size:17px!important;
+}
+.member-page .mallqui-focus-grid small{
+  color:#ff7087!important;
+  font-size:6.5px!important;
+  font-weight:950!important;
+  letter-spacing:1.35px!important;
+}
+.member-page .mallqui-focus-grid h3{
+  margin:8px 0 9px!important;
+  color:#fff!important;
+  font-size:18px!important;
+  line-height:1.05!important;
+  font-weight:950!important;
+}
+.member-page .mallqui-focus-grid p{
+  margin:0!important;
+  color:#8e979d!important;
+  font-size:8px!important;
+  line-height:1.55!important;
+}
+.member-page .mallqui-supplement-strip{
+  margin-top:22px!important;
+  min-height:112px!important;
+  padding:22px 24px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1.2fr) auto auto!important;
+  gap:22px!important;
+  align-items:center!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  background:
+    radial-gradient(circle at 90% 50%,rgba(255,49,80,.10),transparent 24%),
+    #101316!important;
+}
+.member-page .mallqui-supplement-strip>div:first-child>span{
+  color:#ff3150!important;
+  font-size:6.5px!important;
+  font-weight:950!important;
+  letter-spacing:1.5px!important;
+}
+.member-page .mallqui-supplement-strip h3{
+  margin:6px 0 5px!important;
+  color:#fff!important;
+  font-size:19px!important;
+  font-weight:950!important;
+}
+.member-page .mallqui-supplement-strip h3 b{
+  color:#ff3150!important;
+}
+.member-page .mallqui-supplement-strip p{
+  max-width:650px!important;
+  margin:0!important;
+  color:#90989e!important;
+  font-size:8px!important;
+  line-height:1.55!important;
+}
+.member-page .mallqui-supplement-badges{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:7px!important;
+}
+.member-page .mallqui-supplement-badges span{
+  min-height:30px!important;
+  padding:0 10px!important;
+  display:flex!important;
+  align-items:center!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+  background:#0d1013!important;
+  color:#d8dde0!important;
+  font-size:7px!important;
+  font-weight:850!important;
+}
+.member-page .mallqui-supplement-strip>button{
+  min-width:145px!important;
+  min-height:44px!important;
+  padding:0 12px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  border:1px solid #ff3150!important;
+  background:#ff3150!important;
+  color:#fff!important;
+  font-size:7.5px!important;
+  font-weight:950!important;
+  text-transform:uppercase!important;
+  cursor:pointer!important;
+}
+@media(max-width:1100px){
+  .member-page .mallqui-focus-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  .member-page .mallqui-focus-grid article:nth-child(3){
+    border-right:0!important;
+  }
+  .member-page .mallqui-focus-grid article:nth-child(n+4){
+    border-top:1px solid rgba(255,255,255,.10)!important;
+  }
+  .member-page .mallqui-supplement-strip{
+    grid-template-columns:1fr auto!important;
+  }
+  .member-page .mallqui-supplement-badges{
+    grid-column:1/-1!important;
+    grid-row:2!important;
+  }
+}
+@media(max-width:760px){
+  .member-page .mallqui-focus-section{
+    padding:44px 24px 52px!important;
+  }
+  .member-page .mallqui-focus-head{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+  .member-page .mallqui-focus-head>p{
+    text-align:left!important;
+  }
+  .member-page .mallqui-focus-grid{
+    grid-template-columns:1fr 1fr!important;
+  }
+  .member-page .mallqui-focus-grid article{
+    border-right:1px solid rgba(255,255,255,.10)!important;
+    border-top:1px solid rgba(255,255,255,.10)!important;
+  }
+  .member-page .mallqui-focus-grid article:nth-child(2n){
+    border-right:0!important;
+  }
+  .member-page .mallqui-supplement-strip{
+    grid-template-columns:1fr!important;
+  }
+  .member-page .mallqui-supplement-badges{
+    grid-column:auto!important;
+    grid-row:auto!important;
+  }
+}
+@media(max-width:480px){
+  .member-page .mallqui-focus-grid{
+    grid-template-columns:1fr!important;
+  }
+  .member-page .mallqui-focus-grid article{
+    min-height:200px!important;
+    border-right:0!important;
+  }
+  .member-page .mallqui-focus-head h2{
+    font-size:32px!important;
+  }
+}
