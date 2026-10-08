@@ -219,6 +219,72 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               </article>
             </div>
           </section>
+
+          <section class="mallqui-focus-section">
+            <div class="mallqui-focus-head">
+              <div>
+                <span>ENFOQUES DE ENTRENAMIENTO</span>
+                <h2>Entrena según tu objetivo.</h2>
+              </div>
+              <p>Opciones de entrenamiento que Mallqui Gym puede trabajar contigo según tu rutina y la orientación del personal.</p>
+            </div>
+
+            <div class="mallqui-focus-grid">
+              <article>
+                <span class="focus-index">01</span>
+                <div class="focus-icon">❤</div>
+                <small>RESISTENCIA Y SALUD</small>
+                <h3>Cardiovascular</h3>
+                <p>Trabajo de resistencia, capacidad cardiovascular y acondicionamiento general.</p>
+              </article>
+
+              <article>
+                <span class="focus-index">02</span>
+                <div class="focus-icon">◆</div>
+                <small>FUERZA</small>
+                <h3>Masa muscular</h3>
+                <p>Rutinas orientadas al desarrollo de fuerza y masa muscular con seguimiento del gimnasio.</p>
+              </article>
+
+              <article>
+                <span class="focus-index">03</span>
+                <div class="focus-icon">◎</div>
+                <small>ACONDICIONAMIENTO</small>
+                <h3>Tonificación</h3>
+                <p>Trabajo equilibrado de fuerza, resistencia y control corporal.</p>
+              </article>
+
+              <article>
+                <span class="focus-index">04</span>
+                <div class="focus-icon">✦</div>
+                <small>ENTRENAMIENTO FUNCIONAL</small>
+                <h3>CrossFit</h3>
+                <p>Sesiones funcionales de intensidad adaptada, combinando fuerza, movilidad y resistencia.</p>
+              </article>
+
+              <article>
+                <span class="focus-index">05</span>
+                <div class="focus-icon">↗</div>
+                <small>AERÓBICO + ANAERÓBICO</small>
+                <h3>Pérdida de peso</h3>
+                <p>Trabajo cardiovascular y de acondicionamiento orientado a mejorar la condición física.</p>
+              </article>
+            </div>
+
+            <div class="mallqui-supplement-strip">
+              <div>
+                <span>SUPLEMENTACIÓN Y PROVEEDORES</span>
+                <h3>Universal Nutrition <b>(UN)</b></h3>
+                <p>Productos disponibles según stock del gimnasio. La información y registro sanitario deben verificarse según cada producto.</p>
+              </div>
+              <div class="mallqui-supplement-badges">
+                <span>UN</span>
+                <span>Universal Nutrition</span>
+                <span>Referencia FDA</span>
+              </div>
+              <button type="button" (click)="abrirModulo('rutinas')">Ver mi rutina <span>→</span></button>
+            </div>
+          </section>
         </section>
 
         <section *ngIf="moduloActivo==='inicio'" class="gym-real-info-panel member-enter-up">
