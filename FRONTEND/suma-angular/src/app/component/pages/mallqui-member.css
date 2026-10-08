@@ -35239,3 +35239,270 @@
     border-bottom:1px solid rgba(255,255,255,.10)!important;
   }
 }
+
+
+/* PORTAL CLIENTE V131 · CHECKOUT MEMBRESÍA NEGRO ROJO */
+/* La captura mostraba tarjetas blancas y textos azul oscuro dentro del checkout.
+   Este bloque unifica compra e historial con el estilo negro/rojo del portal. */
+
+.member-page .membership-checkout-layout{
+  gap:0!important;
+  padding:0 max(70px,6vw) 70px!important;
+  background:#101316!important;
+}
+.member-page .membership-checkout-layout>.member-module-card{
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-right:0!important;
+  border-radius:0!important;
+  background:#0d1013!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.member-page .membership-checkout-layout>.member-module-card:last-child{
+  border-right:1px solid rgba(255,255,255,.10)!important;
+}
+.member-page .membership-checkout-layout .card-title-block>span{
+  color:#ff3150!important;
+  letter-spacing:1.5px!important;
+}
+.member-page .membership-checkout-layout .card-title-block h2{
+  color:#fff!important;
+}
+.member-page .membership-checkout-layout .card-title-block p{
+  color:#8f989f!important;
+}
+
+/* Resumen del plan seleccionado */
+.member-page .membership-selected-summary{
+  margin:18px 0!important;
+  overflow:hidden!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:0!important;
+  background:#12171b!important;
+}
+.member-page .membership-selected-main{
+  padding:16px!important;
+  border-bottom:1px solid rgba(255,255,255,.09)!important;
+}
+.member-page .membership-selected-main>span{
+  border:1px solid rgba(255,49,80,.30)!important;
+  border-radius:0!important;
+  background:rgba(255,49,80,.08)!important;
+  color:#ff3150!important;
+}
+.member-page .membership-selected-main small{
+  color:#ff3150!important;
+}
+.member-page .membership-selected-main h3{
+  color:#fff!important;
+}
+.member-page .membership-selected-main p{
+  color:#8e979d!important;
+}
+.member-page .membership-selected-numbers article{
+  border-right:1px solid rgba(255,255,255,.08)!important;
+  background:transparent!important;
+}
+.member-page .membership-selected-numbers small{
+  color:#77828a!important;
+}
+.member-page .membership-selected-numbers b{
+  color:#fff!important;
+}
+
+/* Formulario */
+.member-page .membership-payment-form label{
+  color:#fff!important;
+}
+.member-page .membership-payment-form input,
+.member-page .membership-payment-form select{
+  min-height:50px!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  border-radius:0!important;
+  background:#151a1f!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.member-page .membership-payment-form input::placeholder{
+  color:#6e777e!important;
+}
+.member-page .membership-payment-form label>small{
+  color:#7f898f!important;
+}
+
+/* Monto */
+.member-page .membership-payment-instruction{
+  grid-template-columns:48px minmax(0,1fr)!important;
+  padding:15px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:0!important;
+  background:#12171b!important;
+}
+.member-page .membership-payment-instruction>span{
+  border:1px solid rgba(255,49,80,.30)!important;
+  border-radius:0!important;
+  background:rgba(255,49,80,.08)!important;
+  color:#ff3150!important;
+}
+.member-page .membership-payment-instruction small{
+  color:#7f898f!important;
+}
+.member-page .membership-payment-instruction b{
+  color:#ff3150!important;
+}
+.member-page .membership-payment-instruction p{
+  color:#8f989f!important;
+}
+
+/* Revisión del pago */
+.member-page .membership-payment-review{
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:0!important;
+  background:#12171b!important;
+}
+.member-page .membership-payment-review p{
+  border-bottom:1px solid rgba(255,255,255,.08)!important;
+}
+.member-page .membership-payment-review span{
+  color:#8b949b!important;
+}
+.member-page .membership-payment-review b{
+  color:#fff!important;
+}
+.member-page .membership-payment-review .total{
+  background:#ff3150!important;
+}
+.member-page .membership-payment-review .total span,
+.member-page .membership-payment-review .total b{
+  color:#fff!important;
+}
+
+/* Nota de validación */
+.member-page .membership-validation-note{
+  border:1px solid rgba(255,49,80,.18)!important;
+  border-radius:0!important;
+  background:rgba(255,49,80,.06)!important;
+  color:#b8bec2!important;
+}
+.member-page .membership-validation-note>span{
+  border-radius:0!important;
+  background:#ff3150!important;
+  color:#fff!important;
+}
+.member-page .membership-validation-note>div,
+.member-page .membership-validation-note b,
+.member-page .membership-validation-note strong{
+  color:#c8cdd0!important;
+}
+
+/* Botón principal */
+.member-page .membership-payment-form>.member-form-submit{
+  min-height:52px!important;
+  border:1px solid #ff3150!important;
+  border-radius:0!important;
+  background:#ff3150!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.member-page .membership-payment-form>.member-form-submit:not(:disabled):hover{
+  background:#e82645!important;
+}
+
+/* Historial */
+.member-page .membership-payment-history-card{
+  background:#0d1013!important;
+}
+.member-page .membership-payment-history-card .member-payment-list{
+  border-top:1px solid rgba(255,255,255,.10)!important;
+}
+.member-page .membership-payment-history-card .member-payment-item{
+  min-height:118px!important;
+  padding:18px 16px!important;
+  border:0!important;
+  border-bottom:1px solid rgba(255,255,255,.12)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.member-page .membership-payment-history-card .payment-icon{
+  border:1px solid rgba(255,49,80,.25)!important;
+  border-radius:0!important;
+  background:rgba(255,49,80,.07)!important;
+  color:#ff3150!important;
+}
+.member-page .membership-payment-history-card .member-payment-item p b{
+  color:#fff!important;
+}
+.member-page .membership-payment-history-card .member-payment-item p small{
+  color:#818a91!important;
+}
+.member-page .membership-payment-history-card .member-payment-item>strong{
+  color:#fff!important;
+}
+.member-page .membership-payment-history-card .member-payment-item>em{
+  border-radius:0!important;
+  background:rgba(36,203,145,.10)!important;
+  color:#58dcae!important;
+}
+.member-page .membership-payment-history-card .member-payment-item>em.pending{
+  background:rgba(255,49,80,.08)!important;
+  color:#ff758b!important;
+}
+.member-page .membership-payment-history-card .member-payment-item>button{
+  min-height:40px!important;
+  padding:0 14px!important;
+  border:1px solid rgba(255,255,255,.24)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#fff!important;
+  font-weight:900!important;
+}
+.member-page .membership-payment-history-card .member-payment-item>button:hover{
+  border-color:#ff3150!important;
+  color:#ff3150!important;
+}
+
+/* Boleta generada */
+.member-page .receipt-preview{
+  background:#0f1418!important;
+}
+.member-page .receipt-actions .member-form-submit{
+  border-radius:0!important;
+  background:#ff3150!important;
+  color:#fff!important;
+}
+.member-page .receipt-access-button{
+  border:1px solid rgba(255,255,255,.20)!important;
+  background:transparent!important;
+  color:#fff!important;
+}
+
+/* Evitar blancos heredados */
+.member-page .membership-checkout-layout .membership-selected-summary,
+.member-page .membership-checkout-layout .membership-payment-instruction,
+.member-page .membership-checkout-layout .membership-payment-review{
+  box-shadow:none!important;
+}
+
+@media(max-width:1100px){
+  .member-page .membership-checkout-layout{
+    grid-template-columns:1fr!important;
+  }
+  .member-page .membership-checkout-layout>.member-module-card{
+    border-right:1px solid rgba(255,255,255,.10)!important;
+    border-bottom:0!important;
+  }
+  .member-page .membership-checkout-layout>.member-module-card:last-child{
+    border-bottom:1px solid rgba(255,255,255,.10)!important;
+  }
+}
+@media(max-width:760px){
+  .member-page .membership-selected-numbers article{
+    border-right:0!important;
+    border-bottom:1px solid rgba(255,255,255,.08)!important;
+  }
+  .member-page .membership-selected-numbers article:last-child{
+    border-bottom:0!important;
+  }
+}
