@@ -34945,3 +34945,297 @@
     font-size:32px!important;
   }
 }
+
+
+/* PORTAL CLIENTE V130 · PROGRESO NEGRO ROJO */
+/* Unifica el progreso con la pantalla de Rutinas:
+   negro, gris grafito, blanco y rojo Mallqui. Sin azul ni verde. */
+
+/* Menú activo: quitar marco azul heredado */
+.member-page .mallqui-apex-menu button.active{
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+  color:#fff!important;
+}
+.member-page .mallqui-apex-menu button.active::after{
+  left:0!important;
+  right:0!important;
+  background:#ff3150!important;
+}
+
+/* Fondo completo */
+.member-page .progress-experience-v34{
+  background:#0b0d0f!important;
+}
+.member-page .progress-experience-v34 .client-extra-grid.two{
+  gap:0!important;
+  padding:0 max(70px,6vw)!important;
+  background:#101316!important;
+}
+.member-page .progress-experience-v34 .client-extra-grid.two + .client-extra-grid.two{
+  padding-top:0!important;
+  padding-bottom:54px!important;
+}
+
+/* Tarjetas inferiores: planas y editoriales */
+.member-page .progress-experience-v34 .client-extra-grid.two>.client-extra-card{
+  min-height:260px!important;
+  padding:26px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-right:0!important;
+  border-radius:0!important;
+  background:#0d1013!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.member-page .progress-experience-v34 .client-extra-grid.two>.client-extra-card:nth-child(2){
+  border-right:1px solid rgba(255,255,255,.10)!important;
+}
+
+/* Quitar destello/gradiente azul viejo */
+.member-page .progress-experience-v34 .client-extra-card::after,
+.member-page .progress-experience-v34 .client-goal-card::after{
+  display:none!important;
+}
+
+/* Encabezados */
+.member-page .progress-experience-v34 .client-card-head>div>span,
+.member-page .progress-experience-v34 .client-goal-copy>span{
+  color:#ff3150!important;
+  font-size:7.5px!important;
+  font-weight:950!important;
+  letter-spacing:1.6px!important;
+}
+.member-page .progress-experience-v34 .client-card-head h2{
+  color:#fff!important;
+  font-size:24px!important;
+  letter-spacing:-.5px!important;
+}
+.member-page .progress-experience-v34 .client-card-head>b{
+  min-height:28px!important;
+  padding:0 10px!important;
+  display:flex!important;
+  align-items:center!important;
+  border:1px solid rgba(255,49,80,.25)!important;
+  border-radius:0!important;
+  background:rgba(255,49,80,.08)!important;
+  color:#ff768c!important;
+  font-size:7px!important;
+  font-weight:950!important;
+}
+
+/* Barra semanal */
+.member-page .progress-experience-v34 .client-week-progress{
+  height:5px!important;
+  margin:18px 0 16px!important;
+  border-radius:0!important;
+  background:#272c30!important;
+  overflow:hidden!important;
+}
+.member-page .progress-experience-v34 .client-week-progress i{
+  display:block!important;
+  height:100%!important;
+  border-radius:0!important;
+  background:#ff3150!important;
+}
+
+/* Días */
+.member-page .progress-experience-v34 .client-week-days{
+  gap:0!important;
+  margin-top:0!important;
+  border-top:1px solid rgba(255,255,255,.08)!important;
+  border-bottom:1px solid rgba(255,255,255,.08)!important;
+}
+.member-page .progress-experience-v34 .client-week-days>div{
+  min-height:94px!important;
+  padding:14px 7px!important;
+  border:0!important;
+  border-right:1px solid rgba(255,255,255,.08)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.member-page .progress-experience-v34 .client-week-days>div:last-child{
+  border-right:0!important;
+}
+.member-page .progress-experience-v34 .client-week-days>div.active{
+  background:rgba(255,49,80,.055)!important;
+  animation:none!important;
+}
+.member-page .progress-experience-v34 .client-week-days b{
+  color:#fff!important;
+}
+.member-page .progress-experience-v34 .client-week-days span{
+  width:28px!important;
+  height:28px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+  border-radius:50%!important;
+  background:#171c20!important;
+  color:#a5adb3!important;
+}
+.member-page .progress-experience-v34 .client-week-days>div.active span{
+  border-color:#ff3150!important;
+  background:#ff3150!important;
+  color:#fff!important;
+}
+.member-page .progress-experience-v34 .client-week-days small{
+  color:#8e979e!important;
+}
+
+/* Entrenador */
+.member-page .progress-experience-v34 .client-empty-mini,
+.member-page .progress-experience-v34 .client-empty-block{
+  border:1px solid rgba(255,255,255,.09)!important;
+  border-radius:0!important;
+  background:#14181c!important;
+  box-shadow:none!important;
+}
+.member-page .progress-experience-v34 .client-empty-mini>span{
+  border:1px solid rgba(255,49,80,.22)!important;
+  border-radius:0!important;
+  background:rgba(255,49,80,.07)!important;
+  color:#ff6b82!important;
+}
+.member-page .progress-experience-v34 .client-empty-mini b,
+.member-page .progress-experience-v34 .client-empty-block b{
+  color:#fff!important;
+}
+.member-page .progress-experience-v34 .client-empty-mini p,
+.member-page .progress-experience-v34 .client-empty-block p{
+  color:#8f989f!important;
+}
+
+/* Historial */
+.member-page .progress-experience-v34 .history-refresh-btn{
+  border:1px solid rgba(255,255,255,.12)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#fff!important;
+}
+.member-page .progress-experience-v34 .client-history-tabs{
+  gap:0!important;
+  margin:16px 0!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+}
+.member-page .progress-experience-v34 .client-history-tabs button{
+  min-height:42px!important;
+  border:0!important;
+  border-right:1px solid rgba(255,255,255,.08)!important;
+  border-radius:0!important;
+  background:#14181c!important;
+  color:#a3abb1!important;
+  box-shadow:none!important;
+}
+.member-page .progress-experience-v34 .client-history-tabs button:last-child{
+  border-right:0!important;
+}
+.member-page .progress-experience-v34 .client-history-tabs button:hover{
+  background:#181d21!important;
+  color:#fff!important;
+}
+.member-page .progress-experience-v34 .client-history-tabs button.active{
+  border-color:#ff3150!important;
+  background:#ff3150!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.member-page .progress-experience-v34 .client-history-list>div,
+.member-page .progress-experience-v34 .client-activity-list>div{
+  min-height:48px!important;
+  padding:10px 0!important;
+  border:0!important;
+  border-bottom:1px solid rgba(255,255,255,.08)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#fff!important;
+}
+.member-page .progress-experience-v34 .client-history-list b,
+.member-page .progress-experience-v34 .client-activity-list b{
+  color:#fff!important;
+}
+.member-page .progress-experience-v34 .client-history-list span,
+.member-page .progress-experience-v34 .client-history-list small,
+.member-page .progress-experience-v34 .client-activity-list p,
+.member-page .progress-experience-v34 .client-activity-list small,
+.member-page .progress-experience-v34 .client-history-empty{
+  color:#8d969c!important;
+}
+
+/* Meta semanal */
+.member-page .progress-experience-v34 .client-goal-card{
+  margin:0!important;
+  padding:44px max(70px,6vw)!important;
+  border:0!important;
+  border-top:1px solid rgba(255,255,255,.09)!important;
+  border-bottom:1px solid rgba(255,255,255,.09)!important;
+  border-radius:0!important;
+  background:#0d1013!important;
+  box-shadow:none!important;
+}
+.member-page .progress-experience-v34 .client-goal-copy h2{
+  color:#fff!important;
+  font-size:28px!important;
+}
+.member-page .progress-experience-v34 .client-goal-copy p{
+  color:#8f989f!important;
+}
+.member-page .progress-experience-v34 .goal-session-options{
+  gap:0!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+}
+.member-page .progress-experience-v34 .goal-session-options button{
+  border:0!important;
+  border-right:1px solid rgba(255,255,255,.08)!important;
+  border-radius:0!important;
+  background:#14181c!important;
+  color:#a4acb2!important;
+  box-shadow:none!important;
+}
+.member-page .progress-experience-v34 .goal-session-options button:last-child{
+  border-right:0!important;
+}
+.member-page .progress-experience-v34 .goal-session-options button.active{
+  background:#ff3150!important;
+  color:#fff!important;
+}
+.member-page .progress-experience-v34 .goal-save-button{
+  border-radius:0!important;
+  background:#ff3150!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.member-page .progress-experience-v34 .client-reminder-toggle{
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:0!important;
+  background:#14181c!important;
+}
+.member-page .progress-experience-v34 .reminder-switch{
+  background:#30363b!important;
+}
+.member-page .progress-experience-v34 .client-reminder-toggle input:checked + .reminder-switch{
+  background:#ff3150!important;
+}
+
+/* Quitar cualquier verde/teal restante de progreso */
+.member-page .progress-experience-v34 [style*="#20d89b"],
+.member-page .progress-experience-v34 [style*="#18b982"]{
+  color:#ff3150!important;
+}
+
+@media(max-width:999px){
+  .member-page .progress-experience-v34 .client-extra-grid.two{
+    grid-template-columns:1fr!important;
+  }
+  .member-page .progress-experience-v34 .client-extra-grid.two>.client-extra-card{
+    border-right:1px solid rgba(255,255,255,.10)!important;
+    border-bottom:0!important;
+  }
+  .member-page .progress-experience-v34 .client-extra-grid.two>.client-extra-card:last-child{
+    border-bottom:1px solid rgba(255,255,255,.10)!important;
+  }
+}
