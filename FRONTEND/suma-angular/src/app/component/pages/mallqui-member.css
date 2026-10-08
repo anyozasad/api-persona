@@ -36147,3 +36147,188 @@
     padding-right:18px!important;
   }
 }
+
+
+/* PORTAL CLIENTE V134 · ENTRENAR BALANCE Y LEGIBILIDAD */
+/* Ajusta la composición mostrada en la captura:
+   menos vacío, tipografía más legible y mejor proporción entre datos e imagen. */
+
+.member-page .module-training-v34{
+  padding:24px 34px 48px!important;
+}
+
+.member-page .module-training-v34 .train-ux-intro{
+  grid-template-columns:minmax(0,1.72fr) minmax(360px,.88fr)!important;
+}
+
+.member-page .module-training-v34 .train-ux-copy-card,
+.member-page .module-training-v34 .train-ux-visual-card{
+  min-height:520px!important;
+}
+
+.member-page .module-training-v34 .train-ux-copy-card{
+  padding:42px 54px 34px!important;
+}
+
+/* Título principal con mejor balance */
+.member-page .module-training-v34 .train-ux-copy-card h1{
+  max-width:720px!important;
+  font-size:50px!important;
+  line-height:.98!important;
+  letter-spacing:-1.8px!important;
+}
+.member-page .module-training-v34 .train-ux-copy-card>p{
+  max-width:760px!important;
+  font-size:11.5px!important;
+  line-height:1.62!important;
+}
+
+/* Accesos superiores más visibles */
+.member-page .module-training-v34 .train-gym-context-strip button{
+  min-height:54px!important;
+  padding:0 15px!important;
+  font-size:9px!important;
+  letter-spacing:.15px!important;
+}
+.member-page .module-training-v34 .train-gym-context-strip button:not(:last-child){
+  border-right:1px solid rgba(255,255,255,.09)!important;
+}
+
+/* Estado principal más compacto y legible */
+.member-page .module-training-v34 .train-gym-statusbar>div{
+  min-height:86px!important;
+  padding:17px 17px!important;
+}
+.member-page .module-training-v34 .train-gym-statusbar small{
+  font-size:7.5px!important;
+  letter-spacing:1.05px!important;
+}
+.member-page .module-training-v34 .train-gym-statusbar b{
+  font-size:11px!important;
+  line-height:1.3!important;
+}
+
+/* KPIs más útiles visualmente */
+.member-page .module-training-v34 .train-ux-summary>div{
+  min-height:94px!important;
+  padding:16px 16px!important;
+}
+.member-page .module-training-v34 .train-ux-summary>div>span{
+  width:42px!important;
+  height:42px!important;
+  display:grid!important;
+  place-items:center!important;
+}
+.member-page .module-training-v34 .train-ux-summary small{
+  font-size:7px!important;
+  letter-spacing:1px!important;
+}
+.member-page .module-training-v34 .train-ux-summary b{
+  margin-top:5px!important;
+  font-size:13px!important;
+}
+
+/* Acciones al alcance sin ocupar demasiado */
+.member-page .module-training-v34 .train-ux-actions{
+  margin-top:18px!important;
+}
+.member-page .module-training-v34 .train-ux-actions button{
+  min-height:52px!important;
+}
+.member-page .module-training-v34 .train-ux-primary{
+  min-width:290px!important;
+}
+
+/* Imagen más compacta y mejor encuadrada */
+.member-page .module-training-v34 .train-ux-visual-card{
+  min-width:0!important;
+}
+.member-page .module-training-v34 .train-ux-slide{
+  object-position:center 34%!important;
+}
+.member-page .module-training-v34 .train-ux-live-badge{
+  top:16px!important;
+  left:16px!important;
+  padding:9px 12px!important;
+  font-size:8px!important;
+}
+.member-page .module-training-v34 .train-ux-no-equipment{
+  top:16px!important;
+  right:16px!important;
+  padding:9px 12px!important;
+  font-size:8px!important;
+}
+.member-page .module-training-v34 .train-ux-visual-info{
+  left:16px!important;
+  right:16px!important;
+  bottom:16px!important;
+  padding:15px 16px!important;
+}
+.member-page .module-training-v34 .train-ux-visual-info h2{
+  font-size:20px!important;
+  line-height:1.05!important;
+}
+.member-page .module-training-v34 .train-ux-visual-info p{
+  font-size:8.5px!important;
+  line-height:1.45!important;
+}
+
+/* Si no hay rutina, el contenido queda centrado sin abrir demasiado la pantalla */
+.member-page .module-training-v34 .empty-routines-panel{
+  min-height:250px!important;
+  padding:34px 28px!important;
+}
+.member-page .module-training-v34 .empty-routines-panel h3{
+  font-size:22px!important;
+}
+
+/* Historial más compacto */
+.member-page .module-training-v34 .home-history-card{
+  margin-top:14px!important;
+}
+.member-page .module-training-v34 .home-history-card .card-title-block{
+  padding:22px 24px 15px!important;
+}
+.member-page .module-training-v34 .home-history-card .card-title-block h2{
+  font-size:24px!important;
+}
+.member-page .module-training-v34 .home-history-list{
+  padding:0 24px!important;
+}
+.member-page .module-training-v34 .home-history-list>div{
+  min-height:76px!important;
+}
+
+/* Desktop ancho: evita que la imagen robe demasiado espacio */
+@media(min-width:1450px){
+  .member-page .module-training-v34 .train-ux-intro{
+    grid-template-columns:minmax(0,1.82fr) minmax(380px,.78fr)!important;
+  }
+  .member-page .module-training-v34 .train-ux-copy-card{
+    padding-left:58px!important;
+    padding-right:58px!important;
+  }
+}
+
+/* Laptop */
+@media(max-width:1280px){
+  .member-page .module-training-v34 .train-ux-intro{
+    grid-template-columns:minmax(0,1.55fr) minmax(340px,.9fr)!important;
+  }
+  .member-page .module-training-v34 .train-ux-copy-card{
+    padding:36px 38px 30px!important;
+  }
+  .member-page .module-training-v34 .train-ux-copy-card h1{
+    font-size:44px!important;
+  }
+}
+
+/* Tablet */
+@media(max-width:1040px){
+  .member-page .module-training-v34 .train-ux-intro{
+    grid-template-columns:1fr!important;
+  }
+  .member-page .module-training-v34 .train-ux-visual-card{
+    min-height:380px!important;
+  }
+}
