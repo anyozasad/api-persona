@@ -36332,3 +36332,62 @@
     min-height:380px!important;
   }
 }
+
+
+/* PORTAL CLIENTE V135 · QUITAR FRANJA Y MARGEN EXTERIOR ENTRENAR */
+/* Quita exactamente los espacios marcados en rojo:
+   franja superior debajo del menú y margen azul lateral del módulo Entrenar. */
+
+.member-page .module-training-v34{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  background:#0b0d0f!important;
+}
+
+.member-page .module-training-v34 .train-ux-shell{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+.member-page .module-training-v34 .train-ux-intro{
+  width:100%!important;
+  margin:0!important;
+  border-left:0!important;
+  border-right:0!important;
+  border-top:0!important;
+}
+
+/* El contenido interno mantiene aire sin crear una franja externa. */
+.member-page .module-training-v34 .train-ux-copy-card{
+  padding-left:max(54px,5vw)!important;
+  padding-right:max(48px,4vw)!important;
+}
+
+/* Secciones que vienen debajo sí conservan un margen interno controlado. */
+.member-page .module-training-v34 .train-ux-stepbar,
+.member-page .module-training-v34 .membership-unlocked-panel,
+.member-page .module-training-v34 .empty-routines-panel,
+.member-page .module-training-v34 .home-history-card,
+.member-page .module-training-v34 .gym-session-flow{
+  margin-left:max(28px,2.2vw)!important;
+  margin-right:max(28px,2.2vw)!important;
+}
+
+@media(max-width:850px){
+  .member-page .module-training-v34 .train-ux-copy-card{
+    padding-left:24px!important;
+    padding-right:24px!important;
+  }
+  .member-page .module-training-v34 .train-ux-stepbar,
+  .member-page .module-training-v34 .membership-unlocked-panel,
+  .member-page .module-training-v34 .empty-routines-panel,
+  .member-page .module-training-v34 .home-history-card,
+  .member-page .module-training-v34 .gym-session-flow{
+    margin-left:14px!important;
+    margin-right:14px!important;
+  }
+}
