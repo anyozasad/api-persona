@@ -717,16 +717,48 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
     .support-contact-v2 b{color:#fff!important}.support-contact-v2 p{color:#7f8990!important}
     .support-workspace{display:grid;grid-template-columns:minmax(360px,.78fr) minmax(0,1.22fr);gap:16px}
     .support-compose-card,.support-tracking-card{padding:22px}
+    .support-compose-card{align-self:start!important;height:auto!important;min-height:0!important}
     .support-card-head{align-items:flex-start;padding-bottom:16px;border-bottom:1px solid #272e33}
     .support-card-head>b{padding:7px 9px;border:1px solid rgba(255,49,80,.28);background:rgba(255,49,80,.07);color:#ff6278;font-size:7px;text-transform:uppercase}
     .support-card-head>button{width:38px;height:38px;border:1px solid #30373c;background:#141a1f;color:#fff;cursor:pointer}
     .support-form-v2{display:grid;gap:14px;margin-top:18px}
-    .support-form-v2 label{display:grid;gap:7px;color:#c4ccd1;font-size:9px;font-weight:850}
-    .support-form-v2 input,.support-form-v2 textarea{width:100%;box-sizing:border-box;border:1px solid #30373c;border-radius:0;background:#141a1f;color:#fff;font:inherit;padding:13px}
-    .support-form-v2 input{min-height:48px}.support-form-v2 textarea{min-height:150px;resize:vertical}
-    .support-form-v2 input:focus,.support-form-v2 textarea:focus{outline:none;border-color:#ff3150;box-shadow:0 0 0 2px rgba(255,49,80,.08)}
+    .support-form-v2 label{display:grid;gap:7px;color:#d6dde1!important;font-size:9px;font-weight:850}
+    .support-form-v2 input,.support-form-v2 textarea{
+      width:100%!important;
+      box-sizing:border-box!important;
+      border:1px solid #343c42!important;
+      border-radius:0!important;
+      background:#11171b!important;
+      color:#f4f7f8!important;
+      font:inherit!important;
+      padding:13px!important;
+      box-shadow:none!important
+    }
+    .support-form-v2 input{min-height:48px!important}
+    .support-form-v2 textarea{min-height:132px!important;resize:vertical!important}
+    .support-form-v2 input::placeholder,.support-form-v2 textarea::placeholder{color:#717c83!important;opacity:1!important}
+    .support-form-v2 input:focus,.support-form-v2 textarea:focus{
+      outline:none!important;
+      border-color:#ff3150!important;
+      background:#151b20!important;
+      box-shadow:0 0 0 2px rgba(255,49,80,.08)!important
+    }
     .support-form-v2 label>small{justify-self:end;color:#667178;font-size:7px}
-    .support-form-v2>button{min-height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border:1px solid #ff3150;background:#ff3150;color:#fff;font-size:9px;font-weight:950;cursor:pointer}
+    .support-form-v2>button{
+      min-height:48px!important;
+      display:flex!important;
+      align-items:center!important;
+      justify-content:space-between!important;
+      padding:0 16px!important;
+      border:1px solid #ff3150!important;
+      border-radius:0!important;
+      background:#ff3150!important;
+      color:#fff!important;
+      font-size:9px!important;
+      font-weight:950!important;
+      cursor:pointer!important;
+      box-shadow:none!important
+    }
     .support-form-v2>button:disabled{opacity:.6;cursor:wait}
     .support-status-legend{display:flex;gap:14px;padding:12px 0;color:#7f8990;font-size:8px}
     .support-status-legend span{display:flex;align-items:center;gap:6px}.support-status-legend i{width:7px;height:7px;border-radius:50%;background:#f0ad4e}.support-status-legend i.answered{background:#43c884}
