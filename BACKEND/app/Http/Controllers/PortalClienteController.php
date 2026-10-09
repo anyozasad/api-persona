@@ -8,6 +8,7 @@ use App\Models\ClienteMembresia;
 use App\Models\DetalleSesionEntrenamiento;
 use App\Models\PagoMembresia;
 use App\Models\PlanEntrenamientoCasa;
+use App\Models\Producto;
 use App\Models\Rutina;
 use App\Models\SesionEntrenamientoCasa;
 use App\Models\Venta;
@@ -166,6 +167,33 @@ class PortalClienteController extends Controller
                 ->where('id_cliente', $cliente->id_cliente)
                 ->orderByDesc('fecha_venta')
                 ->get()
+        );
+    }
+
+    public function productos(Request $request)
+    {
+        $this->clienteDelUsuario($request);
+
+        return response()->json(
+            Producto::with('categoria')
+                ->where('estado', 'Activo')
+                ->where('stock', '>', 0)
+                ->orderBy('nombre_producto')
+                ->get()
+                ->map(fn ($producto) => [
+                    'id_producto' => $producto->id_producto,
+                    'codigo_producto' => $producto->codigo_producto,
+                    'nombre_producto' => $producto->nombre_producto,
+                    'descripcion' => $producto->descripcion,
+                    'precio_venta' => (float) $producto->precio_venta,
+                    'stock' => (int) $producto->stock,
+                    'unidad_medida' => $producto->unidad_medida,
+                    'categoria' => $producto->categoria ? [
+                        'id_categoria' => $producto->categoria->id_categoria,
+                        'nombre_categoria' => $producto->categoria->nombre_categoria,
+                    ] : null,
+                ])
+                ->values()
         );
     }
 
