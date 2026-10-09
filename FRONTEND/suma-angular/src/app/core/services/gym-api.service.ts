@@ -24,6 +24,7 @@ export class GymApiService {
   rutinasCliente(): Observable<any[]> { return this.http.get<any[]>('/api/mi-cuenta/rutinas'); }
   asistenciasCliente(): Observable<any[]> { return this.http.get<any[]>('/api/mi-cuenta/asistencias'); }
   comprasCliente(): Observable<any[]> { return this.http.get<any[]>('/api/mi-cuenta/compras'); }
+  productosCliente(): Observable<any[]> { return this.http.get<any[]>('/api/mi-cuenta/productos'); }
   reservasCliente(): Observable<any[]> { return this.http.get<any[]>('/api/mi-cuenta/reservas'); }
 
   cargarPortalCliente(): Observable<any> {
@@ -45,6 +46,7 @@ export class GymApiService {
       rutinas: seguro(this.rutinasCliente(), []),
       asistencias: seguro(this.asistenciasCliente(), []),
       compras: seguro(this.comprasCliente(), []),
+      productos: seguro(this.productosCliente(), []),
       reservas: seguro(this.reservasCliente(), []),
       clases: seguro(this.clases(), []),
       membresiasDisponibles: seguro(this.membresias(), []),
