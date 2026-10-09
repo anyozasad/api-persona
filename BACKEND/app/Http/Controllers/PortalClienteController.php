@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Models\ClienteMembresia;
 use App\Models\DetalleSesionEntrenamiento;
 use App\Models\PagoMembresia;
+use App\Models\PlanEntrenamientoCasa;
 use App\Models\Rutina;
 use App\Models\SesionEntrenamientoCasa;
 use App\Models\Venta;
@@ -172,6 +173,11 @@ class PortalClienteController extends Controller
     {
         $cliente = $this->clienteDelUsuario($request);
 
+        $plan = PlanEntrenamientoCasa::query()
+            ->where('id_cliente', $cliente->id_cliente)
+            ->where('activo', true)
+            ->first();
+
         $membresia = ClienteMembresia::with('membresia')
             ->where('id_cliente', $cliente->id_cliente)
             ->where('estado', 'Activo')
@@ -193,6 +199,7 @@ class PortalClienteController extends Controller
         return response()->json([
             'membresia' => $membresia,
             'rutina' => $rutina,
+            'plan' => $plan,
             'historial' => SesionEntrenamientoCasa::with(['rutina', 'detalles.detalleRutina'])
                 ->where('id_cliente', $cliente->id_cliente)
                 ->orderByDesc('fecha')
@@ -203,6 +210,38 @@ class PortalClienteController extends Controller
                 'requiere_rutina' => true,
                 'mensaje' => 'El entrenamiento usa únicamente la rutina activa asignada por Mallqui Gym.',
             ],
+        ]);
+    }
+
+    public function guardarPlanEntrenamiento(Request $request)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+
+        $datos = $request->validate([
+            'dias' => 'required|array|min:1|max:4',
+            'dias.*' => ['required', 'string', Rule::in([
+                'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo',
+            ])],
+            'zonas' => 'required|array|min:1|max:7',
+            'zonas.*' => ['required', 'string', Rule::in([
+                'piernas', 'gluteos', 'brazos', 'pecho', 'espalda', 'hombros', 'core',
+            ])],
+            'objetivo' => ['required', 'string', Rule::in(['fuerza', 'resistencia', 'movilidad'])],
+        ]);
+
+        $plan = PlanEntrenamientoCasa::updateOrCreate(
+            ['id_cliente' => $cliente->id_cliente],
+            [
+                'dias' => array_values(array_unique($datos['dias'])),
+                'zonas' => array_values(array_unique($datos['zonas'])),
+                'objetivo' => $datos['objetivo'],
+                'activo' => true,
+            ]
+        );
+
+        return response()->json([
+            'mensaje' => 'Plan semanal guardado correctamente.',
+            'plan' => $plan->fresh(),
         ]);
     }
 
