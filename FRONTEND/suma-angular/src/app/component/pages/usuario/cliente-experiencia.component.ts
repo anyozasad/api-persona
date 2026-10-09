@@ -211,177 +211,224 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
       </ng-container>
 
       <ng-container *ngIf="modulo==='calendario'">
-        <header class="calendar-pro-head">
-          <div class="calendar-pro-copy">
-            <span class="calendar-pro-kicker"><i></i> AGENDA PERSONAL</span>
-            <h1>Organiza tu entrenamiento</h1>
-            <p>Tu calendario combina reservas, la rutina asignada por Mallqui Gym y fechas de membresía para que tengas claro qué sigue.</p>
-            <div class="calendar-head-actions">
-              <button type="button" class="calendar-today-btn" (click)="irMesActual()">Hoy</button>
-              <button type="button" class="calendar-refresh-btn" (click)="cargarCalendario()">↻ Sincronizar agenda</button>
-            </div>
-          </div>
-          <div class="calendar-next-card" *ngIf="proximoEventoCalendario; else sinProximoEvento">
-            <small>PRÓXIMA ACTIVIDAD</small>
-            <div class="calendar-next-date">
-              <strong>{{diaNumero(proximoEventoCalendario.fecha)}}</strong>
-              <span>{{mesCorto(proximoEventoCalendario.fecha)}}</span>
-            </div>
-            <div>
-              <b>{{proximoEventoCalendario.titulo}}</b>
-              <p>{{proximoEventoCalendario.detalle}}</p>
-            </div>
-          </div>
-          <ng-template #sinProximoEvento>
-            <div class="calendar-next-card empty">
-              <small>PRÓXIMA ACTIVIDAD</small>
-              <strong>Agenda libre</strong>
-              <p>No tienes actividades próximas registradas.</p>
-            </div>
-          </ng-template>
-        </header>
-
-        <section class="calendar-summary-row">
-          <article>
-            <span class="calendar-summary-icon blue">▣</span>
-            <div><small>CLASES</small><strong>{{totalEventosTipo('clase')}}</strong><p>próximas reservas</p></div>
-          </article>
-          <article>
-            <span class="calendar-summary-icon red">⚡</span>
-            <div><small>ENTRENAMIENTOS</small><strong>{{totalEventosTipo('casa')}}</strong><p>sesiones programadas</p></div>
-          </article>
-          <article>
-            <span class="calendar-summary-icon gold">✦</span>
-            <div><small>MEMBRESÍA</small><strong>{{totalEventosTipo('membresia')}}</strong><p>fecha importante</p></div>
-          </article>
-          <article>
-            <span class="calendar-summary-icon green">✓</span>
-            <div><small>TOTAL AGENDA</small><strong>{{calendario.length}}</strong><p>actividades próximas</p></div>
-          </article>
-        </section>
-
-        <section class="calendar-workspace">
-          <article class="calendar-month-card">
-            <header class="calendar-month-head">
+        <section class="calendar-v4">
+          <header class="calendar-v4-head">
+            <div class="calendar-v4-copy">
+              <span><i></i> AGENDA PERSONAL</span>
+              <h1>Tus próximas clases</h1>
+              <p>Revisa tus reservas y recibe sugerencias de fechas disponibles según tu meta semanal. Las recomendaciones son opcionales y puedes reservarlas desde aquí.</p>
               <div>
-                <span>VISTA MENSUAL</span>
-                <h2>{{mesCalendarioTitulo}}</h2>
+                <button type="button" class="calendar-v4-primary" (click)="cargarCalendario()">↻ Actualizar agenda</button>
+                <button type="button" class="calendar-v4-secondary" (click)="irMesActual()">Ir a hoy</button>
               </div>
-              <div class="calendar-month-nav">
-                <button type="button" (click)="cambiarMes(-1)" aria-label="Mes anterior">‹</button>
-                <button type="button" (click)="irMesActual()">Hoy</button>
-                <button type="button" (click)="cambiarMes(1)" aria-label="Mes siguiente">›</button>
-              </div>
-            </header>
-
-            <div class="calendar-week-head">
-              <span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span><span>DOM</span>
             </div>
 
-            <div class="calendar-month-grid">
-              <button
-                type="button"
-                *ngFor="let d of diasCalendario"
-                class="calendar-day"
-                [class.outside]="!d.actual"
-                [class.today]="d.hoy"
-                [class.has-events]="d.eventos.length>0"
-                (click)="seleccionarDiaCalendario(d)">
-                <span>{{d.numero}}</span>
-                <div class="calendar-day-dots" *ngIf="d.eventos.length">
-                  <i *ngFor="let e of eventosVistaDia(d.eventos)"
-                     [class.home]="e.tipo==='casa'"
-                     [class.membership]="e.tipo==='membresia'"></i>
-                </div>
-                <small *ngIf="d.eventos.length">{{d.eventos.length}} actividad{{d.eventos.length===1 ? '' : 'es'}}</small>
-              </button>
-            </div>
+            <aside class="calendar-v4-next" *ngIf="proximoEventoCalendario; else agendaV4Libre">
+              <small>{{proximoEventoCalendario.tipo==='recomendada' ? 'TE RECOMENDAMOS' : 'PRÓXIMA ACTIVIDAD'}}</small>
+              <div class="calendar-v4-next-date">
+                <strong>{{diaNumero(proximoEventoCalendario.fecha)}}</strong>
+                <span>{{mesCorto(proximoEventoCalendario.fecha)}}</span>
+              </div>
+              <div class="calendar-v4-next-copy">
+                <b>{{proximoEventoCalendario.titulo}}</b>
+                <p>{{proximoEventoCalendario.detalle}}</p>
+                <em *ngIf="proximoEventoCalendario.tipo==='recomendada'">{{proximoEventoCalendario.motivo}}</em>
+                <button *ngIf="proximoEventoCalendario.tipo==='recomendada'"
+                        type="button"
+                        (click)="reservarRecomendada(proximoEventoCalendario)">
+                  Reservar esta clase
+                </button>
+              </div>
+            </aside>
 
-            <footer class="calendar-month-legend">
-              <span><i></i> Clase</span>
-              <span><i class="home"></i> Entrenamiento</span>
-              <span><i class="membership"></i> Membresía</span>
-            </footer>
-          </article>
+            <ng-template #agendaV4Libre>
+              <aside class="calendar-v4-next empty">
+                <small>AGENDA</small>
+                <b>Sin actividades próximas</b>
+                <p>Cuando existan clases activas, reservas o una rutina asignada aparecerán aquí.</p>
+              </aside>
+            </ng-template>
+          </header>
 
-          <aside class="calendar-agenda-card">
+          <section class="calendar-v4-recommended" *ngIf="recomendacionesCalendario.length">
             <header>
               <div>
-                <span>AGENDA</span>
-                <h2>{{diaAgendaTitulo}}</h2>
+                <span>PLAN SUGERIDO</span>
+                <h2>Fechas que te recomendamos</h2>
+                <p>El sistema toma tus clases disponibles y tu meta semanal para proponerte días sin reservar automáticamente.</p>
               </div>
-              <b>{{eventosAgendaDia.length}}</b>
+              <b>{{recomendacionesCalendario.length}} sugerencia{{recomendacionesCalendario.length===1 ? '' : 's'}}</b>
             </header>
 
-            <div class="calendar-agenda-list" *ngIf="eventosAgendaDia.length; else agendaVacia">
-              <button type="button" *ngFor="let e of eventosAgendaDia" (click)="eventoSeleccionado=e">
-                <span class="agenda-event-icon"
-                      [class.home]="e.tipo==='casa'"
-                      [class.membership]="e.tipo==='membresia'">
-                  {{e.tipo==='clase' ? '▣' : (e.tipo==='casa' ? '⚡' : '✦')}}
+            <div class="calendar-v4-recommend-grid">
+              <article *ngFor="let e of recomendacionesCalendario | slice:0:4">
+                <div class="calendar-v4-rec-date">
+                  <strong>{{diaNumero(e.fecha)}}</strong>
+                  <span>{{mesCorto(e.fecha)}}</span>
+                  <small>{{diaNombre(e.fecha)}}</small>
+                </div>
+                <div class="calendar-v4-rec-copy">
+                  <span>{{e.favorita ? '★ FAVORITA' : 'CLASE DISPONIBLE'}}</span>
+                  <h3>{{e.titulo}}</h3>
+                  <p>{{e.detalle}}</p>
+                  <small>{{e.motivo}}</small>
+                  <em>{{e.cupos_disponibles}} cupo{{e.cupos_disponibles===1 ? '' : 's'}} disponible{{e.cupos_disponibles===1 ? '' : 's'}}</em>
+                </div>
+                <button type="button" (click)="reservarRecomendada(e)">Reservar <span>→</span></button>
+              </article>
+            </div>
+          </section>
+
+          <section class="calendar-v4-stats">
+            <article>
+              <span>◎</span>
+              <div><small>RECOMENDADAS</small><b>{{totalEventosTipo('recomendada')}}</b><p>fechas sugeridas</p></div>
+            </article>
+            <article>
+              <span>▣</span>
+              <div><small>RESERVADAS</small><b>{{totalEventosTipo('clase')}}</b><p>clases confirmadas</p></div>
+            </article>
+            <article>
+              <span>⚡</span>
+              <div><small>RUTINA</small><b>{{totalEventosTipo('casa')}}</b><p>eventos de entrenamiento</p></div>
+            </article>
+            <article>
+              <span>✦</span>
+              <div><small>MEMBRESÍA</small><b>{{totalEventosTipo('membresia')}}</b><p>fecha importante</p></div>
+            </article>
+          </section>
+
+          <section class="calendar-v4-workspace">
+            <article class="calendar-v4-month">
+              <header>
+                <div><span>CALENDARIO</span><h2>{{mesCalendarioTitulo}}</h2></div>
+                <div class="calendar-v4-nav">
+                  <button type="button" (click)="cambiarMes(-1)" aria-label="Mes anterior">‹</button>
+                  <button type="button" (click)="irMesActual()">Hoy</button>
+                  <button type="button" (click)="cambiarMes(1)" aria-label="Mes siguiente">›</button>
+                </div>
+              </header>
+
+              <div class="calendar-week-head">
+                <span>LUN</span><span>MAR</span><span>MIÉ</span><span>JUE</span><span>VIE</span><span>SÁB</span><span>DOM</span>
+              </div>
+
+              <div class="calendar-month-grid">
+                <button type="button"
+                        *ngFor="let d of diasCalendario"
+                        class="calendar-day calendar-v4-day"
+                        [class.outside]="!d.actual"
+                        [class.today]="d.hoy"
+                        [class.has-events]="d.eventos.length>0"
+                        (click)="seleccionarDiaCalendario(d)">
+                  <span>{{d.numero}}</span>
+                  <div class="calendar-day-dots" *ngIf="d.eventos.length">
+                    <i *ngFor="let e of eventosVistaDia(d.eventos)"
+                       [class.home]="e.tipo==='casa'"
+                       [class.membership]="e.tipo==='membresia'"
+                       [class.recommended]="e.tipo==='recomendada'"></i>
+                  </div>
+                  <small *ngIf="d.eventos.length">{{d.eventos.length}} actividad{{d.eventos.length===1 ? '' : 'es'}}</small>
+                </button>
+              </div>
+
+              <footer class="calendar-v4-legend">
+                <span><i class="recommended"></i> Recomendada</span>
+                <span><i></i> Reservada</span>
+                <span><i class="home"></i> Rutina</span>
+                <span><i class="membership"></i> Membresía</span>
+              </footer>
+            </article>
+
+            <aside class="calendar-v4-agenda">
+              <header>
+                <div><span>DETALLE DEL DÍA</span><h2>{{diaAgendaTitulo}}</h2></div>
+                <b>{{eventosAgendaDia.length}}</b>
+              </header>
+
+              <div class="calendar-agenda-list" *ngIf="eventosAgendaDia.length; else agendaV4DiaVacio">
+                <button type="button" *ngFor="let e of eventosAgendaDia" (click)="eventoSeleccionado=e">
+                  <span class="agenda-event-icon"
+                        [class.home]="e.tipo==='casa'"
+                        [class.membership]="e.tipo==='membresia'"
+                        [class.recommended]="e.tipo==='recomendada'">
+                    {{e.tipo==='recomendada' ? '◎' : (e.tipo==='clase' ? '▣' : (e.tipo==='casa' ? '⚡' : '✦'))}}
+                  </span>
+                  <div>
+                    <small>{{tipoEventoNombre(e.tipo)}} · {{diaNombre(e.fecha)}}</small>
+                    <b>{{e.titulo}}</b>
+                    <p>{{e.detalle}}</p>
+                  </div>
+                  <em>›</em>
+                </button>
+              </div>
+
+              <ng-template #agendaV4DiaVacio>
+                <div class="calendar-agenda-empty">
+                  <span>✓</span>
+                  <b>Día disponible</b>
+                  <p>No tienes actividades ni recomendaciones para esta fecha.</p>
+                </div>
+              </ng-template>
+
+              <div class="calendar-selected-event" *ngIf="eventoSeleccionado">
+                <button type="button" class="calendar-selected-close" (click)="eventoSeleccionado=null">×</button>
+                <small>{{eventoSeleccionado.tipo==='recomendada' ? 'CLASE RECOMENDADA' : 'DETALLE DE ACTIVIDAD'}}</small>
+                <span class="calendar-selected-icon"
+                      [class.home]="eventoSeleccionado.tipo==='casa'"
+                      [class.membership]="eventoSeleccionado.tipo==='membresia'"
+                      [class.recommended]="eventoSeleccionado.tipo==='recomendada'">
+                  {{eventoSeleccionado.tipo==='recomendada' ? '◎' : (eventoSeleccionado.tipo==='clase' ? '▣' : (eventoSeleccionado.tipo==='casa' ? '⚡' : '✦'))}}
                 </span>
-                <div>
-                  <small>{{tipoEventoNombre(e.tipo)}} · {{diaNombre(e.fecha)}}</small>
+                <h3>{{eventoSeleccionado.titulo}}</h3>
+                <p>{{eventoSeleccionado.detalle}}</p>
+                <em *ngIf="eventoSeleccionado.motivo">{{eventoSeleccionado.motivo}}</em>
+                <div><b>{{diaNombre(eventoSeleccionado.fecha) | titlecase}}</b><span>{{diaNumero(eventoSeleccionado.fecha)}} {{mesCorto(eventoSeleccionado.fecha)}}</span></div>
+                <button *ngIf="eventoSeleccionado.tipo==='recomendada'"
+                        type="button"
+                        class="calendar-v4-reserve-detail"
+                        (click)="reservarRecomendada(eventoSeleccionado)">
+                  Reservar esta clase
+                </button>
+              </div>
+            </aside>
+          </section>
+
+          <section class="calendar-v4-upcoming">
+            <header>
+              <div>
+                <span>PRÓXIMAS FECHAS</span>
+                <h2>Agenda actualizada</h2>
+                <p>Reservas confirmadas, recomendaciones, rutina y vencimiento de membresía.</p>
+              </div>
+              <button type="button" (click)="cargarCalendario()">↻ Actualizar</button>
+            </header>
+
+            <div class="calendar-v4-list" *ngIf="calendario.length; else emptyCalendarV4">
+              <article *ngFor="let e of calendario | slice:0:12" [class.recommended]="e.tipo==='recomendada'">
+                <div class="client-date-box">
+                  <strong>{{diaNumero(e.fecha)}}</strong>
+                  <small>{{mesCorto(e.fecha)}}</small>
+                </div>
+                <div class="calendar-v4-list-copy">
+                  <small>{{tipoEventoNombre(e.tipo)}}</small>
                   <b>{{e.titulo}}</b>
                   <p>{{e.detalle}}</p>
+                  <em *ngIf="e.motivo">{{e.motivo}}</em>
                 </div>
-                <em>›</em>
-              </button>
+                <small class="client-event-day">{{diaNombre(e.fecha)}}</small>
+                <button *ngIf="e.tipo==='recomendada'" type="button" (click)="reservarRecomendada(e)">Reservar</button>
+                <button *ngIf="e.tipo!=='recomendada'" type="button" (click)="seleccionarEventoCalendario(e)">Detalle</button>
+              </article>
             </div>
 
-            <ng-template #agendaVacia>
-              <div class="calendar-agenda-empty">
-                <span>✓</span>
-                <b>Día disponible</b>
-                <p>No tienes actividades registradas para esta fecha.</p>
+            <ng-template #emptyCalendarV4>
+              <div class="client-empty-block large">
+                <b>No hay fechas disponibles todavía</b>
+                <p>Cuando el gimnasio registre clases activas o tengas una reserva, aparecerán automáticamente.</p>
               </div>
             </ng-template>
-
-            <div class="calendar-selected-event" *ngIf="eventoSeleccionado">
-              <button type="button" class="calendar-selected-close" (click)="eventoSeleccionado=null">×</button>
-              <small>DETALLE DE ACTIVIDAD</small>
-              <span class="calendar-selected-icon"
-                    [class.home]="eventoSeleccionado.tipo==='casa'"
-                    [class.membership]="eventoSeleccionado.tipo==='membresia'">
-                {{eventoSeleccionado.tipo==='clase' ? '▣' : (eventoSeleccionado.tipo==='casa' ? '⚡' : '✦')}}
-              </span>
-              <h3>{{eventoSeleccionado.titulo}}</h3>
-              <p>{{eventoSeleccionado.detalle}}</p>
-              <div><b>{{diaNombre(eventoSeleccionado.fecha) | titlecase}}</b><span>{{diaNumero(eventoSeleccionado.fecha)}} {{mesCorto(eventoSeleccionado.fecha)}}</span></div>
-            </div>
-          </aside>
-        </section>
-
-        <section class="calendar-upcoming-card">
-          <header>
-            <div><span>PRÓXIMOS EVENTOS</span><h2>Tu agenda completa</h2><p>Información sincronizada con tus reservas, tu rutina asignada y tu membresía.</p></div>
-            <span class="calendar-sync-status"><i></i> Actualizado</span>
-          </header>
-          <div class="client-calendar-list calendar-list-pro" *ngIf="calendario.length; else emptyCalendar">
-            <article *ngFor="let e of calendario">
-              <div class="client-date-box">
-                <strong>{{diaNumero(e.fecha)}}</strong>
-                <small>{{mesCorto(e.fecha)}}</small>
-              </div>
-              <span
-                class="client-event-icon event-photo"
-                [class.home]="e.tipo==='casa'"
-                [class.membership]="e.tipo==='membresia'"
-                [style.background-image]="'url(' + imagenEventoCalendario(e) + ')'">
-                <i>{{e.tipo==='clase' ? '▣' : (e.tipo==='casa' ? '⚡' : '✦')}}</i>
-              </span>
-              <div class="client-event-copy">
-                <small>{{tipoEventoNombre(e.tipo)}}</small>
-                <b>{{e.titulo}}</b>
-                <p>{{e.detalle}}</p>
-              </div>
-              <small class="client-event-day">{{diaNombre(e.fecha)}}</small>
-              <button type="button" class="calendar-detail-btn" (click)="seleccionarEventoCalendario(e)">Ver detalle</button>
-            </article>
-          </div>
-          <ng-template #emptyCalendar>
-            <div class="client-empty-block large"><b>No tienes actividades próximas</b><p>Cuando reserves una clase o tengas una rutina asignada por el gimnasio, aparecerá aquí.</p></div>
-          </ng-template>
+          </section>
         </section>
       </ng-container>
 
@@ -695,6 +742,55 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
   `,
   styles: [`
     :host{display:block}
+    .calendar-v4{display:grid;gap:18px;padding:10px 0 34px}
+    .calendar-v4-head{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,.6fr);gap:0;min-height:270px;background:#0d1217;border:1px solid #252d33;overflow:hidden;color:#fff}
+    .calendar-v4-copy{padding:38px 42px;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(110deg,#0d1217 0%,#10171d 72%,#131b21 100%)}
+    .calendar-v4-copy>span{display:flex;align-items:center;gap:8px;color:#ff6077;font-size:8px;font-weight:950;letter-spacing:1.4px}
+    .calendar-v4-copy>span i{width:7px;height:7px;border-radius:50%;background:#ff3150;box-shadow:0 0 0 5px rgba(255,49,80,.10)}
+    .calendar-v4-copy h1{margin:12px 0 7px;font-size:38px;line-height:1.02;letter-spacing:-1.3px;color:#fff}
+    .calendar-v4-copy p{max-width:720px;margin:0;color:#98a3aa;font-size:11px;line-height:1.65}
+    .calendar-v4-copy>div{display:flex;gap:9px;margin-top:22px;flex-wrap:wrap}
+    .calendar-v4-primary,.calendar-v4-secondary{min-height:40px;padding:0 15px;border:1px solid #303840;font-size:8px;font-weight:950;letter-spacing:.45px;cursor:pointer}
+    .calendar-v4-primary{border-color:#ff3150;background:#ff3150;color:#fff}
+    .calendar-v4-secondary{background:#12181d;color:#d8dde0}
+    .calendar-v4-next{padding:30px;display:grid;align-content:center;grid-template-columns:74px minmax(0,1fr);gap:16px;background:#121a21;border-left:1px solid #252d33;position:relative}
+    .calendar-v4-next>small{grid-column:1/-1;color:#ff6178;font-size:7px;font-weight:950;letter-spacing:1.3px}
+    .calendar-v4-next-date{width:68px;height:76px;display:grid;place-items:center;background:#fff;color:#112437;align-content:center}
+    .calendar-v4-next-date strong{font-size:30px;line-height:1}.calendar-v4-next-date span{margin-top:5px;font-size:8px;font-weight:900;text-transform:uppercase}
+    .calendar-v4-next-copy{min-width:0}.calendar-v4-next-copy b{display:block;color:#fff;font-size:18px}.calendar-v4-next-copy p{margin:6px 0 0;color:#aab3b8;font-size:9.5px;line-height:1.45}
+    .calendar-v4-next-copy em{display:block;margin-top:7px;color:#ff8a9b;font-size:8px;font-style:normal}
+    .calendar-v4-next-copy button{margin-top:12px;min-height:34px;padding:0 11px;border:1px solid #ff3150;background:transparent;color:#ff6077;font-size:7.5px;font-weight:950;cursor:pointer}
+    .calendar-v4-next.empty{display:flex;flex-direction:column;justify-content:center}.calendar-v4-next.empty>b{font-size:20px}.calendar-v4-next.empty>p{color:#8f999f;font-size:10px}
+    .calendar-v4-recommended{border:1px solid #dfe5e9;background:#fff;padding:24px;color:#112437}
+    .calendar-v4-recommended>header{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding-bottom:16px;border-bottom:1px solid #edf0f2}
+    .calendar-v4-recommended>header span,.calendar-v4-month>header span,.calendar-v4-agenda>header span,.calendar-v4-upcoming>header span{display:block;color:#ff3150;font-size:7px;font-weight:950;letter-spacing:1.25px}
+    .calendar-v4-recommended>header h2,.calendar-v4-month>header h2,.calendar-v4-agenda>header h2,.calendar-v4-upcoming>header h2{margin:5px 0 0;color:#102941;font-size:23px}
+    .calendar-v4-recommended>header p,.calendar-v4-upcoming>header p{margin:5px 0 0;color:#768796;font-size:9.5px}
+    .calendar-v4-recommended>header>b{padding:8px 10px;background:#fff2f4;color:#d92d49;font-size:8px}
+    .calendar-v4-recommend-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:17px}
+    .calendar-v4-recommend-grid article{display:grid;grid-template-columns:66px minmax(0,1fr);gap:12px;padding:14px;border:1px solid #e5eaee;background:#fbfcfd;min-height:148px}
+    .calendar-v4-rec-date{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#102b46;color:#fff;min-height:86px}
+    .calendar-v4-rec-date strong{font-size:27px;line-height:1}.calendar-v4-rec-date span{margin-top:4px;font-size:8px;font-weight:900;text-transform:uppercase}.calendar-v4-rec-date small{margin-top:8px;color:#b8cad9;font-size:7px;text-transform:capitalize}
+    .calendar-v4-rec-copy span{color:#ff3150;font-size:6.5px;font-weight:950;letter-spacing:.8px}.calendar-v4-rec-copy h3{margin:5px 0 4px;font-size:14px}.calendar-v4-rec-copy p{margin:0;color:#52697b;font-size:8.5px}.calendar-v4-rec-copy small{display:block;margin-top:6px;color:#7b8b98;font-size:7.5px;line-height:1.4}.calendar-v4-rec-copy em{display:block;margin-top:5px;color:#1b8a5a;font-size:7px;font-style:normal;font-weight:800}
+    .calendar-v4-recommend-grid article>button{grid-column:1/-1;min-height:34px;border:0;background:#ff3150;color:#fff;font-size:8px;font-weight:950;cursor:pointer}
+    .calendar-v4-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-left:1px solid #e1e6ea;border-top:1px solid #e1e6ea}
+    .calendar-v4-stats article{display:grid;grid-template-columns:42px 1fr;gap:11px;align-items:center;padding:15px 17px;background:#fff;border-right:1px solid #e1e6ea;border-bottom:1px solid #e1e6ea}
+    .calendar-v4-stats article>span{width:38px;height:38px;display:grid;place-items:center;background:#f4f7f9;color:#ff3150;font-size:15px}
+    .calendar-v4-stats small{display:block;color:#84929e;font-size:6.5px;font-weight:950;letter-spacing:.9px}.calendar-v4-stats b{display:inline-block;margin-top:2px;color:#102941;font-size:23px}.calendar-v4-stats p{margin:0;color:#8c99a4;font-size:7.5px}
+    .calendar-v4-workspace{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(310px,.55fr);gap:16px}
+    .calendar-v4-month,.calendar-v4-agenda,.calendar-v4-upcoming{border:1px solid #dfe5e9;background:#fff;color:#112437}
+    .calendar-v4-month{padding:22px}.calendar-v4-month>header,.calendar-v4-agenda>header,.calendar-v4-upcoming>header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:14px;border-bottom:1px solid #edf0f2}
+    .calendar-v4-nav{display:flex;gap:6px}.calendar-v4-nav button{width:34px;height:32px;border:1px solid #dfe5e9;background:#fff;color:#24425d;font-size:12px;font-weight:900;cursor:pointer}.calendar-v4-nav button:nth-child(2){width:auto;padding:0 11px;font-size:8px}
+    .calendar-v4-day{min-height:72px!important;background:#fff!important}.calendar-v4-day.today{background:#fff4f6!important}.calendar-v4-day.today>span{background:#ff3150!important;color:#fff!important}
+    .calendar-day-dots i.recommended,.calendar-v4-legend i.recommended{background:#8b5cf6!important}.agenda-event-icon.recommended,.calendar-selected-icon.recommended{background:#f0eaff!important;color:#7449dd!important}
+    .calendar-v4-legend{display:flex;gap:15px;flex-wrap:wrap;padding-top:14px;color:#7b8995;font-size:8px}.calendar-v4-legend span{display:flex;align-items:center;gap:6px}.calendar-v4-legend i{width:7px;height:7px;border-radius:50%;background:#2f7ee6}.calendar-v4-legend i.home{background:#ff3150}.calendar-v4-legend i.membership{background:#d49a26}
+    .calendar-v4-agenda{padding:20px;align-self:start}.calendar-v4-agenda>header>b{width:30px;height:30px;display:grid;place-items:center;background:#102b46;color:#fff;font-size:10px}
+    .calendar-v4-reserve-detail{width:100%;margin-top:12px;min-height:36px;border:0;background:#ff3150;color:#fff;font-size:8px;font-weight:950;cursor:pointer}
+    .calendar-v4-upcoming{padding:22px}.calendar-v4-upcoming>header>button{min-height:34px;padding:0 11px;border:1px solid #dfe5e9;background:#fff;color:#24425d;font-size:8px;font-weight:900;cursor:pointer}
+    .calendar-v4-list{display:grid;margin-top:12px}.calendar-v4-list article{display:grid;grid-template-columns:58px minmax(0,1fr) 90px 82px;gap:12px;align-items:center;padding:12px 4px;border-bottom:1px solid #edf0f2}.calendar-v4-list article.recommended{background:#fcfaff}.calendar-v4-list-copy small{color:#ff3150;font-size:6.5px;font-weight:950;letter-spacing:.8px}.calendar-v4-list-copy b{display:block;margin-top:3px;color:#102941;font-size:11px}.calendar-v4-list-copy p{margin:3px 0 0;color:#6f8190;font-size:8.5px}.calendar-v4-list-copy em{display:block;margin-top:3px;color:#8b5cf6;font-size:7px;font-style:normal}
+    .calendar-v4-list article>button{min-height:31px;border:1px solid #dfe5e9;background:#fff;color:#24425d;font-size:7.5px;font-weight:900;cursor:pointer}.calendar-v4-list article.recommended>button{border-color:#ff3150;background:#ff3150;color:#fff}
+    @media(max-width:1100px){.calendar-v4-recommend-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.calendar-v4-head{grid-template-columns:1fr}.calendar-v4-next{border-left:0;border-top:1px solid #252d33}.calendar-v4-workspace{grid-template-columns:1fr}.calendar-v4-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:650px){.calendar-v4-copy{padding:25px 20px}.calendar-v4-copy h1{font-size:31px}.calendar-v4-recommend-grid{grid-template-columns:1fr}.calendar-v4-stats{grid-template-columns:1fr 1fr}.calendar-v4-month{padding:12px}.calendar-v4-day{min-height:54px!important}.calendar-v4-list article{grid-template-columns:52px minmax(0,1fr) 72px}.calendar-v4-list article>.client-event-day{display:none}.calendar-v4-recommended{padding:16px}}
     .support-center-v2{display:grid;gap:18px}
     .support-center-hero{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:end!important;gap:24px!important}
     .support-hero-stats{display:grid;grid-template-columns:repeat(3,92px);gap:8px;position:relative;z-index:3}
