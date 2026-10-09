@@ -15,28 +15,14 @@ class DashboardController extends Controller
     public function __construct()
     {
         /*
-         * Mallqui Gym usa la base mostrada en phpMyAdmin: gym_system.
-         * Se crea una conexión independiente con el mismo host/usuario del .env,
-         * así el dashboard puede leer gym_system aunque DB_DATABASE apunte a otra BD.
+         * Fuente única de verdad:
+         * el dashboard administrativo debe leer la misma base de datos que
+         * usa el portal del cliente y los CRUD del administrador.
+         *
+         * Antes intentaba abrir otra base (gym_system), por eso un cambio hecho
+         * por el usuario podía existir en el portal pero no aparecer en el dashboard.
          */
-        $mysql = (array) config('database.connections.mysql', []);
-        $database = env('GYM_DB_DATABASE', 'gym_system');
-
-        config([
-            'database.connections.gym_system' => array_merge($mysql, [
-                'database' => $database,
-            ]),
-        ]);
-
-        try {
-            $conexion = DB::connection('gym_system');
-            $conexion->getPdo();
-            $this->db = $conexion;
-        } catch (\Throwable $e) {
-            // Compatibilidad: si gym_system no existe, usa la conexión principal.
-            $this->db = DB::connection();
-        }
-
+        $this->db = DB::connection();
         $this->schema = $this->db->getSchemaBuilder();
     }
 
@@ -148,6 +134,10 @@ class DashboardController extends Controller
         }
 
         $soportePendiente = $this->soportePendiente($tablas['soporte']);
+        $rutinasPendientes = $this->rutinasPendientes($tablas['soporte']);
+        $actividadPortal = $this->actividadPortal();
+        $pagosRegistrados = $tablas['pagos'] ? (int) $this->db->table($tablas['pagos'])->count() : 0;
+
         // Las compras del portal del cliente se completan automáticamente.
         // El dato heredado se conserva solo por compatibilidad, pero ya no requiere acción del administrador.
         $pagosPendientes = $suscripciones['pagos_pendientes'];
@@ -159,7 +149,7 @@ class DashboardController extends Controller
             'fuente' => [
                 'base_datos' => $this->db->getDatabaseName(),
                 'tablas_detectadas' => array_values(array_filter($tablas)),
-                'modo' => $tablas['socios'] === 'socios' ? 'gym_system' : 'compatible',
+                'modo' => 'base_principal_compartida',
             ],
             'periodo' => [
                 'fecha' => $hoy->format('d/m/Y'),
@@ -175,6 +165,7 @@ class DashboardController extends Controller
                 'por_vencer_7_dias' => count($suscripciones['detalle_por_vencer']),
                 'detalle_por_vencer' => $suscripciones['detalle_por_vencer'],
                 'pagos_pendientes' => $pagosPendientes,
+                'pagos_registrados' => $pagosRegistrados,
                 'detalle_pagos_pendientes' => [],
             ],
             'asistencias' => [
@@ -222,6 +213,13 @@ class DashboardController extends Controller
             'alertas' => [
                 'total' => $alertasTotal,
                 'soporte_pendiente' => $soportePendiente,
+                'rutinas_pendientes' => $rutinasPendientes,
+            ],
+            'portal_clientes' => [
+                'actividad_reciente' => $actividadPortal,
+                'soporte_pendiente' => $soportePendiente,
+                'rutinas_pendientes' => $rutinasPendientes,
+                'ultima_sincronizacion' => now()->toIso8601String(),
             ],
         ]);
     }
@@ -779,6 +777,157 @@ class DashboardController extends Controller
         return (int) $this->db->table($tabla)
             ->whereIn($estado, ['Pendiente', 'PENDIENTE', 'pendiente'])
             ->count();
+    }
+
+    private function rutinasPendientes(?string $tabla): int
+    {
+        if (!$tabla) {
+            return 0;
+        }
+
+        $estado = $this->columna($tabla, ['estado', 'status']);
+        $asunto = $this->columna($tabla, ['asunto', 'titulo', 'subject']);
+        if (!$estado || !$asunto) {
+            return 0;
+        }
+
+        return (int) $this->db->table($tabla)
+            ->whereIn($estado, ['Pendiente', 'PENDIENTE', 'pendiente'])
+            ->whereRaw('LOWER('.$asunto.') LIKE ?', ['%rutina%'])
+            ->count();
+    }
+
+    private function actividadPortal(): array
+    {
+        $actividad = collect();
+
+        try {
+            if ($this->schema->hasTable('solicitudes_soporte')) {
+                $rows = $this->db->table('solicitudes_soporte as s')
+                    ->leftJoin('clientes as c', 'c.id_cliente', '=', 's.id_cliente')
+                    ->select(
+                        's.id_soporte as id',
+                        's.id_cliente',
+                        's.asunto',
+                        's.mensaje',
+                        's.estado',
+                        's.fecha',
+                        'c.nombres',
+                        'c.apellidos'
+                    )
+                    ->orderByDesc('s.fecha')
+                    ->limit(8)
+                    ->get();
+
+                foreach ($rows as $r) {
+                    $esRutina = str_contains(mb_strtolower((string) $r->asunto), 'rutina');
+                    $actividad->push([
+                        'tipo' => $esRutina ? 'rutina' : 'soporte',
+                        'id' => (int) $r->id,
+                        'id_cliente' => (int) $r->id_cliente,
+                        'titulo' => $esRutina ? 'Solicitud de rutina' : (string) $r->asunto,
+                        'detalle' => (string) $r->mensaje,
+                        'estado' => (string) $r->estado,
+                        'fecha' => $r->fecha,
+                        'cliente' => trim((string) $r->nombres.' '.(string) $r->apellidos),
+                    ]);
+                }
+            }
+        } catch (Throwable $e) {
+            // El dashboard no debe fallar completo si una tabla opcional no existe.
+        }
+
+        try {
+            if ($this->schema->hasTable('reservas')) {
+                $q = $this->db->table('reservas as r')
+                    ->leftJoin('clientes as c', 'c.id_cliente', '=', 'r.id_cliente');
+
+                if ($this->schema->hasTable('clases')) {
+                    $q->leftJoin('clases as cl', 'cl.id_clase', '=', 'r.id_clase');
+                }
+
+                $select = [
+                    'r.id_reserva as id',
+                    'r.id_cliente',
+                    'r.estado',
+                    'r.fecha_clase',
+                    'r.fecha_reserva',
+                    'c.nombres',
+                    'c.apellidos',
+                ];
+                if ($this->schema->hasTable('clases')) {
+                    $select[] = 'cl.nombre as clase_nombre';
+                    $select[] = 'cl.hora_inicio';
+                }
+
+                foreach ($q->select($select)->orderByDesc('r.fecha_reserva')->limit(8)->get() as $r) {
+                    $actividad->push([
+                        'tipo' => 'reserva',
+                        'id' => (int) $r->id,
+                        'id_cliente' => (int) $r->id_cliente,
+                        'titulo' => 'Reserva de clase',
+                        'detalle' => trim(((string) ($r->clase_nombre ?? 'Clase')).' · '.((string) $r->fecha_clase).' '.((string) ($r->hora_inicio ?? ''))),
+                        'estado' => (string) $r->estado,
+                        'fecha' => $r->fecha_reserva ?: $r->fecha_clase,
+                        'cliente' => trim((string) $r->nombres.' '.(string) $r->apellidos),
+                    ]);
+                }
+            }
+        } catch (Throwable $e) {
+        }
+
+        try {
+            if ($this->schema->hasTable('pagos_membresia')
+                && $this->schema->hasTable('cliente_membresia')) {
+                $q = $this->db->table('pagos_membresia as p')
+                    ->join('cliente_membresia as cm', 'cm.id_cliente_membresia', '=', 'p.id_cliente_membresia')
+                    ->leftJoin('clientes as c', 'c.id_cliente', '=', 'cm.id_cliente');
+
+                if ($this->schema->hasTable('membresias')) {
+                    $q->leftJoin('membresias as m', 'm.id_membresia', '=', 'cm.id_membresia');
+                }
+
+                $select = [
+                    'p.id_pago as id',
+                    'cm.id_cliente',
+                    'p.monto',
+                    'p.metodo_pago',
+                    'p.estado_pago',
+                    'p.fecha_pago',
+                    'c.nombres',
+                    'c.apellidos',
+                ];
+                if ($this->schema->hasTable('membresias')) {
+                    $select[] = 'm.nombre as membresia_nombre';
+                }
+
+                foreach ($q->select($select)->orderByDesc('p.fecha_pago')->limit(8)->get() as $r) {
+                    $actividad->push([
+                        'tipo' => 'pago',
+                        'id' => (int) $r->id,
+                        'id_cliente' => (int) $r->id_cliente,
+                        'titulo' => 'Pago de membresía',
+                        'detalle' => trim(((string) ($r->membresia_nombre ?? 'Membresía')).' · S/ '.number_format((float) $r->monto, 2)),
+                        'estado' => (string) $r->estado_pago,
+                        'fecha' => $r->fecha_pago,
+                        'cliente' => trim((string) $r->nombres.' '.(string) $r->apellidos),
+                    ]);
+                }
+            }
+        } catch (Throwable $e) {
+        }
+
+        return $actividad
+            ->sortByDesc(function ($item) {
+                try {
+                    return Carbon::parse($item['fecha'])->timestamp;
+                } catch (Throwable $e) {
+                    return 0;
+                }
+            })
+            ->take(12)
+            ->values()
+            ->all();
     }
 
     private function normalizarPersona($fila): array
