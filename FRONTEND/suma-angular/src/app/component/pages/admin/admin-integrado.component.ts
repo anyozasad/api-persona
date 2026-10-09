@@ -12,7 +12,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
   selector: 'app-admin-integrado',
   standalone: true,
   imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent],
-  styleUrls: ['../mallqui-admin.css', './admin-live.css'],
+  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
   <div class="admin-shell" [class.admin-sidebar-collapsed]="sidebarCerrado">
