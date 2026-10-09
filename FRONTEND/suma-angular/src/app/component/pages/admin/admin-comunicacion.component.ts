@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AdminApiService } from './admin-api.service';
 
@@ -154,7 +154,7 @@ import { AdminApiService } from './admin-api.service';
     </section>
   `
 })
-export class AdminComunicacionComponent implements OnInit, OnChanges {
+export class AdminComunicacionComponent implements OnInit, OnChanges, OnDestroy {
   @Input() modo: 'comunicacion' | 'soporte' = 'comunicacion';
 
   clientes: any[] = [];
@@ -165,6 +165,7 @@ export class AdminComunicacionComponent implements OnInit, OnChanges {
   guardando = false;
   error = '';
   toast = '';
+  private autoRefreshId: any = null;
 
   notificacionForm: any = {
     id_cliente: null,
@@ -177,6 +178,15 @@ export class AdminComunicacionComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.cargarBase();
+    this.autoRefreshId = setInterval(() => {
+      if (this.guardando) return;
+      if (this.modo === 'soporte') this.cargarSoporte();
+      if (this.modo === 'comunicacion') this.cargarNotificaciones();
+    }, 15000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.autoRefreshId) clearInterval(this.autoRefreshId);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
