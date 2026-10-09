@@ -566,6 +566,24 @@ class ExperienciaClienteController extends Controller
             'mensaje' => 'required|string|min:5|max:2000',
         ]);
 
+        $esRutina = str_contains(mb_strtolower((string) $datos['asunto']), 'rutina');
+
+        if ($esRutina) {
+            $pendiente = SolicitudSoporte::where('id_cliente', $cliente->id_cliente)
+                ->where('estado', 'Pendiente')
+                ->whereRaw('LOWER(asunto) LIKE ?', ['%rutina%'])
+                ->orderByDesc('fecha')
+                ->first();
+
+            if ($pendiente) {
+                return response()->json([
+                    'mensaje' => 'Ya tienes una solicitud de rutina pendiente. Puedes revisar su estado en Seguimiento.',
+                    'solicitud' => $pendiente,
+                    'duplicada' => true,
+                ]);
+            }
+        }
+
         $solicitud = SolicitudSoporte::create([
             'id_cliente' => $cliente->id_cliente,
             'asunto' => $datos['asunto'],
@@ -577,6 +595,7 @@ class ExperienciaClienteController extends Controller
         return response()->json([
             'mensaje' => 'Tu consulta fue enviada al gimnasio.',
             'solicitud' => $solicitud,
+            'duplicada' => false,
         ], 201);
     }
 
