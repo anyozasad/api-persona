@@ -513,46 +513,132 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
       </ng-container>
 
       <ng-container *ngIf="modulo==='soporte'">
-        <header class="client-extra-hero support-hero hero-photo hero-photo-ayuda">
-          <div>
-            <span>AYUDA Y SOPORTE</span>
-            <h1>¿Necesitas ayuda?</h1>
-            <p>Envía una consulta al gimnasio y revisa las respuestas desde tu propia cuenta.</p>
-          </div>
-        </header>
-
-        <section class="client-support-contact-strip">
-          <article><span>☎</span><div><small>CONTACTO DIRECTO</small><b>{{gymInfo?.telefono || '939398148'}}</b><p>Personal de Mallqui Gym</p></div></article>
-          <article><span>⌖</span><div><small>UBICACIÓN</small><b>{{gymInfo?.direccion || 'Jr. Los Laureles Mz 17 Lt 18'}}</b><p>{{gymInfo?.referencia || 'Referencia: Plaza de Laura Bosso'}}</p></div></article>
-          <article><span>◷</span><div><small>HORARIO</small><b>Atención semanal</b><p>{{gymInfo?.horario_detalle || 'Consulta el horario de atención de Mallqui Gym.'}}</p></div></article>
-        </section>
-
-        <section class="client-extra-grid support-grid">
-          <article class="client-extra-card">
-            <div class="client-card-head"><div><span>NUEVA CONSULTA</span><h2>Contactar al gimnasio</h2></div></div>
-            <form class="client-support-form" (ngSubmit)="enviarSoporte()">
-              <label>Asunto<input [(ngModel)]="soporteForm.asunto" name="soporte_asunto" maxlength="150" required placeholder="Ejemplo: consulta sobre mi membresía"></label>
-              <label>Mensaje<textarea [(ngModel)]="soporteForm.mensaje" name="soporte_mensaje" minlength="5" maxlength="2000" required placeholder="Escribe tu consulta..."></textarea></label>
-              <button type="submit" [disabled]="enviandoSoporte">{{enviandoSoporte ? 'Enviando...' : 'Enviar consulta'}}</button>
-            </form>
-          </article>
-
-          <article class="client-extra-card">
-            <div class="client-card-head"><div><span>MIS CONSULTAS</span><h2>Seguimiento</h2></div><button type="button" (click)="cargarSoporte()">↻</button></div>
-            <div class="client-support-list">
-              <article *ngFor="let s of soporte">
-                <div><span [class.done]="s.estado!=='Pendiente'">{{s.estado}}</span><small>{{fecha(s.fecha)}}</small></div>
-                <h3>{{s.asunto}}</h3>
-                <p>{{s.mensaje}}</p>
-                <div class="client-support-answer" *ngIf="s.respuesta">
-                  <b>Respuesta del gimnasio</b>
-                  <p>{{s.respuesta}}</p>
-                  <small>{{fecha(s.fecha_respuesta)}}</small>
-                </div>
-              </article>
-              <div class="client-empty-block" *ngIf="!soporte.length"><b>Aún no tienes consultas</b><p>Cuando necesites ayuda puedes escribirnos desde este formulario.</p></div>
+        <section class="support-center-v2">
+          <header class="client-extra-hero support-hero hero-photo hero-photo-ayuda support-center-hero">
+            <div>
+              <span>CENTRO DE AYUDA · MALLQUI GYM</span>
+              <h1>¿Necesitas ayuda?</h1>
+              <p>Elige el tipo de consulta, envíala al gimnasio y revisa el estado y la respuesta desde tu cuenta.</p>
             </div>
-          </article>
+
+            <div class="support-hero-stats">
+              <article><small>PENDIENTES</small><b>{{soportePendientes}}</b></article>
+              <article><small>RESPONDIDAS</small><b>{{soporteRespondidos}}</b></article>
+              <article><small>TOTAL</small><b>{{soporte.length}}</b></article>
+            </div>
+          </header>
+
+          <section class="support-quick-help">
+            <div class="support-section-head">
+              <div><span>AYUDA RÁPIDA</span><h2>¿Con qué necesitas ayuda?</h2></div>
+              <p>Selecciona una opción para preparar la consulta automáticamente.</p>
+            </div>
+
+            <div class="support-quick-grid">
+              <button type="button" (click)="prepararConsulta('rutina')">
+                <span>🏋</span><div><b>Rutina y ejercicios</b><small>Nivel, objetivo, ejercicios y entrenador</small></div><em>→</em>
+              </button>
+              <button type="button" (click)="prepararConsulta('membresia')">
+                <span>✦</span><div><b>Membresía</b><small>Vigencia, renovación o plan contratado</small></div><em>→</em>
+              </button>
+              <button type="button" (click)="prepararConsulta('pago')">
+                <span>▤</span><div><b>Pago o boleta</b><small>Operación, comprobante o pago registrado</small></div><em>→</em>
+              </button>
+              <button type="button" (click)="prepararConsulta('clase')">
+                <span>▣</span><div><b>Clases y reservas</b><small>Horarios, cupos o reserva de clase</small></div><em>→</em>
+              </button>
+              <button type="button" (click)="prepararConsulta('asistencia')">
+                <span>✓</span><div><b>Ingreso y asistencia</b><small>Entrada, salida o credencial de acceso</small></div><em>→</em>
+              </button>
+              <button type="button" (click)="prepararConsulta('otro')">
+                <span>?</span><div><b>Otra consulta</b><small>Escribe directamente al personal</small></div><em>→</em>
+              </button>
+            </div>
+          </section>
+
+          <section class="client-support-contact-strip support-contact-v2">
+            <article><span>☎</span><div><small>CONTACTO DIRECTO</small><b>{{gymInfo?.telefono || '939398148'}}</b><p>Personal de Mallqui Gym</p></div></article>
+            <article><span>⌖</span><div><small>UBICACIÓN</small><b>{{gymInfo?.direccion || 'Jr. Los Laureles Mz 17 Lt 18'}}</b><p>{{gymInfo?.referencia || 'Referencia: Plaza de Laura Bosso'}}</p></div></article>
+            <article><span>◷</span><div><small>HORARIO</small><b>Atención semanal</b><p>{{gymInfo?.horario_detalle || 'Consulta el horario de atención de Mallqui Gym.'}}</p></div></article>
+          </section>
+
+          <section class="support-workspace">
+            <article class="support-compose-card">
+              <div class="support-card-head">
+                <div><span>NUEVA CONSULTA</span><h2>Escribir al gimnasio</h2><p>Tu mensaje quedará guardado en tu cuenta.</p></div>
+                <b *ngIf="categoriaSoporte">{{categoriaSoporte}}</b>
+              </div>
+
+              <form class="client-support-form support-form-v2" (ngSubmit)="enviarSoporte()">
+                <label>Asunto
+                  <input [(ngModel)]="soporteForm.asunto"
+                         name="soporte_asunto"
+                         maxlength="150"
+                         required
+                         placeholder="Ejemplo: consulta sobre mi membresía">
+                </label>
+                <label>Mensaje
+                  <textarea [(ngModel)]="soporteForm.mensaje"
+                            name="soporte_mensaje"
+                            minlength="5"
+                            maxlength="2000"
+                            required
+                            placeholder="Explica brevemente qué necesitas..."></textarea>
+                  <small>{{soporteForm.mensaje.length}} / 2000 caracteres</small>
+                </label>
+                <button type="submit" [disabled]="enviandoSoporte">
+                  <span>{{enviandoSoporte ? 'Enviando...' : 'Enviar consulta'}}</span><b>→</b>
+                </button>
+              </form>
+            </article>
+
+            <article class="support-tracking-card">
+              <div class="support-card-head">
+                <div><span>MIS CONSULTAS</span><h2>Seguimiento</h2><p>Revisa solicitudes pendientes y respuestas del gimnasio.</p></div>
+                <button type="button" (click)="cargarSoporte()" [disabled]="cargando">↻</button>
+              </div>
+
+              <div class="support-status-legend">
+                <span><i class="pending"></i>Pendiente</span>
+                <span><i class="answered"></i>Respondida</span>
+              </div>
+
+              <div class="client-support-list support-list-v2">
+                <article *ngFor="let s of soporte" [class.support-answered]="s.estado!=='Pendiente' || !!s.respuesta">
+                  <div class="support-item-top">
+                    <span [class.done]="s.estado!=='Pendiente' || !!s.respuesta">{{s.respuesta ? 'Respondida' : s.estado}}</span>
+                    <small>{{fecha(s.fecha)}}</small>
+                  </div>
+
+                  <div class="support-item-kind" *ngIf="esSolicitudRutina(s)">
+                    <span>🏋</span><b>SOLICITUD DE RUTINA</b>
+                  </div>
+
+                  <h3>{{s.asunto}}</h3>
+                  <p>{{s.mensaje}}</p>
+
+                  <div class="support-flow">
+                    <span class="done">1 <small>Enviada</small></span>
+                    <i></i>
+                    <span [class.done]="s.estado!=='Pendiente' || !!s.respuesta">2 <small>Revisada</small></span>
+                    <i></i>
+                    <span [class.done]="!!s.respuesta">3 <small>Respondida</small></span>
+                  </div>
+
+                  <div class="client-support-answer" *ngIf="s.respuesta">
+                    <span>RESPUESTA DEL GIMNASIO</span>
+                    <p>{{s.respuesta}}</p>
+                    <small>{{fecha(s.fecha_respuesta)}}</small>
+                  </div>
+                </article>
+
+                <div class="client-empty-block support-empty-v2" *ngIf="!soporte.length">
+                  <span>?</span><b>Aún no tienes consultas</b>
+                  <p>Selecciona una categoría y envía tu primera consulta al personal de Mallqui Gym.</p>
+                </div>
+              </div>
+            </article>
+          </section>
         </section>
       </ng-container>
     </section>
@@ -560,7 +646,64 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
     <ng-template #loadingTpl>
       <div class="client-extra-loading"><span></span><b>Cargando información...</b></div>
     </ng-template>
-  `
+  `,
+  styles: [`
+    :host{display:block}
+    .support-center-v2{display:grid;gap:18px}
+    .support-center-hero{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:end!important;gap:24px!important}
+    .support-hero-stats{display:grid;grid-template-columns:repeat(3,92px);gap:8px;position:relative;z-index:3}
+    .support-hero-stats article{min-height:72px;padding:12px;border:1px solid rgba(255,255,255,.14);background:rgba(8,13,17,.48);backdrop-filter:blur(8px)}
+    .support-hero-stats small{display:block;color:#ff6b80;font-size:7px;font-weight:950;letter-spacing:1px}
+    .support-hero-stats b{display:block;margin-top:6px;color:#fff;font-size:22px}
+    .support-quick-help,.support-compose-card,.support-tracking-card{border:1px solid #252c31;background:#0d1114;color:#fff}
+    .support-quick-help{padding:24px}
+    .support-section-head,.support-card-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+    .support-section-head span,.support-card-head>div>span{display:block;color:#ff3150;font-size:8px;font-weight:950;letter-spacing:1.4px}
+    .support-section-head h2,.support-card-head h2{margin:6px 0 0;color:#fff;font-size:24px;letter-spacing:-.5px}
+    .support-section-head p,.support-card-head p{margin:4px 0 0;color:#818c93;font-size:9px}
+    .support-quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:18px;border-top:1px solid #272e33;border-left:1px solid #272e33}
+    .support-quick-grid button{min-height:86px;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;padding:14px;border:0;border-right:1px solid #272e33;border-bottom:1px solid #272e33;background:#101519;color:#fff;text-align:left;cursor:pointer}
+    .support-quick-grid button:hover{background:#151b20}
+    .support-quick-grid button>span{width:32px;height:32px;display:grid;place-items:center;border:1px solid rgba(255,49,80,.3);background:rgba(255,49,80,.07);color:#ff3150}
+    .support-quick-grid b{display:block;font-size:10px}.support-quick-grid small{display:block;margin-top:3px;color:#7e8990;font-size:8px}.support-quick-grid em{font-style:normal;color:#ff3150}
+    .support-contact-v2 article{border-radius:0!important;border-color:#272e33!important;background:#101519!important}
+    .support-contact-v2 article>span{border-radius:0!important;background:#171d22!important;color:#ff5d74!important}
+    .support-contact-v2 b{color:#fff!important}.support-contact-v2 p{color:#7f8990!important}
+    .support-workspace{display:grid;grid-template-columns:minmax(360px,.78fr) minmax(0,1.22fr);gap:16px}
+    .support-compose-card,.support-tracking-card{padding:22px}
+    .support-card-head{align-items:flex-start;padding-bottom:16px;border-bottom:1px solid #272e33}
+    .support-card-head>b{padding:7px 9px;border:1px solid rgba(255,49,80,.28);background:rgba(255,49,80,.07);color:#ff6278;font-size:7px;text-transform:uppercase}
+    .support-card-head>button{width:38px;height:38px;border:1px solid #30373c;background:#141a1f;color:#fff;cursor:pointer}
+    .support-form-v2{display:grid;gap:14px;margin-top:18px}
+    .support-form-v2 label{display:grid;gap:7px;color:#c4ccd1;font-size:9px;font-weight:850}
+    .support-form-v2 input,.support-form-v2 textarea{width:100%;box-sizing:border-box;border:1px solid #30373c;border-radius:0;background:#141a1f;color:#fff;font:inherit;padding:13px}
+    .support-form-v2 input{min-height:48px}.support-form-v2 textarea{min-height:150px;resize:vertical}
+    .support-form-v2 input:focus,.support-form-v2 textarea:focus{outline:none;border-color:#ff3150;box-shadow:0 0 0 2px rgba(255,49,80,.08)}
+    .support-form-v2 label>small{justify-self:end;color:#667178;font-size:7px}
+    .support-form-v2>button{min-height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border:1px solid #ff3150;background:#ff3150;color:#fff;font-size:9px;font-weight:950;cursor:pointer}
+    .support-form-v2>button:disabled{opacity:.6;cursor:wait}
+    .support-status-legend{display:flex;gap:14px;padding:12px 0;color:#7f8990;font-size:8px}
+    .support-status-legend span{display:flex;align-items:center;gap:6px}.support-status-legend i{width:7px;height:7px;border-radius:50%;background:#f0ad4e}.support-status-legend i.answered{background:#43c884}
+    .support-list-v2{display:grid;gap:10px;max-height:590px;overflow:auto;padding-right:4px}
+    .support-list-v2>article{padding:16px;border:1px solid #2a3136;border-radius:0;background:#11171b}
+    .support-list-v2>article.support-answered{border-left:3px solid #43c884}
+    .support-item-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .support-item-top>span{padding:5px 7px;background:rgba(240,173,78,.10);color:#e7b45f;font-size:7px;font-weight:950;text-transform:uppercase}
+    .support-item-top>span.done{background:rgba(67,200,132,.09);color:#69d79f}
+    .support-item-top small{color:#758087;font-size:7px}
+    .support-item-kind{display:flex;align-items:center;gap:7px;margin-top:12px;color:#ff6077}.support-item-kind b{font-size:7px;letter-spacing:1px}
+    .support-list-v2 h3{margin:7px 0;color:#fff;font-size:12px}.support-list-v2>article>p{margin:0;color:#99a3a9;font-size:9px;line-height:1.55}
+    .support-flow{display:grid;grid-template-columns:auto 1fr auto 1fr auto;align-items:center;gap:7px;margin-top:14px;padding-top:12px;border-top:1px solid #262d32}
+    .support-flow>span{width:26px;height:26px;display:grid;place-items:center;border:1px solid #333b41;color:#6f7a81;font-size:8px;font-weight:900}
+    .support-flow>span.done{border-color:rgba(67,200,132,.38);color:#69d79f;background:rgba(67,200,132,.05)}
+    .support-flow>span small{display:none}.support-flow>i{height:1px;background:#30373c}
+    .client-support-answer{margin-top:14px;padding:13px;border:1px solid rgba(67,200,132,.28);background:rgba(67,200,132,.05)}
+    .client-support-answer>span,.client-support-answer>b{display:block;color:#69d79f;font-size:7px;font-weight:950;letter-spacing:1px}
+    .client-support-answer p{margin:7px 0;color:#d4dadd!important;font-size:9px!important;line-height:1.5}.client-support-answer small{color:#7d888e;font-size:7px}
+    .support-empty-v2{padding:36px 18px!important;border:1px dashed #343c42!important;background:#11171b!important;text-align:center}.support-empty-v2>span{display:block;margin:auto auto 10px;width:34px;height:34px;line-height:34px;border:1px solid #333c42;color:#ff6077}
+    @media(max-width:980px){.support-workspace{grid-template-columns:1fr}.support-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.support-center-hero{grid-template-columns:1fr!important}.support-hero-stats{grid-template-columns:repeat(3,minmax(0,1fr));width:100%}}
+    @media(max-width:620px){.support-quick-help,.support-compose-card,.support-tracking-card{padding:16px}.support-quick-grid{grid-template-columns:1fr}.support-hero-stats{grid-template-columns:1fr}.support-section-head{align-items:flex-start;flex-direction:column}.support-list-v2{max-height:none}}
+  `]
 })
 export class ClienteExperienciaComponent implements OnInit, OnChanges {
   @Input() modulo = 'progreso';
@@ -589,6 +732,7 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
   soporte: any[] = [];
   soporteForm = { asunto: '', mensaje: '' };
   enviandoSoporte = false;
+  categoriaSoporte = '';
 
   constructor(private api: GymApiService) {}
 
@@ -1025,6 +1169,61 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
     });
   }
 
+  get soportePendientes(): number {
+    return (this.soporte || []).filter((s: any) => String(s?.estado || '').toLowerCase() === 'pendiente' && !s?.respuesta).length;
+  }
+
+  get soporteRespondidos(): number {
+    return (this.soporte || []).filter((s: any) => Boolean(s?.respuesta) || String(s?.estado || '').toLowerCase() !== 'pendiente').length;
+  }
+
+  esSolicitudRutina(s: any): boolean {
+    return String(s?.asunto || '').toLowerCase().includes('rutina');
+  }
+
+  prepararConsulta(tipo: 'rutina' | 'membresia' | 'pago' | 'clase' | 'asistencia' | 'otro'): void {
+    const plantillas: Record<string, { categoria: string; asunto: string; mensaje: string }> = {
+      rutina: {
+        categoria: 'Rutina y ejercicios',
+        asunto: 'Consulta sobre mi rutina',
+        mensaje: 'Necesito ayuda con mi rutina de entrenamiento. Quisiera revisar mi objetivo, nivel, ejercicios o indicaciones del entrenador.'
+      },
+      membresia: {
+        categoria: 'Membresía',
+        asunto: 'Consulta sobre mi membresía',
+        mensaje: 'Necesito ayuda con el estado, vigencia o renovación de mi membresía.'
+      },
+      pago: {
+        categoria: 'Pago o boleta',
+        asunto: 'Consulta sobre pago o boleta',
+        mensaje: 'Necesito ayuda con un pago, número de operación o comprobante de mi membresía.'
+      },
+      clase: {
+        categoria: 'Clases y reservas',
+        asunto: 'Consulta sobre clases o reservas',
+        mensaje: 'Necesito ayuda con horarios, disponibilidad o una reserva de clase.'
+      },
+      asistencia: {
+        categoria: 'Ingreso y asistencia',
+        asunto: 'Consulta sobre ingreso o asistencia',
+        mensaje: 'Necesito ayuda con mi credencial, registro de entrada, salida o historial de asistencias.'
+      },
+      otro: {
+        categoria: 'Otra consulta',
+        asunto: '',
+        mensaje: ''
+      }
+    };
+
+    const p = plantillas[tipo];
+    this.categoriaSoporte = p.categoria;
+    this.soporteForm = { asunto: p.asunto, mensaje: p.mensaje };
+
+    setTimeout(() => {
+      document.querySelector('.support-compose-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 0);
+  }
+
   cargarSoporte(): void {
     this.cargando = true;
     this.api.soporteCliente().subscribe({
@@ -1039,6 +1238,18 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
       return;
     }
 
+    const esRutina = this.soporteForm.asunto.trim().toLowerCase().includes('rutina');
+    const rutinaPendiente = esRutina && (this.soporte || []).some((s: any) =>
+      String(s?.estado || '').toLowerCase() === 'pendiente' &&
+      String(s?.asunto || '').toLowerCase().includes('rutina') &&
+      !s?.respuesta
+    );
+
+    if (rutinaPendiente) {
+      this.error = 'Ya tienes una solicitud de rutina pendiente. Espera la respuesta del gimnasio o usa esa misma consulta para el seguimiento.';
+      return;
+    }
+
     this.error = '';
     this.enviandoSoporte = true;
     this.api.crearSoporteCliente({
@@ -1048,6 +1259,7 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
       next: r => {
         this.enviandoSoporte = false;
         this.soporteForm = { asunto: '', mensaje: '' };
+        this.categoriaSoporte = '';
         this.mostrarToast(r?.mensaje || 'Consulta enviada.');
         this.cargarSoporte();
       },
