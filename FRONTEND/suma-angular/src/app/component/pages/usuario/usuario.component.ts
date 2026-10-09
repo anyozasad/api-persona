@@ -1873,6 +1873,15 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     });
   }
 
+  irAClasesDisponibles():void{
+    if(this.moduloActivo!=='clases'){
+      this.moduloActivo='clases';
+    }
+    setTimeout(()=>{
+      document.getElementById('clases-disponibles')?.scrollIntoView({behavior:'smooth',block:'start'});
+    },0);
+  }
+
   normalizarPerfil(datos:any):any{
     const p={...(datos||{})};
     if(p.fecha_nacimiento){
