@@ -458,13 +458,6 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <h1>Tu <strong>rutina registrada</strong> en el gimnasio</h1>
                 <p>Esta pantalla usa la rutina activa que Mallqui Gym tiene registrada para tu cuenta. Aquí se muestran exactamente los ejercicios, series, repeticiones, carga recomendada, descansos e indicaciones de tu entrenador.</p>
 
-                <div class="train-gym-context-strip">
-                  <button type="button" (click)="abrirModulo('rutinas')">🏋 Rutina asignada</button>
-                  <button type="button" (click)="abrirModulo('perfil')">✓ Datos del cliente</button>
-                  <button type="button" (click)="irDetalleEntrenamiento()">◷ Descansos</button>
-                  <button type="button" (click)="abrirModulo('progreso')">▦ Progreso</button>
-                </div>
-
                 <div class="train-gym-statusbar">
                   <div>
                     <small>MEMBRESÍA</small>
