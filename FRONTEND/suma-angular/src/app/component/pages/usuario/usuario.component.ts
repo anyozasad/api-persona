@@ -305,6 +305,69 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               <button type="button" (click)="abrirModulo('rutinas')">Ver mi rutina <span>→</span></button>
             </div>
           </section>
+
+          <section class="mallqui-wellbeing-section">
+            <div class="mallqui-wellbeing-head">
+              <div>
+                <span>ACTIVIDAD FÍSICA Y BIENESTAR</span>
+                <h2>Muévete hoy para cuidar tu salud.</h2>
+                <p>Referencia informativa basada en el material del gimnasio sobre sedentarismo y actividad física.</p>
+              </div>
+              <b>MENOS SEDENTARISMO · MÁS MOVIMIENTO</b>
+            </div>
+
+            <div class="mallqui-wellbeing-grid">
+              <article>
+                <span class="wellbeing-index">01</span>
+                <div class="wellbeing-icon">♥</div>
+                <small>SALUD CARDIOVASCULAR</small>
+                <h3>Resistencia y corazón</h3>
+                <p>La actividad física regular puede apoyar la resistencia cardiovascular y la salud general. Si una persona tiene hipertensión, enfermedad cardiaca u otra condición diagnosticada, su entrenamiento debe seguir indicaciones profesionales.</p>
+                <button type="button" (click)="abrirEnfoqueEntrenamiento('Cardiovascular')">Ver enfoque cardiovascular <span>→</span></button>
+              </article>
+
+              <article>
+                <span class="wellbeing-index">02</span>
+                <div class="wellbeing-icon">◆</div>
+                <small>MÚSCULO Y ESQUELETO</small>
+                <h3>Fuerza y movilidad</h3>
+                <p>El trabajo progresivo de fuerza y movilidad ayuda a mantener la función física. Ante dolor lumbar, lesión, osteoporosis o molestias articulares, el ejercicio debe adaptarse con orientación adecuada.</p>
+                <button type="button" (click)="abrirEnfoqueEntrenamiento('Tonificación')">Ver enfoque de tonificación <span>→</span></button>
+              </article>
+
+              <article>
+                <span class="wellbeing-index">03</span>
+                <div class="wellbeing-icon">◎</div>
+                <small>BIENESTAR MENTAL</small>
+                <h3>Actividad y estado de ánimo</h3>
+                <p>Mantenerse activo puede apoyar el bienestar, el descanso y el manejo del estrés. No reemplaza la atención de un profesional cuando existen problemas de salud mental.</p>
+                <button type="button" (click)="abrirEnfoqueEntrenamiento('Cardiovascular')">Ver actividad guiada <span>→</span></button>
+              </article>
+
+              <article>
+                <span class="wellbeing-index">04</span>
+                <div class="wellbeing-icon">↗</div>
+                <small>SALUD METABÓLICA</small>
+                <h3>Acondicionamiento general</h3>
+                <p>Combinar movimiento, fuerza y trabajo cardiovascular puede apoyar la salud metabólica y la condición física. El sistema no propone cambios rápidos de peso ni sustituye indicaciones médicas.</p>
+                <button type="button" (click)="abrirEnfoqueEntrenamiento('Pérdida de peso')">Ver aeróbico + anaeróbico <span>→</span></button>
+              </article>
+
+              <article>
+                <span class="wellbeing-index">05</span>
+                <div class="wellbeing-icon">◷</div>
+                <small>CAPACIDAD RESPIRATORIA</small>
+                <h3>Resistencia física</h3>
+                <p>El ejercicio progresivo puede mejorar la capacidad física general. Si existen asma u otras enfermedades respiratorias, la intensidad debe ajustarse con indicaciones del profesional de salud y del entrenador.</p>
+                <button type="button" (click)="abrirEnfoqueEntrenamiento('Cardiovascular')">Ver entrenamiento progresivo <span>→</span></button>
+              </article>
+            </div>
+
+            <div class="mallqui-wellbeing-note">
+              <span>REFERENCIA DEL GIMNASIO</span>
+              <p>El afiche original relaciona la inactividad física con distintas enfermedades. En el sistema esta información se usa solo como educación y prevención: <b>el ejercicio no diagnostica ni cura enfermedades</b>. La rutina final debe adaptarse al usuario y ser registrada por el entrenador.</p>
+            </div>
+          </section>
         </section>
 
         <section *ngIf="moduloActivo==='inicio'" class="gym-real-info-panel member-enter-up">
@@ -1530,6 +1593,28 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
     .member-page .training-profile-primary em{font-style:normal;font-size:18px}
     .member-page .training-profile-secondary{min-height:56px;padding:0 18px;border:1px solid #30363b;background:#14191e;color:#fff;font-size:8px;font-weight:950;cursor:pointer}
     .member-page .training-profile-note{margin:14px 0 0;color:#7f898f;font-size:8.5px;line-height:1.5}
+    .member-page .mallqui-wellbeing-section{padding:54px max(48px,4vw) 58px;border-top:1px solid rgba(255,255,255,.08);background:#0a0d0f;color:#fff}
+    .member-page .mallqui-wellbeing-head{display:flex;align-items:flex-end;justify-content:space-between;gap:28px;margin-bottom:28px}
+    .member-page .mallqui-wellbeing-head>div>span{display:block;margin-bottom:8px;color:#ff3150;font-size:8px;font-weight:950;letter-spacing:1.8px}
+    .member-page .mallqui-wellbeing-head h2{margin:0;color:#fff;font-size:38px;line-height:1;letter-spacing:-1.3px}
+    .member-page .mallqui-wellbeing-head p{max-width:650px;margin:9px 0 0;color:#89939a;font-size:10.5px;line-height:1.55}
+    .member-page .mallqui-wellbeing-head>b{padding:9px 12px;border:1px solid rgba(255,49,80,.28);background:rgba(255,49,80,.06);color:#ff647b;font-size:8px;letter-spacing:1px;white-space:nowrap}
+    .member-page .mallqui-wellbeing-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid rgba(255,255,255,.09);border-left:1px solid rgba(255,255,255,.09)}
+    .member-page .mallqui-wellbeing-grid article{position:relative;min-height:310px;padding:24px 20px;border-right:1px solid rgba(255,255,255,.09);border-bottom:1px solid rgba(255,255,255,.09);background:#0f1316}
+    .member-page .mallqui-wellbeing-grid .wellbeing-index{position:absolute;top:16px;right:16px;color:#566168;font-size:8px;font-weight:950}
+    .member-page .mallqui-wellbeing-grid .wellbeing-icon{width:44px;height:44px;display:grid;place-items:center;margin-bottom:28px;border:1px solid rgba(255,49,80,.30);background:rgba(255,49,80,.07);color:#ff3150;font-size:15px;font-weight:950}
+    .member-page .mallqui-wellbeing-grid article>small{display:block;color:#ff5e75;font-size:7px;font-weight:950;letter-spacing:1.2px}
+    .member-page .mallqui-wellbeing-grid h3{margin:8px 0 9px;color:#fff;font-size:19px;line-height:1.05}
+    .member-page .mallqui-wellbeing-grid p{margin:0;color:#8b959c;font-size:9px;line-height:1.55}
+    .member-page .mallqui-wellbeing-grid button{position:absolute;left:20px;right:20px;bottom:20px;min-height:38px;padding:0 10px;border:1px solid rgba(255,49,80,.28);background:transparent;color:#ff6077;font-size:7.5px;font-weight:950;text-align:left;cursor:pointer}
+    .member-page .mallqui-wellbeing-grid button:hover{background:rgba(255,49,80,.08)}
+    .member-page .mallqui-wellbeing-grid button span{float:right;font-size:13px}
+    .member-page .mallqui-wellbeing-note{margin-top:18px;padding:18px 20px;border-left:3px solid #ff3150;background:#101418}
+    .member-page .mallqui-wellbeing-note>span{display:block;margin-bottom:6px;color:#ff3150;font-size:7px;font-weight:950;letter-spacing:1.4px}
+    .member-page .mallqui-wellbeing-note p{margin:0;color:#9aa3a9;font-size:9.5px;line-height:1.55}
+    .member-page .mallqui-wellbeing-note b{color:#fff}
+    @media(max-width:1200px){.member-page .mallqui-wellbeing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.member-page .mallqui-wellbeing-grid article{min-height:270px}}
+    @media(max-width:700px){.member-page .mallqui-wellbeing-section{padding:36px 14px 42px}.member-page .mallqui-wellbeing-head{align-items:flex-start;flex-direction:column}.member-page .mallqui-wellbeing-head h2{font-size:31px}.member-page .mallqui-wellbeing-head>b{white-space:normal}.member-page .mallqui-wellbeing-grid{grid-template-columns:1fr}}
     @media(max-width:900px){.member-page .training-profile-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.member-page .training-profile-actions{grid-template-columns:1fr}}
     @media(max-width:620px){.member-page .training-profile-guide{margin:14px;padding:18px}.member-page .training-profile-guide-head{flex-direction:column}.member-page .training-profile-cards,.member-page .training-exercise-preview-list{grid-template-columns:1fr}.member-page .training-level-selector button{flex:1}}
     @media(max-width:700px){.member-page .focus-selected-notice{align-items:flex-start;flex-direction:column}.member-page .focus-selected-notice button{width:100%}}
@@ -1688,39 +1773,64 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   get guiaEnfoqueInicio():any{
     const objetivo=this.enfoqueInicioSeleccionado||'Cardiovascular';
+    const nivel=this.nivelEntrenamiento||'Principiante';
+
     const guias:Record<string,any>={
       'Cardiovascular':{
         tipo:'Aeróbico cardiovascular',
-        clase:'Cardio base y resistencia',
-        descripcion:'Sesión orientada a mejorar resistencia y condición cardiovascular.',
-        ejercicios:['Caminata en cinta','Bicicleta estática','Elíptica','Movilidad general']
+        descripcion:'Trabajo progresivo para mejorar resistencia y condición física general.',
+        niveles:{
+          Principiante:{clase:'Adaptación cardiovascular',ejercicios:['Caminata en cinta','Bicicleta estática','Elíptica suave','Movilidad general']},
+          Intermedio:{clase:'Cardio de resistencia moderada',ejercicios:['Caminata con inclinación o trote suave','Bicicleta con intervalos moderados','Elíptica','Remo ergómetro']},
+          Avanzado:{clase:'Resistencia cardiovascular supervisada',ejercicios:['Intervalos controlados en cinta','Bicicleta por bloques','Remo ergómetro','Trabajo de movilidad y recuperación']}
+        }
       },
       'Masa muscular':{
         tipo:'Fuerza y musculación',
-        clase:'Fuerza básica de cuerpo completo',
-        descripcion:'Trabajo técnico de fuerza con máquinas y ejercicios básicos del gimnasio.',
-        ejercicios:['Prensa de piernas','Remo sentado','Press de pecho en máquina','Jalón al pecho']
+        descripcion:'Entrenamiento de fuerza con progresión técnica y cargas definidas por el entrenador.',
+        niveles:{
+          Principiante:{clase:'Adaptación a máquinas',ejercicios:['Prensa de piernas','Press de pecho en máquina','Remo sentado','Jalón al pecho']},
+          Intermedio:{clase:'Fuerza de cuerpo completo',ejercicios:['Sentadilla goblet','Press de pecho','Remo en polea','Press de hombros con carga moderada']},
+          Avanzado:{clase:'Musculación planificada por grupos',ejercicios:['Prensa o sentadilla según técnica','Press de pecho según rutina','Remo con resistencia','Jalón o trabajo de espalda según plan']}
+        }
       },
       'Tonificación':{
         tipo:'Fuerza + acondicionamiento',
-        clase:'Circuito de cuerpo completo',
-        descripcion:'Trabajo general de fuerza, movilidad y resistencia con técnica controlada.',
-        ejercicios:['Sentadilla al banco','Remo en polea','Press de pecho en máquina','Plancha modificada']
+        descripcion:'Combinación de fuerza, movilidad y resistencia con prioridad en técnica y control corporal.',
+        niveles:{
+          Principiante:{clase:'Circuito básico de cuerpo completo',ejercicios:['Sentadilla al banco','Remo en polea','Press de pecho en máquina','Plancha modificada']},
+          Intermedio:{clase:'Circuito de acondicionamiento',ejercicios:['Sentadilla goblet','Remo en polea','Press con mancuernas','Press Pallof']},
+          Avanzado:{clase:'Circuito de fuerza y resistencia',ejercicios:['Trabajo de piernas según rutina','Empuje de tren superior','Tracción de espalda','Core y movilidad']}
+        }
       },
       'CrossFit':{
-        tipo:'Funcional',
-        clase:'CrossFit técnico adaptado',
-        descripcion:'Circuito funcional de iniciación priorizando técnica, control y movimientos simples.',
-        ejercicios:['Sentadilla sin carga','Step-up bajo','Remo en máquina','Trabajo de movilidad']
+        tipo:'Entrenamiento funcional',
+        descripcion:'Trabajo funcional adaptado al nivel. La técnica y la supervisión tienen prioridad sobre la intensidad.',
+        niveles:{
+          Principiante:{clase:'CrossFit técnico adaptado',ejercicios:['Sentadilla sin carga','Step-up bajo','Remo en máquina','Movilidad general']},
+          Intermedio:{clase:'Circuito funcional moderado',ejercicios:['Sentadilla goblet','Step-up','Remo ergómetro','Trabajo de empuje controlado']},
+          Avanzado:{clase:'Circuito funcional supervisado',ejercicios:['Patrones de sentadilla','Patrones de empuje','Patrones de tracción','Trabajo cardiovascular por estaciones']}
+        }
       },
       'Pérdida de peso':{
         tipo:'Aeróbico + anaeróbico',
-        clase:'Cardio y circuito de acondicionamiento',
-        descripcion:'Trabajo combinado de cardio y fuerza general para mejorar la condición física.',
-        ejercicios:['Caminata en cinta','Bicicleta estática','Prensa de piernas','Remo sentado']
+        descripcion:'Enfoque de acondicionamiento y salud que combina cardio y fuerza. No propone cambios rápidos de peso ni dietas restrictivas.',
+        niveles:{
+          Principiante:{clase:'Cardio + fuerza básica',ejercicios:['Caminata en cinta','Bicicleta estática','Prensa de piernas','Remo sentado']},
+          Intermedio:{clase:'Circuito aeróbico y de fuerza',ejercicios:['Cardio moderado por bloques','Prensa de piernas','Remo en polea','Circuito de cuerpo completo']},
+          Avanzado:{clase:'Acondicionamiento mixto supervisado',ejercicios:['Intervalos cardiovasculares controlados','Circuito de fuerza','Trabajo funcional','Movilidad y recuperación']}
+        }
       }
     };
-    return guias[objetivo]||guias['Cardiovascular'];
+
+    const base=guias[objetivo]||guias['Cardiovascular'];
+    const detalle=base.niveles[nivel]||base.niveles.Principiante;
+    return {
+      tipo:base.tipo,
+      clase:detalle.clase,
+      descripcion:base.descripcion,
+      ejercicios:detalle.ejercicios
+    };
   }
 
   solicitarRutinaConPerfil():void{
