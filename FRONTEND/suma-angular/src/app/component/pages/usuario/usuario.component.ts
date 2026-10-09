@@ -479,7 +479,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                   <div><span>▦</span><p><small>EJERCICIOS</small><b>{{ejerciciosCasaActuales.length}}</b></p></div>
                 </div>
 
-                <div class="train-ux-actions">
+                <div class="train-ux-actions" id="acciones-rutina-gym">
                   <button type="button"
                           class="train-ux-primary"
                           (click)="accionEntrenamientoPrincipal()"
@@ -531,15 +531,24 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <em *ngIf="membresiaActual">✓</em>
               </button>
               <i>›</i>
-              <button type="button" class="train-step" [class.active]="tieneRutinaAsignadaGym" (click)="tieneRutinaAsignadaGym ? abrirModulo('rutinas') : solicitarRutinaAlPersonal()">
+              <button type="button"
+                      class="train-step"
+                      [class.active]="tieneRutinaAsignadaGym"
+                      [class.locked]="!tieneRutinaAsignadaGym"
+                      (click)="accionPasoRutinaGym()">
                 <span>2</span>
                 <div><small>PLANIFICACIÓN</small><b>Rutina asignada</b><p>{{tieneRutinaAsignadaGym ? rutinaActual?.nombre_rutina : 'Pendiente del personal'}}</p></div>
                 <em *ngIf="tieneRutinaAsignadaGym">✓</em>
               </button>
               <i>›</i>
-              <button type="button" class="train-step" [class.active]="puedeEntrenarRutinaGym" (click)="accionEntrenamientoPrincipal()">
+              <button type="button"
+                      class="train-step"
+                      [class.active]="puedeEntrenarRutinaGym"
+                      [class.locked]="!puedeEntrenarRutinaGym"
+                      [disabled]="!puedeEntrenarRutinaGym"
+                      (click)="accionPasoEntrenarGym()">
                 <span>3</span>
-                <div><small>EJECUCIÓN</small><b>Entrenar en sala</b><p>{{puedeEntrenarRutinaGym ? 'Series, repeticiones, carga y descansos' : 'Completa el paso anterior para comenzar'}}</p></div>
+                <div><small>EJECUCIÓN</small><b>Entrenar en sala</b><p>{{puedeEntrenarRutinaGym ? 'Series, repeticiones, carga y descansos' : 'Disponible cuando tengas una rutina asignada'}}</p></div>
                 <em *ngIf="puedeEntrenarRutinaGym">LISTO</em>
               </button>
             </section>
@@ -1692,6 +1701,9 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
     @media(max-width:1150px){
       .member-page .member-desktop-actions{display:none}
     }
+    .member-page .train-step.locked{cursor:default;opacity:.66}
+    .member-page .train-step:disabled{cursor:not-allowed;opacity:.52}
+    .member-page .train-step:disabled:hover{transform:none!important}
     .member-page .focus-action-card{cursor:pointer;transition:background .18s ease,transform .18s ease}
     .member-page .mallqui-focus-grid .focus-icon.focus-photo{
       width:74px!important;
@@ -2720,6 +2732,28 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const fin=new Date(String(this.membresiaActual.fecha_fin).slice(0,10)+'T23:59:59');
     const hoy=new Date();
     return Math.max(0,Math.ceil((fin.getTime()-hoy.getTime())/86400000));
+  }
+
+  accionPasoRutinaGym():void{
+    if(this.tieneRutinaAsignadaGym){
+      this.abrirModulo('rutinas');
+      return;
+    }
+    this.ok('Aún no tienes una rutina asignada. Puedes solicitarla al personal desde esta misma pantalla.');
+    setTimeout(()=>{
+      document.getElementById('acciones-rutina-gym')?.scrollIntoView({behavior:'smooth',block:'center'});
+    },0);
+  }
+
+  accionPasoEntrenarGym():void{
+    if(!this.puedeEntrenarRutinaGym){
+      this.ok('Primero necesitas una rutina asignada para comenzar el entrenamiento.');
+      setTimeout(()=>{
+        document.getElementById('acciones-rutina-gym')?.scrollIntoView({behavior:'smooth',block:'center'});
+      },0);
+      return;
+    }
+    this.iniciarEntrenamientoCasa();
   }
 
   accionEntrenamientoPrincipal():void{
