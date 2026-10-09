@@ -12,6 +12,7 @@ use App\Models\ConfiguracionSistema;
 use App\Models\NotificacionCliente;
 use App\Models\MetaCliente;
 use App\Models\PagoMembresia;
+use App\Models\PlanEntrenamientoCasa;
 use App\Models\Reserva;
 use App\Models\Rutina;
 use App\Models\SesionEntrenamientoCasa;
@@ -205,45 +206,110 @@ class ExperienciaClienteController extends Controller
             ]);
         }
 
-        // El calendario del cliente usa la rutina realmente asignada por el gimnasio.
-        // Ya no genera sesiones genéricas desde PlanEntrenamientoCasa.
-        $rutina = Rutina::with('entrenador')
+        // Meta semanal usada tanto para la agenda automática de rutina
+        // como para las recomendaciones de clases.
+        $meta = MetaCliente::firstOrCreate(
+            ['id_cliente' => $cliente->id_cliente],
+            ['sesiones_semanales' => 3, 'recordatorios' => true]
+        );
+        $metaSemanal = max(1, min(4, (int) $meta->sesiones_semanales));
+
+        // El sistema detecta la rutina activa y genera automáticamente las fechas
+        // de entrenamiento de los próximos 30 días. No requiere que el administrador
+        // programe cada fecha manualmente.
+        $rutina = Rutina::with(['entrenador', 'detalles'])
             ->where('id_cliente', $cliente->id_cliente)
             ->where('estado', 'Activo')
             ->orderByDesc('fecha_inicio')
             ->first();
 
         if ($rutina) {
-            $inicioRutina = $rutina->fecha_inicio ? Carbon::parse($rutina->fecha_inicio)->startOfDay() : null;
-            $finRutina = $rutina->fecha_fin ? Carbon::parse($rutina->fecha_fin)->startOfDay() : null;
+            $inicioRutina = $rutina->fecha_inicio
+                ? Carbon::parse($rutina->fecha_inicio)->startOfDay()
+                : today();
+            $finRutina = $rutina->fecha_fin
+                ? Carbon::parse($rutina->fecha_fin)->startOfDay()
+                : $hasta->copy();
+
+            $inicioAgendaRutina = $inicioRutina->gt($desde) ? $inicioRutina->copy() : $desde->copy();
+            $finAgendaRutina = $finRutina->lt($hasta) ? $finRutina->copy() : $hasta->copy();
+
             $entrenador = trim(
                 ($rutina->entrenador?->nombres ?? '').' '.($rutina->entrenador?->apellidos ?? '')
             );
 
-            if ($inicioRutina && !$inicioRutina->isToday() && $inicioRutina->between($desde, $hasta)) {
-                $eventos->push([
-                    'tipo' => 'casa',
-                    'fecha' => $inicioRutina->toDateString(),
-                    'titulo' => 'Inicio de rutina: '.($rutina->nombre_rutina ?? 'Rutina asignada'),
-                    'detalle' => trim(($rutina->objetivo ?? 'Entrenamiento').' · '.$entrenador, ' ·'),
-                ]);
+            $planGuardado = PlanEntrenamientoCasa::query()
+                ->where('id_cliente', $cliente->id_cliente)
+                ->where('activo', true)
+                ->first();
+
+            $diasIso = [
+                'Lunes' => 1, 'Martes' => 2, 'Miércoles' => 3, 'Jueves' => 4,
+                'Viernes' => 5, 'Sábado' => 6, 'Domingo' => 7,
+            ];
+
+            $diasPlan = collect((array) ($planGuardado?->dias ?? []))
+                ->filter(fn ($dia) => isset($diasIso[$dia]))
+                ->values();
+
+            if ($diasPlan->isEmpty()) {
+                $diasAutomaticos = match ($metaSemanal) {
+                    1 => ['Miércoles'],
+                    2 => ['Martes', 'Viernes'],
+                    4 => ['Lunes', 'Martes', 'Jueves', 'Sábado'],
+                    default => ['Lunes', 'Miércoles', 'Viernes'],
+                };
+                $diasPlan = collect($diasAutomaticos);
             }
 
-            $rutinaVigenteHoy = (!$inicioRutina || $inicioRutina->lte(today()))
-                && (!$finRutina || $finRutina->gte(today()));
+            $diasIsoSeleccionados = $diasPlan
+                ->map(fn ($dia) => $diasIso[$dia] ?? null)
+                ->filter()
+                ->values()
+                ->all();
 
-            if ($rutinaVigenteHoy) {
-                $eventos->push([
-                    'tipo' => 'casa',
-                    'fecha' => today()->toDateString(),
-                    'titulo' => $rutina->nombre_rutina ?? 'Rutina activa',
-                    'detalle' => trim(($rutina->objetivo ?? 'Entrenamiento').' · '.($entrenador ?: 'Mallqui Gym'), ' ·'),
-                ]);
+            $sesionesCompletadas = SesionEntrenamientoCasa::query()
+                ->where('id_cliente', $cliente->id_cliente)
+                ->where('id_rutina', $rutina->id_rutina)
+                ->whereBetween('fecha', [$inicioAgendaRutina, $finAgendaRutina])
+                ->where('estado', 'Completada')
+                ->pluck('fecha')
+                ->map(fn ($fecha) => Carbon::parse($fecha)->toDateString())
+                ->all();
+
+            $numeroSesion = 0;
+            if ($inicioAgendaRutina->lte($finAgendaRutina)) {
+                for ($fecha = $inicioAgendaRutina->copy(); $fecha->lte($finAgendaRutina); $fecha->addDay()) {
+                    if (!in_array($fecha->dayOfWeekIso, $diasIsoSeleccionados, true)) continue;
+                    if (in_array($fecha->toDateString(), $sesionesCompletadas, true)) continue;
+
+                    $numeroSesion++;
+                    $cantidadEjercicios = $rutina->detalles?->count() ?? 0;
+                    $partes = [];
+                    if ($cantidadEjercicios > 0) {
+                        $partes[] = $cantidadEjercicios.' ejercicio'.($cantidadEjercicios === 1 ? '' : 's');
+                    }
+                    if ($rutina->objetivo) $partes[] = $rutina->objetivo;
+                    if ($entrenador) $partes[] = $entrenador;
+
+                    $eventos->push([
+                        'tipo' => 'casa',
+                        'fecha' => $fecha->toDateString(),
+                        'titulo' => $rutina->nombre_rutina ?? 'Rutina asignada',
+                        'detalle' => implode(' · ', $partes) ?: 'Entrenamiento programado automáticamente.',
+                        'automatico' => true,
+                        'id_rutina' => (int) $rutina->id_rutina,
+                        'sesion' => $numeroSesion,
+                        'motivo' => $planGuardado
+                            ? 'Fecha tomada de tu plan semanal guardado.'
+                            : 'Fecha calculada automáticamente según tu rutina activa y meta semanal.',
+                    ]);
+                }
             }
 
-            if ($finRutina && !$finRutina->isToday() && $finRutina->between($desde, $hasta)) {
+            if ($finRutina->between($desde, $hasta) && !$finRutina->isSameDay($inicioAgendaRutina)) {
                 $eventos->push([
-                    'tipo' => 'casa',
+                    'tipo' => 'membresia',
                     'fecha' => $finRutina->toDateString(),
                     'titulo' => 'Fin de rutina: '.($rutina->nombre_rutina ?? 'Rutina asignada'),
                     'detalle' => 'Revisa tu progreso y consulta la siguiente asignación.',
@@ -254,11 +320,6 @@ class ExperienciaClienteController extends Controller
         // Sugerencias de clases: no reservan nada automáticamente.
         // Se calculan con la meta semanal del cliente, sus clases favoritas,
         // cupos disponibles y las reservas que ya tiene.
-        $meta = MetaCliente::firstOrCreate(
-            ['id_cliente' => $cliente->id_cliente],
-            ['sesiones_semanales' => 3, 'recordatorios' => true]
-        );
-        $metaSemanal = max(1, min(4, (int) $meta->sesiones_semanales));
 
         $favoritas = ClaseFavorita::query()
             ->where('id_cliente', $cliente->id_cliente)
