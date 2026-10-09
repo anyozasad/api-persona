@@ -1,0 +1,182 @@
+.member-page .mallqui-products-home{
+  margin-top:24px;
+  border:1px solid #2b3136;
+  background:linear-gradient(110deg,#0c1013 0%,#11171b 62%,#171217 100%);
+  color:#fff;
+}
+.member-page .mallqui-products-home-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:24px;
+  padding:24px 26px 20px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.member-page .mallqui-products-home-head>div:first-child>span{
+  display:block;
+  color:#ff3150;
+  font-size:8px;
+  font-weight:950;
+  letter-spacing:1.4px;
+}
+.member-page .mallqui-products-home-head h3{
+  margin:6px 0 5px;
+  color:#fff;
+  font-size:25px;
+  letter-spacing:-.6px;
+}
+.member-page .mallqui-products-home-head p{
+  max-width:760px;
+  margin:0;
+  color:#8c969d;
+  font-size:9px;
+  line-height:1.55;
+}
+.member-page .mallqui-products-home-meta{
+  min-width:90px;
+  text-align:right;
+}
+.member-page .mallqui-products-home-meta b{
+  display:block;
+  color:#fff;
+  font-size:28px;
+  line-height:1;
+}
+.member-page .mallqui-products-home-meta span{
+  display:block;
+  margin-top:5px;
+  color:#7f8a91;
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:.7px;
+  text-transform:uppercase;
+}
+.member-page .mallqui-products-home-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+}
+.member-page .mallqui-products-home-grid article{
+  position:relative;
+  min-height:190px;
+  padding:20px;
+  border-right:1px solid rgba(255,255,255,.08);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  background:#0f1418;
+}
+.member-page .mallqui-products-home-grid article:nth-child(4n){
+  border-right:0;
+}
+.member-page .mallqui-product-home-mark{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  margin-bottom:17px;
+  border:1px solid rgba(255,49,80,.28);
+  background:rgba(255,49,80,.07);
+  color:#ff6178;
+  font-size:18px;
+  font-weight:950;
+}
+.member-page .mallqui-product-home-copy>span{
+  display:block;
+  color:#ff6178;
+  font-size:6.5px;
+  font-weight:950;
+  letter-spacing:1px;
+}
+.member-page .mallqui-product-home-copy h4{
+  margin:6px 0 5px;
+  color:#fff;
+  font-size:16px;
+}
+.member-page .mallqui-product-home-copy p{
+  min-height:32px;
+  margin:0;
+  color:#7f8a91;
+  font-size:8px;
+  line-height:1.45;
+}
+.member-page .mallqui-product-home-copy>div{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+.member-page .mallqui-product-home-copy>div b{
+  color:#fff;
+  font-size:14px;
+}
+.member-page .mallqui-product-home-copy>div small{
+  color:#7f8a91;
+  font-size:7px;
+  text-align:right;
+}
+.member-page .mallqui-product-home-status{
+  position:absolute;
+  top:18px;
+  right:18px;
+  padding:5px 7px;
+  border:1px solid rgba(69,201,132,.25);
+  background:rgba(69,201,132,.06);
+  color:#67d99c;
+  font-size:6px;
+  font-weight:950;
+  letter-spacing:.75px;
+}
+.member-page .mallqui-products-home-empty{
+  padding:28px;
+  text-align:center;
+}
+.member-page .mallqui-products-home-empty b{
+  color:#fff;
+  font-size:12px;
+}
+.member-page .mallqui-products-home-empty p{
+  margin:6px 0 0;
+  color:#7f8a91;
+  font-size:8.5px;
+}
+.member-page .mallqui-products-home-foot{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:13px 20px;
+  background:#0b0f12;
+}
+.member-page .mallqui-products-home-foot>span{
+  color:#768188;
+  font-size:7.5px;
+}
+.member-page .mallqui-products-home-foot button{
+  min-height:32px;
+  padding:0 11px;
+  border:1px solid #30383e;
+  background:#11161a;
+  color:#fff;
+  font-size:7px;
+  font-weight:950;
+  cursor:pointer;
+}
+.member-page .mallqui-products-home-foot button b{
+  margin-left:6px;
+  color:#ff3150;
+}
+@media(max-width:1100px){
+  .member-page .mallqui-products-home-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .member-page .mallqui-products-home-grid article:nth-child(4n){border-right:1px solid rgba(255,255,255,.08)}
+  .member-page .mallqui-products-home-grid article:nth-child(2n){border-right:0}
+}
+@media(max-width:650px){
+  .member-page .mallqui-products-home-head{align-items:flex-start;flex-direction:column;padding:20px}
+  .member-page .mallqui-products-home-meta{text-align:left}
+  .member-page .mallqui-products-home-grid{grid-template-columns:1fr}
+  .member-page .mallqui-products-home-grid article,
+  .member-page .mallqui-products-home-grid article:nth-child(2n),
+  .member-page .mallqui-products-home-grid article:nth-child(4n){border-right:0}
+  .member-page .mallqui-products-home-foot{align-items:flex-start;flex-direction:column}
+}
