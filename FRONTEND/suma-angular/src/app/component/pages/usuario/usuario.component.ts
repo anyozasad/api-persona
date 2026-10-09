@@ -11,7 +11,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
   selector: 'app-usuario',
   standalone: true,
   imports: [CommonModule, FormsModule, ClienteExperienciaComponent],
-  styleUrls: ['../mallqui-member.css'],
+  styleUrls: ['../mallqui-member.css', './usuario-productos.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="member-page">
@@ -302,19 +302,50 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               </article>
             </div>
 
-            <div class="mallqui-supplement-strip">
-              <div>
-                <span>SUPLEMENTACIÓN Y PROVEEDORES</span>
-                <h3>Universal Nutrition <b>(UN)</b></h3>
-                <p>Productos disponibles según stock del gimnasio. La información y registro sanitario deben verificarse según cada producto.</p>
+            <section class="mallqui-products-home">
+              <header class="mallqui-products-home-head">
+                <div>
+                  <span>PRODUCTOS DEL GIMNASIO</span>
+                  <h3>Productos disponibles</h3>
+                  <p>Consulta productos registrados por Mallqui Gym. El precio y el stock se actualizan directamente desde la base de datos.</p>
+                </div>
+                <div class="mallqui-products-home-meta">
+                  <b>{{productosDisponibles.length}}</b>
+                  <span>con stock</span>
+                </div>
+              </header>
+
+              <div class="mallqui-products-home-grid" *ngIf="productosDisponibles.length; else sinProductosInicio">
+                <article *ngFor="let p of productosInicioVisibles">
+                  <div class="mallqui-product-home-mark">{{inicialProductoInicio(p)}}</div>
+                  <div class="mallqui-product-home-copy">
+                    <span>{{nombreCategoriaProductoInicio(p)}}</span>
+                    <h4>{{p.nombre_producto}}</h4>
+                    <p>{{p.descripcion || 'Producto disponible en recepción de Mallqui Gym.'}}</p>
+                    <div>
+                      <b>S/ {{p.precio_venta | number:'1.2-2'}}</b>
+                      <small>{{p.stock}} {{p.unidad_medida || 'unidad'}}{{p.stock===1 ? '' : 'es'}} disponibles</small>
+                    </div>
+                  </div>
+                  <span class="mallqui-product-home-status">EN STOCK</span>
+                </article>
               </div>
-              <div class="mallqui-supplement-badges">
-                <span>UN</span>
-                <span>Universal Nutrition</span>
-                <span>Referencia FDA</span>
-              </div>
-              <button type="button" (click)="abrirModulo('rutinas')">Ver mi rutina <span>→</span></button>
-            </div>
+
+              <ng-template #sinProductosInicio>
+                <div class="mallqui-products-home-empty">
+                  <b>No hay productos con stock disponible.</b>
+                  <p>Cuando el administrador registre productos y existencias, aparecerán aquí automáticamente.</p>
+                </div>
+              </ng-template>
+
+              <footer *ngIf="productosDisponibles.length>4" class="mallqui-products-home-foot">
+                <span>Mostrando {{productosInicioVisibles.length}} de {{productosDisponibles.length}} productos</span>
+                <button type="button" (click)="mostrarTodosProductosInicio=!mostrarTodosProductosInicio">
+                  {{mostrarTodosProductosInicio ? 'Ver menos' : 'Ver todos los productos'}}
+                  <b>{{mostrarTodosProductosInicio ? '↑' : '↓'}}</b>
+                </button>
+              </footer>
+            </section>
           </section>
 
           <section class="mallqui-wellbeing-section">
@@ -1963,7 +1994,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   dbConectada=false;
   dbMotor='MySQL';
   resumen:any=null; perfil:any={}; membresiaActual:any=null; membresiaProxima:any=null; membresiasDisponibles:any[]=[]; gymInfo:any={};
-  pagos:any[]=[]; rutinas:any[]=[]; asistencias:any[]=[]; reservas:any[]=[]; clases:any[]=[]; compras:any[]=[];
+  pagos:any[]=[]; rutinas:any[]=[]; asistencias:any[]=[]; reservas:any[]=[]; clases:any[]=[]; compras:any[]=[]; productosDisponibles:any[]=[];
+  mostrarTodosProductosInicio=false;
   fechasReserva:Record<number,string>={};
   pagoForm:any={id_membresia:0,fecha_inicio:new Date().toISOString().slice(0,10),metodo_pago:'Yape',numero_operacion:''};
   ultimaBoleta:any=null;
@@ -2042,7 +2074,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargar():void{
     this.cargando=true; this.error='';
     this.api.cargarPortalCliente().subscribe({
-      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=r.membresiasDisponibles||[];this.gymInfo=r.gymInfo||{};this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.preseleccionarPlanActual();this.cargando=false;this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
+      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=r.membresiasDisponibles||[];this.gymInfo=r.gymInfo||{};this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.productosDisponibles=r.productos||[];this.preseleccionarPlanActual();this.cargando=false;this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
       error:e=>{this.error=this.errorApi(e);this.cargando=false;}
     });
   }
@@ -2535,6 +2567,20 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       return !isNaN(d.getTime()) && d.getFullYear()===hoy.getFullYear() && d.getMonth()===hoy.getMonth();
     }).length;
   }
+  get productosInicioVisibles(): any[] {
+    return this.mostrarTodosProductosInicio
+      ? this.productosDisponibles
+      : this.productosDisponibles.slice(0,4);
+  }
+
+  nombreCategoriaProductoInicio(p:any): string {
+    return String(p?.categoria?.nombre_categoria || 'Producto').toUpperCase();
+  }
+
+  inicialProductoInicio(p:any): string {
+    return String(p?.nombre_producto || 'P').trim().charAt(0).toUpperCase() || 'P';
+  }
+
   get asistenciaAbierta():any{
     return this.asistencias.find((a:any)=>a?.fecha_hora_entrada && !a?.fecha_hora_salida)||null;
   }
