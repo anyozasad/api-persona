@@ -3257,19 +3257,19 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 <meta charset="utf-8">
 <title>${safe(numero)} - Mallqui Gym</title>
 <style>
-  @page{size:80mm 200mm;margin:2mm}
+  @page{size:A4 portrait;margin:10mm}
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0;background:#fff;color:#000}
+  html,body{margin:0;padding:0;background:#fff;color:#000;width:100%}
   body{font-family:Arial,Helvetica,sans-serif;font-size:8.4px;line-height:1.2}
-  .ticket{width:72mm;margin:0 auto;padding:1mm 1.2mm 2mm;background:#fff}
+  .ticket{width:80mm;margin:0 auto;padding:2mm 2.4mm 3mm;background:#fff}
   .center{text-align:center}
-  .logo{width:24mm;max-height:19mm;object-fit:contain;display:block;margin:0 auto .6mm}
-  .company{margin:0;font-size:10.5px;font-weight:900;line-height:1.05}
-  .business{margin-top:.5mm;font-size:7.7px;line-height:1.25}
+  .logo{width:27mm;max-height:21mm;object-fit:contain;display:block;margin:0 auto .8mm}
+  .company{margin:0;font-size:12px;font-weight:900;line-height:1.05}
+  .business{margin-top:.6mm;font-size:8.2px;line-height:1.3}
   .business b{font-weight:900}
-  .doc-title{margin:2.4mm 0 .4mm;font-size:10px;font-weight:900;line-height:1.12}
+  .doc-title{margin:2.8mm 0 .5mm;font-size:11.5px;font-weight:900;line-height:1.12}
   .doc-sub{font-size:7px;font-weight:800}
-  .number{margin-top:.8mm;font-size:9.5px;font-weight:900}
+  .number{margin-top:.8mm;font-size:10.5px;font-weight:900}
   .client{margin-top:2mm;font-size:8.8px;line-height:1.45}
   .client b{font-weight:900}
   .date-row{display:grid;grid-template-columns:1fr 1fr;gap:2mm;margin:1.5mm 0 1mm;font-size:8.2px}
@@ -3298,9 +3298,19 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   .legal strong{display:block;font-weight:900}
   .warning{margin-top:1mm;padding-top:1mm;border-top:1px dashed #000;font-size:6.6px;font-weight:800}
   @media print{
-    html,body{width:80mm!important;min-width:80mm!important}
-    body{print-color-adjust:exact;-webkit-print-color-adjust:exact}
-    .ticket{width:72mm!important;margin:0 auto!important}
+    html,body{width:100%!important;min-width:0!important}
+    body{
+      print-color-adjust:exact;
+      -webkit-print-color-adjust:exact;
+      display:flex!important;
+      justify-content:center!important;
+      align-items:flex-start!important;
+    }
+    .ticket{
+      width:80mm!important;
+      margin:0 auto!important;
+      padding:2mm 2.4mm 3mm!important;
+    }
   }
 </style>
 </head>
