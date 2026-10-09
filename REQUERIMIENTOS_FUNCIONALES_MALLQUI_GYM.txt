@@ -1,0 +1,58 @@
+MALLQUI GYM - REQUERIMIENTOS FUNCIONALES
+
+RF-01. El sistema debe permitir iniciar sesión con usuario y contraseña.
+RF-02. El sistema debe validar el rol y estado del usuario antes de permitir el acceso.
+RF-03. El sistema debe permitir cerrar sesión.
+RF-04. El cliente debe poder consultar y actualizar su perfil.
+RF-05. El sistema debe mostrar los planes de membresía disponibles.
+RF-06. El cliente debe poder consultar su membresía actual, vigencia y fecha de vencimiento.
+RF-07. El administrador debe poder administrar los planes de membresía.
+RF-08. El cliente debe poder registrar o solicitar el pago de una membresía.
+RF-09. El sistema debe mostrar el historial de pagos del cliente.
+RF-10. El sistema debe generar un comprobante imprimible del pago.
+RF-11. El cliente debe poder seleccionar un objetivo de entrenamiento.
+RF-12. El cliente debe poder seleccionar nivel Principiante, Intermedio o Avanzado.
+RF-13. El sistema debe mostrar tipo de entrenamiento, clase de sesión y ejercicios de referencia según objetivo y nivel.
+RF-14. El sistema debe mostrar imágenes relacionadas con los ejercicios de referencia.
+RF-15. El cliente debe poder solicitar una rutina al personal del gimnasio.
+RF-16. El sistema debe evitar solicitudes duplicadas de rutina.
+RF-17. El entrenador debe poder registrar una rutina para un cliente.
+RF-18. El cliente debe poder consultar su rutina activa.
+RF-19. La rutina debe mostrar ejercicios, series, repeticiones, carga, descanso y observaciones.
+RF-20. El cliente debe poder iniciar y seguir una sesión de entrenamiento.
+RF-21. El sistema debe mostrar las clases activas disponibles.
+RF-22. El administrador debe poder registrar y administrar clases.
+RF-23. El cliente debe poder reservar una clase.
+RF-24. El cliente debe poder consultar sus reservas.
+RF-25. El sistema debe mostrar una credencial digital del socio.
+RF-26. El personal debe poder registrar la entrada del cliente.
+RF-27. El personal debe poder registrar la salida del cliente.
+RF-28. El cliente debe poder consultar su historial de asistencias.
+RF-29. El cliente debe poder consultar su progreso e historial de actividad.
+RF-30. El cliente debe poder enviar consultas al centro de soporte.
+RF-31. El cliente debe poder consultar el estado de sus solicitudes de soporte.
+RF-32. El administrador debe poder revisar y responder consultas.
+RF-33. El sistema debe mostrar avisos o notificaciones al cliente.
+RF-34. El administrador debe poder registrar, consultar y actualizar clientes.
+RF-35. El administrador debe poder registrar y administrar entrenadores.
+RF-36. El administrador debe poder registrar y administrar productos.
+RF-37. El administrador debe poder registrar y administrar proveedores.
+RF-38. El administrador debe poder registrar compras y sus detalles.
+RF-39. El administrador debe poder registrar ventas y sus detalles.
+RF-40. El administrador debe poder consultar reportes del gimnasio.
+RF-41. El frontend Angular debe comunicarse con el backend Laravel mediante API.
+RF-42. El backend debe almacenar los datos del sistema en MySQL.
+RF-43. El sistema debe restringir las funciones según el rol del usuario.
+
+ACTORES:
+- Cliente
+- Entrenador
+- Administrador
+
+TECNOLOGÍAS:
+- Frontend: Angular
+- Backend/API: Laravel
+- Base de datos: MySQL
+
+RESULTADO ESPERADO:
+El sistema Mallqui Gym debe integrar la gestión del cliente, membresías, pagos, rutinas, entrenamiento, clases, reservas, asistencias, progreso, soporte y operaciones administrativas en una sola plataforma.
