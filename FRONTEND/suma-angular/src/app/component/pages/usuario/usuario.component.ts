@@ -11,7 +11,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
   selector: 'app-usuario',
   standalone: true,
   imports: [CommonModule, FormsModule, ClienteExperienciaComponent],
-  styleUrls: ['../mallqui-member.css', './usuario-productos.css'],
+  styleUrls: ['../mallqui-member.css', './usuario-productos.css', './usuario-clases.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="member-page">
@@ -1070,89 +1070,93 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
           </div>
         </section>
 
-        <section *ngIf="moduloActivo==='clases'" class="member-module module-classes-v34 member-enter-up">
-          <section class="module-portal-head module-portal-classes">
-            <article class="module-portal-hero module-portal-classes-hero">
-              <div class="module-portal-copy">
-                <span>AGENDA DEL GIMNASIO</span>
-                <h1>Clases</h1>
-                <p>Explora horarios, reserva tu lugar y revisa tu agenda desde una misma pantalla.</p>
-                <div class="module-portal-actions">
-                  <button type="button" class="portal-action-primary" (click)="abrirModulo('reservas')">
-                    <i>◷</i><span><b>Mis reservas</b><small>Ver clases programadas</small></span><em>→</em>
-                  </button>
-                  <button type="button" class="portal-action-secondary" (click)="abrirModulo('calendario')">
-                    <i>▣</i><b>Calendario</b>
-                  </button>
-                </div>
+        <section *ngIf="moduloActivo==='clases'" class="member-module classes-live-page member-enter-up">
+          <section class="classes-live-head">
+            <div class="classes-live-copy">
+              <span>CLASES · MALLQUI GYM</span>
+              <h1>Encuentra tu próxima clase</h1>
+              <p>Los horarios se consultan automáticamente. Cuando aparezca una clase activa, el sistema calcula su próxima fecha y te permite reservarla sin que tengas que buscarla manualmente.</p>
+              <div class="classes-live-actions">
+                <button type="button" class="primary" (click)="abrirModulo('reservas')">Mis reservas <span>→</span></button>
+                <button type="button" class="secondary" (click)="abrirModulo('calendario')">Ver agenda</button>
               </div>
-              <div class="module-portal-badge" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg>
-              </div>
-            </article>
+            </div>
 
-            <aside class="module-portal-side">
-              <div class="portal-side-head">
-                <span>HOY EN MALLQUI</span>
-                <b>Tu agenda</b>
+            <aside class="classes-live-status">
+              <div class="classes-live-indicator"><i></i><span>ACTUALIZACIÓN AUTOMÁTICA</span></div>
+              <strong>Cada 15 segundos</strong>
+              <p>Clases, reservas y asistencias se vuelven a consultar sin recargar la página.</p>
+              <div class="classes-live-mini">
+                <article><b>{{clases.length}}</b><span>clases activas</span></article>
+                <article><b>{{reservasActivas.length}}</b><span>reservas</span></article>
+                <article><b>{{showcaseAsistencias}}</b><span>asistencias mes</span></article>
               </div>
-              <div class="portal-mini-stats">
-                <article class="portal-stat-action" role="button" tabindex="0"
-                         (click)="irAClasesDisponibles()"
-                         (keydown.enter)="irAClasesDisponibles()">
-                  <i>▣</i><div><strong>{{clases.length}}</strong><small>clases disponibles</small></div>
-                </article>
-                <article class="portal-stat-action" role="button" tabindex="0"
-                         (click)="abrirModulo('reservas')"
-                         (keydown.enter)="abrirModulo('reservas')">
-                  <i>◷</i><div><strong>{{reservasActivas.length}}</strong><small>reservas activas</small></div>
-                </article>
-                <article class="portal-stat-action" role="button" tabindex="0"
-                         (click)="abrirModulo('asistencias')"
-                         (keydown.enter)="abrirModulo('asistencias')">
-                  <i>✓</i><div><strong>{{showcaseAsistencias}}</strong><small>asistencias del mes</small></div>
-                </article>
-              </div>
-              <button type="button" class="portal-side-link" (click)="actualizarSeccion('clases')">
-                <span>Actualizar horarios</span><b>↻</b>
-              </button>
             </aside>
           </section>
 
-          <div class="module-window-title" id="clases-disponibles">
-            <div><span>CLASES DISPONIBLES</span><h2>Elige tu próxima clase</h2><p>Cada clase tiene su propia ventana con horario, entrenador y reserva.</p></div>
-          </div>
-
-          <div class="member-class-grid">
-            <article class="member-class-card" *ngFor="let c of clases">
-              <div class="class-card-top"><span>CLASE DISPONIBLE</span><i>▣</i></div>
-              <h2>{{c.nombre}}</h2>
-              <div class="class-meta">
-                <span><b>Día</b>{{c.dia_semana}}</span>
-                <span><b>Horario</b>{{c.hora_inicio}} - {{c.hora_fin}}</span>
-                <span><b>Entrenador</b>{{nombrePersona(c.entrenador)}}</span>
+          <section class="classes-live-content">
+            <header class="classes-live-section-head">
+              <div>
+                <span>HORARIOS DISPONIBLES</span>
+                <h2>Próximas clases</h2>
+                <p *ngIf="clases.length">La fecha de cada clase se calcula según el día y horario registrado.</p>
+                <p *ngIf="!clases.length">El sistema sigue consultando nuevos horarios automáticamente.</p>
               </div>
-              <label>Fecha de reserva<input type="date" [(ngModel)]="fechasReserva[c.id_clase]" [name]="'fecha'+c.id_clase"></label>
-              <button type="button" (click)="reservar(c)">Reservar clase <span>→</span></button>
-            </article>
+              <span class="classes-live-chip"><i></i> En línea</span>
+            </header>
 
-            <article class="member-empty-card member-empty-guided empty-classes-panel" *ngIf="!clases.length">
-              <span class="empty-state-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h3M13 14h3M8 17h3"/></svg>
-              </span>
-              <small class="empty-state-kicker">AGENDA DEL GIMNASIO</small>
-              <h3>No hay clases disponibles por ahora</h3>
-              <p>Puedes actualizar los horarios para comprobar nuevas clases o continuar con una sesión guiada dentro del gimnasio.</p>
-              <div class="empty-actions">
-                <button type="button" class="empty-primary" (click)="actualizarSeccion('clases')">
-                  <span>↻</span><b>Actualizar clases</b>
-                </button>
-                <button type="button" class="empty-secondary" (click)="abrirModulo('casa')">
-                  <span>⚡</span><b>Entrenar en el gym</b>
-                </button>
-              </div>
-            </article>
-          </div>
+            <div class="classes-live-grid" *ngIf="clases.length; else clasesAutoVacias">
+              <article class="classes-live-card" *ngFor="let c of clases" [class.recommended]="claseAfinObjetivo(c)">
+                <div class="classes-live-card-top">
+                  <span>{{claseAfinObjetivo(c) ? 'RECOMENDADA PARA TI' : 'CLASE DISPONIBLE'}}</span>
+                  <b>{{c.dia_semana}}</b>
+                </div>
+
+                <h3>{{c.nombre}}</h3>
+                <p class="classes-live-trainer">{{nombrePersona(c.entrenador) || 'Entrenador por confirmar'}}</p>
+
+                <div class="classes-live-date">
+                  <div>
+                    <small>PRÓXIMA FECHA</small>
+                    <strong>{{fechaProximaClaseLegible(c)}}</strong>
+                  </div>
+                  <div>
+                    <small>HORARIO</small>
+                    <strong>{{horaClaseCorta(c.hora_inicio)}} - {{horaClaseCorta(c.hora_fin)}}</strong>
+                  </div>
+                </div>
+
+                <div class="classes-live-card-bottom">
+                  <span *ngIf="claseAfinObjetivo(c)">Coincide con tu objetivo: {{enfoqueInicioSeleccionado}}</span>
+                  <span *ngIf="!claseAfinObjetivo(c)">Horario calculado automáticamente</span>
+                  <button type="button" (click)="reservarProximaClase(c)">Reservar <b>→</b></button>
+                </div>
+              </article>
+            </div>
+
+            <ng-template #clasesAutoVacias>
+              <section class="classes-live-empty">
+                <div class="classes-live-empty-main">
+                  <span class="classes-live-empty-icon">▣</span>
+                  <div>
+                    <small>SIN CLASES GRUPALES ACTIVAS</small>
+                    <h3>No necesitas estar actualizando manualmente.</h3>
+                    <p>Esta pantalla seguirá consultando la API automáticamente. En cuanto exista un horario activo, aparecerá aquí con su próxima fecha calculada.</p>
+                  </div>
+                </div>
+
+                <aside class="classes-live-suggestion">
+                  <span>MIENTRAS TANTO</span>
+                  <h4>{{guiaEnfoqueInicio.clase}}</h4>
+                  <p>Según tu objetivo <b>{{enfoqueInicioSeleccionado}}</b> y nivel <b>{{nivelEntrenamiento}}</b>, puedes continuar con tu entrenamiento guiado.</p>
+                  <div>
+                    <small *ngFor="let e of guiaEnfoqueInicio.ejercicios | slice:0:3">{{e}}</small>
+                  </div>
+                  <button type="button" (click)="abrirModulo('casa')">Ir a mi entrenamiento <span>→</span></button>
+                </aside>
+              </section>
+            </ng-template>
+          </section>
         </section>
 
         <section *ngIf="moduloActivo==='reservas'" class="member-module apex-reservations-page member-enter-up">
@@ -3500,6 +3504,64 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       error:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);}
     });
   }
+  diaSemanaClaseNumero(nombre:any):number{
+    const n=String(nombre||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+    const mapa:Record<string,number>={domingo:0,lunes:1,martes:2,miercoles:3,jueves:4,viernes:5,sabado:6};
+    return Object.prototype.hasOwnProperty.call(mapa,n) ? mapa[n] : -1;
+  }
+
+  proximaFechaClaseISO(c:any):string{
+    const dia=this.diaSemanaClaseNumero(c?.dia_semana);
+    if(dia<0)return new Date().toISOString().slice(0,10);
+
+    const ahora=new Date();
+    const fecha=new Date(ahora.getFullYear(),ahora.getMonth(),ahora.getDate());
+    let delta=(dia-fecha.getDay()+7)%7;
+
+    if(delta===0){
+      const hora=String(c?.hora_inicio||'00:00').slice(0,5).split(':').map(Number);
+      const inicio=new Date(fecha);
+      inicio.setHours(hora[0]||0,hora[1]||0,0,0);
+      if(inicio.getTime()<=ahora.getTime())delta=7;
+    }
+
+    fecha.setDate(fecha.getDate()+delta);
+    const y=fecha.getFullYear();
+    const m=String(fecha.getMonth()+1).padStart(2,'0');
+    const d=String(fecha.getDate()).padStart(2,'0');
+    return `${y}-${m}-${d}`;
+  }
+
+  fechaProximaClaseLegible(c:any):string{
+    const iso=this.proximaFechaClaseISO(c);
+    const d=new Date(iso+'T12:00:00');
+    return d.toLocaleDateString('es-PE',{weekday:'long',day:'2-digit',month:'short'})
+      .replace(/^./,x=>x.toUpperCase());
+  }
+
+  horaClaseCorta(v:any):string{
+    return String(v||'--:--').slice(0,5);
+  }
+
+  claseAfinObjetivo(c:any):boolean{
+    const nombre=this.normalizarTextoGym(c?.nombre);
+    const objetivo=this.normalizarTextoGym(this.enfoqueInicioSeleccionado);
+    const palabras:Record<string,string[]>={
+      cardiovascular:['cardio','spinning','ciclismo','aerob','zumba','running'],
+      'masa muscular':['fuerza','muscul','pesas','body pump'],
+      tonificacion:['funcional','tonific','circuito','body'],
+      crossfit:['crossfit','cross','funcional'],
+      'perdida de peso':['cardio','aerob','zumba','spinning','funcional']
+    };
+    return (palabras[objetivo]||[]).some(x=>nombre.includes(x));
+  }
+
+  reservarProximaClase(c:any):void{
+    const fecha=this.proximaFechaClaseISO(c);
+    this.fechasReserva[c.id_clase]=fecha;
+    this.reservar(c);
+  }
+
   reservar(c:any){
     const f=this.fechasReserva[c.id_clase];
     if(!f){this.error='Selecciona una fecha para la clase.';return;}
