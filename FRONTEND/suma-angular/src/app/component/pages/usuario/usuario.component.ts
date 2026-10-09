@@ -24,8 +24,10 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
 
           <nav class="mallqui-apex-menu" aria-label="Navegación principal">
             <button type="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')">Inicio</button>
-            <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')">Reservas</button>
+            <button type="button" [class.active]="moduloActivo==='casa'" (click)="abrirModulo('casa')">Entrenar</button>
             <button type="button" [class.active]="moduloActivo==='rutinas'" (click)="abrirModulo('rutinas')">Rutinas</button>
+            <button type="button" [class.active]="moduloActivo==='clases'" (click)="abrirModulo('clases')">Clases</button>
+            <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')">Reservas</button>
             <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')">Progreso</button>
             <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')">Membresía</button>
           </nav>
@@ -45,6 +47,15 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
           </div>
         </div>
       </header>
+
+      <nav class="member-desktop-actions" aria-label="Accesos del cliente">
+        <button type="button" [class.active]="moduloActivo==='calendario'" (click)="abrirModulo('calendario')"><span>◫</span> Calendario</button>
+        <button type="button" [class.active]="moduloActivo==='asistencias'" (click)="abrirModulo('asistencias')"><span>✓</span> Asistencias</button>
+        <button type="button" [class.active]="moduloActivo==='club'" (click)="abrirModulo('club')"><span>▣</span> Credencial</button>
+        <button type="button" [class.active]="moduloActivo==='avisos'" (click)="abrirModulo('avisos')"><span>●</span> Avisos</button>
+        <button type="button" [class.active]="moduloActivo==='soporte'" (click)="abrirModulo('soporte')"><span>?</span> Ayuda</button>
+        <button type="button" [class.active]="moduloActivo==='perfil'" (click)="abrirModulo('perfil')"><span>♙</span> Perfil</button>
+      </nav>
 
       <div *ngIf="mobileMenuAbierto" class="member-mobile-menu-backdrop" (click)="mobileMenuAbierto=false">
         <aside class="member-mobile-menu-sheet" (click)="$event.stopPropagation()">
@@ -1621,6 +1632,42 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
   `,
   styles: [`
     :host{display:block}
+    .member-page .member-desktop-actions{
+      position:sticky;
+      top:72px;
+      z-index:28;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      min-height:42px;
+      padding:5px 18px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background:rgba(9,12,15,.96);
+      backdrop-filter:blur(12px);
+    }
+    .member-page .member-desktop-actions button{
+      min-height:30px;
+      padding:0 11px;
+      border:1px solid transparent;
+      background:transparent;
+      color:#929ca3;
+      font-size:8px;
+      font-weight:900;
+      letter-spacing:.45px;
+      text-transform:uppercase;
+      cursor:pointer;
+    }
+    .member-page .member-desktop-actions button span{margin-right:5px;color:#ff3150}
+    .member-page .member-desktop-actions button:hover,
+    .member-page .member-desktop-actions button.active{
+      border-color:rgba(255,49,80,.28);
+      background:rgba(255,49,80,.07);
+      color:#fff;
+    }
+    @media(max-width:1150px){
+      .member-page .member-desktop-actions{display:none}
+    }
     .member-page .focus-action-card{cursor:pointer;transition:background .18s ease,transform .18s ease}
     .member-page .mallqui-focus-grid .focus-icon.focus-photo{
       width:74px!important;
@@ -2725,10 +2772,11 @@ export class UsuarioComponent implements OnInit, OnDestroy {
           this.rutinas=[rutina,...resto];
         }
 
+        const planGuardado=r?.plan||null;
         this.planCasa={
-          dias:[],
-          zonas:[],
-          objetivo:String(rutina?.objetivo||'')
+          dias:Array.isArray(planGuardado?.dias) ? [...planGuardado.dias] : [],
+          zonas:Array.isArray(planGuardado?.zonas) ? [...planGuardado.zonas] : [],
+          objetivo:String(planGuardado?.objetivo||rutina?.objetivo||'fuerza')
         };
         this.catalogoCasa={piernas:[],gluteos:[],brazos:[],pecho:[],espalda:[],hombros:[],core:[]};
         this.historialCasa=r?.historial||[];
