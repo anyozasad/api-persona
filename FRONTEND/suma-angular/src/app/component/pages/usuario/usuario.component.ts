@@ -3368,46 +3368,46 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 <meta charset="utf-8">
 <title>${safe(numero)} - Mallqui Gym</title>
 <style>
-  @page{size:A4 portrait;margin:10mm}
+  @page{size:A4 portrait;margin:8mm}
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:#fff;color:#000;width:100%}
-  body{font-family:Arial,Helvetica,sans-serif;font-size:8.4px;line-height:1.2}
-  .ticket{width:80mm;margin:0 auto;padding:2mm 2.4mm 3mm;background:#fff}
+  body{font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:1.24}
+  .ticket{width:118mm;margin:0 auto;padding:4mm 5mm 5mm;background:#fff}
   .center{text-align:center}
-  .logo{width:27mm;max-height:21mm;object-fit:contain;display:block;margin:0 auto .8mm}
-  .company{margin:0;font-size:12px;font-weight:900;line-height:1.05}
-  .business{margin-top:.6mm;font-size:8.2px;line-height:1.3}
+  .logo{width:38mm;max-height:29mm;object-fit:contain;display:block;margin:0 auto 1mm}
+  .company{margin:0;font-size:16px;font-weight:900;line-height:1.05}
+  .business{margin-top:1mm;font-size:10px;line-height:1.35}
   .business b{font-weight:900}
-  .doc-title{margin:2.8mm 0 .5mm;font-size:11.5px;font-weight:900;line-height:1.12}
-  .doc-sub{font-size:7px;font-weight:800}
-  .number{margin-top:.8mm;font-size:10.5px;font-weight:900}
-  .client{margin-top:2mm;font-size:8.8px;line-height:1.45}
+  .doc-title{margin:4mm 0 .8mm;font-size:15px;font-weight:900;line-height:1.12}
+  .doc-sub{font-size:9px;font-weight:800}
+  .number{margin-top:1mm;font-size:14px;font-weight:900}
+  .client{margin-top:3mm;font-size:11px;line-height:1.45}
   .client b{font-weight:900}
-  .date-row{display:grid;grid-template-columns:1fr 1fr;gap:2mm;margin:1.5mm 0 1mm;font-size:8.2px}
+  .date-row{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin:2.4mm 0 1.5mm;font-size:10px}
   .date-row>div:last-child{text-align:right}
   .line{border-top:1px solid #000;margin:1mm 0}
   .dash{border-top:1px dashed #000;margin:1.2mm 0}
   table{width:100%;border-collapse:collapse;table-layout:fixed}
   thead{border-top:1px solid #000;border-bottom:1px solid #000}
-  th{padding:.8mm .25mm;font-size:7.2px;font-weight:900;text-align:left}
-  td{padding:.8mm .25mm;font-size:7.8px;vertical-align:top}
-  .qty{width:7mm}.um{width:8mm}.cod{width:13mm}.price{width:11mm;text-align:right}.totalcol{width:11mm;text-align:right}
+  th{padding:1.1mm .4mm;font-size:9px;font-weight:900;text-align:left}
+  td{padding:1.1mm .4mm;font-size:9.5px;vertical-align:top}
+  .qty{width:10mm}.um{width:12mm}.cod{width:20mm}.price{width:17mm;text-align:right}.totalcol{width:17mm;text-align:right}
   .description-row td{padding-top:0}
   .desc{font-weight:900;text-transform:uppercase;line-height:1.25}
-  .period{display:block;margin-top:.4mm;font-weight:400;text-transform:none;font-size:7px}
+  .period{display:block;margin-top:.6mm;font-weight:400;text-transform:none;font-size:8.5px}
   .totals{margin-top:.8mm;border-top:1px solid #000}
-  .total-row{display:grid;grid-template-columns:1fr 22mm;gap:2mm;padding:.5mm 0;font-size:8.7px;font-weight:900}
+  .total-row{display:grid;grid-template-columns:1fr 30mm;gap:3mm;padding:.7mm 0;font-size:11px;font-weight:900}
   .total-row span:last-child{text-align:right}
-  .grand{font-size:13px;border-top:1px solid #000;border-bottom:1px solid #000;padding:.9mm 0;margin-top:.3mm}
-  .text-row{font-size:8.2px;line-height:1.35;margin-top:.8mm}
+  .grand{font-size:17px;border-top:1px solid #000;border-bottom:1px solid #000;padding:1.2mm 0;margin-top:.5mm}
+  .text-row{font-size:10px;line-height:1.4;margin-top:1mm}
   .text-row b{font-weight:900}
-  .code-title{text-align:center;margin-top:2mm;font-size:7px;font-weight:900}
+  .code-title{text-align:center;margin-top:3mm;font-size:9px;font-weight:900}
   .barcode{margin:1mm auto;text-align:center;overflow:hidden}
-  .barcode svg{width:43mm!important;height:12mm!important;display:block;margin:auto}
-  .footer{font-size:7.2px;line-height:1.3;text-align:center;margin-top:1.5mm}
-  .legal{margin-top:1.3mm;font-size:6.8px;line-height:1.25}
+  .barcode svg{width:68mm!important;height:17mm!important;display:block;margin:auto}
+  .footer{font-size:8.7px;line-height:1.35;text-align:center;margin-top:2mm}
+  .legal{margin-top:1.5mm;font-size:8px;line-height:1.3}
   .legal strong{display:block;font-weight:900}
-  .warning{margin-top:1mm;padding-top:1mm;border-top:1px dashed #000;font-size:6.6px;font-weight:800}
+  .warning{margin-top:1.5mm;padding-top:1.5mm;border-top:1px dashed #000;font-size:7.8px;font-weight:800}
   @media print{
     html,body{width:100%!important;min-width:0!important}
     body{
@@ -3418,9 +3418,9 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       align-items:flex-start!important;
     }
     .ticket{
-      width:80mm!important;
+      width:118mm!important;
       margin:0 auto!important;
-      padding:2mm 2.4mm 3mm!important;
+      padding:4mm 5mm 5mm!important;
     }
   }
 </style>
