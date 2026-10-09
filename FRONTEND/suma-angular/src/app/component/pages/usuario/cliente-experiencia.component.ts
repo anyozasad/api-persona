@@ -414,52 +414,97 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
 
 
       <ng-container *ngIf="modulo==='club'">
-        <header class="client-extra-hero club-hero hero-photo hero-photo-club">
-          <div>
-            <span>ACCESO AL GIMNASIO</span>
-            <h1>Tu credencial para ingresar a Mallqui Gym</h1>
-            <p>Presenta el código de barras en recepción para validar tu membresía y registrar automáticamente tu entrada o salida.</p>
-          </div>
-          <button type="button" (click)="cargarClub()">↻ Actualizar</button>
-        </header>
-
-        <section class="client-club-grid">
-          <article class="client-digital-card">
-            <div class="client-card-brand">
-              <span>MALLQUI GYM</span>
-              <small>CREDENCIAL DIGITAL</small>
+        <section class="club-access-v2">
+          <header class="client-extra-hero club-hero hero-photo hero-photo-club club-access-hero">
+            <div>
+              <span>ACCESO AL GIMNASIO</span>
+              <h1>Tu credencial para ingresar a Mallqui Gym</h1>
+              <p>Presenta tu código en recepción. El sistema valida tu membresía y registra la entrada o salida.</p>
             </div>
-            <div class="client-card-person">
-              <span>{{inicialSocio}}</span>
-              <div>
-                <small>SOCIO</small>
-                <h2>{{nombreSocio}}</h2>
-                <p>{{credencial?.codigo_socio || 'MG------'}}</p>
+            <button type="button" (click)="cargarClub()">↻ Actualizar</button>
+          </header>
+
+          <section class="club-access-grid">
+            <article class="client-digital-card club-card-v2">
+              <div class="client-card-brand">
+                <span>MALLQUI GYM</span>
+                <small>CREDENCIAL DIGITAL</small>
               </div>
-            </div>
-            <div class="client-card-plan">
-              <div><small>MEMBRESÍA</small><b>{{credencial?.membresia?.membresia?.nombre || 'Sin membresía activa'}}</b></div>
-              <div><small>VIGENCIA</small><b>{{credencial?.membresia ? fechaCorta(credencial.membresia.fecha_fin) : '-'}}</b></div>
-              <div><small>DÍAS RESTANTES</small><b>{{credencial?.dias_restantes || 0}}</b></div>
-            </div>
 
-            <div class="client-access-status" [class.inside]="!!credencial?.asistencia_actual" [class.blocked]="!credencial?.acceso_habilitado">
-              <span>{{credencial?.acceso_habilitado ? (credencial?.asistencia_actual ? 'DENTRO DEL GYM' : 'ACCESO HABILITADO') : 'ACCESO NO HABILITADO'}}</span>
-              <small>{{credencial?.estado_acceso || 'Sin estado de acceso'}}</small>
-            </div>
+              <div class="client-card-person">
+                <span>{{inicialSocio}}</span>
+                <div>
+                  <small>SOCIO</small>
+                  <h2>{{nombreSocio}}</h2>
+                  <p>{{credencial?.codigo_socio || 'MG------'}}</p>
+                </div>
+              </div>
 
-            <div class="client-card-barcode-wrap" *ngIf="credencialBarcode">
-              <img class="client-card-barcode" [src]="credencialBarcode" alt="Código de barras de la credencial">
-              <small>Escanea este código en recepción para registrar entrada o salida.</small>
-            </div>
+              <div class="client-card-plan">
+                <div><small>MEMBRESÍA</small><b>{{credencial?.membresia?.membresia?.nombre || 'Sin membresía activa'}}</b></div>
+                <div><small>VIGENCIA</small><b>{{credencial?.membresia ? fechaCorta(credencial.membresia.fecha_fin) : '-'}}</b></div>
+                <div><small>DÍAS RESTANTES</small><b>{{credencial?.dias_restantes || 0}}</b></div>
+              </div>
 
-            <div class="client-card-footer">
-              <span [class.inactive]="credencial?.cliente?.estado!=='Activo'">{{credencial?.cliente?.estado || 'Sin estado'}}</span>
-              <button type="button" (click)="imprimirCredencial()">Imprimir credencial</button>
-            </div>
-          </article>
+              <div class="client-access-status"
+                   [class.inside]="!!credencial?.asistencia_actual"
+                   [class.blocked]="!credencial?.acceso_habilitado">
+                <span>{{credencial?.acceso_habilitado ? (credencial?.asistencia_actual ? 'DENTRO DEL GYM' : 'ACCESO HABILITADO') : 'ACCESO NO HABILITADO'}}</span>
+                <small>{{credencial?.estado_acceso || 'Sin estado de acceso'}}</small>
+              </div>
 
-          <article class="client-extra-card">
+              <div class="client-card-barcode-wrap" *ngIf="credencialBarcode">
+                <img class="client-card-barcode" [src]="credencialBarcode" alt="Código de barras de la credencial">
+                <small>Escanea este código en recepción para registrar entrada o salida.</small>
+              </div>
+
+              <div class="client-card-footer">
+                <span [class.inactive]="credencial?.cliente?.estado!=='Activo'">{{credencial?.cliente?.estado || 'Sin estado'}}</span>
+                <button type="button" (click)="imprimirCredencial()">Imprimir credencial</button>
+              </div>
+            </article>
+
+            <article class="club-access-side">
+              <div class="club-access-side-head">
+                <span>ESTADO DE ACCESO</span>
+                <h2>{{credencial?.asistencia_actual ? 'Actualmente estás dentro' : (credencial?.acceso_habilitado ? 'Listo para ingresar' : 'Acceso no disponible')}}</h2>
+                <p>{{credencial?.asistencia_actual ? 'Tu entrada está registrada. Al salir vuelve a presentar tu credencial en recepción.' : (credencial?.acceso_habilitado ? 'Tu membresía está vigente y tu credencial puede ser validada en recepción.' : 'Necesitas una membresía vigente para registrar ingreso.')}}</p>
+              </div>
+
+              <div class="club-access-kpis">
+                <article>
+                  <small>CÓDIGO DE SOCIO</small>
+                  <b>{{credencial?.codigo_socio || '-'}}</b>
+                </article>
+                <article>
+                  <small>MEMBRESÍA</small>
+                  <b>{{credencial?.membresia?.membresia?.nombre || 'Sin plan'}}</b>
+                </article>
+                <article>
+                  <small>VIGENCIA</small>
+                  <b>{{credencial?.membresia ? fechaCorta(credencial.membresia.fecha_fin) : '-'}}</b>
+                </article>
+                <article>
+                  <small>ESTADO</small>
+                  <b>{{credencial?.asistencia_actual ? 'Dentro' : 'Fuera'}}</b>
+                </article>
+              </div>
+
+              <div class="club-access-steps">
+                <div><span>1</span><p><b>Muestra tu credencial</b><small>Abre este código desde tu celular.</small></p></div>
+                <div><span>2</span><p><b>Escanea en recepción</b><small>El personal valida tu membresía.</small></p></div>
+                <div><span>3</span><p><b>Ingreso registrado</b><small>Tu estado cambia a “Dentro”.</small></p></div>
+                <div><span>4</span><p><b>Registra tu salida</b><small>Vuelve a escanear al retirarte.</small></p></div>
+              </div>
+
+              <div class="club-access-actions">
+                <button type="button" (click)="cargarClub()">↻ Actualizar estado</button>
+                <button type="button" (click)="imprimirCredencial()">Imprimir credencial</button>
+              </div>
+            </article>
+          </section>
+
+          <section class="club-favorites-v2" *ngIf="clasesClub.length">
             <div class="client-card-head">
               <div><span>CLASES FAVORITAS</span><h2>Guarda tus preferidas</h2><p>{{favoritasCount}} favoritas</p></div>
             </div>
@@ -469,46 +514,47 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <div><b>{{c.nombre}}</b><small>{{c.dia_semana}} · {{hora(c.hora_inicio)}} - {{hora(c.hora_fin)}}</small></div>
                 <span>{{c.entrenador ? (c.entrenador.nombres+' '+c.entrenador.apellidos) : 'Sin entrenador'}}</span>
               </article>
-              <div class="client-empty-block" *ngIf="!clasesClub.length"><b>No hay clases disponibles</b><p>Las clases activas aparecerán aquí.</p></div>
             </div>
-          </article>
-        </section>
+          </section>
 
-        <section class="client-extra-grid two">
-          <article class="client-extra-card">
-            <div class="client-card-head"><div><span>TU OPINIÓN</span><h2>Ayúdanos a mejorar</h2><p>Evalúa el servicio sin compartir información sensible.</p></div></div>
-            <form class="client-feedback-form" (ngSubmit)="enviarOpinion()">
-              <label>Categoría
-                <select [(ngModel)]="opinionForm.categoria" name="op_categoria">
-                  <option>Servicio</option>
-                  <option>Instalaciones</option>
-                  <option>Clases</option>
-                  <option>Aplicacion</option>
-                </select>
-              </label>
-              <label>Calificación
-                <div class="client-rating">
-                  <button *ngFor="let n of [1,2,3,4,5]" type="button" [class.active]="opinionForm.calificacion>=n" (click)="opinionForm.calificacion=n">★</button>
+          <section class="club-feedback-v2">
+            <article class="club-feedback-card">
+              <div class="client-card-head"><div><span>TU OPINIÓN</span><h2>Ayúdanos a mejorar</h2><p>Evalúa el servicio del gimnasio.</p></div></div>
+              <form class="client-feedback-form" (ngSubmit)="enviarOpinion()">
+                <label>Categoría
+                  <select [(ngModel)]="opinionForm.categoria" name="op_categoria">
+                    <option>Servicio</option>
+                    <option>Instalaciones</option>
+                    <option>Clases</option>
+                    <option>Aplicacion</option>
+                  </select>
+                </label>
+                <label>Calificación
+                  <div class="client-rating">
+                    <button *ngFor="let n of [1,2,3,4,5]" type="button" [class.active]="opinionForm.calificacion>=n" (click)="opinionForm.calificacion=n">★</button>
+                  </div>
+                </label>
+                <label>Comentario
+                  <textarea [(ngModel)]="opinionForm.comentario" name="op_comentario" minlength="5" maxlength="1000" required placeholder="Cuéntanos qué funcionó bien o qué podemos mejorar..."></textarea>
+                </label>
+                <button type="submit" [disabled]="guardandoOpinion">{{guardandoOpinion ? 'Enviando...' : 'Enviar opinión'}}</button>
+              </form>
+            </article>
+
+            <article class="club-feedback-card">
+              <div class="client-card-head"><div><span>HISTORIAL</span><h2>Mis opiniones</h2></div></div>
+              <div class="client-opinion-list">
+                <article *ngFor="let o of opiniones">
+                  <div><b>{{o.categoria}}</b><span>{{estrellas(o.calificacion)}}</span></div>
+                  <p>{{o.comentario}}</p>
+                  <small>{{fecha(o.fecha)}} · {{o.estado}}</small>
+                </article>
+                <div class="club-empty-dark" *ngIf="!opiniones.length">
+                  <span>★</span><b>Aún no enviaste opiniones</b><p>Cuando quieras, puedes compartir tu experiencia desde este espacio.</p>
                 </div>
-              </label>
-              <label>Comentario
-                <textarea [(ngModel)]="opinionForm.comentario" name="op_comentario" minlength="5" maxlength="1000" required placeholder="Cuéntanos qué funcionó bien o qué podemos mejorar..."></textarea>
-              </label>
-              <button type="submit" [disabled]="guardandoOpinion">{{guardandoOpinion ? 'Enviando...' : 'Enviar opinión'}}</button>
-            </form>
-          </article>
-
-          <article class="client-extra-card">
-            <div class="client-card-head"><div><span>HISTORIAL</span><h2>Mis opiniones</h2></div></div>
-            <div class="client-opinion-list">
-              <article *ngFor="let o of opiniones">
-                <div><b>{{o.categoria}}</b><span>{{estrellas(o.calificacion)}}</span></div>
-                <p>{{o.comentario}}</p>
-                <small>{{fecha(o.fecha)}} · {{o.estado}}</small>
-              </article>
-              <div class="client-empty-block" *ngIf="!opiniones.length"><b>Aún no enviaste opiniones</b><p>Cuando quieras, puedes compartir tu experiencia desde este espacio.</p></div>
-            </div>
-          </article>
+              </div>
+            </article>
+          </section>
         </section>
       </ng-container>
 
@@ -701,8 +747,42 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
     .client-support-answer>span,.client-support-answer>b{display:block;color:#69d79f;font-size:7px;font-weight:950;letter-spacing:1px}
     .client-support-answer p{margin:7px 0;color:#d4dadd!important;font-size:9px!important;line-height:1.5}.client-support-answer small{color:#7d888e;font-size:7px}
     .support-empty-v2{padding:36px 18px!important;border:1px dashed #343c42!important;background:#11171b!important;text-align:center}.support-empty-v2>span{display:block;margin:auto auto 10px;width:34px;height:34px;line-height:34px;border:1px solid #333c42;color:#ff6077}
-    @media(max-width:980px){.support-workspace{grid-template-columns:1fr}.support-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.support-center-hero{grid-template-columns:1fr!important}.support-hero-stats{grid-template-columns:repeat(3,minmax(0,1fr));width:100%}}
-    @media(max-width:620px){.support-quick-help,.support-compose-card,.support-tracking-card{padding:16px}.support-quick-grid{grid-template-columns:1fr}.support-hero-stats{grid-template-columns:1fr}.support-section-head{align-items:flex-start;flex-direction:column}.support-list-v2{max-height:none}}
+    .club-access-v2{display:grid;gap:18px}
+    .club-access-grid{display:grid;grid-template-columns:minmax(360px,.75fr) minmax(0,1.25fr);gap:16px}
+    .club-card-v2{border-radius:0!important;border:1px solid #2a3136!important;box-shadow:none!important}
+    .club-access-side{padding:24px;border:1px solid #2a3136;background:#0d1114;color:#fff}
+    .club-access-side-head>span{display:block;color:#ff3150;font-size:8px;font-weight:950;letter-spacing:1.4px}
+    .club-access-side-head h2{margin:7px 0 6px;color:#fff;font-size:27px;letter-spacing:-.6px}
+    .club-access-side-head p{margin:0;color:#8a959c;font-size:10px;line-height:1.55}
+    .club-access-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:20px;border-top:1px solid #272e33;border-left:1px solid #272e33}
+    .club-access-kpis article{min-height:86px;padding:14px;border-right:1px solid #272e33;border-bottom:1px solid #272e33;background:#101519}
+    .club-access-kpis small{display:block;color:#ff6077;font-size:7px;font-weight:950;letter-spacing:1px}
+    .club-access-kpis b{display:block;margin-top:6px;color:#fff;font-size:13px}
+    .club-access-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:16px;border-top:1px solid #272e33;border-left:1px solid #272e33}
+    .club-access-steps>div{display:grid;grid-template-columns:30px 1fr;gap:9px;min-height:80px;padding:13px;border-right:1px solid #272e33;border-bottom:1px solid #272e33;background:#101519}
+    .club-access-steps>div>span{width:28px;height:28px;display:grid;place-items:center;border:1px solid rgba(255,49,80,.3);background:rgba(255,49,80,.07);color:#ff3150;font-size:8px;font-weight:950}
+    .club-access-steps p{margin:0}.club-access-steps b{display:block;color:#fff;font-size:9px}.club-access-steps small{display:block;margin-top:3px;color:#7d888f;font-size:8px}
+    .club-access-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+    .club-access-actions button{min-height:42px;padding:0 14px;border:1px solid #30373c;background:#141a1f;color:#fff;font-size:8px;font-weight:950;cursor:pointer}
+    .club-access-actions button:first-child{border-color:#ff3150;background:#ff3150}
+    .club-favorites-v2,.club-feedback-card{padding:22px;border:1px solid #2a3136;background:#0d1114;color:#fff}
+    .club-favorites-v2 .client-card-head h2,.club-feedback-card .client-card-head h2{color:#fff!important}
+    .club-favorites-v2 .client-card-head span,.club-feedback-card .client-card-head span{color:#ff3150!important}
+    .club-favorites-v2 .client-card-head p,.club-feedback-card .client-card-head p{color:#7f8a91!important}
+    .club-favorites-v2 .client-favorite-list{margin-top:14px}
+    .club-favorites-v2 .client-favorite-list>article{border-radius:0!important;border-color:#2c3439!important;background:#11171b!important;color:#fff!important}
+    .club-favorites-v2 .client-favorite-list b{color:#fff!important}.club-favorites-v2 .client-favorite-list small,.club-favorites-v2 .client-favorite-list>article>span{color:#7f8a91!important}
+    .club-feedback-v2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .club-feedback-card .client-feedback-form{margin-top:16px}
+    .club-feedback-card .client-feedback-form label{color:#c7cfd4!important}
+    .club-feedback-card .client-feedback-form select,.club-feedback-card .client-feedback-form textarea{border-radius:0!important;border-color:#30373c!important;background:#141a1f!important;color:#fff!important}
+    .club-feedback-card .client-feedback-form>button{border-radius:0!important;background:#ff3150!important;color:#fff!important}
+    .club-feedback-card .client-opinion-list>article{border-radius:0!important;border-color:#2c3439!important;background:#11171b!important;color:#fff!important}
+    .club-feedback-card .client-opinion-list b{color:#fff!important}.club-feedback-card .client-opinion-list p,.club-feedback-card .client-opinion-list small{color:#8a959c!important}
+    .club-empty-dark{padding:34px 18px;border:1px dashed #343c42;background:#11171b;text-align:center}
+    .club-empty-dark>span{display:block;width:36px;height:36px;line-height:36px;margin:0 auto 10px;border:1px solid #333c42;color:#ff6077}.club-empty-dark>b{display:block;color:#fff;font-size:10px}.club-empty-dark>p{margin:6px 0 0;color:#7f8a91;font-size:8px}
+    @media(max-width:980px){.support-workspace{grid-template-columns:1fr}.support-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.support-center-hero{grid-template-columns:1fr!important}.support-hero-stats{grid-template-columns:repeat(3,minmax(0,1fr));width:100%}.club-access-grid,.club-feedback-v2{grid-template-columns:1fr}}
+    @media(max-width:620px){.support-quick-help,.support-compose-card,.support-tracking-card{padding:16px}.support-quick-grid{grid-template-columns:1fr}.support-hero-stats{grid-template-columns:1fr}.support-section-head{align-items:flex-start;flex-direction:column}.support-list-v2{max-height:none}.club-access-side,.club-favorites-v2,.club-feedback-card{padding:16px}.club-access-kpis,.club-access-steps{grid-template-columns:1fr}}
   `]
 })
 export class ClienteExperienciaComponent implements OnInit, OnChanges {
