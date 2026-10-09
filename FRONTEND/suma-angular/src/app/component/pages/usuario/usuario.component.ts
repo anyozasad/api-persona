@@ -230,44 +230,64 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             </div>
 
             <div class="mallqui-focus-grid">
-              <article>
+              <article class="focus-action-card" role="button" tabindex="0"
+                       aria-label="Ver entrenamiento cardiovascular"
+                       (click)="abrirEnfoqueEntrenamiento('Cardiovascular')"
+                       (keydown.enter)="abrirEnfoqueEntrenamiento('Cardiovascular')">
                 <span class="focus-index">01</span>
                 <div class="focus-icon">❤</div>
                 <small>RESISTENCIA Y SALUD</small>
                 <h3>Cardiovascular</h3>
                 <p>Trabajo de resistencia, capacidad cardiovascular y acondicionamiento general.</p>
+                <span class="focus-card-action">Ver rutina <b>→</b></span>
               </article>
 
-              <article>
+              <article class="focus-action-card" role="button" tabindex="0"
+                       aria-label="Ver entrenamiento para masa muscular"
+                       (click)="abrirEnfoqueEntrenamiento('Masa muscular')"
+                       (keydown.enter)="abrirEnfoqueEntrenamiento('Masa muscular')">
                 <span class="focus-index">02</span>
                 <div class="focus-icon">◆</div>
                 <small>FUERZA</small>
                 <h3>Masa muscular</h3>
                 <p>Rutinas orientadas al desarrollo de fuerza y masa muscular con seguimiento del gimnasio.</p>
+                <span class="focus-card-action">Ver rutina <b>→</b></span>
               </article>
 
-              <article>
+              <article class="focus-action-card" role="button" tabindex="0"
+                       aria-label="Ver entrenamiento de tonificación"
+                       (click)="abrirEnfoqueEntrenamiento('Tonificación')"
+                       (keydown.enter)="abrirEnfoqueEntrenamiento('Tonificación')">
                 <span class="focus-index">03</span>
                 <div class="focus-icon">◎</div>
                 <small>ACONDICIONAMIENTO</small>
                 <h3>Tonificación</h3>
                 <p>Trabajo equilibrado de fuerza, resistencia y control corporal.</p>
+                <span class="focus-card-action">Ver rutina <b>→</b></span>
               </article>
 
-              <article>
+              <article class="focus-action-card" role="button" tabindex="0"
+                       aria-label="Ver entrenamiento CrossFit"
+                       (click)="abrirEnfoqueEntrenamiento('CrossFit')"
+                       (keydown.enter)="abrirEnfoqueEntrenamiento('CrossFit')">
                 <span class="focus-index">04</span>
                 <div class="focus-icon">✦</div>
                 <small>ENTRENAMIENTO FUNCIONAL</small>
                 <h3>CrossFit</h3>
                 <p>Sesiones funcionales de intensidad adaptada, combinando fuerza, movilidad y resistencia.</p>
+                <span class="focus-card-action">Ver rutina <b>→</b></span>
               </article>
 
-              <article>
+              <article class="focus-action-card" role="button" tabindex="0"
+                       aria-label="Ver entrenamiento para pérdida de peso"
+                       (click)="abrirEnfoqueEntrenamiento('Pérdida de peso')"
+                       (keydown.enter)="abrirEnfoqueEntrenamiento('Pérdida de peso')">
                 <span class="focus-index">05</span>
                 <div class="focus-icon">↗</div>
                 <small>AERÓBICO + ANAERÓBICO</small>
                 <h3>Pérdida de peso</h3>
                 <p>Trabajo cardiovascular y de acondicionamiento orientado a mejorar la condición física.</p>
+                <span class="focus-card-action">Ver rutina <b>→</b></span>
               </article>
             </div>
 
@@ -798,6 +818,15 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
               </button>
             </aside>
           </section>
+
+          <div class="focus-selected-notice" *ngIf="enfoqueInicioSeleccionado">
+            <div>
+              <small>OBJETIVO SELECCIONADO</small>
+              <b>{{enfoqueInicioSeleccionado}}</b>
+              <span>Revisa tus rutinas asignadas o inicia tu entrenamiento.</span>
+            </div>
+            <button type="button" (click)="abrirModulo('casa')">Entrenar ahora <span>→</span></button>
+          </div>
 
           <div class="module-window-title">
             <div><span>RUTINAS ASIGNADAS</span><h2>Tu plan de entrenamiento</h2><p>Cada rutina aparece en una ventana independiente con sus ejercicios.</p></div>
@@ -1353,6 +1382,18 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
   `,
   styles: [`
     :host{display:block}
+    .member-page .focus-action-card{cursor:pointer;transition:background .18s ease,transform .18s ease}
+    .member-page .focus-action-card:hover{background:#15191d!important;transform:translateY(-2px)}
+    .member-page .focus-action-card:focus-visible{outline:2px solid #ff3150;outline-offset:-2px}
+    .member-page .focus-card-action{display:inline-flex;align-items:center;gap:8px;margin-top:18px;color:#ff3150;font-size:8px;font-weight:950;letter-spacing:.9px;text-transform:uppercase}
+    .member-page .focus-card-action b{font-size:13px}
+    .member-page .focus-selected-notice{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:18px max(28px,2.2vw) 0;padding:16px 18px;border:1px solid rgba(255,49,80,.25);background:#101418;color:#fff}
+    .member-page .focus-selected-notice div{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .member-page .focus-selected-notice small{color:#ff3150;font-size:7px;font-weight:950;letter-spacing:1.2px}
+    .member-page .focus-selected-notice b{font-size:13px}
+    .member-page .focus-selected-notice span{color:#8f989f;font-size:9px}
+    .member-page .focus-selected-notice button{min-height:40px;padding:0 14px;border:1px solid #ff3150;background:#ff3150;color:#fff;font-size:8px;font-weight:950;cursor:pointer}
+    @media(max-width:700px){.member-page .focus-selected-notice{align-items:flex-start;flex-direction:column}.member-page .focus-selected-notice button{width:100%}}
   `]
 })
 export class UsuarioComponent implements OnInit, OnDestroy {
@@ -1371,6 +1412,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   procesandoSolicitudRutina=false;
   actualizandoModulo=false;
   seguridadForm:any={actual:'',nueva:'',confirmacion:''};
+  enfoqueInicioSeleccionado='';
 
   diasSemanaCasa=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
   objetivosCasaMeta=[
@@ -1480,6 +1522,13 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     }
 
     window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  abrirEnfoqueEntrenamiento(enfoque:string):void{
+    this.enfoqueInicioSeleccionado=enfoque;
+    try{localStorage.setItem('mallqui_enfoque_entrenamiento',enfoque);}catch{}
+    this.abrirModulo('rutinas');
+    this.ok('Objetivo seleccionado: '+enfoque);
   }
 
   normalizarPerfil(datos:any):any{
