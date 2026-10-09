@@ -2045,6 +2045,10 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargasGym:Record<string,string|number>={};
   ladoCasa:'derecho'|'izquierdo'='derecho';
   private timerCasa:any=null;
+  private autoSyncPortal:any=null;
+  private readonly autoSyncCadaMs=15000;
+  private onWindowFocus=()=>this.sincronizarPortalAutomatico();
+  private onVisibilityChange=()=>{ if(!document.hidden)this.sincronizarPortalAutomatico(); };
 
   constructor(private api:GymApiService, private auth:AuthService, private router:Router){}
 
@@ -2058,8 +2062,52 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     }
     this.cargarEstadoSistema();
     this.cargar();
+    this.iniciarSincronizacionAutomatica();
   }
-  ngOnDestroy():void{ this.detenerTimerCasa(); }
+  ngOnDestroy():void{
+    this.detenerTimerCasa();
+    if(this.autoSyncPortal)clearInterval(this.autoSyncPortal);
+    window.removeEventListener('focus',this.onWindowFocus);
+    document.removeEventListener('visibilitychange',this.onVisibilityChange);
+  }
+
+  iniciarSincronizacionAutomatica():void{
+    if(this.autoSyncPortal)clearInterval(this.autoSyncPortal);
+    this.autoSyncPortal=setInterval(()=>this.sincronizarPortalAutomatico(),this.autoSyncCadaMs);
+    window.addEventListener('focus',this.onWindowFocus);
+    document.addEventListener('visibilitychange',this.onVisibilityChange);
+  }
+
+  sincronizarPortalAutomatico():void{
+    if(document.hidden || this.cargando || this.actualizandoModulo || this.sesionCasaActiva)return;
+
+    this.api.cargarPortalCliente().subscribe({
+      next:r=>{
+        this.resumen=r.resumen||this.resumen;
+        if(this.moduloActivo!=='perfil')this.perfil=this.normalizarPerfil(r.perfil||this.perfil);
+        this.membresiaActual=r.membresia?.actual||null;
+        this.membresiaProxima=r.membresia?.proxima||null;
+        this.membresiasDisponibles=r.membresiasDisponibles||[];
+        this.gymInfo=r.gymInfo||this.gymInfo||{};
+        this.pagos=r.pagos||[];
+        this.rutinas=r.rutinas||[];
+        this.asistencias=r.asistencias||[];
+        this.reservas=r.reservas||[];
+        this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');
+        this.compras=r.compras||[];
+        this.productosDisponibles=r.productos||[];
+        this.preseleccionarPlanActual();
+        this.cargarContadorAvisos();
+
+        // Si está viendo Entrenar, también vuelve a leer la rutina activa,
+        // pero nunca interrumpe una sesión que ya comenzó.
+        if(this.moduloActivo==='casa' && !this.sesionCasaActiva && !this.sesionCasaTerminada){
+          this.cargarEntrenamientoCasa();
+        }
+      },
+      error:()=>{}
+    });
+  }
 
   cargarEstadoSistema():void{
     this.api.estadoSistema().subscribe({
@@ -2323,6 +2371,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.reservas=r.reservas||[];
         this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');
         this.compras=r.compras||[];
+        this.productosDisponibles=r.productos||[];
         this.preseleccionarPlanActual();
         this.actualizandoModulo=false;
         if(mostrarAviso)this.ok('Información actualizada');
@@ -2357,6 +2406,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.reservas=r.reservas||[];
         this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');
         this.compras=r.compras||[];
+        this.productosDisponibles=r.productos||[];
         this.moduloActivo=modulo;
         this.cargando=false;
         this.toast=modulo==='rutinas' ? 'Rutinas actualizadas' : 'Clases actualizadas';
