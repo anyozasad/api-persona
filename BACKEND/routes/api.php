@@ -149,6 +149,7 @@ Route::middleware(['auth:sanctum', 'rol:Cliente', 'auditoria'])->prefix('mi-cuen
 
     // Flujo actual: entrenamiento guiado dentro del gimnasio.
     Route::get('/entrenamiento-gym', [PortalClienteController::class, 'entrenamientoCasa']);
+    Route::put('/entrenamiento-gym/plan', [PortalClienteController::class, 'guardarPlanEntrenamiento']);
     Route::post('/entrenamiento-gym/sesiones', [PortalClienteController::class, 'registrarSesionEntrenamientoCasa']);
 
     Route::post('/pagos/comprar', [SolicitudPagoMembresiaController::class, 'comprar']);
