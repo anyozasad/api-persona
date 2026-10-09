@@ -1175,10 +1175,71 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             <div class="module-hero-icon">✓</div>
           </div>
 
+          <section class="attendance-access-panel">
+            <div class="attendance-access-copy">
+              <span>CONTROL DE ACCESO · MALLQUI GYM</span>
+              <h2>{{asistenciaAbierta ? 'Actualmente estás dentro del gimnasio' : 'Registra tu ingreso en recepción'}}</h2>
+              <p *ngIf="!asistenciaAbierta">
+                Muestra tu credencial digital en recepción. Al escanear tu código, el sistema registra automáticamente tu entrada.
+              </p>
+              <p *ngIf="asistenciaAbierta">
+                Tu ingreso está abierto desde {{fecha(asistenciaAbierta.fecha_hora_entrada)}}. Cuando salgas, vuelve a mostrar la misma credencial para registrar la salida.
+              </p>
+
+              <div class="attendance-access-actions">
+                <button type="button" class="attendance-access-primary" (click)="abrirModulo('club')">
+                  <span>▥</span>
+                  <div>
+                    <b>{{asistenciaAbierta ? 'Mostrar credencial para salir' : 'Mostrar credencial para ingresar'}}</b>
+                    <small>El código se valida en recepción</small>
+                  </div>
+                  <em>→</em>
+                </button>
+
+                <button type="button" class="attendance-access-secondary"
+                        (click)="sincronizarDatosCliente()"
+                        [disabled]="actualizandoModulo">
+                  {{actualizandoModulo ? 'Actualizando...' : '↻ Ya escanearon mi código'}}
+                </button>
+
+                <button *ngIf="asistenciaAbierta"
+                        type="button"
+                        class="attendance-access-secondary"
+                        (click)="abrirModulo('casa')">
+                  Entrenar ahora
+                </button>
+              </div>
+            </div>
+
+            <div class="attendance-access-status" [class.inside]="!!asistenciaAbierta" [class.blocked]="!membresiaActual">
+              <small>ESTADO DE ACCESO</small>
+              <strong>{{!membresiaActual ? 'SIN MEMBRESÍA' : (asistenciaAbierta ? 'DENTRO' : 'LISTO PARA INGRESAR')}}</strong>
+              <span>{{!membresiaActual ? 'Activa una membresía para registrar ingreso.' : (asistenciaAbierta ? 'Entrada registrada correctamente.' : 'Credencial habilitada para recepción.')}}</span>
+              <div>
+                <b>{{nombreMembresiaVisible(membresiaActual)}}</b>
+                <small *ngIf="membresiaActual">{{diasRestantesMembresia}} días restantes</small>
+              </div>
+            </div>
+          </section>
+
+          <section class="attendance-how-it-works">
+            <div class="attendance-how-title">
+              <span>CÓMO FUNCIONA</span>
+              <h2>Entrada y salida en 4 pasos</h2>
+            </div>
+            <div class="attendance-how-grid">
+              <article><span>1</span><div><b>Abre tu credencial</b><p>Desde esta pantalla puedes mostrar tu código de socio.</p></div></article>
+              <article><span>2</span><div><b>Escanea en recepción</b><p>El personal valida tu membresía y registra la entrada.</p></div></article>
+              <article><span>3</span><div><b>Entrena en el gimnasio</b><p>Tu estado cambia a “Dentro” mientras permanezca abierto el ingreso.</p></div></article>
+              <article><span>4</span><div><b>Registra la salida</b><p>Al volver a escanear la credencial, el sistema cierra la visita.</p></div></article>
+            </div>
+          </section>
+
           <section class="client-rf-summary">
             <article><small>ESTE MES</small><b>{{asistenciasMesActual}}</b><span>Visitas registradas</span></article>
             <article><small>TOTAL</small><b>{{asistencias.length}}</b><span>Historial completo</span></article>
             <article><small>ESTADO ACTUAL</small><b>{{asistenciaAbierta ? 'Dentro' : 'Fuera'}}</b><span>{{asistenciaAbierta ? 'Ingreso abierto' : 'Sin ingreso abierto'}}</span></article>
+            <article><small>ÚLTIMA VISITA</small><b>{{ultimaAsistencia ? fechaCortaPortal(ultimaAsistencia.fecha_hora_entrada) : '-'}}</b><span>{{ultimaAsistencia ? duracionAsistencia(ultimaAsistencia) : 'Sin visitas registradas'}}</span></article>
           </section>
 
           <div class="attendance-timeline">
@@ -1188,16 +1249,17 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <small>ENTRADA</small>
                 <h3>{{fecha(a.fecha_hora_entrada)}}</h3>
                 <p>{{a.fecha_hora_salida ? ('Salida: '+fecha(a.fecha_hora_salida)) : 'Salida pendiente · actualmente dentro del gimnasio'}}</p>
+                <p class="attendance-duration">Duración: {{duracionAsistencia(a)}}</p>
               </div>
               <em>{{a.estado || (a.fecha_hora_salida ? 'Completada' : 'En curso')}}</em>
             </article>
 
             <article class="member-empty-card member-empty-guided" *ngIf="!asistencias.length">
               <span>✓</span><h3>Tu historial empieza desde cero</h3>
-              <p>Las visitas y tus sesiones de entrenamiento dentro del gimnasio aparecerán aquí.</p>
+              <p>Tu primera visita aparecerá aquí después de que el personal escanee tu credencial en recepción.</p>
               <div class="empty-actions">
-                <button type="button" class="empty-primary" (click)="abrirModulo('casa')">Ver entrenamiento en el gym</button>
-                <button type="button" class="empty-secondary" (click)="abrirModulo('clases')">Buscar clases</button>
+                <button type="button" class="empty-primary" (click)="abrirModulo('club')">Mostrar mi credencial</button>
+                <button type="button" class="empty-secondary" (click)="sincronizarDatosCliente()">Actualizar historial</button>
               </div>
             </article>
           </div>
@@ -1613,6 +1675,32 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
     .member-page .mallqui-wellbeing-note>span{display:block;margin-bottom:6px;color:#ff3150;font-size:7px;font-weight:950;letter-spacing:1.4px}
     .member-page .mallqui-wellbeing-note p{margin:0;color:#9aa3a9;font-size:9.5px;line-height:1.55}
     .member-page .mallqui-wellbeing-note b{color:#fff}
+    .member-page .attendance-access-panel{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,.6fr);gap:16px;margin:20px max(28px,2.2vw);padding:24px;border:1px solid rgba(255,255,255,.09);background:#0d1013;color:#fff}
+    .member-page .attendance-access-copy>span,.member-page .attendance-how-title>span{display:block;color:#ff3150;font-size:8px;font-weight:950;letter-spacing:1.4px}
+    .member-page .attendance-access-copy h2{margin:8px 0 6px;color:#fff;font-size:27px;letter-spacing:-.6px}
+    .member-page .attendance-access-copy>p{max-width:760px;margin:0;color:#8e989f;font-size:10.5px;line-height:1.55}
+    .member-page .attendance-access-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+    .member-page .attendance-access-primary{min-height:54px;min-width:290px;padding:0 14px;border:1px solid #ff3150;background:#ff3150;color:#fff;display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;text-align:left;cursor:pointer}
+    .member-page .attendance-access-primary b{display:block;font-size:9px}.member-page .attendance-access-primary small{display:block;margin-top:2px;color:#ffd6dc;font-size:7.5px}.member-page .attendance-access-primary em{font-style:normal;font-size:16px}
+    .member-page .attendance-access-secondary{min-height:54px;padding:0 14px;border:1px solid #30363b;background:#14191e;color:#fff;font-size:8px;font-weight:900;cursor:pointer}
+    .member-page .attendance-access-status{padding:20px;border:1px solid #30363b;background:#11161a}
+    .member-page .attendance-access-status>small{display:block;color:#7f8a91;font-size:7px;font-weight:950;letter-spacing:1.2px}
+    .member-page .attendance-access-status>strong{display:block;margin:8px 0 4px;color:#fff;font-size:24px;letter-spacing:-.6px}
+    .member-page .attendance-access-status>span{display:block;color:#8f989f;font-size:9px;line-height:1.45}
+    .member-page .attendance-access-status>div{margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
+    .member-page .attendance-access-status>div b{display:block;color:#fff;font-size:10px}.member-page .attendance-access-status>div small{display:block;margin-top:3px;color:#7f8a91;font-size:8px}
+    .member-page .attendance-access-status.inside{border-color:rgba(64,199,122,.35);background:rgba(64,199,122,.05)}.member-page .attendance-access-status.inside>strong{color:#73d99f}
+    .member-page .attendance-access-status.blocked{border-color:rgba(255,49,80,.28)}.member-page .attendance-access-status.blocked>strong{color:#ff6077}
+    .member-page .attendance-how-it-works{margin:0 max(28px,2.2vw) 18px;padding:22px;border:1px solid rgba(255,255,255,.09);background:#101418;color:#fff}
+    .member-page .attendance-how-title h2{margin:6px 0 18px;color:#fff;font-size:20px}
+    .member-page .attendance-how-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(255,255,255,.08);border-left:1px solid rgba(255,255,255,.08)}
+    .member-page .attendance-how-grid article{display:grid;grid-template-columns:34px 1fr;gap:10px;min-height:105px;padding:15px;border-right:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
+    .member-page .attendance-how-grid article>span{width:30px;height:30px;display:grid;place-items:center;border:1px solid rgba(255,49,80,.30);background:rgba(255,49,80,.07);color:#ff3150;font-size:8px;font-weight:950}
+    .member-page .attendance-how-grid b{display:block;color:#fff;font-size:9.5px}.member-page .attendance-how-grid p{margin:4px 0 0;color:#7f8a91;font-size:8px;line-height:1.45}
+    .member-page .attendance-timeline .attendance-duration{margin-top:4px!important;color:#ff6077!important;font-weight:800}
+    .member-page .client-rf-summary{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+    @media(max-width:1000px){.member-page .attendance-access-panel{grid-template-columns:1fr}.member-page .attendance-how-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.member-page .client-rf-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+    @media(max-width:620px){.member-page .attendance-access-panel,.member-page .attendance-how-it-works{margin-left:14px;margin-right:14px;padding:18px}.member-page .attendance-access-actions{display:grid}.member-page .attendance-access-primary{min-width:0;width:100%}.member-page .attendance-how-grid,.member-page .client-rf-summary{grid-template-columns:1fr!important}}
     @media(max-width:1200px){.member-page .mallqui-wellbeing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.member-page .mallqui-wellbeing-grid article{min-height:270px}}
     @media(max-width:700px){.member-page .mallqui-wellbeing-section{padding:36px 14px 42px}.member-page .mallqui-wellbeing-head{align-items:flex-start;flex-direction:column}.member-page .mallqui-wellbeing-head h2{font-size:31px}.member-page .mallqui-wellbeing-head>b{white-space:normal}.member-page .mallqui-wellbeing-grid{grid-template-columns:1fr}}
     @media(max-width:900px){.member-page .training-profile-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.member-page .training-profile-actions{grid-template-columns:1fr}}
@@ -2160,6 +2248,22 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
   get asistenciaAbierta():any{
     return this.asistencias.find((a:any)=>a?.fecha_hora_entrada && !a?.fecha_hora_salida)||null;
+  }
+
+  get ultimaAsistencia():any{
+    return Array.isArray(this.asistencias) && this.asistencias.length ? this.asistencias[0] : null;
+  }
+
+  duracionAsistencia(a:any):string{
+    if(!a?.fecha_hora_entrada)return '-';
+    const inicio=new Date(a.fecha_hora_entrada);
+    const fin=a?.fecha_hora_salida ? new Date(a.fecha_hora_salida) : new Date();
+    if(isNaN(inicio.getTime()) || isNaN(fin.getTime()))return '-';
+    const minutos=Math.max(0,Math.floor((fin.getTime()-inicio.getTime())/60000));
+    const h=Math.floor(minutos/60);
+    const m=minutos%60;
+    if(h<=0)return m+' min';
+    return h+' h '+String(m).padStart(2,'0')+' min';
   }
 
   get perfilCompleto():boolean{
