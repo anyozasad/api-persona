@@ -888,9 +888,21 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <b>Tu agenda</b>
               </div>
               <div class="portal-mini-stats">
-                <article><i>▣</i><div><strong>{{clases.length}}</strong><small>clases disponibles</small></div></article>
-                <article><i>◷</i><div><strong>{{reservasActivas.length}}</strong><small>reservas activas</small></div></article>
-                <article><i>✓</i><div><strong>{{showcaseAsistencias}}</strong><small>asistencias del mes</small></div></article>
+                <article class="portal-stat-action" role="button" tabindex="0"
+                         (click)="irAClasesDisponibles()"
+                         (keydown.enter)="irAClasesDisponibles()">
+                  <i>▣</i><div><strong>{{clases.length}}</strong><small>clases disponibles</small></div>
+                </article>
+                <article class="portal-stat-action" role="button" tabindex="0"
+                         (click)="abrirModulo('reservas')"
+                         (keydown.enter)="abrirModulo('reservas')">
+                  <i>◷</i><div><strong>{{reservasActivas.length}}</strong><small>reservas activas</small></div>
+                </article>
+                <article class="portal-stat-action" role="button" tabindex="0"
+                         (click)="abrirModulo('asistencias')"
+                         (keydown.enter)="abrirModulo('asistencias')">
+                  <i>✓</i><div><strong>{{showcaseAsistencias}}</strong><small>asistencias del mes</small></div>
+                </article>
               </div>
               <button type="button" class="portal-side-link" (click)="actualizarSeccion('clases')">
                 <span>Actualizar horarios</span><b>↻</b>
@@ -898,7 +910,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             </aside>
           </section>
 
-          <div class="module-window-title">
+          <div class="module-window-title" id="clases-disponibles">
             <div><span>CLASES DISPONIBLES</span><h2>Elige tu próxima clase</h2><p>Cada clase tiene su propia ventana con horario, entrenador y reserva.</p></div>
           </div>
 
@@ -1393,6 +1405,9 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
     .member-page .focus-selected-notice b{font-size:13px}
     .member-page .focus-selected-notice span{color:#8f989f;font-size:9px}
     .member-page .focus-selected-notice button{min-height:40px;padding:0 14px;border:1px solid #ff3150;background:#ff3150;color:#fff;font-size:8px;font-weight:950;cursor:pointer}
+    .member-page .module-classes-v34 .portal-stat-action{cursor:pointer;transition:background .18s ease,border-color .18s ease}
+    .member-page .module-classes-v34 .portal-stat-action:hover{background:rgba(255,49,80,.06)!important;border-color:rgba(255,49,80,.28)!important}
+    .member-page .module-classes-v34 .portal-stat-action:focus-visible{outline:2px solid #ff3150;outline-offset:2px}
     @media(max-width:700px){.member-page .focus-selected-notice{align-items:flex-start;flex-direction:column}.member-page .focus-selected-notice button{width:100%}}
   `]
 })
@@ -1529,6 +1544,13 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     try{localStorage.setItem('mallqui_enfoque_entrenamiento',enfoque);}catch{}
     this.abrirModulo('rutinas');
     this.ok('Objetivo seleccionado: '+enfoque);
+  }
+
+  irAClasesDisponibles():void{
+    if(this.moduloActivo!=='clases')this.moduloActivo='clases';
+    setTimeout(()=>{
+      document.getElementById('clases-disponibles')?.scrollIntoView({behavior:'smooth',block:'start'});
+    },0);
   }
 
   normalizarPerfil(datos:any):any{
