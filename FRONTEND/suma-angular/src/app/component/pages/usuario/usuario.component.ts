@@ -11,7 +11,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
   selector: 'app-usuario',
   standalone: true,
   imports: [CommonModule, FormsModule, ClienteExperienciaComponent],
-  styleUrls: ['../mallqui-member.css', './usuario-productos.css', './usuario-clases.css'],
+  styleUrls: ['../mallqui-member.css', './usuario-productos.css', './usuario-clases.css', './usuario-perfil.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="member-page">
@@ -1583,8 +1583,54 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
           </div>
 
           <section class="profile-layout">
-            <aside class="profile-summary-card">
-              <div class="profile-avatar">{{nombreCorto.charAt(0).toUpperCase()}}</div>
+            <aside class="profile-summary-card profile-photo-card">
+              <input #fotoPerfilInput
+                     type="file"
+                     accept="image/jpeg,image/png,image/webp"
+                     hidden
+                     (change)="seleccionarFotoPerfil($event)">
+
+              <button type="button"
+                      class="profile-photo-picker"
+                      (click)="fotoPerfilInput.click()"
+                      [attr.aria-label]="fotoPerfilUrl || fotoPerfilPreview ? 'Cambiar foto de perfil' : 'Agregar foto de perfil'">
+                <img *ngIf="fotoPerfilPreview || fotoPerfilUrl"
+                     [src]="fotoPerfilPreview || fotoPerfilUrl"
+                     [alt]="'Foto de perfil de '+nombreCorto">
+                <span *ngIf="!fotoPerfilPreview && !fotoPerfilUrl" class="profile-photo-letter">
+                  {{nombreCorto.charAt(0).toUpperCase()}}
+                </span>
+                <span class="profile-photo-overlay">
+                  <b>⌁</b>
+                  <small>{{fotoPerfilUrl || fotoPerfilPreview ? 'Cambiar foto' : 'Agregar foto'}}</small>
+                </span>
+              </button>
+
+              <div class="profile-photo-pending" *ngIf="fotoPerfilArchivo">
+                <span>NUEVA FOTO SELECCIONADA</span>
+                <button type="button"
+                        (click)="guardarFotoPerfil()"
+                        [disabled]="subiendoFotoPerfil">
+                  {{subiendoFotoPerfil ? 'Guardando...' : 'Guardar foto'}}
+                </button>
+                <button type="button"
+                        class="cancel"
+                        (click)="cancelarFotoPerfil()"
+                        [disabled]="subiendoFotoPerfil">
+                  Cancelar
+                </button>
+              </div>
+
+              <button *ngIf="fotoPerfilUrl && !fotoPerfilArchivo"
+                      type="button"
+                      class="profile-photo-remove"
+                      (click)="eliminarFotoPerfil()"
+                      [disabled]="eliminandoFotoPerfil">
+                {{eliminandoFotoPerfil ? 'Quitando...' : 'Quitar foto'}}
+              </button>
+
+              <p class="profile-photo-error" *ngIf="errorFotoPerfil">{{errorFotoPerfil}}</p>
+
               <h2>{{nombreCorto}}</h2>
               <p>{{perfil?.correo || 'Cliente Mallqui Gym'}}</p>
               <span>{{perfil?.estado || 'Activo'}}</span>
@@ -2005,6 +2051,13 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   resumen:any=null; perfil:any={}; membresiaActual:any=null; membresiaProxima:any=null; membresiasDisponibles:any[]=[]; gymInfo:any={};
   pagos:any[]=[]; rutinas:any[]=[]; asistencias:any[]=[]; reservas:any[]=[]; clases:any[]=[]; compras:any[]=[]; productosDisponibles:any[]=[];
   mostrarTodosProductosInicio=false;
+  fotoPerfilUrl='';
+  fotoPerfilPreview='';
+  fotoPerfilArchivo:File|null=null;
+  subiendoFotoPerfil=false;
+  eliminandoFotoPerfil=false;
+  errorFotoPerfil='';
+  private fotoPerfilObjectUrl='';
   fechasReserva:Record<number,string>={};
   pagoForm:any={id_membresia:0,fecha_inicio:new Date().toISOString().slice(0,10),metodo_pago:'Yape',numero_operacion:''};
   ultimaBoleta:any=null;
@@ -2071,6 +2124,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   ngOnDestroy():void{
     this.detenerTimerCasa();
     if(this.autoSyncPortal)clearInterval(this.autoSyncPortal);
+    if(this.fotoPerfilObjectUrl)URL.revokeObjectURL(this.fotoPerfilObjectUrl);
     window.removeEventListener('focus',this.onWindowFocus);
     document.removeEventListener('visibilitychange',this.onVisibilityChange);
   }
@@ -2131,7 +2185,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargar():void{
     this.cargando=true; this.error='';
     this.api.cargarPortalCliente().subscribe({
-      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=r.membresiasDisponibles||[];this.gymInfo=r.gymInfo||{};this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.productosDisponibles=r.productos||[];this.preseleccionarPlanActual();this.cargando=false;this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
+      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=r.membresiasDisponibles||[];this.gymInfo=r.gymInfo||{};this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.productosDisponibles=r.productos||[];this.preseleccionarPlanActual();this.cargando=false;this.cargarFotoPerfil();this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
       error:e=>{this.error=this.errorApi(e);this.cargando=false;}
     });
   }
@@ -2174,6 +2228,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       this.cargarEntrenamientoCasa();
     }
     if(m==='avisos')this.cargarContadorAvisos();
+    if(m==='perfil')this.cargarFotoPerfil();
 
     // Los módulos operativos siempre consultan datos actuales al abrirse.
     if(['casa','rutinas','clases','reservas','asistencias','pagos','perfil'].includes(m)){
@@ -2346,6 +2401,98 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     setTimeout(()=>{
       document.getElementById('clases-disponibles')?.scrollIntoView({behavior:'smooth',block:'start'});
     },0);
+  }
+
+  cargarFotoPerfil():void{
+    this.api.fotoPerfilCliente().subscribe({
+      next:(blob:Blob)=>{
+        if(!blob || !blob.size){
+          this.fotoPerfilUrl='';
+          return;
+        }
+        if(this.fotoPerfilObjectUrl)URL.revokeObjectURL(this.fotoPerfilObjectUrl);
+        this.fotoPerfilObjectUrl=URL.createObjectURL(blob);
+        this.fotoPerfilUrl=this.fotoPerfilObjectUrl;
+        this.errorFotoPerfil='';
+      },
+      error:e=>{
+        if(Number(e?.status||0)===404){
+          if(this.fotoPerfilObjectUrl)URL.revokeObjectURL(this.fotoPerfilObjectUrl);
+          this.fotoPerfilObjectUrl='';
+          this.fotoPerfilUrl='';
+          this.errorFotoPerfil='';
+        }
+      }
+    });
+  }
+
+  seleccionarFotoPerfil(event:Event):void{
+    const input=event.target as HTMLInputElement;
+    const archivo=input.files?.[0]||null;
+    input.value='';
+    if(!archivo)return;
+
+    const tipos=['image/jpeg','image/png','image/webp'];
+    if(!tipos.includes(archivo.type)){
+      this.errorFotoPerfil='Usa una imagen JPG, PNG o WEBP.';
+      return;
+    }
+    if(archivo.size>3*1024*1024){
+      this.errorFotoPerfil='La foto debe pesar máximo 3 MB.';
+      return;
+    }
+
+    this.fotoPerfilArchivo=archivo;
+    this.errorFotoPerfil='';
+    const lector=new FileReader();
+    lector.onload=()=>this.fotoPerfilPreview=String(lector.result||'');
+    lector.readAsDataURL(archivo);
+  }
+
+  guardarFotoPerfil():void{
+    if(!this.fotoPerfilArchivo || this.subiendoFotoPerfil)return;
+    this.subiendoFotoPerfil=true;
+    this.errorFotoPerfil='';
+    this.api.actualizarFotoPerfilCliente(this.fotoPerfilArchivo).subscribe({
+      next:r=>{
+        this.subiendoFotoPerfil=false;
+        this.fotoPerfilArchivo=null;
+        this.fotoPerfilPreview='';
+        this.ok(r?.mensaje||'Foto de perfil actualizada.');
+        this.cargarFotoPerfil();
+      },
+      error:e=>{
+        this.subiendoFotoPerfil=false;
+        this.errorFotoPerfil=this.errorApi(e);
+      }
+    });
+  }
+
+  cancelarFotoPerfil():void{
+    this.fotoPerfilArchivo=null;
+    this.fotoPerfilPreview='';
+    this.errorFotoPerfil='';
+  }
+
+  eliminarFotoPerfil():void{
+    if(this.eliminandoFotoPerfil)return;
+    this.eliminandoFotoPerfil=true;
+    this.errorFotoPerfil='';
+    this.api.eliminarFotoPerfilCliente().subscribe({
+      next:r=>{
+        this.eliminandoFotoPerfil=false;
+        if(this.fotoPerfilObjectUrl)URL.revokeObjectURL(this.fotoPerfilObjectUrl);
+        this.fotoPerfilObjectUrl='';
+        this.fotoPerfilUrl='';
+        this.fotoPerfilPreview='';
+        this.fotoPerfilArchivo=null;
+        this.ok(r?.mensaje||'Foto de perfil eliminada.');
+      },
+      error:e=>{
+        this.eliminandoFotoPerfil=false;
+        this.errorFotoPerfil=this.errorApi(e);
+      }
+    });
   }
 
   normalizarPerfil(datos:any):any{
