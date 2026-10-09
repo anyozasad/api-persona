@@ -146,6 +146,7 @@ Route::middleware(['auth:sanctum', 'rol:Cliente', 'auditoria'])->prefix('mi-cuen
     Route::get('/rutinas', [PortalClienteController::class, 'rutinas']);
     Route::get('/asistencias', [PortalClienteController::class, 'asistencias']);
     Route::get('/compras', [PortalClienteController::class, 'compras']);
+    Route::get('/productos', [PortalClienteController::class, 'productos']);
 
     // Flujo actual: entrenamiento guiado dentro del gimnasio.
     Route::get('/entrenamiento-gym', [PortalClienteController::class, 'entrenamientoCasa']);
