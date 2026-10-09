@@ -139,6 +139,9 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'rol:Cliente', 'auditoria'])->prefix('mi-cuenta')->group(function () {
     Route::get('/resumen', [PortalClienteController::class, 'resumen']);
     Route::get('/perfil', [PortalClienteController::class, 'perfil']);
+    Route::get('/perfil/foto', [PortalClienteController::class, 'fotoPerfil']);
+    Route::post('/perfil/foto', [PortalClienteController::class, 'actualizarFotoPerfil']);
+    Route::delete('/perfil/foto', [PortalClienteController::class, 'eliminarFotoPerfil']);
     Route::put('/perfil', [PortalClienteController::class, 'actualizarPerfil']);
     Route::get('/membresia', [PortalClienteController::class, 'membresia']);
     Route::get('/pagos', [PortalClienteController::class, 'pagos']);
