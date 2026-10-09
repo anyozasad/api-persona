@@ -215,8 +215,8 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
           <header class="calendar-v4-head">
             <div class="calendar-v4-copy">
               <span><i></i> AGENDA PERSONAL</span>
-              <h1>Tus próximas clases</h1>
-              <p>Revisa tus reservas y recibe sugerencias de fechas disponibles según tu meta semanal. Las recomendaciones son opcionales y puedes reservarlas desde aquí.</p>
+              <h1>Tu agenda de entrenamiento</h1>
+              <p>El sistema detecta tu rutina activa y organiza automáticamente tus próximos días de entrenamiento. También muestra reservas, clases sugeridas y fechas importantes.</p>
               <div>
                 <button type="button" class="calendar-v4-primary" (click)="cargarCalendario()">↻ Actualizar agenda</button>
                 <button type="button" class="calendar-v4-secondary" (click)="irMesActual()">Ir a hoy</button>
@@ -424,8 +424,8 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
 
             <ng-template #emptyCalendarV4>
               <div class="client-empty-block large">
-                <b>No hay fechas disponibles todavía</b>
-                <p>Cuando el gimnasio registre clases activas o tengas una reserva, aparecerán automáticamente.</p>
+                <b>No hay actividades programadas todavía</b>
+                <p>Cuando tengas una rutina activa, el sistema calculará automáticamente tus próximos días de entrenamiento. Las reservas y clases también aparecerán aquí.</p>
               </div>
             </ng-template>
           </section>
