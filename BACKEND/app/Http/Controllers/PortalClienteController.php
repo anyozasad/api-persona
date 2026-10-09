@@ -15,6 +15,7 @@ use App\Models\Venta;
 use App\Services\ComprobanteMembresiaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -53,6 +54,77 @@ class PortalClienteController extends Controller
     public function perfil(Request $request)
     {
         return response()->json($this->clienteDelUsuario($request));
+    }
+
+    public function fotoPerfil(Request $request)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+        $directorio = storage_path('app/profile-photos');
+
+        foreach (['jpg', 'jpeg', 'png', 'webp'] as $extension) {
+            $ruta = $directorio.DIRECTORY_SEPARATOR.'cliente_'.$cliente->id_cliente.'.'.$extension;
+            if (File::exists($ruta)) {
+                return response()->file($ruta, [
+                    'Content-Type' => File::mimeType($ruta) ?: 'image/jpeg',
+                    'Cache-Control' => 'private, no-store, max-age=0',
+                ]);
+            }
+        }
+
+        return response()->json(['mensaje' => 'Aún no tienes foto de perfil.'], 404);
+    }
+
+    public function actualizarFotoPerfil(Request $request)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+
+        $request->validate([
+            'foto' => 'required|image|mimes:jpg,jpeg,png,webp|max:3072',
+        ]);
+
+        $archivo = $request->file('foto');
+        $extension = strtolower($archivo->extension() ?: 'jpg');
+        $directorio = storage_path('app/profile-photos');
+
+        if (!File::isDirectory($directorio)) {
+            File::makeDirectory($directorio, 0755, true);
+        }
+
+        foreach (['jpg', 'jpeg', 'png', 'webp'] as $ext) {
+            $anterior = $directorio.DIRECTORY_SEPARATOR.'cliente_'.$cliente->id_cliente.'.'.$ext;
+            if (File::exists($anterior)) {
+                File::delete($anterior);
+            }
+        }
+
+        $nombre = 'cliente_'.$cliente->id_cliente.'.'.$extension;
+        $archivo->move($directorio, $nombre);
+
+        return response()->json([
+            'mensaje' => 'Foto de perfil actualizada correctamente.',
+            'actualizada' => true,
+        ]);
+    }
+
+    public function eliminarFotoPerfil(Request $request)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+        $directorio = storage_path('app/profile-photos');
+        $eliminada = false;
+
+        foreach (['jpg', 'jpeg', 'png', 'webp'] as $extension) {
+            $ruta = $directorio.DIRECTORY_SEPARATOR.'cliente_'.$cliente->id_cliente.'.'.$extension;
+            if (File::exists($ruta)) {
+                File::delete($ruta);
+                $eliminada = true;
+            }
+        }
+
+        return response()->json([
+            'mensaje' => $eliminada
+                ? 'Foto de perfil eliminada.'
+                : 'No había una foto de perfil guardada.',
+        ]);
     }
 
     public function actualizarPerfil(Request $request)
