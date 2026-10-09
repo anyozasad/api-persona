@@ -3338,7 +3338,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       if(n===0)return 'CERO';
       if(n===100)return 'CIEN';
       if(n<21)return unidades[n];
-      if(n<30)return 'VEINTI'+unidades[n-20].toLowerCase().replace(/^./,(x:string)=>x.toUpperCase());
+      if(n<30)return 'VEINTI'+unidades[n-20];
       if(n<100){
         const d=Math.floor(n/10),u=n%10;
         return decenas[d]+(u?' Y '+unidades[u]:'');
@@ -3360,7 +3360,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const ruc=String(empresa.ruc||'').trim();
     const rucValido=/^\d{11}$/.test(ruc);
     const documentoTitulo=rucValido ? 'BOLETA DE VENTA ELECTRÓNICA' : 'BOLETA DE VENTA';
-    const documentoSubtitulo='SERVICIO DE MEMBRESÍA';
+    const documentoSubtitulo='';
 
     const html=`<!doctype html>
 <html>
@@ -3368,184 +3368,244 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 <meta charset="utf-8">
 <title>${safe(numero)} - Mallqui Gym</title>
 <style>
-  @page{margin:12mm}
+  @page{
+    size:A4 portrait;
+    margin:12mm;
+  }
+
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0;background:#fff;color:#000}
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:#fff;
+    color:#000;
+  }
+
   body{
     font-family:Arial,Helvetica,sans-serif;
-    font-size:12px;
-    line-height:1.35;
+    font-size:11px;
+    line-height:1.25;
     -webkit-print-color-adjust:exact;
     print-color-adjust:exact;
   }
+
   .ticket{
-    width:100%;
-    max-width:760px;
+    width:88mm;
     margin:0 auto;
-    padding:18px 24px 22px;
+    padding:4mm 3.5mm 5mm;
     background:#fff;
   }
+
   .center{text-align:center}
+
   .logo{
-    width:110px;
-    max-height:90px;
+    width:28mm;
+    max-height:22mm;
     object-fit:contain;
     display:block;
-    margin:0 auto 6px;
+    margin:0 auto 1.5mm;
   }
+
   .company{
     margin:0;
-    font-size:18px;
+    font-size:12px;
     font-weight:900;
     line-height:1.1;
+    text-transform:uppercase;
   }
+
   .business{
-    margin-top:5px;
-    font-size:11px;
-    line-height:1.35;
+    margin-top:1mm;
+    font-size:8px;
+    line-height:1.28;
+    text-align:center;
   }
+
   .business b{font-weight:900}
+
   .doc-title{
-    margin:18px 0 4px;
-    font-size:18px;
+    margin:3mm 0 .8mm;
+    text-align:center;
+    font-size:11px;
     font-weight:900;
     line-height:1.15;
+    text-transform:uppercase;
   }
+
   .doc-sub{
-    font-size:10px;
+    text-align:center;
+    font-size:8px;
     font-weight:800;
+    text-transform:uppercase;
   }
+
   .number{
-    margin-top:5px;
-    font-size:16px;
+    margin-top:1mm;
+    text-align:center;
+    font-size:10.5px;
     font-weight:900;
   }
+
   .client{
-    margin-top:16px;
-    font-size:12px;
-    line-height:1.5;
+    margin-top:3mm;
+    text-align:center;
+    font-size:8.8px;
+    line-height:1.45;
   }
+
   .client b{font-weight:900}
+
   .date-row{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:20px;
-    margin:14px 0 8px;
-    font-size:11px;
+    gap:2mm;
+    margin:2mm 0 1mm;
+    font-size:8px;
+    font-weight:700;
   }
+
   .date-row>div:last-child{text-align:right}
-  .line{border-top:1px solid #000;margin:8px 0}
-  .dash{border-top:1px dashed #000;margin:8px 0}
+
   table{
     width:100%;
     border-collapse:collapse;
     table-layout:fixed;
-    margin-top:4px;
+    margin-top:1mm;
   }
+
   thead{
     border-top:1px solid #000;
     border-bottom:1px solid #000;
   }
+
   th{
-    padding:7px 4px;
-    font-size:10px;
+    padding:.8mm .4mm;
+    font-size:7.4px;
     font-weight:900;
     text-align:left;
   }
+
   td{
-    padding:8px 4px;
-    font-size:11px;
+    padding:.9mm .4mm;
+    font-size:7.8px;
     vertical-align:top;
   }
+
   .qty{width:9%}
-  .um{width:10%}
-  .cod{width:18%}
-  .price{width:14%;text-align:right}
-  .totalcol{width:14%;text-align:right}
+  .um{width:11%}
+  .cod{width:19%}
+  .price{width:13%;text-align:right}
+  .totalcol{width:13%;text-align:right}
+
   .desc{
     font-weight:900;
     text-transform:uppercase;
-    line-height:1.3;
+    line-height:1.25;
   }
+
   .period{
     display:block;
-    margin-top:3px;
+    margin-top:.5mm;
+    font-size:7px;
     font-weight:400;
     text-transform:none;
-    font-size:10px;
   }
+
   .totals{
-    margin-top:8px;
+    margin-top:1.2mm;
     border-top:1px solid #000;
   }
+
   .total-row{
     display:grid;
-    grid-template-columns:1fr 150px;
-    gap:16px;
-    padding:4px 0;
-    font-size:12px;
+    grid-template-columns:1fr 22mm;
+    gap:2mm;
+    padding:.7mm 0;
+    font-size:8.5px;
     font-weight:900;
   }
+
   .total-row span:last-child{text-align:right}
+
   .grand{
-    font-size:19px;
+    font-size:11px;
     border-top:1px solid #000;
     border-bottom:1px solid #000;
-    padding:8px 0;
-    margin-top:3px;
+    padding:1mm 0;
+    margin-top:.3mm;
   }
+
   .text-row{
-    font-size:11px;
-    line-height:1.45;
-    margin-top:5px;
+    margin-top:.9mm;
+    font-size:8.2px;
+    line-height:1.35;
   }
+
   .text-row b{font-weight:900}
+
   .code-title{
     text-align:center;
-    margin-top:16px;
-    font-size:9px;
+    margin-top:2.5mm;
+    font-size:7px;
     font-weight:900;
+    text-transform:uppercase;
   }
+
   .barcode{
-    margin:6px auto 4px;
+    margin:1mm auto .5mm;
     text-align:center;
-    overflow:hidden;
   }
+
   .barcode svg{
-    width:300px!important;
+    width:48mm!important;
     max-width:100%!important;
-    height:64px!important;
+    height:13mm!important;
     display:block;
     margin:auto;
   }
+
   .footer{
-    font-size:9px;
-    line-height:1.4;
+    margin-top:2mm;
     text-align:center;
-    margin-top:12px;
+    font-size:7.2px;
+    line-height:1.3;
   }
+
   .legal{
-    margin-top:8px;
-    font-size:8.5px;
-    line-height:1.35;
+    margin-top:1.5mm;
+    font-size:6.8px;
+    line-height:1.25;
   }
+
   .legal strong{
     display:block;
     font-weight:900;
   }
+
   .warning{
-    margin-top:8px;
-    padding-top:8px;
+    margin-top:1.2mm;
+    padding-top:1.2mm;
     border-top:1px dashed #000;
-    font-size:8px;
+    font-size:6.6px;
     font-weight:800;
+    text-align:center;
   }
+
   @media print{
-    html,body{width:auto!important;min-width:0!important}
-    body{background:#fff!important}
+    html,body{
+      width:auto!important;
+      min-width:0!important;
+      background:#fff!important;
+    }
+
+    body{
+      display:block!important;
+    }
+
     .ticket{
-      width:100%!important;
-      max-width:760px!important;
+      width:88mm!important;
+      max-width:88mm!important;
       margin:0 auto!important;
       padding:0!important;
     }
@@ -3566,7 +3626,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     </div>
 
     <div class="doc-title">${safe(documentoTitulo)}</div>
-    <div class="doc-sub">${safe(documentoSubtitulo)}</div>
+    ${documentoSubtitulo ? '<div class="doc-sub">'+safe(documentoSubtitulo)+'</div>' : ''}
     <div class="number">${safe(numero)}</div>
   </header>
 
