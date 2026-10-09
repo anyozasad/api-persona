@@ -2754,40 +2754,152 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
   imprimirBoleta(c:any){
     if(!c)return;
+
     const empresa=c?.empresa||{};
     const periodoInicio=c?.periodo?.inicio||c?.periodo?.fecha_inicio||'-';
     const periodoFin=c?.periodo?.fin||c?.periodo?.fecha_fin||'-';
     const numero=String(c?.numero_comprobante||('B001-'+String(c?.id_pago||'').padStart(8,'0')));
-    const barcode=code128Svg(String(c?.codigo_barras||numero),{height:64,module:2,quiet:14,text:true});
+    const monto=Number(c?.monto||0);
+    const barcode=code128Svg(String(c?.codigo_barras||numero),{height:52,module:1,quiet:8,text:false});
     const entidades:Record<string,string>={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'};
     const safe=(v:any)=>String(v??'').replace(/[&<>"']/g,(m:string)=>entidades[m]||m);
-    const html=`<!doctype html><html><head><meta charset="utf-8"><title>${safe(numero)} - Mallqui Gym</title><style>
-      body{font-family:Arial,sans-serif;background:#eef2f4;color:#172b3a;padding:28px}
-      .receipt{max-width:720px;margin:auto;background:#fff;border:1px solid #d8e0e5;border-radius:16px;padding:28px;box-shadow:0 12px 34px rgba(20,45,65,.12)}
-      .head{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #142f44;padding-bottom:18px}
-      .brand h1{margin:0;color:#102f4b}.brand p{margin:5px 0;color:#667a88;font-size:13px}.doc{text-align:right}.doc b{display:block;font-size:18px}.doc span{font-size:13px;color:#5f7483}
-      .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0}.box{background:#f6f8fa;padding:12px;border-radius:10px}.box small{display:block;color:#738795;font-size:10px;font-weight:700}.box b{display:block;margin-top:4px}
-      table{width:100%;border-collapse:collapse;margin:18px 0}th,td{padding:12px;border-bottom:1px solid #dce4e9;text-align:left}th{font-size:11px;color:#607482}.amount{text-align:right;font-size:22px;font-weight:800}
-      .barcode{text-align:center;border:1px dashed #c9d4da;border-radius:12px;padding:14px;margin-top:18px}.note{font-size:10px;color:#6f808a;margin-top:12px;line-height:1.5}
-      @media print{body{background:#fff;padding:0}.receipt{box-shadow:none;border:0}}
-    </style></head><body><section class="receipt">
-      <div class="head"><div class="brand"><h1>${safe(empresa.nombre||'Mallqui Gym')}</h1><p>RUC: ${safe(empresa.ruc||'No configurado')}</p><p>${safe(empresa.direccion||'Dirección no configurada')}</p><p>${safe(empresa.telefono||'')} ${empresa.correo ? ' · '+safe(empresa.correo) : ''}</p></div>
-      <div class="doc"><b>BOLETA DE MEMBRESÍA</b><span>${safe(numero)}</span><p>${safe(c.fecha||c.fecha_pago||'-')}</p></div></div>
-      <div class="grid">
-        <div class="box"><small>CLIENTE</small><b>${safe(c.cliente||'-')}</b></div>
-        <div class="box"><small>DNI</small><b>${safe(c.dni||'-')}</b></div>
-        <div class="box"><small>MÉTODO DE PAGO</small><b>${safe(c.metodo_pago||'-')}</b></div>
-        <div class="box"><small>N° OPERACIÓN</small><b>${safe(c.numero_operacion||'-')}</b></div>
+    const logoUrl=window.location.origin+'/assets/mallqui-logo.svg';
+
+    const fechaRaw=String(c?.fecha||c?.fecha_pago||'');
+    let fechaTexto=fechaRaw||'-';
+    let horaTexto='-';
+    if(fechaRaw){
+      const d=new Date(fechaRaw);
+      if(!isNaN(d.getTime())){
+        fechaTexto=d.toLocaleDateString('es-PE',{day:'2-digit',month:'2-digit',year:'numeric'});
+        horaTexto=d.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
+      }
+    }
+
+    const html=`<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>${safe(numero)} - Mallqui Gym</title>
+<style>
+  @page{size:80mm 210mm;margin:3mm}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:#000}
+  body{font-family:Arial,Helvetica,sans-serif;font-size:10px}
+  .ticket{width:74mm;margin:0 auto;padding:1mm 1mm 2mm}
+  .center{text-align:center}
+  .logo{width:34mm;max-height:25mm;object-fit:contain;display:block;margin:0 auto 1mm}
+  .company{font-size:15px;font-weight:900;line-height:1.05;margin:0}
+  .business{font-size:9px;line-height:1.35;margin-top:1mm}
+  .title{margin:3mm 0 1mm;font-size:14px;font-weight:900;line-height:1.08}
+  .number{font-size:12px;font-weight:900;margin-bottom:2mm}
+  .rule{border-top:1px solid #000;margin:1.6mm 0}
+  .dash{border-top:1px dashed #000;margin:1.6mm 0}
+  .client{font-size:11px;line-height:1.45}
+  .client b{font-weight:900}
+  .date-row{display:grid;grid-template-columns:1fr 1fr;gap:2mm;font-size:10px;margin:1.5mm 0}
+  table{width:100%;border-collapse:collapse;table-layout:fixed}
+  th{padding:1mm .5mm;border-top:1px solid #000;border-bottom:1px solid #000;font-size:9px;text-align:left}
+  td{padding:1mm .5mm;font-size:9.5px;vertical-align:top}
+  .qty{width:9mm}.um{width:10mm}.price{width:13mm;text-align:right}.totalcol{width:14mm;text-align:right}
+  .desc{font-weight:900;text-transform:uppercase;line-height:1.25}
+  .summary{margin-top:1mm;border-top:1px solid #000}
+  .sum-row{display:grid;grid-template-columns:1fr auto;gap:4mm;padding:.8mm 0;font-size:11px;font-weight:900}
+  .grand{font-size:16px;border-bottom:1px solid #000;padding-bottom:1mm}
+  .text-row{font-size:10px;line-height:1.45;margin-top:1mm}
+  .text-row b{font-weight:900}
+  .barcode{margin:2.5mm auto 1mm;text-align:center;overflow:hidden}
+  .barcode svg{width:53mm!important;height:16mm!important;display:block;margin:auto}
+  .footer{font-size:8.5px;line-height:1.35;text-align:center;margin-top:1.5mm}
+  .internal{font-weight:900;margin-top:1.5mm}
+  @media print{
+    html,body{width:80mm}
+    .ticket{width:74mm}
+  }
+</style>
+</head>
+<body>
+  <section class="ticket">
+    <div class="center">
+      <img class="logo" src="${safe(logoUrl)}" alt="Mallqui Gym">
+      <p class="company">${safe(empresa.nombre||'MALLQUI GYM')}</p>
+      <div class="business">
+        <b>RUC:</b> ${safe(empresa.ruc||'No configurado')}<br>
+        ${safe(empresa.direccion||'Jr. Los Laureles Mz 17 Lt 18')}<br>
+        ${empresa.telefono ? 'Teléf: '+safe(empresa.telefono)+'<br>' : ''}
+        ${empresa.correo ? 'Correo: '+safe(empresa.correo)+'<br>' : ''}
+        Pucallpa - Perú
       </div>
-      <table><thead><tr><th>CONCEPTO</th><th>PERIODO</th><th style="text-align:right">IMPORTE</th></tr></thead><tbody>
-        <tr><td>Membresía ${safe(c.membresia||'Mallqui Gym')}</td><td>${safe(periodoInicio)} al ${safe(periodoFin)}</td><td class="amount">S/ ${Number(c.monto||0).toFixed(2)}</td></tr>
-      </tbody></table>
-      <div class="barcode">${barcode}</div>
-      <p class="note">${safe(c.nota_tributaria||'Comprobante interno generado por Mallqui Gym.')}</p>
-    </section><script>window.print()<\/script></body></html>`;
+
+      <div class="title">BOLETA DE MEMBRESÍA</div>
+      <div class="number">${safe(numero)}</div>
+    </div>
+
+    <div class="dash"></div>
+
+    <div class="client center">
+      ${safe(c.cliente||'-')}<br>
+      ---<br>
+      <b>DNI ${safe(c.dni||'-')}</b>
+    </div>
+
+    <div class="date-row">
+      <div><b>FECHA:</b> ${safe(fechaTexto)}</div>
+      <div><b>HORA:</b> ${safe(horaTexto)}</div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="qty">Cant.</th>
+          <th class="um">U.M</th>
+          <th>DESCRIPCIÓN</th>
+          <th class="price">PRECIO</th>
+          <th class="totalcol">TOTAL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>SERV</td>
+          <td class="desc">MEMBRESÍA ${safe(c.membresia||'MALLQUI GYM')}<br>
+            <span style="font-weight:400;text-transform:none">${safe(periodoInicio)} al ${safe(periodoFin)}</span>
+          </td>
+          <td class="price">${monto.toFixed(2)}</td>
+          <td class="totalcol">${monto.toFixed(2)}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="summary">
+      <div class="sum-row grand"><span>TOTAL (S/)</span><span>${monto.toFixed(2)}</span></div>
+    </div>
+
+    <div class="text-row"><b>SON:</b> ${safe(monto.toFixed(2))} SOLES</div>
+    <div class="text-row"><b>FORMA DE PAGO:</b> ${safe(c.metodo_pago||'-')}</div>
+    <div class="text-row"><b>N° OPERACIÓN:</b> ${safe(c.numero_operacion||'-')}</div>
+    <div class="text-row"><b>OBSERVACIONES:</b> Membresía registrada en Mallqui Gym.</div>
+
+    <div class="barcode">${barcode}</div>
+
+    <div class="footer">
+      Gracias por confiar en Mallqui Gym.<br>
+      Conserva este comprobante como constancia de tu pago.
+      <div class="internal">${safe(c.nota_tributaria||'COMPROBANTE INTERNO - No reemplaza un comprobante electrónico autorizado por SUNAT.')}</div>
+    </div>
+  </section>
+  <script>
+    window.addEventListener('load',function(){
+      setTimeout(function(){window.print();},250);
+    });
+  </script>
+</body>
+</html>`;
+
     const w=window.open('','_blank');
     if(w){w.document.write(html);w.document.close();}
   }
+
   comprobante(p:any){
     this.api.comprobantePagoCliente(p.id_pago).subscribe({
       next:r=>this.imprimirBoleta(r.comprobante),
