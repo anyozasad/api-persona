@@ -239,7 +239,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <small>RESISTENCIA Y SALUD</small>
                 <h3>Cardiovascular</h3>
                 <p>Trabajo de resistencia, capacidad cardiovascular y acondicionamiento general.</p>
-                <span class="focus-card-action">Ver rutina <b>→</b></span>
+                <span class="focus-card-action">Ver entrenamiento <b>→</b></span>
               </article>
 
               <article class="focus-action-card" role="button" tabindex="0"
@@ -251,7 +251,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <small>FUERZA</small>
                 <h3>Masa muscular</h3>
                 <p>Rutinas orientadas al desarrollo de fuerza y masa muscular con seguimiento del gimnasio.</p>
-                <span class="focus-card-action">Ver rutina <b>→</b></span>
+                <span class="focus-card-action">Ver entrenamiento <b>→</b></span>
               </article>
 
               <article class="focus-action-card" role="button" tabindex="0"
@@ -263,7 +263,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <small>ACONDICIONAMIENTO</small>
                 <h3>Tonificación</h3>
                 <p>Trabajo equilibrado de fuerza, resistencia y control corporal.</p>
-                <span class="focus-card-action">Ver rutina <b>→</b></span>
+                <span class="focus-card-action">Ver entrenamiento <b>→</b></span>
               </article>
 
               <article class="focus-action-card" role="button" tabindex="0"
@@ -275,7 +275,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <small>ENTRENAMIENTO FUNCIONAL</small>
                 <h3>CrossFit</h3>
                 <p>Sesiones funcionales de intensidad adaptada, combinando fuerza, movilidad y resistencia.</p>
-                <span class="focus-card-action">Ver rutina <b>→</b></span>
+                <span class="focus-card-action">Ver entrenamiento <b>→</b></span>
               </article>
 
               <article class="focus-action-card" role="button" tabindex="0"
@@ -287,7 +287,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <small>AERÓBICO + ANAERÓBICO</small>
                 <h3>Pérdida de peso</h3>
                 <p>Trabajo cardiovascular y de acondicionamiento orientado a mejorar la condición física.</p>
-                <span class="focus-card-action">Ver rutina <b>→</b></span>
+                <span class="focus-card-action">Ver entrenamiento <b>→</b></span>
               </article>
             </div>
 
@@ -480,6 +480,98 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             </div>
           </section>
 
+          <section class="training-profile-guide" *ngIf="!sesionCasaActiva && !sesionCasaTerminada">
+            <div class="training-profile-guide-head">
+              <div>
+                <small>ORIENTACIÓN DEL ENTRENAMIENTO</small>
+                <h2>Qué te toca hacer cuando vayas al gym</h2>
+                <p>El sistema organiza tu objetivo, nivel, tipo de entrenamiento y clase de sesión. La rutina definitiva la registra el entrenador.</p>
+              </div>
+              <span>{{enfoqueInicioSeleccionado || 'Cardiovascular'}}</span>
+            </div>
+
+            <div class="training-level-selector">
+              <span>NIVEL</span>
+              <button type="button"
+                      [class.active]="nivelEntrenamiento==='Principiante'"
+                      (click)="seleccionarNivelEntrenamiento('Principiante')">
+                Principiante
+              </button>
+              <button type="button"
+                      [class.active]="nivelEntrenamiento==='Intermedio'"
+                      (click)="seleccionarNivelEntrenamiento('Intermedio')">
+                Intermedio
+              </button>
+              <button type="button"
+                      [class.active]="nivelEntrenamiento==='Avanzado'"
+                      (click)="seleccionarNivelEntrenamiento('Avanzado')">
+                Avanzado
+              </button>
+            </div>
+
+            <div class="training-profile-cards">
+              <article>
+                <small>OBJETIVO</small>
+                <b>{{enfoqueInicioSeleccionado || 'Cardiovascular'}}</b>
+                <p>Meta seleccionada desde el inicio del usuario.</p>
+              </article>
+              <article>
+                <small>TIPO DE ENTRENAMIENTO</small>
+                <b>{{guiaEnfoqueInicio.tipo}}</b>
+                <p>Clasificación general de la sesión.</p>
+              </article>
+              <article>
+                <small>CLASE DE SESIÓN</small>
+                <b>{{guiaEnfoqueInicio.clase}}</b>
+                <p>{{guiaEnfoqueInicio.descripcion}}</p>
+              </article>
+              <article>
+                <small>NIVEL</small>
+                <b>{{nivelEntrenamiento}}</b>
+                <p *ngIf="nivelEntrenamiento==='Principiante'">Inicio con técnica, adaptación y supervisión del personal.</p>
+                <p *ngIf="nivelEntrenamiento==='Intermedio'">Para usuarios con experiencia previa y técnica estable.</p>
+                <p *ngIf="nivelEntrenamiento==='Avanzado'">Debe ajustarse con el entrenador según experiencia y rutina registrada.</p>
+              </article>
+            </div>
+
+            <div class="training-exercise-preview">
+              <div class="training-exercise-preview-title">
+                <div>
+                  <small>EJERCICIOS DE REFERENCIA</small>
+                  <h3>Ejemplos para esta clase de entrenamiento</h3>
+                </div>
+                <b>{{guiaEnfoqueInicio.ejercicios.length}} ejercicios</b>
+              </div>
+              <div class="training-exercise-preview-list">
+                <div *ngFor="let ejercicio of guiaEnfoqueInicio.ejercicios; let i=index">
+                  <span>{{i+1}}</span>
+                  <div><b>{{ejercicio}}</b><small>El entrenador define series, repeticiones, carga y descanso.</small></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="training-profile-actions">
+              <button type="button"
+                      class="training-profile-primary"
+                      (click)="tieneRutinaAsignadaGym ? abrirModulo('rutinas') : solicitarRutinaConPerfil()"
+                      [disabled]="procesandoSolicitudRutina">
+                <span>🏋</span>
+                <div>
+                  <b>{{tieneRutinaAsignadaGym ? 'Ver mi rutina registrada' : (procesandoSolicitudRutina ? 'Enviando solicitud...' : 'Solicitar rutina con estos datos')}}</b>
+                  <small>{{tieneRutinaAsignadaGym ? 'Ver ejercicios reales asignados por tu entrenador' : 'Enviar nivel, objetivo, tipo y clase al personal del gimnasio'}}</small>
+                </div>
+                <em>→</em>
+              </button>
+              <button type="button" class="training-profile-secondary" (click)="abrirModulo('inicio')">
+                Cambiar objetivo
+              </button>
+            </div>
+
+            <p class="training-profile-note">
+              Esta guía no reemplaza la rutina asignada por el entrenador. Cuando el personal registre tu plan, la sección Entrenar mostrará los ejercicios reales, sus series, repeticiones, carga y descansos.
+            </p>
+          </section>
+
           <section class="gym-session-flow" *ngIf="!sesionCasaActiva && !sesionCasaTerminada">
             <button type="button" (click)="abrirModulo('asistencias')">
               <span>1</span>
@@ -544,13 +636,13 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             <span class="empty-state-icon" aria-hidden="true">🏋</span>
             <small class="empty-state-kicker">RUTINA DEL CLIENTE</small>
             <h3>Aún no tienes una rutina activa asignada</h3>
-            <p>La sección Entrenar no crea ejercicios por su cuenta. Para que los requisitos funcionales sean reales, la rutina debe estar registrada para tu cliente por el administrador o entrenador. Cuando la asignen, aquí aparecerán sus ejercicios, series, repeticiones, carga, descanso e indicaciones.</p>
+            <p>Ya puedes definir tu nivel y objetivo en la guía superior. Después envía esos datos al personal para que el entrenador registre la rutina final con ejercicios, series, repeticiones, carga, descanso e indicaciones.</p>
             <div class="empty-actions">
               <button type="button" class="empty-primary" (click)="abrirModulo('rutinas')">
                 <span>🏋</span><b>Revisar mis rutinas</b>
               </button>
-              <button type="button" class="empty-secondary" (click)="solicitarRutinaAlPersonal()" [disabled]="procesandoSolicitudRutina">
-                <span>?</span><b>{{procesandoSolicitudRutina ? 'Enviando...' : 'Solicitar rutina al personal'}}</b>
+              <button type="button" class="empty-secondary" (click)="solicitarRutinaConPerfil()" [disabled]="procesandoSolicitudRutina">
+                <span>?</span><b>{{procesandoSolicitudRutina ? 'Enviando...' : 'Solicitar rutina con mi objetivo'}}</b>
               </button>
             </div>
           </section>
@@ -1408,6 +1500,38 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
     .member-page .module-classes-v34 .portal-stat-action{cursor:pointer;transition:background .18s ease,border-color .18s ease}
     .member-page .module-classes-v34 .portal-stat-action:hover{background:rgba(255,49,80,.06)!important;border-color:rgba(255,49,80,.28)!important}
     .member-page .module-classes-v34 .portal-stat-action:focus-visible{outline:2px solid #ff3150;outline-offset:2px}
+    .member-page .training-profile-guide{margin:18px max(28px,2.2vw);padding:28px;border:1px solid rgba(255,255,255,.10);background:#0d1013;color:#fff}
+    .member-page .training-profile-guide-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,.09)}
+    .member-page .training-profile-guide-head small,.member-page .training-exercise-preview-title small{display:block;color:#ff3150;font-size:8px;font-weight:950;letter-spacing:1.5px}
+    .member-page .training-profile-guide-head h2{margin:7px 0 5px;color:#fff;font-size:29px;letter-spacing:-.7px}
+    .member-page .training-profile-guide-head p{max-width:720px;margin:0;color:#8f989f;font-size:10.5px;line-height:1.55}
+    .member-page .training-profile-guide-head>span{padding:9px 12px;border:1px solid rgba(255,49,80,.32);background:rgba(255,49,80,.08);color:#ff6b80;font-size:9px;font-weight:950;text-transform:uppercase}
+    .member-page .training-level-selector{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:18px 0}
+    .member-page .training-level-selector>span{margin-right:5px;color:#7f8a91;font-size:8px;font-weight:950;letter-spacing:1.4px}
+    .member-page .training-level-selector button{min-height:36px;padding:0 12px;border:1px solid #30363b;background:#14191e;color:#adb5ba;font-size:8px;font-weight:900;cursor:pointer}
+    .member-page .training-level-selector button.active{border-color:#ff3150;background:#ff3150;color:#fff}
+    .member-page .training-profile-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(255,255,255,.09);border-left:1px solid rgba(255,255,255,.09)}
+    .member-page .training-profile-cards article{min-height:135px;padding:18px;border-right:1px solid rgba(255,255,255,.09);border-bottom:1px solid rgba(255,255,255,.09);background:#101418}
+    .member-page .training-profile-cards small{display:block;color:#ff5d74;font-size:7px;font-weight:950;letter-spacing:1.1px}
+    .member-page .training-profile-cards b{display:block;margin:9px 0 6px;color:#fff;font-size:15px;line-height:1.15}
+    .member-page .training-profile-cards p{margin:0;color:#828d94;font-size:9px;line-height:1.45}
+    .member-page .training-exercise-preview{margin-top:18px;border:1px solid rgba(255,255,255,.09);background:#101418}
+    .member-page .training-exercise-preview-title{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px;border-bottom:1px solid rgba(255,255,255,.09)}
+    .member-page .training-exercise-preview-title h3{margin:5px 0 0;color:#fff;font-size:18px}
+    .member-page .training-exercise-preview-title>b{color:#ff5d74;font-size:9px}
+    .member-page .training-exercise-preview-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+    .member-page .training-exercise-preview-list>div{display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:center;min-height:70px;padding:12px 16px;border-right:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
+    .member-page .training-exercise-preview-list>div>span{width:32px;height:32px;display:grid;place-items:center;border:1px solid rgba(255,49,80,.28);background:rgba(255,49,80,.07);color:#ff3150;font-size:9px;font-weight:950}
+    .member-page .training-exercise-preview-list b{display:block;color:#fff;font-size:10.5px}
+    .member-page .training-exercise-preview-list small{display:block;margin-top:3px;color:#7f898f;font-size:8px}
+    .member-page .training-profile-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;margin-top:18px}
+    .member-page .training-profile-primary{min-height:56px;padding:0 16px;border:1px solid #ff3150;background:#ff3150;color:#fff;display:grid;grid-template-columns:32px 1fr auto;gap:12px;align-items:center;text-align:left;cursor:pointer}
+    .member-page .training-profile-primary b{display:block;font-size:10px}.member-page .training-profile-primary small{display:block;margin-top:3px;color:#ffd7dd;font-size:8px}
+    .member-page .training-profile-primary em{font-style:normal;font-size:18px}
+    .member-page .training-profile-secondary{min-height:56px;padding:0 18px;border:1px solid #30363b;background:#14191e;color:#fff;font-size:8px;font-weight:950;cursor:pointer}
+    .member-page .training-profile-note{margin:14px 0 0;color:#7f898f;font-size:8.5px;line-height:1.5}
+    @media(max-width:900px){.member-page .training-profile-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.member-page .training-profile-actions{grid-template-columns:1fr}}
+    @media(max-width:620px){.member-page .training-profile-guide{margin:14px;padding:18px}.member-page .training-profile-guide-head{flex-direction:column}.member-page .training-profile-cards,.member-page .training-exercise-preview-list{grid-template-columns:1fr}.member-page .training-level-selector button{flex:1}}
     @media(max-width:700px){.member-page .focus-selected-notice{align-items:flex-start;flex-direction:column}.member-page .focus-selected-notice button{width:100%}}
   `]
 })
@@ -1428,6 +1552,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   actualizandoModulo=false;
   seguridadForm:any={actual:'',nueva:'',confirmacion:''};
   enfoqueInicioSeleccionado='';
+  nivelEntrenamiento='Principiante';
 
   diasSemanaCasa=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
   objetivosCasaMeta=[
@@ -1466,7 +1591,17 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   constructor(private api:GymApiService, private auth:AuthService, private router:Router){}
 
-  ngOnInit():void{ this.cargarEstadoSistema(); this.cargar(); }
+  ngOnInit():void{
+    try{
+      this.enfoqueInicioSeleccionado=localStorage.getItem('mallqui_enfoque_entrenamiento')||'Cardiovascular';
+      this.nivelEntrenamiento=localStorage.getItem('mallqui_nivel_entrenamiento')||'Principiante';
+    }catch{
+      this.enfoqueInicioSeleccionado='Cardiovascular';
+      this.nivelEntrenamiento='Principiante';
+    }
+    this.cargarEstadoSistema();
+    this.cargar();
+  }
   ngOnDestroy():void{ this.detenerTimerCasa(); }
 
   cargarEstadoSistema():void{
@@ -1542,15 +1677,90 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   abrirEnfoqueEntrenamiento(enfoque:string):void{
     this.enfoqueInicioSeleccionado=enfoque;
     try{localStorage.setItem('mallqui_enfoque_entrenamiento',enfoque);}catch{}
-    this.abrirModulo('rutinas');
+    this.abrirModulo('casa');
     this.ok('Objetivo seleccionado: '+enfoque);
   }
 
-  irAClasesDisponibles():void{
-    if(this.moduloActivo!=='clases')this.moduloActivo='clases';
-    setTimeout(()=>{
-      document.getElementById('clases-disponibles')?.scrollIntoView({behavior:'smooth',block:'start'});
-    },0);
+  seleccionarNivelEntrenamiento(nivel:'Principiante'|'Intermedio'|'Avanzado'):void{
+    this.nivelEntrenamiento=nivel;
+    try{localStorage.setItem('mallqui_nivel_entrenamiento',nivel);}catch{}
+  }
+
+  get guiaEnfoqueInicio():any{
+    const objetivo=this.enfoqueInicioSeleccionado||'Cardiovascular';
+    const guias:Record<string,any>={
+      'Cardiovascular':{
+        tipo:'Aeróbico cardiovascular',
+        clase:'Cardio base y resistencia',
+        descripcion:'Sesión orientada a mejorar resistencia y condición cardiovascular.',
+        ejercicios:['Caminata en cinta','Bicicleta estática','Elíptica','Movilidad general']
+      },
+      'Masa muscular':{
+        tipo:'Fuerza y musculación',
+        clase:'Fuerza básica de cuerpo completo',
+        descripcion:'Trabajo técnico de fuerza con máquinas y ejercicios básicos del gimnasio.',
+        ejercicios:['Prensa de piernas','Remo sentado','Press de pecho en máquina','Jalón al pecho']
+      },
+      'Tonificación':{
+        tipo:'Fuerza + acondicionamiento',
+        clase:'Circuito de cuerpo completo',
+        descripcion:'Trabajo general de fuerza, movilidad y resistencia con técnica controlada.',
+        ejercicios:['Sentadilla al banco','Remo en polea','Press de pecho en máquina','Plancha modificada']
+      },
+      'CrossFit':{
+        tipo:'Funcional',
+        clase:'CrossFit técnico adaptado',
+        descripcion:'Circuito funcional de iniciación priorizando técnica, control y movimientos simples.',
+        ejercicios:['Sentadilla sin carga','Step-up bajo','Remo en máquina','Trabajo de movilidad']
+      },
+      'Pérdida de peso':{
+        tipo:'Aeróbico + anaeróbico',
+        clase:'Cardio y circuito de acondicionamiento',
+        descripcion:'Trabajo combinado de cardio y fuerza general para mejorar la condición física.',
+        ejercicios:['Caminata en cinta','Bicicleta estática','Prensa de piernas','Remo sentado']
+      }
+    };
+    return guias[objetivo]||guias['Cardiovascular'];
+  }
+
+  solicitarRutinaConPerfil():void{
+    if(!this.membresiaActual){
+      this.abrirModulo('pagos');
+      return;
+    }
+    if(this.tieneRutinaAsignadaGym){
+      this.abrirModulo('rutinas');
+      return;
+    }
+    if(this.procesandoSolicitudRutina)return;
+
+    this.procesandoSolicitudRutina=true;
+    this.errorCasa='';
+    const g=this.guiaEnfoqueInicio;
+    const mensaje=[
+      'Solicito una rutina de entrenamiento en Mallqui Gym.',
+      'Nivel: '+this.nivelEntrenamiento+'.',
+      'Objetivo: '+this.enfoqueInicioSeleccionado+'.',
+      'Tipo de entrenamiento: '+g.tipo+'.',
+      'Clase de sesión: '+g.clase+'.',
+      'Ejercicios de referencia: '+g.ejercicios.join(', ')+'.',
+      'Solicito que el entrenador revise estos datos y registre la rutina final con series, repeticiones, carga y descansos.'
+    ].join(' ');
+
+    this.api.crearSoporteCliente({
+      asunto:'Solicitud de rutina - '+this.enfoqueInicioSeleccionado,
+      mensaje
+    }).subscribe({
+      next:r=>{
+        this.procesandoSolicitudRutina=false;
+        this.ok(r?.mensaje||'Solicitud de rutina enviada con tu nivel y objetivo.');
+        this.abrirModulo('soporte');
+      },
+      error:e=>{
+        this.procesandoSolicitudRutina=false;
+        this.errorCasa=this.errorApi(e);
+      }
+    });
   }
 
   normalizarPerfil(datos:any):any{
