@@ -235,7 +235,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                        (click)="abrirEnfoqueEntrenamiento('Cardiovascular')"
                        (keydown.enter)="abrirEnfoqueEntrenamiento('Cardiovascular')">
                 <span class="focus-index">01</span>
-                <div class="focus-icon">❤</div>
+                <div class="focus-icon focus-photo"><img src="https://images.unsplash.com/photo-1648995361141-30676a75fd27?auto=format&fit=crop&w=900&q=88" alt="Entrenamiento cardiovascular en caminadora"></div>
                 <small>RESISTENCIA Y SALUD</small>
                 <h3>Cardiovascular</h3>
                 <p>Trabajo de resistencia, capacidad cardiovascular y acondicionamiento general.</p>
@@ -247,7 +247,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                        (click)="abrirEnfoqueEntrenamiento('Masa muscular')"
                        (keydown.enter)="abrirEnfoqueEntrenamiento('Masa muscular')">
                 <span class="focus-index">02</span>
-                <div class="focus-icon">◆</div>
+                <div class="focus-icon focus-photo"><img src="https://images.unsplash.com/photo-1758875570080-331859e7418f?auto=format&fit=crop&w=900&q=88" alt="Entrenamiento de fuerza con pesas"></div>
                 <small>FUERZA</small>
                 <h3>Masa muscular</h3>
                 <p>Rutinas orientadas al desarrollo de fuerza y masa muscular con seguimiento del gimnasio.</p>
@@ -259,7 +259,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                        (click)="abrirEnfoqueEntrenamiento('Tonificación')"
                        (keydown.enter)="abrirEnfoqueEntrenamiento('Tonificación')">
                 <span class="focus-index">03</span>
-                <div class="focus-icon">◎</div>
+                <div class="focus-icon focus-photo"><img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=900&q=88" alt="Acondicionamiento y tonificación en gimnasio"></div>
                 <small>ACONDICIONAMIENTO</small>
                 <h3>Tonificación</h3>
                 <p>Trabajo equilibrado de fuerza, resistencia y control corporal.</p>
@@ -271,7 +271,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                        (click)="abrirEnfoqueEntrenamiento('CrossFit')"
                        (keydown.enter)="abrirEnfoqueEntrenamiento('CrossFit')">
                 <span class="focus-index">04</span>
-                <div class="focus-icon">✦</div>
+                <div class="focus-icon focus-photo"><img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=88" alt="Entrenamiento funcional en gimnasio"></div>
                 <small>ENTRENAMIENTO FUNCIONAL</small>
                 <h3>CrossFit</h3>
                 <p>Sesiones funcionales de intensidad adaptada, combinando fuerza, movilidad y resistencia.</p>
@@ -283,7 +283,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                        (click)="abrirEnfoqueEntrenamiento('Pérdida de peso')"
                        (keydown.enter)="abrirEnfoqueEntrenamiento('Pérdida de peso')">
                 <span class="focus-index">05</span>
-                <div class="focus-icon">↗</div>
+                <div class="focus-icon focus-photo"><img src="https://images.unsplash.com/photo-1770026136895-b7a5ac0bdc67?auto=format&fit=crop&w=900&q=88" alt="Cardio y acondicionamiento en caminadora"></div>
                 <small>AERÓBICO + ANAERÓBICO</small>
                 <h3>Pérdida de peso</h3>
                 <p>Trabajo cardiovascular y de acondicionamiento orientado a mejorar la condición física.</p>
@@ -319,7 +319,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             <div class="mallqui-wellbeing-grid">
               <article>
                 <span class="wellbeing-index">01</span>
-                <div class="wellbeing-icon">♥</div>
+                <div class="wellbeing-icon wellbeing-photo"><img src="https://images.unsplash.com/photo-1648995361141-30676a75fd27?auto=format&fit=crop&w=900&q=88" alt="Actividad cardiovascular y resistencia"></div>
                 <small>SALUD CARDIOVASCULAR</small>
                 <h3>Resistencia y corazón</h3>
                 <p>La actividad física regular puede apoyar la resistencia cardiovascular y la salud general. Si una persona tiene hipertensión, enfermedad cardiaca u otra condición diagnosticada, su entrenamiento debe seguir indicaciones profesionales.</p>
@@ -328,7 +328,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
 
               <article>
                 <span class="wellbeing-index">02</span>
-                <div class="wellbeing-icon">◆</div>
+                <div class="wellbeing-icon wellbeing-photo"><img src="https://images.unsplash.com/photo-1758875570080-331859e7418f?auto=format&fit=crop&w=900&q=88" alt="Fuerza muscular y movilidad"></div>
                 <small>MÚSCULO Y ESQUELETO</small>
                 <h3>Fuerza y movilidad</h3>
                 <p>El trabajo progresivo de fuerza y movilidad ayuda a mantener la función física. Ante dolor lumbar, lesión, osteoporosis o molestias articulares, el ejercicio debe adaptarse con orientación adecuada.</p>
@@ -337,7 +337,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
 
               <article>
                 <span class="wellbeing-index">03</span>
-                <div class="wellbeing-icon">◎</div>
+                <div class="wellbeing-icon wellbeing-photo"><img src="https://images.unsplash.com/photo-1767611098846-05ed978b17ce?auto=format&fit=crop&w=900&q=88" alt="Meditación y bienestar mental"></div>
                 <small>BIENESTAR MENTAL</small>
                 <h3>Actividad y estado de ánimo</h3>
                 <p>Mantenerse activo puede apoyar el bienestar, el descanso y el manejo del estrés. No reemplaza la atención de un profesional cuando existen problemas de salud mental.</p>
@@ -346,7 +346,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
 
               <article>
                 <span class="wellbeing-index">04</span>
-                <div class="wellbeing-icon">↗</div>
+                <div class="wellbeing-icon wellbeing-photo"><img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=900&q=88" alt="Acondicionamiento físico y salud metabólica"></div>
                 <small>SALUD METABÓLICA</small>
                 <h3>Acondicionamiento general</h3>
                 <p>Combinar movimiento, fuerza y trabajo cardiovascular puede apoyar la salud metabólica y la condición física. El sistema no propone cambios rápidos de peso ni sustituye indicaciones médicas.</p>
@@ -355,7 +355,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
 
               <article>
                 <span class="wellbeing-index">05</span>
-                <div class="wellbeing-icon">◷</div>
+                <div class="wellbeing-icon wellbeing-photo"><img src="https://images.unsplash.com/photo-1738524107393-3b001d7af606?auto=format&fit=crop&w=900&q=88" alt="Ejercicio de resistencia y capacidad respiratoria"></div>
                 <small>CAPACIDAD RESPIRATORIA</small>
                 <h3>Resistencia física</h3>
                 <p>El ejercicio progresivo puede mejorar la capacidad física general. Si existen asma u otras enfermedades respiratorias, la intensidad debe ajustarse con indicaciones del profesional de salud y del entrenador.</p>
@@ -1612,6 +1612,33 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
   styles: [`
     :host{display:block}
     .member-page .focus-action-card{cursor:pointer;transition:background .18s ease,transform .18s ease}
+    .member-page .mallqui-focus-grid .focus-icon.focus-photo{
+      width:74px!important;
+      height:74px!important;
+      display:block!important;
+      padding:0!important;
+      margin-bottom:22px!important;
+      border:1px solid rgba(255,49,80,.32)!important;
+      border-radius:0!important;
+      background:#11161b!important;
+      overflow:hidden!important;
+      color:transparent!important;
+      font-size:0!important;
+      box-shadow:none!important;
+    }
+    .member-page .mallqui-focus-grid .focus-icon.focus-photo img{
+      width:100%!important;
+      height:100%!important;
+      display:block!important;
+      object-fit:cover!important;
+      object-position:center!important;
+      filter:saturate(.9) contrast(1.04)!important;
+      transition:transform .25s ease,filter .25s ease!important;
+    }
+    .member-page .mallqui-focus-grid .focus-action-card:hover .focus-icon.focus-photo img{
+      transform:scale(1.06)!important;
+      filter:saturate(1.05) contrast(1.05)!important;
+    }
     .member-page .focus-action-card:hover{background:#15191d!important;transform:translateY(-2px)}
     .member-page .focus-action-card:focus-visible{outline:2px solid #ff3150;outline-offset:-2px}
     .member-page .focus-card-action{display:inline-flex;align-items:center;gap:8px;margin-top:18px;color:#ff3150;font-size:8px;font-weight:950;letter-spacing:.9px;text-transform:uppercase}
@@ -1664,7 +1691,8 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
     .member-page .mallqui-wellbeing-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid rgba(255,255,255,.09);border-left:1px solid rgba(255,255,255,.09)}
     .member-page .mallqui-wellbeing-grid article{position:relative;min-height:310px;padding:24px 20px;border-right:1px solid rgba(255,255,255,.09);border-bottom:1px solid rgba(255,255,255,.09);background:#0f1316}
     .member-page .mallqui-wellbeing-grid .wellbeing-index{position:absolute;top:16px;right:16px;color:#566168;font-size:8px;font-weight:950}
-    .member-page .mallqui-wellbeing-grid .wellbeing-icon{width:44px;height:44px;display:grid;place-items:center;margin-bottom:28px;border:1px solid rgba(255,49,80,.30);background:rgba(255,49,80,.07);color:#ff3150;font-size:15px;font-weight:950}
+    .member-page .mallqui-wellbeing-grid .wellbeing-icon{width:74px;height:74px;display:block;margin-bottom:22px;border:1px solid rgba(255,49,80,.30);background:#11161b;overflow:hidden;color:#ff3150;font-size:0;font-weight:950}
+    .member-page .mallqui-wellbeing-grid .wellbeing-photo img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
     .member-page .mallqui-wellbeing-grid article>small{display:block;color:#ff5e75;font-size:7px;font-weight:950;letter-spacing:1.2px}
     .member-page .mallqui-wellbeing-grid h3{margin:8px 0 9px;color:#fff;font-size:19px;line-height:1.05}
     .member-page .mallqui-wellbeing-grid p{margin:0;color:#8b959c;font-size:9px;line-height:1.55}
