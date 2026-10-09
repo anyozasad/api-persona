@@ -11,7 +11,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
   selector: 'app-usuario',
   standalone: true,
   imports: [CommonModule, FormsModule, ClienteExperienciaComponent],
-  styleUrls: ['../mallqui-member.css', './usuario-productos.css', './usuario-clases.css', './usuario-perfil.css'],
+  styleUrls: ['../mallqui-member.css', '../ui-readable.css', './usuario-productos.css', './usuario-clases.css', './usuario-perfil.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="member-page">
