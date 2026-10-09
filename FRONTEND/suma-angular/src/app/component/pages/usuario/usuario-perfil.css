@@ -1,0 +1,110 @@
+.member-page .profile-photo-card{
+  position:relative;
+  overflow:hidden;
+}
+.member-page .profile-photo-picker{
+  position:relative;
+  width:112px;
+  height:112px;
+  margin:0 0 18px;
+  padding:0;
+  border:1px solid #343a40;
+  background:#14191d;
+  overflow:hidden;
+  cursor:pointer;
+}
+.member-page .profile-photo-picker img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  object-position:center;
+}
+.member-page .profile-photo-letter{
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+  background:#ff3150;
+  color:#fff;
+  font-size:34px;
+  font-weight:950;
+}
+.member-page .profile-photo-overlay{
+  position:absolute;
+  inset:auto 0 0 0;
+  min-height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:6px;
+  background:rgba(5,8,10,.82);
+  color:#fff;
+  transform:translateY(100%);
+  transition:transform .18s ease;
+}
+.member-page .profile-photo-picker:hover .profile-photo-overlay,
+.member-page .profile-photo-picker:focus-visible .profile-photo-overlay{
+  transform:translateY(0);
+}
+.member-page .profile-photo-overlay b{
+  color:#ff6078;
+  font-size:13px;
+}
+.member-page .profile-photo-overlay small{
+  font-size:7px;
+  font-weight:950;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+}
+.member-page .profile-photo-pending{
+  display:grid;
+  gap:7px;
+  margin:-6px 0 16px;
+}
+.member-page .profile-photo-pending>span{
+  color:#ff6078;
+  font-size:6.5px;
+  font-weight:950;
+  letter-spacing:.8px;
+}
+.member-page .profile-photo-pending button,
+.member-page .profile-photo-remove{
+  min-height:32px;
+  padding:0 10px;
+  border:1px solid #ff3150;
+  background:#ff3150;
+  color:#fff;
+  font-size:7px;
+  font-weight:950;
+  cursor:pointer;
+}
+.member-page .profile-photo-pending button.cancel{
+  border-color:#313940;
+  background:#11171b;
+  color:#aeb7bd;
+}
+.member-page .profile-photo-remove{
+  margin:-6px 0 16px;
+  border-color:#30383e;
+  background:transparent;
+  color:#9da8ae;
+}
+.member-page .profile-photo-pending button:disabled,
+.member-page .profile-photo-remove:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+.member-page .profile-photo-error{
+  margin:-6px 0 14px!important;
+  color:#ff7a8e!important;
+  font-size:7.5px!important;
+  line-height:1.4;
+}
+@media(max-width:650px){
+  .member-page .profile-photo-picker{
+    width:96px;
+    height:96px;
+  }
+}
