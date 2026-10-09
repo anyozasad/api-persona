@@ -251,8 +251,135 @@ class ExperienciaClienteController extends Controller
             }
         }
 
+        // Sugerencias de clases: no reservan nada automáticamente.
+        // Se calculan con la meta semanal del cliente, sus clases favoritas,
+        // cupos disponibles y las reservas que ya tiene.
+        $meta = MetaCliente::firstOrCreate(
+            ['id_cliente' => $cliente->id_cliente],
+            ['sesiones_semanales' => 3, 'recordatorios' => true]
+        );
+        $metaSemanal = max(1, min(4, (int) $meta->sesiones_semanales));
+
+        $favoritas = ClaseFavorita::query()
+            ->where('id_cliente', $cliente->id_cliente)
+            ->pluck('id_clase')
+            ->map(fn ($id) => (int) $id)
+            ->all();
+
+        $clasesActivas = Clase::with('entrenador')
+            ->where('estado', 'Activo')
+            ->orderBy('hora_inicio')
+            ->get();
+
+        $diasIso = [
+            'Lunes' => 1, 'Martes' => 2, 'Miércoles' => 3, 'Jueves' => 4,
+            'Viernes' => 5, 'Sábado' => 6, 'Domingo' => 7,
+        ];
+
+        $reservasProgramadas = Reserva::query()
+            ->where('id_cliente', $cliente->id_cliente)
+            ->whereBetween('fecha_clase', [$desde, $hasta])
+            ->whereIn('estado', ['Reservada', 'Asistio'])
+            ->get(['id_clase', 'fecha_clase']);
+
+        $candidatas = collect();
+
+        foreach ($clasesActivas as $clase) {
+            $diaIso = $diasIso[$clase->dia_semana] ?? null;
+            if (!$diaIso) continue;
+
+            for ($i = 0; $i <= 20; $i++) {
+                $fecha = today()->copy()->addDays($i);
+                if ($fecha->dayOfWeekIso !== $diaIso || $fecha->gt($hasta)) continue;
+
+                $inicio = Carbon::parse($fecha->toDateString().' '.$clase->hora_inicio);
+                if ($inicio->isPast()) continue;
+
+                $yaReservada = $reservasProgramadas->contains(function ($r) use ($clase, $fecha) {
+                    return (int) $r->id_clase === (int) $clase->id_clase
+                        && optional($r->fecha_clase)->toDateString() === $fecha->toDateString();
+                });
+                if ($yaReservada) continue;
+
+                $ocupados = Reserva::query()
+                    ->where('id_clase', $clase->id_clase)
+                    ->whereDate('fecha_clase', $fecha)
+                    ->whereIn('estado', ['Reservada', 'Asistio'])
+                    ->count();
+
+                if ($ocupados >= (int) $clase->cupo_maximo) continue;
+
+                $esFavorita = in_array((int) $clase->id_clase, $favoritas, true);
+                $entrenadorNombre = trim(
+                    ($clase->entrenador?->nombres ?? '').' '.($clase->entrenador?->apellidos ?? '')
+                );
+
+                $candidatas->push([
+                    'tipo' => 'recomendada',
+                    'fecha' => $fecha->toDateString(),
+                    'titulo' => $clase->nombre,
+                    'detalle' => substr((string) $clase->hora_inicio, 0, 5)
+                        .' - '.substr((string) $clase->hora_fin, 0, 5)
+                        .($entrenadorNombre ? ' · '.$entrenadorNombre : ''),
+                    'id_clase' => (int) $clase->id_clase,
+                    'hora_inicio' => substr((string) $clase->hora_inicio, 0, 5),
+                    'hora_fin' => substr((string) $clase->hora_fin, 0, 5),
+                    'entrenador' => $entrenadorNombre,
+                    'favorita' => $esFavorita,
+                    'cupos_disponibles' => max(0, (int) $clase->cupo_maximo - $ocupados),
+                    'motivo' => $esFavorita
+                        ? 'Está entre tus clases favoritas y tiene cupo disponible.'
+                        : 'Horario disponible para distribuir tus sesiones de la semana.',
+                ]);
+            }
+        }
+
+        // Sugiere únicamente lo necesario para acercarse a la meta semanal,
+        // con máximo una recomendación por día y sin exceder 4 sesiones por semana.
+        $recomendaciones = collect();
+        $inicioSemana = today()->copy()->startOfWeek(Carbon::MONDAY);
+
+        for ($semana = 0; $semana < 3; $semana++) {
+            $semanaInicio = $inicioSemana->copy()->addWeeks($semana);
+            $semanaFin = $semanaInicio->copy()->endOfWeek(Carbon::SUNDAY);
+
+            $reservasSemana = $reservasProgramadas->filter(function ($r) use ($semanaInicio, $semanaFin) {
+                $f = optional($r->fecha_clase);
+                return $f && $f->between($semanaInicio, $semanaFin);
+            })->count();
+
+            $faltan = max(0, $metaSemanal - $reservasSemana);
+            if ($faltan === 0) continue;
+
+            $semanaCandidatas = $candidatas
+                ->filter(function ($e) use ($semanaInicio, $semanaFin) {
+                    $f = Carbon::parse($e['fecha']);
+                    return $f->between($semanaInicio, $semanaFin);
+                })
+                ->sortBy(function ($e) {
+                    // Favoritas primero y luego fecha/hora.
+                    return ($e['favorita'] ? '0' : '1').'|'.$e['fecha'].'|'.$e['hora_inicio'];
+                });
+
+            $diasUsados = [];
+            foreach ($semanaCandidatas as $e) {
+                if ($faltan <= 0) break;
+                if (in_array($e['fecha'], $diasUsados, true)) continue;
+
+                $recomendaciones->push($e);
+                $diasUsados[] = $e['fecha'];
+                $faltan--;
+            }
+        }
+
+        foreach ($recomendaciones->take(8) as $recomendada) {
+            $eventos->push($recomendada);
+        }
+
         return response()->json(
-            $eventos->sortBy('fecha')->values()
+            $eventos
+                ->sortBy(fn ($e) => ($e['fecha'] ?? '').'|'.($e['hora_inicio'] ?? '00:00'))
+                ->values()
         );
     }
 
