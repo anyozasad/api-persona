@@ -12,7 +12,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
   selector: 'app-admin-integrado',
   standalone: true,
   imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent],
-  styleUrls: ['../mallqui-admin.css'],
+  styleUrls: ['../mallqui-admin.css', './admin-live.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
   <div class="admin-shell" [class.admin-sidebar-collapsed]="sidebarCerrado">
@@ -162,9 +162,43 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         <section class="ux-status-strip" aria-label="Estado operativo">
           <button type="button" (click)="cambiarSeccion('reservas')"><span>◷</span><div><b>{{dashboard?.reservas?.hoy ?? 0}}</b><small>Reservas hoy</small></div></button>
           <button type="button" (click)="cambiarSeccion('asistencias')"><span>▣</span><div><b>{{dashboard?.asistencias?.hoy ?? 0}}</b><small>Asistencias hoy</small></div></button>
-          <button type="button" (click)="cambiarSeccion('pagos')"><span>▤</span><div><b>{{pagos.length}}</b><small>Pagos registrados</small></div></button>
+          <button type="button" (click)="cambiarSeccion('pagos')"><span>▤</span><div><b>{{dashboard?.membresias?.pagos_registrados ?? 0}}</b><small>Pagos registrados</small></div></button>
+          <button type="button" [class.needs-attention]="(dashboard?.alertas?.rutinas_pendientes ?? 0)>0" (click)="cambiarSeccion('soporte')"><span>🏋</span><div><b>{{dashboard?.alertas?.rutinas_pendientes ?? 0}}</b><small>Rutinas solicitadas</small></div></button>
           <button type="button" [class.needs-attention]="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0" (click)="cambiarSeccion('productos')"><span>!</span><div><b>{{dashboard?.inventario?.productos_stock_bajo ?? 0}}</b><small>Stock bajo</small></div></button>
           <button type="button" [class.needs-attention]="(dashboard?.alertas?.soporte_pendiente ?? 0)>0" (click)="cambiarSeccion('soporte')"><span>?</span><div><b>{{dashboard?.alertas?.soporte_pendiente ?? 0}}</b><small>Soporte pendiente</small></div></button>
+        </section>
+
+        <section class="admin-portal-live">
+          <header>
+            <div>
+              <span>PORTAL DEL CLIENTE · EN TIEMPO REAL</span>
+              <h3>Actividad que llega al administrador</h3>
+              <p>Reservas, pagos y solicitudes realizadas por los usuarios aparecen aquí desde la misma base de datos.</p>
+            </div>
+            <div class="admin-live-sync"><i></i><span>Sincronización automática · 15 s</span></div>
+          </header>
+
+          <div class="admin-portal-live-list" *ngIf="dashboard?.portal_clientes?.actividad_reciente?.length; else sinActividadPortal">
+            <button type="button"
+                    *ngFor="let a of dashboard?.portal_clientes?.actividad_reciente"
+                    (click)="abrirActividadPortal(a)">
+              <span class="admin-live-icon" [attr.data-kind]="a.tipo">{{iconoActividadPortal(a.tipo)}}</span>
+              <div>
+                <small>{{etiquetaActividadPortal(a.tipo)}} · {{a.estado || 'Registrado'}}</small>
+                <b>{{a.titulo}}</b>
+                <p>{{a.cliente || 'Cliente'}} · {{a.detalle}}</p>
+              </div>
+              <time>{{fecha(a.fecha)}}</time>
+              <em>→</em>
+            </button>
+          </div>
+
+          <ng-template #sinActividadPortal>
+            <div class="admin-portal-live-empty">
+              <span>◎</span>
+              <div><b>Aún no hay actividad reciente del portal.</b><p>Cuando un cliente reserve, pague o envíe una consulta, aparecerá aquí automáticamente.</p></div>
+            </div>
+          </ng-template>
         </section>
 
         <section class="ux-alert-banner" *ngIf="(dashboard?.alertas?.total ?? 0) > 0">
@@ -1287,13 +1321,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.cargarDashboard();
     if (this.seccion !== 'dashboard') this.cargarSeccion(this.seccion);
 
-    // Solo el dashboard se refresca automáticamente.
-    // Los formularios de edición no se recargan en segundo plano para no perder cambios.
+    // El administrador ve los mismos datos que genera el portal del cliente.
+    // Se actualiza la sección abierta sin tocar los valores de los formularios.
     this.autoRefreshId = setInterval(() => {
-      if (this.seccion === 'dashboard') {
-        this.cargarDashboard();
+      if (!this.actualizandoDatos) {
+        this.actualizarSeccionActual(true);
       }
-    }, 30000);
+    }, 15000);
   }
 
   ngOnDestroy(): void {
@@ -2083,6 +2117,31 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   cerrarSesion(){ this.auth.logout().subscribe({next:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);},error:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);}}); }
+
+  iconoActividadPortal(tipo:any):string{
+    const t=String(tipo||'').toLowerCase();
+    if(t==='rutina')return '🏋';
+    if(t==='soporte')return '?';
+    if(t==='reserva')return '◷';
+    if(t==='pago')return 'S/';
+    return '●';
+  }
+
+  etiquetaActividadPortal(tipo:any):string{
+    const t=String(tipo||'').toLowerCase();
+    if(t==='rutina')return 'SOLICITUD DE RUTINA';
+    if(t==='soporte')return 'SOPORTE';
+    if(t==='reserva')return 'RESERVA';
+    if(t==='pago')return 'PAGO';
+    return 'ACTIVIDAD';
+  }
+
+  abrirActividadPortal(a:any):void{
+    const t=String(a?.tipo||'').toLowerCase();
+    if(t==='rutina' || t==='soporte'){ this.cambiarSeccion('soporte'); return; }
+    if(t==='reserva'){ this.cambiarSeccion('reservas'); return; }
+    if(t==='pago'){ this.cambiarSeccion('pagos'); return; }
+  }
 
   nombreCliente(c:any): string { return c ? `${c.nombres ?? ''} ${c.apellidos ?? ''}`.trim() : '-'; }
   nombreClienteVenta(c:any): string {
