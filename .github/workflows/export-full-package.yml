@@ -318,3 +318,5 @@ jobs:
           name: Mallqui_Gym_RAR
           path: Mallqui_Gym_Completo.rar
           retention-days: 7
+
+# Trigger de exportación para compartir proyecto completo
