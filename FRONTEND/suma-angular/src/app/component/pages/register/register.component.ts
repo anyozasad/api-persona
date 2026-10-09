@@ -40,19 +40,6 @@ import { AuthService } from '../../../auth.service';
             </div>
           </div>
 
-          <div class="register-socials">
-            <button type="button" class="social-button google" (click)="socialRegistro('Google')">
-              <span class="social-mark google-mark">G</span>
-              Continuar con Google
-            </button>
-            <button type="button" class="social-button facebook" (click)="socialRegistro('Facebook')">
-              <span class="social-mark facebook-mark">f</span>
-              Continuar con Facebook
-            </button>
-          </div>
-
-          <div class="register-divider"><span>o crea tu cuenta con correo</span></div>
-
           <form (ngSubmit)="registrar()" #registerForm="ngForm">
             <div class="register-row">
               <label>
@@ -166,11 +153,6 @@ export class RegisterComponent {
         this.error = this.extraerError(err, 'No se pudo crear la cuenta. Revisa los datos ingresados.');
       }
     });
-  }
-
-  socialRegistro(proveedor: string): void {
-    this.error = `El registro con ${proveedor} requiere configurar las credenciales oficiales del proveedor.`;
-    this.mensaje = '';
   }
 
   private extraerError(err: any, fallback: string): string {
