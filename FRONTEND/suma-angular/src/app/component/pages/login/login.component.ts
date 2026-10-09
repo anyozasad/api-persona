@@ -88,21 +88,6 @@ import { AuthService } from '../../../auth.service';
             </button>
           </form>
 
-          <div class="login-divider social-divider"><span>o continúa con</span></div>
-
-          <div class="login-socials">
-            <button type="button" class="social-button google" (click)="socialLogin('Google')">
-              <span class="social-mark google-mark">G</span>
-              <span>Continuar con Google</span>
-              <b>→</b>
-            </button>
-            <button type="button" class="social-button facebook" (click)="socialLogin('Facebook')">
-              <span class="social-mark facebook-mark">f</span>
-              <span>Continuar con Facebook</span>
-              <b>→</b>
-            </button>
-          </div>
-
           <div class="login-register-box">
             <div>
               <strong>¿Aún no tienes cuenta?</strong>
@@ -171,12 +156,6 @@ export class LoginComponent {
         this.error = this.extraerError(err, 'No se pudo iniciar sesión. Verifica tus credenciales.');
       }
     });
-  }
-
-  socialLogin(proveedor: string): void {
-    this.error = '';
-    this.mensaje = '';
-    this.error = `El acceso con ${proveedor} requiere configurar las credenciales oficiales del proveedor.`;
   }
 
   recuperarPassword(): void {
