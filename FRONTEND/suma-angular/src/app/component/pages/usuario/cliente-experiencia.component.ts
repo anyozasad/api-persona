@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { GymApiService } from '../../../core/services/gym-api.service';
 import { code128DataUri, code128Svg } from '../../../shared/code128';
@@ -913,7 +913,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
     @media(max-width:620px){.support-quick-help,.support-compose-card,.support-tracking-card{padding:16px}.support-quick-grid{grid-template-columns:1fr}.support-hero-stats{grid-template-columns:1fr}.support-section-head{align-items:flex-start;flex-direction:column}.support-list-v2{max-height:none}.club-access-side,.club-favorites-v2,.club-feedback-card{padding:16px}.club-access-kpis,.club-access-steps{grid-template-columns:1fr}}
   `]
 })
-export class ClienteExperienciaComponent implements OnInit, OnChanges {
+export class ClienteExperienciaComponent implements OnInit, OnChanges, OnDestroy {
   @Input() modulo = 'progreso';
   @Input() gymInfo: any = {};
   @Output() notificacionesCambio = new EventEmitter<number>();
@@ -942,16 +942,85 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
   soporteForm = { asunto: '', mensaje: '' };
   enviandoSoporte = false;
   categoriaSoporte = '';
+  private autoRefreshId: any = null;
+  private readonly autoRefreshMs = 15000;
+  private onFocus = () => this.sincronizarModuloSilencioso();
+  private onVisibility = () => { if (!document.hidden) this.sincronizarModuloSilencioso(); };
 
   constructor(private api: GymApiService) {}
 
   ngOnInit(): void {
     this.cargarModulo();
+    this.iniciarActualizacionAutomatica();
+  }
+
+  ngOnDestroy(): void {
+    if (this.autoRefreshId) clearInterval(this.autoRefreshId);
+    window.removeEventListener('focus', this.onFocus);
+    document.removeEventListener('visibilitychange', this.onVisibility);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['modulo'] && !changes['modulo'].firstChange) {
       this.cargarModulo();
+    }
+  }
+
+  private iniciarActualizacionAutomatica(): void {
+    if (this.autoRefreshId) clearInterval(this.autoRefreshId);
+    this.autoRefreshId = setInterval(() => this.sincronizarModuloSilencioso(), this.autoRefreshMs);
+    window.addEventListener('focus', this.onFocus);
+    document.addEventListener('visibilitychange', this.onVisibility);
+  }
+
+  private sincronizarModuloSilencioso(): void {
+    if (document.hidden || this.cargando) return;
+
+    if (this.modulo === 'calendario') {
+      this.api.calendarioCliente().subscribe({
+        next: r => this.calendario = r || [],
+        error: () => {}
+      });
+      return;
+    }
+
+    if (this.modulo === 'avisos') {
+      this.api.notificacionesCliente().subscribe({
+        next: r => {
+          this.notificaciones = r || { no_leidas: 0, items: [] };
+          this.notificacionesCambio.emit(Number(this.notificaciones?.no_leidas || 0));
+        },
+        error: () => {}
+      });
+      return;
+    }
+
+    if (this.modulo === 'soporte') {
+      this.api.soporteCliente().subscribe({
+        next: r => this.soporte = r || [],
+        error: () => {}
+      });
+      return;
+    }
+
+    if (this.modulo === 'progreso') {
+      this.api.progresoCliente().subscribe({ next: r => this.progreso = r, error: () => {} });
+      this.api.metaCliente().subscribe({
+        next: r => this.meta = {
+          sesiones_semanales: Number(r?.sesiones_semanales || 3),
+          recordatorios: r?.recordatorios !== false
+        },
+        error: () => {}
+      });
+      this.api.historialCliente().subscribe({ next: r => this.historial = r, error: () => {} });
+      this.api.entrenadorCliente().subscribe({ next: r => this.entrenadorInfo = r, error: () => {} });
+      return;
+    }
+
+    if (this.modulo === 'club') {
+      this.api.credencialCliente().subscribe({ next: r => this.credencial = r, error: () => {} });
+      this.api.clasesFavoritasCliente().subscribe({ next: r => this.clasesClub = r || [], error: () => {} });
+      this.api.opinionesCliente().subscribe({ next: r => this.opiniones = r || [], error: () => {} });
     }
   }
 
