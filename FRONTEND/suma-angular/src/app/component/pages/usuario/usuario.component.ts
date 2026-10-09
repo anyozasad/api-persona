@@ -606,9 +606,19 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
                 <b>{{guiaEnfoqueInicio.ejercicios.length}} ejercicios</b>
               </div>
               <div class="training-exercise-preview-list">
-                <div *ngFor="let ejercicio of guiaEnfoqueInicio.ejercicios; let i=index">
-                  <span>{{i+1}}</span>
-                  <div><b>{{ejercicio}}</b><small>El entrenador define series, repeticiones, carga y descanso.</small></div>
+                <div class="training-reference-exercise"
+                     *ngFor="let ejercicio of guiaEnfoqueInicio.ejercicios; let i=index">
+                  <div class="training-reference-photo">
+                    <img [src]="imagenEjercicioReferencia(ejercicio)"
+                         [alt]="ejercicio"
+                         loading="lazy"
+                         (error)="imagenReferenciaFallback($event)">
+                    <span>{{i+1}}</span>
+                  </div>
+                  <div class="training-reference-copy">
+                    <b>{{ejercicio}}</b>
+                    <small>Ejercicio real de referencia. El entrenador define series, repeticiones, carga y descanso.</small>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1672,10 +1682,61 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
     .member-page .training-exercise-preview-title h3{margin:5px 0 0;color:#fff;font-size:18px}
     .member-page .training-exercise-preview-title>b{color:#ff5d74;font-size:9px}
     .member-page .training-exercise-preview-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
-    .member-page .training-exercise-preview-list>div{display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:center;min-height:70px;padding:12px 16px;border-right:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
-    .member-page .training-exercise-preview-list>div>span{width:32px;height:32px;display:grid;place-items:center;border:1px solid rgba(255,49,80,.28);background:rgba(255,49,80,.07);color:#ff3150;font-size:9px;font-weight:950}
-    .member-page .training-exercise-preview-list b{display:block;color:#fff;font-size:10.5px}
-    .member-page .training-exercise-preview-list small{display:block;margin-top:3px;color:#7f898f;font-size:8px}
+    .member-page .training-exercise-preview-list>div.training-reference-exercise{
+      display:grid!important;
+      grid-template-columns:112px minmax(0,1fr)!important;
+      gap:14px!important;
+      align-items:center!important;
+      min-height:104px!important;
+      padding:12px 16px!important;
+      border-right:1px solid rgba(255,255,255,.08)!important;
+      border-bottom:1px solid rgba(255,255,255,.08)!important;
+      background:#101418!important;
+    }
+    .member-page .training-reference-photo{
+      position:relative!important;
+      width:112px!important;
+      height:78px!important;
+      overflow:hidden!important;
+      border:1px solid rgba(255,49,80,.26)!important;
+      background:#0b0f12!important;
+    }
+    .member-page .training-reference-photo img{
+      width:100%!important;
+      height:100%!important;
+      display:block!important;
+      object-fit:cover!important;
+      object-position:center!important;
+      filter:saturate(.92) contrast(1.04)!important;
+    }
+    .member-page .training-reference-photo>span{
+      position:absolute!important;
+      left:6px!important;
+      top:6px!important;
+      width:24px!important;
+      height:24px!important;
+      display:grid!important;
+      place-items:center!important;
+      border:1px solid rgba(255,255,255,.18)!important;
+      background:#ff3150!important;
+      color:#fff!important;
+      font-size:8px!important;
+      font-weight:950!important;
+      box-shadow:0 3px 10px rgba(0,0,0,.28)!important;
+    }
+    .member-page .training-reference-copy b{
+      display:block!important;
+      color:#fff!important;
+      font-size:11px!important;
+      line-height:1.25!important;
+    }
+    .member-page .training-reference-copy small{
+      display:block!important;
+      margin-top:5px!important;
+      color:#7f898f!important;
+      font-size:8px!important;
+      line-height:1.4!important;
+    }
     .member-page .training-profile-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;margin-top:18px}
     .member-page .training-profile-primary{min-height:56px;padding:0 16px;border:1px solid #ff3150;background:#ff3150;color:#fff;display:grid;grid-template-columns:32px 1fr auto;gap:12px;align-items:center;text-align:left;cursor:pointer}
     .member-page .training-profile-primary b{display:block;font-size:10px}.member-page .training-profile-primary small{display:block;margin-top:3px;color:#ffd7dd;font-size:8px}
@@ -1843,7 +1904,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
     @media(max-width:1200px){.member-page .mallqui-wellbeing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.member-page .mallqui-wellbeing-grid article{min-height:270px}}
     @media(max-width:700px){.member-page .mallqui-wellbeing-section{padding:36px 14px 42px}.member-page .mallqui-wellbeing-head{align-items:flex-start;flex-direction:column}.member-page .mallqui-wellbeing-head h2{font-size:31px}.member-page .mallqui-wellbeing-head>b{white-space:normal}.member-page .mallqui-wellbeing-grid{grid-template-columns:1fr}}
     @media(max-width:900px){.member-page .training-profile-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.member-page .training-profile-actions{grid-template-columns:1fr}}
-    @media(max-width:620px){.member-page .training-profile-guide{margin:14px;padding:18px}.member-page .training-profile-guide-head{flex-direction:column}.member-page .training-profile-cards,.member-page .training-exercise-preview-list{grid-template-columns:1fr}.member-page .training-level-selector button{flex:1}}
+    @media(max-width:620px){.member-page .training-profile-guide{margin:14px;padding:18px}.member-page .training-profile-guide-head{flex-direction:column}.member-page .training-profile-cards,.member-page .training-exercise-preview-list{grid-template-columns:1fr}.member-page .training-level-selector button{flex:1}.member-page .training-exercise-preview-list>div.training-reference-exercise{grid-template-columns:96px minmax(0,1fr)!important}.member-page .training-reference-photo{width:96px!important;height:72px!important}}
     @media(max-width:700px){.member-page .focus-selected-notice{align-items:flex-start;flex-direction:column}.member-page .focus-selected-notice button{width:100%}}
   `]
 })
@@ -2058,6 +2119,48 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       descripcion:base.descripcion,
       ejercicios:detalle.ejercicios
     };
+  }
+
+  imagenEjercicioReferencia(nombre:string):string{
+    const n=String(nombre||'').toLowerCase();
+
+    // Fotografías reales relacionadas con cada máquina o movimiento.
+    if(n.includes('bicicleta')){
+      return 'https://tommasocycling.com/cdn/shop/articles/Indoor_Cycling_Season_2025_Stay_Strong_All_Winter_Tommaso_Cycling_1_fa978be4-c5f9-4d3c-9b3d-c49b4db5da24.jpg?v=1764927390';
+    }
+    if(n.includes('elíptica') || n.includes('eliptica')){
+      return 'https://truefitness.com.sg/club/djitsun-mall-amk/img_8729/';
+    }
+    if(n.includes('remo')){
+      return 'https://pulsefit.bg/uploads/tinymce/57762.jpg';
+    }
+    if(n.includes('movilidad') || n.includes('plancha') || n.includes('core') || n.includes('pallof')){
+      return 'https://pliability.com/__cdn/framerusercontent.com/images/CZjvBl0MKtIWOaUdXWm7KiyU0.jpeg';
+    }
+    if(n.includes('prensa') || n.includes('piernas') || n.includes('sentadilla') || n.includes('step-up') || n.includes('step up')){
+      return 'https://www.beattypark.com.au/Profiles/beattypark/assets/moduledata/image-gallery/30fa39ae-c4b7-4956-8c21-6aa21bf0763a/1.3/Beatty-Park-Gym-Relaunch-DZuks-Oct-2022-%2842%29.jpg';
+    }
+    if(n.includes('press de pecho') || n.includes('empuje')){
+      return 'https://www.villagegym.co.uk/media/hs1pupgn/cardiff-gym-floor-technogym-pure-strength-chest-press.jpg';
+    }
+    if(n.includes('jalón') || n.includes('jalon') || n.includes('tracción') || n.includes('traccion') || n.includes('espalda')){
+      return 'https://images.unsplash.com/photo-1690731069562-6c6fbcd47353?auto=format&fit=crop&w=1000&q=88';
+    }
+    if(n.includes('mancuerna') || n.includes('hombro') || n.includes('fuerza') || n.includes('funcional') || n.includes('circuito')){
+      return 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1000&q=88';
+    }
+    if(n.includes('caminata') || n.includes('trote') || n.includes('cinta') || n.includes('intervalo') || n.includes('cardio')){
+      return 'https://images.squarespace-cdn.com/content/v1/5c0ae596e17ba37883d59594/4b062ba6-0343-43be-a85a-e69b2d4b5d45/pexels-william-choquette-1954524.jpg';
+    }
+
+    return 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1000&q=88';
+  }
+
+  imagenReferenciaFallback(event:Event):void{
+    const img=event.target as HTMLImageElement;
+    if(!img || img.dataset['fallbackAplicado']==='1')return;
+    img.dataset['fallbackAplicado']='1';
+    img.src='https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1000&q=88';
   }
 
   solicitarRutinaConPerfil():void{
