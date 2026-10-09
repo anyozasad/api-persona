@@ -925,6 +925,7 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
   meta: any = { sesiones_semanales: 3, recordatorios: true };
   guardandoMeta = false;
   calendario: any[] = [];
+  reservandoClaseRecomendada = 0;
   mesCalendario = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
   fechaAgenda = new Date();
   eventoSeleccionado: any = null;
@@ -1079,6 +1080,10 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
       .replace(/^./, x => x.toUpperCase());
   }
 
+  get recomendacionesCalendario(): any[] {
+    return this.calendario.filter((e:any) => String(e?.tipo || '').toLowerCase() === 'recomendada');
+  }
+
   get proximoEventoCalendario(): any {
     if (!this.calendario.length) return null;
     const ahora = new Date();
@@ -1097,6 +1102,27 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
 
   totalEventosTipo(tipo: string): number {
     return this.calendario.filter((e:any) => String(e?.tipo || '').toLowerCase() === tipo).length;
+  }
+
+  reservarRecomendada(e:any): void {
+    const idClase = Number(e?.id_clase || 0);
+    const fecha = String(e?.fecha || '');
+    if (!idClase || !fecha || this.reservandoClaseRecomendada === idClase) return;
+
+    this.error = '';
+    this.reservandoClaseRecomendada = idClase;
+    this.api.reservarClase(idClase, fecha).subscribe({
+      next: r => {
+        this.reservandoClaseRecomendada = 0;
+        this.eventoSeleccionado = null;
+        this.mostrarToast(r?.mensaje || 'Clase reservada correctamente.');
+        this.cargarCalendario();
+      },
+      error: e2 => {
+        this.reservandoClaseRecomendada = 0;
+        this.error = this.mensajeError(e2);
+      }
+    });
   }
 
   get diasCalendario(): any[] {
@@ -1178,9 +1204,10 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
 
   tipoEventoNombre(tipo:any): string {
     const t = String(tipo || '').toLowerCase();
+    if (t==='recomendada') return 'Clase recomendada';
     if (t==='casa') return 'Entrenamiento en el gimnasio';
     if (t==='membresia') return 'Membresía';
-    return 'Clase del gimnasio';
+    return 'Clase reservada';
   }
 
   imagenEventoCalendario(e:any): string {
@@ -1188,6 +1215,9 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges {
     const detalle=String(e?.detalle||'').toLowerCase();
     if(tipo==='membresia'){
       return 'https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=240&q=82';
+    }
+    if(tipo==='recomendada'){
+      return 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=240&q=82';
     }
     if(tipo==='clase'){
       return 'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=240&q=82';
