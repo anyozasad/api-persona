@@ -3304,17 +3304,11 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const periodoFin=c?.periodo?.fin||c?.periodo?.fecha_fin||'-';
     const numero=String(c?.numero_comprobante||('B001-'+String(c?.id_pago||'').padStart(8,'0')));
     const monto=Math.max(0,Number(c?.monto||0));
-
-    // IGV mostrado con la tasa general peruana (18%) solo para la presentación
-    // del ticket. La validez tributaria real depende de la emisión autorizada
-    // e integración con SUNAT.
     const gravado=monto/1.18;
     const igv=monto-gravado;
 
-    const barcode=code128Svg(String(c?.codigo_barras||numero),{height:46,module:1,quiet:6,text:false});
     const entidades:Record<string,string>={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'};
     const safe=(v:any)=>String(v??'').replace(/[&<>"']/g,(m:string)=>entidades[m]||m);
-    const logoUrl=window.location.origin+'/assets/mallqui-logo.svg';
 
     const fechaRaw=String(c?.fecha||c?.fecha_pago||'');
     let fechaTexto=fechaRaw||'-';
@@ -3344,8 +3338,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         return decenas[d]+(u?' Y '+unidades[u]:'');
       }
       if(n<1000){
-        const c=Math.floor(n/100),r=n%100;
-        return centenas[c]+(r?' '+enteroLetras(r):'');
+        const cen=Math.floor(n/100),r=n%100;
+        return centenas[cen]+(r?' '+enteroLetras(r):'');
       }
       if(n<1000000){
         const miles=Math.floor(n/1000),r=n%1000;
@@ -3354,13 +3348,23 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       }
       return String(n);
     };
+
     const centimos=Math.round((monto-Math.floor(monto))*100);
     const montoLetras=enteroLetras(Math.floor(monto))+' CON '+String(centimos).padStart(2,'0')+'/100 SOLES';
 
     const ruc=String(empresa.ruc||'').trim();
     const rucValido=/^\d{11}$/.test(ruc);
     const documentoTitulo=rucValido ? 'BOLETA DE VENTA ELECTRÓNICA' : 'BOLETA DE VENTA';
-    const documentoSubtitulo='';
+
+    const qrContenido=[
+      'MALLQUI GYM',
+      'COMPROBANTE '+numero,
+      'DNI '+String(c?.dni||''),
+      'FECHA '+fechaTexto,
+      'TOTAL '+monto.toFixed(2),
+      'OPERACION '+String(c?.numero_operacion||'')
+    ].join('|');
+    const qrUrl='https://quickchart.io/qr?size=280&margin=1&text='+encodeURIComponent(qrContenido);
 
     const html=`<!doctype html>
 <html>
@@ -3368,244 +3372,171 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 <meta charset="utf-8">
 <title>${safe(numero)} - Mallqui Gym</title>
 <style>
-  @page{
-    size:A4 portrait;
-    margin:12mm;
-  }
-
+  @page{size:A4 portrait;margin:8mm}
   *{box-sizing:border-box}
-
-  html,body{
-    margin:0;
-    padding:0;
-    background:#fff;
-    color:#000;
-  }
-
+  html,body{margin:0;padding:0;background:#fff;color:#000}
   body{
-    font-family:Arial,Helvetica,sans-serif;
+    font-family:"Courier New",Courier,monospace;
     font-size:11px;
     line-height:1.25;
     -webkit-print-color-adjust:exact;
     print-color-adjust:exact;
   }
-
   .ticket{
-    width:88mm;
+    width:104mm;
     margin:0 auto;
-    padding:4mm 3.5mm 5mm;
+    padding:4mm 5mm 6mm;
     background:#fff;
   }
-
   .center{text-align:center}
-
-  .logo{
-    width:28mm;
-    max-height:22mm;
-    object-fit:contain;
-    display:block;
-    margin:0 auto 1.5mm;
-  }
-
-  .company{
-    margin:0;
-    font-size:12px;
+  .empresa{
+    font-size:15px;
     font-weight:900;
-    line-height:1.1;
+    line-height:1.08;
     text-transform:uppercase;
   }
-
-  .business{
-    margin-top:1mm;
-    font-size:8px;
-    line-height:1.28;
-    text-align:center;
+  .empresa-sub{
+    margin-top:2px;
+    font-size:10px;
+    font-weight:700;
+    line-height:1.2;
+    text-transform:uppercase;
   }
-
-  .business b{font-weight:900}
-
-  .doc-title{
-    margin:3mm 0 .8mm;
-    text-align:center;
+  .ruc{
+    margin-top:3px;
     font-size:11px;
     font-weight:900;
-    line-height:1.15;
+  }
+  .contacto{
+    margin-top:2px;
+    font-size:9px;
+    line-height:1.25;
+  }
+  .doc-title{
+    margin-top:7px;
+    font-size:12px;
+    font-weight:900;
     text-transform:uppercase;
   }
-
-  .doc-sub{
-    text-align:center;
-    font-size:8px;
-    font-weight:800;
-    text-transform:uppercase;
-  }
-
-  .number{
-    margin-top:1mm;
-    text-align:center;
-    font-size:10.5px;
+  .numero{
+    margin-top:2px;
+    font-size:12px;
     font-weight:900;
   }
-
-  .client{
-    margin-top:3mm;
-    text-align:center;
-    font-size:8.8px;
+  .buyer{
+    margin-top:9px;
+    font-size:10px;
     line-height:1.45;
   }
-
-  .client b{font-weight:900}
-
-  .date-row{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:2mm;
-    margin:2mm 0 1mm;
-    font-size:8px;
-    font-weight:700;
+  .buyer b{
+    font-size:11px;
+    font-weight:900;
   }
-
-  .date-row>div:last-child{text-align:right}
-
+  .row{
+    display:grid;
+    grid-template-columns:42mm 1fr;
+    gap:3mm;
+    margin-top:2px;
+  }
+  .label{font-weight:900}
+  .sep{
+    border-top:1px solid #000;
+    margin:8px 0 6px;
+  }
   table{
     width:100%;
     border-collapse:collapse;
     table-layout:fixed;
-    margin-top:1mm;
   }
-
   thead{
     border-top:1px solid #000;
     border-bottom:1px solid #000;
   }
-
   th{
-    padding:.8mm .4mm;
-    font-size:7.4px;
+    padding:5px 2px;
+    font-size:9px;
     font-weight:900;
     text-align:left;
   }
-
   td{
-    padding:.9mm .4mm;
-    font-size:7.8px;
+    padding:6px 2px;
+    font-size:9px;
     vertical-align:top;
   }
-
-  .qty{width:9%}
-  .um{width:11%}
-  .cod{width:19%}
-  .price{width:13%;text-align:right}
-  .totalcol{width:13%;text-align:right}
-
-  .desc{
-    font-weight:900;
-    text-transform:uppercase;
+  .cant{width:12%}
+  .descripcion{width:50%}
+  .pu{width:18%;text-align:right}
+  .totalcol{width:20%;text-align:right}
+  .desc-main{font-weight:900}
+  .desc-sub{
+    display:block;
+    margin-top:2px;
+    font-size:8px;
     line-height:1.25;
   }
-
-  .period{
-    display:block;
-    margin-top:.5mm;
-    font-size:7px;
-    font-weight:400;
-    text-transform:none;
-  }
-
   .totals{
-    margin-top:1.2mm;
-    border-top:1px solid #000;
-  }
-
-  .total-row{
-    display:grid;
-    grid-template-columns:1fr 22mm;
-    gap:2mm;
-    padding:.7mm 0;
-    font-size:8.5px;
-    font-weight:900;
-  }
-
-  .total-row span:last-child{text-align:right}
-
-  .grand{
-    font-size:11px;
+    margin-top:8px;
     border-top:1px solid #000;
     border-bottom:1px solid #000;
-    padding:1mm 0;
-    margin-top:.3mm;
+    padding:5px 0;
   }
-
-  .text-row{
-    margin-top:.9mm;
-    font-size:8.2px;
+  .total-line{
+    display:grid;
+    grid-template-columns:1fr 13mm 23mm;
+    gap:2mm;
+    align-items:center;
+    padding:2px 0;
+    font-size:11px;
+    font-weight:900;
+  }
+  .total-line span:nth-child(2),
+  .total-line span:nth-child(3){text-align:right}
+  .importe{
+    margin-top:7px;
+    font-size:10px;
+    font-weight:900;
+  }
+  .detalle{
+    margin-top:6px;
+    font-size:9px;
     line-height:1.35;
   }
-
-  .text-row b{font-weight:900}
-
-  .code-title{
-    text-align:center;
-    margin-top:2.5mm;
-    font-size:7px;
-    font-weight:900;
-    text-transform:uppercase;
-  }
-
-  .barcode{
-    margin:1mm auto .5mm;
-    text-align:center;
-  }
-
-  .barcode svg{
-    width:48mm!important;
-    max-width:100%!important;
-    height:13mm!important;
-    display:block;
-    margin:auto;
-  }
-
+  .detalle b{font-weight:900}
   .footer{
-    margin-top:2mm;
+    margin-top:8px;
+    padding-top:6px;
+    border-top:1px solid #000;
     text-align:center;
-    font-size:7.2px;
-    line-height:1.3;
+    font-size:8px;
+    line-height:1.35;
   }
-
-  .legal{
-    margin-top:1.5mm;
-    font-size:6.8px;
+  .qr{
+    margin-top:7px;
+    text-align:center;
+    min-height:48mm;
+  }
+  .qr img{
+    width:46mm;
+    height:46mm;
+    object-fit:contain;
+    image-rendering:pixelated;
+  }
+  .qr-fallback{
+    margin-top:4px;
+    font-size:7px;
+    word-break:break-all;
+  }
+  .nota-legal{
+    margin-top:5px;
+    font-size:7px;
     line-height:1.25;
+    font-weight:700;
   }
-
-  .legal strong{
-    display:block;
-    font-weight:900;
-  }
-
-  .warning{
-    margin-top:1.2mm;
-    padding-top:1.2mm;
-    border-top:1px dashed #000;
-    font-size:6.6px;
-    font-weight:800;
-    text-align:center;
-  }
-
   @media print{
-    html,body{
-      width:auto!important;
-      min-width:0!important;
-      background:#fff!important;
-    }
-
-    body{
-      display:block!important;
-    }
-
+    html,body{width:auto!important;min-width:0!important;background:#fff!important}
     .ticket{
-      width:88mm!important;
-      max-width:88mm!important;
+      width:104mm!important;
+      max-width:104mm!important;
       margin:0 auto!important;
       padding:0!important;
     }
@@ -3615,88 +3546,86 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 <body>
 <section class="ticket">
   <header class="center">
-    <img class="logo" src="${safe(logoUrl)}" alt="Mallqui Gym">
-    <p class="company">${safe(empresa.nombre||'MALLQUI GYM')}</p>
-    <div class="business">
-      <b>RUC:</b> ${safe(ruc||'NO CONFIGURADO')}<br>
-      ${safe(empresa.direccion||'Jr. Los Laureles Mz 17 Lt 18')}<br>
-      ${empresa.telefono ? 'Teléf: '+safe(empresa.telefono)+'<br>' : ''}
-      ${empresa.correo ? 'Correo: '+safe(empresa.correo)+'<br>' : ''}
-      Pucallpa - Perú
+    <div class="empresa">${safe(empresa.nombre||'MALLQUI GYM')}</div>
+    <div class="empresa-sub">${safe(empresa.direccion||'JR. LOS LAURELES MZ 17 LT 18')}<br>PUCALLPA - UCAYALI - PERÚ</div>
+    ${rucValido ? '<div class="ruc">RUC '+safe(ruc)+'</div>' : ''}
+    <div class="contacto">
+      ${empresa.telefono ? 'TELÉFONO '+safe(empresa.telefono) : 'TELÉFONO 939398148'}
+      ${empresa.correo ? '<br>'+safe(empresa.correo) : ''}
     </div>
-
     <div class="doc-title">${safe(documentoTitulo)}</div>
-    ${documentoSubtitulo ? '<div class="doc-sub">'+safe(documentoSubtitulo)+'</div>' : ''}
-    <div class="number">${safe(numero)}</div>
+    <div class="numero">${safe(numero)}</div>
   </header>
 
-  <div class="client center">
-    ${safe(c.cliente||'-')}<br>
-    ---<br>
-    <b>DNI ${safe(c.dni||'-')}</b>
-  </div>
+  <section class="buyer">
+    <b>ADQUIRIENTE</b>
+    <div><span class="label">DNI:</span> ${safe(c?.dni||'-')}</div>
+    <div><span class="label">NOMBRE:</span> ${safe(c?.cliente||'-')}</div>
+    <div><span class="label">FECHA EMISIÓN:</span> ${safe(fechaTexto)} &nbsp; ${safe(horaTexto)}</div>
+    <div><span class="label">VIGENCIA HASTA:</span> ${safe(periodoFin)}</div>
+    <div><span class="label">MONEDA:</span> SOLES</div>
+    <div><span class="label">IGV:</span> 18.00 %</div>
+  </section>
 
-  <div class="date-row">
-    <div><b>FECHA:</b> ${safe(fechaTexto)}</div>
-    <div><b>HORA:</b> ${safe(horaTexto)}</div>
-  </div>
+  <div class="sep"></div>
 
   <table>
     <thead>
       <tr>
-        <th class="qty">Cant.</th>
-        <th class="um">U.M</th>
-        <th class="cod">CÓD</th>
-        <th>DESCRIPCIÓN</th>
-        <th class="price">PRECIO</th>
+        <th class="cant">[ CANT. ]</th>
+        <th class="descripcion">DESCRIPCIÓN</th>
+        <th class="pu">P/U</th>
         <th class="totalcol">TOTAL</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>1</td>
-        <td>SERV</td>
-        <td>${safe(String(c?.id_pago||numero).replace(/\D/g,'').slice(-12)||'-')}</td>
-        <td class="desc">
-          MEMBRESÍA ${safe(c.membresia||'MALLQUI GYM')}
-          <span class="period">${safe(periodoInicio)} al ${safe(periodoFin)}</span>
+        <td class="cant">[ 1 ]</td>
+        <td class="descripcion">
+          <span class="desc-main">MEMBRESÍA ${safe(c?.membresia||'MALLQUI GYM')}</span>
+          <span class="desc-sub">Servicio de gimnasio</span>
+          <span class="desc-sub">Periodo: ${safe(periodoInicio)} al ${safe(periodoFin)}</span>
+          <span class="desc-sub">Código: ${safe(String(c?.id_pago||numero).replace(/\D/g,'').slice(-12)||'-')}</span>
         </td>
-        <td class="price">${monto.toFixed(2)}</td>
+        <td class="pu">${monto.toFixed(2)}</td>
         <td class="totalcol">${monto.toFixed(2)}</td>
       </tr>
     </tbody>
   </table>
 
-  <div class="totals">
-    <div class="total-row"><span>TOTAL GRAVADO (S/)</span><span>${gravado.toFixed(2)}</span></div>
-    <div class="total-row"><span>I.G.V. 18% (S/)</span><span>${igv.toFixed(2)}</span></div>
-    <div class="total-row grand"><span>TOTAL (S/)</span><span>${monto.toFixed(2)}</span></div>
-  </div>
+  <section class="totals">
+    <div class="total-line"><span>GRAVADA</span><span>S/</span><span>${gravado.toFixed(2)}</span></div>
+    <div class="total-line"><span>IGV</span><span>S/</span><span>${igv.toFixed(2)}</span></div>
+    <div class="total-line"><span>TOTAL</span><span>S/</span><span>${monto.toFixed(2)}</span></div>
+  </section>
 
-  <div class="text-row"><b>SON:</b> ${safe(montoLetras)}</div>
-  <div class="text-row"><b>FORMA DE PAGO:</b> ${safe(c.metodo_pago||'-')}</div>
-  <div class="text-row"><b>COND. VENTA:</b> CONTADO</div>
-  <div class="text-row"><b>N° OPERACIÓN:</b> ${safe(c.numero_operacion||'-')}</div>
-  <div class="text-row"><b>OBSERVACIONES:</b> Membresía registrada en Mallqui Gym.</div>
+  <div class="importe">IMPORTE EN LETRAS: ${safe(montoLetras)}</div>
 
-  <div class="code-title">CÓDIGO DEL COMPROBANTE</div>
-  <div class="barcode">${barcode}</div>
+  <section class="detalle">
+    <div><b>FORMA DE PAGO:</b> ${safe(c?.metodo_pago||'CONTADO')}</div>
+    <div><b>COND. VENTA:</b> CONTADO</div>
+    <div><b>N° OPERACIÓN:</b> ${safe(c?.numero_operacion||'-')}</div>
+    <div><b>OBSERVACIONES:</b> MEMBRESÍA REGISTRADA EN MALLQUI GYM.</div>
+  </section>
 
   <footer class="footer">
-    Representación impresa del comprobante de Mallqui Gym.<br>
-    Conserva este documento como constancia de tu pago.
-    <div class="legal">
-      <strong>${rucValido ? 'BOLETA CON RUC CONFIGURADO EN EL SISTEMA' : 'RUC AÚN NO CONFIGURADO'}</strong>
-      ${safe(c.nota_tributaria||'Para validez tributaria como comprobante electrónico se requiere emisión autorizada por SUNAT.')}
+    Representación impresa de la ${safe(documentoTitulo)}.<br>
+    Conserva este comprobante como constancia de tu pago.
+    <div class="qr">
+      <img src="${safe(qrUrl)}" alt="Código QR del comprobante">
+      <div class="qr-fallback">${safe(numero)}</div>
     </div>
-    <div class="warning">
-      La apariencia corresponde al formato de ticket peruano. La validez tributaria depende de la emisión electrónica autorizada y no solo del diseño.
+    <div class="nota-legal">
+      ${rucValido
+        ? 'La validez tributaria electrónica depende de la emisión autorizada e integración con SUNAT.'
+        : 'RUC no configurado. Este documento funciona como constancia interna hasta completar la emisión electrónica autorizada.'}
     </div>
   </footer>
 </section>
+
 <script>
   window.addEventListener('load',function(){
-    setTimeout(function(){window.print();},300);
+    setTimeout(function(){window.print();},700);
   });
 <\/script>
 </body>
