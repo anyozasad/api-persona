@@ -18,6 +18,17 @@ export class GymApiService {
   // =========================================================
   resumenCliente(): Observable<any> { return this.http.get('/api/mi-cuenta/resumen'); }
   perfilCliente(): Observable<any> { return this.http.get('/api/mi-cuenta/perfil'); }
+  fotoPerfilCliente(): Observable<Blob> {
+    return this.http.get('/api/mi-cuenta/perfil/foto', { responseType: 'blob' });
+  }
+  actualizarFotoPerfilCliente(archivo: File): Observable<any> {
+    const form = new FormData();
+    form.append('foto', archivo);
+    return this.http.post('/api/mi-cuenta/perfil/foto', form);
+  }
+  eliminarFotoPerfilCliente(): Observable<any> {
+    return this.http.delete('/api/mi-cuenta/perfil/foto');
+  }
   actualizarPerfilCliente(datos: any): Observable<any> { return this.http.put('/api/mi-cuenta/perfil', datos); }
   membresiaCliente(): Observable<any> { return this.http.get('/api/mi-cuenta/membresia'); }
   pagosCliente(): Observable<any[]> { return this.http.get<any[]>('/api/mi-cuenta/pagos'); }
