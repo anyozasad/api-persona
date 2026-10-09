@@ -1698,7 +1698,118 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
     .member-page .attendance-how-grid article>span{width:30px;height:30px;display:grid;place-items:center;border:1px solid rgba(255,49,80,.30);background:rgba(255,49,80,.07);color:#ff3150;font-size:8px;font-weight:950}
     .member-page .attendance-how-grid b{display:block;color:#fff;font-size:9.5px}.member-page .attendance-how-grid p{margin:4px 0 0;color:#7f8a91;font-size:8px;line-height:1.45}
     .member-page .attendance-timeline .attendance-duration{margin-top:4px!important;color:#ff6077!important;font-weight:800}
-    .member-page .client-rf-summary{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+    .member-page .client-rf-summary{
+      grid-template-columns:repeat(4,minmax(0,1fr))!important;
+      gap:0!important;
+      margin:0 max(28px,2.2vw) 18px!important;
+      border-top:1px solid rgba(255,255,255,.09)!important;
+      border-left:1px solid rgba(255,255,255,.09)!important;
+      background:#0d1013!important;
+    }
+    .member-page .client-rf-summary article{
+      min-height:112px!important;
+      padding:20px!important;
+      border:0!important;
+      border-right:1px solid rgba(255,255,255,.09)!important;
+      border-bottom:1px solid rgba(255,255,255,.09)!important;
+      border-radius:0!important;
+      background:#101418!important;
+      box-shadow:none!important;
+      color:#fff!important;
+    }
+    .member-page .client-rf-summary article:hover{
+      background:#141a1f!important;
+      transform:none!important;
+    }
+    .member-page .client-rf-summary article small{
+      display:block!important;
+      color:#ff5e75!important;
+      font-size:7.5px!important;
+      font-weight:950!important;
+      letter-spacing:1.2px!important;
+    }
+    .member-page .client-rf-summary article b{
+      display:block!important;
+      margin:9px 0 4px!important;
+      color:#fff!important;
+      font-size:26px!important;
+      line-height:1!important;
+      letter-spacing:-.6px!important;
+    }
+    .member-page .client-rf-summary article span{
+      color:#7f8a91!important;
+      font-size:8.5px!important;
+    }
+    .member-page .attendance-timeline{
+      margin:0 max(28px,2.2vw) 24px!important;
+    }
+    .member-page .attendance-timeline .member-empty-card.member-empty-guided{
+      min-height:240px!important;
+      display:flex!important;
+      flex-direction:column!important;
+      align-items:center!important;
+      justify-content:center!important;
+      padding:30px 20px!important;
+      border:1px solid rgba(255,255,255,.09)!important;
+      border-radius:0!important;
+      background:
+        linear-gradient(145deg,rgba(255,49,80,.045),transparent 55%),
+        #0f1316!important;
+      color:#fff!important;
+      box-shadow:none!important;
+      text-align:center!important;
+    }
+    .member-page .attendance-timeline .member-empty-card.member-empty-guided>span{
+      width:48px!important;
+      height:48px!important;
+      display:grid!important;
+      place-items:center!important;
+      margin-bottom:14px!important;
+      border:1px solid rgba(255,49,80,.32)!important;
+      border-radius:0!important;
+      background:rgba(255,49,80,.07)!important;
+      color:#ff3150!important;
+      font-size:17px!important;
+    }
+    .member-page .attendance-timeline .member-empty-card.member-empty-guided h3{
+      margin:0 0 6px!important;
+      color:#fff!important;
+      font-size:18px!important;
+    }
+    .member-page .attendance-timeline .member-empty-card.member-empty-guided p{
+      max-width:620px!important;
+      margin:0!important;
+      color:#8c969d!important;
+      font-size:9px!important;
+      line-height:1.55!important;
+    }
+    .member-page .attendance-timeline .empty-actions{
+      display:flex!important;
+      gap:9px!important;
+      justify-content:center!important;
+      flex-wrap:wrap!important;
+      margin-top:18px!important;
+    }
+    .member-page .attendance-timeline .empty-actions button{
+      min-height:44px!important;
+      padding:0 16px!important;
+      border-radius:0!important;
+      font-size:8px!important;
+      font-weight:950!important;
+      cursor:pointer!important;
+    }
+    .member-page .attendance-timeline .empty-primary{
+      border:1px solid #ff3150!important;
+      background:#ff3150!important;
+      color:#fff!important;
+    }
+    .member-page .attendance-timeline .empty-secondary{
+      border:1px solid #30373c!important;
+      background:#141a1f!important;
+      color:#fff!important;
+    }
+    .member-page .attendance-timeline .empty-primary:hover{background:#e82946!important}
+    .member-page .attendance-timeline .empty-secondary:hover{border-color:#ff3150!important}
     @media(max-width:1000px){.member-page .attendance-access-panel{grid-template-columns:1fr}.member-page .attendance-how-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.member-page .client-rf-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
     @media(max-width:620px){.member-page .attendance-access-panel,.member-page .attendance-how-it-works{margin-left:14px;margin-right:14px;padding:18px}.member-page .attendance-access-actions{display:grid}.member-page .attendance-access-primary{min-width:0;width:100%}.member-page .attendance-how-grid,.member-page .client-rf-summary{grid-template-columns:1fr!important}}
     @media(max-width:1200px){.member-page .mallqui-wellbeing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.member-page .mallqui-wellbeing-grid article{min-height:270px}}
