@@ -118,7 +118,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
           <button type="button" class="ux-action primary-action" (click)="cambiarSeccion('ventas')">
             <span>＋</span><div><b>Nueva venta</b><small>Vender productos</small></div>
           </button>
-          <button type="button" class="ux-action" (click)="cambiarSeccion('clientes')">
+          <button type="button" class="ux-action" (click)="abrirNuevoSocioDesdeDashboard()">
             <span>♙</span><div><b>Nuevo socio</b><small>Registrar miembro</small></div>
           </button>
           <button type="button" class="ux-action" (click)="cambiarSeccion('membresias')">
@@ -164,7 +164,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
           <button type="button" (click)="cambiarSeccion('asistencias')"><span>▣</span><div><b>{{dashboard?.asistencias?.hoy ?? 0}}</b><small>Asistencias hoy</small></div></button>
           <button type="button" (click)="cambiarSeccion('pagos')"><span>▤</span><div><b>{{dashboard?.membresias?.pagos_registrados ?? 0}}</b><small>Pagos registrados</small></div></button>
           <button type="button" [class.needs-attention]="(dashboard?.alertas?.rutinas_pendientes ?? 0)>0" (click)="cambiarSeccion('soporte')"><span>🏋</span><div><b>{{dashboard?.alertas?.rutinas_pendientes ?? 0}}</b><small>Rutinas solicitadas</small></div></button>
-          <button type="button" [class.needs-attention]="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0" (click)="cambiarSeccion('productos')"><span>!</span><div><b>{{dashboard?.inventario?.productos_stock_bajo ?? 0}}</b><small>Stock bajo</small></div></button>
+          <button type="button" [class.needs-attention]="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0" (click)="cambiarSeccion('inventario')"><span>!</span><div><b>{{dashboard?.inventario?.productos_stock_bajo ?? 0}}</b><small>Stock bajo</small></div></button>
           <button type="button" [class.needs-attention]="(dashboard?.alertas?.soporte_pendiente ?? 0)>0" (click)="cambiarSeccion('soporte')"><span>?</span><div><b>{{dashboard?.alertas?.soporte_pendiente ?? 0}}</b><small>Soporte pendiente</small></div></button>
         </section>
 
@@ -919,6 +919,15 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
       </ng-container>
 
       <ng-container *ngIf="seccion==='rutinas'">
+        <div *ngIf="solicitudRutinaContexto" class="admin-request-context">
+          <div>
+            <span>SOLICITUD DEL PORTAL DEL CLIENTE</span>
+            <b>{{nombreSolicitudRutina(solicitudRutinaContexto)}}</b>
+            <p>{{solicitudRutinaContexto.mensaje || solicitudRutinaContexto.detalle || 'El cliente solicitó una rutina personalizada.'}}</p>
+            <small>Al guardar una nueva rutina desde esta solicitud, el caso se cerrará y el cliente recibirá una notificación.</small>
+          </div>
+          <button type="button" (click)="cancelarSolicitudRutinaContexto()" aria-label="Cerrar solicitud">×</button>
+        </div>
         <section class="management-grid">
           <article class="admin-form-card">
             <div class="management-heading"><div><h2>{{rutinaEditandoId ? 'Editar rutina' : 'Nueva rutina'}}</h2><p>{{rutinaEditandoId ? 'Modifica la rutina y guarda los cambios.' : 'Asigna una rutina a un cliente y entrenador.'}}</p></div><span>🏋</span></div>
@@ -1139,7 +1148,10 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         </section>
       </ng-container>
       <ng-container *ngIf="seccion==='comunicacion' || seccion==='soporte'">
-        <app-admin-comunicacion [modo]="seccion==='soporte' ? 'soporte' : 'comunicacion'"></app-admin-comunicacion>
+        <app-admin-comunicacion
+          [modo]="seccion==='soporte' ? 'soporte' : 'comunicacion'"
+          (atenderRutina)="atenderSolicitudRutina($event)">
+        </app-admin-comunicacion>
       </ng-container>
 
       <app-admin-cliente-ficha
@@ -1158,6 +1170,9 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
     .access-scan-result>span{padding:6px 9px;border-radius:999px;background:#198754;color:#fff;font-size:10px;font-weight:900;letter-spacing:.5px}
     .access-scan-result>span.exit{background:#35536b}
     .access-scan-result div{display:grid;gap:2px}.access-scan-result small{color:#6a7d8d}
+    .admin-request-context{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:0 0 18px;padding:18px 20px;border:1px solid #f2c9cd;border-left:5px solid #d7192d;border-radius:16px;background:#fff8f8;box-shadow:0 10px 28px rgba(71,21,28,.06)}
+    .admin-request-context>div{display:grid;gap:5px}.admin-request-context span{font-size:11px;font-weight:900;letter-spacing:.9px;color:#d7192d}.admin-request-context b{font-size:18px;color:#202833}.admin-request-context p{margin:0;color:#4b5966}.admin-request-context small{color:#76838e}
+    .admin-request-context>button{border:0;background:#fff;color:#7e8992;width:34px;height:34px;border-radius:10px;cursor:pointer;font-size:22px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
   `]
 })
 export class AdminIntegradoComponent implements OnInit, OnDestroy {
@@ -1207,23 +1222,36 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       ]
     },
     {
-      titulo:'Gestión',
+      titulo:'Clientes',
       items:[
         {id:'clientes',icono:'♙',nombre:'Socios'},
+        {id:'membresias',icono:'✦',nombre:'Membresías'},
+        {id:'pagos',icono:'S/',nombre:'Pagos de membresía'},
+        {id:'reservas',icono:'◫',nombre:'Reservas'},
+        {id:'rutinas',icono:'🏋',nombre:'Rutinas'},
+        {id:'clases',icono:'◉',nombre:'Clases'},
+        {id:'soporte',icono:'?',nombre:'Soporte'},
+        {id:'comunicacion',icono:'●',nombre:'Notificaciones'}
+      ]
+    },
+    {
+      titulo:'Operación',
+      items:[
         {id:'caja',icono:'▣',nombre:'Caja'},
-        {id:'membresias',icono:'✦',nombre:'Mensualidades'},
         {id:'ventas',icono:'▤',nombre:'Punto de Venta'},
-        {id:'comunicacion',icono:'●',nombre:'Notificaciones'},
-        {id:'historial-ventas',icono:'↺',nombre:'Historial de Ventas'}
+        {id:'historial-ventas',icono:'↺',nombre:'Historial de Ventas'},
+        {id:'inventario',icono:'▦',nombre:'Inventario'},
+        {id:'proveedores',icono:'♢',nombre:'Proveedores'},
+        {id:'compras',icono:'↓',nombre:'Compras'},
+        {id:'categorias',icono:'◇',nombre:'Categorías'}
       ]
     },
     {
       titulo:'Administración',
       items:[
+        {id:'entrenador',icono:'🏋',nombre:'Entrenadores'},
         {id:'planes',icono:'◆',nombre:'Tarifas'},
         {id:'gastos',icono:'↓',nombre:'Gastos'},
-        {id:'inventario',icono:'▦',nombre:'Inventario'},
-        {id:'categorias',icono:'◇',nombre:'Categorías'},
         {id:'reportes',icono:'▥',nombre:'Reportes'},
         {id:'reporte-asistencias',icono:'✓',nombre:'Rep. Asistencias'},
         {id:'usuarios',icono:'♙',nombre:'Usuarios'},
@@ -1233,20 +1261,20 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ];
   titulos: Record<string,[string,string]> = {
     dashboard:['Panel Administrador','Datos reales del gimnasio'], clientes:['Socios','Registro y administración de miembros'],
-    membresias:['Suscripciones','Contratación, vigencias y membresías de socios'], pagos:['Pagos','Historial de compras automáticas de membresías'],
-    planes:['Planes','Configuración de precios, duración y estados'],
+    membresias:['Membresías','Asignación, renovación y vigencia de socios'], pagos:['Pagos de membresía','Compras realizadas desde el portal del cliente'],
+    planes:['Tarifas','Precios, duración y beneficios visibles para los clientes'],
     gastos:['Gastos','Registro de egresos de la caja activa'],
     inventario:['Inventario','Productos, stock y control del inventario'],
     'historial-ventas':['Historial de Ventas','Consulta de todas las ventas registradas'],
     'reporte-asistencias':['Reporte de Asistencias','Resumen y detalle de asistencias registradas'],
     entrenador:['Entrenador','Gestión del entrenador principal'], clases:['Clases','Programación, horarios y cupos'],
-    asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['Rutinas','Planes de entrenamiento por cliente'],
-    reservas:['Reservas','Control de reservas y asistencia a clases'], categorias:['Categorías','Clasificación de productos'],
+    asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['Rutinas','Asignación de rutinas solicitadas por clientes'],
+    reservas:['Reservas','Reservas creadas desde el portal y control de asistencia'], categorias:['Categorías','Clasificación de productos'],
     productos:['Productos','Registro, precios y control de stock'], proveedores:['Proveedores','Proveedores de productos'],
     compras:['Compras','Ingreso de productos e inventario'], ventas:['Ventas','Ventas de productos y stock'],
     caja:['Caja','Apertura, movimientos y cierre'],
     reportes:['Reportes','Indicadores de gestión del gimnasio'], usuarios:['Usuarios','Cuentas internas y permisos'],
-    comunicacion:['Notificaciones','Avisos y comunicación con clientes'], soporte:['Soporte','Consultas y respuestas a clientes'],
+    comunicacion:['Notificaciones','Avisos que reciben los clientes en su portal'], soporte:['Soporte','Consultas y solicitudes enviadas desde el portal del cliente'],
     configuracion:['Configuración','Ajustes generales y mantenimiento del sistema']
   };
 
@@ -1296,6 +1324,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   categoriaForm: any = {nombre_categoria:'',descripcion:'',estado:'Activo'};
   rutinaEditandoId = 0;
   rutinaForm: any = {id_cliente:0,id_entrenador:0,nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:new Date().toISOString().slice(0,10),fecha_fin:'',estado:'Activo'};
+  solicitudRutinaContexto: any = null;
+  solicitudRutinaIdPendiente = 0;
   usuarioEditandoId = 0;
   usuarioForm: any = {nombre_usuario:'',contrasena:'',nombres:'',apellidos:'',dni:'',telefono:'',correo:'',rol:'Entrenador',estado:'Activo'};
   auditoriaFiltros: any = {ruta:'',desde:'',hasta:''};
@@ -1383,6 +1413,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.error = '';
     this.cargarSeccion(id);
     window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  abrirNuevoSocioDesdeDashboard(): void {
+    this.cambiarSeccion('clientes');
+    setTimeout(() => this.nuevoCliente(), 0);
   }
 
   actualizarSeccionActual(silencioso = false): void {
@@ -1888,14 +1923,40 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(!this.rutinaForm.id_cliente || !this.rutinaForm.id_entrenador){this.error='Selecciona cliente y entrenador.';return;}
     const datos={...this.rutinaForm};
     if(!datos.fecha_fin) datos.fecha_fin=null;
-    const req=this.rutinaEditandoId
+
+    const eraEdicion=Boolean(this.rutinaEditandoId);
+    const idSolicitud=!eraEdicion ? Number(this.solicitudRutinaIdPendiente||0) : 0;
+    const req=eraEdicion
       ? this.api.actualizarRutina(this.rutinaEditandoId,datos)
       : this.api.crearRutina(datos);
+
     req.subscribe({
       next:()=>{
-        this.ok(this.rutinaEditandoId?'Rutina actualizada correctamente':'Rutina registrada');
         this.cancelarEdicionRutina();
         this.cargarRutinas();
+
+        if(idSolicitud){
+          this.api.responderSoporte(
+            idSolicitud,
+            'Tu rutina ya fue asignada por Mallqui Gym. Revísala en la sección Rutinas de tu cuenta.',
+            'Cerrado'
+          ).subscribe({
+            next:()=>{
+              this.solicitudRutinaIdPendiente=0;
+              this.solicitudRutinaContexto=null;
+              this.ok('Rutina asignada y cliente notificado');
+              this.cargarDashboard();
+            },
+            error:()=>{
+              this.ok('Rutina asignada. La solicitud sigue pendiente de cerrar en Soporte.');
+              this.cargarDashboard();
+            }
+          });
+          return;
+        }
+
+        this.ok(eraEdicion?'Rutina actualizada correctamente':'Rutina registrada');
+        this.cargarDashboard();
       },
       error:e=>this.mostrarError(e)
     });
@@ -2138,9 +2199,49 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   abrirActividadPortal(a:any):void{
     const t=String(a?.tipo||'').toLowerCase();
-    if(t==='rutina' || t==='soporte'){ this.cambiarSeccion('soporte'); return; }
+    if(t==='rutina'){ this.atenderSolicitudRutina(a); return; }
+    if(t==='soporte'){ this.cambiarSeccion('soporte'); return; }
     if(t==='reserva'){ this.cambiarSeccion('reservas'); return; }
     if(t==='pago'){ this.cambiarSeccion('pagos'); return; }
+  }
+
+  atenderSolicitudRutina(s:any):void{
+    const idCliente=Number(s?.id_cliente ?? s?.cliente?.id_cliente ?? 0);
+    if(!idCliente){
+      this.error='No se pudo identificar al cliente de la solicitud de rutina.';
+      return;
+    }
+
+    this.solicitudRutinaContexto=s;
+    this.solicitudRutinaIdPendiente=Number(s?.id_soporte ?? s?.id ?? 0);
+    this.rutinaEditandoId=0;
+    this.rutinaForm={
+      id_cliente:idCliente,
+      id_entrenador:0,
+      nombre_rutina:'',
+      objetivo:'',
+      descripcion:'',
+      fecha_inicio:new Date().toISOString().slice(0,10),
+      fecha_fin:'',
+      estado:'Activo'
+    };
+    this.cambiarSeccion('rutinas');
+    this.ok('Solicitud cargada: completa la rutina y guárdala para notificar al cliente');
+  }
+
+  cancelarSolicitudRutinaContexto():void{
+    this.solicitudRutinaContexto=null;
+    this.solicitudRutinaIdPendiente=0;
+    if(!this.rutinaEditandoId){
+      this.rutinaForm={id_cliente:0,id_entrenador:0,nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:new Date().toISOString().slice(0,10),fecha_fin:'',estado:'Activo'};
+    }
+  }
+
+  nombreSolicitudRutina(s:any):string{
+    if(typeof s?.cliente==='string' && s.cliente.trim()) return s.cliente.trim();
+    const cliente=s?.cliente;
+    const nombre=cliente ? `${cliente.nombres ?? ''} ${cliente.apellidos ?? ''}`.trim() : '';
+    return nombre || 'Cliente';
   }
 
   nombreCliente(c:any): string { return c ? `${c.nombres ?? ''} ${c.apellidos ?? ''}`.trim() : '-'; }
