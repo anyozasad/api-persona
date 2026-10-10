@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AdminApiService } from './admin-api.service';
 
@@ -127,6 +127,15 @@ import { AdminApiService } from './admin-api.service';
                 <p>{{soporteSeleccionado.mensaje}}</p>
               </div>
 
+              <div *ngIf="esSolicitudRutina(soporteSeleccionado) && soporteSeleccionado.estado!=='Cerrado'" class="admin-routine-request">
+                <div>
+                  <small>SOLICITUD DE RUTINA</small>
+                  <b>Esta solicitud requiere una acción en el módulo Rutinas.</b>
+                  <p>Abre la ficha de rutina con este cliente seleccionado. Al guardar la rutina, el sistema podrá cerrar la solicitud y notificar al cliente.</p>
+                </div>
+                <button type="button" (click)="atenderRutina.emit(soporteSeleccionado)">Crear rutina para este cliente →</button>
+              </div>
+
               <div class="admin-ticket-answer" *ngIf="soporteSeleccionado.respuesta">
                 <small>RESPUESTA ACTUAL</small>
                 <p>{{soporteSeleccionado.respuesta}}</p>
@@ -152,10 +161,16 @@ import { AdminApiService } from './admin-api.service';
         </div>
       </ng-container>
     </section>
-  `
+  `,
+  styles: [`
+    .admin-routine-request{display:grid;gap:12px;margin:14px 0;padding:16px;border:1px solid #f0c8cc;border-left:4px solid #d7192d;border-radius:14px;background:#fff8f8}
+    .admin-routine-request div{display:grid;gap:5px}.admin-routine-request small{font-size:10px;font-weight:900;letter-spacing:.8px;color:#d7192d}.admin-routine-request b{color:#202833}.admin-routine-request p{margin:0;color:#5e6973;line-height:1.5}
+    .admin-routine-request button{justify-self:start;border:0;border-radius:10px;background:#d7192d;color:white;padding:10px 14px;font-weight:800;cursor:pointer}
+  `]
 })
 export class AdminComunicacionComponent implements OnInit, OnChanges, OnDestroy {
   @Input() modo: 'comunicacion' | 'soporte' = 'comunicacion';
+  @Output() atenderRutina = new EventEmitter<any>();
 
   clientes: any[] = [];
   notificaciones: any[] = [];
@@ -264,6 +279,10 @@ export class AdminComunicacionComponent implements OnInit, OnChanges, OnDestroy 
     this.soporteSeleccionado = s;
     this.respuestaSoporte = s.respuesta || '';
     this.error = '';
+  }
+
+  esSolicitudRutina(s: any): boolean {
+    return String(s?.asunto || '').toLowerCase().includes('rutina');
   }
 
   responderSoporte(): void {
