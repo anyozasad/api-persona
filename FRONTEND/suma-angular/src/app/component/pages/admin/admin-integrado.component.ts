@@ -166,6 +166,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
           <button type="button" [class.needs-attention]="(dashboard?.alertas?.rutinas_pendientes ?? 0)>0" (click)="cambiarSeccion('soporte')"><span>🏋</span><div><b>{{dashboard?.alertas?.rutinas_pendientes ?? 0}}</b><small>Rutinas solicitadas</small></div></button>
           <button type="button" [class.needs-attention]="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0" (click)="cambiarSeccion('inventario')"><span>!</span><div><b>{{dashboard?.inventario?.productos_stock_bajo ?? 0}}</b><small>Stock bajo</small></div></button>
           <button type="button" [class.needs-attention]="(dashboard?.alertas?.soporte_pendiente ?? 0)>0" (click)="cambiarSeccion('soporte')"><span>?</span><div><b>{{dashboard?.alertas?.soporte_pendiente ?? 0}}</b><small>Soporte pendiente</small></div></button>
+          <button type="button" [class.needs-attention]="(dashboard?.alertas?.opiniones_pendientes ?? 0)>0" (click)="cambiarSeccion('opiniones')"><span>★</span><div><b>{{dashboard?.alertas?.opiniones_pendientes ?? 0}}</b><small>Opiniones nuevas</small></div></button>
         </section>
 
         <section class="admin-portal-live">
@@ -173,7 +174,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
             <div>
               <span>PORTAL DEL CLIENTE · EN TIEMPO REAL</span>
               <h3>Actividad que llega al administrador</h3>
-              <p>Reservas, pagos y solicitudes realizadas por los usuarios aparecen aquí desde la misma base de datos.</p>
+              <p>Reservas, pagos, solicitudes de rutina, consultas y opiniones del usuario aparecen aquí desde la misma base de datos.</p>
             </div>
             <div class="admin-live-sync"><i></i><span>Sincronización automática · 15 s</span></div>
           </header>
@@ -196,14 +197,14 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
           <ng-template #sinActividadPortal>
             <div class="admin-portal-live-empty">
               <span>◎</span>
-              <div><b>Aún no hay actividad reciente del portal.</b><p>Cuando un cliente reserve, pague o envíe una consulta, aparecerá aquí automáticamente.</p></div>
+              <div><b>Aún no hay actividad reciente del portal.</b><p>Cuando un cliente reserve, pague, solicite una rutina, envíe una consulta u opinión, aparecerá aquí automáticamente.</p></div>
             </div>
           </ng-template>
         </section>
 
         <section class="ux-alert-banner" *ngIf="(dashboard?.alertas?.total ?? 0) > 0">
-          <div><span>!</span><div><b>Hay {{dashboard?.alertas?.total}} alertas operativas.</b><small>Revisa membresías por vencer, stock bajo y consultas de soporte. Las compras de mensualidades se registran automáticamente.</small></div></div>
-          <button type="button" (click)="(dashboard?.alertas?.soporte_pendiente ?? 0)>0 ? cambiarSeccion('soporte') : cambiarSeccion('reportes')">Revisar pendientes →</button>
+          <div><span>!</span><div><b>Hay {{dashboard?.alertas?.total}} alertas operativas.</b><small>Revisa soporte, rutinas solicitadas, opiniones nuevas, stock bajo y membresías próximas a vencer.</small></div></div>
+          <button type="button" (click)="irAlertasPendientes()">Revisar pendientes →</button>
         </section>
 
         <section class="ux-chart-layout">
@@ -2350,6 +2351,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(t==='soporte')return '?';
     if(t==='reserva')return '◷';
     if(t==='pago')return 'S/';
+    if(t==='opinion')return '★';
     return '●';
   }
 
@@ -2359,6 +2361,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(t==='soporte')return 'SOPORTE';
     if(t==='reserva')return 'RESERVA';
     if(t==='pago')return 'PAGO';
+    if(t==='opinion')return 'OPINIÓN';
     return 'ACTIVIDAD';
   }
 
@@ -2368,6 +2371,27 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(t==='soporte'){ this.cambiarSeccion('soporte'); return; }
     if(t==='reserva'){ this.cambiarSeccion('reservas'); return; }
     if(t==='pago'){ this.cambiarSeccion('pagos'); return; }
+    if(t==='opinion'){ this.cambiarSeccion('opiniones'); return; }
+  }
+
+  irAlertasPendientes():void{
+    if((this.dashboard?.alertas?.rutinas_pendientes ?? 0)>0 || (this.dashboard?.alertas?.soporte_pendiente ?? 0)>0){
+      this.cambiarSeccion('soporte');
+      return;
+    }
+    if((this.dashboard?.alertas?.opiniones_pendientes ?? 0)>0){
+      this.cambiarSeccion('opiniones');
+      return;
+    }
+    if((this.dashboard?.inventario?.productos_stock_bajo ?? 0)>0){
+      this.cambiarSeccion('inventario');
+      return;
+    }
+    if((this.dashboard?.membresias?.por_vencer_7_dias ?? 0)>0){
+      this.cambiarSeccion('membresias');
+      return;
+    }
+    this.cambiarSeccion('dashboard');
   }
 
   atenderSolicitudRutina(s:any):void{
