@@ -310,7 +310,8 @@ jobs:
       - name: Create RAR
         shell: bash
         run: |
-          cd paquete\n          ../rar/rar a -r -m3 ../Mallqui_Gym_Completo.rar .
+          cd paquete
+          ../rar/rar a -r -m3 ../Mallqui_Gym_Completo.rar .
 
       - name: Upload RAR
         uses: actions/upload-artifact@v4
@@ -320,3 +321,5 @@ jobs:
           retention-days: 7
 
 # Trigger de exportación para compartir proyecto completo
+
+# Regenerado con la version actual del proyecto y pruebas Semana 10
