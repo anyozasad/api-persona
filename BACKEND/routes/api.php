@@ -267,6 +267,9 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
     Route::put('/soporte-clientes/{id}/responder', [ComunicacionAdminController::class, 'responderSoporte']);
     Route::put('/soporte-clientes/{id}/cerrar', [ComunicacionAdminController::class, 'cerrarSoporte']);
 
+    Route::get('/opiniones-clientes', [ComunicacionAdminController::class, 'opiniones']);
+    Route::put('/opiniones-clientes/{id}/estado', [ComunicacionAdminController::class, 'cambiarEstadoOpinion']);
+
     Route::get('/reportes/ingresos', [ReporteController::class, 'ingresos']);
     Route::get('/reportes/vencimientos', [ReporteController::class, 'vencimientos']);
     Route::get('/reportes/asistencias', [ReporteController::class, 'asistencias']);
