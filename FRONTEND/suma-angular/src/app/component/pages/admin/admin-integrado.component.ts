@@ -115,8 +115,12 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         </section>
 
         <section class="ux-quick-actions" aria-label="Acciones rápidas">
-          <button type="button" class="ux-action primary-action" (click)="cambiarSeccion('ventas')">
-            <span>＋</span><div><b>Nueva venta</b><small>Vender productos</small></div>
+          <button type="button" class="ux-action primary-action" (click)="dashboard?.caja?.abierta ? cambiarSeccion('ventas') : cambiarSeccion('caja')">
+            <span>{{dashboard?.caja?.abierta ? '＋' : '▣'}}</span>
+            <div>
+              <b>{{dashboard?.caja?.abierta ? 'Nueva venta' : 'Abrir caja'}}</b>
+              <small>{{dashboard?.caja?.abierta ? 'Vender productos' : 'Primero abre caja para vender'}}</small>
+            </div>
           </button>
           <button type="button" class="ux-action" (click)="abrirNuevoSocioDesdeDashboard()">
             <span>♙</span><div><b>Nuevo socio</b><small>Registrar miembro</small></div>
