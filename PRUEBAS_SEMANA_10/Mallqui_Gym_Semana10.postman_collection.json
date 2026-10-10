@@ -1,0 +1,310 @@
+{
+  "info": {
+    "name": "Mallqui Gym - Semana 10 Pruebas API",
+    "description": "Colección para evidencias de Pruebas de Software Semana 10. Usa el CRUD real de Productos. No incluye credenciales reales.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api"
+    },
+    {
+      "key": "admin_login",
+      "value": "CAMBIA_AQUI"
+    },
+    {
+      "key": "admin_password",
+      "value": "CAMBIA_AQUI"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "categoria_id",
+      "value": "1"
+    },
+    {
+      "key": "producto_id",
+      "value": ""
+    },
+    {
+      "key": "codigo_producto",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Login administrador",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"login\": \"{{admin_login}}\",\n  \"contrasena\": \"{{admin_password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Login correcto', function () { pm.expect(pm.response.code).to.be.oneOf([200,201]); });",
+              "const r = pm.response.json();",
+              "if (r.access_token) pm.collectionVariables.set('token', r.access_token);",
+              "pm.test('Token recibido', function () { pm.expect(r.access_token).to.exist; });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - GET categorías",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/categorias",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "categorias"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('GET categorías responde 200', function () { pm.response.to.have.status(200); });",
+              "const r = pm.response.json();",
+              "if (Array.isArray(r) && r.length) pm.collectionVariables.set('categoria_id', r[0].id_categoria);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - GET productos",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/productos",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "productos"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('GET productos responde 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Devuelve una lista JSON', function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - POST producto válido",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "pm.collectionVariables.set('codigo_producto', 'TST-' + Date.now());"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('POST válido crea el producto', function () { pm.expect(pm.response.code).to.be.oneOf([200,201]); });",
+              "const r = pm.response.json();",
+              "if (r.id_producto) pm.collectionVariables.set('producto_id', r.id_producto);",
+              "pm.test('Se recibió id_producto', function () { pm.expect(r.id_producto).to.exist; });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id_categoria\": \"{{categoria_id}}\",\n  \"codigo_producto\": \"{{codigo_producto}}\",\n  \"nombre_producto\": \"Producto Semana 10\",\n  \"descripcion\": \"Producto creado para evidencia de pruebas\",\n  \"precio_compra\": 5,\n  \"precio_venta\": 8.5,\n  \"stock\": 10,\n  \"stock_minimo\": 2,\n  \"unidad_medida\": \"Unidad\",\n  \"estado\": \"Activo\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/productos",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "productos"
+          ]
+        }
+      }
+    },
+    {
+      "name": "05 - POST inválido (422)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id_categoria\": \"{{categoria_id}}\",\n  \"codigo_producto\": \"INVALIDO-SEM10\",\n  \"nombre_producto\": \"\",\n  \"descripcion\": \"Debe fallar\",\n  \"precio_compra\": 5,\n  \"precio_venta\": -10,\n  \"stock\": 1,\n  \"stock_minimo\": 1,\n  \"unidad_medida\": \"Unidad\",\n  \"estado\": \"Activo\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/productos",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "productos"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('POST inválido responde 422', function () { pm.response.to.have.status(422); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - PUT actualizar producto",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id_categoria\": \"{{categoria_id}}\",\n  \"codigo_producto\": \"{{codigo_producto}}\",\n  \"nombre_producto\": \"Producto Semana 10 ACTUALIZADO\",\n  \"descripcion\": \"Actualizado por prueba API\",\n  \"precio_compra\": 5,\n  \"precio_venta\": 9.5,\n  \"stock\": 12,\n  \"stock_minimo\": 2,\n  \"unidad_medida\": \"Unidad\",\n  \"estado\": \"Activo\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/productos/{{producto_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "productos",
+            "{{producto_id}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('PUT responde correctamente', function () { pm.expect(pm.response.code).to.be.oneOf([200,201]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - DELETE desactivar producto",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/productos/{{producto_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "productos",
+            "{{producto_id}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('DELETE/desactivación correcta', function () { pm.expect(pm.response.code).to.be.oneOf([200,204]); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
