@@ -10,6 +10,19 @@ jobs:
   backend:
     name: Laravel
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: mallqui_gym_pruebas
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
     defaults:
       run:
         working-directory: BACKEND
@@ -19,15 +32,26 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
-          extensions: mbstring, pdo_sqlite
+          extensions: mbstring, pdo_mysql, pdo_sqlite
           coverage: none
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
       - name: Prepare environment
         run: |
-          cp .env.example .env
-          php artisan key:generate
+          cp .env.testing .env
+          sed -i 's/^DB_PASSWORD=.*/DB_PASSWORD=root/' .env
+          sed -i 's/^DB_DATABASE=.*/DB_DATABASE=mallqui_gym_pruebas/' .env
+          sed -i 's/^GYM_DB_DATABASE=.*/GYM_DB_DATABASE=mallqui_gym_pruebas/' .env
       - name: Laravel tests
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: mallqui_gym_pruebas
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          GYM_DB_DATABASE: mallqui_gym_pruebas
         run: php artisan test
 
   frontend:
@@ -45,6 +69,8 @@ jobs:
           cache: npm
           cache-dependency-path: FRONTEND/suma-angular/package-lock.json
       - name: Install dependencies
-        run: npm ci
+        run: npm install
+      - name: Angular tests
+        run: npm test -- --watch=false --browsers=ChromeHeadless
       - name: Build Angular
         run: npm run build
