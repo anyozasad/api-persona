@@ -253,6 +253,14 @@ export class AdminApiService {
     return this.http.put(`/api/soporte-clientes/${id}/cerrar`, {});
   }
 
+  opinionesClientes(): Observable<any[]> {
+    return this.http.get<any[]>('/api/opiniones-clientes');
+  }
+
+  cambiarEstadoOpinion(id: number, estado: 'Enviada' | 'Revisada'): Observable<any> {
+    return this.http.put(`/api/opiniones-clientes/${id}/estado`, { estado });
+  }
+
   // =========================================================
   // FUNCIONES COMPLETAS DEL REPOSITORIO DE REFERENCIA (GYM SYSTEM)
   // =========================================================
