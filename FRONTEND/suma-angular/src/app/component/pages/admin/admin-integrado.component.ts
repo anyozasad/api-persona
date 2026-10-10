@@ -1256,6 +1256,48 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
           </div>
         </section>
       </ng-container>
+      <ng-container *ngIf="seccion==='opiniones'">
+        <section class="feedback-admin-shell">
+          <header class="feedback-admin-head">
+            <div>
+              <span>VOZ DEL CLIENTE</span>
+              <h2>Opiniones recibidas desde el portal</h2>
+              <p>Lo que el cliente envía desde “Tu opinión” aparece aquí. Al marcarlo como revisado, el cliente recibe un aviso.</p>
+            </div>
+            <button type="button" class="admin-secondary" (click)="cargarOpiniones()">↻ Actualizar</button>
+          </header>
+
+          <section class="feedback-admin-kpis">
+            <article><small>TOTAL</small><b>{{opiniones.length}}</b><span>opiniones registradas</span></article>
+            <article><small>PENDIENTES</small><b>{{opinionesPendientesCount}}</b><span>por revisar</span></article>
+            <article><small>PROMEDIO</small><b>{{promedioOpiniones | number:'1.1-1'}} / 5</b><span>calificación general</span></article>
+          </section>
+
+          <section class="feedback-admin-list">
+            <article *ngFor="let o of opiniones" [class.reviewed]="o.estado==='Revisada'">
+              <div class="feedback-admin-rating">
+                <span>{{estrellasOpinion(o.calificacion)}}</span>
+                <small>{{o.calificacion}} / 5</small>
+              </div>
+              <div class="feedback-admin-copy">
+                <small>{{o.categoria}} · {{fecha(o.fecha)}}</small>
+                <h3>{{nombreCliente(o.cliente)}}</h3>
+                <p>{{o.comentario}}</p>
+              </div>
+              <div class="feedback-admin-actions">
+                <span [class.done]="o.estado==='Revisada'">{{o.estado}}</span>
+                <button *ngIf="o.estado!=='Revisada'" type="button" class="admin-primary" (click)="cambiarEstadoOpinion(o,'Revisada')">Marcar revisada</button>
+                <button *ngIf="o.estado==='Revisada'" type="button" class="admin-secondary" (click)="cambiarEstadoOpinion(o,'Enviada')">Volver a pendiente</button>
+              </div>
+            </article>
+
+            <div *ngIf="!opiniones.length" class="feedback-admin-empty">
+              <span>★</span><b>Aún no hay opiniones</b><p>Cuando un cliente califique el servicio desde su portal, aparecerá aquí.</p>
+            </div>
+          </section>
+        </section>
+      </ng-container>
+
       <ng-container *ngIf="seccion==='comunicacion' || seccion==='soporte'">
         <app-admin-comunicacion
           [modo]="seccion==='soporte' ? 'soporte' : 'comunicacion'"
@@ -1282,6 +1324,11 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
     .admin-request-context{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:0 0 18px;padding:18px 20px;border:1px solid #f2c9cd;border-left:5px solid #d7192d;border-radius:16px;background:#fff8f8;box-shadow:0 10px 28px rgba(71,21,28,.06)}
     .admin-request-context>div{display:grid;gap:5px}.admin-request-context span{font-size:11px;font-weight:900;letter-spacing:.9px;color:#d7192d}.admin-request-context b{font-size:18px;color:#202833}.admin-request-context p{margin:0;color:#4b5966}.admin-request-context small{color:#76838e}
     .admin-request-context>button{border:0;background:#fff;color:#7e8992;width:34px;height:34px;border-radius:10px;cursor:pointer;font-size:22px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+    .routine-exercises-editor{display:grid;gap:14px;margin:18px 0;padding-top:18px;border-top:1px solid #e7edf1}.routine-exercises-editor>header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.routine-exercises-editor>header span{font-size:10px;font-weight:900;letter-spacing:.8px;color:#d7192d}.routine-exercises-editor>header h3{margin:3px 0}.routine-exercises-editor>header p{margin:0;color:#6c7882;font-size:12px}
+    .routine-exercise-row{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:start;padding:14px;border:1px solid #e2e8ec;border-radius:14px;background:#fbfcfd}.routine-exercise-number{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#1f2a33;color:#fff;font-weight:900}.routine-exercise-fields{display:grid;gap:10px}.routine-exercise-grid{display:grid;grid-template-columns:repeat(4,minmax(90px,1fr));gap:10px}.routine-remove{align-self:center}
+    .feedback-admin-shell{display:grid;gap:18px}.feedback-admin-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding:22px;border:1px solid #e5eaee;border-radius:18px;background:#fff}.feedback-admin-head span{font-size:10px;font-weight:900;letter-spacing:.9px;color:#d7192d}.feedback-admin-head h2{margin:5px 0}.feedback-admin-head p{margin:0;color:#66737e}.feedback-admin-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.feedback-admin-kpis article{display:grid;gap:4px;padding:18px;border:1px solid #e5eaee;border-radius:16px;background:#fff}.feedback-admin-kpis small{font-weight:900;color:#7a8791}.feedback-admin-kpis b{font-size:28px}.feedback-admin-kpis span{font-size:12px;color:#75818b}
+    .feedback-admin-list{display:grid;gap:12px}.feedback-admin-list>article{display:grid;grid-template-columns:150px 1fr auto;gap:18px;align-items:center;padding:18px;border:1px solid #e5eaee;border-left:4px solid #d7192d;border-radius:16px;background:#fff}.feedback-admin-list>article.reviewed{border-left-color:#198754}.feedback-admin-rating{display:grid;gap:4px}.feedback-admin-rating span{font-size:18px;letter-spacing:1px;color:#d99800}.feedback-admin-rating small{color:#77848e}.feedback-admin-copy small{color:#7a8791}.feedback-admin-copy h3{margin:4px 0}.feedback-admin-copy p{margin:0;color:#4f5d67}.feedback-admin-actions{display:grid;justify-items:end;gap:9px}.feedback-admin-actions>span{padding:5px 9px;border-radius:999px;background:#fff1f2;color:#b51625;font-size:10px;font-weight:900}.feedback-admin-actions>span.done{background:#eef8f1;color:#187743}.feedback-admin-empty{display:grid;place-items:center;gap:5px;padding:40px;border:1px dashed #d4dce2;border-radius:16px;background:#fff;color:#66737e}.feedback-admin-empty>span{font-size:28px}
+    @media(max-width:900px){.routine-exercise-grid{grid-template-columns:repeat(2,1fr)}.feedback-admin-kpis{grid-template-columns:1fr}.feedback-admin-list>article{grid-template-columns:1fr}.feedback-admin-actions{justify-items:start}}
   `]
 })
 export class AdminIntegradoComponent implements OnInit, OnDestroy {
@@ -2426,6 +2473,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       this.rutinaForm={id_cliente:0,id_entrenador:0,nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:new Date().toISOString().slice(0,10),fecha_fin:'',estado:'Activo'};
       this.rutinaDetallesForm=[{ejercicio:'',series:3,repeticiones:12,peso_recomendado:null,descanso_segundos:60,observaciones:''}];
     }
+  }
+
+  get opinionesPendientesCount():number{
+    return this.opiniones.filter((o:any)=>String(o?.estado||'').toLowerCase()==='enviada').length;
+  }
+
+  get promedioOpiniones():number{
+    if(!this.opiniones.length)return 0;
+    return this.opiniones.reduce((s:number,o:any)=>s+(Number(o?.calificacion)||0),0)/this.opiniones.length;
   }
 
   cambiarEstadoOpinion(o:any,estado:'Enviada'|'Revisada'){
