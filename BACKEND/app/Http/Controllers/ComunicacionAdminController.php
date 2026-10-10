@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\NotificacionCliente;
+use App\Models\OpinionCliente;
 use App\Models\SolicitudSoporte;
 use Illuminate\Http\Request;
 
@@ -67,6 +68,44 @@ class ComunicacionAdminController extends Controller
         $notificacion->delete();
 
         return response()->json(['mensaje' => 'Notificación eliminada.']);
+    }
+
+    public function opiniones()
+    {
+        return response()->json(
+            OpinionCliente::with('cliente')
+                ->orderByRaw("CASE WHEN estado = 'Enviada' THEN 0 ELSE 1 END")
+                ->orderByDesc('fecha')
+                ->get()
+        );
+    }
+
+    public function cambiarEstadoOpinion(Request $request, string $id)
+    {
+        $datos = $request->validate([
+            'estado' => 'required|string|in:Enviada,Revisada',
+        ]);
+
+        $opinion = OpinionCliente::findOrFail($id);
+        $opinion->update(['estado' => $datos['estado']]);
+
+        if ($datos['estado'] === 'Revisada') {
+            NotificacionCliente::create([
+                'id_cliente' => $opinion->id_cliente,
+                'titulo' => 'Gracias por tu opinión',
+                'mensaje' => 'Mallqui Gym revisó el comentario que enviaste. Gracias por ayudarnos a mejorar.',
+                'tipo' => 'Informacion',
+                'leida' => false,
+                'fecha' => now(),
+            ]);
+        }
+
+        return response()->json([
+            'mensaje' => $datos['estado'] === 'Revisada'
+                ? 'Opinión marcada como revisada y cliente notificado.'
+                : 'Opinión marcada como pendiente.',
+            'opinion' => $opinion->fresh('cliente'),
+        ]);
     }
 
     public function soporte()
