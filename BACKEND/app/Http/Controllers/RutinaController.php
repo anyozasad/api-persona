@@ -88,6 +88,13 @@ class RutinaController extends Controller
             'fecha_inicio' => 'sometimes|date',
             'fecha_fin' => 'sometimes|nullable|date',
             'estado' => ['sometimes', Rule::in(['Activo', 'Finalizado', 'Inactivo'])],
+            'detalles' => 'sometimes|array|min:1|max:30',
+            'detalles.*.ejercicio' => 'required_with:detalles|string|max:150',
+            'detalles.*.series' => 'required_with:detalles|integer|min:1|max:20',
+            'detalles.*.repeticiones' => 'required_with:detalles|integer|min:1|max:200',
+            'detalles.*.peso_recomendado' => 'nullable|numeric|min:0',
+            'detalles.*.descanso_segundos' => 'nullable|integer|min:0|max:3600',
+            'detalles.*.observaciones' => 'nullable|string|max:500',
         ]);
 
         if ($idEntrenador = $this->idEntrenadorActual($request)) $datos['id_entrenador'] = $idEntrenador;
@@ -98,6 +105,9 @@ class RutinaController extends Controller
         }
 
         DB::transaction(function () use ($rutina, $datos) {
+            $detalles = array_key_exists('detalles', $datos) ? $datos['detalles'] : null;
+            unset($datos['detalles']);
+
             $clienteFinal = (int) ($datos['id_cliente'] ?? $rutina->id_cliente);
             $estadoFinal = (string) ($datos['estado'] ?? $rutina->estado);
 
@@ -109,6 +119,13 @@ class RutinaController extends Controller
             }
 
             $rutina->update($datos);
+
+            if (is_array($detalles)) {
+                $rutina->detalles()->delete();
+                foreach ($detalles as $detalle) {
+                    $rutina->detalles()->create($detalle);
+                }
+            }
         });
 
         return response()->json($rutina->fresh(['cliente', 'entrenador', 'detalles']));
