@@ -951,33 +951,114 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
             <span>SOLICITUD DEL PORTAL DEL CLIENTE</span>
             <b>{{nombreSolicitudRutina(solicitudRutinaContexto)}}</b>
             <p>{{solicitudRutinaContexto.mensaje || solicitudRutinaContexto.detalle || 'El cliente solicitó una rutina personalizada.'}}</p>
-            <small>Al guardar una nueva rutina desde esta solicitud, el caso se cerrará y el cliente recibirá una notificación.</small>
+            <small>Completa la rutina con ejercicios reales. Al guardar, la solicitud se cerrará y el cliente recibirá una notificación.</small>
           </div>
           <button type="button" (click)="cancelarSolicitudRutinaContexto()" aria-label="Cerrar solicitud">×</button>
         </div>
-        <section class="management-grid">
-          <article class="admin-form-card">
-            <div class="management-heading"><div><h2>{{rutinaEditandoId ? 'Editar rutina' : 'Nueva rutina'}}</h2><p>{{rutinaEditandoId ? 'Modifica la rutina y guarda los cambios.' : 'Asigna una rutina a un cliente y entrenador.'}}</p></div><span>🏋</span></div>
+
+        <section class="management-grid routine-management">
+          <article class="admin-form-card routine-editor-card">
+            <div class="management-heading">
+              <div>
+                <h2>{{rutinaEditandoId ? 'Editar rutina' : 'Crear rutina completa'}}</h2>
+                <p>{{rutinaEditandoId ? 'Actualiza datos y ejercicios de la rutina.' : 'Asigna cliente, entrenador y ejercicios para que el usuario vea un plan útil en su cuenta.'}}</p>
+              </div>
+              <span>🏋</span>
+            </div>
+
             <form (ngSubmit)="guardarRutina()">
-              <label>Cliente<select [(ngModel)]="rutinaForm.id_cliente" name="rucliente" required><option [ngValue]="0">Seleccionar</option><option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option></select></label>
-              <label>Entrenador<select [(ngModel)]="rutinaForm.id_entrenador" name="ruentrenador" required><option [ngValue]="0">Seleccionar</option><option *ngFor="let e of entrenadores" [ngValue]="e.id_entrenador">{{nombreEntrenador(e)}}</option></select></label>
-              <label>Nombre<input [(ngModel)]="rutinaForm.nombre_rutina" name="runombre" required></label>
-              <label>Objetivo<input [(ngModel)]="rutinaForm.objetivo" name="ruobjetivo"></label>
-              <label>Descripción<input [(ngModel)]="rutinaForm.descripcion" name="rudescripcion"></label>
-              <div class="form-row"><label>Inicio<input type="date" [(ngModel)]="rutinaForm.fecha_inicio" name="ruinicio" required></label><label>Fin<input type="date" [(ngModel)]="rutinaForm.fecha_fin" name="rufin"></label></div>
-              <label>Estado<select [(ngModel)]="rutinaForm.estado" name="ruestado"><option>Activo</option><option>Finalizado</option><option>Inactivo</option></select></label>
               <div class="form-row">
-                <button class="admin-primary" type="submit">{{rutinaEditandoId ? 'Guardar cambios' : 'Guardar rutina'}}</button>
+                <label>Cliente
+                  <select [(ngModel)]="rutinaForm.id_cliente" name="rucliente" required>
+                    <option [ngValue]="0">Seleccionar</option>
+                    <option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option>
+                  </select>
+                </label>
+                <label>Entrenador
+                  <select [(ngModel)]="rutinaForm.id_entrenador" name="ruentrenador" required>
+                    <option [ngValue]="0">Seleccionar</option>
+                    <option *ngFor="let e of entrenadores" [ngValue]="e.id_entrenador">{{nombreEntrenador(e)}}</option>
+                  </select>
+                </label>
+              </div>
+
+              <label>Nombre de la rutina
+                <input [(ngModel)]="rutinaForm.nombre_rutina" name="runombre" required placeholder="Ej. Rutina fuerza inicial">
+              </label>
+              <label>Objetivo
+                <input [(ngModel)]="rutinaForm.objetivo" name="ruobjetivo" placeholder="Ej. Ganar fuerza y mejorar resistencia">
+              </label>
+              <label>Indicaciones generales
+                <textarea [(ngModel)]="rutinaForm.descripcion" name="rudescripcion" placeholder="Indicaciones que verá el cliente"></textarea>
+              </label>
+
+              <div class="form-row">
+                <label>Inicio<input type="date" [(ngModel)]="rutinaForm.fecha_inicio" name="ruinicio" required></label>
+                <label>Fin<input type="date" [(ngModel)]="rutinaForm.fecha_fin" name="rufin"></label>
+              </div>
+              <label>Estado
+                <select [(ngModel)]="rutinaForm.estado" name="ruestado">
+                  <option>Activo</option><option>Finalizado</option><option>Inactivo</option>
+                </select>
+              </label>
+
+              <section class="routine-exercises-editor">
+                <header>
+                  <div><span>EJERCICIOS</span><h3>Plan que verá el cliente</h3><p>Agrega series, repeticiones, peso y descanso para que la rutina tenga sentido al entrenar.</p></div>
+                  <button type="button" class="admin-secondary" (click)="agregarEjercicioRutina()">＋ Agregar ejercicio</button>
+                </header>
+
+                <article *ngFor="let d of rutinaDetallesForm; let i=index" class="routine-exercise-row">
+                  <div class="routine-exercise-number">{{i+1}}</div>
+                  <div class="routine-exercise-fields">
+                    <label>Ejercicio
+                      <input [(ngModel)]="d.ejercicio" [name]="'ejercicio_'+i" required placeholder="Ej. Press de banca">
+                    </label>
+                    <div class="routine-exercise-grid">
+                      <label>Series<input type="number" min="1" max="20" [(ngModel)]="d.series" [name]="'series_'+i" required></label>
+                      <label>Repeticiones<input type="number" min="1" max="200" [(ngModel)]="d.repeticiones" [name]="'reps_'+i" required></label>
+                      <label>Peso recomendado<input type="number" min="0" step="0.5" [(ngModel)]="d.peso_recomendado" [name]="'peso_'+i" placeholder="Opcional"></label>
+                      <label>Descanso (seg)<input type="number" min="0" max="3600" [(ngModel)]="d.descanso_segundos" [name]="'descanso_'+i"></label>
+                    </div>
+                    <label>Observaciones
+                      <input [(ngModel)]="d.observaciones" [name]="'obs_'+i" placeholder="Ej. Mantener técnica y controlar el movimiento">
+                    </label>
+                  </div>
+                  <button *ngIf="rutinaDetallesForm.length>1" type="button" class="table-danger routine-remove" (click)="quitarEjercicioRutina(i)">Quitar</button>
+                </article>
+              </section>
+
+              <div class="form-row">
+                <button class="admin-primary" type="submit">{{rutinaEditandoId ? 'Guardar rutina completa' : 'Asignar rutina al cliente'}}</button>
                 <button *ngIf="rutinaEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionRutina()">Cancelar</button>
               </div>
             </form>
           </article>
+
           <article class="admin-list-card wide-card">
-            <div class="management-heading"><div><h2>Rutinas</h2><p>{{rutinas.length}} registradas.</p></div></div>
-            <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Entrenador</th><th>Rutina</th><th>Objetivo</th><th>Periodo</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
-              <tr *ngFor="let r of rutinas"><td>{{r.id_rutina}}</td><td>{{nombreCliente(r.cliente)}}</td><td>{{nombreEntrenador(r.entrenador)}}</td><td><b>{{r.nombre_rutina}}</b></td><td>{{r.objetivo || '-'}}</td><td>{{r.fecha_inicio}} - {{r.fecha_fin || 'Sin fin'}}</td><td>{{r.estado}}</td><td><button class="table-action" type="button" (click)="editarRutina(r)">Editar</button> <button *ngIf="r.estado==='Activo'" class="table-danger" type="button" (click)="desactivarRutina(r.id_rutina)">Desactivar</button></td></tr>
-              <tr *ngIf="!rutinas.length"><td colspan="8">No hay rutinas registradas.</td></tr>
-            </tbody></table></div>
+            <div class="management-heading">
+              <div><h2>Rutinas asignadas</h2><p>{{rutinas.length}} registradas. El cliente ve la rutina activa y sus ejercicios desde su portal.</p></div>
+            </div>
+            <div class="table-wrap">
+              <table class="management-table">
+                <thead><tr><th>Cliente</th><th>Entrenador</th><th>Rutina</th><th>Ejercicios</th><th>Periodo</th><th>Estado</th><th>Acción</th></tr></thead>
+                <tbody>
+                  <tr *ngFor="let r of rutinas">
+                    <td><b>{{nombreCliente(r.cliente)}}</b></td>
+                    <td>{{nombreEntrenador(r.entrenador)}}</td>
+                    <td><b>{{r.nombre_rutina}}</b><br><small>{{r.objetivo || 'Sin objetivo indicado'}}</small></td>
+                    <td><b>{{r.detalles?.length || 0}}</b> ejercicio(s)</td>
+                    <td>{{r.fecha_inicio}} - {{r.fecha_fin || 'Sin fin'}}</td>
+                    <td>{{r.estado}}</td>
+                    <td>
+                      <button class="table-action" type="button" (click)="editarRutina(r)">Editar</button>
+                      <button *ngIf="r.estado==='Activo'" class="table-danger" type="button" (click)="desactivarRutina(r.id_rutina)">Desactivar</button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="!rutinas.length"><td colspan="7">No hay rutinas registradas.</td></tr>
+                </tbody>
+              </table>
+            </div>
           </article>
         </section>
       </ng-container>
