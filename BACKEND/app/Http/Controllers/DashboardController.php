@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class DashboardController extends Controller
 {
@@ -135,6 +136,7 @@ class DashboardController extends Controller
 
         $soportePendiente = $this->soportePendiente($tablas['soporte']);
         $rutinasPendientes = $this->rutinasPendientes($tablas['soporte']);
+        $opinionesPendientes = $this->opinionesPendientes();
         $actividadPortal = $this->actividadPortal();
         $pagosRegistrados = $tablas['pagos'] ? (int) $this->db->table($tablas['pagos'])->count() : 0;
 
@@ -143,7 +145,8 @@ class DashboardController extends Controller
         $pagosPendientes = $suscripciones['pagos_pendientes'];
         $alertasTotal = count($suscripciones['detalle_por_vencer'])
             + $stock['productos_stock_bajo']
-            + $soportePendiente;
+            + $soportePendiente
+            + $opinionesPendientes;
 
         return response()->json([
             'fuente' => [
@@ -214,11 +217,13 @@ class DashboardController extends Controller
                 'total' => $alertasTotal,
                 'soporte_pendiente' => $soportePendiente,
                 'rutinas_pendientes' => $rutinasPendientes,
+                'opiniones_pendientes' => $opinionesPendientes,
             ],
             'portal_clientes' => [
                 'actividad_reciente' => $actividadPortal,
                 'soporte_pendiente' => $soportePendiente,
                 'rutinas_pendientes' => $rutinasPendientes,
+                'opiniones_pendientes' => $opinionesPendientes,
                 'ultima_sincronizacion' => now()->toIso8601String(),
             ],
         ]);
@@ -797,6 +802,21 @@ class DashboardController extends Controller
             ->count();
     }
 
+    private function opinionesPendientes(): int
+    {
+        try {
+            if (!$this->schema->hasTable('opiniones_cliente')) {
+                return 0;
+            }
+
+            return (int) $this->db->table('opiniones_cliente')
+                ->whereIn('estado', ['Enviada', 'ENVIADA', 'enviada'])
+                ->count();
+        } catch (Throwable $e) {
+            return 0;
+        }
+    }
+
     private function actividadPortal(): array
     {
         $actividad = collect();
@@ -910,6 +930,41 @@ class DashboardController extends Controller
                         'detalle' => trim(((string) ($r->membresia_nombre ?? 'Membresía')).' · S/ '.number_format((float) $r->monto, 2)),
                         'estado' => (string) $r->estado_pago,
                         'fecha' => $r->fecha_pago,
+                        'cliente' => trim((string) $r->nombres.' '.(string) $r->apellidos),
+                    ]);
+                }
+            }
+        } catch (Throwable $e) {
+        }
+
+        try {
+            if ($this->schema->hasTable('opiniones_cliente')) {
+                $rows = $this->db->table('opiniones_cliente as o')
+                    ->leftJoin('clientes as c', 'c.id_cliente', '=', 'o.id_cliente')
+                    ->select(
+                        'o.id_opinion as id',
+                        'o.id_cliente',
+                        'o.categoria',
+                        'o.calificacion',
+                        'o.comentario',
+                        'o.estado',
+                        'o.fecha',
+                        'c.nombres',
+                        'c.apellidos'
+                    )
+                    ->orderByDesc('o.fecha')
+                    ->limit(8)
+                    ->get();
+
+                foreach ($rows as $r) {
+                    $actividad->push([
+                        'tipo' => 'opinion',
+                        'id' => (int) $r->id,
+                        'id_cliente' => (int) $r->id_cliente,
+                        'titulo' => 'Opinión del cliente · '.((int) $r->calificacion).'/5',
+                        'detalle' => trim(((string) $r->categoria).' · '.((string) $r->comentario)),
+                        'estado' => (string) $r->estado,
+                        'fecha' => $r->fecha,
                         'cliente' => trim((string) $r->nombres.' '.(string) $r->apellidos),
                     ]);
                 }
