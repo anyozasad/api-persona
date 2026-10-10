@@ -2036,8 +2036,32 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   desactivarCategoria(id:number){ if(!confirm('¿Desactivar esta categoría?')) return; this.api.eliminarCategoria(id).subscribe({next:r=>{this.ok(r.mensaje||'Categoría desactivada');this.cancelarEdicionCategoria();this.cargarCategorias();},error:e=>this.mostrarError(e)}); }
 
   guardarRutina(){
-    if(!this.rutinaForm.id_cliente || !this.rutinaForm.id_entrenador){this.error='Selecciona cliente y entrenador.';return;}
-    const datos={...this.rutinaForm};
+    if(!this.rutinaForm.id_cliente || !this.rutinaForm.id_entrenador){
+      this.error='Selecciona cliente y entrenador.';
+      return;
+    }
+
+    const detalles=(this.rutinaDetallesForm||[])
+      .map((d:any)=>({
+        ejercicio:String(d.ejercicio||'').trim(),
+        series:Number(d.series||0),
+        repeticiones:Number(d.repeticiones||0),
+        peso_recomendado:d.peso_recomendado===''||d.peso_recomendado===null?null:Number(d.peso_recomendado),
+        descanso_segundos:d.descanso_segundos===''||d.descanso_segundos===null?null:Number(d.descanso_segundos),
+        observaciones:String(d.observaciones||'').trim()||null
+      }))
+      .filter((d:any)=>d.ejercicio);
+
+    if(!detalles.length){
+      this.error='Agrega al menos un ejercicio a la rutina.';
+      return;
+    }
+    if(detalles.some((d:any)=>d.series<1 || d.repeticiones<1)){
+      this.error='Cada ejercicio debe tener series y repeticiones válidas.';
+      return;
+    }
+
+    const datos={...this.rutinaForm,detalles};
     if(!datos.fecha_fin) datos.fecha_fin=null;
 
     const eraEdicion=Boolean(this.rutinaEditandoId);
@@ -2054,29 +2078,39 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         if(idSolicitud){
           this.api.responderSoporte(
             idSolicitud,
-            'Tu rutina ya fue asignada por Mallqui Gym. Revísala en la sección Rutinas de tu cuenta.',
+            'Tu rutina completa ya fue asignada por Mallqui Gym. Revísala en Rutinas: allí encontrarás ejercicios, series, repeticiones, carga y descansos.',
             'Cerrado'
           ).subscribe({
             next:()=>{
               this.solicitudRutinaIdPendiente=0;
               this.solicitudRutinaContexto=null;
-              this.ok('Rutina asignada y cliente notificado');
+              this.ok('Rutina completa asignada y cliente notificado');
               this.cargarDashboard();
             },
             error:()=>{
-              this.ok('Rutina asignada. La solicitud sigue pendiente de cerrar en Soporte.');
+              this.ok('Rutina guardada. La solicitud sigue pendiente de cerrar en Soporte.');
               this.cargarDashboard();
             }
           });
           return;
         }
 
-        this.ok(eraEdicion?'Rutina actualizada correctamente':'Rutina registrada');
+        this.ok(eraEdicion?'Rutina y ejercicios actualizados':'Rutina completa asignada');
         this.cargarDashboard();
       },
       error:e=>this.mostrarError(e)
     });
   }
+
+  agregarEjercicioRutina(){
+    this.rutinaDetallesForm.push({ejercicio:'',series:3,repeticiones:12,peso_recomendado:null,descanso_segundos:60,observaciones:''});
+  }
+
+  quitarEjercicioRutina(index:number){
+    if(this.rutinaDetallesForm.length<=1)return;
+    this.rutinaDetallesForm.splice(index,1);
+  }
+
   editarRutina(r:any){
     this.rutinaEditandoId=r.id_rutina;
     this.rutinaForm={
@@ -2089,11 +2123,26 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       fecha_fin:r.fecha_fin?String(r.fecha_fin).slice(0,10):'',
       estado:r.estado||'Activo'
     };
+    const detalles=Array.isArray(r.detalles)?r.detalles:[];
+    this.rutinaDetallesForm=detalles.length
+      ? detalles.map((d:any)=>({
+          ejercicio:d.ejercicio||'',
+          series:Number(d.series||3),
+          repeticiones:Number(d.repeticiones||12),
+          peso_recomendado:d.peso_recomendado===null?null:Number(d.peso_recomendado),
+          descanso_segundos:d.descanso_segundos===null?60:Number(d.descanso_segundos||60),
+          observaciones:d.observaciones||''
+        }))
+      : [{ejercicio:'',series:3,repeticiones:12,peso_recomendado:null,descanso_segundos:60,observaciones:''}];
+    this.solicitudRutinaContexto=null;
+    this.solicitudRutinaIdPendiente=0;
     window.scrollTo({top:0,behavior:'smooth'});
   }
+
   cancelarEdicionRutina(){
     this.rutinaEditandoId=0;
     this.rutinaForm={id_cliente:0,id_entrenador:0,nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:new Date().toISOString().slice(0,10),fecha_fin:'',estado:'Activo'};
+    this.rutinaDetallesForm=[{ejercicio:'',series:3,repeticiones:12,peso_recomendado:null,descanso_segundos:60,observaciones:''}];
   }
   desactivarRutina(id:number){ if(!confirm('¿Desactivar esta rutina?')) return; this.api.eliminarRutina(id).subscribe({next:r=>{this.ok(r.mensaje||'Rutina desactivada');this.cancelarEdicionRutina();this.cargarRutinas();},error:e=>this.mostrarError(e)}); }
 
@@ -2341,6 +2390,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       fecha_fin:'',
       estado:'Activo'
     };
+    this.rutinaDetallesForm=[{ejercicio:'',series:3,repeticiones:12,peso_recomendado:null,descanso_segundos:60,observaciones:''}];
     this.cambiarSeccion('rutinas');
     this.ok('Solicitud cargada: completa la rutina y guárdala para notificar al cliente');
   }
@@ -2350,7 +2400,21 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.solicitudRutinaIdPendiente=0;
     if(!this.rutinaEditandoId){
       this.rutinaForm={id_cliente:0,id_entrenador:0,nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:new Date().toISOString().slice(0,10),fecha_fin:'',estado:'Activo'};
+      this.rutinaDetallesForm=[{ejercicio:'',series:3,repeticiones:12,peso_recomendado:null,descanso_segundos:60,observaciones:''}];
     }
+  }
+
+  cambiarEstadoOpinion(o:any,estado:'Enviada'|'Revisada'){
+    if(!o?.id_opinion)return;
+    this.api.cambiarEstadoOpinion(Number(o.id_opinion),estado).subscribe({
+      next:r=>{this.ok(r?.mensaje||'Opinión actualizada');this.cargarOpiniones();this.cargarDashboard();},
+      error:e=>this.mostrarError(e)
+    });
+  }
+
+  estrellasOpinion(n:any):string{
+    const total=Math.max(0,Math.min(5,Number(n)||0));
+    return '★'.repeat(total)+'☆'.repeat(5-total);
   }
 
   nombreSolicitudRutina(s:any):string{
