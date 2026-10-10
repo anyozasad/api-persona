@@ -1223,6 +1223,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   rutinas: any[] = [];
   reservas: any[] = [];
   usuarios: any[] = [];
+  opiniones: any[] = [];
   auditorias: any[] = [];
   auditoriaBusqueda = '';
   auditoriaMetodo = '';
@@ -1258,6 +1259,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         {id:'rutinas',icono:'🏋',nombre:'Rutinas'},
         {id:'clases',icono:'◉',nombre:'Clases'},
         {id:'soporte',icono:'?',nombre:'Soporte'},
+        {id:'opiniones',icono:'★',nombre:'Opiniones'},
         {id:'comunicacion',icono:'●',nombre:'Notificaciones'}
       ]
     },
@@ -1302,6 +1304,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     caja:['Caja','Apertura, movimientos y cierre'],
     reportes:['Reportes','Indicadores de gestión del gimnasio'], usuarios:['Usuarios','Cuentas internas y permisos'],
     comunicacion:['Notificaciones','Avisos que reciben los clientes en su portal'], soporte:['Soporte','Consultas y solicitudes enviadas desde el portal del cliente'],
+    opiniones:['Opiniones','Comentarios y calificaciones enviadas desde el portal del cliente'],
     configuracion:['Configuración','Ajustes generales y mantenimiento del sistema']
   };
 
@@ -1351,6 +1354,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   categoriaForm: any = {nombre_categoria:'',descripcion:'',estado:'Activo'};
   rutinaEditandoId = 0;
   rutinaForm: any = {id_cliente:0,id_entrenador:0,nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:new Date().toISOString().slice(0,10),fecha_fin:'',estado:'Activo'};
+  rutinaDetallesForm: any[] = [{ejercicio:'',series:3,repeticiones:12,peso_recomendado:null,descanso_segundos:60,observaciones:''}];
   solicitudRutinaContexto: any = null;
   solicitudRutinaIdPendiente = 0;
   usuarioEditandoId = 0;
@@ -1555,6 +1559,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       case 'usuarios':
         this.cargarUsuarios();
         break;
+      case 'opiniones':
+        this.cargarOpiniones();
+        break;
       case 'comunicacion':
       case 'soporte':
         break;
@@ -1618,6 +1625,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   cargarRutinas(){ this.api.rutinas().subscribe({next:r=>this.rutinas=r,error:e=>this.mostrarError(e)}); }
   cargarReservas(){ this.api.reservas().subscribe({next:r=>this.reservas=r,error:e=>this.mostrarError(e)}); }
   cargarUsuarios(){ this.api.usuarios().subscribe({next:r=>this.usuarios=r,error:e=>this.mostrarError(e)}); }
+  cargarOpiniones(){ this.api.opinionesClientes().subscribe({next:r=>this.opiniones=r||[],error:e=>this.mostrarError(e)}); }
   cargarAuditoria(){
     const f:any={};
     if(this.auditoriaFiltros.ruta)f.ruta=this.auditoriaFiltros.ruta;
