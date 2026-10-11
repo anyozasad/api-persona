@@ -39,13 +39,14 @@ describe('ClienteHerramientasComponent',()=>{
     const futuro=new Date(Date.now()+86400000).toISOString().slice(0,10);
     c.reservas=[
       {estado:'Reservada',fecha_clase:futuro,clase:{nombre:'Box'}},
-      {estado:'Asistio',fecha_clase:'2026-01-01',clase:{nombre:'Yoga'}},
+      {estado:'ASISTIÓ',fecha_clase:'2026-01-01',clase:{nombre:'Yoga'}},
       {estado:'Cancelada',fecha_clase:'2026-01-02',clase:{nombre:'Cross'}}
     ];
     expect(c.mostrarReservasActivas().length).toBe(1);
     expect(c.mostrarReservasAsistidas().length).toBe(1);
     expect(c.mostrarReservasCanceladas().length).toBe(1);
     expect(c.proximaReserva()?.clase?.nombre).toBe('Box');
+    expect(c.fechaCorta('2026-10-11')).toContain('11');
     c.estadoReserva='Reservada';
     expect(c.contarReservasResultado()).toBe(1);
   });
@@ -95,7 +96,7 @@ describe('ClienteHerramientasComponent',()=>{
 
   it('filtra y calcula pagos',()=>{
     c.pagos=[
-      {estado_pago:'Completado',monto:30,fecha_pago:'2026-10-10',numero_operacion:'ABC1',cliente_membresia:{membresia:{nombre:'Mensual'}}},
+      {estado_pago:'COMPLETADO',monto:30,fecha_pago:'2026-10-10',numero_operacion:'ABC1',cliente_membresia:{membresia:{nombre:'Mensual'}}},
       {estado_pago:'Pendiente',monto:40,fecha_pago:'2026-10-11',numero_operacion:'ABC2',cliente_membresia:{membresia:{nombre:'Promo'}}},
       {estado_pago:'Cancelado',monto:50,fecha_pago:'2026-10-09'}
     ];
