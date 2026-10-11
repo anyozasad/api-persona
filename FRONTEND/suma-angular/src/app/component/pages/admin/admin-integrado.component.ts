@@ -1190,37 +1190,77 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
       </ng-container>
 
       <ng-container *ngIf="seccion==='gastos'">
-        <section class="management-grid">
-          <article class="admin-form-card">
-            <div class="management-heading"><div><h2>Registrar gasto</h2><p>El gasto se registra como egreso de la caja abierta.</p></div><span>↓</span></div>
-            <div class="admin-inline-warning" *ngIf="!caja?.caja_abierta">
-              <b>La caja está cerrada.</b>
-              <p>Debes abrir caja antes de registrar un gasto.</p>
-              <button type="button" class="admin-secondary" (click)="cambiarSeccion('caja')">Ir a Caja</button>
-            </div>
-            <form *ngIf="caja?.caja_abierta" (ngSubmit)="registrarGasto()">
-              <label>Descripción<input [(ngModel)]="gastoForm.descripcion" name="gasto_descripcion" required placeholder="Ej. compra de limpieza"></label>
-              <label>Monto S/<input type="number" min="0.01" step="0.01" [(ngModel)]="gastoForm.monto" name="gasto_monto" required></label>
-              <button class="admin-primary" type="submit">Registrar gasto</button>
-            </form>
-          </article>
-          <article class="admin-list-card wide-card">
-            <div class="management-heading"><div><h2>Gastos de la caja actual</h2><p>{{gastosActuales.length}} egresos registrados.</p></div></div>
-            <div class="table-wrap">
-              <table class="management-table">
-                <thead><tr><th>Fecha</th><th>Descripción</th><th>Origen</th><th>Monto</th><th>Estado</th></tr></thead>
-                <tbody>
-                  <tr *ngFor="let g of gastosActuales">
-                    <td>{{fecha(g.fecha_movimiento)}}</td><td>{{g.descripcion}}</td><td>{{g.origen}}</td><td><b>S/ {{g.monto | number:'1.2-2'}}</b></td><td>{{g.estado}}</td>
-                  </tr>
-                  <tr *ngIf="!gastosActuales.length"><td colspan="5">No hay gastos registrados en la caja actual.</td></tr>
-                </tbody>
-              </table>
-            </div>
+        <section class="operation-locked-state" *ngIf="!caja?.caja_abierta; else gastosCajaAbierta">
+          <div class="operation-locked-main">
+            <span class="operation-locked-icon">▣</span>
+            <small>CAJA REQUERIDA</small>
+            <h2>Abre la caja antes de registrar un gasto</h2>
+            <p>Todo egreso debe quedar asociado a una caja abierta para que el cierre, los reportes y la auditoría cuadren correctamente.</p>
+            <button type="button" class="admin-primary" (click)="cambiarSeccion('caja')">Ir a abrir caja</button>
+          </div>
+          <article class="operation-locked-side">
+            <span>Última operación</span>
+            <ng-container *ngIf="historialCaja[0] as ultima; else sinHistorialCaja">
+              <h3>Caja #{{ultima.id_caja}}</h3>
+              <p>{{ultima.estado}} · {{fecha(ultima.fecha_apertura)}}</p>
+              <div><small>Monto inicial</small><b>S/ {{ultima.monto_inicial ?? 0 | number:'1.2-2'}}</b></div>
+              <div><small>Monto real</small><b>S/ {{ultima.monto_real ?? 0 | number:'1.2-2'}}</b></div>
+            </ng-container>
+            <ng-template #sinHistorialCaja>
+              <h3>Sin historial todavía</h3>
+              <p>La primera caja aparecerá aquí después de abrirla.</p>
+            </ng-template>
           </article>
         </section>
-      </ng-container>
 
+        <ng-template #gastosCajaAbierta>
+          <section class="management-grid">
+            <article class="admin-form-card">
+              <div class="management-heading">
+                <div>
+                  <h2>Registrar gasto</h2>
+                  <p>Caja abierta · saldo esperado S/ {{caja?.resumen?.monto_esperado ?? 0 | number:'1.2-2'}}</p>
+                </div>
+                <span>↓</span>
+              </div>
+              <form (ngSubmit)="registrarGasto()">
+                <label>Descripción
+                  <input [(ngModel)]="gastoForm.descripcion" name="gasto_descripcion" required minlength="3" placeholder="Ej. compra de productos de limpieza">
+                </label>
+                <label>Monto S/
+                  <input type="number" min="0.01" step="0.01" [(ngModel)]="gastoForm.monto" name="gasto_monto" required>
+                </label>
+                <button class="admin-primary" type="submit" [disabled]="!gastoForm.descripcion.trim() || gastoForm.monto<=0">Registrar gasto</button>
+              </form>
+            </article>
+            <article class="admin-list-card wide-card">
+              <div class="management-heading">
+                <div><h2>Gastos de la caja actual</h2><p>{{gastosActuales.length}} egresos registrados.</p></div>
+                <strong class="expense-total">S/ {{totalGastosCajaActual | number:'1.2-2'}}</strong>
+              </div>
+              <div class="table-wrap" *ngIf="gastosActuales.length; else sinGastosCaja">
+                <table class="management-table">
+                  <thead><tr><th>Fecha</th><th>Descripción</th><th>Origen</th><th>Monto</th><th>Estado</th></tr></thead>
+                  <tbody>
+                    <tr *ngFor="let g of gastosActuales">
+                      <td>{{fecha(g.fecha_movimiento)}}</td>
+                      <td><b>{{g.descripcion}}</b></td>
+                      <td>{{g.origen}}</td>
+                      <td><b>S/ {{g.monto | number:'1.2-2'}}</b></td>
+                      <td>{{g.estado}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <ng-template #sinGastosCaja>
+                <div class="admin-empty-state compact">
+                  <span>✓</span><b>Sin gastos en esta caja</b><p>Aún no se han registrado egresos durante la caja actual.</p>
+                </div>
+              </ng-template>
+            </article>
+          </section>
+        </ng-template>
+      </ng-container>
       <ng-container *ngIf="seccion==='inventario'">
         <div class="embedded-productos"><app-productos></app-productos></div>
       </ng-container>
@@ -2421,6 +2461,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     return Array.isArray(movimientos)
       ? movimientos.filter((m:any)=>String(m?.tipo||'').toLowerCase()==='egreso')
       : [];
+  }
+
+  get totalGastosCajaActual(): number {
+    return this.gastosActuales.reduce((total:number,g:any)=>total+Number(g?.monto||0),0);
   }
 
   registrarGasto(): void {
