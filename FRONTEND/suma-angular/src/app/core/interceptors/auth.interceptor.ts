@@ -6,9 +6,24 @@ import { catchError, throwError } from 'rxjs';
 const TOKEN_KEY = 'mallqui_token';
 const USER_KEY = 'mallqui_usuario';
 
+function leerStorage(storage: Storage, key: string): string | null {
+  try { return storage.getItem(key); } catch { return null; }
+}
+
+function limpiarStorage(): void {
+  try {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+  } catch {}
+  try {
+    sessionStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(USER_KEY);
+  } catch {}
+}
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
-  const token = localStorage.getItem(TOKEN_KEY) ?? sessionStorage.getItem(TOKEN_KEY);
+  const token = leerStorage(localStorage, TOKEN_KEY) ?? leerStorage(sessionStorage, TOKEN_KEY);
   const esApi = req.url.startsWith('/api');
 
   const headers: Record<string, string> = { Accept: 'application/json' };
@@ -36,10 +51,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       const esLogin = req.url.includes('/auth/login') || req.url.includes('/auth/register');
       if (error.status === 401 && !esLogin) {
-        localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem(USER_KEY);
-        sessionStorage.removeItem(TOKEN_KEY);
-        sessionStorage.removeItem(USER_KEY);
+        limpiarStorage();
         void router.navigate(['/login']);
       }
       return throwError(() => error);
