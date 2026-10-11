@@ -498,154 +498,6 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         </section>
       </ng-container>
 
-      <ng-container *ngIf="seccion==='socios-hub'">
-        <section class="admin-hub-shell">
-          <header class="admin-hub-hero">
-            <div>
-              <span>GESTIÓN DEL SOCIO</span>
-              <h2>Socios</h2>
-              <p>Las tres funciones principales para administrar a un miembro: sus datos, su membresía y su acceso al gimnasio.</p>
-            </div>
-          </header>
-
-          <div class="admin-hub-grid contact-hub-grid">
-            <button type="button" class="admin-hub-card admin-hub-card-primary" (click)="cambiarSeccion('clientes')">
-              <span class="admin-hub-icon">♙</span>
-              <div><small>DATOS DEL MIEMBRO</small><h3>Clientes <em class="admin-hub-live-count">{{dashboard?.clientes?.total ?? 0}}</em></h3><p>Registrar, editar, consultar ficha y administrar el acceso del socio.</p></div><b>→</b>
-            </button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('membresias')">
-              <span class="admin-hub-icon">✦</span>
-              <div><small>PLAN Y VIGENCIA</small><h3>Membresías <em class="admin-hub-live-count">{{dashboard?.membresias?.activas ?? 0}}</em></h3><p>Asignar, renovar y revisar vencimientos y pagos del socio.</p></div><b>→</b>
-            </button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('asistencias')">
-              <span class="admin-hub-icon">✓</span>
-              <div><small>ENTRADA Y SALIDA</small><h3>Asistencia <em class="admin-hub-live-count">{{dashboard?.asistencias?.dentro_ahora ?? 0}}</em></h3><p>Registrar acceso por socio, DNI o credencial y consultar movimientos.</p></div><b>→</b>
-            </button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('pagos')">
-              <span class="admin-hub-icon">S/</span>
-              <div><small>HISTORIAL ECONÓMICO</small><h3>Pagos <em class="admin-hub-live-count">{{dashboard?.membresias?.pagos_registrados ?? 0}}</em></h3><p>Consultar pagos de membresía, métodos y operaciones registradas.</p></div><b>→</b>
-            </button>
-          </div>
-        </section>
-      </ng-container>
-
-      <ng-container *ngIf="seccion==='servicios'">
-        <section class="admin-hub-shell">
-          <header class="admin-hub-hero">
-            <div>
-              <span>SERVICIOS DEL GIMNASIO</span>
-              <h2>Servicios</h2>
-              <p>Aquí se administra lo que el socio usa directamente desde su portal: clases, reservas y rutinas.</p>
-            </div>
-          </header>
-
-          <div class="admin-hub-grid contact-hub-grid">
-            <button type="button" class="admin-hub-card admin-hub-card-primary" (click)="cambiarSeccion('clases')">
-              <span class="admin-hub-icon">◉</span>
-              <div><small>PROGRAMACIÓN</small><h3>Clases <em class="admin-hub-live-count">{{dashboard?.operacion?.clases_activas ?? 0}}</em></h3><p>Horarios, cupos y entrenador de las clases disponibles.</p></div><b>→</b>
-            </button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('reservas')">
-              <span class="admin-hub-icon">◫</span>
-              <div><small>AGENDA DEL SOCIO</small><h3>Reservas <em class="admin-hub-live-count">{{dashboard?.reservas?.hoy ?? 0}}</em></h3><p>Ver reservas creadas por los clientes y controlar su asistencia.</p></div><b>→</b>
-            </button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('rutinas')">
-              <span class="admin-hub-icon">🏋</span>
-              <div><small>ENTRENAMIENTO</small><h3>Rutinas <em class="admin-hub-live-count">{{dashboard?.alertas?.rutinas_pendientes ?? 0}}</em></h3><p>Atender solicitudes y asignar la rutina que verá el socio.</p></div><b>→</b>
-            </button>
-          </div>
-        </section>
-      </ng-container>
-
-      <ng-container *ngIf="seccion==='atencion'">
-        <section class="admin-hub-shell">
-          <header class="admin-hub-hero">
-            <div>
-              <span>CONTACTO CON EL SOCIO</span>
-              <h2>Atención al cliente</h2>
-              <p>Aquí están únicamente las funciones con las que el administrador recibe o envía información al portal del usuario.</p>
-            </div>
-          </header>
-
-          <div class="admin-hub-grid contact-hub-grid">
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('soporte')">
-              <span class="admin-hub-icon">?</span>
-              <div>
-                <small>CONSULTAS Y SOLICITUDES</small>
-                <h3>Soporte <em class="admin-hub-live-count">{{dashboard?.alertas?.soporte_pendiente ?? 0}}</em></h3>
-                <p>Revisa mensajes del socio y solicitudes de rutina enviadas desde su cuenta.</p>
-              </div>
-              <b>→</b>
-            </button>
-
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('opiniones')">
-              <span class="admin-hub-icon">★</span>
-              <div>
-                <small>VOZ DEL CLIENTE</small>
-                <h3>Opiniones <em class="admin-hub-live-count">{{dashboard?.alertas?.opiniones_pendientes ?? 0}}</em></h3>
-                <p>Consulta comentarios y calificaciones que los socios dejan en el portal.</p>
-              </div>
-              <b>→</b>
-            </button>
-
-            <button type="button" class="admin-hub-card admin-hub-card-primary" (click)="cambiarSeccion('comunicacion')">
-              <span class="admin-hub-icon">●</span>
-              <div>
-                <small>MENSAJES AL PORTAL</small>
-                <h3>Notificaciones</h3>
-                <p>Envía avisos que el socio podrá ver directamente desde su cuenta.</p>
-              </div>
-              <b>→</b>
-            </button>
-          </div>
-        </section>
-      </ng-container>
-
-      <ng-container *ngIf="seccion==='gestion'">
-        <section class="admin-hub-shell">
-          <header class="admin-hub-hero compact">
-            <div>
-              <span>HERRAMIENTAS INTERNAS</span>
-              <h2>Gestión interna</h2>
-              <p>Estas funciones siguen disponibles, pero ya no ocupan espacio en el menú principal.</p>
-            </div>
-          </header>
-
-          <div class="admin-hub-section-title">
-            <span>PERSONAL Y CONFIGURACIÓN</span>
-          </div>
-          <div class="admin-hub-grid admin-hub-grid-compact">
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('entrenador')"><span class="admin-hub-icon">🏋</span><div><h3>Entrenador principal</h3><p>Datos del único entrenador del gimnasio.</p></div><b>→</b></button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('planes')"><span class="admin-hub-icon">◆</span><div><h3>Tarifas</h3><p>Planes, precios y beneficios.</p></div><b>→</b></button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('usuarios')"><span class="admin-hub-icon">♙</span><div><h3>Usuarios internos</h3><p>Cuentas y permisos del personal.</p></div><b>→</b></button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('configuracion')"><span class="admin-hub-icon">⚙</span><div><h3>Mantenimiento</h3><p>Ajustes generales del sistema.</p></div><b>→</b></button>
-          </div>
-
-          <div class="admin-hub-section-title">
-            <span>CAJA, VENTAS E INVENTARIO</span>
-          </div>
-          <div class="admin-hub-grid admin-hub-grid-compact">
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('caja')"><span class="admin-hub-icon">▣</span><div><h3>Caja</h3><p>Apertura, movimientos y cierre.</p></div><b>→</b></button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('ventas')"><span class="admin-hub-icon">▤</span><div><h3>Punto de venta</h3><p>Cobro de productos del gimnasio.</p></div><b>→</b></button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('historial-ventas')"><span class="admin-hub-icon">↺</span><div><h3>Historial de ventas</h3><p>Consulta de ventas registradas.</p></div><b>→</b></button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('inventario')"><span class="admin-hub-icon">▦</span><div><h3>Inventario</h3><p>Productos y control de stock.</p></div><b>→</b></button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('kardex')"><span class="admin-hub-icon">↕</span><div><h3>Kardex y ajustes</h3><p>Entradas, salidas y correcciones de stock.</p></div><b>→</b></button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('proveedores')"><span class="admin-hub-icon">♢</span><div><h3>Proveedores</h3><p>Datos de abastecimiento.</p></div><b>→</b></button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('compras')"><span class="admin-hub-icon">↓</span><div><h3>Compras</h3><p>Ingreso de mercadería.</p></div><b>→</b></button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('categorias')"><span class="admin-hub-icon">◇</span><div><h3>Categorías</h3><p>Organización de productos.</p></div><b>→</b></button>
-          </div>
-
-          <div class="admin-hub-section-title">
-            <span>CONTROL</span>
-          </div>
-          <div class="admin-hub-grid admin-hub-grid-compact">
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('gastos')"><span class="admin-hub-icon">↓</span><div><h3>Gastos</h3><p>Egresos de la caja activa.</p></div><b>→</b></button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('reportes')"><span class="admin-hub-icon">▥</span><div><h3>Reportes</h3><p>Indicadores del gimnasio.</p></div><b>→</b></button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('reporte-asistencias')"><span class="admin-hub-icon">✓</span><div><h3>Reporte de asistencias</h3><p>Resumen del control de accesos.</p></div><b>→</b></button>
-            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('auditoria')"><span class="admin-hub-icon">◎</span><div><h3>Auditoría</h3><p>Quién hizo qué, cuándo y con qué resultado.</p></div><b>→</b></button>
-          </div>
-        </section>
-      </ng-container>
-
       <ng-container *ngIf="seccion==='clientes'">
         <section class="clients-v3-shell">
           <header class="clients-v3-hero">
@@ -2098,19 +1950,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   historialCaja: any[] = [];
 
   dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
-  menuGrupos = [
-    {
-      titulo:'Principal',
-      items:[
-        {id:'dashboard',icono:'⌂',nombre:'Dashboard'},
-        {id:'socios-hub',icono:'♙',nombre:'Socios'},
-        {id:'servicios',icono:'◉',nombre:'Servicios'},
-        {id:'atencion',icono:'●',nombre:'Atención al cliente'},
-        {id:'gestion',icono:'⚙',nombre:'Gestión interna'}
-      ]
-    }
-  ];
-
   titulos: Record<string,[string,string]> = {
     dashboard:['Panel Administrador','Datos reales del gimnasio'], clientes:['Socios','Registro y administración de miembros'],
     membresias:['Membresías','Asignación, renovación y vigencia de socios'], pagos:['Pagos de membresía','Compras realizadas desde el portal del cliente'],
@@ -2129,10 +1968,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     reportes:['Reportes','Indicadores de gestión del gimnasio'], usuarios:['Usuarios','Cuentas internas y permisos'],
     comunicacion:['Notificaciones','Avisos que reciben los clientes en su portal'], soporte:['Soporte','Consultas y solicitudes enviadas desde el portal del cliente'],
     opiniones:['Opiniones','Comentarios y calificaciones enviadas desde el portal del cliente'],
-    'socios-hub':['Socios','Clientes, membresías y control de acceso en un solo lugar'],
-    servicios:['Servicios','Reservas, rutinas y clases que usa el socio'],
-    atencion:['Atención al cliente','Consultas, opiniones y avisos que conectan con el portal del socio'],
-    gestion:['Gestión interna','Herramientas administrativas que no necesitas ver todo el tiempo'],
     auditoria:['Auditoría','Historial de acciones, usuarios, rutas y resultados del sistema'],
     configuracion:['Configuración','Ajustes generales y mantenimiento del sistema']
   };
