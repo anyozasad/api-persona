@@ -93,6 +93,35 @@
         <input name="descripcion" [(ngModel)]="producto.descripcion" placeholder="Describe brevemente el producto">
       </label>
 
+      <div class="image-field span-2">
+        <span class="field-label">Imagen del producto</span>
+        <div class="image-uploader" [class.has-image]="producto.foto">
+          <div class="image-preview">
+            @if (producto.foto) {
+              <img [src]="producto.foto" [alt]="producto.nombre_producto || 'Vista previa del producto'">
+            } @else {
+              <span>▧</span>
+              <b>Sin imagen</b>
+              <small>Agrega una foto para identificar mejor el producto.</small>
+            }
+          </div>
+          <div class="image-actions">
+            <label class="image-upload-button" [class.disabled]="procesandoImagen">
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                (change)="seleccionarImagen($event)"
+                [disabled]="procesandoImagen">
+              <span>{{ procesandoImagen ? 'Procesando...' : (producto.foto ? 'Cambiar imagen' : 'Seleccionar imagen') }}</span>
+            </label>
+            @if (producto.foto) {
+              <button type="button" class="image-remove-button" (click)="quitarImagen()">Quitar imagen</button>
+            }
+            <small>JPG, PNG o WEBP · máximo 5 MB · se optimiza automáticamente.</small>
+          </div>
+        </div>
+      </div>
+
       <div class="form-section-title span-2">
         <span>2</span>
         <div><b>Precios y existencias</b><small>Control comercial y nivel de stock</small></div>
@@ -182,7 +211,11 @@
               <tr [class.stock-row-alert]="esStockBajo(item)">
                 <td>
                   <div class="producto-identidad">
-                    <span class="producto-avatar">{{ inicialProducto(item.nombre_producto) }}</span>
+                    @if (item.foto) {
+                      <img class="producto-foto" [src]="item.foto" [alt]="item.nombre_producto">
+                    } @else {
+                      <span class="producto-avatar">{{ inicialProducto(item.nombre_producto) }}</span>
+                    }
                     <div><b>{{ item.nombre_producto }}</b><small>{{ item.unidad_medida || 'Unidad' }}</small></div>
                   </div>
                 </td>
