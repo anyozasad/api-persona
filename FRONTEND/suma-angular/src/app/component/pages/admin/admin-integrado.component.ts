@@ -728,7 +728,12 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
             <form (ngSubmit)="guardarClase()">
               <label>Nombre<input [(ngModel)]="claseForm.nombre" name="clnombre" required></label>
               <label>Descripción<input [(ngModel)]="claseForm.descripcion" name="cldescripcion"></label>
-              <label>Entrenador<select [(ngModel)]="claseForm.id_entrenador" name="clentrenador"><option [ngValue]="null">Sin asignar</option><option *ngFor="let e of entrenadores" [ngValue]="e.id_entrenador">{{nombreEntrenador(e)}}</option></select></label>
+              <label *ngIf="entrenadores[0] as entrenadorPrincipal">Entrenador principal
+                <input [value]="nombreEntrenador(entrenadorPrincipal)" readonly>
+              </label>
+              <div *ngIf="!entrenadores.length" class="trainer-required-note">
+                <span>!</span><div><b>Falta registrar el entrenador principal.</b><small>Regístralo primero en la sección Entrenador.</small></div>
+              </div>
               <div class="form-row"><label>Día<select [(ngModel)]="claseForm.dia_semana" name="cldia"><option *ngFor="let d of dias">{{d}}</option></select></label><label>Cupo máximo<input type="number" min="1" [(ngModel)]="claseForm.cupo_maximo" name="clcupo"></label></div>
               <div class="form-row"><label>Hora inicio<input type="time" [(ngModel)]="claseForm.hora_inicio" name="clinicio" required></label><label>Hora fin<input type="time" [(ngModel)]="claseForm.hora_fin" name="clfin" required></label></div>
               <label>Estado<select [(ngModel)]="claseForm.estado" name="clestado"><option>Activo</option><option>Inactivo</option></select></label>
@@ -1045,12 +1050,12 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
                     <option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option>
                   </select>
                 </label>
-                <label>Entrenador
-                  <select [(ngModel)]="rutinaForm.id_entrenador" name="ruentrenador" required>
-                    <option [ngValue]="0">Seleccionar</option>
-                    <option *ngFor="let e of entrenadores" [ngValue]="e.id_entrenador">{{nombreEntrenador(e)}}</option>
-                  </select>
+                <label *ngIf="entrenadores[0] as entrenadorPrincipal">Entrenador principal
+                  <input [value]="nombreEntrenador(entrenadorPrincipal)" readonly>
                 </label>
+                <div *ngIf="!entrenadores.length" class="trainer-required-note compact">
+                  <span>!</span><div><b>Primero registra el entrenador principal.</b><small>La rutina necesita un entrenador responsable.</small></div>
+                </div>
               </div>
 
               <label>Nombre de la rutina
@@ -2046,6 +2051,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   guardarClase(){
+    const entrenadorPrincipal=this.entrenadores[0];
+    if(!entrenadorPrincipal){
+      this.error='Primero registra el entrenador principal antes de programar una clase.';
+      return;
+    }
+    this.claseForm.id_entrenador=Number(entrenadorPrincipal.id_entrenador);
     const datos={...this.claseForm,hora_inicio:String(this.claseForm.hora_inicio||'').slice(0,5),hora_fin:String(this.claseForm.hora_fin||'').slice(0,5)};
     const req=this.claseEditandoId
       ? this.api.actualizarClase(this.claseEditandoId,datos)
