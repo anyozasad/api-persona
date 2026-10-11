@@ -1,5 +1,5 @@
 import {
-  normalizeText,normalizeEmail,normalizePhone,safeArray,uniqueById,sortNewest,sortOldest,clampPercent,safeNumber,nonNegative,
+  normalizeText,normalizeStatus,parseLocalDate,localDateIso,safeTime,normalizeEmail,normalizePhone,safeArray,uniqueById,sortNewest,sortOldest,clampPercent,safeNumber,nonNegative,
   daysUntil,isExpiringSoon,completedPayments,pendingPayments,totalCompletedAmount,latestCompletedPayment,paymentStatusLabel,membershipStatus,nextMembershipStart,normalizeOperationNumber,
   activeClasses,availableClasses,reservationActive,reservationCancelled,reservationAttended,hasDuplicateReservation,nextReservation,reservationSummary,searchClasses,sortClassesByName,
   attendanceOpen,attendanceThisMonth,attendanceDurationMinutes,totalAttendanceMinutesThisMonth,averageAttendanceMinutesThisMonth,
@@ -11,6 +11,10 @@ describe('calidad funcional del portal cliente',()=>{
   const now=new Date('2026-10-11T12:00:00');
   it('normaliza datos generales',()=>{
     expect(normalizeText('  hola   gym ')).toBe('hola gym');
+    expect(normalizeStatus(' ASISTIÓ ')).toBe('asistio');
+    expect(parseLocalDate('2026-10-11')?.getDate()).toBe(11);
+    expect(localDateIso(new Date(2026,9,11,23,30))).toBe('2026-10-11');
+    expect(safeTime('2026-10-11')).toBeGreaterThan(0);
     expect(normalizeEmail(' USER@MAIL.COM ')).toBe('user@mail.com');
     expect(normalizePhone('+51 999-111-222')).toBe('51999111222');
     expect(safeArray(null)).toEqual([]);
@@ -41,6 +45,7 @@ describe('calidad funcional del portal cliente',()=>{
     expect(reservationActive({estado:'Reservada'})).toBeTrue();
     expect(reservationCancelled({estado:'Cancelada'})).toBeTrue();
     expect(reservationAttended({estado:'Asistio'})).toBeTrue();
+    expect(reservationAttended({estado:'ASISTIÓ'})).toBeTrue();
     const r=[{estado:'Reservada',id_clase:4,fecha_clase:'2026-10-20'},{estado:'Cancelada',id_clase:5,fecha_clase:'2026-10-22'}];
     expect(hasDuplicateReservation(r,4,'2026-10-20')).toBeTrue();
     expect(nextReservation(r,now).id_clase).toBe(4);
