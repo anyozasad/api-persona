@@ -4027,3 +4027,109 @@ button.admin-system-card:hover{
     border-radius:10px;
   }
 }
+
+
+/* ADMIN V33 · FLUJO DE GASTOS COHERENTE */
+.operation-locked-state{
+  display:grid;
+  grid-template-columns:minmax(0,1.4fr) minmax(260px,.6fr);
+  gap:14px;
+  margin-top:4px;
+}
+.operation-locked-main,
+.operation-locked-side{
+  border:1px solid #e3e9ef;
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 8px 22px rgba(20,35,55,.045);
+}
+.operation-locked-main{
+  min-height:300px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  padding:34px;
+}
+.operation-locked-icon{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  margin-bottom:14px;
+  border-radius:14px;
+  background:#fff0f2;
+  color:#d52239;
+  font-size:20px;
+  font-weight:900;
+}
+.operation-locked-main>small{
+  color:#d52239;
+  font-size:8px;
+  font-weight:950;
+  letter-spacing:1.1px;
+}
+.operation-locked-main h2{
+  max-width:620px;
+  margin:7px 0 8px;
+  color:#17283d;
+  font-size:23px;
+  line-height:1.15;
+}
+.operation-locked-main p{
+  max-width:650px;
+  margin:0 0 18px;
+  color:#718095;
+  font-size:10px;
+  line-height:1.55;
+}
+.operation-locked-main .admin-primary{
+  min-width:140px;
+}
+.operation-locked-side{
+  padding:22px;
+}
+.operation-locked-side>span{
+  color:#8996a7;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.9px;
+  text-transform:uppercase;
+}
+.operation-locked-side h3{
+  margin:7px 0 4px;
+  color:#1b2d43;
+  font-size:17px;
+}
+.operation-locked-side>p{
+  margin:0 0 17px;
+  color:#7d8998;
+  font-size:9px;
+}
+.operation-locked-side>div{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:11px 0;
+  border-top:1px solid #edf1f4;
+}
+.operation-locked-side>div small{
+  color:#8592a1;
+  font-size:8px;
+}
+.operation-locked-side>div b{
+  color:#1f3147;
+  font-size:10px;
+}
+.expense-total{
+  color:#c92036;
+  font-size:16px;
+}
+.admin-empty-state.compact{
+  min-height:190px;
+}
+@media(max-width:900px){
+  .operation-locked-state{grid-template-columns:1fr}
+  .operation-locked-main{min-height:240px;padding:24px}
+}
