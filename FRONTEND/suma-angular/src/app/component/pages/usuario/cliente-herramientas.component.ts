@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { normalizeStatus, parseLocalDate, safeTime } from './portal-cliente-quality';
 
 @Component({
   selector: 'app-cliente-herramientas',
@@ -42,6 +43,7 @@ import { FormsModule } from '@angular/forms';
       </div>
       <div class="tools-list">
         <article *ngFor="let r of filtrarReservas() | slice:0:6"><div><small>{{fechaCorta(r.fecha_clase)}}</small><b>{{r.clase?.nombre || 'Clase'}}</b></div><em>{{r.estado}}</em></article>
+        <article class="empty" *ngIf="!filtrarReservas().length"><b>No hay reservas con esos filtros.</b></article>
       </div>
       <div class="tools-foot"><span>Próxima: {{proximaReserva()?.clase?.nombre || 'Sin reserva próxima'}}</span></div>
     </section>
@@ -62,6 +64,7 @@ import { FormsModule } from '@angular/forms';
       </div>
       <div class="tools-list">
         <article *ngFor="let a of filtrarAsistencias() | slice:0:6"><div><small>{{fechaCorta(a.fecha_hora_entrada)}}</small><b>{{a.fecha_hora_salida ? 'Visita completada' : 'Ingreso abierto'}}</b></div><em>{{duracionMinutos(a)}} min</em></article>
+        <article class="empty" *ngIf="!filtrarAsistencias().length"><b>No hay asistencias con esos filtros.</b></article>
       </div>
     </section>
 
@@ -81,6 +84,7 @@ import { FormsModule } from '@angular/forms';
       </div>
       <div class="tools-list">
         <article *ngFor="let p of filtrarPagos() | slice:0:6"><div><small>{{fechaCorta(p.fecha_pago)}}</small><b>{{nombrePlanPago(p)}}</b><span>{{p.numero_operacion || 'Sin operación'}}</span></div><em>S/ {{p.monto | number:'1.2-2'}}</em></article>
+        <article class="empty" *ngIf="!filtrarPagos().length"><b>No hay pagos con esos filtros.</b></article>
       </div>
       <div class="tools-foot"><span>Último pago: {{ultimoPagoCompletadoHerramienta() ? fechaCorta(ultimoPagoCompletadoHerramienta().fecha_pago) : 'Sin pagos completados'}}</span></div>
     </section>
@@ -134,17 +138,17 @@ export class ClienteHerramientasComponent {
   alternarSoloRecomendadas():void{this.soloRecomendadas=!this.soloRecomendadas;}
   seleccionarDiaClase(dia:string):string{this.diaClase=dia||'';return this.diaClase;}
   ordenarClasesPorNombre(items:any[]=this.clases):any[]{return [...(items||[])].sort((a,b)=>String(a?.nombre||'').localeCompare(String(b?.nombre||''),'es'));}
-  ordenarClasesPorDia(items:any[]=this.clases):any[]{return [...(items||[])].sort((a,b)=>this.diasSemana.indexOf(a?.dia_semana)-this.diasSemana.indexOf(b?.dia_semana));}
+  ordenarClasesPorDia(items:any[]=this.clases):any[]{return [...(items||[])].sort((a,b)=>{const ia=this.diasSemana.indexOf(a?.dia_semana);const ib=this.diasSemana.indexOf(b?.dia_semana);return (ia<0?99:ia)-(ib<0?99:ib);});}
   ordenarClasesPorHora(items:any[]=this.clases):any[]{return [...(items||[])].sort((a,b)=>String(a?.hora_inicio||'').localeCompare(String(b?.hora_inicio||'')));}
   contarClasesResultado():number{return this.filtrarClases().length;}
   limpiarFiltrosClases():void{this.busquedaClase='';this.diaClase='';this.ordenClase='nombre';this.soloRecomendadas=false;}
   resumenProximaClase():string{const c=this.filtrarClases()[0];return c?('Próxima opción: '+c.nombre+' · '+(c.dia_semana||'')+' '+this.hora(c.hora_inicio)):'No hay una clase disponible con estos filtros.';}
   copiarResumenClase():void{this.copiarTexto(this.resumenProximaClase());}
 
-  filtrarReservas():any[]{let x=[...(this.reservas||[])];const q=this.busquedaReserva.trim().toLowerCase();if(q)x=x.filter(r=>String(r?.clase?.nombre||'').toLowerCase().includes(q));if(this.estadoReserva)x=x.filter(r=>String(r?.estado||'')===this.estadoReserva);return this.ordenReserva==='antigua'?this.ordenarReservasAntiguas(x):this.ordenarReservasRecientes(x);}
-  mostrarReservasActivas():any[]{return (this.reservas||[]).filter(r=>r?.estado==='Reservada');}
-  mostrarReservasAsistidas():any[]{return (this.reservas||[]).filter(r=>['Asistio','Asistió'].includes(r?.estado));}
-  mostrarReservasCanceladas():any[]{return (this.reservas||[]).filter(r=>r?.estado==='Cancelada');}
+  filtrarReservas():any[]{let x=[...(this.reservas||[])];const q=this.busquedaReserva.trim().toLowerCase();if(q)x=x.filter(r=>String(r?.clase?.nombre||'').toLowerCase().includes(q));if(this.estadoReserva)x=x.filter(r=>normalizeStatus(r?.estado)===normalizeStatus(this.estadoReserva));return this.ordenReserva==='antigua'?this.ordenarReservasAntiguas(x):this.ordenarReservasRecientes(x);}
+  mostrarReservasActivas():any[]{return (this.reservas||[]).filter(r=>normalizeStatus(r?.estado)==='reservada');}
+  mostrarReservasAsistidas():any[]{return (this.reservas||[]).filter(r=>normalizeStatus(r?.estado)==='asistio');}
+  mostrarReservasCanceladas():any[]{return (this.reservas||[]).filter(r=>normalizeStatus(r?.estado)==='cancelada');}
   ordenarReservasRecientes(items:any[]=this.reservas):any[]{return [...(items||[])].sort((a,b)=>this.time(b?.fecha_clase)-this.time(a?.fecha_clase));}
   ordenarReservasAntiguas(items:any[]=this.reservas):any[]{return [...(items||[])].sort((a,b)=>this.time(a?.fecha_clase)-this.time(b?.fecha_clase));}
   proximaReserva():any{return this.mostrarReservasActivas().filter(r=>this.time(r?.fecha_clase)>=this.inicioHoy()).sort((a,b)=>this.time(a?.fecha_clase)-this.time(b?.fecha_clase))[0]||null;}
@@ -153,7 +157,7 @@ export class ClienteHerramientasComponent {
   exportarReservasCsv():void{this.descargarCsv('mis-reservas.csv',['Clase,Fecha,Estado',...this.filtrarReservas().map(r=>[r?.clase?.nombre,r?.fecha_clase,r?.estado].map(v=>this.csv(v)).join(','))]);}
 
   filtrarAsistencias():any[]{let x=[...(this.asistencias||[])];if(this.periodoAsistencia==='mes')x=this.mostrarAsistenciasMes();if(this.estadoAsistencia==='completada')x=x.filter(a=>!!a?.fecha_hora_salida);if(this.estadoAsistencia==='abierta')x=x.filter(a=>!a?.fecha_hora_salida);return this.ordenAsistencia==='antigua'?this.ordenarAsistenciasAntiguas(x):this.ordenarAsistenciasRecientes(x);}
-  mostrarAsistenciasMes():any[]{const h=new Date();return (this.asistencias||[]).filter(a=>{const d=new Date(a?.fecha_hora_entrada);return !isNaN(d.getTime())&&d.getFullYear()===h.getFullYear()&&d.getMonth()===h.getMonth();});}
+  mostrarAsistenciasMes():any[]{const h=new Date();return (this.asistencias||[]).filter(a=>{const d=parseLocalDate(a?.fecha_hora_entrada);return !!d&&d.getFullYear()===h.getFullYear()&&d.getMonth()===h.getMonth();});}
   mostrarAsistenciasCompletadas():any[]{return (this.asistencias||[]).filter(a=>!!a?.fecha_hora_salida);}
   mostrarAsistenciasAbiertas():any[]{return (this.asistencias||[]).filter(a=>a?.fecha_hora_entrada&&!a?.fecha_hora_salida);}
   ordenarAsistenciasRecientes(items:any[]=this.asistencias):any[]{return [...(items||[])].sort((a,b)=>this.time(b?.fecha_hora_entrada)-this.time(a?.fecha_hora_entrada));}
@@ -163,10 +167,10 @@ export class ClienteHerramientasComponent {
   limpiarFiltrosAsistencias():void{this.periodoAsistencia='';this.estadoAsistencia='';this.ordenAsistencia='reciente';}
   exportarAsistenciasCsv():void{this.descargarCsv('mis-asistencias.csv',['Entrada,Salida,Minutos',...this.filtrarAsistencias().map(a=>[a?.fecha_hora_entrada,a?.fecha_hora_salida||'',this.duracionMinutos(a)].map(v=>this.csv(v)).join(','))]);}
 
-  filtrarPagos():any[]{let x=[...(this.pagos||[])];const q=this.busquedaPago.trim().toLowerCase();if(q)x=x.filter(p=>[this.nombrePlanPago(p),p?.numero_operacion].some(v=>String(v||'').toLowerCase().includes(q)));if(this.estadoPago)x=x.filter(p=>p?.estado_pago===this.estadoPago);return this.ordenPago==='antigua'?this.ordenarPagosAntiguos(x):this.ordenarPagosRecientes(x);}
-  mostrarPagosCompletados():any[]{return (this.pagos||[]).filter(p=>p?.estado_pago==='Completado');}
-  mostrarPagosPendientes():any[]{return (this.pagos||[]).filter(p=>p?.estado_pago==='Pendiente');}
-  mostrarPagosCancelados():any[]{return (this.pagos||[]).filter(p=>p?.estado_pago==='Cancelado');}
+  filtrarPagos():any[]{let x=[...(this.pagos||[])];const q=this.busquedaPago.trim().toLowerCase();if(q)x=x.filter(p=>[this.nombrePlanPago(p),p?.numero_operacion].some(v=>String(v||'').toLowerCase().includes(q)));if(this.estadoPago)x=x.filter(p=>normalizeStatus(p?.estado_pago)===normalizeStatus(this.estadoPago));return this.ordenPago==='antigua'?this.ordenarPagosAntiguos(x):this.ordenarPagosRecientes(x);}
+  mostrarPagosCompletados():any[]{return (this.pagos||[]).filter(p=>normalizeStatus(p?.estado_pago)==='completado');}
+  mostrarPagosPendientes():any[]{return (this.pagos||[]).filter(p=>normalizeStatus(p?.estado_pago)==='pendiente');}
+  mostrarPagosCancelados():any[]{return (this.pagos||[]).filter(p=>normalizeStatus(p?.estado_pago)==='cancelado');}
   ordenarPagosRecientes(items:any[]=this.pagos):any[]{return [...(items||[])].sort((a,b)=>this.time(b?.fecha_pago)-this.time(a?.fecha_pago));}
   ordenarPagosAntiguos(items:any[]=this.pagos):any[]{return [...(items||[])].sort((a,b)=>this.time(a?.fecha_pago)-this.time(b?.fecha_pago));}
   montoTotalPagado():number{return this.mostrarPagosCompletados().reduce((s,p)=>s+Math.max(0,Number(p?.monto||0)),0);}
@@ -180,7 +184,7 @@ export class ClienteHerramientasComponent {
   copiarCorreo():void{this.copiarTexto(this.perfil?.correo||'');}
   copiarTelefono():void{this.copiarTexto(this.perfil?.telefono||'');}
   copiarDireccion():void{this.copiarTexto(this.perfil?.direccion||'');}
-  diasRestantesMembresiaHerramienta():number{if(!this.membresiaActual?.fecha_fin)return 0;const fin=new Date(String(this.membresiaActual.fecha_fin).slice(0,10)+'T23:59:59');return Math.max(0,Math.ceil((fin.getTime()-Date.now())/86400000));}
+  diasRestantesMembresiaHerramienta():number{if(!this.membresiaActual?.fecha_fin)return 0;const fin=parseLocalDate(String(this.membresiaActual.fecha_fin).slice(0,10)+'T23:59:59');return fin?Math.max(0,Math.ceil((fin.getTime()-Date.now())/86400000)):0;}
   estadoMembresiaHerramienta():string{if(!this.membresiaActual)return'Sin membresía';return this.diasRestantesMembresiaHerramienta()>0?'Activa':'Vencida';}
   copiarResumenCuenta():void{this.copiarTexto(this.resumenCuenta());}
   exportarResumenCuenta():void{this.descargarTexto('resumen-cuenta-mallqui.txt',this.resumenCuenta(),'text/plain;charset=utf-8');}
@@ -189,11 +193,11 @@ export class ClienteHerramientasComponent {
   nombreEntrenador(c:any):string{return [c?.entrenador?.nombres,c?.entrenador?.apellidos].filter(Boolean).join(' ')||'Entrenador por confirmar';}
   nombrePlanPago(p:any):string{return p?.cliente_membresia?.membresia?.nombre||p?.membresia?.nombre||'Membresía';}
   hora(v:any):string{return String(v||'--:--').slice(0,5);}
-  fechaCorta(v:any):string{if(!v)return'-';const d=new Date(v);return isNaN(d.getTime())?String(v):d.toLocaleDateString('es-PE');}
-  duracionMinutos(a:any):number{if(!a?.fecha_hora_entrada)return 0;const i=new Date(a.fecha_hora_entrada);const f=a?.fecha_hora_salida?new Date(a.fecha_hora_salida):new Date();if(isNaN(i.getTime())||isNaN(f.getTime()))return 0;return Math.max(0,Math.floor((f.getTime()-i.getTime())/60000));}
+  fechaCorta(v:any):string{if(!v)return'-';const d=parseLocalDate(v);return d?d.toLocaleDateString('es-PE'):String(v);}
+  duracionMinutos(a:any):number{if(!a?.fecha_hora_entrada)return 0;const i=parseLocalDate(a.fecha_hora_entrada);const f=a?.fecha_hora_salida?parseLocalDate(a.fecha_hora_salida):new Date();if(!i||!f)return 0;return Math.max(0,Math.floor((f.getTime()-i.getTime())/60000));}
   resumenCuenta():string{return ['MALLQUI GYM - RESUMEN DE CUENTA','Nombre: '+[this.perfil?.nombres,this.perfil?.apellidos].filter(Boolean).join(' '),'DNI: '+(this.perfil?.dni||'-'),'Correo: '+(this.perfil?.correo||'-'),'Teléfono: '+(this.perfil?.telefono||'-'),'Membresía: '+this.estadoMembresiaHerramienta(),'Días restantes: '+this.diasRestantesMembresiaHerramienta()].join('\n');}
   private inicioHoy():number{const d=new Date();d.setHours(0,0,0,0);return d.getTime();}
-  private time(v:any):number{const d=new Date(v||0);return isNaN(d.getTime())?0:d.getTime();}
+  private time(v:any):number{return safeTime(v);}
   private csv(v:any):string{return '"'+String(v??'').replace(/"/g,'""')+'"';}
   private copiarTexto(v:any):void{const t=String(v??'');if(navigator?.clipboard?.writeText){navigator.clipboard.writeText(t).catch(()=>this.copiaAlterna(t));}else this.copiaAlterna(t);}
   private copiaAlterna(t:string):void{const x=document.createElement('textarea');x.value=t;x.style.position='fixed';x.style.opacity='0';document.body.appendChild(x);x.select();try{document.execCommand('copy');}catch{}document.body.removeChild(x);}
