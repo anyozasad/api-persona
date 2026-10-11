@@ -23,6 +23,7 @@ export class ProductosComponent implements OnInit {
   mensaje = '';
   error = '';
   busqueda = '';
+  procesandoImagen = false;
   producto: Producto = this.productoVacio();
 
   constructor(
@@ -81,6 +82,7 @@ export class ProductosComponent implements OnInit {
       codigo_producto: this.producto.codigo_producto,
       nombre_producto: this.producto.nombre_producto,
       descripcion: this.producto.descripcion,
+      foto: this.producto.foto ?? null,
       precio_compra: this.producto.precio_compra,
       precio_venta: this.producto.precio_venta,
       stock_minimo: this.producto.stock_minimo,
@@ -141,6 +143,88 @@ export class ProductosComponent implements OnInit {
     return String(nombre || 'P').trim().charAt(0).toUpperCase() || 'P';
   }
 
+  seleccionarImagen(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const archivo = input.files?.[0];
+    if (!archivo) return;
+
+    this.error = '';
+    const tiposPermitidos = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!tiposPermitidos.includes(archivo.type)) {
+      this.error = 'La imagen debe ser JPG, PNG o WEBP.';
+      input.value = '';
+      return;
+    }
+    if (archivo.size > 5 * 1024 * 1024) {
+      this.error = 'La imagen no debe superar los 5 MB.';
+      input.value = '';
+      return;
+    }
+
+    this.procesandoImagen = true;
+    const lector = new FileReader();
+
+    lector.onload = () => {
+      const origen = String(lector.result || '');
+      const imagen = new Image();
+
+      imagen.onload = () => {
+        try {
+          const maximo = 900;
+          const escala = Math.min(1, maximo / Math.max(imagen.width, imagen.height));
+          const ancho = Math.max(1, Math.round(imagen.width * escala));
+          const alto = Math.max(1, Math.round(imagen.height * escala));
+          const canvas = document.createElement('canvas');
+          canvas.width = ancho;
+          canvas.height = alto;
+
+          const ctx = canvas.getContext('2d');
+          if (!ctx) throw new Error('No se pudo preparar la imagen.');
+
+          ctx.drawImage(imagen, 0, 0, ancho, alto);
+          let foto = canvas.toDataURL('image/webp', 0.82);
+
+          // Algunos navegadores antiguos pueden no generar WEBP.
+          if (!foto.startsWith('data:image/webp')) {
+            foto = canvas.toDataURL('image/jpeg', 0.82);
+          }
+
+          if (foto.length > 2_900_000) {
+            this.error = 'La imagen sigue siendo demasiado grande. Selecciona una imagen más liviana.';
+            this.producto.foto = null;
+          } else {
+            this.producto.foto = foto;
+          }
+        } catch {
+          this.error = 'No se pudo procesar la imagen seleccionada.';
+        } finally {
+          this.procesandoImagen = false;
+          input.value = '';
+        }
+      };
+
+      imagen.onerror = () => {
+        this.procesandoImagen = false;
+        this.error = 'El archivo seleccionado no contiene una imagen válida.';
+        input.value = '';
+      };
+
+      imagen.src = origen;
+    };
+
+    lector.onerror = () => {
+      this.procesandoImagen = false;
+      this.error = 'No se pudo leer la imagen seleccionada.';
+      input.value = '';
+    };
+
+    lector.readAsDataURL(archivo);
+  }
+
+  quitarImagen(): void {
+    this.producto.foto = null;
+  }
+
   cerrarSesion(): void {
     this.auth.logout().subscribe({
       next: () => { this.auth.limpiarSesion(); this.router.navigate(['/login']); },
@@ -161,6 +245,7 @@ export class ProductosComponent implements OnInit {
       codigo_producto: '',
       nombre_producto: '',
       descripcion: '',
+      foto: null,
       precio_compra: 0,
       precio_venta: 0,
       stock: 0,
