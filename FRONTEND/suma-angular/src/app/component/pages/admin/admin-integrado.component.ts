@@ -39,9 +39,12 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         </section>
       </nav>
 
-      <div class="admin-system-card">
+      <div class="admin-system-card" [class.is-offline]="!dashboard?.fuente?.base_datos">
         <div class="system-live-dot"></div>
-        <div><b>Sistema en línea</b><small>Operación disponible</small></div>
+        <div>
+          <b>{{dashboard?.fuente?.base_datos ? 'Sistema en línea' : 'Verificando sistema'}}</b>
+          <small>{{dashboard?.fuente?.base_datos ? ('BD: '+dashboard.fuente.base_datos) : 'Esperando conexión con Laravel y MySQL'}}</small>
+        </div>
       </div>
       <button type="button" class="admin-logout" (click)="cerrarSesion()"><span>↪</span> Cerrar sesión</button>
     </aside>
@@ -70,10 +73,10 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
           <small *ngIf="ultimaActualizacion">Última actualización: {{ultimaActualizacion}}</small>
         </div>
         <div class="admin-profile-wrap">
-          <button type="button" class="admin-profile">
+          <button type="button" class="admin-profile" (click)="cambiarSeccion('usuarios')" title="Administrar cuenta y usuarios internos">
             <span class="admin-avatar">A</span>
             <p><strong>{{auth.usuario?.nombre_usuario || 'Administrador'}}</strong><small>{{auth.usuario?.correo || ''}}</small></p>
-            <i>⌄</i>
+            <i>→</i>
           </button>
         </div>
       </header>
@@ -302,7 +305,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
                 <span>↗</span>
                 <h4>Aún no hay movimientos para graficar</h4>
                 <p>Cuando registres ventas o pagos de membresías, aquí verás la evolución de los ingresos.</p>
-                <button type="button" (click)="cambiarSeccion('ventas')">Registrar una venta</button>
+                <button type="button" (click)="dashboard?.caja?.abierta ? cambiarSeccion('ventas') : cambiarSeccion('caja')">{{dashboard?.caja?.abierta ? 'Registrar una venta' : 'Abrir caja para vender'}}</button>
               </div>
             </ng-template>
           </article>
