@@ -9,8 +9,8 @@ import { ClienteHerramientasComponent } from './cliente-herramientas.component';
 import { code128DataUri, code128Svg } from '../../../shared/code128';
 import {
   activeClasses, activeRoutine, attendanceOpen, attendanceThisMonth, daysUntil,
-  hasDuplicateReservation, latestCompletedPayment, normalizeEmail, normalizeOperationNumber,
-  normalizePhone, normalizeText, profileCompletionPercent, reservationActive,
+  hasDuplicateReservation, latestCompletedPayment, localDateIso, normalizeEmail, normalizeOperationNumber,
+  normalizePhone, normalizeText, parseLocalDate, profileCompletionPercent, reservationActive,
   reservationAttended, reservationCancelled, safeArray, safeModule, sortNewest,
   uniqueById, uniqueTrainingZones, weeklyTrainingDaysLimit
 } from './portal-cliente-quality';
@@ -315,7 +315,7 @@ import {
               <div class="mallqui-products-home-grid" *ngIf="productosDisponibles.length; else sinProductosInicio">
                 <article *ngFor="let p of productosInicioVisibles">
                   <div class="mallqui-product-home-media" [class.has-photo]="!!p.foto">
-                    <img *ngIf="p.foto" [src]="p.foto" [alt]="p.nombre_producto">
+                    <img *ngIf="p.foto" [src]="p.foto" [alt]="p.nombre_producto" loading="lazy" decoding="async" (error)="imagenProductoError(p)">
                     <div *ngIf="!p.foto" class="mallqui-product-home-mark">{{inicialProductoInicio(p)}}</div>
                   </div>
                   <div class="mallqui-product-home-copy">
@@ -2071,7 +2071,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   errorFotoPerfil='';
   private fotoPerfilObjectUrl='';
   fechasReserva:Record<number,string>={};
-  pagoForm:any={id_membresia:0,fecha_inicio:new Date().toISOString().slice(0,10),metodo_pago:'Yape',numero_operacion:''};
+  pagoForm:any={id_membresia:0,fecha_inicio:localDateIso(),metodo_pago:'Yape',numero_operacion:''};
   ultimaBoleta:any=null;
   procesandoCompra=false;
   procesandoSolicitudRutina=false;
@@ -2166,7 +2166,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.reservas=sortNewest(uniqueById(safeArray(r.reservas),['id_reserva']),'fecha_clase');
         this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));
         this.compras=sortNewest(uniqueById(safeArray(r.compras),['id_venta']),'fecha_venta');
-        this.productosDisponibles=uniqueById(safeArray(r.productos),['id_producto']);
+        this.productosDisponibles=this.normalizarProductosPortal(r.productos);
         this.preseleccionarPlanActual();
         this.cargarContadorAvisos();
 
@@ -2198,7 +2198,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargar():void{
     this.cargando=true; this.error='';
     this.api.cargarPortalCliente().subscribe({
-      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=safeArray(r.membresiasDisponibles);this.gymInfo=r.gymInfo||{};this.pagos=sortNewest(uniqueById(safeArray(r.pagos),['id_pago']),'fecha_pago');this.rutinas=sortNewest(uniqueById(safeArray(r.rutinas),['id_rutina']),'fecha_inicio');this.asistencias=sortNewest(uniqueById(safeArray(r.asistencias),['id_asistencia']),'fecha_hora_entrada');this.reservas=sortNewest(uniqueById(safeArray(r.reservas),['id_reserva']),'fecha_clase');this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));this.compras=sortNewest(uniqueById(safeArray(r.compras),['id_venta']),'fecha_venta');this.productosDisponibles=uniqueById(safeArray(r.productos),['id_producto']);this.preseleccionarPlanActual();this.cargando=false;this.cargarFotoPerfil();this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
+      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=safeArray(r.membresiasDisponibles);this.gymInfo=r.gymInfo||{};this.pagos=sortNewest(uniqueById(safeArray(r.pagos),['id_pago']),'fecha_pago');this.rutinas=sortNewest(uniqueById(safeArray(r.rutinas),['id_rutina']),'fecha_inicio');this.asistencias=sortNewest(uniqueById(safeArray(r.asistencias),['id_asistencia']),'fecha_hora_entrada');this.reservas=sortNewest(uniqueById(safeArray(r.reservas),['id_reserva']),'fecha_clase');this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));this.compras=sortNewest(uniqueById(safeArray(r.compras),['id_venta']),'fecha_venta');this.productosDisponibles=this.normalizarProductosPortal(r.productos);this.preseleccionarPlanActual();this.cargando=false;this.cargarFotoPerfil();this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
       error:e=>{this.error=this.errorApi(e);this.cargando=false;}
     });
   }
@@ -2538,7 +2538,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.reservas=r.reservas||[];
         this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');
         this.compras=r.compras||[];
-        this.productosDisponibles=r.productos||[];
+        this.productosDisponibles=this.normalizarProductosPortal(r.productos);
         this.preseleccionarPlanActual();
         this.actualizandoModulo=false;
         if(mostrarAviso)this.ok('Información actualizada');
@@ -2573,7 +2573,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.reservas=r.reservas||[];
         this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');
         this.compras=r.compras||[];
-        this.productosDisponibles=r.productos||[];
+        this.productosDisponibles=this.normalizarProductosPortal(r.productos);
         this.moduloActivo=modulo;
         this.cargando=false;
         this.toast=modulo==='rutinas' ? 'Rutinas actualizadas' : 'Clases actualizadas';
@@ -2697,22 +2697,22 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   get fechaMinimaPago():string{
-    return new Date().toISOString().slice(0,10);
+    return localDateIso();
   }
 
   get fechaInicioRenovacion():string{
     const solicitada=String(this.pagoForm?.fecha_inicio||this.fechaMinimaPago);
     if(!this.membresiaActual?.fecha_fin)return solicitada;
 
-    const fin=new Date(this.membresiaActual.fecha_fin);
-    if(isNaN(fin.getTime()))return solicitada;
+    const fin=parseLocalDate(this.membresiaActual.fecha_fin);
+    if(!fin)return solicitada;
 
     const siguiente=new Date(fin);
     siguiente.setDate(siguiente.getDate()+1);
 
-    const pedida=new Date(solicitada+'T00:00:00');
-    const real=!isNaN(pedida.getTime()) && pedida>siguiente ? pedida : siguiente;
-    return real.toISOString().slice(0,10);
+    const pedida=parseLocalDate(solicitada);
+    const real=pedida && pedida>siguiente ? pedida : siguiente;
+    return localDateIso(real);
   }
 
   get instruccionMetodoPago():string{
@@ -2787,6 +2787,23 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     return String(p?.nombre_producto || 'P').trim().charAt(0).toUpperCase() || 'P';
   }
 
+  private normalizarProductosPortal(items:any):any[]{
+    return uniqueById(safeArray(items),['id_producto'])
+      .filter((p:any)=>Number(p?.stock??0)>0)
+      .filter((p:any)=>!p?.estado || String(p.estado).trim().toLowerCase()==='activo')
+      .map((p:any)=>({...p,foto:this.fotoProductoSegura(p?.foto)}));
+  }
+
+  private fotoProductoSegura(foto:any):string|null{
+    const src=String(foto??'').trim();
+    if(!src)return null;
+    if(/^data:image\/(jpeg|jpg|png|webp);base64,/i.test(src))return src;
+    if(/^https?:\/\//i.test(src) || src.startsWith('/'))return src;
+    return null;
+  }
+
+  imagenProductoError(p:any):void{if(p)p.foto=null;}
+
   get asistenciaAbierta():any{return attendanceOpen(this.asistencias);}
 
   get ultimaAsistencia():any{
@@ -2795,9 +2812,9 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   duracionAsistencia(a:any):string{
     if(!a?.fecha_hora_entrada)return '-';
-    const inicio=new Date(a.fecha_hora_entrada);
-    const fin=a?.fecha_hora_salida ? new Date(a.fecha_hora_salida) : new Date();
-    if(isNaN(inicio.getTime()) || isNaN(fin.getTime()))return '-';
+    const inicio=parseLocalDate(a.fecha_hora_entrada);
+    const fin=a?.fecha_hora_salida ? parseLocalDate(a.fecha_hora_salida) : new Date();
+    if(!inicio || !fin)return '-';
     const minutos=Math.max(0,Math.floor((fin.getTime()-inicio.getTime())/60000));
     const h=Math.floor(minutos/60);
     const m=minutos%60;
@@ -2897,8 +2914,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   fechaCortaPortal(v:any):string{
     if(!v)return 'Por confirmar';
-    const d=new Date(v);
-    if(isNaN(d.getTime()))return String(v);
+    const d=parseLocalDate(v);
+    if(!d)return String(v);
     return d.toLocaleDateString('es-PE',{day:'2-digit',month:'short',year:'numeric'});
   }
 
@@ -3010,7 +3027,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   nombrePersona(p:any):string{return p?[`${p.nombres||''}`,`${p.apellidos||''}`].join(' ').trim():'-';}
-  fecha(v:any):string{if(!v)return '-';const d=new Date(v);return isNaN(d.getTime())?String(v):d.toLocaleString('es-PE');}
+  fecha(v:any):string{if(!v)return '-';const d=parseLocalDate(v);return d?d.toLocaleString('es-PE'):String(v);}
 
   cargarEntrenamientoCasa():void{
     this.api.entrenamientoCasaCliente().subscribe({
@@ -3650,7 +3667,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   proximaFechaClaseISO(c:any):string{
     const dia=this.diaSemanaClaseNumero(c?.dia_semana);
-    if(dia<0)return new Date().toISOString().slice(0,10);
+    if(dia<0)return localDateIso();
 
     const ahora=new Date();
     const fecha=new Date(ahora.getFullYear(),ahora.getMonth(),ahora.getDate());
@@ -3818,8 +3835,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     let fechaTexto=fechaRaw||'-';
     let horaTexto='-';
     if(fechaRaw){
-      const d=new Date(fechaRaw);
-      if(!isNaN(d.getTime())){
+      const d=parseLocalDate(fechaRaw);
+      if(d){
         fechaTexto=d.toLocaleDateString('es-PE',{day:'2-digit',month:'2-digit',year:'numeric'});
         horaTexto=d.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
       }
