@@ -24,6 +24,12 @@ class EntrenadorController extends Controller
 
     public function store(Request $request)
     {
+        if (Entrenador::query()->exists()) {
+            return response()->json([
+                'mensaje' => 'Mallqui Gym trabaja con un solo entrenador principal. Edita el entrenador registrado en lugar de crear otro.',
+            ], 422);
+        }
+
         $datos = $request->validate([
             'dni' => 'required|string|max:15|unique:entrenadores,dni',
             'nombres' => 'required|string|max:100',
