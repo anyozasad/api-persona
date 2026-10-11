@@ -28,19 +28,89 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         </button>
       </div>
 
-      <nav class="admin-grouped-nav">
-        <section class="admin-menu-group" *ngFor="let grupo of menuGrupos">
-          <div class="admin-menu-group-title">{{grupo.titulo}}</div>
-          <button *ngFor="let item of grupo.items"
-                  type="button"
-                  [class.active]="seccion===item.id"
-                  [attr.aria-current]="seccion===item.id ? 'page' : null"
-                  (click)="cambiarSeccion(item.id)">
-            <span class="admin-menu-icon">{{item.icono}}</span>
-            <span class="admin-menu-text">{{item.nombre}}</span>
-            <b class="admin-menu-badge" *ngIf="badgeMenu(item.id)>0" [attr.aria-label]="badgeMenu(item.id)+' pendientes'">{{badgeMenu(item.id)>99 ? '99+' : badgeMenu(item.id)}}</b>
-            <i *ngIf="seccion===item.id">›</i>
+      <nav class="admin-grouped-nav admin-nav-functional" aria-label="Módulos de administración">
+        <button type="button"
+                class="admin-nav-primary"
+                [class.active]="seccion==='dashboard'"
+                (click)="cambiarSeccion('dashboard')">
+          <span class="admin-menu-icon">⌂</span>
+          <span class="admin-menu-text">Dashboard</span>
+          <i *ngIf="seccion==='dashboard'">›</i>
+        </button>
+
+        <section class="admin-nav-accordion" [class.open]="menuAbierto==='socios'" [class.has-active]="grupoActivo('socios')">
+          <button type="button" class="admin-nav-group-toggle" (click)="toggleMenuGrupo('socios')">
+            <span class="admin-menu-icon">♙</span>
+            <span class="admin-menu-text">Socios</span>
+            <b class="admin-menu-badge" *ngIf="badgeGrupo('socios')>0">{{badgeGrupo('socios')>99 ? '99+' : badgeGrupo('socios')}}</b>
+            <i>{{menuAbierto==='socios' ? '⌃' : '⌄'}}</i>
           </button>
+          <div class="admin-nav-submenu">
+            <button type="button" [class.active]="seccion==='clientes'" (click)="cambiarSeccion('clientes')"><span>Clientes</span></button>
+            <button type="button" [class.active]="seccion==='membresias'" (click)="cambiarSeccion('membresias')"><span>Membresías</span><b *ngIf="(dashboard?.membresias?.por_vencer_7_dias ?? 0)>0">{{dashboard?.membresias?.por_vencer_7_dias}}</b></button>
+            <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSeccion('asistencias')"><span>Asistencia</span></button>
+            <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSeccion('pagos')"><span>Pagos</span></button>
+          </div>
+        </section>
+
+        <section class="admin-nav-accordion" [class.open]="menuAbierto==='servicios'" [class.has-active]="grupoActivo('servicios')">
+          <button type="button" class="admin-nav-group-toggle" (click)="toggleMenuGrupo('servicios')">
+            <span class="admin-menu-icon">◉</span>
+            <span class="admin-menu-text">Servicios</span>
+            <b class="admin-menu-badge" *ngIf="badgeGrupo('servicios')>0">{{badgeGrupo('servicios')>99 ? '99+' : badgeGrupo('servicios')}}</b>
+            <i>{{menuAbierto==='servicios' ? '⌃' : '⌄'}}</i>
+          </button>
+          <div class="admin-nav-submenu">
+            <button type="button" [class.active]="seccion==='clases'" (click)="cambiarSeccion('clases')"><span>Clases</span></button>
+            <button type="button" [class.active]="seccion==='reservas'" (click)="cambiarSeccion('reservas')"><span>Reservas</span></button>
+            <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSeccion('rutinas')"><span>Rutinas</span><b *ngIf="(dashboard?.alertas?.rutinas_pendientes ?? 0)>0">{{dashboard?.alertas?.rutinas_pendientes}}</b></button>
+          </div>
+        </section>
+
+        <section class="admin-nav-accordion" [class.open]="menuAbierto==='atencion'" [class.has-active]="grupoActivo('atencion')">
+          <button type="button" class="admin-nav-group-toggle" (click)="toggleMenuGrupo('atencion')">
+            <span class="admin-menu-icon">●</span>
+            <span class="admin-menu-text">Atención al cliente</span>
+            <b class="admin-menu-badge" *ngIf="badgeGrupo('atencion')>0">{{badgeGrupo('atencion')>99 ? '99+' : badgeGrupo('atencion')}}</b>
+            <i>{{menuAbierto==='atencion' ? '⌃' : '⌄'}}</i>
+          </button>
+          <div class="admin-nav-submenu">
+            <button type="button" [class.active]="seccion==='soporte'" (click)="cambiarSeccion('soporte')"><span>Soporte</span><b *ngIf="(dashboard?.alertas?.soporte_pendiente ?? 0)>0">{{dashboard?.alertas?.soporte_pendiente}}</b></button>
+            <button type="button" [class.active]="seccion==='opiniones'" (click)="cambiarSeccion('opiniones')"><span>Opiniones</span><b *ngIf="(dashboard?.alertas?.opiniones_pendientes ?? 0)>0">{{dashboard?.alertas?.opiniones_pendientes}}</b></button>
+            <button type="button" [class.active]="seccion==='comunicacion'" (click)="cambiarSeccion('comunicacion')"><span>Notificaciones</span></button>
+          </div>
+        </section>
+
+        <section class="admin-nav-accordion" [class.open]="menuAbierto==='gestion'" [class.has-active]="grupoActivo('gestion')">
+          <button type="button" class="admin-nav-group-toggle" (click)="toggleMenuGrupo('gestion')">
+            <span class="admin-menu-icon">⚙</span>
+            <span class="admin-menu-text">Gestión interna</span>
+            <b class="admin-menu-badge" *ngIf="badgeGrupo('gestion')>0">{{badgeGrupo('gestion')>99 ? '99+' : badgeGrupo('gestion')}}</b>
+            <i>{{menuAbierto==='gestion' ? '⌃' : '⌄'}}</i>
+          </button>
+          <div class="admin-nav-submenu admin-nav-submenu-long">
+            <span class="admin-nav-subtitle">Operación</span>
+            <button type="button" [class.active]="seccion==='caja'" (click)="cambiarSeccion('caja')"><span>Caja</span></button>
+            <button type="button" [class.active]="seccion==='ventas'" (click)="cambiarSeccion('ventas')"><span>Punto de venta</span></button>
+            <button type="button" [class.active]="seccion==='historial-ventas'" (click)="cambiarSeccion('historial-ventas')"><span>Historial de ventas</span></button>
+            <button type="button" [class.active]="seccion==='gastos'" (click)="cambiarSeccion('gastos')"><span>Gastos</span></button>
+
+            <span class="admin-nav-subtitle">Inventario</span>
+            <button type="button" [class.active]="seccion==='inventario'" (click)="cambiarSeccion('inventario')"><span>Productos</span><b *ngIf="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0">{{dashboard?.inventario?.productos_stock_bajo}}</b></button>
+            <button type="button" [class.active]="seccion==='kardex'" (click)="cambiarSeccion('kardex')"><span>Kardex</span></button>
+            <button type="button" [class.active]="seccion==='proveedores'" (click)="cambiarSeccion('proveedores')"><span>Proveedores</span></button>
+            <button type="button" [class.active]="seccion==='compras'" (click)="cambiarSeccion('compras')"><span>Compras</span></button>
+            <button type="button" [class.active]="seccion==='categorias'" (click)="cambiarSeccion('categorias')"><span>Categorías</span></button>
+
+            <span class="admin-nav-subtitle">Administración</span>
+            <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSeccion('entrenador')"><span>Entrenador</span></button>
+            <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSeccion('planes')"><span>Tarifas</span></button>
+            <button type="button" [class.active]="seccion==='reportes'" (click)="cambiarSeccion('reportes')"><span>Reportes</span></button>
+            <button type="button" [class.active]="seccion==='reporte-asistencias'" (click)="cambiarSeccion('reporte-asistencias')"><span>Rep. asistencias</span></button>
+            <button type="button" [class.active]="seccion==='auditoria'" (click)="cambiarSeccion('auditoria')"><span>Auditoría</span></button>
+            <button type="button" [class.active]="seccion==='usuarios'" (click)="cambiarSeccion('usuarios')"><span>Usuarios</span></button>
+            <button type="button" [class.active]="seccion==='configuracion'" (click)="cambiarSeccion('configuracion')"><span>Configuración</span></button>
+          </div>
         </section>
       </nav>
 
@@ -93,13 +163,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         </div>
       </header>
 
-      <div class="admin-context-back" *ngIf="esSeccionSociosSecundaria || esSeccionServiciosSecundaria || esSeccionAtencionSecundaria || esSeccionGestionSecundaria">
-        <button type="button" *ngIf="esSeccionSociosSecundaria" (click)="cambiarSeccion('socios-hub')">← Socios</button>
-        <button type="button" *ngIf="esSeccionServiciosSecundaria" (click)="cambiarSeccion('servicios')">← Servicios</button>
-        <button type="button" *ngIf="esSeccionAtencionSecundaria" (click)="cambiarSeccion('atencion')">← Atención al cliente</button>
-        <button type="button" *ngIf="esSeccionGestionSecundaria" (click)="cambiarSeccion('gestion')">← Gestión interna</button>
-        <span>{{esSeccionSociosSecundaria ? 'Gestión del socio' : (esSeccionServiciosSecundaria ? 'Servicio visible para el socio' : (esSeccionAtencionSecundaria ? 'Función conectada con el portal del socio' : 'Herramienta administrativa interna'))}}</span>
-      </div>
+
 
       <div *ngIf="toast" class="admin-toast success">{{toast}}</div>
       <div *ngIf="error" class="admin-toast error">⚠ {{error}}</div>
@@ -167,7 +231,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
             <small>Datos de la misma base que usa el portal del socio</small>
           </header>
           <div class="dashboard-control-grid">
-            <button type="button" (click)="cambiarSeccion('socios-hub')">
+            <button type="button" (click)="cambiarSeccion('clientes')">
               <span>♙</span><div><small>SOCIOS ACTIVOS</small><b>{{dashboard?.clientes?.activos ?? 0}}</b><p>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos este mes</p></div>
             </button>
             <button type="button" (click)="cambiarSeccion('membresias')">
@@ -2074,6 +2138,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   };
 
   sidebarCerrado = false;
+  menuAbierto = '';
   actualizandoDatos = false;
   ultimaActualizacion = '';
   ultimaActualizacionTs = 0;
@@ -2146,7 +2211,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   constructor(public auth: AuthService, private api: AdminApiService, private router: Router) {}
 
   ngOnInit(): void {
-    this.seccion = this.seccionInicial || 'dashboard';
+    this.seccion = this.normalizarSeccion(this.seccionInicial || 'dashboard');
+    this.menuAbierto = this.grupoDeSeccion(this.seccion);
     this.sidebarCerrado = localStorage.getItem('mallqui_admin_sidebar_closed') === '1';
     this.autoRefreshActivo = localStorage.getItem('mallqui_admin_auto_refresh') !== '0';
     this.cargarDashboard();
@@ -2188,25 +2254,49 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   get puedeAutoActualizar(): boolean {
-    return ['dashboard','socios-hub','servicios','atencion','gestion'].includes(this.seccion);
+    return this.seccion === 'dashboard';
   }
 
   get datosDesactualizados(): boolean {
     return Boolean(this.ultimaActualizacionTs) && (Date.now()-this.ultimaActualizacionTs)>60000;
   }
 
+  private normalizarSeccion(id:string):string{
+    if(id==='socios-hub') return 'clientes';
+    if(id==='servicios') return 'clases';
+    if(id==='atencion') return 'soporte';
+    if(id==='gestion') return 'caja';
+    return id;
+  }
+
+  grupoDeSeccion(id:string):string{
+    if(['clientes','membresias','asistencias','pagos'].includes(id)) return 'socios';
+    if(['clases','reservas','rutinas'].includes(id)) return 'servicios';
+    if(['soporte','opiniones','comunicacion'].includes(id)) return 'atencion';
+    if(['entrenador','planes','gastos','reportes','reporte-asistencias','usuarios','auditoria','configuracion','caja','ventas','historial-ventas','inventario','kardex','proveedores','compras','categorias','productos'].includes(id)) return 'gestion';
+    return '';
+  }
+
+  grupoActivo(grupo:string):boolean{
+    return this.grupoDeSeccion(this.seccion)===grupo;
+  }
+
+  toggleMenuGrupo(grupo:string):void{
+    this.menuAbierto=this.menuAbierto===grupo?'':grupo;
+  }
+
+  badgeGrupo(grupo:string):number{
+    if(grupo==='socios') return Number(this.dashboard?.membresias?.por_vencer_7_dias||0);
+    if(grupo==='servicios') return Number(this.dashboard?.alertas?.rutinas_pendientes||0);
+    if(grupo==='atencion') return Number(this.dashboard?.alertas?.soporte_pendiente||0)+Number(this.dashboard?.alertas?.opiniones_pendientes||0);
+    if(grupo==='gestion') return Number(this.dashboard?.inventario?.productos_stock_bajo||0);
+    return 0;
+  }
+
   toggleAutoRefresh(): void {
     this.autoRefreshActivo=!this.autoRefreshActivo;
     localStorage.setItem('mallqui_admin_auto_refresh',this.autoRefreshActivo?'1':'0');
     this.ok(this.autoRefreshActivo?'Actualización automática activada':'Actualización automática pausada');
-  }
-
-  badgeMenu(id:string): number {
-    if(id==='socios-hub') return Number(this.dashboard?.membresias?.por_vencer_7_dias||0);
-    if(id==='servicios') return Number(this.dashboard?.alertas?.rutinas_pendientes||0);
-    if(id==='atencion') return Number(this.dashboard?.alertas?.soporte_pendiente||0)+Number(this.dashboard?.alertas?.opiniones_pendientes||0);
-    if(id==='gestion') return Number(this.dashboard?.inventario?.productos_stock_bajo||0);
-    return 0;
   }
 
   abrirPrioridad(p:any):void{
@@ -2306,9 +2396,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   cambiarSeccion(id: string): void {
-    this.seccion = id;
+    const destino=this.normalizarSeccion(id);
+    this.seccion = destino;
+    const grupo=this.grupoDeSeccion(destino);
+    if(grupo)this.menuAbierto=grupo;
     this.error = '';
-    this.cargarSeccion(id);
+    this.cargarSeccion(destino);
     window.scrollTo({top:0, behavior:'smooth'});
   }
 
@@ -2344,9 +2437,16 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.cargarDashboard();
         break;
       case 'socios-hub':
+        this.cargarSeccion('clientes');
+        break;
       case 'servicios':
+        this.cargarSeccion('clases');
+        break;
       case 'atencion':
+        this.cargarSeccion('soporte');
+        break;
       case 'gestion':
+        this.cargarSeccion('caja');
         break;
       case 'clientes':
         this.cargarClientes();
