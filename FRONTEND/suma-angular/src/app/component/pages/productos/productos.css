@@ -275,6 +275,121 @@
   font-weight:500;
 }
 
+.image-field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.image-uploader{
+  display:grid;
+  grid-template-columns:170px 1fr;
+  gap:16px;
+  align-items:center;
+  min-height:140px;
+  padding:14px;
+  border:1px dashed #cfdbe5;
+  border-radius:15px;
+  background:#f9fbfd;
+}
+
+.image-uploader.has-image{
+  border-style:solid;
+  background:#fff;
+}
+
+.image-preview{
+  width:170px;
+  height:130px;
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:5px;
+  overflow:hidden;
+  border:1px solid #e1e8ee;
+  border-radius:13px;
+  background:#fff;
+  color:#7b8ea1;
+  text-align:center;
+}
+
+.image-preview img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  background:#f8fafc;
+}
+
+.image-preview>span{
+  font-size:24px;
+  color:#8fa1b2;
+}
+
+.image-preview b{
+  font-size:11px;
+  color:#39556f;
+}
+
+.image-preview small{
+  max-width:135px;
+  color:#95a4b2;
+  font-size:8.5px;
+  line-height:1.35;
+}
+
+.image-actions{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:9px;
+}
+
+.image-actions>small{
+  width:100%;
+  color:#8b9cab;
+  font-size:9px;
+}
+
+.image-upload-button,
+.image-remove-button{
+  min-height:38px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  border-radius:10px;
+  font:inherit;
+  font-size:10px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.image-upload-button{
+  padding:0 14px;
+  background:#173f62;
+  color:#fff;
+}
+
+.image-upload-button input{
+  position:absolute;
+  width:1px;
+  height:1px;
+  opacity:0;
+  pointer-events:none;
+}
+
+.image-upload-button.disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+.image-remove-button{
+  padding:0 13px;
+  border:1px solid #ebc9ce;
+  background:#fff7f8;
+  color:#c82b42;
+}
+
 .span-2{grid-column:1/-1}
 
 .acciones-form{
@@ -416,6 +531,16 @@ tbody tr.stock-row-alert{background:linear-gradient(90deg,rgba(255,247,235,.72),
   font-weight:900;
 }
 
+.producto-foto{
+  width:42px;
+  height:42px;
+  flex:0 0 42px;
+  object-fit:cover;
+  border:1px solid #dfe7ed;
+  border-radius:11px;
+  background:#f7f9fb;
+}
+
 .producto-identidad b{display:block;color:#153754;font-size:11.5px}
 .producto-identidad small{display:block;margin-top:3px;color:#95a3b1;font-size:9px}
 
@@ -551,4 +676,11 @@ tbody tr.stock-row-alert{background:linear-gradient(90deg,rgba(255,247,235,.72),
 
 @media(prefers-reduced-motion:reduce){
   *{scroll-behavior:auto!important;animation:none!important;transition:none!important}
+}
+
+@media(max-width:640px){
+  .image-uploader{grid-template-columns:1fr}
+  .image-preview{width:100%;height:180px}
+  .image-actions{align-items:stretch}
+  .image-upload-button,.image-remove-button{width:100%}
 }
