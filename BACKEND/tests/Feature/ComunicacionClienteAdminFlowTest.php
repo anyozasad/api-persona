@@ -97,6 +97,8 @@ class ComunicacionClienteAdminFlowTest extends TestCase
                 'correo' => 'admin.soporte@mallqui.test',
                 'rol' => 'Administrador',
                 'estado' => 'Activo',
+                'id_cliente' => null,
+                'id_entrenador' => null,
                 'fecha_registro' => now(),
             ],
             [
@@ -110,6 +112,7 @@ class ComunicacionClienteAdminFlowTest extends TestCase
                 'rol' => 'Cliente',
                 'estado' => 'Activo',
                 'id_cliente' => 1,
+                'id_entrenador' => null,
                 'fecha_registro' => now(),
             ],
         ]);
