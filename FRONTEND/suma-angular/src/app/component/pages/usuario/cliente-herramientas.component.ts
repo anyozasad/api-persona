@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
       <div class="tools-head"><div><span>BUSCADOR PERSONAL</span><h2>Encuentra una clase más rápido</h2></div><b>{{contarClasesResultado()}} resultados</b></div>
       <div class="tools-controls">
         <label>Buscar<input [(ngModel)]="busquedaClase" placeholder="Nombre, entrenador o sala"></label>
-        <label>Día<select [(ngModel)]="diaClase"><option value="">Todos</option><option *ngFor="let d of diasSemana" [value]="d">{{d}}</option></select></label>
+        <label>Día<select [(ngModel)]="diaClase" (ngModelChange)="seleccionarDiaClase($event)"><option value="">Todos</option><option *ngFor="let d of diasSemana" [value]="d">{{d}}</option></select></label>
         <label>Orden<select [(ngModel)]="ordenClase"><option value="nombre">Nombre</option><option value="dia">Día</option><option value="hora">Hora</option></select></label>
         <button type="button" [class.active]="soloRecomendadas" (click)="alternarSoloRecomendadas()">Solo recomendadas</button>
         <button type="button" (click)="limpiarFiltrosClases()">Limpiar</button>
