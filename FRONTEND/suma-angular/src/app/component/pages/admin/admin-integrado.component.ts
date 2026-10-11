@@ -572,6 +572,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
             <button type="button" class="admin-hub-card" (click)="cambiarSeccion('gastos')"><span class="admin-hub-icon">↓</span><div><h3>Gastos</h3><p>Egresos de la caja activa.</p></div><b>→</b></button>
             <button type="button" class="admin-hub-card" (click)="cambiarSeccion('reportes')"><span class="admin-hub-icon">▥</span><div><h3>Reportes</h3><p>Indicadores del gimnasio.</p></div><b>→</b></button>
             <button type="button" class="admin-hub-card" (click)="cambiarSeccion('reporte-asistencias')"><span class="admin-hub-icon">✓</span><div><h3>Reporte de asistencias</h3><p>Resumen del control de accesos.</p></div><b>→</b></button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('auditoria')"><span class="admin-hub-icon">◎</span><div><h3>Auditoría</h3><p>Quién hizo qué, cuándo y con qué resultado.</p></div><b>→</b></button>
           </div>
         </section>
       </ng-container>
@@ -1554,6 +1555,97 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         <article class="report-panel"><div class="management-heading"><div><h2>Datos reales para reportes</h2><p>Información calculada por Laravel desde MySQL.</p></div><div class="report-actions"><button class="admin-secondary" type="button" (click)="cargarReportes()">Actualizar reporte</button><button class="admin-primary" type="button" (click)="exportarReporteCsv()">Exportar CSV</button></div></div><div class="table-wrap"><table class="management-table"><tbody><tr><th>Membresías</th><td>S/ {{reporteIngresos?.membresias ?? 0 | number:'1.2-2'}}</td></tr><tr><th>Ventas productos</th><td>S/ {{reporteIngresos?.ventas_productos ?? 0 | number:'1.2-2'}}</td></tr><tr><th>Total ingresos</th><td>S/ {{reporteIngresos?.total_ingresos ?? 0 | number:'1.2-2'}}</td></tr></tbody></table></div></article>
       </ng-container>
 
+      <ng-container *ngIf="seccion==='auditoria'">
+        <section class="audit-page">
+          <header class="audit-hero">
+            <div>
+              <span class="audit-eyebrow">SEGURIDAD · TRAZABILIDAD</span>
+              <h2>Auditoría del sistema</h2>
+              <p>Consulta las acciones registradas por Laravel para saber quién modificó información y si la operación terminó correctamente.</p>
+            </div>
+            <button type="button" class="audit-export" (click)="exportarAuditoria()">⇩ Exportar CSV</button>
+          </header>
+
+          <section class="audit-kpis">
+            <article><span class="audit-kpi-icon blue">◎</span><div><small>EVENTOS HOY</small><b>{{auditoriaEventosHoy}}</b><p>acciones registradas</p></div></article>
+            <article><span class="audit-kpi-icon violet">♙</span><div><small>USUARIOS</small><b>{{auditoriaUsuariosUnicos}}</b><p>usuarios identificados</p></div></article>
+            <article><span class="audit-kpi-icon amber">!</span><div><small>CAMBIOS</small><b>{{auditoriaAccionesCriticas}}</b><p>POST, PUT, PATCH o DELETE</p></div></article>
+            <article><span class="audit-kpi-icon red">×</span><div><small>ERRORES</small><b>{{auditoriaErrores}}</b><p>respuestas HTTP 4xx/5xx</p></div></article>
+          </section>
+
+          <article class="audit-filter-card">
+            <div class="audit-filter-head">
+              <div><h3>Buscar eventos</h3><p>Filtra por usuario, ruta, método, estado y rango de fechas.</p></div>
+              <button type="button" class="audit-mode" [class.active]="auditoriaSoloImportantes" (click)="auditoriaSoloImportantes=!auditoriaSoloImportantes;auditoriaPagina=1">Solo cambios importantes</button>
+            </div>
+            <div class="audit-filters">
+              <label class="audit-search-field"><span>⌕</span><input [(ngModel)]="auditoriaBusqueda" (ngModelChange)="auditoriaPagina=1" placeholder="Usuario, ruta, IP o estado"></label>
+              <label><span>MÉTODO</span><select [(ngModel)]="auditoriaMetodo" (ngModelChange)="auditoriaPagina=1"><option value="">Todos</option><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option></select></label>
+              <label><span>RESULTADO</span><select [(ngModel)]="auditoriaEstado" (ngModelChange)="auditoriaPagina=1"><option value="">Todos</option><option value="ok">Correctos</option><option value="error">Con error</option></select></label>
+              <label><span>DESDE</span><input type="date" [(ngModel)]="auditoriaFiltros.desde"></label>
+              <label><span>HASTA</span><input type="date" [(ngModel)]="auditoriaFiltros.hasta"></label>
+              <label class="audit-route-field"><span>RUTA CONTIENE</span><input [(ngModel)]="auditoriaFiltros.ruta" placeholder="/api/clientes"></label>
+              <div class="audit-filter-actions">
+                <button type="button" class="audit-clear" (click)="limpiarFiltrosAuditoria()">Limpiar</button>
+                <button type="button" class="audit-apply" (click)="aplicarFiltrosAuditoria()">Aplicar</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="audit-table-card">
+            <div class="audit-table-head">
+              <div><h3>Registro de actividad</h3><p>Historial generado por el middleware de auditoría.</p></div>
+              <span class="audit-page-info">{{auditoriasFiltradas.length}} eventos · Página {{auditoriaPagina}} de {{auditoriaTotalPaginas}}</span>
+            </div>
+            <div class="table-wrap" *ngIf="auditoriasPaginadas.length; else auditEmpty">
+              <table class="audit-table">
+                <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Método</th><th>Ruta</th><th>IP</th><th>Resultado</th><th></th></tr></thead>
+                <tbody>
+                  <tr *ngFor="let a of auditoriasPaginadas">
+                    <td><div class="audit-date"><b>{{fechaCortaAuditoria(a.fecha)}}</b><small>{{horaAuditoria(a.fecha)}}</small></div></td>
+                    <td><div class="audit-user"><span>{{inicialAuditoria(a)}}</span><div><b>{{a.usuario || ('Usuario #'+(a.id_usuario||'-'))}}</b><small>{{a.rol || 'Sistema'}}</small></div></div></td>
+                    <td><span class="audit-action-label">{{accionAuditoria(a.metodo)}}</span></td>
+                    <td><span class="audit-method" [ngClass]="claseMetodoAuditoria(a.metodo)">{{a.metodo}}</span></td>
+                    <td><code class="audit-route" [title]="a.ruta">{{a.ruta}}</code></td>
+                    <td><code class="audit-ip">{{a.ip || '-'}}</code></td>
+                    <td><span class="audit-status" [class.error]="esErrorAuditoria(a.status)"><i></i>{{estadoAuditoria(a.status)}}</span></td>
+                    <td><button type="button" class="audit-detail-btn" (click)="auditoriaDetalle=a">Detalle</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ng-template #auditEmpty>
+              <div class="audit-empty"><span>◎</span><b>No hay eventos con estos filtros</b><p>Prueba otro rango de fechas o limpia los filtros.</p></div>
+            </ng-template>
+            <div class="audit-pagination" *ngIf="auditoriasFiltradas.length>auditoriaPorPagina">
+              <button type="button" [disabled]="auditoriaPagina<=1" (click)="auditoriaPaginaAnterior()">← Anterior</button>
+              <div><button type="button" *ngFor="let p of auditoriaPaginasVisibles" [class.active]="p===auditoriaPagina" (click)="auditoriaPagina=p">{{p}}</button></div>
+              <button type="button" [disabled]="auditoriaPagina>=auditoriaTotalPaginas" (click)="auditoriaPaginaSiguiente()">Siguiente →</button>
+            </div>
+          </article>
+
+          <div class="audit-detail-overlay" *ngIf="auditoriaDetalle as a" (click)="auditoriaDetalle=null">
+            <aside class="audit-detail-panel" (click)="$event.stopPropagation()">
+              <div class="audit-detail-head">
+                <div><span>DETALLE DEL EVENTO</span><h3>{{accionAuditoria(a.metodo)}} · {{a.metodo}}</h3></div>
+                <button type="button" (click)="auditoriaDetalle=null">×</button>
+              </div>
+              <div class="audit-detail-grid">
+                <div><small>Fecha</small><b>{{fecha(a.fecha)}}</b></div>
+                <div><small>Resultado</small><b>{{estadoAuditoria(a.status)}} ({{a.status || '-'}})</b></div>
+                <div><small>Usuario</small><b>{{a.usuario || a.id_usuario || 'Sistema'}}</b></div>
+                <div><small>Rol</small><b>{{a.rol || '-'}}</b></div>
+                <div><small>IP</small><code>{{a.ip || '-'}}</code></div>
+                <div><small>Método</small><b>{{a.metodo || '-'}}</b></div>
+                <div class="span-2"><small>Ruta</small><code>{{a.ruta || '-'}}</code></div>
+              </div>
+              <div class="audit-detail-note"><b>¿Para qué sirve?</b><p>Este registro ayuda a rastrear cambios importantes, intentos fallidos y operaciones realizadas por usuarios internos.</p></div>
+              <button type="button" class="audit-close-detail" (click)="auditoriaDetalle=null">Cerrar detalle</button>
+            </aside>
+          </div>
+        </section>
+      </ng-container>
+
       <ng-container *ngIf="seccion==='configuracion'">
         <section class="config-page">
           <div class="config-hero">
@@ -1881,6 +1973,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     servicios:['Servicios','Reservas, rutinas y clases que usa el socio'],
     atencion:['Atención al cliente','Consultas, opiniones y avisos que conectan con el portal del socio'],
     gestion:['Gestión interna','Herramientas administrativas que no necesitas ver todo el tiempo'],
+    auditoria:['Auditoría','Historial de acciones, usuarios, rutas y resultados del sistema'],
     configuracion:['Configuración','Ajustes generales y mantenimiento del sistema']
   };
 
@@ -1957,7 +2050,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   constructor(public auth: AuthService, private api: AdminApiService, private router: Router) {}
 
   ngOnInit(): void {
-    this.seccion = ['kardex','auditoria'].includes(this.seccionInicial) ? 'dashboard' : (this.seccionInicial || 'dashboard');
+    this.seccion = ['kardex'].includes(this.seccionInicial) ? 'dashboard' : (this.seccionInicial || 'dashboard');
     this.sidebarCerrado = localStorage.getItem('mallqui_admin_sidebar_closed') === '1';
     this.autoRefreshActivo = localStorage.getItem('mallqui_admin_auto_refresh') !== '0';
     this.cargarDashboard();
@@ -1995,7 +2088,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     return ['soporte','opiniones','comunicacion'].includes(this.seccion);
   }
   get esSeccionGestionSecundaria(): boolean {
-    return ['entrenador','planes','gastos','reportes','reporte-asistencias','usuarios','configuracion','caja','ventas','historial-ventas','inventario','proveedores','compras','categorias','productos'].includes(this.seccion);
+    return ['entrenador','planes','gastos','reportes','reporte-asistencias','usuarios','auditoria','configuracion','caja','ventas','historial-ventas','inventario','proveedores','compras','categorias','productos'].includes(this.seccion);
   }
 
   get puedeAutoActualizar(): boolean {
@@ -2243,6 +2336,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         break;
       case 'opiniones':
         this.cargarOpiniones();
+        break;
+      case 'auditoria':
+        this.cargarAuditoria();
         break;
       case 'comunicacion':
       case 'soporte':
