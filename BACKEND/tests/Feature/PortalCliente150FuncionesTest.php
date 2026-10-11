@@ -43,16 +43,34 @@ class PortalCliente150FuncionesTest extends TestCase
         }
     }
 
-    public function test_las_cincuenta_mejoras_nuevas_tienen_pruebas_frontend(): void
+    public function test_las_cincuenta_funciones_nuevas_son_visibles_y_tienen_pruebas_frontend(): void
     {
-        $quality = base_path('../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts');
-        $spec = base_path('../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.spec.ts');
+        $tools = base_path('../FRONTEND/suma-angular/src/app/component/pages/usuario/cliente-herramientas.component.ts');
+        $spec = base_path('../FRONTEND/suma-angular/src/app/component/pages/usuario/cliente-herramientas.component.spec.ts');
+        $portal = base_path('../FRONTEND/suma-angular/src/app/component/pages/usuario/usuario.component.ts');
 
-        $this->assertFileExists($quality);
+        $this->assertFileExists($tools);
         $this->assertFileExists($spec);
-        $source = (string) file_get_contents($quality);
-        preg_match_all('/export function\\s+[A-Za-z0-9_]+/', $source, $matches);
-        $this->assertCount(50, $matches[0]);
-        $this->assertStringContainsString("describe('calidad funcional del portal cliente'", (string) file_get_contents($spec));
+
+        $source = (string) file_get_contents($tools);
+        foreach (['101-110','111-120','121-130','131-140','141-150'] as $grupo) {
+            $this->assertStringContainsString('data-capability-group="'.$grupo.'"', $source);
+        }
+
+        $portalSource = (string) file_get_contents($portal);
+        $this->assertStringContainsString('<app-cliente-herramientas', $portalSource);
+        $this->assertStringContainsString('[clases]="clases"', $portalSource);
+        $this->assertStringContainsString('[reservas]="reservas"', $portalSource);
+        $this->assertStringContainsString('[asistencias]="asistencias"', $portalSource);
+        $this->assertStringContainsString('[pagos]="pagos"', $portalSource);
+        $this->assertStringContainsString('[perfil]="perfil"', $portalSource);
+
+        $specSource = (string) file_get_contents($spec);
+        $this->assertStringContainsString("describe('ClienteHerramientasComponent'", $specSource);
+        $this->assertStringContainsString("c.copiarDni()", $specSource);
+        $this->assertStringContainsString("c.exportarReservasCsv()", $specSource);
+        $this->assertStringContainsString("c.exportarAsistenciasCsv()", $specSource);
+        $this->assertStringContainsString("c.exportarPagosCsv()", $specSource);
+        $this->assertStringContainsString("c.exportarResumenCuenta()", $specSource);
     }
 }
