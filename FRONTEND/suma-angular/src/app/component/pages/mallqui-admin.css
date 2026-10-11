@@ -3878,3 +3878,152 @@ button.admin-system-card:hover{
   .admin-nav-submenu{margin-left:17px!important;padding-left:11px!important}
   .admin-nav-submenu-long{max-height:280px!important}
 }
+
+
+/* ADMIN V32 · ARQUITECTURA POR MÓDULOS */
+.admin-main-nav{
+  flex:1 1 auto;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  padding:10px 11px 12px;
+  overflow:visible;
+}
+.admin-main-nav button{
+  position:relative;
+  width:100%;
+  min-height:42px;
+  display:grid;
+  grid-template-columns:30px minmax(0,1fr) auto;
+  align-items:center;
+  gap:9px;
+  padding:6px 10px;
+  border:1px solid transparent;
+  border-radius:11px;
+  background:transparent;
+  color:#c8d5e2;
+  text-align:left;
+  cursor:pointer;
+  transition:background .16s ease,border-color .16s ease,color .16s ease;
+}
+.admin-main-nav button:hover{
+  background:rgba(255,255,255,.055);
+  border-color:rgba(255,255,255,.06);
+  color:#fff;
+}
+.admin-main-nav button.active{
+  background:linear-gradient(135deg,#ef233c,#cf1730);
+  border-color:rgba(255,255,255,.08);
+  color:#fff;
+  box-shadow:0 8px 18px rgba(239,35,60,.20);
+}
+.admin-main-nav button.active:before{
+  content:'';
+  position:absolute;
+  left:-11px;
+  top:8px;
+  bottom:8px;
+  width:3px;
+  border-radius:0 4px 4px 0;
+  background:#fff;
+}
+.admin-main-nav-icon{
+  width:29px;
+  height:29px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:rgba(255,255,255,.07);
+  color:#e0eaf4;
+  font-size:11px;
+  font-weight:900;
+}
+.admin-main-nav button.active .admin-main-nav-icon{
+  background:rgba(255,255,255,.16);
+  color:#fff;
+}
+.admin-main-nav button>span:nth-child(2){
+  min-width:0;
+  overflow:hidden;
+  font-size:9px;
+  font-weight:850;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.admin-main-nav button>b{
+  min-width:20px;
+  height:20px;
+  display:grid;
+  place-items:center;
+  padding:0 6px;
+  border-radius:999px;
+  background:rgba(255,255,255,.11);
+  color:#fff;
+  font-size:7.5px;
+  font-weight:950;
+}
+.admin-main-nav button:not(.active)>b{
+  background:rgba(239,35,60,.16);
+  color:#ff99a5;
+}
+.admin-module-tabs{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin:-2px 0 16px;
+  padding:7px;
+  border:1px solid #e2e8ee;
+  border-radius:12px;
+  background:#fff;
+  box-shadow:0 5px 16px rgba(18,34,52,.035);
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.admin-module-tabs::-webkit-scrollbar{display:none}
+.admin-module-tabs button{
+  min-height:34px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:0 12px;
+  border:1px solid transparent;
+  border-radius:9px;
+  background:transparent;
+  color:#66758a;
+  font-size:9px;
+  font-weight:850;
+  white-space:nowrap;
+  cursor:pointer;
+}
+.admin-module-tabs button:hover{
+  background:#f5f7fa;
+  color:#23364d;
+}
+.admin-module-tabs button.active{
+  border-color:#f0b6bf;
+  background:#fff1f3;
+  color:#c81f36;
+}
+.admin-module-tabs button>b{
+  min-width:18px;
+  height:18px;
+  display:grid;
+  place-items:center;
+  padding:0 5px;
+  border-radius:999px;
+  background:#ef233c;
+  color:#fff;
+  font-size:7px;
+}
+@media(max-width:1180px) and (min-width:851px){
+  .admin-main-nav{padding-left:8px;padding-right:8px}
+  .admin-main-nav button{padding-left:8px;padding-right:8px}
+  .admin-main-nav button>span:nth-child(2){font-size:8px}
+}
+@media(max-width:850px){
+  .admin-module-tabs{
+    margin:0 0 13px;
+    border-radius:10px;
+  }
+}
