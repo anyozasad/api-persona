@@ -246,6 +246,70 @@ class PortalClienteController extends Controller
     {
         $this->clienteDelUsuario($request);
 
+        // El administrador trabaja con la base operativa definida por GYM_DB_DATABASE.
+        // Si esa base usa el esquema histórico (id/categoria_id/codigo/nombre), el portal
+        // del cliente lee exactamente los mismos productos para que precio, stock e imagen
+        // coincidan con lo registrado desde Inventario.
+        try {
+            $mysql = (array) config('database.connections.mysql', []);
+            config([
+                'database.connections.gym_portal_products' => array_merge($mysql, [
+                    'database' => env('GYM_DB_DATABASE', $mysql['database'] ?? null),
+                ]),
+            ]);
+
+            $conexion = DB::connection('gym_portal_products');
+            $schema = $conexion->getSchemaBuilder();
+
+            if (
+                $schema->hasTable('productos') &&
+                $schema->hasColumn('productos', 'id') &&
+                $schema->hasColumn('productos', 'categoria_id') &&
+                $schema->hasColumn('productos', 'codigo') &&
+                $schema->hasColumn('productos', 'nombre')
+            ) {
+                $tieneFoto = $schema->hasColumn('productos', 'foto');
+
+                $rows = $conexion->table('productos as p')
+                    ->leftJoin('categorias as c', 'c.id', '=', 'p.categoria_id')
+                    ->whereRaw('LOWER(p.estado) = ?', ['activo'])
+                    ->where('p.stock', '>', 0)
+                    ->select(
+                        'p.id',
+                        'p.categoria_id',
+                        'p.codigo',
+                        'p.nombre',
+                        'p.descripcion',
+                        'p.precio_venta',
+                        'p.stock',
+                        'p.unidad_medida',
+                        'c.nombre as categoria_nombre',
+                        ...($tieneFoto ? ['p.foto'] : [])
+                    )
+                    ->orderBy('p.nombre')
+                    ->get()
+                    ->map(fn ($producto) => [
+                        'id_producto' => (int) $producto->id,
+                        'codigo_producto' => $producto->codigo,
+                        'nombre_producto' => $producto->nombre,
+                        'descripcion' => $producto->descripcion ?? null,
+                        'foto' => $tieneFoto ? ($producto->foto ?? null) : null,
+                        'precio_venta' => (float) $producto->precio_venta,
+                        'stock' => (int) $producto->stock,
+                        'unidad_medida' => $producto->unidad_medida ?? 'Unidad',
+                        'categoria' => [
+                            'id_categoria' => (int) $producto->categoria_id,
+                            'nombre_categoria' => $producto->categoria_nombre ?? '',
+                        ],
+                    ])
+                    ->values();
+
+                return response()->json($rows);
+            }
+        } catch (\Throwable $e) {
+            // Si la base operativa no está disponible, se conserva el origen estándar.
+        }
+
         return response()->json(
             Producto::with('categoria')
                 ->where('estado', 'Activo')
@@ -257,6 +321,7 @@ class PortalClienteController extends Controller
                     'codigo_producto' => $producto->codigo_producto,
                     'nombre_producto' => $producto->nombre_producto,
                     'descripcion' => $producto->descripcion,
+                    'foto' => $producto->foto ?? null,
                     'precio_venta' => (float) $producto->precio_venta,
                     'stock' => (int) $producto->stock,
                     'unidad_medida' => $producto->unidad_medida,
