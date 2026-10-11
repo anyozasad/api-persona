@@ -1551,10 +1551,51 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
       </ng-container>
 
       <ng-container *ngIf="seccion==='reportes'">
-        <section class="report-grid"><article><span>👥</span><p>Clientes registrados</p><h2>{{dashboard?.clientes?.total ?? clientes.length}}</h2></article><article><span>✦</span><p>Membresías activas</p><h2>{{dashboard?.membresias?.activas ?? 0}}</h2></article><article><span>💵</span><p>Ingresos del mes</p><h2>S/ {{reporteIngresos?.total_ingresos ?? dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</h2></article><article><span>▣</span><p>Asistencias del periodo</p><h2>{{reporteAsistencias?.total ?? 0}}</h2></article></section>
-        <article class="report-panel"><div class="management-heading"><div><h2>Datos reales para reportes</h2><p>Información calculada por Laravel desde MySQL.</p></div><div class="report-actions"><button class="admin-secondary" type="button" (click)="cargarReportes()">Actualizar reporte</button><button class="admin-primary" type="button" (click)="exportarReporteCsv()">Exportar CSV</button></div></div><div class="table-wrap"><table class="management-table"><tbody><tr><th>Membresías</th><td>S/ {{reporteIngresos?.membresias ?? 0 | number:'1.2-2'}}</td></tr><tr><th>Ventas productos</th><td>S/ {{reporteIngresos?.ventas_productos ?? 0 | number:'1.2-2'}}</td></tr><tr><th>Total ingresos</th><td>S/ {{reporteIngresos?.total_ingresos ?? 0 | number:'1.2-2'}}</td></tr></tbody></table></div></article>
+        <section class="report-grid">
+          <article><span>👥</span><p>Clientes registrados</p><h2>{{dashboard?.clientes?.total ?? clientes.length}}</h2></article>
+          <article><span>✦</span><p>Membresías activas</p><h2>{{dashboard?.membresias?.activas ?? 0}}</h2></article>
+          <article><span>💵</span><p>Ingresos del mes</p><h2>S/ {{reporteIngresos?.total_ingresos ?? dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</h2></article>
+          <article><span>▣</span><p>Asistencias del periodo</p><h2>{{reporteAsistencias?.total ?? 0}}</h2></article>
+          <article><span>!</span><p>Membresías por vencer</p><h2>{{reporteVencimientos?.total ?? dashboard?.membresias?.por_vencer_7_dias ?? 0}}</h2></article>
+        </section>
+        <article class="report-panel">
+          <div class="management-heading">
+            <div><h2>Datos reales para reportes</h2><p>Información calculada por Laravel desde MySQL.</p></div>
+            <div class="report-actions">
+              <button class="admin-secondary" type="button" (click)="cargarReportes()">Actualizar reporte</button>
+              <button class="admin-primary" type="button" (click)="exportarReporteCsv()">Exportar CSV</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="management-table">
+              <tbody>
+                <tr><th>Membresías</th><td>S/ {{reporteIngresos?.membresias ?? 0 | number:'1.2-2'}}</td></tr>
+                <tr><th>Ventas productos</th><td>S/ {{reporteIngresos?.ventas_productos ?? 0 | number:'1.2-2'}}</td></tr>
+                <tr><th>Total ingresos</th><td>S/ {{reporteIngresos?.total_ingresos ?? 0 | number:'1.2-2'}}</td></tr>
+                <tr><th>Asistencias</th><td>{{reporteAsistencias?.total ?? 0}}</td></tr>
+                <tr><th>Vencimientos próximos</th><td>{{reporteVencimientos?.total ?? dashboard?.membresias?.por_vencer_7_dias ?? 0}}</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+        <article class="report-panel">
+          <div class="management-heading"><div><h2>Próximos vencimientos</h2><p>Socios que requieren seguimiento para renovar su membresía.</p></div><button type="button" class="admin-secondary" (click)="cambiarSeccion('membresias')">Gestionar membresías</button></div>
+          <div class="table-wrap">
+            <table class="management-table">
+              <thead><tr><th>Socio</th><th>Plan</th><th>Fecha fin</th><th>Días restantes</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let v of (reporteVencimientos?.detalle || reporteVencimientos?.vencimientos || dashboard?.membresias?.detalle_por_vencer || []).slice(0,20)">
+                  <td><b>{{nombreCliente(v.cliente)}}</b></td>
+                  <td>{{v.membresia?.nombre || v.plan || v.nombre_membresia || '-'}}</td>
+                  <td>{{v.fecha_fin || '-'}}</td>
+                  <td>{{v.dias_restantes ?? '-'}}</td>
+                </tr>
+                <tr *ngIf="!(reporteVencimientos?.detalle || reporteVencimientos?.vencimientos || dashboard?.membresias?.detalle_por_vencer || []).length"><td colspan="4">No hay membresías próximas a vencer.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
       </ng-container>
-
       <ng-container *ngIf="seccion==='auditoria'">
         <section class="audit-page">
           <header class="audit-hero">
@@ -1908,6 +1949,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   dashboard: any = null;
   reporteIngresos: any = null;
   reporteAsistencias: any = null;
+  reporteVencimientos: any = null;
 
   clientes: any[] = [];
   membresiasDisponibles: any[] = [];
@@ -2443,6 +2485,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   cargarReportes(){
     this.api.reporteIngresos().subscribe({next:r=>this.reporteIngresos=r,error:e=>this.mostrarError(e)});
     this.api.reporteAsistencias().subscribe({next:r=>this.reporteAsistencias=r,error:e=>this.mostrarError(e)});
+    this.api.reporteVencimientos().subscribe({next:r=>this.reporteVencimientos=r,error:e=>this.mostrarError(e)});
   }
 
   exportarReporteCsv(){
@@ -2456,6 +2499,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       ['Ingresos ventas',this.reporteIngresos?.ventas_productos ?? 0],
       ['Ingresos totales',this.reporteIngresos?.total_ingresos ?? this.dashboard?.ingresos?.total_mes ?? 0],
       ['Asistencias',this.reporteAsistencias?.total ?? 0],
+      ['Membresías por vencer',this.reporteVencimientos?.total ?? this.dashboard?.membresias?.por_vencer_7_dias ?? 0],
       ['Soporte pendiente',this.dashboard?.alertas?.soporte_pendiente ?? 0]
     ];
     const csv=filas.map(f=>f.map((v:any)=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');
