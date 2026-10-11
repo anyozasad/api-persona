@@ -138,7 +138,7 @@ class DashboardController extends Controller
             ]);
         }
 
-        $soportePendiente = $this->soportePendiente($tablas['soporte']);
+        $soportePendiente = $this->soporteGeneralPendiente($tablas['soporte']);
         $rutinasPendientes = $this->rutinasPendientes($tablas['soporte']);
         $opinionesPendientes = $this->opinionesPendientes();
         $actividadPortal = $this->actividadPortal();
@@ -154,6 +154,7 @@ class DashboardController extends Controller
         $alertasTotal = count($suscripciones['detalle_por_vencer'])
             + $stock['productos_stock_bajo']
             + $soportePendiente
+            + $rutinasPendientes
             + $opinionesPendientes;
 
         $prioridades = collect([
@@ -834,6 +835,28 @@ class DashboardController extends Controller
                 ];
             })
             ->all();
+    }
+
+    private function soporteGeneralPendiente(?string $tabla): int
+    {
+        if (!$tabla) {
+            return 0;
+        }
+
+        $estado = $this->columna($tabla, ['estado', 'status']);
+        $asunto = $this->columna($tabla, ['asunto', 'titulo', 'subject']);
+        if (!$estado) {
+            return 0;
+        }
+
+        $query = $this->db->table($tabla)
+            ->whereIn($estado, ['Pendiente', 'PENDIENTE', 'pendiente']);
+
+        if ($asunto) {
+            $query->whereRaw('LOWER('.$asunto.') NOT LIKE ?', ['%rutina%']);
+        }
+
+        return (int) $query->count();
     }
 
     private function soportePendiente(?string $tabla): int
