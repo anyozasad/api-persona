@@ -77,6 +77,7 @@ class GymSystemAdminController extends Controller
                     if (!$this->schema->hasColumn('productos', 'descripcion')) $table->text('descripcion')->nullable();
                     if (!$this->schema->hasColumn('productos', 'stock_minimo')) $table->unsignedInteger('stock_minimo')->default(5);
                     if (!$this->schema->hasColumn('productos', 'unidad_medida')) $table->string('unidad_medida', 30)->default('Unidad');
+                    if (!$this->schema->hasColumn('productos', 'foto')) $table->mediumText('foto')->nullable();
                 });
             }
             if ($this->schema->hasTable('asistencias')) {
@@ -884,9 +885,11 @@ class GymSystemAdminController extends Controller
             'stock'=>'nullable|integer|min:0',
             'stock_minimo'=>'nullable|integer|min:0',
             'unidad_medida'=>'nullable|string|max:30',
-            'estado'=>'nullable|string'
+            'estado'=>'nullable|string',
+            'foto'=>'nullable|string|max:3000000'
         ]);
-        return [
+
+        $datos=[
             'categoria_id'=>$d['id_categoria'],
             'codigo'=>$d['codigo_producto'],
             'nombre'=>$d['nombre_producto'],
@@ -898,6 +901,22 @@ class GymSystemAdminController extends Controller
             'unidad_medida'=>trim((string)($d['unidad_medida']??'Unidad'))?:'Unidad',
             'estado'=>$this->estadoDb($d['estado']??'Activo')
         ];
+
+        // La foto se guarda como Data URL comprimida. Es opcional y al editar
+        // solo se modifica cuando el frontend envía explícitamente la propiedad.
+        if ($request->has('foto')) {
+            $foto=trim((string)($d['foto']??''));
+            if ($foto!=='') {
+                abort_unless(
+                    preg_match('/^data:image\/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+\/=\r\n]+$/i',$foto)===1,
+                    422,
+                    'La imagen del producto no tiene un formato válido.'
+                );
+            }
+            $datos['foto']=$foto!==''?$foto:null;
+        }
+
+        return $datos;
     }
 
     private function resumenCaja($c):array
