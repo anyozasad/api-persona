@@ -28,7 +28,6 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             <button type="button" [class.active]="moduloActivo==='rutinas'" (click)="abrirModulo('rutinas')">Rutina</button>
             <button type="button" [class.active]="moduloActivo==='clases' || moduloActivo==='reservas' || moduloActivo==='calendario'" (click)="abrirModulo('clases')">Clases</button>
             <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')">Membresía</button>
-            <button type="button" [class.active]="mobileMenuAbierto" (click)="mobileMenuAbierto=!mobileMenuAbierto">Más</button>
           </nav>
 
           <div class="mallqui-apex-user">
@@ -53,7 +52,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
           <div class="member-mobile-menu-head">
             <div>
               <span>MALLQUI GYM</span>
-              <h3>Más opciones</h3>
+              <h3>Mi cuenta</h3>
             </div>
             <button type="button" (click)="mobileMenuAbierto=false" aria-label="Cerrar menú">×</button>
           </div>
@@ -1689,7 +1688,7 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
         <button type="button" [class.active]="moduloActivo==='casa' || moduloActivo==='rutinas'" (click)="abrirModulo('casa')"><i>⚡</i><span>Entrenar</span></button>
         <button type="button" [class.active]="moduloActivo==='clases' || moduloActivo==='reservas' || moduloActivo==='calendario'" (click)="abrirModulo('clases')"><i>▣</i><span>Clases</span></button>
         <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')"><i>▤</i><span>Membresía</span></button>
-        <button type="button" [class.active]="mobileMenuAbierto" (click)="mobileMenuAbierto=!mobileMenuAbierto"><i>•••</i><span>Más</span></button>
+        <button type="button" [class.active]="mobileMenuAbierto" (click)="mobileMenuAbierto=!mobileMenuAbierto"><i>♙</i><span>Cuenta</span></button>
       </nav>
 
       <ng-template #cargandoTpl>
