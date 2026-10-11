@@ -79,6 +79,15 @@ class GymSystemAdminController extends Controller
                     if (!$this->schema->hasColumn('productos', 'unidad_medida')) $table->string('unidad_medida', 30)->default('Unidad');
                     if (!$this->schema->hasColumn('productos', 'foto')) $table->mediumText('foto')->nullable();
                 });
+
+                // Algunas bases antiguas tenían "foto" como VARCHAR para guardar una ruta.
+                // La interfaz actual guarda una imagen optimizada en Data URL, por eso se
+                // amplía la columna una sola vez cuando sea necesario.
+                $columnaFoto=$this->db->selectOne("SHOW COLUMNS FROM productos LIKE 'foto'");
+                $tipoFoto=strtolower((string)($columnaFoto->Type??''));
+                if ($tipoFoto!=='' && !str_contains($tipoFoto,'text')) {
+                    $this->db->statement("ALTER TABLE productos MODIFY foto MEDIUMTEXT NULL");
+                }
             }
             if ($this->schema->hasTable('asistencias')) {
                 $this->schema->table('asistencias', function ($table) {
