@@ -46,6 +46,10 @@ class DashboardController extends Controller
             'cajas' => $this->tabla(['cajas']),
             'reservas' => $this->tabla(['reservas']),
             'soporte' => $this->tabla(['solicitudes_soporte']),
+            'clases' => $this->tabla(['clases']),
+            'rutinas' => $this->tabla(['rutinas']),
+            'entrenadores' => $this->tabla(['entrenadores']),
+            'usuarios' => $this->tabla(['usuarios']),
         ];
 
         $socios = $this->resumenSocios($tablas['socios'], $inicioMes, $finMes);
@@ -139,6 +143,10 @@ class DashboardController extends Controller
         $opinionesPendientes = $this->opinionesPendientes();
         $actividadPortal = $this->actividadPortal();
         $pagosRegistrados = $tablas['pagos'] ? (int) $this->db->table($tablas['pagos'])->count() : 0;
+        $clasesActivas = $this->conteoActivos($tablas['clases']);
+        $rutinasActivas = $this->conteoActivos($tablas['rutinas']);
+        $entrenadoresActivos = $this->conteoActivos($tablas['entrenadores']);
+        $usuariosActivos = $this->conteoActivos($tablas['usuarios']);
 
         // Las compras del portal del cliente se completan automáticamente.
         // El dato heredado se conserva solo por compatibilidad, pero ya no requiere acción del administrador.
@@ -178,6 +186,12 @@ class DashboardController extends Controller
             'reservas' => [
                 'hoy' => count($reservas),
                 'detalle_hoy' => $reservas,
+            ],
+            'operacion' => [
+                'clases_activas' => $clasesActivas,
+                'rutinas_activas' => $rutinasActivas,
+                'entrenadores_activos' => $entrenadoresActivos,
+                'usuarios_activos' => $usuariosActivos,
             ],
             'ventas' => [
                 'hoy_total' => round($ventasHoy, 2),
@@ -303,6 +317,21 @@ class DashboardController extends Controller
             $q->whereIn($estado, ['Activo', 'ACTIVO', 'activo', 'Activa', 'ACTIVA', 'activa', 'Active', 'ACTIVE', 1, '1', 'Si', 'Sí'])
                 ->orWhereNull($estado);
         });
+    }
+
+    private function conteoActivos(?string $tabla): int
+    {
+        if (!$tabla) {
+            return 0;
+        }
+
+        try {
+            $query = $this->db->table($tabla);
+            $this->aplicarActivo($query, $tabla);
+            return (int) $query->count();
+        } catch (Throwable $e) {
+            return 0;
+        }
     }
 
     private function aplicarVentaValida($query, ?string $tabla): void
