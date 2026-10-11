@@ -5,6 +5,7 @@ export interface Producto {
   codigo_producto: string;
   nombre_producto: string;
   descripcion?: string | null;
+  foto?: string | null;
   precio_compra: number;
   precio_venta: number;
   stock: number;
