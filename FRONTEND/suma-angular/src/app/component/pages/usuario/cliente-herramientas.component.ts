@@ -24,7 +24,6 @@ import { FormsModule } from '@angular/forms';
         <article class="empty" *ngIf="!filtrarClases().length"><b>No hay clases con esos filtros.</b></article>
       </div>
       <div class="tools-foot"><span>{{resumenProximaClase()}}</span><button type="button" (click)="copiarResumenClase()">Copiar próxima clase</button></div>
-      <div hidden>{{seleccionarDiaClase(diaClase)}}{{ordenarClasesPorNombre().length}}{{ordenarClasesPorDia().length}}{{ordenarClasesPorHora().length}}</div>
     </section>
 
     <section class="client-tools" *ngIf="modulo==='reservas'" data-capability-group="111-120">
@@ -45,7 +44,6 @@ import { FormsModule } from '@angular/forms';
         <article *ngFor="let r of filtrarReservas() | slice:0:6"><div><small>{{fechaCorta(r.fecha_clase)}}</small><b>{{r.clase?.nombre || 'Clase'}}</b></div><em>{{r.estado}}</em></article>
       </div>
       <div class="tools-foot"><span>Próxima: {{proximaReserva()?.clase?.nombre || 'Sin reserva próxima'}}</span></div>
-      <div hidden>{{ordenarReservasRecientes().length}}{{ordenarReservasAntiguas().length}}</div>
     </section>
 
     <section class="client-tools" *ngIf="modulo==='asistencias'" data-capability-group="121-130">
@@ -65,7 +63,6 @@ import { FormsModule } from '@angular/forms';
       <div class="tools-list">
         <article *ngFor="let a of filtrarAsistencias() | slice:0:6"><div><small>{{fechaCorta(a.fecha_hora_entrada)}}</small><b>{{a.fecha_hora_salida ? 'Visita completada' : 'Ingreso abierto'}}</b></div><em>{{duracionMinutos(a)}} min</em></article>
       </div>
-      <div hidden>{{mostrarAsistenciasCompletadas().length}}{{mostrarAsistenciasAbiertas().length}}{{ordenarAsistenciasRecientes().length}}{{ordenarAsistenciasAntiguas().length}}</div>
     </section>
 
     <section class="client-tools" *ngIf="modulo==='pagos'" data-capability-group="131-140">
@@ -86,7 +83,6 @@ import { FormsModule } from '@angular/forms';
         <article *ngFor="let p of filtrarPagos() | slice:0:6"><div><small>{{fechaCorta(p.fecha_pago)}}</small><b>{{nombrePlanPago(p)}}</b><span>{{p.numero_operacion || 'Sin operación'}}</span></div><em>S/ {{p.monto | number:'1.2-2'}}</em></article>
       </div>
       <div class="tools-foot"><span>Último pago: {{ultimoPagoCompletadoHerramienta() ? fechaCorta(ultimoPagoCompletadoHerramienta().fecha_pago) : 'Sin pagos completados'}}</span></div>
-      <div hidden>{{ordenarPagosRecientes().length}}{{ordenarPagosAntiguos().length}}</div>
     </section>
 
     <section class="client-tools" *ngIf="modulo==='perfil'" data-capability-group="141-150">
@@ -202,5 +198,16 @@ export class ClienteHerramientasComponent {
   private copiarTexto(v:any):void{const t=String(v??'');if(navigator?.clipboard?.writeText){navigator.clipboard.writeText(t).catch(()=>this.copiaAlterna(t));}else this.copiaAlterna(t);}
   private copiaAlterna(t:string):void{const x=document.createElement('textarea');x.value=t;x.style.position='fixed';x.style.opacity='0';document.body.appendChild(x);x.select();try{document.execCommand('copy');}catch{}document.body.removeChild(x);}
   private descargarCsv(nombre:string,lineas:string[]):void{this.descargarTexto(nombre,'\uFEFF'+lineas.join('\n'),'text/csv;charset=utf-8');}
-  private descargarTexto(nombre:string,contenido:string,tipo:string):void{const blob=new Blob([contenido],{type:tipo});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=nombre;a.click();setTimeout(()=>URL.revokeObjectURL(url),0);}
+  private descargarTexto(nombre:string,contenido:string,tipo:string):void{
+    const blob=new Blob([contenido],{type:tipo});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=nombre;
+    a.style.display='none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),0);
+  }
 }
