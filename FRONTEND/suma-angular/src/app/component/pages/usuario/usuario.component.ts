@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../auth.service';
 import { GymApiService } from '../../../core/services/gym-api.service';
 import { ClienteExperienciaComponent } from './cliente-experiencia.component';
+import { ClienteHerramientasComponent } from './cliente-herramientas.component';
 import { code128DataUri, code128Svg } from '../../../shared/code128';
 import {
   activeClasses, activeRoutine, attendanceOpen, attendanceThisMonth, daysUntil,
@@ -17,7 +18,7 @@ import {
 @Component({
   selector: 'app-usuario',
   standalone: true,
-  imports: [CommonModule, FormsModule, ClienteExperienciaComponent],
+  imports: [CommonModule, FormsModule, ClienteExperienciaComponent, ClienteHerramientasComponent],
   styleUrls: ['../mallqui-member.css', '../ui-readable.css', './usuario-productos.css', './usuario-clases.css', './usuario-perfil.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
@@ -1688,6 +1689,18 @@ import {
           [gymInfo]="gymInfo"
           (notificacionesCambio)="avisosNoLeidos=$event">
         </app-cliente-experiencia>
+
+        <app-cliente-herramientas
+          *ngIf="['clases','reservas','asistencias','pagos','perfil'].includes(moduloActivo)"
+          [modulo]="moduloActivo"
+          [clases]="clases"
+          [reservas]="reservas"
+          [asistencias]="asistencias"
+          [pagos]="pagos"
+          [perfil]="perfil"
+          [membresiaActual]="membresiaActual"
+          [enfoque]="enfoqueInicioSeleccionado">
+        </app-cliente-herramientas>
       </main>
 
       <nav class="member-mobile-bottom-nav" aria-label="Navegación móvil">
