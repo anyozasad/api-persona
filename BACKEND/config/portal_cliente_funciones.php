@@ -801,4 +801,404 @@ return [
             ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/usuario.component.ts', 'needle' => 'imprimirBoleta('],
         ],
     ],
+    [
+        'id' => 101,
+        'name' => 'Normalización segura de texto',
+        'area' => 'Calidad',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function normalizeText'],
+        ],
+    ],
+    [
+        'id' => 102,
+        'name' => 'Normalización automática de correo',
+        'area' => 'Perfil',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function normalizeEmail'],
+        ],
+    ],
+    [
+        'id' => 103,
+        'name' => 'Normalización automática de teléfono',
+        'area' => 'Perfil',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function normalizePhone'],
+        ],
+    ],
+    [
+        'id' => 104,
+        'name' => 'Protección de listas recibidas desde API',
+        'area' => 'Calidad',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function safeArray'],
+        ],
+    ],
+    [
+        'id' => 105,
+        'name' => 'Eliminación de registros duplicados',
+        'area' => 'Calidad',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function uniqueById'],
+        ],
+    ],
+    [
+        'id' => 106,
+        'name' => 'Ordenamiento del historial más reciente',
+        'area' => 'Calidad',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function sortNewest'],
+        ],
+    ],
+    [
+        'id' => 107,
+        'name' => 'Ordenamiento cronológico seguro',
+        'area' => 'Calidad',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function sortOldest'],
+        ],
+    ],
+    [
+        'id' => 108,
+        'name' => 'Control de porcentajes entre 0 y 100',
+        'area' => 'Calidad',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function clampPercent'],
+        ],
+    ],
+    [
+        'id' => 109,
+        'name' => 'Conversión numérica segura',
+        'area' => 'Calidad',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function safeNumber'],
+        ],
+    ],
+    [
+        'id' => 110,
+        'name' => 'Bloqueo de valores numéricos negativos',
+        'area' => 'Calidad',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function nonNegative'],
+        ],
+    ],
+    [
+        'id' => 111,
+        'name' => 'Cálculo seguro de días restantes',
+        'area' => 'Membresía',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function daysUntil'],
+        ],
+    ],
+    [
+        'id' => 112,
+        'name' => 'Aviso de membresía próxima a vencer',
+        'area' => 'Membresía',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function isExpiringSoon'],
+        ],
+    ],
+    [
+        'id' => 113,
+        'name' => 'Separación de pagos completados',
+        'area' => 'Membresía',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function completedPayments'],
+        ],
+    ],
+    [
+        'id' => 114,
+        'name' => 'Separación de pagos pendientes',
+        'area' => 'Membresía',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function pendingPayments'],
+        ],
+    ],
+    [
+        'id' => 115,
+        'name' => 'Cálculo de pagos completados',
+        'area' => 'Membresía',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function totalCompletedAmount'],
+        ],
+    ],
+    [
+        'id' => 116,
+        'name' => 'Detección del último pago completado',
+        'area' => 'Membresía',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function latestCompletedPayment'],
+        ],
+    ],
+    [
+        'id' => 117,
+        'name' => 'Etiqueta consistente del estado de pago',
+        'area' => 'Membresía',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function paymentStatusLabel'],
+        ],
+    ],
+    [
+        'id' => 118,
+        'name' => 'Estado calculado de la membresía',
+        'area' => 'Membresía',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function membershipStatus'],
+        ],
+    ],
+    [
+        'id' => 119,
+        'name' => 'Fecha segura de próxima membresía',
+        'area' => 'Membresía',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function nextMembershipStart'],
+        ],
+    ],
+    [
+        'id' => 120,
+        'name' => 'Limpieza del número de operación',
+        'area' => 'Membresía',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function normalizeOperationNumber'],
+        ],
+    ],
+    [
+        'id' => 121,
+        'name' => 'Filtrado de clases activas',
+        'area' => 'Clases',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function activeClasses'],
+        ],
+    ],
+    [
+        'id' => 122,
+        'name' => 'Filtrado de clases con disponibilidad',
+        'area' => 'Clases',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function availableClasses'],
+        ],
+    ],
+    [
+        'id' => 123,
+        'name' => 'Detección de reserva activa',
+        'area' => 'Reservas',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function reservationActive'],
+        ],
+    ],
+    [
+        'id' => 124,
+        'name' => 'Detección de reserva cancelada',
+        'area' => 'Reservas',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function reservationCancelled'],
+        ],
+    ],
+    [
+        'id' => 125,
+        'name' => 'Detección de reserva asistida',
+        'area' => 'Reservas',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function reservationAttended'],
+        ],
+    ],
+    [
+        'id' => 126,
+        'name' => 'Prevención de reservas duplicadas',
+        'area' => 'Reservas',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function hasDuplicateReservation'],
+        ],
+    ],
+    [
+        'id' => 127,
+        'name' => 'Detección de próxima reserva',
+        'area' => 'Reservas',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function nextReservation'],
+        ],
+    ],
+    [
+        'id' => 128,
+        'name' => 'Resumen de estados de reservas',
+        'area' => 'Reservas',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function reservationSummary'],
+        ],
+    ],
+    [
+        'id' => 129,
+        'name' => 'Búsqueda de clases',
+        'area' => 'Clases',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function searchClasses'],
+        ],
+    ],
+    [
+        'id' => 130,
+        'name' => 'Ordenamiento alfabético de clases',
+        'area' => 'Clases',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function sortClassesByName'],
+        ],
+    ],
+    [
+        'id' => 131,
+        'name' => 'Detección de asistencia abierta',
+        'area' => 'Asistencia',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function attendanceOpen'],
+        ],
+    ],
+    [
+        'id' => 132,
+        'name' => 'Filtrado de asistencias del mes',
+        'area' => 'Asistencia',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function attendanceThisMonth'],
+        ],
+    ],
+    [
+        'id' => 133,
+        'name' => 'Cálculo de duración de asistencia',
+        'area' => 'Asistencia',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function attendanceDurationMinutes'],
+        ],
+    ],
+    [
+        'id' => 134,
+        'name' => 'Total de minutos de asistencia mensual',
+        'area' => 'Asistencia',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function totalAttendanceMinutesThisMonth'],
+        ],
+    ],
+    [
+        'id' => 135,
+        'name' => 'Promedio de duración de asistencia',
+        'area' => 'Asistencia',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function averageAttendanceMinutesThisMonth'],
+        ],
+    ],
+    [
+        'id' => 136,
+        'name' => 'Selección segura de rutina activa',
+        'area' => 'Rutina',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function activeRoutine'],
+        ],
+    ],
+    [
+        'id' => 137,
+        'name' => 'Lectura segura de ejercicios de rutina',
+        'area' => 'Rutina',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function routineExercises'],
+        ],
+    ],
+    [
+        'id' => 138,
+        'name' => 'Detección de sesión de entrenamiento completada',
+        'area' => 'Entrenamiento',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function trainingSessionCompleted'],
+        ],
+    ],
+    [
+        'id' => 139,
+        'name' => 'Control seguro del tiempo de descanso',
+        'area' => 'Entrenamiento',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function safeRestSeconds'],
+        ],
+    ],
+    [
+        'id' => 140,
+        'name' => 'Control seguro de repeticiones',
+        'area' => 'Entrenamiento',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function safeReps'],
+        ],
+    ],
+    [
+        'id' => 141,
+        'name' => 'Control seguro de series',
+        'area' => 'Entrenamiento',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function safeSeries'],
+        ],
+    ],
+    [
+        'id' => 142,
+        'name' => 'Avance seguro entre ejercicios',
+        'area' => 'Entrenamiento',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function nextExerciseIndex'],
+        ],
+    ],
+    [
+        'id' => 143,
+        'name' => 'Cálculo de avance de entrenamiento',
+        'area' => 'Entrenamiento',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function trainingProgressPercent'],
+        ],
+    ],
+    [
+        'id' => 144,
+        'name' => 'Límite semanal seguro de días de entrenamiento',
+        'area' => 'Entrenamiento',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function weeklyTrainingDaysLimit'],
+        ],
+    ],
+    [
+        'id' => 145,
+        'name' => 'Eliminación de zonas de entrenamiento repetidas',
+        'area' => 'Entrenamiento',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function uniqueTrainingZones'],
+        ],
+    ],
+    [
+        'id' => 146,
+        'name' => 'Protección de navegación por módulos',
+        'area' => 'Navegación',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function safeModule'],
+        ],
+    ],
+    [
+        'id' => 147,
+        'name' => 'Formato local seguro de fechas',
+        'area' => 'Experiencia',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function formatLocalDate'],
+        ],
+    ],
+    [
+        'id' => 148,
+        'name' => 'Formato monetario en soles',
+        'area' => 'Experiencia',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function formatCurrencyPEN'],
+        ],
+    ],
+    [
+        'id' => 149,
+        'name' => 'Cálculo de perfil completado',
+        'area' => 'Perfil',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function profileCompletionPercent'],
+        ],
+    ],
+    [
+        'id' => 150,
+        'name' => 'Detección de datos faltantes del perfil',
+        'area' => 'Perfil',
+        'checks' => [
+            ['type' => 'file_contains', 'path' => '../FRONTEND/suma-angular/src/app/component/pages/usuario/portal-cliente-quality.ts', 'needle' => 'export function missingProfileFields'],
+        ],
+    ],
 ];
