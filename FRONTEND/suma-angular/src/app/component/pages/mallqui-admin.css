@@ -3046,3 +3046,136 @@
     min-width:560px;
   }
 }
+
+
+/* ADMIN V26 · MENÚ PRINCIPAL SIMPLIFICADO */
+.admin-hub-shell{
+  display:grid;
+  gap:18px;
+}
+.admin-hub-hero{
+  padding:24px 26px;
+  border:1px solid #e5eaf1;
+  border-radius:20px;
+  background:linear-gradient(135deg,#ffffff 0%,#f8fafc 100%);
+  box-shadow:0 12px 34px rgba(21,33,52,.06);
+}
+.admin-hub-hero.compact{
+  padding-bottom:21px;
+}
+.admin-hub-hero span{
+  display:block;
+  margin-bottom:7px;
+  color:#e21d3d;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:1.15px;
+}
+.admin-hub-hero h2{
+  margin:0;
+  color:#111b2d;
+  font-size:27px;
+  line-height:1.05;
+}
+.admin-hub-hero p{
+  max-width:760px;
+  margin:8px 0 0;
+  color:#6d7a8d;
+  font-size:11.5px;
+  line-height:1.5;
+}
+.admin-hub-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+.admin-hub-grid-compact{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+}
+.admin-hub-card{
+  min-height:145px;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) 20px;
+  align-items:start;
+  gap:12px;
+  padding:20px;
+  border:1px solid #e3e9f1;
+  border-radius:17px;
+  background:#fff;
+  color:#17243a;
+  text-align:left;
+  cursor:pointer;
+  box-shadow:0 10px 28px rgba(22,35,55,.045);
+  transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease;
+}
+.admin-hub-card:hover{
+  transform:translateY(-2px);
+  border-color:#f0b6c0;
+  box-shadow:0 14px 34px rgba(22,35,55,.08);
+}
+.admin-hub-card-primary{
+  border-color:#ffd4dc;
+  background:#fff8f9;
+}
+.admin-hub-icon{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:#f2f5f8;
+  color:#d91f38;
+  font-size:16px;
+  font-weight:900;
+}
+.admin-hub-card div{
+  min-width:0;
+}
+.admin-hub-card small{
+  display:block;
+  margin-bottom:5px;
+  color:#8b97a8;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.7px;
+}
+.admin-hub-card h3{
+  margin:0;
+  color:#17243a;
+  font-size:15px;
+}
+.admin-hub-card p{
+  margin:6px 0 0;
+  color:#748196;
+  font-size:9.5px;
+  line-height:1.45;
+}
+.admin-hub-card>b{
+  align-self:center;
+  color:#d91f38;
+  font-size:18px;
+}
+.admin-hub-section-title{
+  margin:4px 2px -5px;
+}
+.admin-hub-section-title span{
+  color:#7f8b9d;
+  font-size:8.5px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+@media(max-width:1200px){
+  .admin-hub-grid,
+  .admin-hub-grid-compact{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+@media(max-width:720px){
+  .admin-hub-grid,
+  .admin-hub-grid-compact{
+    grid-template-columns:1fr;
+  }
+  .admin-hub-card{
+    min-height:auto;
+  }
+}
