@@ -108,9 +108,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
                 <small>{{dashboard?.periodo?.fecha || ''}}</small>
               </div>
             </div>
-            <button type="button" class="ux-refresh" [disabled]="actualizandoDatos" (click)="actualizarSeccionActual()">
-              {{actualizandoDatos ? '↻ Actualizando...' : '↻ Actualizar'}}
-            </button>
+
           </div>
         </section>
 
@@ -125,14 +123,8 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
           <button type="button" class="ux-action" (click)="abrirNuevoSocioDesdeDashboard()">
             <span>♙</span><div><b>Nuevo socio</b><small>Registrar miembro</small></div>
           </button>
-          <button type="button" class="ux-action" (click)="cambiarSeccion('membresias')">
-            <span>✦</span><div><b>Asignar membresía</b><small>Contratar o renovar</small></div>
-          </button>
           <button type="button" class="ux-action" (click)="cambiarSeccion('asistencias')">
             <span>✓</span><div><b>Registrar asistencia</b><small>Entrada o salida</small></div>
-          </button>
-          <button type="button" class="ux-action" (click)="cambiarSeccion('comunicacion')">
-            <span>●</span><div><b>Enviar aviso</b><small>Notificar clientes</small></div>
           </button>
         </section>
 
@@ -163,14 +155,25 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
           </article>
         </section>
 
-        <section class="ux-status-strip" aria-label="Estado operativo">
-          <button type="button" (click)="cambiarSeccion('reservas')"><span>◷</span><div><b>{{dashboard?.reservas?.hoy ?? 0}}</b><small>Reservas hoy</small></div></button>
-          <button type="button" (click)="cambiarSeccion('asistencias')"><span>▣</span><div><b>{{dashboard?.asistencias?.hoy ?? 0}}</b><small>Asistencias hoy</small></div></button>
-          <button type="button" (click)="cambiarSeccion('pagos')"><span>▤</span><div><b>{{dashboard?.membresias?.pagos_registrados ?? 0}}</b><small>Pagos registrados</small></div></button>
-          <button type="button" [class.needs-attention]="(dashboard?.alertas?.rutinas_pendientes ?? 0)>0" (click)="cambiarSeccion('soporte')"><span>🏋</span><div><b>{{dashboard?.alertas?.rutinas_pendientes ?? 0}}</b><small>Rutinas solicitadas</small></div></button>
-          <button type="button" [class.needs-attention]="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0" (click)="cambiarSeccion('inventario')"><span>!</span><div><b>{{dashboard?.inventario?.productos_stock_bajo ?? 0}}</b><small>Stock bajo</small></div></button>
-          <button type="button" [class.needs-attention]="(dashboard?.alertas?.soporte_pendiente ?? 0)>0" (click)="cambiarSeccion('soporte')"><span>?</span><div><b>{{dashboard?.alertas?.soporte_pendiente ?? 0}}</b><small>Soporte pendiente</small></div></button>
-          <button type="button" [class.needs-attention]="(dashboard?.alertas?.opiniones_pendientes ?? 0)>0" (click)="cambiarSeccion('opiniones')"><span>★</span><div><b>{{dashboard?.alertas?.opiniones_pendientes ?? 0}}</b><small>Opiniones nuevas</small></div></button>
+        <section class="ux-status-strip" aria-label="Pendientes importantes">
+          <button type="button" (click)="cambiarSeccion('reservas')">
+            <span>◷</span><div><b>{{dashboard?.reservas?.hoy ?? 0}}</b><small>Reservas de hoy</small></div>
+          </button>
+          <button type="button" [class.needs-attention]="(dashboard?.alertas?.rutinas_pendientes ?? 0)>0" (click)="cambiarSeccion('soporte')">
+            <span>🏋</span><div><b>{{dashboard?.alertas?.rutinas_pendientes ?? 0}}</b><small>Rutinas solicitadas</small></div>
+          </button>
+          <button type="button" [class.needs-attention]="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0" (click)="cambiarSeccion('inventario')">
+            <span>!</span><div><b>{{dashboard?.inventario?.productos_stock_bajo ?? 0}}</b><small>Productos con stock bajo</small></div>
+          </button>
+          <button type="button"
+                  [class.needs-attention]="((dashboard?.alertas?.soporte_pendiente ?? 0)+(dashboard?.alertas?.opiniones_pendientes ?? 0))>0"
+                  (click)="(dashboard?.alertas?.soporte_pendiente ?? 0)>0 ? cambiarSeccion('soporte') : cambiarSeccion('opiniones')">
+            <span>?</span>
+            <div>
+              <b>{{(dashboard?.alertas?.soporte_pendiente ?? 0)+(dashboard?.alertas?.opiniones_pendientes ?? 0)}}</b>
+              <small>Atención al cliente</small>
+            </div>
+          </button>
         </section>
 
         <section class="admin-portal-live">
