@@ -25,11 +25,10 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
           <nav class="mallqui-apex-menu" aria-label="Navegación principal">
             <button type="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')">Inicio</button>
             <button type="button" [class.active]="moduloActivo==='casa'" (click)="abrirModulo('casa')">Entrenar</button>
-            <button type="button" [class.active]="moduloActivo==='rutinas'" (click)="abrirModulo('rutinas')">Rutinas</button>
-            <button type="button" [class.active]="moduloActivo==='clases'" (click)="abrirModulo('clases')">Clases</button>
-            <button type="button" [class.active]="moduloActivo==='reservas'" (click)="abrirModulo('reservas')">Reservas</button>
-            <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')">Progreso</button>
+            <button type="button" [class.active]="moduloActivo==='rutinas'" (click)="abrirModulo('rutinas')">Rutina</button>
+            <button type="button" [class.active]="moduloActivo==='clases' || moduloActivo==='reservas' || moduloActivo==='calendario'" (click)="abrirModulo('clases')">Clases</button>
             <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')">Membresía</button>
+            <button type="button" [class.active]="mobileMenuAbierto" (click)="mobileMenuAbierto=!mobileMenuAbierto">Más</button>
           </nav>
 
           <div class="mallqui-apex-user">
@@ -48,14 +47,6 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
         </div>
       </header>
 
-      <nav class="member-desktop-actions" aria-label="Accesos del cliente">
-        <button type="button" [class.active]="moduloActivo==='calendario'" (click)="abrirModulo('calendario')"><span>◫</span> Calendario</button>
-        <button type="button" [class.active]="moduloActivo==='asistencias'" (click)="abrirModulo('asistencias')"><span>✓</span> Asistencias</button>
-        <button type="button" [class.active]="moduloActivo==='club'" (click)="abrirModulo('club')"><span>▣</span> Credencial</button>
-        <button type="button" [class.active]="moduloActivo==='avisos'" (click)="abrirModulo('avisos')"><span>●</span> Avisos</button>
-        <button type="button" [class.active]="moduloActivo==='soporte'" (click)="abrirModulo('soporte')"><span>?</span> Ayuda</button>
-        <button type="button" [class.active]="moduloActivo==='perfil'" (click)="abrirModulo('perfil')"><span>♙</span> Perfil</button>
-      </nav>
 
       <div *ngIf="mobileMenuAbierto" class="member-mobile-menu-backdrop" (click)="mobileMenuAbierto=false">
         <aside class="member-mobile-menu-sheet" (click)="$event.stopPropagation()">
@@ -67,12 +58,11 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
             <button type="button" (click)="mobileMenuAbierto=false" aria-label="Cerrar menú">×</button>
           </div>
           <div class="member-mobile-menu-grid">
-            <button type="button" (click)="abrirModulo('rutinas')"><i>🏋</i><span>Rutinas</span></button>
+            <button type="button" (click)="abrirModulo('progreso')"><i>◎</i><span>Progreso</span></button>
             <button type="button" (click)="abrirModulo('calendario')"><i>◫</i><span>Calendario</span></button>
             <button type="button" (click)="abrirModulo('reservas')"><i>◷</i><span>Reservas</span></button>
             <button type="button" (click)="abrirModulo('asistencias')"><i>✓</i><span>Asistencias</span></button>
-            <button type="button" (click)="abrirModulo('club')"><i>★</i><span>Acceso al gym</span></button>
-            <button type="button" (click)="abrirModulo('pagos')"><i>▤</i><span>Membresía</span></button>
+            <button type="button" (click)="abrirModulo('club')"><i>★</i><span>Credencial</span></button>
             <button type="button" (click)="abrirModulo('avisos')"><i>●</i><span>Avisos</span></button>
             <button type="button" (click)="abrirModulo('soporte')"><i>?</i><span>Ayuda</span></button>
             <button type="button" (click)="abrirModulo('perfil')"><i>♙</i><span>Perfil</span></button>
@@ -1696,9 +1686,9 @@ import { code128DataUri, code128Svg } from '../../../shared/code128';
 
       <nav class="member-mobile-bottom-nav" aria-label="Navegación móvil">
         <button type="button" [class.active]="moduloActivo==='inicio'" (click)="abrirModulo('inicio')"><i>⌂</i><span>Inicio</span></button>
-        <button type="button" [class.active]="moduloActivo==='casa'" (click)="abrirModulo('casa')"><i>⚡</i><span>Entrenar</span></button>
-        <button type="button" [class.active]="moduloActivo==='clases'" (click)="abrirModulo('clases')"><i>▣</i><span>Clases</span></button>
-        <button type="button" [class.active]="moduloActivo==='progreso'" (click)="abrirModulo('progreso')"><i>◎</i><span>Progreso</span></button>
+        <button type="button" [class.active]="moduloActivo==='casa' || moduloActivo==='rutinas'" (click)="abrirModulo('casa')"><i>⚡</i><span>Entrenar</span></button>
+        <button type="button" [class.active]="moduloActivo==='clases' || moduloActivo==='reservas' || moduloActivo==='calendario'" (click)="abrirModulo('clases')"><i>▣</i><span>Clases</span></button>
+        <button type="button" [class.active]="moduloActivo==='pagos'" (click)="abrirModulo('pagos')"><i>▤</i><span>Membresía</span></button>
         <button type="button" [class.active]="mobileMenuAbierto" (click)="mobileMenuAbierto=!mobileMenuAbierto"><i>•••</i><span>Más</span></button>
       </nav>
 
