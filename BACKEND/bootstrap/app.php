@@ -3,6 +3,7 @@
 use App\Http\Middleware\AuditLogMiddleware;
 use App\Http\Middleware\JwtMiddleware;
 use App\Http\Middleware\RolMiddleware;
+use App\Console\Commands\VerificarSprintsMallqui;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withCommands([
+        VerificarSprintsMallqui::class,
+    ])
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'rol' => RolMiddleware::class,
