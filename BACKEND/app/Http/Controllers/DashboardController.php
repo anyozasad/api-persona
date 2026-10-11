@@ -156,6 +156,44 @@ class DashboardController extends Controller
             + $soportePendiente
             + $opinionesPendientes;
 
+        $prioridades = collect([
+            [
+                'tipo' => 'rutinas',
+                'cantidad' => $rutinasPendientes,
+                'titulo' => 'Solicitudes de rutina',
+                'descripcion' => 'Clientes esperando una rutina asignada por el entrenador.',
+                'nivel' => $rutinasPendientes > 0 ? 'alta' : 'ok',
+            ],
+            [
+                'tipo' => 'soporte',
+                'cantidad' => $soportePendiente,
+                'titulo' => 'Consultas de clientes',
+                'descripcion' => 'Mensajes del portal pendientes de respuesta.',
+                'nivel' => $soportePendiente > 0 ? 'alta' : 'ok',
+            ],
+            [
+                'tipo' => 'opiniones',
+                'cantidad' => $opinionesPendientes,
+                'titulo' => 'Opiniones por revisar',
+                'descripcion' => 'Comentarios del socio que aún no fueron revisados.',
+                'nivel' => $opinionesPendientes > 0 ? 'media' : 'ok',
+            ],
+            [
+                'tipo' => 'inventario',
+                'cantidad' => $stock['productos_stock_bajo'],
+                'titulo' => 'Stock bajo',
+                'descripcion' => 'Productos que necesitan reposición.',
+                'nivel' => $stock['productos_stock_bajo'] > 0 ? 'alta' : 'ok',
+            ],
+            [
+                'tipo' => 'membresias',
+                'cantidad' => count($suscripciones['detalle_por_vencer']),
+                'titulo' => 'Membresías por vencer',
+                'descripcion' => 'Socios cuya membresía vence durante los próximos 7 días.',
+                'nivel' => count($suscripciones['detalle_por_vencer']) > 0 ? 'media' : 'ok',
+            ],
+        ])->filter(fn ($item) => $item['cantidad'] > 0)->values();
+
         return response()->json([
             'fuente' => [
                 'base_datos' => $this->db->getDatabaseName(),
@@ -232,6 +270,7 @@ class DashboardController extends Controller
                 'soporte_pendiente' => $soportePendiente,
                 'rutinas_pendientes' => $rutinasPendientes,
                 'opiniones_pendientes' => $opinionesPendientes,
+                'prioridades' => $prioridades,
             ],
             'portal_clientes' => [
                 'actividad_reciente' => $actividadPortal,
