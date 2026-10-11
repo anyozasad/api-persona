@@ -29,4 +29,22 @@ class PortalCliente100FuncionesTest extends TestCase
         $this->assertSame(0, $report['failed'], 'Fallaron: '.implode(', ', $failed));
         $this->assertSame(100, $report['passed']);
     }
+
+    public function test_la_navegacion_del_cliente_no_depende_de_un_boton_mas(): void
+    {
+        $path = base_path('../FRONTEND/suma-angular/src/app/component/pages/usuario/usuario.component.ts');
+        $source = (string) file_get_contents($path);
+
+        $this->assertStringNotContainsString('>Más</button>', $source);
+        $this->assertStringNotContainsString('<span>Más</span>', $source);
+        $this->assertStringContainsString('<span>Cuenta</span>', $source);
+        $this->assertStringContainsString("abrirModulo('progreso')", $source);
+        $this->assertStringContainsString("abrirModulo('calendario')", $source);
+        $this->assertStringContainsString("abrirModulo('reservas')", $source);
+        $this->assertStringContainsString("abrirModulo('asistencias')", $source);
+        $this->assertStringContainsString("abrirModulo('club')", $source);
+        $this->assertStringContainsString("abrirModulo('avisos')", $source);
+        $this->assertStringContainsString("abrirModulo('soporte')", $source);
+        $this->assertStringContainsString("abrirModulo('perfil')", $source);
+    }
 }
