@@ -66,12 +66,31 @@
 .member-page .mallqui-products-home-grid article:nth-child(4n){
   border-right:0;
 }
+.member-page .mallqui-product-home-media{
+  width:100%;
+  height:118px;
+  display:grid;
+  place-items:center;
+  margin-bottom:14px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);
+  background:#0b1014;
+}
+.member-page .mallqui-product-home-media.has-photo{
+  background:linear-gradient(145deg,#151b20,#0b0f12);
+}
+.member-page .mallqui-product-home-media img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  padding:8px;
+  box-sizing:border-box;
+}
 .member-page .mallqui-product-home-mark{
   width:48px;
   height:48px;
   display:grid;
   place-items:center;
-  margin-bottom:17px;
   border:1px solid rgba(255,49,80,.28);
   background:rgba(255,49,80,.07);
   color:#ff6178;
