@@ -78,6 +78,12 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         </div>
       </header>
 
+      <div class="admin-context-back" *ngIf="esSeccionAtencionSecundaria || esSeccionGestionSecundaria">
+        <button type="button" *ngIf="esSeccionAtencionSecundaria" (click)="cambiarSeccion('atencion')">← Atención al cliente</button>
+        <button type="button" *ngIf="esSeccionGestionSecundaria" (click)="cambiarSeccion('gestion')">← Gestión interna</button>
+        <span>{{esSeccionAtencionSecundaria ? 'Función conectada con el portal del socio' : 'Herramienta administrativa interna'}}</span>
+      </div>
+
       <div *ngIf="toast" class="admin-toast success">{{toast}}</div>
       <div *ngIf="error" class="admin-toast error">⚠ {{error}}</div>
 
@@ -1849,6 +1855,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   get tituloActual(): string { return this.titulos[this.seccion]?.[0] ?? 'Administrador'; }
   get subtituloActual(): string { return this.titulos[this.seccion]?.[1] ?? ''; }
+  get esSeccionAtencionSecundaria(): boolean {
+    return ['soporte','opiniones','comunicacion'].includes(this.seccion);
+  }
+  get esSeccionGestionSecundaria(): boolean {
+    return ['entrenador','planes','gastos','reportes','reporte-asistencias','usuarios','configuracion','caja','ventas','historial-ventas','inventario','proveedores','compras','categorias','productos'].includes(this.seccion);
+  }
 
   get clientesActivos(): number {
     return this.clientes.filter((c:any)=>c.estado==='Activo').length;
