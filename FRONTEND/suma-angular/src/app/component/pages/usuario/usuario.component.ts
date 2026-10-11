@@ -6,6 +6,13 @@ import { AuthService } from '../../../auth.service';
 import { GymApiService } from '../../../core/services/gym-api.service';
 import { ClienteExperienciaComponent } from './cliente-experiencia.component';
 import { code128DataUri, code128Svg } from '../../../shared/code128';
+import {
+  activeClasses, activeRoutine, attendanceOpen, attendanceThisMonth, daysUntil,
+  hasDuplicateReservation, latestCompletedPayment, normalizeEmail, normalizeOperationNumber,
+  normalizePhone, normalizeText, profileCompletionPercent, reservationActive,
+  reservationAttended, reservationCancelled, safeArray, safeModule, sortNewest,
+  uniqueById, uniqueTrainingZones, weeklyTrainingDaysLimit
+} from './portal-cliente-quality';
 
 @Component({
   selector: 'app-usuario',
@@ -2106,6 +2113,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       this.enfoqueInicioSeleccionado='Cardiovascular';
       this.nivelEntrenamiento='Principiante';
     }
+    try{this.moduloActivo=safeModule(localStorage.getItem('mallqui_modulo_cliente')||'inicio');}catch{this.moduloActivo='inicio';}
     this.cargarEstadoSistema();
     this.cargar();
     this.iniciarSincronizacionAutomatica();
@@ -2136,13 +2144,13 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.membresiaProxima=r.membresia?.proxima||null;
         this.membresiasDisponibles=r.membresiasDisponibles||[];
         this.gymInfo=r.gymInfo||this.gymInfo||{};
-        this.pagos=r.pagos||[];
-        this.rutinas=r.rutinas||[];
-        this.asistencias=r.asistencias||[];
-        this.reservas=r.reservas||[];
-        this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');
-        this.compras=r.compras||[];
-        this.productosDisponibles=r.productos||[];
+        this.pagos=sortNewest(uniqueById(safeArray(r.pagos),['id_pago']),'fecha_pago');
+        this.rutinas=sortNewest(uniqueById(safeArray(r.rutinas),['id_rutina']),'fecha_inicio');
+        this.asistencias=sortNewest(uniqueById(safeArray(r.asistencias),['id_asistencia']),'fecha_hora_entrada');
+        this.reservas=sortNewest(uniqueById(safeArray(r.reservas),['id_reserva']),'fecha_clase');
+        this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));
+        this.compras=sortNewest(uniqueById(safeArray(r.compras),['id_venta']),'fecha_venta');
+        this.productosDisponibles=uniqueById(safeArray(r.productos),['id_producto']);
         this.preseleccionarPlanActual();
         this.cargarContadorAvisos();
 
@@ -2174,7 +2182,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargar():void{
     this.cargando=true; this.error='';
     this.api.cargarPortalCliente().subscribe({
-      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=r.membresiasDisponibles||[];this.gymInfo=r.gymInfo||{};this.pagos=r.pagos||[];this.rutinas=r.rutinas||[];this.asistencias=r.asistencias||[];this.reservas=r.reservas||[];this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');this.compras=r.compras||[];this.productosDisponibles=r.productos||[];this.preseleccionarPlanActual();this.cargando=false;this.cargarFotoPerfil();this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
+      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=safeArray(r.membresiasDisponibles);this.gymInfo=r.gymInfo||{};this.pagos=sortNewest(uniqueById(safeArray(r.pagos),['id_pago']),'fecha_pago');this.rutinas=sortNewest(uniqueById(safeArray(r.rutinas),['id_rutina']),'fecha_inicio');this.asistencias=sortNewest(uniqueById(safeArray(r.asistencias),['id_asistencia']),'fecha_hora_entrada');this.reservas=sortNewest(uniqueById(safeArray(r.reservas),['id_reserva']),'fecha_clase');this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));this.compras=sortNewest(uniqueById(safeArray(r.compras),['id_venta']),'fecha_venta');this.productosDisponibles=uniqueById(safeArray(r.productos),['id_producto']);this.preseleccionarPlanActual();this.cargando=false;this.cargarFotoPerfil();this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
       error:e=>{this.error=this.errorApi(e);this.cargando=false;}
     });
   }
@@ -2208,7 +2216,10 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   abrirModulo(m:string){
     this.mobileMenuAbierto=false;
+    m=safeModule(m);
     this.moduloActivo=m;
+    try{localStorage.setItem('mallqui_modulo_cliente',m);}catch{}
+    document.title='Mallqui Gym · '+this.tituloModuloActual;
     this.error='';
 
     if(m==='casa'){
@@ -2740,28 +2751,12 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
   irSiguientePaso(){this.abrirModulo(this.siguientePasoModulo);}
 
-  get rutinaActual():any{
-    if(this.resumen?.rutina_actual)return this.resumen.rutina_actual;
-    const hoy=new Date();
-    hoy.setHours(0,0,0,0);
-    return this.rutinas.find((r:any)=>{
-      if(String(r?.estado||'').toLowerCase()!=='activo')return false;
-      const inicio=r?.fecha_inicio ? new Date(String(r.fecha_inicio).slice(0,10)+'T00:00:00') : null;
-      const fin=r?.fecha_fin ? new Date(String(r.fecha_fin).slice(0,10)+'T23:59:59') : null;
-      return (!inicio || inicio.getTime()<=hoy.getTime()) && (!fin || fin.getTime()>=hoy.getTime());
-    }) || null;
-  }
+  get rutinaActual():any{return this.resumen?.rutina_actual||activeRoutine(this.rutinas);}
   get nombreEntrenador():string{return this.nombrePersona(this.rutinaActual?.entrenador) || 'Personal de Mallqui Gym';}
-  get reservasActivas():any[]{return this.reservas.filter(r=>r.estado==='Reservada');}
-  get reservasAsistidas():number{return this.reservas.filter(r=>r.estado==='Asistio').length;}
-  get reservasCanceladas():number{return this.reservas.filter(r=>r.estado==='Cancelada').length;}
-  get asistenciasMesActual():number{
-    const hoy=new Date();
-    return this.asistencias.filter((a:any)=>{
-      const d=new Date(a?.fecha_hora_entrada);
-      return !isNaN(d.getTime()) && d.getFullYear()===hoy.getFullYear() && d.getMonth()===hoy.getMonth();
-    }).length;
-  }
+  get reservasActivas():any[]{return this.reservas.filter(reservationActive);}
+  get reservasAsistidas():number{return this.reservas.filter(reservationAttended).length;}
+  get reservasCanceladas():number{return this.reservas.filter(reservationCancelled).length;}
+  get asistenciasMesActual():number{return attendanceThisMonth(this.asistencias).length;}
   get productosInicioVisibles(): any[] {
     return this.mostrarTodosProductosInicio
       ? this.productosDisponibles
@@ -2776,9 +2771,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     return String(p?.nombre_producto || 'P').trim().charAt(0).toUpperCase() || 'P';
   }
 
-  get asistenciaAbierta():any{
-    return this.asistencias.find((a:any)=>a?.fecha_hora_entrada && !a?.fecha_hora_salida)||null;
-  }
+  get asistenciaAbierta():any{return attendanceOpen(this.asistencias);}
 
   get ultimaAsistencia():any{
     return Array.isArray(this.asistencias) && this.asistencias.length ? this.asistencias[0] : null;
@@ -2796,15 +2789,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     return h+' h '+String(m).padStart(2,'0')+' min';
   }
 
-  get perfilCompleto():boolean{
-    return Boolean(
-      String(this.perfil?.nombres||'').trim() &&
-      String(this.perfil?.apellidos||'').trim() &&
-      String(this.perfil?.correo||'').trim() &&
-      String(this.perfil?.telefono||'').trim() &&
-      String(this.perfil?.direccion||'').trim()
-    );
-  }
+  get perfilCompleto():boolean{return profileCompletionPercent(this.perfil)===100;}
 
   get planCasaConfigurado():boolean{
     return Boolean(
@@ -2913,16 +2898,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     return nombre || 'Membresía vigente';
   }
 
-  get ultimoPagoCompletado():any{
-    return (this.pagos||[]).find((p:any)=>String(p?.estado_pago||'').toLowerCase()==='completado')||null;
-  }
-
-  get diasRestantesMembresia():number{
-    if(!this.membresiaActual?.fecha_fin)return 0;
-    const fin=new Date(String(this.membresiaActual.fecha_fin).slice(0,10)+'T23:59:59');
-    const hoy=new Date();
-    return Math.max(0,Math.ceil((fin.getTime()-hoy.getTime())/86400000));
-  }
+  get ultimoPagoCompletado():any{return latestCompletedPayment(this.pagos);}
+  get diasRestantesMembresia():number{return daysUntil(this.membresiaActual?.fecha_fin);}
 
   accionPasoRutinaGym():void{
     if(this.tieneRutinaAsignadaGym){
@@ -3089,6 +3066,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   guardarPlanCasa():void{
     this.errorCasa='';
+    this.planCasa={...this.planCasa,dias:weeklyTrainingDaysLimit(this.planCasa.dias),zonas:uniqueTrainingZones(this.planCasa.zonas)};
     this.api.guardarPlanCasaCliente({dias:this.planCasa.dias,zonas:this.planCasa.zonas,objetivo:this.planCasa.objetivo||'fuerza'}).subscribe({
       next:r=>{this.planCasa={...r.plan};this.ok(r.mensaje||'Plan semanal guardado');},
       error:e=>this.errorCasa=this.errorApi(e)
@@ -3616,6 +3594,14 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   guardarPerfil(){
+    this.perfil={
+      ...this.perfil,
+      nombres:normalizeText(this.perfil?.nombres),
+      apellidos:normalizeText(this.perfil?.apellidos),
+      correo:normalizeEmail(this.perfil?.correo),
+      telefono:normalizePhone(this.perfil?.telefono),
+      direccion:normalizeText(this.perfil?.direccion)
+    };
     this.api.actualizarPerfilCliente(this.perfil).subscribe({
       next:r=>{
         this.perfil=this.normalizarPerfil(r.cliente);
@@ -3701,6 +3687,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   reservar(c:any){
     const f=this.fechasReserva[c.id_clase];
     if(!f){this.error='Selecciona una fecha para la clase.';return;}
+    if(hasDuplicateReservation(this.reservas,c?.id_clase,f)){this.error='Ya tienes una reserva activa para esa clase y fecha.';return;}
     this.api.reservarClase(c.id_clase,f).subscribe({
       next:r=>{
         this.ok(r.mensaje||'Reserva creada');
@@ -3737,6 +3724,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       this.error='Selecciona una mensualidad o promoción disponible.';
       return;
     }
+    this.pagoForm.numero_operacion=normalizeOperationNumber(this.pagoForm.numero_operacion);
     if(!String(this.pagoForm.numero_operacion||'').trim()){
       this.error='Ingresa el número de operación del pago.';
       return;
