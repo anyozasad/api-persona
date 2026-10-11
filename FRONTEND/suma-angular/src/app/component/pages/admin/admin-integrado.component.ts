@@ -457,6 +457,10 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
               <span class="admin-hub-icon">✓</span>
               <div><small>ENTRADA Y SALIDA</small><h3>Asistencia <em class="admin-hub-live-count">{{dashboard?.asistencias?.dentro_ahora ?? 0}}</em></h3><p>Registrar acceso por socio, DNI o credencial y consultar movimientos.</p></div><b>→</b>
             </button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('pagos')">
+              <span class="admin-hub-icon">S/</span>
+              <div><small>HISTORIAL ECONÓMICO</small><h3>Pagos <em class="admin-hub-live-count">{{dashboard?.membresias?.pagos_registrados ?? 0}}</em></h3><p>Consultar pagos de membresía, métodos y operaciones registradas.</p></div><b>→</b>
+            </button>
           </div>
         </section>
       </ng-container>
@@ -560,6 +564,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
             <button type="button" class="admin-hub-card" (click)="cambiarSeccion('ventas')"><span class="admin-hub-icon">▤</span><div><h3>Punto de venta</h3><p>Cobro de productos del gimnasio.</p></div><b>→</b></button>
             <button type="button" class="admin-hub-card" (click)="cambiarSeccion('historial-ventas')"><span class="admin-hub-icon">↺</span><div><h3>Historial de ventas</h3><p>Consulta de ventas registradas.</p></div><b>→</b></button>
             <button type="button" class="admin-hub-card" (click)="cambiarSeccion('inventario')"><span class="admin-hub-icon">▦</span><div><h3>Inventario</h3><p>Productos y control de stock.</p></div><b>→</b></button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('kardex')"><span class="admin-hub-icon">↕</span><div><h3>Kardex y ajustes</h3><p>Entradas, salidas y correcciones de stock.</p></div><b>→</b></button>
             <button type="button" class="admin-hub-card" (click)="cambiarSeccion('proveedores')"><span class="admin-hub-icon">♢</span><div><h3>Proveedores</h3><p>Datos de abastecimiento.</p></div><b>→</b></button>
             <button type="button" class="admin-hub-card" (click)="cambiarSeccion('compras')"><span class="admin-hub-icon">↓</span><div><h3>Compras</h3><p>Ingreso de mercadería.</p></div><b>→</b></button>
             <button type="button" class="admin-hub-card" (click)="cambiarSeccion('categorias')"><span class="admin-hub-icon">◇</span><div><h3>Categorías</h3><p>Organización de productos.</p></div><b>→</b></button>
@@ -1351,6 +1356,54 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         <div class="embedded-productos"><app-productos></app-productos></div>
       </ng-container>
 
+      <ng-container *ngIf="seccion==='kardex'">
+        <section class="management-grid">
+          <article class="admin-form-card">
+            <div class="management-heading">
+              <div><h2>Ajustar stock</h2><p>Usa esta opción para correcciones, mermas o ingresos manuales que no provienen de una compra.</p></div><span>↕</span>
+            </div>
+            <form (ngSubmit)="ajustarStock()">
+              <label>Producto
+                <select [(ngModel)]="ajusteForm.id_producto" name="ajproducto" required>
+                  <option [ngValue]="0">Seleccionar</option>
+                  <option *ngFor="let p of productos" [ngValue]="p.id_producto">{{p.nombre_producto}} · Stock {{p.stock}}</option>
+                </select>
+              </label>
+              <div class="form-row">
+                <label>Tipo<select [(ngModel)]="ajusteForm.tipo" name="ajtipo"><option>Entrada</option><option>Salida</option></select></label>
+                <label>Cantidad<input type="number" min="1" [(ngModel)]="ajusteForm.cantidad" name="ajcantidad" required></label>
+              </div>
+              <label>Motivo<input [(ngModel)]="ajusteForm.motivo" name="ajmotivo" required minlength="3" placeholder="Ej. Corrección de conteo físico"></label>
+              <button class="admin-primary" type="submit" [disabled]="!ajusteForm.id_producto || ajusteForm.cantidad<1 || !ajusteForm.motivo.trim()">Registrar ajuste</button>
+            </form>
+          </article>
+
+          <article class="admin-list-card wide-card">
+            <div class="management-heading">
+              <div><h2>Kardex de inventario</h2><p>{{kardex.length}} movimientos registrados. Cada movimiento conserva su origen y saldo.</p></div>
+              <button type="button" class="admin-secondary" (click)="cargarKardex()">↻ Actualizar</button>
+            </div>
+            <div class="table-wrap">
+              <table class="management-table">
+                <thead><tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cantidad</th><th>Stock anterior</th><th>Stock nuevo</th><th>Motivo / origen</th></tr></thead>
+                <tbody>
+                  <tr *ngFor="let k of kardex">
+                    <td>{{fecha(k.fecha || k.created_at)}}</td>
+                    <td><b>{{k.producto?.nombre_producto || k.nombre_producto || nombreProducto(k.id_producto)}}</b></td>
+                    <td>{{k.tipo || k.tipo_movimiento || '-'}}</td>
+                    <td>{{k.cantidad ?? '-'}}</td>
+                    <td>{{k.stock_anterior ?? '-'}}</td>
+                    <td><b>{{k.stock_nuevo ?? k.stock_actual ?? '-'}}</b></td>
+                    <td>{{k.motivo || k.origen || k.descripcion || '-'}}</td>
+                  </tr>
+                  <tr *ngIf="!kardex.length"><td colspan="7">Todavía no hay movimientos de Kardex.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+      </ng-container>
+
       <ng-container *ngIf="seccion==='reporte-asistencias'">
         <section class="report-grid">
           <article><span>✓</span><p>Total asistencias</p><h2>{{reporteAsistencias?.total ?? 0}}</h2></article>
@@ -2000,6 +2053,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     planes:['Tarifas','Precios, duración y beneficios visibles para los clientes'],
     gastos:['Gastos','Registro de egresos de la caja activa'],
     inventario:['Inventario','Productos, stock y control del inventario'],
+    kardex:['Kardex y stock','Ajustes manuales y trazabilidad de movimientos de inventario'],
     'historial-ventas':['Historial de Ventas','Consulta de todas las ventas registradas'],
     'reporte-asistencias':['Reporte de Asistencias','Resumen y detalle de asistencias registradas'],
     entrenador:['Entrenador','Gestión del entrenador principal'], clases:['Clases','Programación, horarios y cupos'],
@@ -2092,7 +2146,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   constructor(public auth: AuthService, private api: AdminApiService, private router: Router) {}
 
   ngOnInit(): void {
-    this.seccion = ['kardex'].includes(this.seccionInicial) ? 'dashboard' : (this.seccionInicial || 'dashboard');
+    this.seccion = this.seccionInicial || 'dashboard';
     this.sidebarCerrado = localStorage.getItem('mallqui_admin_sidebar_closed') === '1';
     this.autoRefreshActivo = localStorage.getItem('mallqui_admin_auto_refresh') !== '0';
     this.cargarDashboard();
@@ -2130,7 +2184,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     return ['soporte','opiniones','comunicacion'].includes(this.seccion);
   }
   get esSeccionGestionSecundaria(): boolean {
-    return ['entrenador','planes','gastos','reportes','reporte-asistencias','usuarios','auditoria','configuracion','caja','ventas','historial-ventas','inventario','proveedores','compras','categorias','productos'].includes(this.seccion);
+    return ['entrenador','planes','gastos','reportes','reporte-asistencias','usuarios','auditoria','configuracion','caja','ventas','historial-ventas','inventario','kardex','proveedores','compras','categorias','productos'].includes(this.seccion);
   }
 
   get puedeAutoActualizar(): boolean {
@@ -2341,6 +2395,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       case 'inventario':
         this.cargarProductos();
         this.cargarCategorias();
+        this.cargarKardex();
+        break;
+      case 'kardex':
+        this.cargarProductos();
         this.cargarKardex();
         break;
       case 'reporte-asistencias':
