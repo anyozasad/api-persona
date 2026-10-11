@@ -5,9 +5,24 @@ import { AuthService } from '../../auth.service';
 const TOKEN_KEY = 'mallqui_token';
 const USER_KEY = 'mallqui_usuario';
 
+function leerStorage(storage: Storage, key: string): string | null {
+  try { return storage.getItem(key); } catch { return null; }
+}
+
+function limpiarStorage(): void {
+  try {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+  } catch {}
+  try {
+    sessionStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(USER_KEY);
+  } catch {}
+}
+
 function sesionActual(): { token: string | null; rol: string | null } {
-  const token = localStorage.getItem(TOKEN_KEY) ?? sessionStorage.getItem(TOKEN_KEY);
-  const raw = localStorage.getItem(USER_KEY) ?? sessionStorage.getItem(USER_KEY);
+  const token = leerStorage(localStorage, TOKEN_KEY) ?? leerStorage(sessionStorage, TOKEN_KEY);
+  const raw = leerStorage(localStorage, USER_KEY) ?? leerStorage(sessionStorage, USER_KEY);
 
   if (!token || !raw) return { token: null, rol: null };
 
@@ -15,10 +30,7 @@ function sesionActual(): { token: string | null; rol: string | null } {
     const usuario = JSON.parse(raw) as { rol?: string };
     return { token, rol: usuario.rol ?? null };
   } catch {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
-    sessionStorage.removeItem(TOKEN_KEY);
-    sessionStorage.removeItem(USER_KEY);
+    limpiarStorage();
     return { token: null, rol: null };
   }
 }
