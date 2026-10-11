@@ -314,7 +314,10 @@ import {
 
               <div class="mallqui-products-home-grid" *ngIf="productosDisponibles.length; else sinProductosInicio">
                 <article *ngFor="let p of productosInicioVisibles">
-                  <div class="mallqui-product-home-mark">{{inicialProductoInicio(p)}}</div>
+                  <div class="mallqui-product-home-media" [class.has-photo]="!!p.foto">
+                    <img *ngIf="p.foto" [src]="p.foto" [alt]="p.nombre_producto">
+                    <div *ngIf="!p.foto" class="mallqui-product-home-mark">{{inicialProductoInicio(p)}}</div>
+                  </div>
                   <div class="mallqui-product-home-copy">
                     <span>{{nombreCategoriaProductoInicio(p)}}</span>
                     <h4>{{p.nombre_producto}}</h4>
