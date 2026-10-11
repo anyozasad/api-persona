@@ -31,21 +31,26 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
       <nav class="admin-grouped-nav">
         <section class="admin-menu-group" *ngFor="let grupo of menuGrupos">
           <div class="admin-menu-group-title">{{grupo.titulo}}</div>
-          <button *ngFor="let item of grupo.items" type="button" [class.active]="seccion===item.id" (click)="cambiarSeccion(item.id)">
+          <button *ngFor="let item of grupo.items"
+                  type="button"
+                  [class.active]="seccion===item.id"
+                  [attr.aria-current]="seccion===item.id ? 'page' : null"
+                  (click)="cambiarSeccion(item.id)">
             <span class="admin-menu-icon">{{item.icono}}</span>
             <span class="admin-menu-text">{{item.nombre}}</span>
+            <b class="admin-menu-badge" *ngIf="badgeMenu(item.id)>0" [attr.aria-label]="badgeMenu(item.id)+' pendientes'">{{badgeMenu(item.id)>99 ? '99+' : badgeMenu(item.id)}}</b>
             <i *ngIf="seccion===item.id">›</i>
           </button>
         </section>
       </nav>
 
-      <div class="admin-system-card" [class.is-offline]="!dashboard?.fuente?.base_datos">
+      <button type="button" class="admin-system-card" [class.is-offline]="!dashboard?.fuente?.base_datos" (click)="cambiarSeccion('configuracion')" title="Abrir estado y mantenimiento del sistema">
         <div class="system-live-dot"></div>
         <div>
           <b>{{dashboard?.fuente?.base_datos ? 'Sistema en línea' : 'Verificando sistema'}}</b>
           <small>{{dashboard?.fuente?.base_datos ? ('BD: '+dashboard.fuente.base_datos) : 'Esperando conexión con Laravel y MySQL'}}</small>
         </div>
-      </div>
+      </button>
       <button type="button" class="admin-logout" (click)="cerrarSesion()"><span>↪</span> Cerrar sesión</button>
     </aside>
 
@@ -67,10 +72,17 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
           <p>{{subtituloActual}}</p>
         </div>
         <div class="admin-refresh-box">
-          <button class="admin-secondary admin-refresh-top" type="button" [disabled]="actualizandoDatos" (click)="actualizarSeccionActual()">
-            {{actualizandoDatos ? '↻ Actualizando...' : '↻ Actualizar datos'}}
-          </button>
-          <small *ngIf="ultimaActualizacion">Última actualización: {{ultimaActualizacion}}</small>
+          <div class="admin-refresh-actions">
+            <button class="admin-secondary admin-refresh-top" type="button" [disabled]="actualizandoDatos" (click)="actualizarSeccionActual()">
+              {{actualizandoDatos ? '↻ Actualizando...' : '↻ Actualizar datos'}}
+            </button>
+            <button *ngIf="seccion==='dashboard'" class="admin-header-mini" type="button" (click)="exportarDashboardCsv()" title="Descargar resumen del dashboard">⇩ CSV</button>
+            <button *ngIf="seccion==='dashboard'" class="admin-header-mini" type="button" (click)="imprimirDashboard()" title="Imprimir dashboard">⎙</button>
+            <button *ngIf="seccion==='dashboard'" class="admin-header-mini" type="button" [class.is-active]="autoRefreshActivo" (click)="toggleAutoRefresh()" [title]="autoRefreshActivo ? 'Desactivar actualización automática' : 'Activar actualización automática'">
+              {{autoRefreshActivo ? 'AUTO ON' : 'AUTO OFF'}}
+            </button>
+          </div>
+          <small *ngIf="ultimaActualizacion" [class.is-stale]="datosDesactualizados">Última actualización: {{ultimaActualizacion}}{{datosDesactualizados ? ' · datos antiguos' : ''}}</small>
         </div>
         <div class="admin-profile-wrap">
           <button type="button" class="admin-profile" (click)="cambiarSeccion('usuarios')" title="Administrar cuenta y usuarios internos">
@@ -93,6 +105,13 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
       <div *ngIf="error" class="admin-toast error">⚠ {{error}}</div>
 
       <ng-container *ngIf="seccion==='dashboard'">
+        <section class="dashboard-load-state" *ngIf="dashboardCargando && !dashboard">
+          <span class="dashboard-loader"></span><div><b>Cargando información real del gimnasio...</b><small>Consultando Laravel y MySQL.</small></div>
+        </section>
+        <section class="dashboard-load-state is-error" *ngIf="dashboardError">
+          <span>!</span><div><b>No se pudo actualizar el dashboard.</b><small>{{dashboardError}}</small></div>
+          <button type="button" (click)="reintentarDashboard()">Reintentar</button>
+        </section>
         <section class="ux-dashboard-head premium-dashboard-hero">
           <div class="dashboard-hero-copy">
             <span class="dashboard-live-pill"><i></i> OPERACIÓN EN TIEMPO REAL</span>
@@ -237,6 +256,20 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
               <small>Atención al cliente</small>
             </div>
           </button>
+        </section>
+
+        <section class="dashboard-priority-board" *ngIf="dashboard?.alertas?.prioridades?.length">
+          <header>
+            <div><span>PRIORIDADES</span><h3>Qué atender primero</h3><p>Ordenado con los pendientes reales del sistema.</p></div>
+            <b>{{dashboard?.alertas?.total ?? 0}} pendientes</b>
+          </header>
+          <div class="dashboard-priority-list">
+            <button type="button" *ngFor="let p of dashboard?.alertas?.prioridades" [attr.data-level]="p.nivel" (click)="abrirPrioridad(p)">
+              <span>{{iconoPrioridad(p.tipo)}}</span>
+              <div><small>{{p.cantidad}} PENDIENTE{{p.cantidad===1 ? '' : 'S'}}</small><b>{{p.titulo}}</b><p>{{p.descripcion}}</p></div>
+              <em>Resolver →</em>
+            </button>
+          </div>
         </section>
 
         <section class="admin-portal-live">
@@ -414,15 +447,15 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
           <div class="admin-hub-grid contact-hub-grid">
             <button type="button" class="admin-hub-card admin-hub-card-primary" (click)="cambiarSeccion('clientes')">
               <span class="admin-hub-icon">♙</span>
-              <div><small>DATOS DEL MIEMBRO</small><h3>Clientes</h3><p>Registrar, editar, consultar ficha y administrar el acceso del socio.</p></div><b>→</b>
+              <div><small>DATOS DEL MIEMBRO</small><h3>Clientes <em class="admin-hub-live-count">{{dashboard?.clientes?.total ?? 0}}</em></h3><p>Registrar, editar, consultar ficha y administrar el acceso del socio.</p></div><b>→</b>
             </button>
             <button type="button" class="admin-hub-card" (click)="cambiarSeccion('membresias')">
               <span class="admin-hub-icon">✦</span>
-              <div><small>PLAN Y VIGENCIA</small><h3>Membresías</h3><p>Asignar, renovar y revisar vencimientos y pagos del socio.</p></div><b>→</b>
+              <div><small>PLAN Y VIGENCIA</small><h3>Membresías <em class="admin-hub-live-count">{{dashboard?.membresias?.activas ?? 0}}</em></h3><p>Asignar, renovar y revisar vencimientos y pagos del socio.</p></div><b>→</b>
             </button>
             <button type="button" class="admin-hub-card" (click)="cambiarSeccion('asistencias')">
               <span class="admin-hub-icon">✓</span>
-              <div><small>ENTRADA Y SALIDA</small><h3>Asistencia</h3><p>Registrar acceso por socio, DNI o credencial y consultar movimientos.</p></div><b>→</b>
+              <div><small>ENTRADA Y SALIDA</small><h3>Asistencia <em class="admin-hub-live-count">{{dashboard?.asistencias?.dentro_ahora ?? 0}}</em></h3><p>Registrar acceso por socio, DNI o credencial y consultar movimientos.</p></div><b>→</b>
             </button>
           </div>
         </section>
@@ -441,15 +474,15 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
           <div class="admin-hub-grid contact-hub-grid">
             <button type="button" class="admin-hub-card admin-hub-card-primary" (click)="cambiarSeccion('clases')">
               <span class="admin-hub-icon">◉</span>
-              <div><small>PROGRAMACIÓN</small><h3>Clases</h3><p>Horarios, cupos y entrenador de las clases disponibles.</p></div><b>→</b>
+              <div><small>PROGRAMACIÓN</small><h3>Clases <em class="admin-hub-live-count">{{dashboard?.operacion?.clases_activas ?? 0}}</em></h3><p>Horarios, cupos y entrenador de las clases disponibles.</p></div><b>→</b>
             </button>
             <button type="button" class="admin-hub-card" (click)="cambiarSeccion('reservas')">
               <span class="admin-hub-icon">◫</span>
-              <div><small>AGENDA DEL SOCIO</small><h3>Reservas</h3><p>Ver reservas creadas por los clientes y controlar su asistencia.</p></div><b>→</b>
+              <div><small>AGENDA DEL SOCIO</small><h3>Reservas <em class="admin-hub-live-count">{{dashboard?.reservas?.hoy ?? 0}}</em></h3><p>Ver reservas creadas por los clientes y controlar su asistencia.</p></div><b>→</b>
             </button>
             <button type="button" class="admin-hub-card" (click)="cambiarSeccion('rutinas')">
               <span class="admin-hub-icon">🏋</span>
-              <div><small>ENTRENAMIENTO</small><h3>Rutinas</h3><p>Atender solicitudes y asignar la rutina que verá el socio.</p></div><b>→</b>
+              <div><small>ENTRENAMIENTO</small><h3>Rutinas <em class="admin-hub-live-count">{{dashboard?.alertas?.rutinas_pendientes ?? 0}}</em></h3><p>Atender solicitudes y asignar la rutina que verá el socio.</p></div><b>→</b>
             </button>
           </div>
         </section>
@@ -470,7 +503,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
               <span class="admin-hub-icon">?</span>
               <div>
                 <small>CONSULTAS Y SOLICITUDES</small>
-                <h3>Soporte</h3>
+                <h3>Soporte <em class="admin-hub-live-count">{{dashboard?.alertas?.soporte_pendiente ?? 0}}</em></h3>
                 <p>Revisa mensajes del socio y solicitudes de rutina enviadas desde su cuenta.</p>
               </div>
               <b>→</b>
@@ -480,7 +513,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
               <span class="admin-hub-icon">★</span>
               <div>
                 <small>VOZ DEL CLIENTE</small>
-                <h3>Opiniones</h3>
+                <h3>Opiniones <em class="admin-hub-live-count">{{dashboard?.alertas?.opiniones_pendientes ?? 0}}</em></h3>
                 <p>Consulta comentarios y calificaciones que los socios dejan en el portal.</p>
               </div>
               <b>→</b>
@@ -1854,6 +1887,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   sidebarCerrado = false;
   actualizandoDatos = false;
   ultimaActualizacion = '';
+  ultimaActualizacionTs = 0;
+  dashboardCargando = false;
+  dashboardError = '';
+  autoRefreshActivo = true;
   private autoRefreshId: any = null;
 
   diasSemana = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
@@ -1922,13 +1959,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.seccion = ['kardex','auditoria'].includes(this.seccionInicial) ? 'dashboard' : (this.seccionInicial || 'dashboard');
     this.sidebarCerrado = localStorage.getItem('mallqui_admin_sidebar_closed') === '1';
+    this.autoRefreshActivo = localStorage.getItem('mallqui_admin_auto_refresh') !== '0';
     this.cargarDashboard();
     if (this.seccion !== 'dashboard') this.cargarSeccion(this.seccion);
 
-    // El administrador ve los mismos datos que genera el portal del cliente.
-    // Se actualiza la sección abierta sin tocar los valores de los formularios.
+    // Refresco inteligente: no interrumpe formularios ni trabaja cuando la pestaña está oculta.
     this.autoRefreshId = setInterval(() => {
-      if (!this.actualizandoDatos) {
+      if (this.autoRefreshActivo && !document.hidden && !this.actualizandoDatos && this.puedeAutoActualizar) {
         this.actualizarSeccionActual(true);
       }
     }, 15000);
@@ -1959,6 +1996,91 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
   get esSeccionGestionSecundaria(): boolean {
     return ['entrenador','planes','gastos','reportes','reporte-asistencias','usuarios','configuracion','caja','ventas','historial-ventas','inventario','proveedores','compras','categorias','productos'].includes(this.seccion);
+  }
+
+  get puedeAutoActualizar(): boolean {
+    return ['dashboard','socios-hub','servicios','atencion','gestion'].includes(this.seccion);
+  }
+
+  get datosDesactualizados(): boolean {
+    return Boolean(this.ultimaActualizacionTs) && (Date.now()-this.ultimaActualizacionTs)>60000;
+  }
+
+  toggleAutoRefresh(): void {
+    this.autoRefreshActivo=!this.autoRefreshActivo;
+    localStorage.setItem('mallqui_admin_auto_refresh',this.autoRefreshActivo?'1':'0');
+    this.ok(this.autoRefreshActivo?'Actualización automática activada':'Actualización automática pausada');
+  }
+
+  badgeMenu(id:string): number {
+    if(id==='socios-hub') return Number(this.dashboard?.membresias?.por_vencer_7_dias||0);
+    if(id==='servicios') return Number(this.dashboard?.alertas?.rutinas_pendientes||0);
+    if(id==='atencion') return Number(this.dashboard?.alertas?.soporte_pendiente||0)+Number(this.dashboard?.alertas?.opiniones_pendientes||0);
+    if(id==='gestion') return Number(this.dashboard?.inventario?.productos_stock_bajo||0);
+    return 0;
+  }
+
+  abrirPrioridad(p:any):void{
+    const tipo=String(p?.tipo||'');
+    if(tipo==='rutinas' || tipo==='soporte'){ this.cambiarSeccion('soporte'); return; }
+    if(tipo==='opiniones'){ this.cambiarSeccion('opiniones'); return; }
+    if(tipo==='inventario'){ this.cambiarSeccion('inventario'); return; }
+    if(tipo==='membresias'){ this.cambiarSeccion('membresias'); return; }
+    this.cambiarSeccion('dashboard');
+  }
+
+  iconoPrioridad(tipo:any):string{
+    const t=String(tipo||'');
+    if(t==='rutinas')return '🏋';
+    if(t==='soporte')return '?';
+    if(t==='opiniones')return '★';
+    if(t==='inventario')return '!';
+    if(t==='membresias')return '✦';
+    return '●';
+  }
+
+  exportarDashboardCsv():void{
+    const d=this.dashboard||{};
+    const filas:any[][]=[
+      ['MALLQUI GYM','RESUMEN DEL DASHBOARD'],
+      ['Fecha',d?.periodo?.fecha||new Date().toLocaleDateString('es-PE')],
+      ['Indicador','Valor'],
+      ['Socios registrados',d?.clientes?.total??0],
+      ['Socios activos',d?.clientes?.activos??0],
+      ['Socios nuevos del mes',d?.clientes?.nuevos_mes??0],
+      ['Membresías activas',d?.membresias?.activas??0],
+      ['Membresías por vencer',d?.membresias?.por_vencer_7_dias??0],
+      ['Personas dentro del gym',d?.asistencias?.dentro_ahora??0],
+      ['Asistencias de hoy',d?.asistencias?.hoy??0],
+      ['Reservas de hoy',d?.reservas?.hoy??0],
+      ['Ventas de hoy',d?.ventas?.hoy_cantidad??0],
+      ['Total vendido hoy',d?.ventas?.hoy_total??0],
+      ['Ingresos del mes',d?.ingresos?.total_mes??0],
+      ['Gastos del mes',d?.gastos?.total_mes??0],
+      ['Utilidad neta',d?.utilidad?.total_mes??0],
+      ['Clases activas',d?.operacion?.clases_activas??0],
+      ['Rutinas activas',d?.operacion?.rutinas_activas??0],
+      ['Entrenadores activos',d?.operacion?.entrenadores_activos??0],
+      ['Stock bajo',d?.inventario?.productos_stock_bajo??0],
+      ['Pendientes totales',d?.alertas?.total??0]
+    ];
+    const csv=filas.map(f=>f.map((v:any)=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');
+    const url=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='dashboard-mallqui-gym-'+new Date().toISOString().slice(0,10)+'.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    this.ok('Resumen del dashboard exportado');
+  }
+
+  imprimirDashboard():void{
+    window.print();
+  }
+
+  reintentarDashboard():void{
+    this.dashboardError='';
+    this.cargarDashboard();
   }
 
   get clientesActivos(): number {
@@ -2162,12 +2284,20 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   cargarDashboard(){
+    if(!this.dashboard)this.dashboardCargando=true;
     this.api.dashboard().subscribe({
       next:r=>{
         this.dashboard=r;
-        this.ultimaActualizacion=new Date().toLocaleTimeString('es-PE');
+        this.dashboardCargando=false;
+        this.dashboardError='';
+        this.ultimaActualizacionTs=Date.now();
+        this.ultimaActualizacion=new Date(this.ultimaActualizacionTs).toLocaleTimeString('es-PE');
       },
-      error:e=>this.mostrarError(e)
+      error:e=>{
+        this.dashboardCargando=false;
+        this.dashboardError=e?.error?.mensaje ?? e?.error?.message ?? 'No se pudo conectar con el resumen administrativo.';
+        if(!this.dashboard)this.mostrarError(e);
+      }
     });
   }
   cargarClientes(){ this.api.clientes().subscribe({next:r=>this.clientes=r,error:e=>this.mostrarError(e)}); }
