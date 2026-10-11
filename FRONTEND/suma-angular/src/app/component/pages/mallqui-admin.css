@@ -3420,3 +3420,16 @@
   .dashboard-health-strip{grid-template-columns:1fr}
   .dashboard-health-strip>div{padding:5px 3px}
 }
+
+
+/* ADMIN V29 · ESTADO REAL DEL SISTEMA */
+.admin-system-card.is-offline{
+  border-color:#f0d4d8;
+  background:#fff7f8;
+}
+.admin-system-card.is-offline .system-live-dot{
+  background:#d14355!important;
+  box-shadow:0 0 0 5px rgba(209,67,85,.12)!important;
+}
+.admin-system-card.is-offline b{color:#9e2636!important}
+.admin-system-card.is-offline small{color:#9a7880!important}
