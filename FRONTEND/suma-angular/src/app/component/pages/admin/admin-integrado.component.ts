@@ -7,11 +7,12 @@ import { AuthService } from './auth.service';
 import { ProductosComponent } from './pages/productos/productos';
 import { AdminComunicacionComponent } from './admin-comunicacion.component';
 import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
+import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component';
 
 @Component({
   selector: 'app-admin-integrado',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent],
+  imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminDashboardToolsComponent],
   styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
@@ -237,6 +238,11 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
           </div>
           <button type="button" (click)="irAlertasPendientes()">Revisar prioridades →</button>
         </section>
+
+        <app-admin-dashboard-tools
+          [dashboard]="dashboard"
+          (irSeccion)="cambiarSeccion($event)">
+        </app-admin-dashboard-tools>
 
         <section class="ux-primary-kpis" aria-label="Indicadores principales">
           <article class="ux-kpi">
@@ -2050,8 +2056,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.seccion = this.normalizarSeccion(this.seccionInicial || 'dashboard');
-    this.sidebarCerrado = localStorage.getItem('mallqui_admin_sidebar_closed') === '1';
-    this.autoRefreshActivo = localStorage.getItem('mallqui_admin_auto_refresh') !== '0';
+    try{
+      this.sidebarCerrado = localStorage.getItem('mallqui_admin_sidebar_closed') === '1';
+      this.autoRefreshActivo = localStorage.getItem('mallqui_admin_auto_refresh') !== '0';
+    }catch{
+      this.sidebarCerrado = false;
+      this.autoRefreshActivo = true;
+    }
     this.cargarDashboard();
     if (this.seccion !== 'dashboard') this.cargarSeccion(this.seccion);
 
@@ -2072,7 +2083,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   toggleSidebar(): void {
     this.sidebarCerrado = !this.sidebarCerrado;
-    localStorage.setItem('mallqui_admin_sidebar_closed', this.sidebarCerrado ? '1' : '0');
+    try{localStorage.setItem('mallqui_admin_sidebar_closed', this.sidebarCerrado ? '1' : '0');}catch{}
   }
 
   get tituloActual(): string { return this.titulos[this.seccion]?.[0] ?? 'Administrador'; }
@@ -2215,7 +2226,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   toggleAutoRefresh(): void {
     this.autoRefreshActivo=!this.autoRefreshActivo;
-    localStorage.setItem('mallqui_admin_auto_refresh',this.autoRefreshActivo?'1':'0');
+    try{localStorage.setItem('mallqui_admin_auto_refresh',this.autoRefreshActivo?'1':'0');}catch{}
     this.ok(this.autoRefreshActivo?'Actualización automática activada':'Actualización automática pausada');
   }
 
@@ -2268,8 +2279,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     const a=document.createElement('a');
     a.href=url;
     a.download='dashboard-mallqui-gym-'+new Date().toISOString().slice(0,10)+'.csv';
+    a.style.display='none';
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),0);
     this.ok('Resumen del dashboard exportado');
   }
 
