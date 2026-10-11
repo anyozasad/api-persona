@@ -1,511 +1,423 @@
-# Mallqui Gym — 100 sprints desarrollados
+# Mallqui Gym — 100 sprints desarrollados y verificables
 
-Este documento registra los **100 sprints reales del proyecto**. Los sprints 01–08 son los originales. Los sprints 09–100 corresponden a incrementos funcionales ya implementados en Laravel/Angular y cuentan con una prueba automática de aceptación en `BACKEND/tests/Feature/Sprints100AcceptanceTest.php`.
+Este documento refleja exactamente la definición ejecutable de `BACKEND/config/mallqui_sprints.php`. Cada sprint tiene comprobaciones de rutas, archivos o funcionalidades reales que son evaluadas por `App\\Services\\SprintVerifier` y por la prueba `Sprint100AcceptanceTest.php`.
 
-## Sprints 01–08 originales
+## Estado general
 
-### Sprint 01 — Cuenta y perfil
-**Estado:** COMPLETO
+- Total de sprints definidos: **100**
+- Sprints originales: **01–08**
+- Sprints adicionales desarrollados: **09–100**
+- Verificación automática: `php artisan mallqui:sprints`
 
-Login, perfil, contraseña y cierre de sesiones.
+## Registro de sprints
 
-### Sprint 02 — Membresía, pago y comprobante
-**Estado:** COMPLETO
+### Sprint 001 — Cuenta y perfil del cliente
+**Módulo:** Cliente  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Planes, compra/renovación, pago, comprobante e historial.
+### Sprint 002 — Membresía, pago y comprobante
+**Módulo:** Membresías  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 03 — Acceso al gimnasio
-**Estado:** COMPLETO
+### Sprint 003 — Acceso al gimnasio
+**Módulo:** Asistencia  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Credencial, código, entrada/salida e historial de asistencias.
+### Sprint 004 — Rutina y entrenamiento
+**Módulo:** Entrenamiento  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 04 — Rutina y entrenamiento
-**Estado:** COMPLETO
+### Sprint 005 — Clases y reservas
+**Módulo:** Servicios  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Rutina asignada, ejercicios, sesión, validaciones y progreso.
+### Sprint 006 — Progreso y calendario
+**Módulo:** Experiencia  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 05 — Clases y reservas
-**Estado:** COMPLETO
+### Sprint 007 — Comunicación y experiencia
+**Módulo:** Comunicación  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Clases, cupos, reservas, cancelación y estados.
+### Sprint 008 — Administración y entrenador
+**Módulo:** Administración  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 06 — Progreso y calendario
-**Estado:** COMPLETO
+### Sprint 009 — Registro de cuenta con control de frecuencia
+**Módulo:** Seguridad  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Sesiones, metas, asistencias, historial y calendario.
+### Sprint 010 — Recuperación de contraseña por correo
+**Módulo:** Seguridad  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 07 — Comunicación y experiencia
-**Estado:** COMPLETO
+### Sprint 011 — Recuperación de acceso por DNI
+**Módulo:** Seguridad  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Avisos, soporte, favoritos y opiniones.
+### Sprint 012 — Cierre de una o todas las sesiones
+**Módulo:** Seguridad  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 08 — Administración y entrenador
-**Estado:** COMPLETO
+### Sprint 013 — Cambio seguro de contraseña
+**Módulo:** Seguridad  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-CRUD administrativo, entrenador, inventario, ventas, caja, reportes y auditoría.
+### Sprint 014 — Autenticación JWT y claims
+**Módulo:** Seguridad  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-## Sprints 09–100 implementados
+### Sprint 015 — Restricción por roles
+**Módulo:** Seguridad  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 09 — Dashboard operativo
-**Estado:** COMPLETO
+### Sprint 016 — Auditoría de acciones sensibles
+**Módulo:** Seguridad  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-KPIs reales del gimnasio y resumen administrativo.
+### Sprint 017 — Estado público del sistema
+**Módulo:** Sistema  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 10 — Actualización del dashboard
-**Estado:** COMPLETO
+### Sprint 018 — Foto de perfil del cliente
+**Módulo:** Cliente  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Refresco manual y sincronización de datos.
+### Sprint 019 — Resumen personalizado de la cuenta
+**Módulo:** Cliente  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 11 — Prioridades operativas
-**Estado:** COMPLETO
+### Sprint 020 — Historial de pagos del cliente
+**Módulo:** Membresías  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Pendientes ordenados por atención requerida.
+### Sprint 021 — Compra de membresía desde portal
+**Módulo:** Membresías  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 12 — Exportación del dashboard
-**Estado:** COMPLETO
+### Sprint 022 — Cancelación de solicitud de pago
+**Módulo:** Membresías  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Descarga del resumen en CSV.
+### Sprint 023 — Contratación administrativa de membresía
+**Módulo:** Membresías  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 13 — Impresión del dashboard
-**Estado:** COMPLETO
+### Sprint 024 — Renovación administrativa de membresía
+**Módulo:** Membresías  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Vista imprimible del panel administrativo.
+### Sprint 025 — Estado vigente de membresía por socio
+**Módulo:** Membresías  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 14 — Estado del sistema
-**Estado:** COMPLETO
+### Sprint 026 — Comprobante administrativo de membresía
+**Módulo:** Membresías  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Indicadores de conexión y salud del sistema.
+### Sprint 027 — Registro de entrada al gimnasio
+**Módulo:** Asistencia  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 15 — Actividad del portal
-**Estado:** COMPLETO
+### Sprint 028 — Registro de salida del gimnasio
+**Módulo:** Asistencia  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Actividad reciente de clientes visible para administración.
+### Sprint 029 — Acceso mediante código o credencial
+**Módulo:** Asistencia  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 16 — Administración móvil
-**Estado:** COMPLETO
+### Sprint 030 — Historial de asistencia por cliente
+**Módulo:** Asistencia  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Navegación administrativa responsive en celular.
+### Sprint 031 — Credencial digital del socio
+**Módulo:** Asistencia  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 17 — Navegación modular
-**Estado:** COMPLETO
+### Sprint 032 — Resumen operativo del entrenador
+**Módulo:** Entrenador  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Pestañas contextuales por módulo de trabajo.
+### Sprint 033 — Cartera de clientes del entrenador
+**Módulo:** Entrenador  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 18 — Búsqueda y paginación de socios
-**Estado:** COMPLETO
+### Sprint 034 — Rutinas visibles para el entrenador
+**Módulo:** Entrenador  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Filtro y navegación de clientes.
+### Sprint 035 — Clases visibles para el entrenador
+**Módulo:** Entrenador  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 19 — Ficha integral del socio
-**Estado:** COMPLETO
+### Sprint 036 — Reservas visibles para el entrenador
+**Módulo:** Entrenador  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Consulta de datos completos del cliente.
+### Sprint 037 — CRUD de clases
+**Módulo:** Servicios  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 20 — Estado de membresía
-**Estado:** COMPLETO
+### Sprint 038 — Control de cupo de clases
+**Módulo:** Servicios  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Consulta de vigencia por cliente.
+### Sprint 039 — Reserva de clase por cliente
+**Módulo:** Reservas  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 21 — Renovación de membresía
-**Estado:** COMPLETO
+### Sprint 040 — Cancelación de reserva por cliente
+**Módulo:** Reservas  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Flujo de renovación desde administración.
+### Sprint 041 — Cambio de estado de reserva por personal
+**Módulo:** Reservas  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 22 — Historial de pagos
-**Estado:** COMPLETO
+### Sprint 042 — CRUD de rutinas
+**Módulo:** Entrenamiento  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Consulta de pagos por socio.
+### Sprint 043 — Detalle de ejercicios por rutina
+**Módulo:** Entrenamiento  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 23 — Comprobante de membresía
-**Estado:** COMPLETO
+### Sprint 044 — Plan de entrenamiento personalizable
+**Módulo:** Entrenamiento  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Generación y consulta del comprobante interno.
+### Sprint 045 — Registro de sesión de entrenamiento
+**Módulo:** Entrenamiento  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 24 — Vencimientos de membresía
-**Estado:** COMPLETO
+### Sprint 046 — Entrenamiento guiado desde el portal
+**Módulo:** Entrenamiento  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Reporte de membresías próximas a vencer.
+### Sprint 047 — Métricas de progreso del socio
+**Módulo:** Experiencia  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 25 — Acceso por código
-**Estado:** COMPLETO
+### Sprint 048 — Meta semanal editable
+**Módulo:** Experiencia  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Ingreso mediante código de credencial.
+### Sprint 049 — Calendario del socio
+**Módulo:** Experiencia  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 26 — Entrada manual
-**Estado:** COMPLETO
+### Sprint 050 — Historial integral del socio
+**Módulo:** Experiencia  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Registro administrativo de entrada.
+### Sprint 051 — Clases favoritas
+**Módulo:** Experiencia  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 27 — Salida manual
-**Estado:** COMPLETO
+### Sprint 052 — Opiniones del servicio
+**Módulo:** Experiencia  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Registro administrativo de salida.
+### Sprint 053 — Soporte del cliente
+**Módulo:** Comunicación  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 28 — Historial de asistencia
-**Estado:** COMPLETO
+### Sprint 054 — Respuesta y cierre de soporte
+**Módulo:** Comunicación  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Consulta de accesos por cliente.
+### Sprint 055 — Notificaciones del cliente
+**Módulo:** Comunicación  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 29 — Entrenador principal
-**Estado:** COMPLETO
+### Sprint 056 — Marcado de notificaciones leídas
+**Módulo:** Comunicación  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Gestión enfocada en un entrenador principal.
+### Sprint 057 — Notificaciones masivas desde administración
+**Módulo:** Comunicación  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 30 — Cuenta del entrenador
-**Estado:** COMPLETO
+### Sprint 058 — Dashboard administrativo conectado a BD
+**Módulo:** Dashboard  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Creación y mantenimiento de acceso del entrenador.
+### Sprint 059 — Indicadores y tendencias del dashboard
+**Módulo:** Dashboard  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 31 — Resumen del entrenador
-**Estado:** COMPLETO
+### Sprint 060 — Priorización operativa de pendientes
+**Módulo:** Dashboard  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Portal con resumen de su operación.
+### Sprint 061 — Actualización manual y automática del dashboard
+**Módulo:** Dashboard  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 32 — Clientes del entrenador
-**Estado:** COMPLETO
+### Sprint 062 — Navegación modular del administrador
+**Módulo:** UX  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Lista limitada de clientes para trabajo del entrenador.
+### Sprint 063 — Navegación administrativa móvil
+**Módulo:** UX  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 33 — Rutinas del entrenador
-**Estado:** COMPLETO
+### Sprint 064 — CRUD de clientes
+**Módulo:** Socios  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Consulta y administración de rutinas.
+### Sprint 065 — Ficha integral del cliente
+**Módulo:** Socios  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 34 — Clases del entrenador
-**Estado:** COMPLETO
+### Sprint 066 — Búsqueda y filtrado de clientes
+**Módulo:** Socios  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Consulta de clases asignadas.
+### Sprint 067 — CRUD de membresías y planes
+**Módulo:** Membresías  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 35 — Reservas del entrenador
-**Estado:** COMPLETO
+### Sprint 068 — Tarifas y vigencias en administración
+**Módulo:** Membresías  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Consulta de reservas relacionadas.
+### Sprint 069 — Gestión administrativa de pagos
+**Módulo:** Membresías  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 36 — CRUD de clases
-**Estado:** COMPLETO
+### Sprint 070 — Gestión del entrenador principal
+**Módulo:** Entrenador  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Alta, edición, consulta y baja de clases.
+### Sprint 071 — CRUD de categorías de producto
+**Módulo:** Inventario  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 37 — Control de cupos
-**Estado:** COMPLETO
+### Sprint 072 — CRUD de productos
+**Módulo:** Inventario  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Cupo máximo configurable por clase.
+### Sprint 073 — Alertas de stock bajo
+**Módulo:** Inventario  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 38 — Reserva del cliente
-**Estado:** COMPLETO
+### Sprint 074 — Ajuste manual de stock
+**Módulo:** Inventario  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Creación de reserva desde el portal.
+### Sprint 075 — Kardex de movimientos
+**Módulo:** Inventario  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 39 — Cancelación de reserva
-**Estado:** COMPLETO
+### Sprint 076 — CRUD de proveedores
+**Módulo:** Inventario  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Cancelación por el cliente.
+### Sprint 077 — Registro de compras con detalle
+**Módulo:** Compras  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 40 — Estado de reserva
-**Estado:** COMPLETO
+### Sprint 078 — Anulación de compra
+**Módulo:** Compras  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Gestión administrativa del estado de una reserva.
+### Sprint 079 — Punto de venta con carrito
+**Módulo:** Ventas  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 41 — CRUD de rutinas
-**Estado:** COMPLETO
+### Sprint 080 — Anulación de venta
+**Módulo:** Ventas  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Alta, edición, consulta y baja de rutinas.
+### Sprint 081 — Apertura de caja
+**Módulo:** Caja  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 42 — Detalle de ejercicios
-**Estado:** COMPLETO
+### Sprint 082 — Movimientos de caja
+**Módulo:** Caja  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Ejercicios, series, repeticiones y carga.
+### Sprint 083 — Cierre de caja
+**Módulo:** Caja  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 43 — Solicitud de rutina
-**Estado:** COMPLETO
+### Sprint 084 — Gastos vinculados a caja abierta
+**Módulo:** Caja  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Cliente solicita una rutina desde su portal.
+### Sprint 085 — Historial de caja
+**Módulo:** Caja  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 44 — Cierre de solicitud de rutina
-**Estado:** COMPLETO
+### Sprint 086 — Reporte de ingresos
+**Módulo:** Reportes  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Asignación y notificación al cliente.
+### Sprint 087 — Reporte de membresías por vencer
+**Módulo:** Reportes  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 45 — Sesión de entrenamiento
-**Estado:** COMPLETO
+### Sprint 088 — Reporte de asistencias
+**Módulo:** Reportes  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Registro de una sesión realizada.
+### Sprint 089 — Vista consolidada clientes-membresías
+**Módulo:** Reportes  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 46 — Validación de membresía
-**Estado:** COMPLETO
+### Sprint 090 — Vista consolidada de stock
+**Módulo:** Reportes  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Bloqueo de entrenamiento sin membresía vigente.
+### Sprint 091 — Vista consolidada de ventas
+**Módulo:** Reportes  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 47 — Validación de rutina
-**Estado:** COMPLETO
+### Sprint 092 — Usuarios internos y roles
+**Módulo:** Sistema  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Bloqueo de entrenamiento sin rutina activa.
+### Sprint 093 — Configuración general del gimnasio
+**Módulo:** Sistema  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 48 — Progreso del cliente
-**Estado:** COMPLETO
+### Sprint 094 — Respaldo desde el sistema
+**Módulo:** Sistema  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Resumen de actividad y progreso.
+### Sprint 095 — Limpieza de caché y mantenimiento
+**Módulo:** Sistema  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 49 — Meta semanal
-**Estado:** COMPLETO
+### Sprint 096 — Auditoría visual y exportable
+**Módulo:** Sistema  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Seguimiento de meta de entrenamiento.
+### Sprint 097 — Carnet interno del socio
+**Módulo:** Documentos  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 50 — Calendario del cliente
-**Estado:** COMPLETO
+### Sprint 098 — Comprobante y ticket interno
+**Módulo:** Documentos  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Eventos de rutina, clases y membresía.
+### Sprint 099 — Experiencia responsive admin-cliente
+**Módulo:** UX  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-### Sprint 51 — Historial del cliente
-**Estado:** COMPLETO
+### Sprint 100 — Aceptación automatizada de la solución
+**Módulo:** Calidad  
+**Estado:** IMPLEMENTADO Y VERIFICABLE
 
-Resumen histórico de actividad.
+## Cómo comprobarlos
 
-### Sprint 52 — Credencial digital
-**Estado:** COMPLETO
+Desde la carpeta `BACKEND`:
 
-Identificación digital del socio.
+```bash
+php artisan mallqui:sprints
+php artisan test
+```
 
-### Sprint 53 — Clases favoritas
-**Estado:** COMPLETO
-
-Marcar y consultar clases favoritas.
-
-### Sprint 54 — Opiniones
-**Estado:** COMPLETO
-
-Registro de opinión del socio.
-
-### Sprint 55 — Soporte
-**Estado:** COMPLETO
-
-Creación de consultas desde el portal.
-
-### Sprint 56 — Respuesta de soporte
-**Estado:** COMPLETO
-
-Respuesta administrativa a consultas.
-
-### Sprint 57 — Notificaciones
-**Estado:** COMPLETO
-
-Avisos enviados a clientes.
-
-### Sprint 58 — Lectura de notificaciones
-**Estado:** COMPLETO
-
-Marcado de avisos como leídos.
-
-### Sprint 59 — CRUD de categorías
-**Estado:** COMPLETO
-
-Gestión de categorías de productos.
-
-### Sprint 60 — CRUD de productos
-**Estado:** COMPLETO
-
-Gestión de productos del gimnasio.
-
-### Sprint 61 — Alerta de stock bajo
-**Estado:** COMPLETO
-
-Detección automática de productos con bajo stock.
-
-### Sprint 62 — Ajuste manual de stock
-**Estado:** COMPLETO
-
-Entradas y salidas justificadas.
-
-### Sprint 63 — Kardex
-**Estado:** COMPLETO
-
-Trazabilidad de movimientos de inventario.
-
-### Sprint 64 — CRUD de proveedores
-**Estado:** COMPLETO
-
-Gestión de proveedores.
-
-### Sprint 65 — Compra con múltiples productos
-**Estado:** COMPLETO
-
-Registro de compra con carrito.
-
-### Sprint 66 — Anulación de compra
-**Estado:** COMPLETO
-
-Reversión de una compra registrada.
-
-### Sprint 67 — Punto de venta con carrito
-**Estado:** COMPLETO
-
-Venta de varios productos.
-
-### Sprint 68 — Venta condicionada a caja
-**Estado:** COMPLETO
-
-Bloqueo de venta si no existe caja abierta.
-
-### Sprint 69 — Método y operación de pago
-**Estado:** COMPLETO
-
-Registro de método y número de operación.
-
-### Sprint 70 — Anulación de venta
-**Estado:** COMPLETO
-
-Reversión controlada de venta.
-
-### Sprint 71 — Apertura de caja
-**Estado:** COMPLETO
-
-Inicio de turno de caja.
-
-### Sprint 72 — Movimientos de caja
-**Estado:** COMPLETO
-
-Ingresos y egresos manuales.
-
-### Sprint 73 — Cierre de caja
-**Estado:** COMPLETO
-
-Cierre con monto real y diferencia.
-
-### Sprint 74 — Gastos ligados a caja
-**Estado:** COMPLETO
-
-Gastos solo con caja abierta.
-
-### Sprint 75 — Reporte de ingresos
-**Estado:** COMPLETO
-
-Consolidado de ingresos.
-
-### Sprint 76 — Reporte de asistencias
-**Estado:** COMPLETO
-
-Consolidado de accesos.
-
-### Sprint 77 — Reporte de vencimientos
-**Estado:** COMPLETO
-
-Seguimiento de membresías por vencer.
-
-### Sprint 78 — Exportación de reportes
-**Estado:** COMPLETO
-
-Descarga de información en CSV.
-
-### Sprint 79 — CRUD de usuarios internos
-**Estado:** COMPLETO
-
-Gestión de cuentas internas.
-
-### Sprint 80 — Roles y permisos
-**Estado:** COMPLETO
-
-Separación de Administrador, Entrenador y Cliente.
-
-### Sprint 81 — Configuración del sistema
-**Estado:** COMPLETO
-
-Parámetros generales del gimnasio.
-
-### Sprint 82 — Respaldo
-**Estado:** COMPLETO
-
-Generación de respaldo desde configuración.
-
-### Sprint 83 — Limpieza de caché
-**Estado:** COMPLETO
-
-Mantenimiento del sistema.
-
-### Sprint 84 — Auditoría visual
-**Estado:** COMPLETO
-
-Consulta administrativa de eventos.
-
-### Sprint 85 — Filtros de auditoría
-**Estado:** COMPLETO
-
-Filtro por usuario, ruta, método y fecha.
-
-### Sprint 86 — Exportación de auditoría
-**Estado:** COMPLETO
-
-Descarga del registro en CSV.
-
-### Sprint 87 — Edición de perfil
-**Estado:** COMPLETO
-
-Actualización del perfil del cliente.
-
-### Sprint 88 — Foto de perfil
-**Estado:** COMPLETO
-
-Carga y actualización de imagen.
-
-### Sprint 89 — Cambio de contraseña
-**Estado:** COMPLETO
-
-Cambio autenticado de contraseña.
-
-### Sprint 90 — Cerrar todas las sesiones
-**Estado:** COMPLETO
-
-Revocación de sesiones activas.
-
-### Sprint 91 — Recuperación de contraseña
-**Estado:** COMPLETO
-
-Solicitud de recuperación.
-
-### Sprint 92 — Restablecimiento de contraseña
-**Estado:** COMPLETO
-
-Cambio mediante flujo de recuperación.
-
-### Sprint 93 — Protección por rol
-**Estado:** COMPLETO
-
-Rutas protegidas según tipo de usuario.
-
-### Sprint 94 — Middleware de auditoría
-**Estado:** COMPLETO
-
-Registro de acciones críticas.
-
-### Sprint 95 — Pruebas de seguridad
-**Estado:** COMPLETO
-
-Pruebas automáticas básicas de autorización.
-
-### Sprint 96 — Prueba de acceso por código
-**Estado:** COMPLETO
-
-Validación automática del flujo de ingreso.
-
-### Sprint 97 — Prueba de comprobante
-**Estado:** COMPLETO
-
-Validación automática de comprobantes.
-
-### Sprint 98 — Prueba de reservas
-**Estado:** COMPLETO
-
-Validación automática de reserva y cancelación.
-
-### Sprint 99 — Prueba de entrenamiento
-**Estado:** COMPLETO
-
-Validación automática del flujo de entrenamiento.
-
-### Sprint 100 — Cierre responsive y aceptación
-**Estado:** COMPLETO
-
-Responsive administrativo y prueba de aceptación 09-100.
-
-## Criterio de aceptación
-
-La prueba `Sprints100AcceptanceTest.php` valida que existan evidencias funcionales en código para los sprints 09–100. El proyecto también mantiene pruebas de acceso, comprobantes, CRUD, dashboard, entrenamiento, reservas y seguridad.
+El comando de sprints falla si no existen exactamente 100 o si cualquiera de sus evidencias funcionales deja de existir.
