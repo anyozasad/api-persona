@@ -3179,3 +3179,46 @@
     min-height:auto;
   }
 }
+
+
+/* ADMIN V27 · NAVEGACIÓN CONTEXTUAL */
+.admin-context-back{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:-2px 0 14px;
+  padding:9px 12px;
+  border:1px solid #e4eaf1;
+  border-radius:12px;
+  background:#fff;
+  box-shadow:0 6px 18px rgba(22,35,55,.04);
+}
+.admin-context-back button{
+  min-height:32px;
+  padding:0 12px;
+  border:1px solid #dfe5ed;
+  border-radius:9px;
+  background:#f7f9fb;
+  color:#17243a;
+  font-size:9.5px!important;
+  font-weight:900;
+  cursor:pointer;
+}
+.admin-context-back button:hover{
+  border-color:#f0bcc5;
+  background:#fff5f7;
+  color:#d91f38;
+}
+.admin-context-back span{
+  color:#7c899b;
+  font-size:9.5px;
+}
+@media(max-width:700px){
+  .admin-context-back{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .admin-context-back button{
+    width:100%;
+  }
+}
