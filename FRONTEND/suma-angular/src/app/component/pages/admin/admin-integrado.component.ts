@@ -108,6 +108,17 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         </div>
       </header>
 
+      <nav class="admin-mobile-modules" aria-label="Módulos principales en móvil">
+        <button type="button" [class.active]="moduloActivo==='dashboard'" (click)="abrirModuloAdmin('dashboard')"><span>⌂</span><b>Inicio</b></button>
+        <button type="button" [class.active]="moduloActivo==='socios'" (click)="abrirModuloAdmin('socios')"><span>♙</span><b>Socios</b><i *ngIf="badgeModulo('socios')>0">{{badgeModulo('socios')}}</i></button>
+        <button type="button" [class.active]="moduloActivo==='servicios'" (click)="abrirModuloAdmin('servicios')"><span>◉</span><b>Servicios</b><i *ngIf="badgeModulo('servicios')>0">{{badgeModulo('servicios')}}</i></button>
+        <button type="button" [class.active]="moduloActivo==='operacion'" (click)="abrirModuloAdmin('operacion')"><span>▣</span><b>Caja</b></button>
+        <button type="button" [class.active]="moduloActivo==='inventario'" (click)="abrirModuloAdmin('inventario')"><span>▦</span><b>Stock</b><i *ngIf="badgeModulo('inventario')>0">{{badgeModulo('inventario')}}</i></button>
+        <button type="button" [class.active]="moduloActivo==='atencion'" (click)="abrirModuloAdmin('atencion')"><span>●</span><b>Atención</b><i *ngIf="badgeModulo('atencion')>0">{{badgeModulo('atencion')}}</i></button>
+        <button type="button" [class.active]="moduloActivo==='reportes'" (click)="abrirModuloAdmin('reportes')"><span>↗</span><b>Reportes</b></button>
+        <button type="button" [class.active]="moduloActivo==='sistema'" (click)="abrirModuloAdmin('sistema')"><span>⚙</span><b>Sistema</b></button>
+      </nav>
+
       <nav class="admin-module-tabs" *ngIf="seccion!=='dashboard' && tabsModuloActual.length" [attr.aria-label]="'Opciones de '+nombreModuloActual">
         <button type="button"
                 *ngFor="let tab of tabsModuloActual"
