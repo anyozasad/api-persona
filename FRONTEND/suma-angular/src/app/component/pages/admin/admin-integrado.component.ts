@@ -1556,7 +1556,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
           <article><span>✦</span><p>Membresías activas</p><h2>{{dashboard?.membresias?.activas ?? 0}}</h2></article>
           <article><span>💵</span><p>Ingresos del mes</p><h2>S/ {{reporteIngresos?.total_ingresos ?? dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</h2></article>
           <article><span>▣</span><p>Asistencias del periodo</p><h2>{{reporteAsistencias?.total ?? 0}}</h2></article>
-          <article><span>!</span><p>Membresías por vencer</p><h2>{{reporteVencimientos?.total ?? dashboard?.membresias?.por_vencer_7_dias ?? 0}}</h2></article>
+          <article><span>!</span><p>Membresías por vencer</p><h2>{{reporteVencimientos.length || dashboard?.membresias?.por_vencer_7_dias || 0}}</h2></article>
         </section>
         <article class="report-panel">
           <div class="management-heading">
@@ -1573,7 +1573,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
                 <tr><th>Ventas productos</th><td>S/ {{reporteIngresos?.ventas_productos ?? 0 | number:'1.2-2'}}</td></tr>
                 <tr><th>Total ingresos</th><td>S/ {{reporteIngresos?.total_ingresos ?? 0 | number:'1.2-2'}}</td></tr>
                 <tr><th>Asistencias</th><td>{{reporteAsistencias?.total ?? 0}}</td></tr>
-                <tr><th>Vencimientos próximos</th><td>{{reporteVencimientos?.total ?? dashboard?.membresias?.por_vencer_7_dias ?? 0}}</td></tr>
+                <tr><th>Vencimientos próximos</th><td>{{reporteVencimientos.length || dashboard?.membresias?.por_vencer_7_dias || 0}}</td></tr>
               </tbody>
             </table>
           </div>
@@ -1584,13 +1584,13 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
             <table class="management-table">
               <thead><tr><th>Socio</th><th>Plan</th><th>Fecha fin</th><th>Días restantes</th></tr></thead>
               <tbody>
-                <tr *ngFor="let v of (reporteVencimientos?.detalle || reporteVencimientos?.vencimientos || dashboard?.membresias?.detalle_por_vencer || []).slice(0,20)">
+                <tr *ngFor="let v of (reporteVencimientos.length ? reporteVencimientos : (dashboard?.membresias?.detalle_por_vencer || [])).slice(0,20)">
                   <td><b>{{nombreCliente(v.cliente)}}</b></td>
                   <td>{{v.membresia?.nombre || v.plan || v.nombre_membresia || '-'}}</td>
                   <td>{{v.fecha_fin || '-'}}</td>
                   <td>{{v.dias_restantes ?? '-'}}</td>
                 </tr>
-                <tr *ngIf="!(reporteVencimientos?.detalle || reporteVencimientos?.vencimientos || dashboard?.membresias?.detalle_por_vencer || []).length"><td colspan="4">No hay membresías próximas a vencer.</td></tr>
+                <tr *ngIf="!(reporteVencimientos.length ? reporteVencimientos : (dashboard?.membresias?.detalle_por_vencer || [])).length"><td colspan="4">No hay membresías próximas a vencer.</td></tr>
               </tbody>
             </table>
           </div>
@@ -1949,7 +1949,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   dashboard: any = null;
   reporteIngresos: any = null;
   reporteAsistencias: any = null;
-  reporteVencimientos: any = null;
+  reporteVencimientos: any[] = [];
 
   clientes: any[] = [];
   membresiasDisponibles: any[] = [];
@@ -2485,7 +2485,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   cargarReportes(){
     this.api.reporteIngresos().subscribe({next:r=>this.reporteIngresos=r,error:e=>this.mostrarError(e)});
     this.api.reporteAsistencias().subscribe({next:r=>this.reporteAsistencias=r,error:e=>this.mostrarError(e)});
-    this.api.reporteVencimientos().subscribe({next:r=>this.reporteVencimientos=r,error:e=>this.mostrarError(e)});
+    this.api.reporteVencimientos().subscribe({next:r=>this.reporteVencimientos=Array.isArray(r)?r:[],error:e=>this.mostrarError(e)});
   }
 
   exportarReporteCsv(){
@@ -2499,7 +2499,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       ['Ingresos ventas',this.reporteIngresos?.ventas_productos ?? 0],
       ['Ingresos totales',this.reporteIngresos?.total_ingresos ?? this.dashboard?.ingresos?.total_mes ?? 0],
       ['Asistencias',this.reporteAsistencias?.total ?? 0],
-      ['Membresías por vencer',this.reporteVencimientos?.total ?? this.dashboard?.membresias?.por_vencer_7_dias ?? 0],
+      ['Membresías por vencer',this.reporteVencimientos.length || this.dashboard?.membresias?.por_vencer_7_dias || 0],
       ['Soporte pendiente',this.dashboard?.alertas?.soporte_pendiente ?? 0]
     ];
     const csv=filas.map(f=>f.map((v:any)=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');
