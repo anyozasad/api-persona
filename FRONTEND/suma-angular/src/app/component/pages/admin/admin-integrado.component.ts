@@ -848,21 +848,152 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
       </ng-container>
 
       <ng-container *ngIf="seccion==='ventas'">
-        <section class="management-grid">
-          <article class="admin-form-card"><div class="management-heading"><div><h2>Punto de venta</h2><p>Registra productos, pagos y comprobantes en una sola operación.</p></div><span>↑</span></div>
-            <form (ngSubmit)="registrarVenta()">
-              <label>Cliente<select [(ngModel)]="ventaForm.id_cliente" name="vcliente"><option [ngValue]="0">Público general</option><option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option></select></label>
-              <div class="form-row"><label>Producto<select [(ngModel)]="ventaForm.id_producto" name="vproducto"><option [ngValue]="0">Seleccionar</option><option *ngFor="let p of productos" [ngValue]="p.id_producto">{{p.nombre_producto}} (Stock {{p.stock}})</option></select></label><label>Cantidad<input type="number" min="1" [(ngModel)]="ventaForm.cantidad" name="vcantidad"></label></div>
-              <button class="admin-secondary" type="button" (click)="agregarItemVenta()">+ Agregar al carrito</button>
-              <div class="table-wrap" *ngIf="ventaItems.length"><table class="management-table"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th><th></th></tr></thead><tbody><tr *ngFor="let i of ventaItems;let ix=index"><td>{{nombreProducto(i.id_producto)}}</td><td>{{i.cantidad}}</td><td>S/ {{precioProducto(i.id_producto) | number:'1.2-2'}}</td><td>S/ {{i.cantidad*precioProducto(i.id_producto) | number:'1.2-2'}}</td><td><button class="table-danger" type="button" (click)="quitarItemVenta(ix)">Quitar</button></td></tr></tbody></table></div>
-              <div class="report-grid"><article><p>Subtotal sin IGV</p><h2>S/ {{subtotalVentaPreview | number:'1.2-2'}}</h2></article><article><p>IGV incluido {{ventaForm.igv_porcentaje}}%</p><h2>S/ {{igvVentaPreview | number:'1.2-2'}}</h2></article><article><p>Total a cobrar</p><h2>S/ {{totalVentaPreview | number:'1.2-2'}}</h2></article></div>
-              <div class="form-row"><label>Comprobante<select [(ngModel)]="ventaForm.tipo_comprobante" name="vtipo"><option>Boleta</option><option>Factura</option></select></label><label>Número<input [value]="ventaForm.numero_comprobante || 'Se genera al cobrar'" name="vnumero" readonly></label></div>
-              <div class="form-row"><label>Método<select [(ngModel)]="ventaForm.metodo_pago" name="vmetodo"><option>Efectivo</option><option>Yape</option><option>Plin</option><option>Transferencia</option><option>Tarjeta</option></select></label><label>N° operación<input [(ngModel)]="ventaForm.numero_operacion" name="voperacion"></label></div>
-              <button class="admin-primary">Cobrar venta</button>
-            </form>
-          </article>
-          <article class="admin-list-card wide-card"><div class="management-heading"><div><h2>Ventas</h2><p>{{ventas.length}} registros.</p></div></div><div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Comprobante</th><th>Fecha</th><th>Método</th><th>Total</th><th>Estado</th><th>Acción</th></tr></thead><tbody><tr *ngFor="let v of ventas"><td>{{v.id_venta}}</td><td>{{nombreClienteVenta(v.cliente)}}</td><td>{{v.tipo_comprobante}} {{v.numero_comprobante}}</td><td>{{fecha(v.fecha_venta)}}</td><td>{{v.metodo_pago}}</td><td>S/ {{v.total | number:'1.2-2'}}</td><td>{{v.estado || 'Registrado'}}</td><td><button *ngIf="(v.estado||'Registrado')!=='Anulado'" class="table-danger" type="button" (click)="anularVenta(v.id_venta)">Anular</button></td></tr></tbody></table></div></article>
-        </section>
+        <form class="sales-pos-form" (ngSubmit)="registrarVenta()">
+          <section class="sales-pos-layout">
+            <article class="admin-form-card sales-entry-card">
+              <div class="management-heading">
+                <div>
+                  <h2>Nueva venta</h2>
+                  <p>Selecciona el cliente y agrega los productos que llevará.</p>
+                </div>
+                <span>＋</span>
+              </div>
+
+              <label>
+                Cliente
+                <select [(ngModel)]="ventaForm.id_cliente" name="vcliente">
+                  <option [ngValue]="0">Público general</option>
+                  <option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option>
+                </select>
+              </label>
+
+              <div class="form-row sales-product-row">
+                <label>
+                  Producto
+                  <select [(ngModel)]="ventaForm.id_producto" name="vproducto">
+                    <option [ngValue]="0">Seleccionar producto</option>
+                    <option *ngFor="let p of productos" [ngValue]="p.id_producto">
+                      {{p.nombre_producto}} · Stock {{p.stock}}
+                    </option>
+                  </select>
+                </label>
+                <label>
+                  Cantidad
+                  <input type="number" min="1" [(ngModel)]="ventaForm.cantidad" name="vcantidad">
+                </label>
+              </div>
+
+              <button class="admin-secondary sales-add-button" type="button" (click)="agregarItemVenta()">
+                + Agregar al carrito
+              </button>
+
+              <div class="sales-entry-help">
+                <span>1</span>
+                <p><b>Agrega los productos primero.</b><small>El resumen y el cobro se completan a la derecha.</small></p>
+              </div>
+            </article>
+
+            <article class="admin-list-card sales-cart-card">
+              <div class="management-heading">
+                <div>
+                  <h2>Carrito de compra</h2>
+                  <p>{{ventaItems.length}} {{ventaItems.length === 1 ? 'producto agregado' : 'productos agregados'}}.</p>
+                </div>
+                <span>▤</span>
+              </div>
+
+              <div class="sales-cart-empty" *ngIf="!ventaItems.length">
+                <span>🛒</span>
+                <div>
+                  <b>El carrito está vacío</b>
+                  <p>Selecciona un producto y presiona “Agregar al carrito”.</p>
+                </div>
+              </div>
+
+              <div class="table-wrap sales-cart-table" *ngIf="ventaItems.length">
+                <table class="management-table">
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Cant.</th>
+                      <th>Precio</th>
+                      <th>Subtotal</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let i of ventaItems; let ix=index">
+                      <td><b>{{nombreProducto(i.id_producto)}}</b></td>
+                      <td>{{i.cantidad}}</td>
+                      <td>S/ {{precioProducto(i.id_producto) | number:'1.2-2'}}</td>
+                      <td><b>S/ {{i.cantidad*precioProducto(i.id_producto) | number:'1.2-2'}}</b></td>
+                      <td><button class="table-danger" type="button" (click)="quitarItemVenta(ix)">Quitar</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="admin-form-card sales-checkout-card">
+              <div class="management-heading">
+                <div>
+                  <h2>Resumen de cobro</h2>
+                  <p>Revisa el total, selecciona el comprobante y registra el pago.</p>
+                </div>
+                <span>S/</span>
+              </div>
+
+              <div class="sales-checkout-content">
+                <div class="sales-totals">
+                  <article>
+                    <p>Subtotal sin IGV</p>
+                    <h2>S/ {{subtotalVentaPreview | number:'1.2-2'}}</h2>
+                  </article>
+                  <article>
+                    <p>IGV incluido {{ventaForm.igv_porcentaje}}%</p>
+                    <h2>S/ {{igvVentaPreview | number:'1.2-2'}}</h2>
+                  </article>
+                  <article class="sales-total-main">
+                    <p>Total a cobrar</p>
+                    <h2>S/ {{totalVentaPreview | number:'1.2-2'}}</h2>
+                  </article>
+                </div>
+
+                <div class="sales-payment-fields">
+                  <label>
+                    Comprobante
+                    <select [(ngModel)]="ventaForm.tipo_comprobante" name="vtipo">
+                      <option>Boleta</option>
+                      <option>Factura</option>
+                    </select>
+                  </label>
+                  <label>
+                    Número
+                    <input [value]="ventaForm.numero_comprobante || 'Se genera al cobrar'" name="vnumero" readonly>
+                  </label>
+                  <label>
+                    Método de pago
+                    <select [(ngModel)]="ventaForm.metodo_pago" name="vmetodo">
+                      <option>Efectivo</option>
+                      <option>Yape</option>
+                      <option>Plin</option>
+                      <option>Transferencia</option>
+                      <option>Tarjeta</option>
+                    </select>
+                  </label>
+                  <label>
+                    N° operación
+                    <input [(ngModel)]="ventaForm.numero_operacion" name="voperacion" placeholder="Opcional para efectivo">
+                  </label>
+                </div>
+
+                <button class="admin-primary sales-charge-button" type="submit" [disabled]="!ventaItems.length">
+                  Cobrar venta · S/ {{totalVentaPreview | number:'1.2-2'}}
+                </button>
+              </div>
+            </article>
+          </section>
+        </form>
       </ng-container>
 
       <ng-container *ngIf="seccion==='caja'">
