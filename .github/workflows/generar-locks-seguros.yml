@@ -1,0 +1,78 @@
+name: Generar locks seguros
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  frontend-lock:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: FRONTEND/suma-angular
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.0'
+          cache: npm
+          cache-dependency-path: FRONTEND/suma-angular/package-lock.json
+      - run: npm install
+      - name: Actualizar Angular y corregir dependencias
+        run: |
+          npm install @angular/common@20.3.32 @angular/compiler@20.3.32 @angular/core@20.3.32 @angular/forms@20.3.32 @angular/platform-browser@20.3.32 @angular/router@20.3.32
+          npm audit fix || true
+      - run: npm run build
+      - run: npm test -- --watch=false --browsers=ChromeHeadless
+      - name: Exportar archivos actualizados
+        run: |
+          echo "BEGIN_PACKAGE_JSON"
+          base64 -w0 package.json
+          echo
+          echo "END_PACKAGE_JSON"
+          echo "BEGIN_PACKAGE_LOCK"
+          base64 -w0 package-lock.json
+          echo
+          echo "END_PACKAGE_LOCK"
+          npm audit --omit=dev || true
+
+  backend-lock:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: mallqui_gym_pruebas
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    defaults:
+      run:
+        working-directory: BACKEND
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo_mysql
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist
+      - name: Actualizar paquetes con avisos
+        run: composer update laravel/framework league/commonmark league/flysystem --with-all-dependencies --no-interaction
+      - run: |
+          cp .env.testing .env
+          php artisan config:clear
+          php artisan migrate:fresh --force
+          php artisan mallqui:sprints
+          php artisan test
+      - name: Exportar Composer lock actualizado
+        run: |
+          echo "BEGIN_COMPOSER_LOCK"
+          base64 -w0 composer.lock
+          echo
+          echo "END_COMPOSER_LOCK"
+          composer audit || true
