@@ -1420,7 +1420,19 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
     .trainer-edit-button{margin-top:16px;width:100%}.trainer-empty-card{min-height:260px;display:grid;place-items:center;align-content:center;text-align:center;color:#72808d}.trainer-empty-card>span{font-size:34px}.trainer-empty-card h2{margin:8px 0 4px;color:#26394d}.trainer-empty-card p{margin:0;max-width:420px}
     .trainer-access-check{display:grid!important;grid-template-columns:22px 1fr!important;align-items:center!important}.trainer-access-check input{width:18px!important;height:18px!important}
     .trainer-required-note{display:flex;gap:9px;align-items:center;padding:12px;border:1px solid #ffd8dc;border-radius:10px;background:#fff7f7;color:#8b2630}.trainer-required-note>span{font-weight:900}.trainer-required-note div{display:grid;gap:2px}.trainer-required-note b{font-size:10px}.trainer-required-note small{font-size:8px}.trainer-required-note.compact{min-height:42px;box-sizing:border-box}
-    @media(max-width:900px){.trainer-single-layout{grid-template-columns:1fr}.trainer-main-data{grid-template-columns:repeat(2,minmax(0,1fr))}{.routine-exercise-grid{grid-template-columns:repeat(2,1fr)}.feedback-admin-kpis{grid-template-columns:1fr}.feedback-admin-list>article{grid-template-columns:1fr}.feedback-admin-actions{justify-items:start}}
+    @media(max-width:900px){
+      .trainer-single-layout{grid-template-columns:1fr}
+      .trainer-main-data{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .routine-exercise-grid{grid-template-columns:repeat(2,1fr)}
+      .feedback-admin-kpis{grid-template-columns:1fr}
+      .feedback-admin-list>article{grid-template-columns:1fr}
+      .feedback-admin-actions{justify-items:start}
+    }
+    @media(max-width:560px){
+      .trainer-main-top{grid-template-columns:52px minmax(0,1fr)}
+      .trainer-main-status{grid-column:1/-1;justify-self:start}
+      .trainer-main-data{grid-template-columns:1fr}
+    }
   `]
 })
 export class AdminIntegradoComponent implements OnInit, OnDestroy {
