@@ -334,6 +334,94 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         </section>
       </ng-container>
 
+      <ng-container *ngIf="seccion==='atencion'">
+        <section class="admin-hub-shell">
+          <header class="admin-hub-hero">
+            <div>
+              <span>CONTACTO CON EL SOCIO</span>
+              <h2>Atención al cliente</h2>
+              <p>Aquí están únicamente las funciones con las que el administrador recibe o envía información al portal del usuario.</p>
+            </div>
+          </header>
+
+          <div class="admin-hub-grid contact-hub-grid">
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('soporte')">
+              <span class="admin-hub-icon">?</span>
+              <div>
+                <small>CONSULTAS Y SOLICITUDES</small>
+                <h3>Soporte</h3>
+                <p>Revisa mensajes del socio y solicitudes de rutina enviadas desde su cuenta.</p>
+              </div>
+              <b>→</b>
+            </button>
+
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('opiniones')">
+              <span class="admin-hub-icon">★</span>
+              <div>
+                <small>VOZ DEL CLIENTE</small>
+                <h3>Opiniones</h3>
+                <p>Consulta comentarios y calificaciones que los socios dejan en el portal.</p>
+              </div>
+              <b>→</b>
+            </button>
+
+            <button type="button" class="admin-hub-card admin-hub-card-primary" (click)="cambiarSeccion('comunicacion')">
+              <span class="admin-hub-icon">●</span>
+              <div>
+                <small>MENSAJES AL PORTAL</small>
+                <h3>Notificaciones</h3>
+                <p>Envía avisos que el socio podrá ver directamente desde su cuenta.</p>
+              </div>
+              <b>→</b>
+            </button>
+          </div>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='gestion'">
+        <section class="admin-hub-shell">
+          <header class="admin-hub-hero compact">
+            <div>
+              <span>HERRAMIENTAS INTERNAS</span>
+              <h2>Gestión interna</h2>
+              <p>Estas funciones siguen disponibles, pero ya no ocupan espacio en el menú principal.</p>
+            </div>
+          </header>
+
+          <div class="admin-hub-section-title">
+            <span>PERSONAL Y CONFIGURACIÓN</span>
+          </div>
+          <div class="admin-hub-grid admin-hub-grid-compact">
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('entrenador')"><span class="admin-hub-icon">🏋</span><div><h3>Entrenador principal</h3><p>Datos del único entrenador del gimnasio.</p></div><b>→</b></button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('planes')"><span class="admin-hub-icon">◆</span><div><h3>Tarifas</h3><p>Planes, precios y beneficios.</p></div><b>→</b></button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('usuarios')"><span class="admin-hub-icon">♙</span><div><h3>Usuarios internos</h3><p>Cuentas y permisos del personal.</p></div><b>→</b></button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('configuracion')"><span class="admin-hub-icon">⚙</span><div><h3>Mantenimiento</h3><p>Ajustes generales del sistema.</p></div><b>→</b></button>
+          </div>
+
+          <div class="admin-hub-section-title">
+            <span>CAJA, VENTAS E INVENTARIO</span>
+          </div>
+          <div class="admin-hub-grid admin-hub-grid-compact">
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('caja')"><span class="admin-hub-icon">▣</span><div><h3>Caja</h3><p>Apertura, movimientos y cierre.</p></div><b>→</b></button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('ventas')"><span class="admin-hub-icon">▤</span><div><h3>Punto de venta</h3><p>Cobro de productos del gimnasio.</p></div><b>→</b></button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('historial-ventas')"><span class="admin-hub-icon">↺</span><div><h3>Historial de ventas</h3><p>Consulta de ventas registradas.</p></div><b>→</b></button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('inventario')"><span class="admin-hub-icon">▦</span><div><h3>Inventario</h3><p>Productos y control de stock.</p></div><b>→</b></button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('proveedores')"><span class="admin-hub-icon">♢</span><div><h3>Proveedores</h3><p>Datos de abastecimiento.</p></div><b>→</b></button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('compras')"><span class="admin-hub-icon">↓</span><div><h3>Compras</h3><p>Ingreso de mercadería.</p></div><b>→</b></button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('categorias')"><span class="admin-hub-icon">◇</span><div><h3>Categorías</h3><p>Organización de productos.</p></div><b>→</b></button>
+          </div>
+
+          <div class="admin-hub-section-title">
+            <span>CONTROL</span>
+          </div>
+          <div class="admin-hub-grid admin-hub-grid-compact">
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('gastos')"><span class="admin-hub-icon">↓</span><div><h3>Gastos</h3><p>Egresos de la caja activa.</p></div><b>→</b></button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('reportes')"><span class="admin-hub-icon">▥</span><div><h3>Reportes</h3><p>Indicadores del gimnasio.</p></div><b>→</b></button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('reporte-asistencias')"><span class="admin-hub-icon">✓</span><div><h3>Reporte de asistencias</h3><p>Resumen del control de accesos.</p></div><b>→</b></button>
+          </div>
+        </section>
+      </ng-container>
+
       <ng-container *ngIf="seccion==='clientes'">
         <section class="clients-v3-shell">
           <header class="clients-v3-hero">
@@ -1609,8 +1697,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     {
       titulo:'Inicio',
       items:[
-        {id:'dashboard',icono:'⌂',nombre:'Dashboard'},
-        {id:'asistencias',icono:'◷',nombre:'Asistencia'}
+        {id:'dashboard',icono:'⌂',nombre:'Dashboard'}
       ]
     },
     {
@@ -1618,40 +1705,31 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       items:[
         {id:'clientes',icono:'♙',nombre:'Socios'},
         {id:'membresias',icono:'✦',nombre:'Membresías'},
-        {id:'pagos',icono:'S/',nombre:'Pagos de membresía'},
+        {id:'asistencias',icono:'✓',nombre:'Asistencia'}
+      ]
+    },
+    {
+      titulo:'Servicios',
+      items:[
         {id:'reservas',icono:'◫',nombre:'Reservas'},
         {id:'rutinas',icono:'🏋',nombre:'Rutinas'},
-        {id:'clases',icono:'◉',nombre:'Clases'},
-        {id:'soporte',icono:'?',nombre:'Soporte'},
-        {id:'opiniones',icono:'★',nombre:'Opiniones'},
-        {id:'comunicacion',icono:'●',nombre:'Notificaciones'}
+        {id:'clases',icono:'◉',nombre:'Clases'}
       ]
     },
     {
-      titulo:'Operación',
+      titulo:'Contacto',
       items:[
-        {id:'caja',icono:'▣',nombre:'Caja'},
-        {id:'ventas',icono:'▤',nombre:'Punto de Venta'},
-        {id:'historial-ventas',icono:'↺',nombre:'Historial de Ventas'},
-        {id:'inventario',icono:'▦',nombre:'Inventario'},
-        {id:'proveedores',icono:'♢',nombre:'Proveedores'},
-        {id:'compras',icono:'↓',nombre:'Compras'},
-        {id:'categorias',icono:'◇',nombre:'Categorías'}
+        {id:'atencion',icono:'●',nombre:'Atención al cliente'}
       ]
     },
     {
-      titulo:'Administración',
+      titulo:'Sistema',
       items:[
-        {id:'entrenador',icono:'🏋',nombre:'Entrenador'},
-        {id:'planes',icono:'◆',nombre:'Tarifas'},
-        {id:'gastos',icono:'↓',nombre:'Gastos'},
-        {id:'reportes',icono:'▥',nombre:'Reportes'},
-        {id:'reporte-asistencias',icono:'✓',nombre:'Rep. Asistencias'},
-        {id:'usuarios',icono:'♙',nombre:'Usuarios'},
-        {id:'configuracion',icono:'⚙',nombre:'Mantenimiento'}
+        {id:'gestion',icono:'⚙',nombre:'Gestión interna'}
       ]
     }
   ];
+
   titulos: Record<string,[string,string]> = {
     dashboard:['Panel Administrador','Datos reales del gimnasio'], clientes:['Socios','Registro y administración de miembros'],
     membresias:['Membresías','Asignación, renovación y vigencia de socios'], pagos:['Pagos de membresía','Compras realizadas desde el portal del cliente'],
@@ -1669,6 +1747,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     reportes:['Reportes','Indicadores de gestión del gimnasio'], usuarios:['Usuarios','Cuentas internas y permisos'],
     comunicacion:['Notificaciones','Avisos que reciben los clientes en su portal'], soporte:['Soporte','Consultas y solicitudes enviadas desde el portal del cliente'],
     opiniones:['Opiniones','Comentarios y calificaciones enviadas desde el portal del cliente'],
+    atencion:['Atención al cliente','Consultas, opiniones y avisos que conectan con el portal del socio'],
+    gestion:['Gestión interna','Herramientas administrativas que no necesitas ver todo el tiempo'],
     configuracion:['Configuración','Ajustes generales y mantenimiento del sistema']
   };
 
@@ -1840,6 +1920,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     switch (id) {
       case 'dashboard':
         this.cargarDashboard();
+        break;
+      case 'atencion':
+      case 'gestion':
         break;
       case 'clientes':
         this.cargarClientes();
