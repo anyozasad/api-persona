@@ -78,10 +78,12 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         </div>
       </header>
 
-      <div class="admin-context-back" *ngIf="esSeccionAtencionSecundaria || esSeccionGestionSecundaria">
+      <div class="admin-context-back" *ngIf="esSeccionSociosSecundaria || esSeccionServiciosSecundaria || esSeccionAtencionSecundaria || esSeccionGestionSecundaria">
+        <button type="button" *ngIf="esSeccionSociosSecundaria" (click)="cambiarSeccion('socios-hub')">← Socios</button>
+        <button type="button" *ngIf="esSeccionServiciosSecundaria" (click)="cambiarSeccion('servicios')">← Servicios</button>
         <button type="button" *ngIf="esSeccionAtencionSecundaria" (click)="cambiarSeccion('atencion')">← Atención al cliente</button>
         <button type="button" *ngIf="esSeccionGestionSecundaria" (click)="cambiarSeccion('gestion')">← Gestión interna</button>
-        <span>{{esSeccionAtencionSecundaria ? 'Función conectada con el portal del socio' : 'Herramienta administrativa interna'}}</span>
+        <span>{{esSeccionSociosSecundaria ? 'Gestión del socio' : (esSeccionServiciosSecundaria ? 'Servicio visible para el socio' : (esSeccionAtencionSecundaria ? 'Función conectada con el portal del socio' : 'Herramienta administrativa interna'))}}</span>
       </div>
 
       <div *ngIf="toast" class="admin-toast success">{{toast}}</div>
@@ -132,6 +134,58 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
           <button type="button" class="ux-action" (click)="cambiarSeccion('asistencias')">
             <span>✓</span><div><b>Registrar asistencia</b><small>Entrada o salida</small></div>
           </button>
+        </section>
+
+        <section class="dashboard-control-center" aria-label="Resumen operativo del gimnasio">
+          <header>
+            <div>
+              <span>RESUMEN DE HOY</span>
+              <h3>Lo que necesita atención ahora</h3>
+            </div>
+            <small>Datos de la misma base que usa el portal del socio</small>
+          </header>
+          <div class="dashboard-control-grid">
+            <button type="button" (click)="cambiarSeccion('socios-hub')">
+              <span>♙</span><div><small>SOCIOS ACTIVOS</small><b>{{dashboard?.clientes?.activos ?? 0}}</b><p>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos este mes</p></div>
+            </button>
+            <button type="button" (click)="cambiarSeccion('membresias')">
+              <span>✦</span><div><small>MEMBRESÍAS</small><b>{{dashboard?.membresias?.activas ?? 0}}</b><p>{{dashboard?.membresias?.por_vencer_7_dias ?? 0}} por vencer</p></div>
+            </button>
+            <button type="button" (click)="cambiarSeccion('asistencias')">
+              <span>✓</span><div><small>DENTRO DEL GYM</small><b>{{dashboard?.asistencias?.dentro_ahora ?? 0}}</b><p>{{dashboard?.asistencias?.hoy ?? 0}} accesos hoy</p></div>
+            </button>
+            <button type="button" (click)="cambiarSeccion('reservas')">
+              <span>◫</span><div><small>RESERVAS HOY</small><b>{{dashboard?.reservas?.hoy ?? 0}}</b><p>Agenda del día</p></div>
+            </button>
+            <button type="button" (click)="cambiarSeccion('ventas')">
+              <span>▤</span><div><small>VENTAS HOY</small><b>{{dashboard?.ventas?.hoy_cantidad ?? 0}}</b><p>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</p></div>
+            </button>
+            <button type="button" (click)="cambiarSeccion('clases')">
+              <span>◉</span><div><small>CLASES ACTIVAS</small><b>{{dashboard?.operacion?.clases_activas ?? 0}}</b><p>Disponibles para reservar</p></div>
+            </button>
+            <button type="button" (click)="cambiarSeccion('rutinas')">
+              <span>🏋</span><div><small>RUTINAS ACTIVAS</small><b>{{dashboard?.operacion?.rutinas_activas ?? 0}}</b><p>{{dashboard?.alertas?.rutinas_pendientes ?? 0}} solicitudes pendientes</p></div>
+            </button>
+            <button type="button" (click)="cambiarSeccion('entrenador')">
+              <span>◎</span><div><small>ENTRENADOR</small><b>{{dashboard?.operacion?.entrenadores_activos ?? 0}}</b><p>Entrenador principal activo</p></div>
+            </button>
+          </div>
+        </section>
+
+        <section class="dashboard-health-strip" aria-label="Estado del sistema">
+          <div>
+            <span class="health-dot"></span>
+            <p><b>Base principal conectada</b><small>{{dashboard?.fuente?.base_datos || 'MySQL'}} · {{dashboard?.fuente?.tablas_detectadas?.length || 0}} tablas detectadas</small></p>
+          </div>
+          <div>
+            <span>↻</span>
+            <p><b>Sincronización automática</b><small>Cada 15 segundos con el portal del socio</small></p>
+          </div>
+          <div>
+            <span [class.health-warning]="(dashboard?.alertas?.total ?? 0)>0">!</span>
+            <p><b>{{(dashboard?.alertas?.total ?? 0)>0 ? ((dashboard?.alertas?.total ?? 0)+' pendientes') : 'Sin alertas críticas'}}</b><small>{{(dashboard?.inventario?.productos_stock_bajo ?? 0)}} stock bajo · {{dashboard?.membresias?.por_vencer_7_dias ?? 0}} vencimientos</small></p>
+          </div>
+          <button type="button" (click)="irAlertasPendientes()">Revisar prioridades →</button>
         </section>
 
         <section class="ux-primary-kpis" aria-label="Indicadores principales">
@@ -218,6 +272,10 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
         <section class="ux-alert-banner" *ngIf="(dashboard?.alertas?.total ?? 0) > 0">
           <div><span>!</span><div><b>Hay {{dashboard?.alertas?.total}} alertas operativas.</b><small>Revisa soporte, rutinas solicitadas, opiniones nuevas, stock bajo y membresías próximas a vencer.</small></div></div>
           <button type="button" (click)="irAlertasPendientes()">Revisar pendientes →</button>
+        </section>
+        <section class="ux-alert-banner is-clear" *ngIf="(dashboard?.alertas?.total ?? 0) === 0">
+          <div><span>✓</span><div><b>Operación al día.</b><small>No hay alertas de soporte, opiniones, stock ni vencimientos que requieran atención inmediata.</small></div></div>
+          <button type="button" (click)="actualizarSeccionActual()">Actualizar datos →</button>
         </section>
 
         <section class="ux-chart-layout">
@@ -337,6 +395,60 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
               <div class="dashboard-empty" *ngIf="!(dashboard?.tendencias?.membresias_por_plan?.length)">Todavía no hay membresías activas.</div>
             </div>
           </article>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='socios-hub'">
+        <section class="admin-hub-shell">
+          <header class="admin-hub-hero">
+            <div>
+              <span>GESTIÓN DEL SOCIO</span>
+              <h2>Socios</h2>
+              <p>Las tres funciones principales para administrar a un miembro: sus datos, su membresía y su acceso al gimnasio.</p>
+            </div>
+          </header>
+
+          <div class="admin-hub-grid contact-hub-grid">
+            <button type="button" class="admin-hub-card admin-hub-card-primary" (click)="cambiarSeccion('clientes')">
+              <span class="admin-hub-icon">♙</span>
+              <div><small>DATOS DEL MIEMBRO</small><h3>Clientes</h3><p>Registrar, editar, consultar ficha y administrar el acceso del socio.</p></div><b>→</b>
+            </button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('membresias')">
+              <span class="admin-hub-icon">✦</span>
+              <div><small>PLAN Y VIGENCIA</small><h3>Membresías</h3><p>Asignar, renovar y revisar vencimientos y pagos del socio.</p></div><b>→</b>
+            </button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('asistencias')">
+              <span class="admin-hub-icon">✓</span>
+              <div><small>ENTRADA Y SALIDA</small><h3>Asistencia</h3><p>Registrar acceso por socio, DNI o credencial y consultar movimientos.</p></div><b>→</b>
+            </button>
+          </div>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='servicios'">
+        <section class="admin-hub-shell">
+          <header class="admin-hub-hero">
+            <div>
+              <span>SERVICIOS DEL GIMNASIO</span>
+              <h2>Servicios</h2>
+              <p>Aquí se administra lo que el socio usa directamente desde su portal: clases, reservas y rutinas.</p>
+            </div>
+          </header>
+
+          <div class="admin-hub-grid contact-hub-grid">
+            <button type="button" class="admin-hub-card admin-hub-card-primary" (click)="cambiarSeccion('clases')">
+              <span class="admin-hub-icon">◉</span>
+              <div><small>PROGRAMACIÓN</small><h3>Clases</h3><p>Horarios, cupos y entrenador de las clases disponibles.</p></div><b>→</b>
+            </button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('reservas')">
+              <span class="admin-hub-icon">◫</span>
+              <div><small>AGENDA DEL SOCIO</small><h3>Reservas</h3><p>Ver reservas creadas por los clientes y controlar su asistencia.</p></div><b>→</b>
+            </button>
+            <button type="button" class="admin-hub-card" (click)="cambiarSeccion('rutinas')">
+              <span class="admin-hub-icon">🏋</span>
+              <div><small>ENTRENAMIENTO</small><h3>Rutinas</h3><p>Atender solicitudes y asignar la rutina que verá el socio.</p></div><b>→</b>
+            </button>
+          </div>
         </section>
       </ng-container>
 
@@ -1701,36 +1813,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
   menuGrupos = [
     {
-      titulo:'Inicio',
+      titulo:'Principal',
       items:[
-        {id:'dashboard',icono:'⌂',nombre:'Dashboard'}
-      ]
-    },
-    {
-      titulo:'Clientes',
-      items:[
-        {id:'clientes',icono:'♙',nombre:'Socios'},
-        {id:'membresias',icono:'✦',nombre:'Membresías'},
-        {id:'asistencias',icono:'✓',nombre:'Asistencia'}
-      ]
-    },
-    {
-      titulo:'Servicios',
-      items:[
-        {id:'reservas',icono:'◫',nombre:'Reservas'},
-        {id:'rutinas',icono:'🏋',nombre:'Rutinas'},
-        {id:'clases',icono:'◉',nombre:'Clases'}
-      ]
-    },
-    {
-      titulo:'Contacto',
-      items:[
-        {id:'atencion',icono:'●',nombre:'Atención al cliente'}
-      ]
-    },
-    {
-      titulo:'Sistema',
-      items:[
+        {id:'dashboard',icono:'⌂',nombre:'Dashboard'},
+        {id:'socios-hub',icono:'♙',nombre:'Socios'},
+        {id:'servicios',icono:'◉',nombre:'Servicios'},
+        {id:'atencion',icono:'●',nombre:'Atención al cliente'},
         {id:'gestion',icono:'⚙',nombre:'Gestión interna'}
       ]
     }
@@ -1753,6 +1841,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     reportes:['Reportes','Indicadores de gestión del gimnasio'], usuarios:['Usuarios','Cuentas internas y permisos'],
     comunicacion:['Notificaciones','Avisos que reciben los clientes en su portal'], soporte:['Soporte','Consultas y solicitudes enviadas desde el portal del cliente'],
     opiniones:['Opiniones','Comentarios y calificaciones enviadas desde el portal del cliente'],
+    'socios-hub':['Socios','Clientes, membresías y control de acceso en un solo lugar'],
+    servicios:['Servicios','Reservas, rutinas y clases que usa el socio'],
     atencion:['Atención al cliente','Consultas, opiniones y avisos que conectan con el portal del socio'],
     gestion:['Gestión interna','Herramientas administrativas que no necesitas ver todo el tiempo'],
     configuracion:['Configuración','Ajustes generales y mantenimiento del sistema']
@@ -1855,6 +1945,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   get tituloActual(): string { return this.titulos[this.seccion]?.[0] ?? 'Administrador'; }
   get subtituloActual(): string { return this.titulos[this.seccion]?.[1] ?? ''; }
+  get esSeccionSociosSecundaria(): boolean {
+    return ['clientes','membresias','asistencias','pagos'].includes(this.seccion);
+  }
+  get esSeccionServiciosSecundaria(): boolean {
+    return ['reservas','rutinas','clases'].includes(this.seccion);
+  }
   get esSeccionAtencionSecundaria(): boolean {
     return ['soporte','opiniones','comunicacion'].includes(this.seccion);
   }
@@ -1933,6 +2029,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       case 'dashboard':
         this.cargarDashboard();
         break;
+      case 'socios-hub':
+      case 'servicios':
       case 'atencion':
       case 'gestion':
         break;
