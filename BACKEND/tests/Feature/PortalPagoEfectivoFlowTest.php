@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Http\Controllers\SolicitudPagoMembresiaController;
 use App\Models\Usuario;
 use App\Services\ComprobanteMembresiaService;
+use App\Services\CajaService;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,7 @@ class PortalPagoEfectivoFlowTest extends TestCase
     {
         parent::setUp();
 
-        foreach (['pagos_membresia', 'cliente_membresia', 'membresias', 'usuarios', 'clientes'] as $tabla) {
+        foreach (['movimientos_caja', 'cajas', 'pagos_membresia', 'cliente_membresia', 'membresias', 'usuarios', 'clientes'] as $tabla) {
             Schema::dropIfExists($tabla);
         }
 
@@ -72,6 +73,33 @@ class PortalPagoEfectivoFlowTest extends TestCase
             $table->string('estado_pago');
         });
 
+        Schema::create('cajas', function (Blueprint $table) {
+            $table->id('id_caja');
+            $table->unsignedBigInteger('id_usuario_apertura');
+            $table->dateTime('fecha_apertura');
+            $table->decimal('monto_inicial', 10, 2);
+            $table->dateTime('fecha_cierre')->nullable();
+            $table->decimal('monto_esperado', 10, 2)->nullable();
+            $table->decimal('monto_real', 10, 2)->nullable();
+            $table->decimal('diferencia', 10, 2)->nullable();
+            $table->string('estado');
+            $table->text('observacion')->nullable();
+        });
+
+        Schema::create('movimientos_caja', function (Blueprint $table) {
+            $table->id('id_movimiento');
+            $table->unsignedBigInteger('id_caja');
+            $table->unsignedBigInteger('id_usuario');
+            $table->string('tipo');
+            $table->string('origen');
+            $table->string('referencia_tipo')->nullable();
+            $table->unsignedBigInteger('referencia_id')->nullable();
+            $table->string('descripcion');
+            $table->decimal('monto', 10, 2);
+            $table->dateTime('fecha_movimiento');
+            $table->string('estado');
+        });
+
         DB::table('clientes')->insert([
             'id_cliente' => 1,
             'dni' => '70000111',
@@ -91,6 +119,20 @@ class PortalPagoEfectivoFlowTest extends TestCase
             'rol' => 'Cliente',
             'estado' => 'Activo',
             'id_cliente' => 1,
+            'fecha_registro' => now(),
+        ]);
+
+        DB::table('usuarios')->insert([
+            'id_usuario' => 2,
+            'nombre_usuario' => 'admin.efectivo',
+            'contrasena' => bcrypt('Password123'),
+            'nombres' => 'Admin',
+            'apellidos' => 'Caja',
+            'dni' => '70000112',
+            'correo' => 'admin.efectivo@test.local',
+            'rol' => 'Administrador',
+            'estado' => 'Activo',
+            'id_cliente' => null,
             'fecha_registro' => now(),
         ]);
 
@@ -137,10 +179,33 @@ class PortalPagoEfectivoFlowTest extends TestCase
 
         $response2 = $this->comprarEfectivo();
         $idPago2 = (int) $response2->getData(true)['pago']['id_pago'];
-        app(SolicitudPagoMembresiaController::class)->confirmar((string) $idPago2);
+
+        DB::table('cajas')->insert([
+            'id_caja' => 1,
+            'id_usuario_apertura' => 2,
+            'fecha_apertura' => now(),
+            'monto_inicial' => 50,
+            'estado' => 'Abierta',
+        ]);
+
+        $requestConfirmar = Request::create('/api/pagos-membresia/'.$idPago2.'/confirmar', 'POST');
+        $requestConfirmar->setUserResolver(fn () => Usuario::findOrFail(2));
+        app(SolicitudPagoMembresiaController::class)->confirmar(
+            $requestConfirmar,
+            (string) $idPago2,
+            app(CajaService::class)
+        );
 
         $this->assertDatabaseHas('pagos_membresia', ['id_pago' => $idPago2, 'estado_pago' => 'Completado']);
         $this->assertDatabaseHas('cliente_membresia', ['id_cliente' => 1, 'estado' => 'Activo']);
+        $this->assertDatabaseHas('movimientos_caja', [
+            'id_usuario' => 2,
+            'tipo' => 'Ingreso',
+            'origen' => 'Membresia',
+            'referencia_tipo' => 'PagoMembresia',
+            'referencia_id' => $idPago2,
+            'monto' => 100.00,
+        ]);
     }
 
     private function comprarEfectivo()
