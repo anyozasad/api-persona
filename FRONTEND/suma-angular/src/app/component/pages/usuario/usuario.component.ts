@@ -1476,6 +1476,7 @@ import {
                     <option>Plin</option>
                     <option>Transferencia</option>
                     <option>Tarjeta</option>
+                    <option>Efectivo</option>
                   </select>
                 </label>
 
@@ -1488,12 +1489,13 @@ import {
                   </div>
                 </div>
 
-                <label>N° de operación
+                <label>{{pagoForm.metodo_pago==='Efectivo' ? 'Pago en recepción' : 'N° de operación'}}
                   <input [(ngModel)]="pagoForm.numero_operacion"
                          name="operacionPago"
-                         placeholder="Ejemplo: 548721963"
-                         required>
-                  <small>Debe coincidir con la operación realizada por el monto de la mensualidad o promoción.</small>
+                         [placeholder]="pagoForm.metodo_pago==='Efectivo' ? 'No requiere número de operación' : 'Ejemplo: 548721963'"
+                         [disabled]="pagoForm.metodo_pago==='Efectivo'"
+                         [required]="pagoForm.metodo_pago!=='Efectivo'">
+                  <small>{{pagoForm.metodo_pago==='Efectivo' ? 'La solicitud quedará pendiente hasta que recepción confirme el efectivo.' : 'Debe coincidir con la operación realizada por el monto de la mensualidad o promoción.'}}</small>
                 </label>
 
                 <div class="membership-payment-review" *ngIf="planPagoSeleccionado">
@@ -1505,17 +1507,23 @@ import {
 
                 <button class="member-form-submit"
                         type="submit"
-                        [disabled]="procesandoCompra || !planPagoSeleccionado || !pagoForm.numero_operacion.trim()">
-                  {{procesandoCompra ? 'Procesando compra...' : (membresiaActual ? 'Renovar y generar boleta' : 'Comprar y generar boleta')}}
+                        [disabled]="procesandoCompra || !planPagoSeleccionado || (pagoForm.metodo_pago!=='Efectivo' && !pagoForm.numero_operacion.trim())">
+                  {{procesandoCompra ? 'Procesando...' : (pagoForm.metodo_pago==='Efectivo' ? 'Registrar pago en recepción' : (membresiaActual ? 'Renovar y generar boleta' : 'Comprar y generar boleta'))}}
                   <span>→</span>
                 </button>
 
                 <div class="membership-validation-note">
                   <span>✓</span>
                   <div>
-                    Al confirmar, el sistema registra el pago como <b>Completado</b>,
-                    activa o programa la membresía y genera la boleta automáticamente.
-                    <strong>No necesita aprobación del dashboard.</strong>
+                    <ng-container *ngIf="pagoForm.metodo_pago!=='Efectivo'; else pagoEfectivoInfo">
+                      Al confirmar, el sistema registra el pago como <b>Completado</b>,
+                      activa o programa la membresía y genera la boleta automáticamente.
+                      <strong>No necesita aprobación del dashboard.</strong>
+                    </ng-container>
+                    <ng-template #pagoEfectivoInfo>
+                      El pago en <b>Efectivo</b> queda pendiente hasta que recepción confirme el dinero.
+                      Puedes cancelar la solicitud mientras siga pendiente.
+                    </ng-template>
                   </div>
                 </div>
 
@@ -1555,11 +1563,17 @@ import {
                   <strong>S/ {{p.monto | number:'1.2-2'}}</strong>
                   <em [class.pending]="p.estado_pago==='Pendiente'">{{p.estado_pago}}</em>
                   <button *ngIf="p.estado_pago==='Completado'" type="button" (click)="comprobante(p)">Ver boleta</button>
-                  <button *ngIf="p.estado_pago==='Pendiente'"
+                  <button *ngIf="p.estado_pago==='Pendiente' && p.metodo_pago!=='Efectivo'"
                           type="button"
                           class="payment-cancel"
                           (click)="usarPagoPendiente(p)">
                     Completar compra
+                  </button>
+                  <button *ngIf="p.estado_pago==='Pendiente' && p.metodo_pago==='Efectivo'"
+                          type="button"
+                          class="payment-cancel"
+                          (click)="cancelarSolicitudPago(p)">
+                    Cancelar solicitud
                   </button>
                 </div>
 
@@ -2105,6 +2119,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   sesionCasaActiva=false;
   sesionCasaPausada=false;
   sesionCasaTerminada=false;
+  idSesionCasaActiva:number|null=null;
   indiceEjercicioCasa=0;
   faseCasa:'ejercicio'|'descanso'='ejercicio';
   segundosCasa=0;
@@ -2722,6 +2737,9 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     }
     if(metodo==='Transferencia'){
       return 'Realiza la transferencia por el monto exacto y registra el código de operación.';
+    }
+    if(metodo==='Efectivo'){
+      return 'Paga en recepción. La membresía se activará cuando el administrador confirme el efectivo.';
     }
     return 'Registra el número de operación o comprobante entregado al realizar el pago.';
   }
@@ -3757,8 +3775,10 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       this.error='Selecciona una mensualidad o promoción disponible.';
       return;
     }
-    this.pagoForm.numero_operacion=normalizeOperationNumber(this.pagoForm.numero_operacion);
-    if(!String(this.pagoForm.numero_operacion||'').trim()){
+    this.pagoForm.numero_operacion=this.pagoForm.metodo_pago==='Efectivo'
+      ? ''
+      : normalizeOperationNumber(this.pagoForm.numero_operacion);
+    if(this.pagoForm.metodo_pago!=='Efectivo' && !String(this.pagoForm.numero_operacion||'').trim()){
       this.error='Ingresa el número de operación del pago.';
       return;
     }
@@ -3769,7 +3789,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       next:r=>{
         this.procesandoCompra=false;
         this.ultimaBoleta=r?.comprobante||null;
-        this.ok(r.mensaje||'Compra completada');
+        this.ok(r.mensaje||'Operación registrada');
         this.pagoForm.numero_operacion='';
         this.api.pagosCliente().subscribe(x=>this.pagos=x);
         this.api.membresiaCliente().subscribe(x=>{
@@ -3811,7 +3831,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
   cancelarSolicitudPago(p:any){
     if(!p?.id_pago||p.estado_pago!=='Pendiente')return;
-    if(!confirm('¿Cancelar este registro pendiente del flujo anterior?'))return;
+    if(!confirm('¿Cancelar esta solicitud de pago pendiente?'))return;
     this.api.cancelarSolicitudPago(Number(p.id_pago)).subscribe({
       next:r=>{this.ok(r.mensaje||'Registro cancelado');this.api.pagosCliente().subscribe(x=>this.pagos=x);},
       error:e=>this.error=this.errorApi(e)
