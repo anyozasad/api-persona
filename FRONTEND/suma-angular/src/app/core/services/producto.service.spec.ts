@@ -10,7 +10,7 @@ import { ProductoService } from './producto.service';
 describe('ProductoService - pruebas CRUD Mallqui Gym', () => {
   let servicio: ProductoService;
   let httpMock: HttpTestingController;
-  const api = '/api/productos';
+  const api = '/api/gym-admin/productos';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -101,14 +101,15 @@ describe('ProductoService - pruebas CRUD Mallqui Gym', () => {
     req.flush({ id_producto: 2, ...cambios });
   });
 
-  it('usa DELETE para desactivar sin borrar el historial', () => {
+  it('usa PUT de estado para desactivar sin borrar el historial', () => {
     servicio.eliminar(2).subscribe();
 
-    const req = httpMock.expectOne(`${api}/2`);
-    expect(req.request.method).toBe('DELETE');
+    const req = httpMock.expectOne(`${api}/2/estado`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({ estado: 'Inactivo' });
 
     req.flush({
-      mensaje: 'Producto desactivado correctamente. Se conserva su historial.'
+      mensaje: 'Estado del producto actualizado.'
     });
   });
 });
