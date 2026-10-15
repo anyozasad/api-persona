@@ -853,6 +853,7 @@ import {
                            step="0.5"
                            [ngModel]="cargaActualGym(ejercicioCasaActual)"
                            (ngModelChange)="actualizarCargaGym(ejercicioCasaActual,$event)"
+                           (change)="guardarCargaGym(ejercicioCasaActual)"
                            name="cargaGymActual"
                            placeholder="0">
                     <b>kg</b>
@@ -3324,6 +3325,16 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.cargasGym={...this.cargasGym,[clave]:valor};
   }
 
+  guardarCargaGym(e:any):void{
+    if(!this.idSesionCasaActiva || !e?.id_detalle_rutina)return;
+    const valor=Number(this.cargaActualGym(e));
+    this.api.actualizarSesionCasaCliente(this.idSesionCasaActiva,{
+      duracion_segundos:Math.max(0,this.segundosTranscurridosCasa),
+      id_detalle_rutina:Number(e.id_detalle_rutina),
+      peso_utilizado:Number.isFinite(valor) && valor>=0 ? valor : null
+    }).subscribe({error:err=>this.errorCasa='No se pudo guardar la carga: '+this.errorApi(err)});
+  }
+
   textoPesoGym(e:any):string{
     const carga=this.cargaActualGym(e);
     if(carga!=='' && carga!==null && carga!==undefined)return String(carga)+' kg';
@@ -3455,8 +3466,25 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   completarSerieGym():void{
     if(!this.sesionCasaActiva || this.sesionCasaPausada || this.faseCasa!=='ejercicio')return;
-    this.errorCasa='';
-    this.siguienteFaseCasa();
+    if(!this.idSesionCasaActiva || !this.ejercicioCasaActual?.id_detalle_rutina){
+      this.errorCasa='La sesión no está registrada en la base de datos.';
+      return;
+    }
+
+    const e=this.ejercicioCasaActual;
+    const peso=Number(this.cargaActualGym(e));
+    const completaEjercicio=this.serieCasaActual>=this.seriesCasaTotalActual;
+    this.api.actualizarSesionCasaCliente(this.idSesionCasaActiva,{
+      duracion_segundos:Math.max(0,this.segundosTranscurridosCasa),
+      id_detalle_rutina:Number(e.id_detalle_rutina),
+      series_realizadas:this.serieCasaActual,
+      repeticiones_realizadas:Math.max(1,Number(e?.repeticiones||1)),
+      peso_utilizado:Number.isFinite(peso) && peso>=0 ? peso : null,
+      completado:completaEjercicio
+    }).subscribe({
+      next:()=>{this.errorCasa='';this.siguienteFaseCasa();},
+      error:err=>this.errorCasa='No se pudo guardar la serie: '+this.errorApi(err)
+    });
   }
 
   saltarDescansoGym():void{
@@ -3488,34 +3516,51 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.detenerTimerCasa();
-    this.indiceEjercicioCasa=0;
-    this.faseCasa='ejercicio';
-    this.segundosCasa=this.ejercicioCasaActual?.modo==='tiempo' ? this.segundosObjetivoCasa(this.ejercicioCasaActual) : 0;
-    this.segundosTranscurridosCasa=0;
-    this.repsCasaHechas=0;
-    this.serieCasaActual=1;
-    this.ladoCasa='derecho';
-    this.cargasGym={};
-    for(const ejercicio of this.ejerciciosCasaActuales){
-      const recomendado=Number(ejercicio?.peso_recomendado||0);
-      if(recomendado>0)this.cargasGym[this.claveEjercicioGym(ejercicio)]=recomendado;
+    if(this.idSesionCasaActiva){
+      this.sesionCasaActiva=true;
+      this.sesionCasaPausada=false;
+      this.detenerTimerCasa();
+      this.timerCasa=setInterval(()=>this.tickCasa(),1000);
+      return;
     }
-    this.sesionCasaActiva=true;
-    this.sesionCasaPausada=false;
-    this.sesionCasaTerminada=false;
-    this.errorCasa='';
-    this.timerCasa=setInterval(()=>this.tickCasa(),1000);
 
-    setTimeout(()=>{
-      document.querySelector('#sesion-entrenamiento-casa')?.scrollIntoView({behavior:'smooth',block:'start'});
-    },80);
+    const idRutina=Number(this.rutinaActual?.id_rutina||0);
+    if(!idRutina){
+      this.errorCasa='No se pudo identificar la rutina activa.';
+      return;
+    }
+
+    this.errorCasa='';
+    this.api.iniciarSesionCasaCliente(idRutina).subscribe({
+      next:r=>{
+        this.indiceEjercicioCasa=0;
+        this.faseCasa='ejercicio';
+        this.segundosCasa=0;
+        this.segundosTranscurridosCasa=0;
+        this.repsCasaHechas=0;
+        this.serieCasaActual=1;
+        this.ladoCasa='derecho';
+        this.cargasGym={};
+        this.restaurarSesionCasa(r?.sesion);
+        this.ok(r?.mensaje||'Entrenamiento iniciado');
+        setTimeout(()=>{
+          document.querySelector('#sesion-entrenamiento-casa')?.scrollIntoView({behavior:'smooth',block:'start'});
+        },80);
+      },
+      error:e=>this.errorCasa=this.errorApi(e)
+    });
   }
 
   private tickCasa():void{
     if(!this.sesionCasaActiva||this.sesionCasaPausada)return;
 
     this.segundosTranscurridosCasa++;
+    if(this.idSesionCasaActiva && this.segundosTranscurridosCasa%15===0){
+      this.api.actualizarSesionCasaCliente(this.idSesionCasaActiva,{
+        duracion_segundos:this.segundosTranscurridosCasa,
+        estado:'EnCurso'
+      }).subscribe({error:()=>{}});
+    }
 
     if(this.faseCasa==='descanso'){
       this.segundosCasa=Math.max(0,this.segundosCasa-1);
@@ -3566,30 +3611,70 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       : 0;
   }
 
-  togglePausaCasa():void{this.sesionCasaPausada=!this.sesionCasaPausada;}
+  togglePausaCasa():void{
+    if(!this.idSesionCasaActiva)return;
+    const nuevoEstado=this.sesionCasaPausada?'EnCurso':'Pausada';
+    this.api.actualizarSesionCasaCliente(this.idSesionCasaActiva,{
+      duracion_segundos:Math.max(0,this.segundosTranscurridosCasa),
+      estado:nuevoEstado
+    }).subscribe({
+      next:()=>{
+        this.sesionCasaPausada=nuevoEstado==='Pausada';
+        if(this.sesionCasaPausada){
+          this.detenerTimerCasa();
+        }else{
+          this.detenerTimerCasa();
+          this.timerCasa=setInterval(()=>this.tickCasa(),1000);
+        }
+      },
+      error:e=>this.errorCasa='No se pudo cambiar el estado de la sesión: '+this.errorApi(e)
+    });
+  }
 
-  cancelarSesionCasa():void{
-    if(!confirm('¿Terminar esta sesión antes de completarla?'))return;
+  private limpiarSesionCasaLocal():void{
     this.detenerTimerCasa();
     this.sesionCasaActiva=false;
     this.sesionCasaPausada=false;
-    this.sesionCasaTerminada=false;
     this.indiceEjercicioCasa=0;
     this.repsCasaHechas=0;
     this.serieCasaActual=1;
     this.ladoCasa='derecho';
     this.segundosCasa=0;
+    this.segundosTranscurridosCasa=0;
+    this.idSesionCasaActiva=null;
+  }
+
+  cancelarSesionCasa():void{
+    if(!confirm('¿Terminar esta sesión antes de completarla?'))return;
+    if(!this.idSesionCasaActiva){
+      this.limpiarSesionCasaLocal();
+      this.sesionCasaTerminada=false;
+      return;
+    }
+
+    const id=this.idSesionCasaActiva;
+    this.api.cancelarSesionCasaCliente(id,Math.max(0,this.segundosTranscurridosCasa)).subscribe({
+      next:r=>{
+        if(r?.sesion)this.historialCasa=[r.sesion,...this.historialCasa.filter((x:any)=>Number(x?.id_sesion_casa)!==id)];
+        this.limpiarSesionCasaLocal();
+        this.sesionCasaTerminada=false;
+        this.ok(r?.mensaje||'Sesión cancelada');
+      },
+      error:e=>this.errorCasa='No se pudo cancelar la sesión: '+this.errorApi(e)
+    });
   }
 
   private completarSesionCasa():void{
+    if(!this.idSesionCasaActiva){
+      this.errorCasa='La sesión no tiene un registro activo en la base de datos.';
+      return;
+    }
+
     this.detenerTimerCasa();
-    this.sesionCasaActiva=false;
-    this.sesionCasaPausada=false;
-    this.sesionCasaTerminada=true;
+    this.sesionCasaPausada=true;
 
-    const total=this.ejerciciosCasaActuales.length;
+    const idSesion=this.idSesionCasaActiva;
     const duracion=Math.max(1,this.segundosTranscurridosCasa);
-
     const idRutina=Number(this.rutinaActual?.id_rutina||0);
     const ejercicios=this.ejerciciosCasaActuales.map((e:any)=>({
       id_detalle_rutina:Number(e?.id_detalle_rutina||0),
@@ -3597,22 +3682,28 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       repeticiones_realizadas:Math.max(1,Number(e?.repeticiones||1)),
       peso_utilizado:(()=>{
         const valor=Number(this.cargaActualGym(e));
-        return Number.isFinite(valor) && valor>0 ? valor : null;
+        return Number.isFinite(valor) && valor>=0 ? valor : null;
       })(),
       completado:true
     }));
 
     this.api.registrarSesionCasaCliente({
+      id_sesion_casa:idSesion,
       id_rutina:idRutina,
       duracion_segundos:duracion,
       ejercicios
     }).subscribe({
       next:r=>{
-        if(r?.sesion)this.historialCasa=[r.sesion,...this.historialCasa];
+        this.limpiarSesionCasaLocal();
+        this.sesionCasaTerminada=true;
+        if(r?.sesion)this.historialCasa=[r.sesion,...this.historialCasa.filter((x:any)=>Number(x?.id_sesion_casa)!==idSesion)];
         this.ok(r?.mensaje||'Entrenamiento guardado');
       },
       error:e=>{
-        this.errorCasa='Terminaste la sesión, pero no se pudo guardar el historial: '+this.errorApi(e);
+        this.sesionCasaPausada=false;
+        this.sesionCasaActiva=true;
+        this.timerCasa=setInterval(()=>this.tickCasa(),1000);
+        this.errorCasa='No se pudo finalizar el entrenamiento: '+this.errorApi(e);
       }
     });
   }
