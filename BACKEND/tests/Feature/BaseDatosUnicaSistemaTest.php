@@ -6,26 +6,31 @@ use Tests\TestCase;
 
 class BaseDatosUnicaSistemaTest extends TestCase
 {
-    public function test_clientes_registrados_se_mantienen_en_la_interfaz_y_se_sincronizan_a_gym_system(): void
+    public function test_interfaz_conserva_sus_datos_y_tiene_espejo_en_gym_system(): void
     {
         $adminApi = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/component/pages/admin/admin-api.service.ts'));
-        $clienteController = (string) file_get_contents(app_path('Http/Controllers/ClienteController.php'));
-        $mirror = (string) file_get_contents(app_path('Services/GymSystemClienteMirror.php'));
-        $command = (string) file_get_contents(app_path('Console/Commands/SincronizarClientesGymSystem.php'));
+        $mirror = (string) file_get_contents(app_path('Services/GymSystemDataMirror.php'));
+        $middleware = (string) file_get_contents(app_path('Http/Middleware/SyncGymSystemMirror.php'));
+        $command = (string) file_get_contents(app_path('Console/Commands/SincronizarTodoGymSystem.php'));
 
         $this->assertStringContainsString("'/api/clientes'", $adminApi);
-        $this->assertStringContainsString('GymSystemClienteMirror', $clienteController);
+        $this->assertStringContainsString("'/api/membresias'", $adminApi);
+        $this->assertStringContainsString("'/api/asistencias'", $adminApi);
+        $this->assertStringContainsString("'/api/productos'", $adminApi);
+        $this->assertStringContainsString("'/api/ventas'", $adminApi);
+
         $this->assertStringContainsString("env('GYM_DB_DATABASE', 'gym_system')", $mirror);
-        $this->assertStringContainsString("table('socios')", $mirror);
-        $this->assertStringContainsString('gym:sincronizar-clientes', $command);
+        $this->assertStringContainsString("'app_'.\$tabla", $mirror);
+        $this->assertStringContainsString('sincronizarSilencioso', $middleware);
+        $this->assertStringContainsString('gym:sincronizar-todo', $command);
     }
 
-    public function test_inventario_sigue_apuntando_a_gym_system_real(): void
+    public function test_clientes_siguen_reflejandose_en_socios(): void
     {
-        $producto = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/core/services/producto.service.ts'));
-        $categoria = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/core/services/categoria.service.ts'));
+        $clienteController = (string) file_get_contents(app_path('Http/Controllers/ClienteController.php'));
+        $clienteMirror = (string) file_get_contents(app_path('Services/GymSystemClienteMirror.php'));
 
-        $this->assertStringContainsString("'/api/gym-admin/productos'", $producto);
-        $this->assertStringContainsString("'/api/gym-admin/categorias'", $categoria);
+        $this->assertStringContainsString('GymSystemClienteMirror', $clienteController);
+        $this->assertStringContainsString("table('socios')", $clienteMirror);
     }
 }
