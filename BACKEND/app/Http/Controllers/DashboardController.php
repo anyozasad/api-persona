@@ -15,15 +15,16 @@ class DashboardController extends Controller
 
     public function __construct()
     {
-        /*
-         * Fuente única de verdad:
-         * el dashboard administrativo debe leer la misma base de datos que
-         * usa el portal del cliente y los CRUD del administrador.
-         *
-         * Antes intentaba abrir otra base (gym_system), por eso un cambio hecho
-         * por el usuario podía existir en el portal pero no aparecer en el dashboard.
-         */
-        $this->db = DB::connection();
+        // El panel administrativo debe reflejar exactamente la base que el usuario
+        // revisa en phpMyAdmin: gym_system. No lee clientes de otra base.
+        $mysql = (array) config('database.connections.mysql', []);
+        config([
+            'database.connections.dashboard_gym_system' => array_merge($mysql, [
+                'database' => env('GYM_DB_DATABASE', 'gym_system'),
+            ]),
+        ]);
+
+        $this->db = DB::connection('dashboard_gym_system');
         $this->schema = $this->db->getSchemaBuilder();
     }
 
