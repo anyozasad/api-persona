@@ -24,7 +24,8 @@ class ProductoImagenPortalClienteTest extends TestCase
         $this->assertStringContainsString('[src]="p.foto"', $usuario);
         $this->assertStringContainsString('.mallqui-product-home-media img', $usuarioCss);
 
-        $this->assertStringContainsString('gym_portal_products', $controller);
-        $this->assertStringContainsString("'foto' => \$tieneFoto ? (\$producto->foto ?? null) : null", $controller);
+        $this->assertStringNotContainsString('gym_portal_products', $controller);
+        $this->assertStringContainsString("'foto' => \$producto->foto ?? null", $controller);
+        $this->assertStringContainsString("Producto::with('categoria')", $controller);
     }
 }
