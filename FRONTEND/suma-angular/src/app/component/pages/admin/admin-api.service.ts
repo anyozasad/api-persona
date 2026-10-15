@@ -46,6 +46,12 @@ export class AdminApiService {
   comprobantePago(id: number): Observable<any> {
     return this.http.get(`/api/pagos-membresia/${id}/comprobante`);
   }
+  confirmarPagoPendiente(id: number): Observable<any> {
+    return this.http.post(`/api/pagos-membresia/${id}/confirmar`, {});
+  }
+  rechazarPagoPendiente(id: number, motivo: string): Observable<any> {
+    return this.http.post(`/api/pagos-membresia/${id}/rechazar`, { motivo });
+  }
 
   // =========================================================
   // ENTRENADORES
