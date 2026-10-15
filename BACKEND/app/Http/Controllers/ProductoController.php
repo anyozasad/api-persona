@@ -42,14 +42,13 @@ class ProductoController extends Controller
 
         if (array_key_exists('foto', $datos) && $datos['foto'] !== null && $datos['foto'] !== '') {
             abort_unless(
-                preg_match('/^data:image\/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+\/=
-]+$/i', $datos['foto']) === 1,
+                preg_match('/^data:image\/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+\/]+$/i', $datos['foto']) === 1,
                 422,
                 'La imagen del producto no tiene un formato válido.'
             );
         }
 
-        $datos['foto'] = $datos['foto'] ?: null;
+        $datos['foto'] = $datos['foto'] ?? null;
         $datos['precio_compra'] = $datos['precio_compra'] ?? 0;
         $datos['stock'] = $datos['stock'] ?? 0;
         $datos['stock_minimo'] = $datos['stock_minimo'] ?? 0;
@@ -89,8 +88,7 @@ class ProductoController extends Controller
 
         if (array_key_exists('foto', $datos) && $datos['foto'] !== null && $datos['foto'] !== '') {
             abort_unless(
-                preg_match('/^data:image\/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+\/=
-]+$/i', $datos['foto']) === 1,
+                preg_match('/^data:image\/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+\/]+$/i', $datos['foto']) === 1,
                 422,
                 'La imagen del producto no tiene un formato válido.'
             );
