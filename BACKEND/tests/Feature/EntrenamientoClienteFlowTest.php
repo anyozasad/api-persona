@@ -181,6 +181,117 @@ class EntrenamientoClienteFlowTest extends TestCase
         ]);
     }
 
+    public function test_sesion_se_crea_al_iniciar_y_guarda_series_antes_de_finalizar(): void
+    {
+        $this->crearMembresia();
+        [$rutina, $detalle] = $this->crearRutina();
+
+        $requestInicio = Request::create('/api/mi-cuenta/entrenamiento-gym/sesiones/iniciar', 'POST', [
+            'id_rutina' => $rutina,
+        ]);
+        $usuario = Usuario::findOrFail(1);
+        $requestInicio->setUserResolver(fn () => $usuario);
+
+        $inicio = app(PortalClienteController::class)->iniciarSesionEntrenamientoCasa($requestInicio);
+        $this->assertSame(201, $inicio->getStatusCode());
+
+        $idSesion = (int) $inicio->getData(true)['sesion']['id_sesion_casa'];
+
+        $this->assertDatabaseHas('sesiones_entrenamiento_casa', [
+            'id_sesion_casa' => $idSesion,
+            'estado' => 'EnCurso',
+        ]);
+        $this->assertDatabaseHas('detalle_sesion_entrenamiento', [
+            'id_sesion_casa' => $idSesion,
+            'id_detalle_rutina' => $detalle,
+            'series_realizadas' => 0,
+        ]);
+
+        $requestProgreso = Request::create('/api/mi-cuenta/entrenamiento-gym/sesiones/'.$idSesion, 'PATCH', [
+            'duracion_segundos' => 90,
+            'id_detalle_rutina' => $detalle,
+            'series_realizadas' => 1,
+            'repeticiones_realizadas' => 12,
+            'peso_utilizado' => 22.5,
+            'completado' => false,
+        ]);
+        $requestProgreso->setUserResolver(fn () => $usuario);
+
+        app(PortalClienteController::class)->actualizarSesionEntrenamientoCasa($requestProgreso, (string) $idSesion);
+
+        $this->assertDatabaseHas('detalle_sesion_entrenamiento', [
+            'id_sesion_casa' => $idSesion,
+            'id_detalle_rutina' => $detalle,
+            'series_realizadas' => 1,
+            'repeticiones_realizadas' => 12,
+            'peso_utilizado' => 22.50,
+        ]);
+    }
+
+    public function test_pausa_cancelacion_y_finalizacion_se_guardan_en_base_de_datos(): void
+    {
+        $this->crearMembresia();
+        [$rutina, $detalle] = $this->crearRutina();
+        $usuario = Usuario::findOrFail(1);
+
+        $requestInicio = Request::create('/api/mi-cuenta/entrenamiento-gym/sesiones/iniciar', 'POST', ['id_rutina' => $rutina]);
+        $requestInicio->setUserResolver(fn () => $usuario);
+        $inicio = app(PortalClienteController::class)->iniciarSesionEntrenamientoCasa($requestInicio);
+        $idSesion = (int) $inicio->getData(true)['sesion']['id_sesion_casa'];
+
+        $requestPausa = Request::create('/api/mi-cuenta/entrenamiento-gym/sesiones/'.$idSesion, 'PATCH', [
+            'duracion_segundos' => 120,
+            'estado' => 'Pausada',
+        ]);
+        $requestPausa->setUserResolver(fn () => $usuario);
+        app(PortalClienteController::class)->actualizarSesionEntrenamientoCasa($requestPausa, (string) $idSesion);
+
+        $this->assertDatabaseHas('sesiones_entrenamiento_casa', [
+            'id_sesion_casa' => $idSesion,
+            'estado' => 'Pausada',
+            'duracion_segundos' => 120,
+        ]);
+
+        $requestFinal = Request::create('/api/mi-cuenta/entrenamiento-gym/sesiones', 'POST', [
+            'id_sesion_casa' => $idSesion,
+            'id_rutina' => $rutina,
+            'duracion_segundos' => 600,
+            'ejercicios' => [[
+                'id_detalle_rutina' => $detalle,
+                'series_realizadas' => 3,
+                'repeticiones_realizadas' => 12,
+                'peso_utilizado' => 25,
+                'completado' => true,
+            ]],
+        ]);
+        $requestFinal->setUserResolver(fn () => $usuario);
+        app(PortalClienteController::class)->registrarSesionEntrenamientoCasa($requestFinal);
+
+        $this->assertDatabaseCount('sesiones_entrenamiento_casa', 1);
+        $this->assertDatabaseHas('sesiones_entrenamiento_casa', [
+            'id_sesion_casa' => $idSesion,
+            'estado' => 'Completada',
+            'duracion_segundos' => 600,
+        ]);
+
+        $requestInicio2 = Request::create('/api/mi-cuenta/entrenamiento-gym/sesiones/iniciar', 'POST', ['id_rutina' => $rutina]);
+        $requestInicio2->setUserResolver(fn () => $usuario);
+        $inicio2 = app(PortalClienteController::class)->iniciarSesionEntrenamientoCasa($requestInicio2);
+        $idSesion2 = (int) $inicio2->getData(true)['sesion']['id_sesion_casa'];
+
+        $requestCancelar = Request::create('/api/mi-cuenta/entrenamiento-gym/sesiones/'.$idSesion2.'/cancelar', 'POST', [
+            'duracion_segundos' => 45,
+        ]);
+        $requestCancelar->setUserResolver(fn () => $usuario);
+        app(PortalClienteController::class)->cancelarSesionEntrenamientoCasa($requestCancelar, (string) $idSesion2);
+
+        $this->assertDatabaseHas('sesiones_entrenamiento_casa', [
+            'id_sesion_casa' => $idSesion2,
+            'estado' => 'Cancelada',
+            'duracion_segundos' => 45,
+        ]);
+    }
+
     private function registrarSesion(int $idRutina, int $idDetalle)
     {
         $request = Request::create('/api/mi-cuenta/entrenamiento-gym/sesiones', 'POST', [
