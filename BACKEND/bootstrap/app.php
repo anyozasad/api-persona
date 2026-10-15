@@ -3,6 +3,7 @@
 use App\Http\Middleware\AuditLogMiddleware;
 use App\Http\Middleware\JwtMiddleware;
 use App\Http\Middleware\RolMiddleware;
+use App\Http\Middleware\SyncGymSystemMirror;
 use App\Console\Commands\VerificarSprintsMallqui;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         VerificarSprintsMallqui::class,
     ])
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->appendToGroup('api', SyncGymSystemMirror::class);
         $middleware->alias([
             'rol' => RolMiddleware::class,
             'auditoria' => AuditLogMiddleware::class,
