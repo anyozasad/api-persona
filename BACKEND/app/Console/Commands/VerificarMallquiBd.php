@@ -105,7 +105,7 @@ class VerificarMallquiBd extends Command
             ],
             'productos' => [
                 'id_producto', 'id_categoria', 'codigo_producto', 'nombre_producto',
-                'descripcion', 'precio_compra', 'precio_venta', 'stock', 'stock_minimo',
+                'descripcion', 'foto', 'precio_compra', 'precio_venta', 'stock', 'stock_minimo',
                 'unidad_medida', 'fecha_registro', 'estado',
             ],
             'proveedores' => [
