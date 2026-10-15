@@ -6,46 +6,31 @@ use Tests\TestCase;
 
 class BaseDatosUnicaSistemaTest extends TestCase
 {
-    public function test_estado_del_sistema_reporta_la_misma_base_principal(): void
+    public function test_dashboard_administrativo_usa_la_base_gym_system_configurada(): void
     {
-        $this->getJson('/api/estado-sistema')
-            ->assertOk()
-            ->assertJson([
-                'api' => true,
-                'database' => true,
-                'base_datos' => config('database.connections.'.config('database.default').'.database'),
-            ]);
+        $dashboard = (string) file_get_contents(app_path('Http/Controllers/DashboardController.php'));
+        $legacy = (string) file_get_contents(app_path('Http/Controllers/GymSystemAdminController.php'));
+
+        $this->assertStringContainsString("env('GYM_DB_DATABASE', 'gym_system')", $dashboard);
+        $this->assertStringContainsString("env('GYM_DB_DATABASE', 'gym_system')", $legacy);
+        $this->assertStringContainsString("DB::connection('dashboard_gym_system')", $dashboard);
+        $this->assertStringContainsString("DB::connection('gym_system_actions')", $legacy);
     }
 
-    public function test_no_existe_una_segunda_variable_de_base_para_el_sistema(): void
+    public function test_clientes_e_inventario_del_dashboard_usan_rutas_gym_admin(): void
     {
-        $archivos = [
-            base_path('.env.example'),
-            base_path('.env.testing'),
-            base_path('routes/api.php'),
-            app_path('Http/Controllers/PortalClienteController.php'),
-            app_path('Http/Controllers/GymSystemAdminController.php'),
-        ];
+        $adminApi = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/component/pages/admin/admin-api.service.ts'));
+        $producto = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/core/services/producto.service.ts'));
+        $categoria = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/core/services/categoria.service.ts'));
 
-        foreach ($archivos as $archivo) {
-            $contenido = (string) file_get_contents($archivo);
-            $this->assertStringNotContainsString('GYM_DB_DATABASE', $contenido, $archivo);
-            $this->assertStringNotContainsString('gym_system_actions', $contenido, $archivo);
-        }
-    }
+        $this->assertStringContainsString("'/api/gym-admin/socios'", $adminApi);
+        $this->assertStringContainsString("'/api/gym-admin/planes'", $adminApi);
+        $this->assertStringContainsString("'/api/gym-admin/asistencias'", $adminApi);
+        $this->assertStringContainsString("'/api/gym-admin/productos'", $adminApi);
+        $this->assertStringContainsString("'/api/gym-admin/ventas'", $adminApi);
+        $this->assertStringContainsString("'/api/gym-admin/caja/actual'", $adminApi);
 
-    public function test_inventario_del_frontend_usa_las_rutas_de_la_base_principal(): void
-    {
-        $producto = base_path('../FRONTEND/suma-angular/src/app/core/services/producto.service.ts');
-        $categoria = base_path('../FRONTEND/suma-angular/src/app/core/services/categoria.service.ts');
-
-        $productoSource = (string) file_get_contents($producto);
-        $categoriaSource = (string) file_get_contents($categoria);
-
-        $this->assertStringContainsString("'/api/productos'", $productoSource);
-        $this->assertStringNotContainsString("'/api/gym-admin/productos'", $productoSource);
-
-        $this->assertStringContainsString("'/api/categorias'", $categoriaSource);
-        $this->assertStringNotContainsString("'/api/gym-admin/categorias'", $categoriaSource);
+        $this->assertStringContainsString("'/api/gym-admin/productos'", $producto);
+        $this->assertStringContainsString("'/api/gym-admin/categorias'", $categoria);
     }
 }
