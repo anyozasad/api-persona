@@ -71,6 +71,7 @@ class VerificarMallquiBd extends Command
             'clientes' => [
                 'id_cliente', 'dni', 'nombres', 'apellidos', 'sexo', 'telefono',
                 'correo', 'direccion', 'fecha_nacimiento', 'fecha_registro', 'estado',
+                'foto_perfil', 'enfoque_entrenamiento', 'nivel_entrenamiento',
             ],
             'cliente_membresia' => [
                 'id_cliente_membresia', 'id_cliente', 'id_membresia',
@@ -98,7 +99,7 @@ class VerificarMallquiBd extends Command
             ],
             'detalle_rutina' => [
                 'id_detalle_rutina', 'id_rutina', 'ejercicio', 'series', 'repeticiones',
-                'peso_recomendado', 'descanso_segundos', 'observaciones',
+                'peso_recomendado', 'descanso_segundos', 'observaciones', 'zona', 'equipo',
             ],
             'categorias' => [
                 'id_categoria', 'nombre_categoria', 'descripcion', 'estado',
