@@ -155,11 +155,31 @@ export class AdminDashboardToolsComponent {
   actividadFiltrada():any[]{let x=[...this.actividadBase()];const q=this.busquedaActividad.trim().toLowerCase();if(q)x=x.filter(a=>[a?.titulo,a?.cliente,a?.detalle,a?.estado].some(v=>String(v||'').toLowerCase().includes(q)));if(this.tipoActividad)x=x.filter(a=>String(a?.tipo||'').toLowerCase()===this.tipoActividad);return x.sort((a,b)=>this.ordenActividad==='antigua'?this.time(a?.fecha)-this.time(b?.fecha):this.time(b?.fecha)-this.time(a?.fecha));}
   limpiarFiltroActividad():void{this.busquedaActividad='';this.tipoActividad='';this.ordenActividad='reciente';}
 
-  totalPendientesCalculado():number{return this.numeroSeguro(this.dashboard?.alertas?.soporte_pendiente)+this.numeroSeguro(this.dashboard?.alertas?.rutinas_pendientes)+this.numeroSeguro(this.dashboard?.alertas?.opiniones_pendientes)+this.numeroSeguro(this.dashboard?.inventario?.productos_stock_bajo)+this.numeroSeguro(this.dashboard?.membresias?.por_vencer_7_dias);}
-  datosConsistentes():boolean{return this.numeroSeguro(this.dashboard?.alertas?.total)===this.totalPendientesCalculado();}
-  mensajeConsistencia():string{return this.datosConsistentes()?'El total de alertas coincide con soporte, rutinas, opiniones, stock y vencimientos.':`El resumen informa ${this.numeroSeguro(this.dashboard?.alertas?.total)} alertas, pero el detalle suma ${this.totalPendientesCalculado()}.`;}
-  nivelRiesgoOperativo():string{const altos=this.prioridadesUrgentes();const total=this.totalPendientesCalculado();if(altos>0||total>=10)return'ALTO';if(total>0)return'MEDIO';return'BAJO';}
-  puntajeOperativo():number{let score=100;score-=Math.min(40,this.totalPendientesCalculado()*3);score-=Math.min(25,this.prioridadesUrgentes()*5);if(!this.datosConsistentes())score-=15;if(!this.dashboard?.fuente?.base_datos)score-=20;return Math.max(0,Math.round(score));}
+  pagosPendientes():number{return this.numeroSeguro(this.dashboard?.membresias?.pagos_pendientes);}
+  descuadreCaja():number{
+    const c=this.dashboard?.caja?.detalle||{};
+    const directo=Number(c?.diferencia);
+    if(Number.isFinite(directo))return Math.abs(directo);
+    const real=Number(c?.monto_real);
+    const esperado=Number(c?.monto_esperado ?? c?.monto_sistema);
+    return Number.isFinite(real)&&Number.isFinite(esperado)?Math.abs(real-esperado):0;
+  }
+  totalPendientesCalculado():number{return this.numeroSeguro(this.dashboard?.alertas?.soporte_pendiente)+this.numeroSeguro(this.dashboard?.alertas?.rutinas_pendientes)+this.numeroSeguro(this.dashboard?.alertas?.opiniones_pendientes)+this.numeroSeguro(this.dashboard?.inventario?.productos_stock_bajo)+this.numeroSeguro(this.dashboard?.membresias?.por_vencer_7_dias)+this.pagosPendientes();}
+  datosConsistentes():boolean{
+    const alertas=this.numeroSeguro(this.dashboard?.alertas?.total)===this.totalPendientesCalculado();
+    const ingresos=this.numeroSeguro(this.dashboard?.ingresos?.total_mes);
+    const partes=this.numeroSeguro(this.dashboard?.ingresos?.membresias_mes)+this.numeroSeguro(this.dashboard?.ingresos?.ventas_mes);
+    const ingresosOk=Math.abs(ingresos-partes)<0.02;
+    const clientes=this.numeroSeguro(this.dashboard?.clientes?.total);
+    const activos=this.numeroSeguro(this.dashboard?.clientes?.activos);
+    return alertas && ingresosOk && activos<=clientes && this.descuadreCaja()<0.02;
+  }
+  mensajeConsistencia():string{
+    if(this.datosConsistentes())return 'Alertas, ingresos, clientes y caja coinciden con el detalle operativo.';
+    return 'Hay una diferencia entre alertas, ingresos, clientes o caja. Revisa el módulo relacionado antes de cerrar operaciones.';
+  }
+  nivelRiesgoOperativo():string{const altos=this.prioridadesUrgentes();const total=this.totalPendientesCalculado();const caja=this.descuadreCaja();if(altos>0||total>=10||caja>=10)return'ALTO';if(total>0||caja>0)return'MEDIO';return'BAJO';}
+  puntajeOperativo():number{let score=100;score-=Math.min(40,this.totalPendientesCalculado()*3);score-=Math.min(25,this.prioridadesUrgentes()*5);score-=Math.min(20,Math.round(this.descuadreCaja()));if(!this.datosConsistentes())score-=15;if(!this.dashboard?.fuente?.base_datos)score-=20;return Math.max(0,Math.round(score));}
   estadoOperativo():string{const p=this.puntajeOperativo();return p>=85?'estable':p>=60?'atencion':'alerta';}
   etiquetaEstadoOperativo():string{const e=this.estadoOperativo();return e==='estable'?'Estable':e==='atencion'?'Requiere atención':'Atención prioritaria';}
 
@@ -167,7 +187,7 @@ export class AdminDashboardToolsComponent {
   exportarPrioridadesCsv():void{this.descargarCsv('prioridades-dashboard.csv',['Nivel,Titulo,Cantidad,Descripcion',...this.prioridadesFiltradas().map(p=>[this.normalizarNivel(p?.nivel),p?.titulo,this.numeroSeguro(p?.cantidad),p?.descripcion].map(v=>this.csv(v)).join(','))]);}
   exportarActividadCsv():void{this.descargarCsv('actividad-dashboard.csv',['Tipo,Cliente,Titulo,Detalle,Estado,Fecha',...this.actividadFiltrada().map(a=>[a?.tipo,a?.cliente,a?.titulo,a?.detalle,a?.estado,a?.fecha].map(v=>this.csv(v)).join(','))]);}
 
-  abrirDestinoPrioridad(p:any):void{const t=String(p?.tipo||'').toLowerCase();const map:any={rutinas:'rutinas',soporte:'soporte',opiniones:'opiniones',inventario:'inventario',membresias:'membresias'};this.irSeccion.emit(map[t]||'dashboard');}
+  abrirDestinoPrioridad(p:any):void{const t=String(p?.tipo||'').toLowerCase();const map:any={rutinas:'rutinas',soporte:'soporte',opiniones:'opiniones',inventario:'inventario',membresias:'membresias',pagos:'pagos'};this.irSeccion.emit(map[t]||'dashboard');}
   abrirDestinoActividad(a:any):void{const t=String(a?.tipo||'').toLowerCase();const map:any={rutina:'rutinas',soporte:'soporte',reserva:'reservas',pago:'pagos',opinion:'opiniones'};this.irSeccion.emit(map[t]||'dashboard');}
   iconoActividad(tipo:any):string{const t=String(tipo||'').toLowerCase();return t==='rutina'?'🏋':t==='soporte'?'?':t==='reserva'?'◷':t==='pago'?'S/':t==='opinion'?'★':'●';}
   etiquetaActividad(tipo:any):string{const t=String(tipo||'').toLowerCase();return t==='rutina'?'RUTINA':t==='soporte'?'SOPORTE':t==='reserva'?'RESERVA':t==='pago'?'PAGO':t==='opinion'?'OPINIÓN':'ACTIVIDAD';}
