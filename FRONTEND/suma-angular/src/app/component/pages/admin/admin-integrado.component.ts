@@ -756,13 +756,22 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
           <div class="management-heading">
             <div>
               <h2>Historial de pagos de membresías</h2>
-              <p>Las compras realizadas por los clientes se registran automáticamente; el administrador solo consulta el historial.</p>
+              <p>Los pagos digitales se registran automáticamente. Los pagos en efectivo quedan pendientes hasta ser confirmados en recepción.</p>
             </div>
             <span class="big-number">{{pagos.length}}</span>
           </div>
-          <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Plan</th><th>Monto</th><th>Método</th><th>N° operación</th><th>Fecha</th><th>Estado</th></tr></thead><tbody>
-            <tr *ngFor="let p of pagos"><td>{{p.id_pago}}</td><td>{{clientePago(p)}}</td><td>{{planPago(p)}}</td><td>S/ {{p.monto | number:'1.2-2'}}</td><td>{{p.metodo_pago}}</td><td>{{p.numero_operacion || '-'}}</td><td>{{fecha(p.fecha_pago)}}</td><td>{{p.estado_pago}}</td></tr>
-            <tr *ngIf="!pagos.length"><td colspan="8">No hay pagos registrados.</td></tr>
+          <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Plan</th><th>Monto</th><th>Método</th><th>N° operación</th><th>Fecha</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
+            <tr *ngFor="let p of pagos">
+              <td>{{p.id_pago}}</td><td>{{clientePago(p)}}</td><td>{{planPago(p)}}</td><td>S/ {{p.monto | number:'1.2-2'}}</td><td>{{p.metodo_pago}}</td><td>{{p.numero_operacion || '-'}}</td><td>{{fecha(p.fecha_pago)}}</td><td>{{p.estado_pago}}</td>
+              <td>
+                <ng-container *ngIf="p.estado_pago==='Pendiente' && p.metodo_pago==='Efectivo'; else sinAccionPago">
+                  <button type="button" (click)="confirmarPagoEfectivo(p)">Confirmar</button>
+                  <button type="button" (click)="rechazarPagoEfectivo(p)">Rechazar</button>
+                </ng-container>
+                <ng-template #sinAccionPago>-</ng-template>
+              </td>
+            </tr>
+            <tr *ngIf="!pagos.length"><td colspan="9">No hay pagos registrados.</td></tr>
           </tbody></table></div>
         </section>
       </ng-container>
@@ -2539,6 +2548,25 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
   cargarPagos(){
     this.api.pagos().subscribe({next:r=>this.pagos=r,error:e=>this.mostrarError(e)});
+  }
+
+  confirmarPagoEfectivo(p:any){
+    if(!p?.id_pago || p?.estado_pago!=='Pendiente' || p?.metodo_pago!=='Efectivo')return;
+    if(!confirm('¿Confirmar que recepción recibió el pago en efectivo?'))return;
+    this.api.confirmarPagoPendiente(Number(p.id_pago)).subscribe({
+      next:r=>{this.ok(r?.mensaje||'Pago confirmado');this.cargarPagos();this.cargarMembresias();this.cargarDashboard();},
+      error:e=>this.mostrarError(e)
+    });
+  }
+
+  rechazarPagoEfectivo(p:any){
+    if(!p?.id_pago || p?.estado_pago!=='Pendiente' || p?.metodo_pago!=='Efectivo')return;
+    const motivo=String(prompt('Motivo del rechazo del pago en efectivo:')||'').trim();
+    if(!motivo)return;
+    this.api.rechazarPagoPendiente(Number(p.id_pago),motivo).subscribe({
+      next:r=>{this.ok(r?.mensaje||'Pago rechazado');this.cargarPagos();this.cargarMembresias();this.cargarDashboard();},
+      error:e=>this.mostrarError(e)
+    });
   }
   cargarEntrenadores(){
     this.api.entrenadores().subscribe({
