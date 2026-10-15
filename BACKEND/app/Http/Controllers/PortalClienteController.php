@@ -246,109 +246,31 @@ class PortalClienteController extends Controller
     {
         $this->clienteDelUsuario($request);
 
-        // Fuente principal: la misma base DB_DATABASE donde ahora guarda Inventario.
-        // Así lo registrado por el administrador aparece inmediatamente en phpMyAdmin
-        // y en la interfaz del cliente sin depender de una segunda base.
-        try {
-            $schemaPrincipal = DB::connection()->getSchemaBuilder();
-
-            if (
-                $schemaPrincipal->hasTable('productos') &&
-                $schemaPrincipal->hasColumn('productos', 'id_producto') &&
-                $schemaPrincipal->hasColumn('productos', 'id_categoria') &&
-                $schemaPrincipal->hasColumn('productos', 'codigo_producto') &&
-                $schemaPrincipal->hasColumn('productos', 'nombre_producto')
-            ) {
-                return response()->json(
-                    Producto::with('categoria')
-                        ->where('estado', 'Activo')
-                        ->where('stock', '>', 0)
-                        ->orderBy('nombre_producto')
-                        ->get()
-                        ->map(fn ($producto) => [
-                            'id_producto' => $producto->id_producto,
-                            'codigo_producto' => $producto->codigo_producto,
-                            'nombre_producto' => $producto->nombre_producto,
-                            'descripcion' => $producto->descripcion,
-                            'foto' => $producto->foto ?? null,
-                            'precio_venta' => (float) $producto->precio_venta,
-                            'stock' => (int) $producto->stock,
-                            'unidad_medida' => $producto->unidad_medida,
-                            'categoria' => $producto->categoria ? [
-                                'id_categoria' => $producto->categoria->id_categoria,
-                                'nombre_categoria' => $producto->categoria->nombre_categoria,
-                            ] : null,
-                        ])
-                        ->values()
-                );
-            }
-        } catch (\Throwable $e) {
-            // Si la base principal todavía usa otro esquema, se intenta compatibilidad heredada.
-        }
-
-        // Compatibilidad temporal con instalaciones antiguas que todavía conservan
-        // la tabla histórica en GYM_DB_DATABASE.
-        try {
-            $mysql = (array) config('database.connections.mysql', []);
-            config([
-                'database.connections.gym_portal_products' => array_merge($mysql, [
-                    'database' => env('GYM_DB_DATABASE', $mysql['database'] ?? null),
-                ]),
-            ]);
-
-            $conexion = DB::connection('gym_portal_products');
-            $schema = $conexion->getSchemaBuilder();
-
-            if (
-                $schema->hasTable('productos') &&
-                $schema->hasColumn('productos', 'id') &&
-                $schema->hasColumn('productos', 'categoria_id') &&
-                $schema->hasColumn('productos', 'codigo') &&
-                $schema->hasColumn('productos', 'nombre')
-            ) {
-                $tieneFoto = $schema->hasColumn('productos', 'foto');
-
-                $rows = $conexion->table('productos as p')
-                    ->leftJoin('categorias as c', 'c.id', '=', 'p.categoria_id')
-                    ->whereRaw('LOWER(p.estado) = ?', ['activo'])
-                    ->where('p.stock', '>', 0)
-                    ->select(
-                        'p.id',
-                        'p.categoria_id',
-                        'p.codigo',
-                        'p.nombre',
-                        'p.descripcion',
-                        'p.precio_venta',
-                        'p.stock',
-                        'p.unidad_medida',
-                        'c.nombre as categoria_nombre',
-                        ...($tieneFoto ? ['p.foto'] : [])
-                    )
-                    ->orderBy('p.nombre')
-                    ->get()
-                    ->map(fn ($producto) => [
-                        'id_producto' => (int) $producto->id,
-                        'codigo_producto' => $producto->codigo,
-                        'nombre_producto' => $producto->nombre,
-                        'descripcion' => $producto->descripcion ?? null,
-                        'foto' => $tieneFoto ? ($producto->foto ?? null) : null,
-                        'precio_venta' => (float) $producto->precio_venta,
-                        'stock' => (int) $producto->stock,
-                        'unidad_medida' => $producto->unidad_medida ?? 'Unidad',
-                        'categoria' => [
-                            'id_categoria' => (int) $producto->categoria_id,
-                            'nombre_categoria' => $producto->categoria_nombre ?? '',
-                        ],
-                    ])
-                    ->values();
-
-                return response()->json($rows);
-            }
-        } catch (\Throwable $e) {
-            // Si tampoco existe el esquema heredado, se devuelve una lista vacía.
-        }
-
-        return response()->json([]);
+        // Única fuente de productos: la base principal DB_DATABASE.
+        // Inventario del administrador y portal del cliente comparten exactamente
+        // la misma tabla productos y la misma tabla categorias.
+        return response()->json(
+            Producto::with('categoria')
+                ->where('estado', 'Activo')
+                ->where('stock', '>', 0)
+                ->orderBy('nombre_producto')
+                ->get()
+                ->map(fn ($producto) => [
+                    'id_producto' => $producto->id_producto,
+                    'codigo_producto' => $producto->codigo_producto,
+                    'nombre_producto' => $producto->nombre_producto,
+                    'descripcion' => $producto->descripcion,
+                    'foto' => $producto->foto ?? null,
+                    'precio_venta' => (float) $producto->precio_venta,
+                    'stock' => (int) $producto->stock,
+                    'unidad_medida' => $producto->unidad_medida,
+                    'categoria' => $producto->categoria ? [
+                        'id_categoria' => $producto->categoria->id_categoria,
+                        'nombre_categoria' => $producto->categoria->nombre_categoria,
+                    ] : null,
+                ])
+                ->values()
+        );
     }
 
     public function entrenamientoCasa(Request $request)
