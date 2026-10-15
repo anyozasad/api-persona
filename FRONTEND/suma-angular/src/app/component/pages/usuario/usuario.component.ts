@@ -3097,8 +3097,11 @@ export class UsuarioComponent implements OnInit, OnDestroy {
           zonas:Array.isArray(planGuardado?.zonas) ? [...planGuardado.zonas] : [],
           objetivo:String(planGuardado?.objetivo||rutina?.objetivo||'fuerza')
         };
-        this.catalogoCasa={piernas:[],gluteos:[],brazos:[],pecho:[],espalda:[],hombros:[],core:[]};
+        this.reconstruirCatalogoCasa();
         this.historialCasa=r?.historial||[];
+        if(r?.sesion_activa && !this.sesionCasaActiva){
+          this.restaurarSesionCasa(r.sesion_activa);
+        }
         this.casaCargado=true;
         this.errorCasa='';
       },
@@ -3172,7 +3175,9 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       .toLowerCase();
   }
 
-  equipoRutinaGym(nombre:any):string{
+  equipoRutinaGym(nombre:any,equipoRegistrado:any=''):string{
+    const guardado=String(equipoRegistrado||'').trim();
+    if(guardado)return guardado;
     const n=this.normalizarTextoGym(nombre);
     if(n.includes('prensa'))return 'Máquina de prensa';
     if(n.includes('extension') && n.includes('cuadr'))return 'Máquina de extensión de cuádriceps';
@@ -3199,6 +3204,63 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     return 'Área de musculación';
   }
 
+  zonaEjercicioGym(detalle:any):string{
+    const registrada=String(detalle?.zona||'').trim().toLowerCase();
+    if(['piernas','gluteos','brazos','pecho','espalda','hombros','core'].includes(registrada))return registrada;
+    const n=this.normalizarTextoGym(detalle?.ejercicio||detalle?.nombre||'');
+    if(/glute|hip thrust|abdu|patada/.test(n))return 'gluteos';
+    if(/prensa|sentadilla|cuadr|femoral|zancada|pantorr|step|pierna/.test(n))return 'piernas';
+    if(/biceps|triceps|curl|brazo/.test(n))return 'brazos';
+    if(/pecho|banca|pectoral|apertura/.test(n))return 'pecho';
+    if(/hombro|delto|elevacion lateral|face pull/.test(n))return 'hombros';
+    if(/remo|jalon|espalda|dorsal|pullover/.test(n))return 'espalda';
+    if(/abdominal|crunch|plancha|pallof|core/.test(n))return 'core';
+    return String(this.planCasa?.zonas?.[0]||'core');
+  }
+
+  reconstruirCatalogoCasa():void{
+    const catalogo:Record<string,any[]>={piernas:[],gluteos:[],brazos:[],pecho:[],espalda:[],hombros:[],core:[]};
+    for(const ejercicio of this.ejerciciosRutinaAsignadaGym){
+      const zona=String(ejercicio?.zona||'core');
+      (catalogo[zona]||catalogo.core).push(ejercicio);
+    }
+    this.catalogoCasa=catalogo;
+    const primera=Object.keys(catalogo).find(z=>catalogo[z].length>0);
+    if(primera && !catalogo[this.zonaCasaSeleccionada]?.length)this.zonaCasaSeleccionada=primera;
+  }
+
+  private restaurarSesionCasa(sesion:any):void{
+    const id=Number(sesion?.id_sesion_casa||0);
+    if(!id)return;
+    this.idSesionCasaActiva=id;
+    this.sesionCasaActiva=true;
+    this.sesionCasaPausada=String(sesion?.estado||'')==='Pausada';
+    this.sesionCasaTerminada=false;
+    this.segundosTranscurridosCasa=Math.max(0,Number(sesion?.duracion_segundos||0));
+    this.faseCasa='ejercicio';
+
+    const detalles=Array.isArray(sesion?.detalles)?sesion.detalles:[];
+    this.cargasGym={};
+    for(const detalle of detalles){
+      const ejercicio=this.ejerciciosRutinaAsignadaGym.find((e:any)=>Number(e.id_detalle_rutina)===Number(detalle?.id_detalle_rutina));
+      if(ejercicio && detalle?.peso_utilizado!==null && detalle?.peso_utilizado!==undefined){
+        this.cargasGym[this.claveEjercicioGym(ejercicio)]=Number(detalle.peso_utilizado);
+      }
+    }
+
+    const indice=this.ejerciciosRutinaAsignadaGym.findIndex((e:any)=>{
+      const d=detalles.find((x:any)=>Number(x?.id_detalle_rutina)===Number(e.id_detalle_rutina));
+      return !d || !d.completado;
+    });
+    this.indiceEjercicioCasa=indice>=0?indice:Math.max(0,this.ejerciciosCasaActuales.length-1);
+    const actual=this.ejercicioCasaActual;
+    const progreso=detalles.find((x:any)=>Number(x?.id_detalle_rutina)===Number(actual?.id_detalle_rutina));
+    this.serieCasaActual=Math.min(this.seriesCasaTotalActual,Math.max(1,Number(progreso?.series_realizadas||0)+1));
+    this.repsCasaHechas=Number(progreso?.repeticiones_realizadas||0);
+    this.detenerTimerCasa();
+    if(!this.sesionCasaPausada)this.timerCasa=setInterval(()=>this.tickCasa(),1000);
+  }
+
   get ejerciciosRutinaAsignadaGym():any[]{
     const detalles=Array.isArray(this.rutinaActual?.detalles) ? this.rutinaActual.detalles : [];
     return detalles.map((d:any,i:number)=>({
@@ -3212,7 +3274,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       segundos:45,
       descanso:Math.max(10,Number(d?.descanso_segundos||45)),
       icono:'🏋',
-      equipo:this.equipoRutinaGym(d?.ejercicio),
+      zona:this.zonaEjercicioGym(d),
+      equipo:this.equipoRutinaGym(d?.ejercicio,d?.equipo),
       peso_recomendado:Number(d?.peso_recomendado||0),
       observaciones:String(d?.observaciones||'').trim(),
       instrucciones:String(d?.observaciones||'').trim()
@@ -3312,7 +3375,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   duracionEstimadaCasa(zona:string):number{
-    const lista=this.tieneRutinaAsignadaGym ? this.ejerciciosRutinaAsignadaGym : [];
+    const porZona=this.ejerciciosZonaCasa(zona);
+    const lista=porZona.length ? porZona : (this.tieneRutinaAsignadaGym ? this.ejerciciosRutinaAsignadaGym : []);
     const total=lista.reduce((s:number,e:any)=>{
       const trabajo=e?.modo==='repeticiones'
         ? Math.max(30,this.repeticionesObjetivoCasa(e)*(e?.por_lado?4:3))
