@@ -16,6 +16,7 @@ class GymSystemClienteMirror
         config([
             'database.connections.gym_system_mirror' => array_merge($mysql, [
                 'database' => env('GYM_DB_DATABASE', 'gym_system'),
+                'prefix' => '',
             ]),
         ]);
 
