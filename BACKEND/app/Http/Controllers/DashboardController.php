@@ -15,16 +15,8 @@ class DashboardController extends Controller
 
     public function __construct()
     {
-        // El panel administrativo debe reflejar exactamente la base que el usuario
-        // revisa en phpMyAdmin: gym_system. No lee clientes de otra base.
-        $mysql = (array) config('database.connections.mysql', []);
-        config([
-            'database.connections.dashboard_gym_system' => array_merge($mysql, [
-                'database' => env('GYM_DB_DATABASE', 'gym_system'),
-            ]),
-        ]);
-
-        $this->db = DB::connection('dashboard_gym_system');
+        // El resumen refleja los mismos datos registrados que usa la interfaz.
+        $this->db = DB::connection();
         $this->schema = $this->db->getSchemaBuilder();
     }
 
