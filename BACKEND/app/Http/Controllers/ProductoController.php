@@ -30,6 +30,7 @@ class ProductoController extends Controller
             'codigo_producto' => 'required|string|max:60|unique:productos,codigo_producto',
             'nombre_producto' => 'required|string|max:150',
             'descripcion' => 'nullable|string|max:500',
+            'foto' => 'nullable|string|max:3000000',
             'precio_compra' => 'nullable|numeric|min:0',
             'precio_venta' => 'required|numeric|min:0',
             'stock' => 'nullable|integer|min:0',
@@ -39,6 +40,16 @@ class ProductoController extends Controller
             'estado' => ['nullable', Rule::in(['Activo', 'Inactivo'])],
         ]);
 
+        if (array_key_exists('foto', $datos) && $datos['foto'] !== null && $datos['foto'] !== '') {
+            abort_unless(
+                preg_match('/^data:image\/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+\/=
+]+$/i', $datos['foto']) === 1,
+                422,
+                'La imagen del producto no tiene un formato válido.'
+            );
+        }
+
+        $datos['foto'] = $datos['foto'] ?: null;
         $datos['precio_compra'] = $datos['precio_compra'] ?? 0;
         $datos['stock'] = $datos['stock'] ?? 0;
         $datos['stock_minimo'] = $datos['stock_minimo'] ?? 0;
@@ -68,12 +79,26 @@ class ProductoController extends Controller
             ],
             'nombre_producto' => 'sometimes|string|max:150',
             'descripcion' => 'sometimes|nullable|string|max:500',
+            'foto' => 'sometimes|nullable|string|max:3000000',
             'precio_compra' => 'sometimes|numeric|min:0',
             'precio_venta' => 'sometimes|numeric|min:0',
             'stock_minimo' => 'sometimes|integer|min:0',
             'unidad_medida' => 'sometimes|string|max:50',
             'estado' => ['sometimes', Rule::in(['Activo', 'Inactivo'])],
         ]);
+
+        if (array_key_exists('foto', $datos) && $datos['foto'] !== null && $datos['foto'] !== '') {
+            abort_unless(
+                preg_match('/^data:image\/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+\/=
+]+$/i', $datos['foto']) === 1,
+                422,
+                'La imagen del producto no tiene un formato válido.'
+            );
+        }
+
+        if (array_key_exists('foto', $datos) && $datos['foto'] === '') {
+            $datos['foto'] = null;
+        }
 
         // El stock no se modifica desde este CRUD: cambia mediante compras y ventas.
         $producto->update($datos);
