@@ -39,53 +39,40 @@ use App\Http\Controllers\ComunicacionAdminController;
 use App\Http\Controllers\ClienteFichaController;
 use App\Http\Controllers\GymSystemAdminController;
 
-// ESTADO REAL DEL SISTEMA: permite verificar API + conexión con MySQL sin exponer credenciales.
+// ESTADO REAL DEL SISTEMA: una sola conexión y una sola DB_DATABASE.
 Route::get('/estado-sistema', function () {
     try {
-        DB::connection()->getPdo();
+        $db = DB::connection();
+        $db->getPdo();
+        $schema = $db->getSchemaBuilder();
 
-        $mysql = (array) config('database.connections.mysql', []);
-        config([
-            'database.connections.gym_system_check' => array_merge($mysql, [
-                'database' => env('GYM_DB_DATABASE', 'gym_system'),
-            ]),
-        ]);
-
-        $gymConectada = false;
-        $gymTablas = [];
-        try {
-            $gym = DB::connection('gym_system_check');
-            $gym->getPdo();
-            $gymConectada = true;
-            $schema = $gym->getSchemaBuilder();
-            foreach (['clientes','membresias','cliente_membresia','pagos_membresia','rutinas','detalle_rutina','clases','reservas','asistencias','productos','ventas','cajas','usuarios'] as $tabla) {
-                if ($schema->hasTable($tabla)) {
-                    $gymTablas[] = $tabla;
-                }
+        $tablas = [];
+        foreach ([
+            'clientes','membresias','cliente_membresia','pagos_membresia',
+            'entrenadores','rutinas','detalle_rutina','clases','reservas',
+            'asistencias','categorias','productos','proveedores','compras',
+            'detalle_compra','ventas','detalle_venta','cajas','movimientos_caja',
+            'movimientos_inventario','usuarios','auditorias'
+        ] as $tabla) {
+            if ($schema->hasTable($tabla)) {
+                $tablas[] = $tabla;
             }
-        } catch (\Throwable $e) {
-            $gymConectada = false;
         }
 
         return response()->json([
             'api' => true,
             'database' => true,
-            'motor' => DB::connection()->getDriverName(),
-            'base_principal' => DB::connection()->getDatabaseName(),
-            'gym_system' => [
-                'conectada' => $gymConectada,
-                'base' => env('GYM_DB_DATABASE', 'gym_system'),
-                'tablas_detectadas' => $gymTablas,
-            ],
-            'mensaje' => $gymConectada
-                ? 'Sistema conectado correctamente con la base de datos de Mallqui Gym.'
-                : 'La API responde, pero no se pudo abrir la base de datos de Mallqui Gym.',
+            'motor' => $db->getDriverName(),
+            'base_datos' => $db->getDatabaseName(),
+            'tablas_detectadas' => $tablas,
+            'mensaje' => 'Todo el sistema está conectado a una sola base de datos.',
         ]);
     } catch (\Throwable $e) {
         return response()->json([
             'api' => true,
             'database' => false,
             'motor' => config('database.default'),
+            'base_datos' => config('database.connections.'.config('database.default').'.database'),
             'mensaje' => 'La API responde, pero la base de datos no está disponible.',
         ], 503);
     }
@@ -277,8 +264,8 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
     Route::get('/vistas/clientes-membresias', [ReporteController::class, 'clientesMembresias']);
     Route::get('/vistas/stock', [ReporteController::class, 'stock']);
     Route::get('/vistas/ventas', [ReporteController::class, 'ventas']);
-    // FUNCIONES DEL DASHBOARD DE GYM SYSTEM, conectadas a la BD gym_system.
-    // Se mantienen en un prefijo separado para no romper el portal del cliente.
+    // FUNCIONES LEGACY DEL DASHBOARD: usan la misma DB_DATABASE que el resto del sistema.
+    // Se mantienen en un prefijo separado solo por compatibilidad de rutas.
     Route::prefix('gym-admin')->group(function () {
         Route::get('/estado', [GymSystemAdminController::class, 'estado']);
         Route::post('/dashboard/filtrar', [GymSystemAdminController::class, 'filtrarDashboard']);
