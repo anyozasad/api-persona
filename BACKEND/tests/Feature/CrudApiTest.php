@@ -52,6 +52,7 @@ class CrudApiTest extends TestCase
             $table->string('codigo_producto')->unique();
             $table->string('nombre_producto');
             $table->text('descripcion')->nullable();
+            $table->mediumText('foto')->nullable();
             $table->decimal('precio_compra', 10, 2)->default(0);
             $table->decimal('precio_venta', 10, 2);
             $table->unsignedInteger('stock')->default(0);
@@ -131,6 +132,26 @@ class CrudApiTest extends TestCase
         $this->assertDatabaseHas('productos', [
             'codigo_producto' => 'TEST-001',
             'nombre_producto' => 'Bebida de prueba',
+        ]);
+    }
+
+    public function test_puedo_guardar_imagen_del_producto_en_la_base_principal(): void
+    {
+        $foto = 'data:image/webp;base64,'.base64_encode('imagen-mallqui-producto');
+
+        $this->postJson($this->ruta, $this->datosValidos([
+            'codigo_producto' => 'IMG-PRINCIPAL-001',
+            'foto' => $foto,
+        ]))
+            ->assertStatus(201)
+            ->assertJsonFragment([
+                'codigo_producto' => 'IMG-PRINCIPAL-001',
+                'foto' => $foto,
+            ]);
+
+        $this->assertDatabaseHas('productos', [
+            'codigo_producto' => 'IMG-PRINCIPAL-001',
+            'foto' => $foto,
         ]);
     }
 
