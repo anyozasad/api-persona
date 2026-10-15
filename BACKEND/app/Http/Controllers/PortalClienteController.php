@@ -61,9 +61,20 @@ class PortalClienteController extends Controller
         $cliente = $this->clienteDelUsuario($request);
         $directorio = storage_path('app/profile-photos');
 
+        if ($cliente->foto_perfil) {
+            $rutaGuardada = storage_path('app/'.ltrim((string) $cliente->foto_perfil, '/\\'));
+            if (File::exists($rutaGuardada)) {
+                return response()->file($rutaGuardada, [
+                    'Content-Type' => File::mimeType($rutaGuardada) ?: 'image/jpeg',
+                    'Cache-Control' => 'private, no-store, max-age=0',
+                ]);
+            }
+        }
+
         foreach (['jpg', 'jpeg', 'png', 'webp'] as $extension) {
             $ruta = $directorio.DIRECTORY_SEPARATOR.'cliente_'.$cliente->id_cliente.'.'.$extension;
             if (File::exists($ruta)) {
+                $cliente->update(['foto_perfil' => 'profile-photos/'.basename($ruta)]);
                 return response()->file($ruta, [
                     'Content-Type' => File::mimeType($ruta) ?: 'image/jpeg',
                     'Cache-Control' => 'private, no-store, max-age=0',
@@ -99,6 +110,7 @@ class PortalClienteController extends Controller
 
         $nombre = 'cliente_'.$cliente->id_cliente.'.'.$extension;
         $archivo->move($directorio, $nombre);
+        $cliente->update(['foto_perfil' => 'profile-photos/'.$nombre]);
 
         return response()->json([
             'mensaje' => 'Foto de perfil actualizada correctamente.',
@@ -119,6 +131,8 @@ class PortalClienteController extends Controller
                 $eliminada = true;
             }
         }
+
+        $cliente->update(['foto_perfil' => null]);
 
         return response()->json([
             'mensaje' => $eliminada
@@ -144,7 +158,22 @@ class PortalClienteController extends Controller
             'direccion' => 'sometimes|nullable|string|max:255',
             'fecha_nacimiento' => 'sometimes|nullable|date|before:today',
             'sexo' => 'sometimes|nullable|string|max:20',
+            'enfoque_entrenamiento' => ['sometimes', 'nullable', Rule::in([
+                'Cardiovascular', 'Masa muscular', 'Tonificación', 'CrossFit', 'Pérdida de peso',
+            ])],
+            'nivel_entrenamiento' => ['sometimes', 'nullable', Rule::in([
+                'Principiante', 'Intermedio', 'Avanzado',
+            ])],
         ]);
+
+        foreach (['nombres', 'apellidos', 'telefono', 'direccion', 'sexo', 'enfoque_entrenamiento', 'nivel_entrenamiento'] as $campo) {
+            if (array_key_exists($campo, $datos) && is_string($datos[$campo])) {
+                $datos[$campo] = preg_replace('/\s+/u', ' ', trim($datos[$campo]));
+            }
+        }
+        if (array_key_exists('correo', $datos)) {
+            $datos['correo'] = mb_strtolower(trim((string) $datos['correo']));
+        }
 
         DB::transaction(function () use ($cliente, $usuario, $datos) {
             $cliente->update($datos);
@@ -304,6 +333,11 @@ class PortalClienteController extends Controller
             'membresia' => $membresia,
             'rutina' => $rutina,
             'plan' => $plan,
+            'sesion_activa' => SesionEntrenamientoCasa::with(['rutina', 'detalles.detalleRutina'])
+                ->where('id_cliente', $cliente->id_cliente)
+                ->whereIn('estado', ['EnCurso', 'Pausada'])
+                ->orderByDesc('fecha')
+                ->first(),
             'historial' => SesionEntrenamientoCasa::with(['rutina', 'detalles.detalleRutina'])
                 ->where('id_cliente', $cliente->id_cliente)
                 ->orderByDesc('fecha')
@@ -349,11 +383,168 @@ class PortalClienteController extends Controller
         ]);
     }
 
+    public function iniciarSesionEntrenamientoCasa(Request $request)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+        $datos = $request->validate([
+            'id_rutina' => 'required|integer|exists:rutinas,id_rutina',
+        ]);
+
+        $membresia = ClienteMembresia::query()
+            ->where('id_cliente', $cliente->id_cliente)
+            ->where('estado', 'Activo')
+            ->whereDate('fecha_inicio', '<=', today())
+            ->whereDate('fecha_fin', '>=', today())
+            ->first();
+
+        if (!$membresia) {
+            return response()->json(['mensaje' => 'Necesitas una membresía vigente para iniciar un entrenamiento.'], 422);
+        }
+
+        $rutina = Rutina::with('detalles')
+            ->where('id_rutina', $datos['id_rutina'])
+            ->where('id_cliente', $cliente->id_cliente)
+            ->where('estado', 'Activo')
+            ->whereDate('fecha_inicio', '<=', today())
+            ->where(function ($q) {
+                $q->whereNull('fecha_fin')->orWhereDate('fecha_fin', '>=', today());
+            })
+            ->first();
+
+        if (!$rutina || $rutina->detalles->isEmpty()) {
+            return response()->json(['mensaje' => 'La rutina no está disponible o no tiene ejercicios.'], 422);
+        }
+
+        $sesion = SesionEntrenamientoCasa::with(['rutina', 'detalles.detalleRutina'])
+            ->where('id_cliente', $cliente->id_cliente)
+            ->where('id_rutina', $rutina->id_rutina)
+            ->whereIn('estado', ['EnCurso', 'Pausada'])
+            ->orderByDesc('fecha')
+            ->first();
+
+        if ($sesion) {
+            return response()->json([
+                'mensaje' => 'Se recuperó tu entrenamiento en curso.',
+                'sesion' => $sesion,
+            ]);
+        }
+
+        $sesion = DB::transaction(function () use ($cliente, $rutina) {
+            $sesion = SesionEntrenamientoCasa::create([
+                'id_cliente' => $cliente->id_cliente,
+                'id_rutina' => $rutina->id_rutina,
+                'zona' => 'rutina',
+                'fecha' => now(),
+                'duracion_segundos' => 0,
+                'ejercicios_total' => $rutina->detalles->count(),
+                'ejercicios_completados' => 0,
+                'estado' => 'EnCurso',
+            ]);
+
+            foreach ($rutina->detalles as $detalle) {
+                DetalleSesionEntrenamiento::create([
+                    'id_sesion_casa' => $sesion->id_sesion_casa,
+                    'id_detalle_rutina' => $detalle->id_detalle_rutina,
+                    'series_realizadas' => 0,
+                    'repeticiones_realizadas' => 0,
+                    'peso_utilizado' => null,
+                    'completado' => false,
+                ]);
+            }
+
+            return $sesion;
+        });
+
+        return response()->json([
+            'mensaje' => 'Entrenamiento iniciado y guardado.',
+            'sesion' => $sesion->load(['rutina', 'detalles.detalleRutina']),
+        ], 201);
+    }
+
+    public function actualizarSesionEntrenamientoCasa(Request $request, string $idSesion)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+        $datos = $request->validate([
+            'duracion_segundos' => 'sometimes|integer|min:0|max:14400',
+            'estado' => ['sometimes', Rule::in(['EnCurso', 'Pausada'])],
+            'id_detalle_rutina' => 'sometimes|integer|exists:detalle_rutina,id_detalle_rutina',
+            'series_realizadas' => 'sometimes|integer|min:0|max:30',
+            'repeticiones_realizadas' => 'sometimes|integer|min:0|max:500',
+            'peso_utilizado' => 'sometimes|nullable|numeric|min:0|max:1000',
+            'completado' => 'sometimes|boolean',
+        ]);
+
+        $sesion = SesionEntrenamientoCasa::with('detalles')
+            ->where('id_sesion_casa', $idSesion)
+            ->where('id_cliente', $cliente->id_cliente)
+            ->whereIn('estado', ['EnCurso', 'Pausada'])
+            ->firstOrFail();
+
+        DB::transaction(function () use ($sesion, $datos) {
+            $sesionDatos = array_intersect_key($datos, array_flip(['duracion_segundos', 'estado']));
+            if ($sesionDatos) $sesion->update($sesionDatos);
+
+            if (!empty($datos['id_detalle_rutina'])) {
+                $permitido = $sesion->rutina?->detalles()
+                    ->where('id_detalle_rutina', $datos['id_detalle_rutina'])
+                    ->exists();
+
+                abort_unless($permitido, 422, 'El ejercicio no pertenece a la rutina de esta sesión.');
+
+                $detalle = DetalleSesionEntrenamiento::firstOrNew([
+                    'id_sesion_casa' => $sesion->id_sesion_casa,
+                    'id_detalle_rutina' => $datos['id_detalle_rutina'],
+                ]);
+
+                foreach (['series_realizadas', 'repeticiones_realizadas', 'peso_utilizado', 'completado'] as $campo) {
+                    if (array_key_exists($campo, $datos)) $detalle->{$campo} = $datos[$campo];
+                }
+                $detalle->save();
+
+                $sesion->update([
+                    'ejercicios_completados' => DetalleSesionEntrenamiento::where('id_sesion_casa', $sesion->id_sesion_casa)
+                        ->where('completado', true)
+                        ->count(),
+                ]);
+            }
+        });
+
+        return response()->json([
+            'mensaje' => 'Progreso del entrenamiento guardado.',
+            'sesion' => $sesion->fresh(['rutina', 'detalles.detalleRutina']),
+        ]);
+    }
+
+    public function cancelarSesionEntrenamientoCasa(Request $request, string $idSesion)
+    {
+        $cliente = $this->clienteDelUsuario($request);
+        $datos = $request->validate([
+            'duracion_segundos' => 'nullable|integer|min:0|max:14400',
+        ]);
+
+        $sesion = SesionEntrenamientoCasa::query()
+            ->where('id_sesion_casa', $idSesion)
+            ->where('id_cliente', $cliente->id_cliente)
+            ->whereIn('estado', ['EnCurso', 'Pausada'])
+            ->firstOrFail();
+
+        $sesion->update([
+            'duracion_segundos' => $datos['duracion_segundos'] ?? $sesion->duracion_segundos,
+            'estado' => 'Cancelada',
+        ]);
+
+        return response()->json([
+            'mensaje' => 'Sesión cancelada y conservada en el historial.',
+            'sesion' => $sesion->fresh(['rutina', 'detalles.detalleRutina']),
+        ]);
+    }
+
     public function registrarSesionEntrenamientoCasa(Request $request)
     {
         $cliente = $this->clienteDelUsuario($request);
 
         $datos = $request->validate([
+            'id_sesion_casa' => 'nullable|integer|exists:sesiones_entrenamiento_casa,id_sesion_casa',
             'id_rutina' => 'required|integer|exists:rutinas,id_rutina',
             'duracion_segundos' => 'required|integer|min:1|max:14400',
             'ejercicios' => 'required|array|min:1|max:50',
@@ -403,7 +594,6 @@ class PortalClienteController extends Controller
         }
 
         $completados = collect($datos['ejercicios'])->where('completado', true)->count();
-
         if ($completados < 1) {
             return response()->json([
                 'mensaje' => 'Debes completar al menos un ejercicio antes de guardar la sesión.',
@@ -411,26 +601,43 @@ class PortalClienteController extends Controller
         }
 
         $sesion = DB::transaction(function () use ($cliente, $rutina, $datos, $completados) {
-            $sesion = SesionEntrenamientoCasa::create([
-                'id_cliente' => $cliente->id_cliente,
-                'id_rutina' => $rutina->id_rutina,
-                'zona' => 'rutina',
-                'fecha' => now(),
+            $sesion = !empty($datos['id_sesion_casa'])
+                ? SesionEntrenamientoCasa::where('id_sesion_casa', $datos['id_sesion_casa'])
+                    ->where('id_cliente', $cliente->id_cliente)
+                    ->where('id_rutina', $rutina->id_rutina)
+                    ->firstOrFail()
+                : new SesionEntrenamientoCasa([
+                    'id_cliente' => $cliente->id_cliente,
+                    'id_rutina' => $rutina->id_rutina,
+                    'zona' => 'rutina',
+                    'fecha' => now(),
+                ]);
+
+            if ($sesion->estado === 'Cancelada') {
+                abort(422, 'Una sesión cancelada no puede finalizarse.');
+            }
+
+            $sesion->fill([
                 'duracion_segundos' => $datos['duracion_segundos'],
                 'ejercicios_total' => count($datos['ejercicios']),
                 'ejercicios_completados' => $completados,
                 'estado' => $completados === count($datos['ejercicios']) ? 'Completada' : 'Parcial',
             ]);
+            $sesion->save();
 
             foreach ($datos['ejercicios'] as $ejercicio) {
-                DetalleSesionEntrenamiento::create([
-                    'id_sesion_casa' => $sesion->id_sesion_casa,
-                    'id_detalle_rutina' => $ejercicio['id_detalle_rutina'],
-                    'series_realizadas' => $ejercicio['series_realizadas'],
-                    'repeticiones_realizadas' => $ejercicio['repeticiones_realizadas'],
-                    'peso_utilizado' => $ejercicio['peso_utilizado'] ?? null,
-                    'completado' => (bool) $ejercicio['completado'],
-                ]);
+                DetalleSesionEntrenamiento::updateOrCreate(
+                    [
+                        'id_sesion_casa' => $sesion->id_sesion_casa,
+                        'id_detalle_rutina' => $ejercicio['id_detalle_rutina'],
+                    ],
+                    [
+                        'series_realizadas' => $ejercicio['series_realizadas'],
+                        'repeticiones_realizadas' => $ejercicio['repeticiones_realizadas'],
+                        'peso_utilizado' => $ejercicio['peso_utilizado'] ?? null,
+                        'completado' => (bool) $ejercicio['completado'],
+                    ]
+                );
             }
 
             return $sesion;
