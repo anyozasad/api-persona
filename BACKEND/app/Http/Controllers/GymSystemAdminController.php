@@ -18,9 +18,16 @@ class GymSystemAdminController extends Controller
 
     public function __construct()
     {
-        // Todo el sistema usa una sola conexión: DB_DATABASE.
-        // No se crea una segunda conexión ni se permite guardar en otra base.
-        $this->db = DB::connection();
+        // El dashboard administrativo trabaja directamente con la base existente gym_system.
+        // En pruebas se puede reemplazar con GYM_DB_DATABASE para no tocar datos reales.
+        $mysql = (array) config('database.connections.mysql', []);
+        config([
+            'database.connections.gym_system_actions' => array_merge($mysql, [
+                'database' => env('GYM_DB_DATABASE', 'gym_system'),
+            ]),
+        ]);
+
+        $this->db = DB::connection('gym_system_actions');
         $this->schema = $this->db->getSchemaBuilder();
         $this->asegurarCompatibilidad();
     }
