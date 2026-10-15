@@ -7,6 +7,7 @@ use App\Models\ClienteMembresia;
 use App\Models\Membresia;
 use App\Models\PagoMembresia;
 use App\Services\ComprobanteMembresiaService;
+use App\Services\CajaService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -252,9 +253,21 @@ class SolicitudPagoMembresiaController extends Controller
         );
     }
 
-    public function confirmar(string $idPago)
+    public function confirmar(Request $request, string $idPago, CajaService $cajaService)
     {
-        $pago = DB::transaction(function () use ($idPago) {
+        $pago = PagoMembresia::with('clienteMembresia.membresia')->findOrFail($idPago);
+
+        if ($pago->estado_pago !== 'Pendiente') {
+            throw ValidationException::withMessages(['pago' => ['Este pago ya fue procesado.']]);
+        }
+
+        if ($pago->metodo_pago === 'Efectivo' && !$cajaService->cajaAbierta()) {
+            throw ValidationException::withMessages([
+                'caja' => ['Debes abrir caja antes de confirmar un pago en efectivo.'],
+            ]);
+        }
+
+        $pago = DB::transaction(function () use ($idPago, $request, $cajaService) {
             $pago = PagoMembresia::with('clienteMembresia.membresia')->lockForUpdate()->findOrFail($idPago);
 
             if ($pago->estado_pago !== 'Pendiente') {
@@ -291,7 +304,28 @@ class SolicitudPagoMembresiaController extends Controller
                 'estado' => 'Activo',
             ]);
 
-            $pago->update(['estado_pago' => 'Completado']);
+            $pago->update([
+                'fecha_pago' => now(),
+                'estado_pago' => 'Completado',
+            ]);
+
+            if ($pago->metodo_pago === 'Efectivo') {
+                $movimiento = $cajaService->registrarMovimiento(
+                    (int) $request->user()->id_usuario,
+                    'Ingreso',
+                    'Membresia',
+                    'Pago en efectivo de membresía '.$membresia->nombre,
+                    (float) $pago->monto,
+                    'PagoMembresia',
+                    (int) $pago->id_pago
+                );
+
+                if (!$movimiento) {
+                    throw ValidationException::withMessages([
+                        'caja' => ['No se pudo registrar el ingreso porque no existe una caja abierta.'],
+                    ]);
+                }
+            }
 
             return $pago;
         });
