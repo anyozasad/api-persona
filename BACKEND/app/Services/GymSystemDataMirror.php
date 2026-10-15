@@ -46,6 +46,18 @@ class GymSystemDataMirror
         'planes_entrenamiento_casa',
         'sesiones_entrenamiento_casa',
         'detalle_sesion_entrenamiento',
+        'personal_access_tokens',
+        'migrations',
+        'cache',
+        'cache_locks',
+        'jobs',
+        'job_batches',
+        'failed_jobs',
+        'password_reset_tokens',
+        'sessions',
+        'personas',
+        'cursos',
+        'users',
     ];
 
     public function __construct(private GymSystemClienteMirror $clientesMirror)
@@ -63,6 +75,7 @@ class GymSystemDataMirror
         config([
             'database.connections.gym_system_mirror_all' => array_merge($mysql, [
                 'database' => env('GYM_DB_DATABASE', 'gym_system'),
+                'prefix' => '',
             ]),
         ]);
 
@@ -81,8 +94,31 @@ class GymSystemDataMirror
         $baseOrigen = (string) $origen->getDatabaseName();
         $baseDestino = (string) $destino->getDatabaseName();
 
-        // En pruebas ambas variables apuntan a la misma base. No se duplica nada.
+        $prefijoOrigen = (string) config('database.connections.'.config('database.default').'.prefix', '');
+
+        // Si la aplicación ya usa gym_system con prefijo app_, no se vuelven a
+        // copiar las tablas modernas. Solo se mantienen actualizadas las tablas
+        // legacy visibles (socios, planes, productos, etc.).
         if ($baseOrigen === $baseDestino) {
+            if ($prefijoOrigen === 'app_') {
+                $resultado = [
+                    'origen' => $baseOrigen,
+                    'destino' => $baseDestino,
+                    'tablas' => [],
+                    'socios' => null,
+                    'modo' => 'gym_system_principal',
+                ];
+
+                try {
+                    $resultado['socios'] = $this->clientesMirror->sincronizarTodos();
+                } catch (Throwable $e) {
+                    $resultado['socios'] = ['error' => $e->getMessage()];
+                }
+
+                $resultado['compatibilidad'] = $this->sincronizarCompatibilidad($origen, $destino);
+                return $resultado;
+            }
+
             return ['omitido' => true, 'motivo' => 'Origen y destino son la misma base.', 'base' => $baseOrigen];
         }
 
