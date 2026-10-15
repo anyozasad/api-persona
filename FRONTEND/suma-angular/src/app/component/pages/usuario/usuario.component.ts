@@ -2170,7 +2170,10 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.api.cargarPortalCliente().subscribe({
       next:r=>{
         this.resumen=r.resumen||this.resumen;
-        if(this.moduloActivo!=='perfil')this.perfil=this.normalizarPerfil(r.perfil||this.perfil);
+        if(this.moduloActivo!=='perfil'){
+          this.perfil=this.normalizarPerfil(r.perfil||this.perfil);
+          this.aplicarPreferenciasPerfil();
+        }
         this.membresiaActual=r.membresia?.actual||null;
         this.membresiaProxima=r.membresia?.proxima||null;
         this.membresiasDisponibles=r.membresiasDisponibles||[];
@@ -2213,7 +2216,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargar():void{
     this.cargando=true; this.error='';
     this.api.cargarPortalCliente().subscribe({
-      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=safeArray(r.membresiasDisponibles);this.gymInfo=r.gymInfo||{};this.pagos=sortNewest(uniqueById(safeArray(r.pagos),['id_pago']),'fecha_pago');this.rutinas=sortNewest(uniqueById(safeArray(r.rutinas),['id_rutina']),'fecha_inicio');this.asistencias=sortNewest(uniqueById(safeArray(r.asistencias),['id_asistencia']),'fecha_hora_entrada');this.reservas=sortNewest(uniqueById(safeArray(r.reservas),['id_reserva']),'fecha_clase');this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));this.compras=sortNewest(uniqueById(safeArray(r.compras),['id_venta']),'fecha_venta');this.productosDisponibles=this.normalizarProductosPortal(r.productos);this.preseleccionarPlanActual();this.cargando=false;this.cargarFotoPerfil();this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
+      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.aplicarPreferenciasPerfil();this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=safeArray(r.membresiasDisponibles);this.gymInfo=r.gymInfo||{};this.pagos=sortNewest(uniqueById(safeArray(r.pagos),['id_pago']),'fecha_pago');this.rutinas=sortNewest(uniqueById(safeArray(r.rutinas),['id_rutina']),'fecha_inicio');this.asistencias=sortNewest(uniqueById(safeArray(r.asistencias),['id_asistencia']),'fecha_hora_entrada');this.reservas=sortNewest(uniqueById(safeArray(r.reservas),['id_reserva']),'fecha_clase');this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));this.compras=sortNewest(uniqueById(safeArray(r.compras),['id_venta']),'fecha_venta');this.productosDisponibles=this.normalizarProductosPortal(r.productos);this.preseleccionarPlanActual();this.cargando=false;this.cargarFotoPerfil();this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
       error:e=>{this.error=this.errorApi(e);this.cargando=false;}
     });
   }
@@ -2271,14 +2274,22 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   abrirEnfoqueEntrenamiento(enfoque:string):void{
     this.enfoqueInicioSeleccionado=enfoque;
+    this.perfil={...(this.perfil||{}),enfoque_entrenamiento:enfoque};
     try{localStorage.setItem('mallqui_enfoque_entrenamiento',enfoque);}catch{}
+    this.api.actualizarPerfilCliente({enfoque_entrenamiento:enfoque}).subscribe({
+      error:e=>this.errorCasa='No se pudo guardar el objetivo: '+this.errorApi(e)
+    });
     this.abrirModulo('casa');
     this.ok('Objetivo seleccionado: '+enfoque);
   }
 
   seleccionarNivelEntrenamiento(nivel:'Principiante'|'Intermedio'|'Avanzado'):void{
     this.nivelEntrenamiento=nivel;
+    this.perfil={...(this.perfil||{}),nivel_entrenamiento:nivel};
     try{localStorage.setItem('mallqui_nivel_entrenamiento',nivel);}catch{}
+    this.api.actualizarPerfilCliente({nivel_entrenamiento:nivel}).subscribe({
+      error:e=>this.errorCasa='No se pudo guardar el nivel: '+this.errorApi(e)
+    });
   }
 
   get guiaEnfoqueInicio():any{
@@ -2528,10 +2539,26 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   normalizarPerfil(datos:any):any{
     const p={...(datos||{})};
-    if(p.fecha_nacimiento){
-      p.fecha_nacimiento=String(p.fecha_nacimiento).slice(0,10);
+    const limpiar=(v:any)=>typeof v==='string' ? v.trim().replace(/\s+/g,' ') : v;
+    for(const campo of ['nombres','apellidos','telefono','direccion','sexo']){
+      if(p[campo]!==undefined && p[campo]!==null)p[campo]=limpiar(p[campo]);
     }
+    if(p.correo!==undefined && p.correo!==null)p.correo=String(p.correo).trim().toLowerCase();
+    if(p.fecha_nacimiento)p.fecha_nacimiento=String(p.fecha_nacimiento).slice(0,10);
+    if(p.enfoque_entrenamiento)p.enfoque_entrenamiento=limpiar(p.enfoque_entrenamiento);
+    if(p.nivel_entrenamiento)p.nivel_entrenamiento=limpiar(p.nivel_entrenamiento);
     return p;
+  }
+
+  private aplicarPreferenciasPerfil():void{
+    const enfoque=String(this.perfil?.enfoque_entrenamiento||'').trim();
+    const nivel=String(this.perfil?.nivel_entrenamiento||'').trim();
+    if(enfoque)this.enfoqueInicioSeleccionado=enfoque;
+    if(['Principiante','Intermedio','Avanzado'].includes(nivel))this.nivelEntrenamiento=nivel as 'Principiante'|'Intermedio'|'Avanzado';
+    try{
+      if(enfoque)localStorage.setItem('mallqui_enfoque_entrenamiento',enfoque);
+      if(nivel)localStorage.setItem('mallqui_nivel_entrenamiento',nivel);
+    }catch{}
   }
 
   sincronizarDatosCliente(mostrarAviso=true):void{
@@ -2543,6 +2570,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       next:r=>{
         this.resumen=r.resumen;
         this.perfil=this.normalizarPerfil(r.perfil);
+        this.aplicarPreferenciasPerfil();
         this.membresiaActual=r.membresia?.actual||null;
         this.membresiaProxima=r.membresia?.proxima||null;
         this.membresiasDisponibles=r.membresiasDisponibles||[];
