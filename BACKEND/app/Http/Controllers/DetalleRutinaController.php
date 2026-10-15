@@ -29,6 +29,8 @@ class DetalleRutinaController extends Controller
             'peso_recomendado' => 'nullable|numeric|min:0',
             'descanso_segundos' => 'nullable|integer|min:0|max:3600',
             'observaciones' => 'nullable|string|max:500',
+            'zona' => 'nullable|string|max:30',
+            'equipo' => 'nullable|string|max:120',
         ]);
         $this->autorizarRutina($request, (int) $datos['id_rutina']);
         return response()->json(DetalleRutina::create($datos)->load('rutina'), 201);
@@ -50,6 +52,8 @@ class DetalleRutinaController extends Controller
             'peso_recomendado' => 'sometimes|nullable|numeric|min:0',
             'descanso_segundos' => 'sometimes|nullable|integer|min:0|max:3600',
             'observaciones' => 'sometimes|nullable|string|max:500',
+            'zona' => 'sometimes|nullable|string|max:30',
+            'equipo' => 'sometimes|nullable|string|max:120',
         ]);
         if (isset($datos['id_rutina'])) $this->autorizarRutina($request, (int) $datos['id_rutina']);
         $detalle->update($datos);
