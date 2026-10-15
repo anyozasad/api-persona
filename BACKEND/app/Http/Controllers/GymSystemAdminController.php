@@ -18,14 +18,9 @@ class GymSystemAdminController extends Controller
 
     public function __construct()
     {
-        $mysql = (array) config('database.connections.mysql', []);
-        config([
-            'database.connections.gym_system_actions' => array_merge($mysql, [
-                'database' => env('GYM_DB_DATABASE', 'gym_system'),
-            ]),
-        ]);
-
-        $this->db = DB::connection('gym_system_actions');
+        // Todo el sistema usa una sola conexión: DB_DATABASE.
+        // No se crea una segunda conexión ni se permite guardar en otra base.
+        $this->db = DB::connection();
         $this->schema = $this->db->getSchemaBuilder();
         $this->asegurarCompatibilidad();
     }
@@ -758,13 +753,13 @@ class GymSystemAdminController extends Controller
         $a=$this->db->table('configuracion')->first();
         $g=['nombre_sistema'=>$d['nombre_sistema']??$d['nombre_gimnasio']??($a->nombre_sistema??'Mallqui Gym'),'ruc'=>$d['ruc']??($a->ruc??null),'direccion'=>$d['direccion']??($a->direccion??null),'telefono'=>$d['telefono']??($a->telefono??null),'email'=>$d['email']??$d['correo']??($a->email??null),'moneda'=>$d['moneda']??($a->moneda??'S/')];
         $a?$this->db->table('configuracion')->where('id',$a->id)->update($g):$this->db->table('configuracion')->insert(array_merge(['id'=>1],$g));
-        return response()->json(['mensaje'=>'Configuración de gym_system actualizada.','configuracion'=>$this->db->table('configuracion')->first()]);
+        return response()->json(['mensaje'=>'Configuración de la base principal actualizada.','configuracion'=>$this->db->table('configuracion')->first()]);
     }
 
     public function backup()
     {
         $nombre=preg_replace('/[^A-Za-z0-9\-]/','_',optional($this->db->table('configuracion')->first())->nombre_sistema??'Mallqui_Gym');
-        $out="-- Backup gym_system\n-- Fecha: ".now()->format('Y-m-d H:i:s')."\n\nSET FOREIGN_KEY_CHECKS=0;\n";
+        $out="-- Backup base principal\n-- Fecha: ".now()->format('Y-m-d H:i:s')."\n\nSET FOREIGN_KEY_CHECKS=0;\n";
         $tables=collect($this->db->select('SHOW TABLES'))->map(fn($r)=>array_values((array)$r)[0]);
         foreach($tables as $t){
             $cr=$this->db->select("SHOW CREATE TABLE `{$t}`")[0]??null;if($cr){$vals=array_values((array)$cr);$out.="\nDROP TABLE IF EXISTS `{$t}`;\n".($vals[1]??'').";\n";}
@@ -780,7 +775,7 @@ class GymSystemAdminController extends Controller
         $f=$request->file('backup_file');abort_if(strtolower($f->getClientOriginalExtension())!=='sql',422,'Solo se permiten archivos .sql.');
         $sql=file_get_contents($f->getRealPath());abort_if(trim((string)$sql)==='',422,'El archivo SQL está vacío.');
         $this->db->unprepared('SET FOREIGN_KEY_CHECKS=0');try{$this->db->unprepared($sql);}finally{$this->db->unprepared('SET FOREIGN_KEY_CHECKS=1');}
-        return response()->json(['mensaje'=>'Base gym_system restaurada correctamente.']);
+        return response()->json(['mensaje'=>'Base principal restaurada correctamente.']);
     }
 
     public function limpiar()
