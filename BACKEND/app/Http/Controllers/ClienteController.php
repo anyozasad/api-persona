@@ -4,14 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\Usuario;
+use App\Services\GymSystemClienteMirror;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 
 class ClienteController extends Controller
 {
+    public function __construct(private GymSystemClienteMirror $gymMirror)
+    {
+    }
+
+    private function sincronizarGymSystem(Cliente $cliente): void
+    {
+        try {
+            $this->gymMirror->sincronizar($cliente->fresh());
+        } catch (\Throwable $e) {
+            Log::warning('No se pudo sincronizar el cliente con gym_system.', [
+                'id_cliente' => $cliente->id_cliente,
+                'dni' => $cliente->dni,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
     public function index()
     {
         return response()->json(
@@ -95,6 +114,8 @@ class ClienteController extends Controller
             return $cliente;
         });
 
+        $this->sincronizarGymSystem($cliente);
+
         return response()->json([
             'mensaje' => 'Cliente registrado correctamente.',
             'cliente' => $cliente->fresh(),
@@ -172,6 +193,8 @@ class ClienteController extends Controller
             }
         });
 
+        $this->sincronizarGymSystem($cliente);
+
         return response()->json([
             'mensaje' => 'Cambios del cliente guardados correctamente.',
             'cliente' => $cliente->fresh(),
@@ -195,6 +218,8 @@ class ClienteController extends Controller
                 $usuario->tokens()->delete();
             });
         });
+
+        $this->sincronizarGymSystem($cliente);
 
         return response()->json([
             'mensaje' => 'Cliente y acceso asociados fueron desactivados. El historial fue conservado.',
