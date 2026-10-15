@@ -12,7 +12,7 @@ class DetalleRutina extends Model
 
     protected $fillable = [
         'id_rutina', 'ejercicio', 'series', 'repeticiones', 'peso_recomendado',
-        'descanso_segundos', 'observaciones'
+        'descanso_segundos', 'observaciones', 'zona', 'equipo'
     ];
 
     protected $casts = [
