@@ -3223,7 +3223,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     const catalogo:Record<string,any[]>={piernas:[],gluteos:[],brazos:[],pecho:[],espalda:[],hombros:[],core:[]};
     for(const ejercicio of this.ejerciciosRutinaAsignadaGym){
       const zona=String(ejercicio?.zona||'core');
-      (catalogo[zona]||catalogo.core).push(ejercicio);
+      (catalogo[zona]||catalogo['core']).push(ejercicio);
     }
     this.catalogoCasa=catalogo;
     const primera=Object.keys(catalogo).find(z=>catalogo[z].length>0);
