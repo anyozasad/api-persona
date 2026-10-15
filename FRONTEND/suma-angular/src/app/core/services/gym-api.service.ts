@@ -110,7 +110,28 @@ export class GymApiService {
     return this.http.put('/api/mi-cuenta/entrenamiento-gym/plan', datos);
   }
 
+  iniciarSesionCasaCliente(id_rutina: number): Observable<any> {
+    return this.http.post('/api/mi-cuenta/entrenamiento-gym/sesiones/iniciar', { id_rutina });
+  }
+
+  actualizarSesionCasaCliente(id_sesion: number, datos: {
+    duracion_segundos?: number;
+    estado?: 'EnCurso' | 'Pausada';
+    id_detalle_rutina?: number;
+    series_realizadas?: number;
+    repeticiones_realizadas?: number;
+    peso_utilizado?: number | null;
+    completado?: boolean;
+  }): Observable<any> {
+    return this.http.patch(`/api/mi-cuenta/entrenamiento-gym/sesiones/${id_sesion}`, datos);
+  }
+
+  cancelarSesionCasaCliente(id_sesion: number, duracion_segundos: number): Observable<any> {
+    return this.http.post(`/api/mi-cuenta/entrenamiento-gym/sesiones/${id_sesion}/cancelar`, { duracion_segundos });
+  }
+
   registrarSesionCasaCliente(datos: {
+    id_sesion_casa?: number | null;
     id_rutina: number;
     duracion_segundos: number;
     ejercicios: Array<{
