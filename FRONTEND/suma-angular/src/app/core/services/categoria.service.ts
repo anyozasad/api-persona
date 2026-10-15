@@ -5,7 +5,7 @@ import { Categoria } from '../../models/categoria';
 
 @Injectable({ providedIn: 'root' })
 export class CategoriaService {
-  private readonly apiUrl = '/api/categorias';
+  private readonly apiUrl = '/api/gym-admin/categorias';
 
   constructor(private http: HttpClient) {}
 
