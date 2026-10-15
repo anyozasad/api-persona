@@ -12,7 +12,8 @@ class Cliente extends Model
 
     protected $fillable = [
         'dni', 'nombres', 'apellidos', 'sexo', 'telefono', 'correo',
-        'direccion', 'fecha_nacimiento', 'fecha_registro', 'estado'
+        'direccion', 'fecha_nacimiento', 'fecha_registro', 'estado',
+        'foto_perfil', 'enfoque_entrenamiento', 'nivel_entrenamiento'
     ];
 
     protected $casts = [
