@@ -148,7 +148,8 @@ class DashboardController extends Controller
             + $stock['productos_stock_bajo']
             + $soportePendiente
             + $rutinasPendientes
-            + $opinionesPendientes;
+            + $opinionesPendientes
+            + $pagosPendientes;
 
         $prioridades = collect([
             [
@@ -186,13 +187,20 @@ class DashboardController extends Controller
                 'descripcion' => 'Socios cuya membresía vence durante los próximos 7 días.',
                 'nivel' => count($suscripciones['detalle_por_vencer']) > 0 ? 'media' : 'ok',
             ],
+            [
+                'tipo' => 'pagos',
+                'cantidad' => $pagosPendientes,
+                'titulo' => 'Pagos en efectivo pendientes',
+                'descripcion' => 'Pagos que recepción debe confirmar o rechazar.',
+                'nivel' => $pagosPendientes > 0 ? 'alta' : 'ok',
+            ],
         ])->filter(fn ($item) => $item['cantidad'] > 0)->values();
 
         return response()->json([
             'fuente' => [
                 'base_datos' => $this->db->getDatabaseName(),
                 'tablas_detectadas' => array_values(array_filter($tablas)),
-                'modo' => 'base_principal_compartida',
+                'modo' => 'base_principal_con_sincronizacion_gym_system',
             ],
             'periodo' => [
                 'fecha' => $hoy->format('d/m/Y'),
