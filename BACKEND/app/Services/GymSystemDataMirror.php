@@ -198,6 +198,30 @@ class GymSystemDataMirror
             $r['productos'] = ['error' => $e->getMessage()];
         }
 
+        try {
+            $r['suscripciones'] = $this->sincronizarSuscripciones($origen, $destino);
+        } catch (Throwable $e) {
+            $r['suscripciones'] = ['error' => $e->getMessage()];
+        }
+
+        try {
+            $r['asistencias'] = $this->sincronizarAsistencias($origen, $destino);
+        } catch (Throwable $e) {
+            $r['asistencias'] = ['error' => $e->getMessage()];
+        }
+
+        try {
+            $r['usuarios'] = $this->sincronizarUsuarios($origen, $destino);
+        } catch (Throwable $e) {
+            $r['usuarios'] = ['error' => $e->getMessage()];
+        }
+
+        try {
+            $r['ventas'] = $this->sincronizarVentas($origen, $destino);
+        } catch (Throwable $e) {
+            $r['ventas'] = ['error' => $e->getMessage()];
+        }
+
         return $r;
     }
 
@@ -290,6 +314,236 @@ class GymSystemDataMirror
             } else {
                 $destino->table('productos')->insert(array_merge(['codigo' => $p->codigo_producto], $datos));
             }
+            $total++;
+        }
+
+        return ['registros' => $total];
+    }
+
+    private function sincronizarSuscripciones(ConnectionInterface $origen, ConnectionInterface $destino): array
+    {
+        if (
+            !$origen->getSchemaBuilder()->hasTable('cliente_membresia') ||
+            !$origen->getSchemaBuilder()->hasTable('clientes') ||
+            !$origen->getSchemaBuilder()->hasTable('membresias') ||
+            !$destino->getSchemaBuilder()->hasTable('suscripciones')
+        ) {
+            return ['omitido' => true];
+        }
+
+        $total = 0;
+        $rows = $origen->table('cliente_membresia as cm')
+            ->join('clientes as c', 'c.id_cliente', '=', 'cm.id_cliente')
+            ->join('membresias as m', 'm.id_membresia', '=', 'cm.id_membresia')
+            ->select('cm.*', 'c.dni', 'm.nombre as membresia_nombre')
+            ->get();
+
+        foreach ($rows as $row) {
+            $socio = $destino->table('socios')->where('dni', $row->dni)->first();
+            $plan = $destino->table('planes')->where('nombre', $row->membresia_nombre)->first();
+            if (!$socio || !$plan) {
+                continue;
+            }
+
+            $estado = strtolower((string) $row->estado);
+            $estado = in_array($estado, ['activo', 'activa'], true) ? 'activa' : 'vencida';
+
+            $query = $destino->table('suscripciones')
+                ->where('socio_id', $socio->id)
+                ->where('plan_id', $plan->id)
+                ->whereDate('fecha_inicio', $row->fecha_inicio);
+
+            $datos = [
+                'fecha_fin' => $row->fecha_fin,
+                'estado' => $estado,
+            ];
+
+            if ($query->exists()) {
+                $query->update($datos);
+            } else {
+                $destino->table('suscripciones')->insert(array_merge([
+                    'socio_id' => $socio->id,
+                    'plan_id' => $plan->id,
+                    'fecha_inicio' => $row->fecha_inicio,
+                ], $datos));
+            }
+            $total++;
+        }
+
+        return ['registros' => $total];
+    }
+
+    private function sincronizarAsistencias(ConnectionInterface $origen, ConnectionInterface $destino): array
+    {
+        if (
+            !$origen->getSchemaBuilder()->hasTable('asistencias') ||
+            !$origen->getSchemaBuilder()->hasTable('clientes') ||
+            !$destino->getSchemaBuilder()->hasTable('asistencias')
+        ) {
+            return ['omitido' => true];
+        }
+
+        $total = 0;
+        $rows = $origen->table('asistencias as a')
+            ->join('clientes as c', 'c.id_cliente', '=', 'a.id_cliente')
+            ->select('a.*', 'c.dni')
+            ->get();
+
+        foreach ($rows as $row) {
+            $socio = $destino->table('socios')->where('dni', $row->dni)->first();
+            if (!$socio) {
+                continue;
+            }
+
+            $datos = ['socio_id' => $socio->id];
+
+            if ($destino->getSchemaBuilder()->hasColumn('asistencias', 'fecha_hora')) {
+                $datos['fecha_hora'] = $row->fecha_hora_entrada;
+            }
+            if ($destino->getSchemaBuilder()->hasColumn('asistencias', 'fecha_hora_salida')) {
+                $datos['fecha_hora_salida'] = $row->fecha_hora_salida;
+            }
+            if ($destino->getSchemaBuilder()->hasColumn('asistencias', 'estado')) {
+                $datos['estado'] = $row->estado ?: ($row->fecha_hora_salida ? 'Salió' : 'Dentro');
+            }
+
+            $q = $destino->table('asistencias')
+                ->where('socio_id', $socio->id);
+
+            if ($destino->getSchemaBuilder()->hasColumn('asistencias', 'fecha_hora')) {
+                $q->where('fecha_hora', $row->fecha_hora_entrada);
+            }
+
+            if ($q->exists()) {
+                $q->update($datos);
+            } else {
+                $destino->table('asistencias')->insert($datos);
+            }
+            $total++;
+        }
+
+        return ['registros' => $total];
+    }
+
+    private function sincronizarUsuarios(ConnectionInterface $origen, ConnectionInterface $destino): array
+    {
+        if (!$origen->getSchemaBuilder()->hasTable('usuarios') || !$destino->getSchemaBuilder()->hasTable('usuarios')) {
+            return ['omitido' => true];
+        }
+
+        $total = 0;
+        foreach ($origen->table('usuarios')->get() as $u) {
+            $correo = $u->correo ?: ($u->nombre_usuario.'@mallqui.local');
+            $rol = strtolower((string) $u->rol);
+            $rolLegacy = str_contains($rol, 'admin') ? 'admin' : (str_contains($rol, 'entren') ? 'entrenador' : 'recepcionista');
+
+            $datos = [
+                'nombre' => trim((string) $u->nombres.' '.(string) $u->apellidos),
+                'nombre_usuario' => $u->nombre_usuario,
+                'dni' => $u->dni,
+                'telefono' => $u->telefono,
+                'email' => $correo,
+                'password' => $u->contrasena,
+                'rol' => $rolLegacy,
+                'estado' => strtolower((string) $u->estado) === 'activo' ? 'activo' : 'inactivo',
+            ];
+
+            $existe = $destino->table('usuarios')->where('email', $correo)->first();
+            if ($existe) {
+                $destino->table('usuarios')->where('id', $existe->id)->update($datos);
+            } else {
+                $destino->table('usuarios')->insert($datos);
+            }
+            $total++;
+        }
+
+        return ['registros' => $total];
+    }
+
+    private function sincronizarVentas(ConnectionInterface $origen, ConnectionInterface $destino): array
+    {
+        if (
+            !$origen->getSchemaBuilder()->hasTable('ventas') ||
+            !$destino->getSchemaBuilder()->hasTable('ventas')
+        ) {
+            return ['omitido' => true];
+        }
+
+        $total = 0;
+        foreach ($origen->table('ventas as v')
+            ->leftJoin('clientes as c', 'c.id_cliente', '=', 'v.id_cliente')
+            ->select('v.*', 'c.dni as cliente_dni')
+            ->get() as $v) {
+            $socioId = null;
+            if ($v->cliente_dni) {
+                $socioId = $destino->table('socios')->where('dni', $v->cliente_dni)->value('id');
+            }
+
+            $datos = [
+                'socio_id' => $socioId,
+                'subtotal' => $v->subtotal,
+                'igv' => $v->igv,
+                'total' => $v->total,
+                'metodo_pago' => $v->metodo_pago,
+                'fecha' => $v->fecha_venta,
+                'tipo_comprobante' => $v->tipo_comprobante,
+                'numero_comprobante' => $v->numero_comprobante,
+                'numero_operacion' => $v->numero_operacion,
+                'estado' => $v->estado,
+                'motivo_anulacion' => $v->motivo_anulacion,
+            ];
+
+            if ($destino->getSchemaBuilder()->hasColumn('ventas', 'igv_porcentaje')) {
+                $datos['igv_porcentaje'] = $v->total > 0 ? 18 : 0;
+            }
+            if ($destino->getSchemaBuilder()->hasColumn('ventas', 'descuento')) {
+                $datos['descuento'] = 0;
+            }
+
+            $q = $destino->table('ventas')->where('numero_comprobante', $v->numero_comprobante);
+            if ($q->exists()) {
+                $q->update($datos);
+                $ventaId = (int) $q->value('id');
+            } else {
+                $ventaId = (int) $destino->table('ventas')->insertGetId($datos);
+            }
+
+            if (
+                $origen->getSchemaBuilder()->hasTable('detalle_venta') &&
+                $destino->getSchemaBuilder()->hasTable('detalle_ventas') &&
+                $origen->getSchemaBuilder()->hasTable('productos')
+            ) {
+                foreach ($origen->table('detalle_venta as d')
+                    ->join('productos as p', 'p.id_producto', '=', 'd.id_producto')
+                    ->where('d.id_venta', $v->id_venta)
+                    ->select('d.*', 'p.codigo_producto')
+                    ->get() as $d) {
+                    $productoId = $destino->table('productos')->where('codigo', $d->codigo_producto)->value('id');
+                    if (!$productoId) {
+                        continue;
+                    }
+
+                    $dq = $destino->table('detalle_ventas')
+                        ->where('venta_id', $ventaId)
+                        ->where('producto_id', $productoId);
+
+                    $detalle = [
+                        'cantidad' => $d->cantidad,
+                        'precio_unitario' => $d->precio_unitario,
+                        'subtotal' => $d->subtotal,
+                    ];
+
+                    if ($dq->exists()) {
+                        $dq->update($detalle);
+                    } else {
+                        $destino->table('detalle_ventas')->insert(array_merge([
+                            'venta_id' => $ventaId,
+                            'producto_id' => $productoId,
+                        ], $detalle));
+                    }
+                }
+            }
+
             $total++;
         }
 
