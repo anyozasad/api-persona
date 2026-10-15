@@ -42,6 +42,10 @@ class GymSystemClienteMirror
             'estado' => strtolower((string) ($cliente->estado ?: 'Activo')),
         ];
 
+        if ($schema->hasColumn('socios', 'foto')) {
+            $datos['foto'] = $cliente->foto_perfil;
+        }
+
         $existente = $db->table('socios')->where('dni', $cliente->dni)->first();
 
         if ($existente) {
