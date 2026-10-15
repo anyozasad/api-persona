@@ -65,7 +65,7 @@ Route::get('/estado-sistema', function () {
             'motor' => $db->getDriverName(),
             'base_datos' => $db->getDatabaseName(),
             'tablas_detectadas' => $tablas,
-            'mensaje' => 'Todo el sistema está conectado a una sola base de datos.',
+            'mensaje' => 'La aplicación está conectada a su base principal y mantiene sincronización de compatibilidad con gym_system cuando está configurada.',
         ]);
     } catch (\Throwable $e) {
         return response()->json([
@@ -141,6 +141,9 @@ Route::middleware(['auth:sanctum', 'rol:Cliente', 'auditoria'])->prefix('mi-cuen
     // Flujo actual: entrenamiento guiado dentro del gimnasio.
     Route::get('/entrenamiento-gym', [PortalClienteController::class, 'entrenamientoCasa']);
     Route::put('/entrenamiento-gym/plan', [PortalClienteController::class, 'guardarPlanEntrenamiento']);
+    Route::post('/entrenamiento-gym/sesiones/iniciar', [PortalClienteController::class, 'iniciarSesionEntrenamientoCasa']);
+    Route::patch('/entrenamiento-gym/sesiones/{idSesion}', [PortalClienteController::class, 'actualizarSesionEntrenamientoCasa']);
+    Route::post('/entrenamiento-gym/sesiones/{idSesion}/cancelar', [PortalClienteController::class, 'cancelarSesionEntrenamientoCasa']);
     Route::post('/entrenamiento-gym/sesiones', [PortalClienteController::class, 'registrarSesionEntrenamientoCasa']);
 
     Route::post('/pagos/comprar', [SolicitudPagoMembresiaController::class, 'comprar']);
@@ -210,6 +213,8 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
 
     Route::apiResource('/cliente-membresias', ClienteMembresiaController::class)->only(['index', 'show']);
     Route::apiResource('/pagos-membresia', PagoMembresiaController::class)->only(['index', 'show']);
+    Route::post('/pagos-membresia/{idPago}/confirmar', [SolicitudPagoMembresiaController::class, 'confirmar']);
+    Route::post('/pagos-membresia/{idPago}/rechazar', [SolicitudPagoMembresiaController::class, 'rechazar']);
     Route::post('/membresias/contratar', [MembresiaProcesoController::class, 'contratar']);
     Route::post('/membresias/renovar', [MembresiaProcesoController::class, 'renovar']);
     Route::get('/clientes/{idCliente}/estado-membresia', [MembresiaProcesoController::class, 'estadoCliente']);
