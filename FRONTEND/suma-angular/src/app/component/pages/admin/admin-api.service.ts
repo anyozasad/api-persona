@@ -14,12 +14,12 @@ export class AdminApiService {
   // =========================================================
   // CLIENTES
   // =========================================================
-  clientes(): Observable<any[]> { return this.http.get<any[]>('/api/gym-admin/socios'); }
-  cliente(id: number): Observable<any> { return this.http.get(`/api/gym-admin/socios/${id}`); }
-  fichaCliente(id: number): Observable<any> { return this.http.get(`/api/gym-admin/socios/${id}/ficha`); }
-  crearCliente(datos: any): Observable<any> { return this.http.post('/api/gym-admin/socios', datos); }
-  actualizarCliente(id: number, datos: any): Observable<any> { return this.http.put(`/api/gym-admin/socios/${id}`, datos); }
-  desactivarCliente(id: number): Observable<any> { return this.http.put(`/api/gym-admin/socios/${id}/estado`, { estado: 'Inactivo' }); }
+  clientes(): Observable<any[]> { return this.http.get<any[]>('/api/clientes'); }
+  cliente(id: number): Observable<any> { return this.http.get(`/api/clientes/${id}`); }
+  fichaCliente(id: number): Observable<any> { return this.http.get(`/api/clientes/${id}/ficha`); }
+  crearCliente(datos: any): Observable<any> { return this.http.post('/api/clientes', datos); }
+  actualizarCliente(id: number, datos: any): Observable<any> { return this.http.put(`/api/clientes/${id}`, datos); }
+  desactivarCliente(id: number): Observable<any> { return this.http.delete(`/api/clientes/${id}`); }
 
   // =========================================================
   // MEMBRESIAS Y PAGOS
