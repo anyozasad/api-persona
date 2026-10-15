@@ -24,6 +24,7 @@ class GymSystemAdminController extends Controller
         config([
             'database.connections.gym_system_actions' => array_merge($mysql, [
                 'database' => env('GYM_DB_DATABASE', 'gym_system'),
+                'prefix' => '',
             ]),
         ]);
 
