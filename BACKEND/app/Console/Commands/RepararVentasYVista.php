@@ -43,29 +43,30 @@ class RepararVentasYVista extends Command
                 }
             });
 
-            DB::statement("UPDATE ventas SET estado = 'Registrado' WHERE estado IS NULL OR TRIM(estado) = ''");
+            $p = DB::connection()->getTablePrefix();
+            DB::statement("UPDATE {$p}ventas SET estado = 'Registrado' WHERE estado IS NULL OR TRIM(estado) = ''");
 
-            DB::statement('DROP VIEW IF EXISTS vista_ventas');
-            DB::statement(<<<'SQL'
-CREATE VIEW vista_ventas AS
+            DB::statement("DROP VIEW IF EXISTS {$p}vista_ventas");
+            DB::statement("
+CREATE VIEW {$p}vista_ventas AS
 SELECT
     v.id_venta,
     v.fecha_venta,
     v.numero_comprobante,
     CONCAT(c.nombres, ' ', c.apellidos) AS cliente,
-    p.codigo_producto,
-    p.nombre_producto,
+    pr.codigo_producto,
+    pr.nombre_producto,
     dv.cantidad,
     dv.precio_unitario,
     dv.subtotal,
     v.metodo_pago,
     v.estado
-FROM ventas v
-INNER JOIN clientes c ON c.id_cliente = v.id_cliente
-INNER JOIN detalle_venta dv ON dv.id_venta = v.id_venta
-INNER JOIN productos p ON p.id_producto = dv.id_producto
+FROM {$p}ventas v
+INNER JOIN {$p}clientes c ON c.id_cliente = v.id_cliente
+INNER JOIN {$p}detalle_venta dv ON dv.id_venta = v.id_venta
+INNER JOIN {$p}productos pr ON pr.id_producto = dv.id_producto
 WHERE COALESCE(v.estado, 'Registrado') <> 'Anulado'
-SQL);
+");
 
             DB::table('vista_ventas')->limit(1)->get();
 
