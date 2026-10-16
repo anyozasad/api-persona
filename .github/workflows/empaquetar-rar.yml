@@ -102,7 +102,14 @@ jobs:
              php artisan key:generate
              php artisan optimize:clear
              php artisan migrate --force
+             php artisan gym:sincronizar-clientes
              php artisan serve
+
+             La tabla app_clientes es la tabla moderna usada por el sistema.
+             La tabla socios es la tabla legacy visible en gym_system.
+             El comando gym:sincronizar-clientes copia/actualiza cada cliente
+             real de app_clientes hacia socios usando el DNI, sin duplicarlo.
+             Los nuevos clientes también se sincronizan automáticamente.
           9. Ejecutar en FRONTEND/suma-angular:
              npm install
              ng serve
