@@ -77,12 +77,12 @@ jobs:
           echo "SET FOREIGN_KEY_CHECKS=1;" >> gym_system_ESTRUCTURA_ACTUALIZADA.sql
           rm gym_system_dump.tmp.sql
 
-      - name: Verificar socios y clientes en el SQL
+      - name: Verificar socios y clientes en MySQL
         run: |
-          grep -q 'CREATE TABLE `socios`' gym_system_ESTRUCTURA_ACTUALIZADA.sql
-          grep -q 'CREATE TABLE `app_clientes`' gym_system_ESTRUCTURA_ACTUALIZADA.sql
-          grep -q 'CREATE TABLE `app_usuarios`' gym_system_ESTRUCTURA_ACTUALIZADA.sql
-          echo "OK: SQL contiene socios, app_clientes y app_usuarios."
+          test "$(mysql -h 127.0.0.1 -P 3306 -u root -Nse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='gym_system' AND table_name='socios';")" = "1"
+          test "$(mysql -h 127.0.0.1 -P 3306 -u root -Nse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='gym_system' AND table_name='app_clientes';")" = "1"
+          test "$(mysql -h 127.0.0.1 -P 3306 -u root -Nse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='gym_system' AND table_name='app_usuarios';")" = "1"
+          echo "OK: gym_system contiene socios, app_clientes y app_usuarios."
 
       - name: Preparar paquete
         run: |
