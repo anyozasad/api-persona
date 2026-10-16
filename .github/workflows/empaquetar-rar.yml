@@ -62,7 +62,20 @@ jobs:
         run: |
           mysqldump -h 127.0.0.1 -P 3306 -u root \
             --routines --triggers --events --single-transaction \
-            --no-tablespaces gym_system > gym_system_ESTRUCTURA_ACTUALIZADA.sql
+            --no-tablespaces gym_system > gym_system_dump.tmp.sql
+
+          cat > gym_system_ESTRUCTURA_ACTUALIZADA.sql <<'EOF'
+          SET NAMES utf8mb4;
+          CREATE DATABASE IF NOT EXISTS `gym_system`
+            CHARACTER SET utf8mb4
+            COLLATE utf8mb4_unicode_ci;
+          USE `gym_system`;
+          SET FOREIGN_KEY_CHECKS=0;
+          EOF
+
+          cat gym_system_dump.tmp.sql >> gym_system_ESTRUCTURA_ACTUALIZADA.sql
+          echo "SET FOREIGN_KEY_CHECKS=1;" >> gym_system_ESTRUCTURA_ACTUALIZADA.sql
+          rm gym_system_dump.tmp.sql
 
       - name: Preparar paquete
         run: |
@@ -75,8 +88,8 @@ jobs:
           1. Instalar XAMPP, Composer, Node.js y Angular CLI.
           2. Iniciar Apache y MySQL en XAMPP.
           3. Entrar a phpMyAdmin.
-          4. Crear la base de datos gym_system si no existe.
-          5. Importar gym_system_ESTRUCTURA_ACTUALIZADA.sql.
+          4. Ir a Importar directamente.
+          5. Importar gym_system_ESTRUCTURA_ACTUALIZADA.sql. El archivo crea y selecciona gym_system automáticamente.
           6. En BACKEND, crear .env usando .env.example.
           7. Verificar:
              DB_DATABASE=gym_system
