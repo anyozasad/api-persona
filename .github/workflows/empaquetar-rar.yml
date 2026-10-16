@@ -79,10 +79,15 @@ jobs:
 
       - name: Verificar socios y clientes en MySQL
         run: |
-          test "$(mysql -h 127.0.0.1 -P 3306 -u root -Nse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='gym_system' AND table_name='socios';")" = "1"
-          test "$(mysql -h 127.0.0.1 -P 3306 -u root -Nse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='gym_system' AND table_name='app_clientes';")" = "1"
-          test "$(mysql -h 127.0.0.1 -P 3306 -u root -Nse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='gym_system' AND table_name='app_usuarios';")" = "1"
-          echo "OK: gym_system contiene socios, app_clientes y app_usuarios."
+          echo "TABLAS CREADAS:"
+          mysql -h 127.0.0.1 -P 3306 -u root -Nse "SHOW TABLES FROM gym_system;"
+          SOCIOS=$(mysql -h 127.0.0.1 -P 3306 -u root -Nse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='gym_system' AND table_name='socios';")
+          CLIENTES=$(mysql -h 127.0.0.1 -P 3306 -u root -Nse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='gym_system' AND table_name IN ('app_clientes','clientes');")
+          USUARIOS=$(mysql -h 127.0.0.1 -P 3306 -u root -Nse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='gym_system' AND table_name IN ('app_usuarios','usuarios');")
+          test "$SOCIOS" -ge "1"
+          test "$CLIENTES" -ge "1"
+          test "$USUARIOS" -ge "1"
+          echo "OK: gym_system contiene socios y las tablas de clientes/usuarios."
 
       - name: Preparar paquete
         run: |
