@@ -77,6 +77,13 @@ jobs:
           echo "SET FOREIGN_KEY_CHECKS=1;" >> gym_system_ESTRUCTURA_ACTUALIZADA.sql
           rm gym_system_dump.tmp.sql
 
+      - name: Verificar socios y clientes en el SQL
+        run: |
+          grep -q 'CREATE TABLE `socios`' gym_system_ESTRUCTURA_ACTUALIZADA.sql
+          grep -q 'CREATE TABLE `app_clientes`' gym_system_ESTRUCTURA_ACTUALIZADA.sql
+          grep -q 'CREATE TABLE `app_usuarios`' gym_system_ESTRUCTURA_ACTUALIZADA.sql
+          echo "OK: SQL contiene socios, app_clientes y app_usuarios."
+
       - name: Preparar paquete
         run: |
           mkdir -p MALLQUI_GYM_COMPLETO
