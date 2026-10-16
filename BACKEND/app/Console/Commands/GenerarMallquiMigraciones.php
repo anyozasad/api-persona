@@ -546,8 +546,10 @@ use Illuminate\Support\Facades\DB;
 return new class extends Migration {
     public function up(): void
     {
-        DB::statement(<<<'SQL'
-CREATE VIEW vista_clientes_membresias AS
+        $p = DB::connection()->getTablePrefix();
+
+        DB::statement("
+CREATE VIEW {$p}vista_clientes_membresias AS
 SELECT
     c.id_cliente,
     c.dni,
@@ -557,55 +559,57 @@ SELECT
     cm.fecha_inicio,
     cm.fecha_fin,
     cm.estado
-FROM clientes c
-INNER JOIN cliente_membresia cm ON cm.id_cliente = c.id_cliente
-INNER JOIN membresias m ON m.id_membresia = cm.id_membresia
-SQL);
+FROM {$p}clientes c
+INNER JOIN {$p}cliente_membresia cm ON cm.id_cliente = c.id_cliente
+INNER JOIN {$p}membresias m ON m.id_membresia = cm.id_membresia
+");
 
-        DB::statement(<<<'SQL'
-CREATE VIEW vista_stock AS
+        DB::statement("
+CREATE VIEW {$p}vista_stock AS
 SELECT
-    p.id_producto,
-    p.codigo_producto,
-    c.nombre_categoria AS categoria,
-    p.nombre_producto,
-    p.precio_compra,
-    p.precio_venta,
-    p.stock,
-    p.stock_minimo,
-    p.estado
-FROM productos p
-INNER JOIN categorias c ON c.id_categoria = p.id_categoria
-SQL);
+    pr.id_producto,
+    pr.codigo_producto,
+    ca.nombre_categoria AS categoria,
+    pr.nombre_producto,
+    pr.precio_compra,
+    pr.precio_venta,
+    pr.stock,
+    pr.stock_minimo,
+    pr.estado
+FROM {$p}productos pr
+INNER JOIN {$p}categorias ca ON ca.id_categoria = pr.id_categoria
+");
 
-        DB::statement(<<<'SQL'
-CREATE VIEW vista_ventas AS
+        DB::statement("
+CREATE VIEW {$p}vista_ventas AS
 SELECT
     v.id_venta,
     v.fecha_venta,
     v.numero_comprobante,
     CONCAT(c.nombres, ' ', c.apellidos) AS cliente,
-    p.codigo_producto,
-    p.nombre_producto,
+    pr.codigo_producto,
+    pr.nombre_producto,
     dv.cantidad,
     dv.precio_unitario,
     dv.subtotal,
     NULL AS metodo_pago
-FROM ventas v
-INNER JOIN clientes c ON c.id_cliente = v.id_cliente
-INNER JOIN detalle_venta dv ON dv.id_venta = v.id_venta
-INNER JOIN productos p ON p.id_producto = dv.id_producto
-SQL);
+FROM {$p}ventas v
+INNER JOIN {$p}clientes c ON c.id_cliente = v.id_cliente
+INNER JOIN {$p}detalle_venta dv ON dv.id_venta = v.id_venta
+INNER JOIN {$p}productos pr ON pr.id_producto = dv.id_producto
+");
     }
 
     public function down(): void
     {
-        DB::statement('DROP VIEW IF EXISTS vista_ventas');
-        DB::statement('DROP VIEW IF EXISTS vista_stock');
-        DB::statement('DROP VIEW IF EXISTS vista_clientes_membresias');
+        $p = DB::connection()->getTablePrefix();
+        DB::statement("DROP VIEW IF EXISTS {$p}vista_ventas");
+        DB::statement("DROP VIEW IF EXISTS {$p}vista_stock");
+        DB::statement("DROP VIEW IF EXISTS {$p}vista_clientes_membresias");
     }
 };
 PHP,
+
         ];
     }
 }
