@@ -1,0 +1,33 @@
+name: Empaquetar proyecto RAR
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  paquete:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar RAR
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rar
+
+      - name: Preparar proyecto limpio
+        run: |
+          mkdir -p MALLQUI_GYM_COMPLETO
+          git archive HEAD | tar -x -C MALLQUI_GYM_COMPLETO
+
+      - name: Crear archivo RAR
+        run: |
+          rar a -r -m5 MALLQUI_GYM_COMPLETO.rar MALLQUI_GYM_COMPLETO
+
+      - name: Subir RAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: MALLQUI_GYM_COMPLETO_RAR
+          path: MALLQUI_GYM_COMPLETO.rar
+          compression-level: 0
+          retention-days: 7
