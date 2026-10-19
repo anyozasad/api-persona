@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Clase;
 use App\Models\ConfiguracionSistema;
+use App\Models\Entrenador;
 use App\Models\Membresia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -83,6 +84,7 @@ class ConfiguracionSistemaController extends Controller
 
     public function publico()
     {
+        $this->asegurarClasesPublicas();
         $config = $this->configuracion();
 
         return response()->json([
@@ -203,4 +205,67 @@ class ConfiguracionSistemaController extends Controller
             'tamano_kb' => round($archivo->getSize() / 1024, 2),
         ];
     }
+
+
+    private function asegurarClasesPublicas(): void
+    {
+        try {
+            if (!DB::getSchemaBuilder()->hasTable('clases')) {
+                return;
+            }
+
+            if (Clase::query()->where('estado', 'Activo')->exists()) {
+                return;
+            }
+
+            $entrenadorId = null;
+            if (DB::getSchemaBuilder()->hasTable('entrenadores')) {
+                $entrenadorId = Entrenador::query()
+                    ->where('estado', 'Activo')
+                    ->orderBy('id_entrenador')
+                    ->value('id_entrenador');
+            }
+
+            $clases = [
+                [
+                    'nombre' => 'Entrenamiento inicial',
+                    'descripcion' => 'Aprende técnica, postura y una rutina segura para comenzar.',
+                    'dia_semana' => 'Lunes',
+                    'hora_inicio' => '18:00',
+                    'hora_fin' => '19:00',
+                    'cupo_maximo' => 20,
+                ],
+                [
+                    'nombre' => 'Fuerza y masa muscular',
+                    'descripcion' => 'Trabajo progresivo con cargas para mejorar fuerza e hipertrofia.',
+                    'dia_semana' => 'Miércoles',
+                    'hora_inicio' => '18:00',
+                    'hora_fin' => '19:00',
+                    'cupo_maximo' => 20,
+                ],
+                [
+                    'nombre' => 'Acondicionamiento avanzado',
+                    'descripcion' => 'Sesiones intensas orientadas a rendimiento y resistencia.',
+                    'dia_semana' => 'Viernes',
+                    'hora_inicio' => '19:00',
+                    'hora_fin' => '20:00',
+                    'cupo_maximo' => 20,
+                ],
+            ];
+
+            foreach ($clases as $datos) {
+                Clase::firstOrCreate(
+                    ['nombre' => $datos['nombre']],
+                    array_merge($datos, [
+                        'id_entrenador' => $entrenadorId,
+                        'estado' => 'Activo',
+                    ])
+                );
+            }
+        } catch (Throwable $e) {
+            // La portada pública debe seguir funcionando aunque la tabla de clases
+            // todavía no esté disponible durante una instalación inicial.
+        }
+    }
+
 }
