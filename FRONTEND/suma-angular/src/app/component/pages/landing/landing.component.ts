@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { GymApiService } from '../../../core/services/gym-api.service';
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   styleUrls: ['../mallqui-landing.css'],
   template: `
     <div class="mq-public-home">
@@ -258,12 +259,47 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         </div>
       </div>
 
+      <section class="mq-chat-panel" *ngIf="chatAbierto" aria-label="Chat Mallqui Gym">
+        <header class="mq-chat-header">
+          <div>
+            <strong>Mallqui Gym</strong>
+            <span><i></i> Te responderemos tan pronto como podamos.</span>
+          </div>
+          <button type="button" aria-label="Cerrar chat" (click)="chatAbierto=false">×</button>
+        </header>
+
+        <div class="mq-chat-messages">
+          <div class="mq-chat-welcome">
+            <strong>¡Hola! 👋</strong>
+            <p>Bienvenido a Mallqui Gym. Escríbenos tu consulta y te ayudaremos.</p>
+          </div>
+
+          <div
+            *ngFor="let m of mensajesChat"
+            class="mq-chat-message"
+            [class.usuario]="m.tipo==='usuario'"
+            [class.gym]="m.tipo==='gym'">
+            {{m.texto}}
+          </div>
+        </div>
+
+        <form class="mq-chat-input" (submit)="enviarChat($event)">
+          <input
+            name="mensajeChat"
+            [(ngModel)]="mensajeChat"
+            placeholder="Escribe tu mensaje..."
+            autocomplete="off">
+          <button type="submit" aria-label="Enviar mensaje">➤</button>
+        </form>
+      </section>
+
       <button
         type="button"
         class="mq-chat-float"
-        aria-label="Ir a contacto"
-        title="Contacto"
-        (click)="irA('contacto')">
+        aria-label="Abrir chat"
+        title="Chat"
+        [class.open]="chatAbierto"
+        (click)="chatAbierto=!chatAbierto">
         <span class="mq-chat-bubble" aria-hidden="true">
           <i></i>
           <i></i>
@@ -279,6 +315,9 @@ export class LandingComponent implements OnInit, OnDestroy {
   toast = '';
   heroIndex = 0;
   galeriaActiva: number | null = null;
+  chatAbierto = false;
+  mensajeChat = '';
+  mensajesChat: Array<{tipo:'usuario'|'gym'; texto:string}> = [];
   private heroTimer?: ReturnType<typeof setInterval>;
   private toastTimer?: ReturnType<typeof setTimeout>;
 
@@ -391,6 +430,22 @@ export class LandingComponent implements OnInit, OnDestroy {
   galeriaSiguiente(): void {
     if (this.galeriaActiva === null) return;
     this.galeriaActiva = (this.galeriaActiva + 1) % this.galeria.length;
+  }
+
+  enviarChat(event: Event): void {
+    event.preventDefault();
+    const texto = this.mensajeChat.trim();
+    if (!texto) return;
+
+    this.mensajesChat.push({ tipo: 'usuario', texto });
+    this.mensajeChat = '';
+
+    setTimeout(() => {
+      this.mensajesChat.push({
+        tipo: 'gym',
+        texto: 'Gracias por escribirnos. Hemos recibido tu mensaje y te responderemos lo antes posible.'
+      });
+    }, 450);
   }
 
   enviarContacto(event: Event): void {
