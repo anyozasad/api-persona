@@ -112,6 +112,8 @@ export class LoginComponent {
   mensaje = '';
   planSeleccionado = '';
   destinoSeleccionado = '';
+  claseSeleccionada = '';
+  fechaSeleccionada = '';
 
   constructor(
     private router: Router,
@@ -120,6 +122,8 @@ export class LoginComponent {
   ) {
     this.planSeleccionado = this.route.snapshot.queryParamMap.get('plan') ?? '';
     this.destinoSeleccionado = this.route.snapshot.queryParamMap.get('destino') ?? '';
+    this.claseSeleccionada = this.route.snapshot.queryParamMap.get('clase') ?? '';
+    this.fechaSeleccionada = this.route.snapshot.queryParamMap.get('fecha') ?? '';
   }
 
   ingresar(): void {
@@ -142,6 +146,13 @@ export class LoginComponent {
           return;
         }
         if (res.usuario.rol === 'Cliente') {
+          if (this.destinoSeleccionado === 'reservar' && this.claseSeleccionada) {
+            const queryParams: Record<string, string> = { clase: this.claseSeleccionada };
+            if (this.fechaSeleccionada) queryParams['fecha'] = this.fechaSeleccionada;
+            void this.router.navigate(['/reservar'], { queryParams });
+            return;
+          }
+
           const queryParams: Record<string, string> = {};
           if (this.destinoSeleccionado) queryParams['modulo'] = this.destinoSeleccionado;
           if (this.planSeleccionado) queryParams['plan'] = this.planSeleccionado;
