@@ -111,6 +111,7 @@ export class LoginComponent {
   error = '';
   mensaje = '';
   planSeleccionado = '';
+  destinoSeleccionado = '';
 
   constructor(
     private router: Router,
@@ -118,6 +119,7 @@ export class LoginComponent {
     private auth: AuthService
   ) {
     this.planSeleccionado = this.route.snapshot.queryParamMap.get('plan') ?? '';
+    this.destinoSeleccionado = this.route.snapshot.queryParamMap.get('destino') ?? '';
   }
 
   ingresar(): void {
@@ -140,7 +142,14 @@ export class LoginComponent {
           return;
         }
         if (res.usuario.rol === 'Cliente') {
-          void this.router.navigate(['/usuario']);
+          const queryParams: Record<string, string> = {};
+          if (this.destinoSeleccionado) queryParams['modulo'] = this.destinoSeleccionado;
+          if (this.planSeleccionado) queryParams['plan'] = this.planSeleccionado;
+
+          void this.router.navigate(
+            ['/usuario'],
+            Object.keys(queryParams).length ? { queryParams } : undefined
+          );
           return;
         }
         if (res.usuario.rol === 'Entrenador') {
