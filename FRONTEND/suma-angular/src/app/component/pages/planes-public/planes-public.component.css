@@ -18,18 +18,12 @@
   border-bottom:1px solid rgba(255,255,255,.06);
 }
 .nav-inner{
-  min-height:82px;
-  display:grid;
-  grid-template-columns:190px 1fr 90px;
+  position:relative;
+  min-height:90px;
+  display:flex;
   align-items:center;
-  gap:18px;
-}
-.brand{
-  color:#fff;
-  text-decoration:none;
-  font-weight:900;
-  letter-spacing:3px;
-  font-size:17px;
+  justify-content:center;
+  padding:0 105px;
 }
 nav{
   display:flex;
@@ -55,6 +49,10 @@ nav a.active:after{
   background:var(--accent);
 }
 .login{
+  position:absolute;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
   display:flex;
   align-items:center;
   justify-content:flex-end;
@@ -185,15 +183,15 @@ nav a.active:after{
 }
 .plan-grid article>a:hover:after{width:100%}
 @media(max-width:980px){
-  .nav-inner{grid-template-columns:150px 1fr 80px}
+  .nav-inner{padding:0 90px}
   nav{overflow-x:auto;justify-content:flex-start}
   .plan-grid{grid-template-columns:1fr;max-width:560px}
   .plan-grid article.featured{transform:none}
 }
 @media(max-width:620px){
   .planes-shell{width:calc(100% - 28px)}
-  .nav-inner{grid-template-columns:1fr auto;padding:12px 0}
-  nav{grid-column:1/-1;order:3}
+  .nav-inner{min-height:118px;padding:12px 70px 12px 0;justify-content:flex-start}
+  nav{justify-content:flex-start;flex-wrap:wrap}
   nav a{padding:12px 9px}
   .pricing{padding-top:150px}
   .title h1{font-size:48px}
