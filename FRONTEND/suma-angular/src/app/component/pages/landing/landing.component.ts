@@ -230,16 +230,25 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               <button type="submit">Enviar</button>
             </form>
           </div>
+
+          <div class="mq-shell mq-contact-bottom">
+            <div class="mq-socials" aria-label="Redes sociales">
+              <button type="button" aria-label="Facebook">f</button>
+              <button type="button" aria-label="X">𝕏</button>
+              <button type="button" aria-label="Instagram">◎</button>
+            </div>
+
+            <button
+              type="button"
+              class="mq-back-top"
+              aria-label="Volver arriba"
+              title="Volver arriba"
+              (click)="irA('inicio')">⌃</button>
+
+            <div class="mq-copyright">© 2026 MALLQUI GYM · PUCALLPA, PERÚ</div>
+          </div>
         </section>
       </main>
-
-      <footer class="mq-footer">
-        <div class="mq-shell">
-          <img src="assets/mallqui-logo.png" alt="Mallqui Gym">
-          <span>© 2026 Mallqui Gym · Pucallpa, Perú</span>
-          <a routerLink="/login">Login</a>
-        </div>
-      </footer>
 
       <div
         class="mq-lightbox"
