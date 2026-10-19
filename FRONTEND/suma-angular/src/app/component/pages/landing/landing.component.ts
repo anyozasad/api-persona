@@ -96,17 +96,22 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         </section>
 
         <section id="victorias" class="mq-victories">
-          <div class="mq-shell">
-            <div class="mq-section-title">
-              <p class="mq-section-label">DISCIPLINA · CONSTANCIA · PROGRESO</p>
-              <h2>VICTORIAS</h2>
-            </div>
+          <div class="mq-gallery-cta">
+            <p>COMIENZA HOY A ENTRENAR</p>
+            <a routerLink="/login" [queryParams]="{ destino: 'reservas' }">Reservar sesión</a>
           </div>
+
           <div class="mq-gallery">
-            <figure *ngFor="let foto of galeria; let i = index" [class.mq-gallery-wide]="i === 1 || i === 4">
+            <button
+              type="button"
+              class="mq-gallery-item"
+              *ngFor="let foto of galeria; let i = index"
+              [class.mq-gallery-wide]="i === 1 || i === 4"
+              (click)="abrirGaleria(i)"
+              [attr.aria-label]="'Abrir ' + foto.texto">
               <img [src]="foto.img" [alt]="foto.alt">
-              <figcaption>{{foto.texto}}</figcaption>
-            </figure>
+              <span>{{foto.texto}}</span>
+            </button>
           </div>
         </section>
 
@@ -227,6 +232,32 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         </div>
       </footer>
 
+      <div
+        class="mq-lightbox"
+        *ngIf="galeriaActiva !== null"
+        (click)="cerrarGaleria()"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Galería Mallqui Gym">
+        <div class="mq-lightbox-inner" (click)="$event.stopPropagation()">
+          <button type="button" class="mq-lightbox-close" aria-label="Cerrar" (click)="cerrarGaleria()">×</button>
+
+          <button type="button" class="mq-lightbox-arrow prev" aria-label="Imagen anterior" (click)="galeriaAnterior()">‹</button>
+
+          <div class="mq-lightbox-photo">
+            <img [src]="galeria[galeriaActiva].img" [alt]="galeria[galeriaActiva].alt">
+          </div>
+
+          <div class="mq-lightbox-copy">
+            <h3>{{galeria[galeriaActiva].texto}}</h3>
+            <p>{{galeria[galeriaActiva].descripcion}}</p>
+            <a routerLink="/login" [queryParams]="{ destino: 'reservas' }" (click)="cerrarGaleria()">Reservar sesión</a>
+          </div>
+
+          <button type="button" class="mq-lightbox-arrow next" aria-label="Imagen siguiente" (click)="galeriaSiguiente()">›</button>
+        </div>
+      </div>
+
       <button
         type="button"
         class="mq-chat-float"
@@ -247,6 +278,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   gymInfo: any = {};
   toast = '';
   heroIndex = 0;
+  galeriaActiva: number | null = null;
   private heroTimer?: ReturnType<typeof setInterval>;
   private toastTimer?: ReturnType<typeof setTimeout>;
 
@@ -257,12 +289,12 @@ export class LandingComponent implements OnInit, OnDestroy {
   ];
 
   galeria = [
-    { img: 'https://images.unsplash.com/photo-1534258936925-c58bed479fcb?auto=format&fit=crop&w=900&q=85', alt: 'Entrenamiento de fuerza', texto: 'FUERZA' },
-    { img: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1200&q=85', alt: 'Entrenamiento funcional', texto: 'DISCIPLINA' },
-    { img: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=900&q=85', alt: 'Trabajo con pesas', texto: 'PROGRESO' },
-    { img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=900&q=85', alt: 'Entrenamiento intenso', texto: 'CONSTANCIA' },
-    { img: 'https://images.unsplash.com/photo-1532384748853-8f54a8f476e2?auto=format&fit=crop&w=1200&q=85', alt: 'Gimnasio y pesas', texto: 'SUPERACIÓN' },
-    { img: 'https://images.unsplash.com/photo-1605296867304-46d5465a13f1?auto=format&fit=crop&w=900&q=85', alt: 'Entrenamiento profesional', texto: 'RESULTADOS' }
+    { img: 'https://images.unsplash.com/photo-1534258936925-c58bed479fcb?auto=format&fit=crop&w=900&q=85', alt: 'Entrenamiento de fuerza', texto: 'FUERZA', descripcion: 'Entrena fuerza con técnica, constancia y una progresión adecuada a tu nivel.' },
+    { img: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1200&q=85', alt: 'Entrenamiento funcional', texto: 'DISCIPLINA', descripcion: 'La disciplina convierte cada sesión en un paso más hacia tu objetivo.' },
+    { img: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=900&q=85', alt: 'Trabajo con pesas', texto: 'PROGRESO', descripcion: 'Registra tu avance y mejora poco a poco con un entrenamiento organizado.' },
+    { img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=900&q=85', alt: 'Entrenamiento intenso', texto: 'CONSTANCIA', descripcion: 'Mantener la constancia es la base para conseguir cambios sostenibles.' },
+    { img: 'https://images.unsplash.com/photo-1532384748853-8f54a8f476e2?auto=format&fit=crop&w=1200&q=85', alt: 'Gimnasio y pesas', texto: 'SUPERACIÓN', descripcion: 'Cada entrenamiento es una oportunidad para superar tu propio rendimiento.' },
+    { img: 'https://images.unsplash.com/photo-1605296867304-46d5465a13f1?auto=format&fit=crop&w=900&q=85', alt: 'Entrenamiento profesional', texto: 'RESULTADOS', descripcion: 'Los resultados llegan con un plan claro, buena técnica y continuidad.' }
   ];
 
   clases = [
@@ -329,6 +361,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.heroTimer) clearInterval(this.heroTimer);
     if (this.toastTimer) clearTimeout(this.toastTimer);
+    document.body.style.overflow = '';
   }
 
   cambiarHero(index: number): void {
@@ -338,6 +371,26 @@ export class LandingComponent implements OnInit, OnDestroy {
   irA(id: string, event?: Event): void {
     event?.preventDefault();
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  abrirGaleria(index: number): void {
+    this.galeriaActiva = index;
+    document.body.style.overflow = 'hidden';
+  }
+
+  cerrarGaleria(): void {
+    this.galeriaActiva = null;
+    document.body.style.overflow = '';
+  }
+
+  galeriaAnterior(): void {
+    if (this.galeriaActiva === null) return;
+    this.galeriaActiva = (this.galeriaActiva - 1 + this.galeria.length) % this.galeria.length;
+  }
+
+  galeriaSiguiente(): void {
+    if (this.galeriaActiva === null) return;
+    this.galeriaActiva = (this.galeriaActiva + 1) % this.galeria.length;
   }
 
   enviarContacto(event: Event): void {
