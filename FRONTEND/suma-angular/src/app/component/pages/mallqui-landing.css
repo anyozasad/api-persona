@@ -281,34 +281,8 @@
   overflow:hidden;
   background:#242127;
 }
-.mq-coach::before{
-  content:'';
-  position:absolute;
-  z-index:0;
-  top:0;
-  right:0;
-  bottom:0;
-  left:44%;
-  background:
-    url('https://pikwizard.com/pw/medium/565cdd3cd627b8bb774469b7226ee7b8.jpg')
-    center 38%/cover no-repeat;
-  transform:scale(1.01);
-}
-.mq-coach::after{
-  content:'';
-  position:absolute;
-  z-index:1;
-  inset:0;
-  pointer-events:none;
-  background:
-    linear-gradient(90deg,
-      #242127 0%,
-      #242127 34%,
-      rgba(36,33,39,.96) 43%,
-      rgba(36,33,39,.60) 57%,
-      rgba(36,33,39,.18) 76%,
-      rgba(36,33,39,.12) 100%);
-}
+.mq-coach::before{content:none}
+.mq-coach::after{content:none}
 .mq-coach-grid{
   position:relative;
   z-index:2;
@@ -343,9 +317,25 @@
   font:400 18px/1.75 Arial,sans-serif;
 }
 .mq-coach-photo{
+  position:relative;
   min-height:670px;
-  background:transparent;
+  overflow:hidden;
+  background:#17151a;
+}
+.mq-coach-photo::after{
+  content:'';
+  position:absolute;
+  inset:0;
   pointer-events:none;
+  background:linear-gradient(90deg,rgba(36,33,39,.82) 0%,rgba(36,33,39,.28) 34%,rgba(36,33,39,0) 65%);
+}
+.mq-coach-photo img{
+  width:100%;
+  height:100%;
+  min-height:670px;
+  display:block;
+  object-fit:cover;
+  object-position:center 32%;
 }
 .mq-coach-facts{
   display:grid;
@@ -959,13 +949,10 @@
   .mq-levels{grid-template-columns:1fr}
   .mq-level-card{min-height:430px}
   .mq-coach{min-height:650px}
-  .mq-coach::before{left:34%;opacity:.78}
-  .mq-coach::after{
-    background:linear-gradient(90deg,#242127 0%,rgba(36,33,39,.94) 40%,rgba(36,33,39,.48) 72%,rgba(36,33,39,.22) 100%);
-  }
-  .mq-coach-grid{grid-template-columns:1fr;min-height:650px}
-  .mq-coach-copy{max-width:64%;padding:62px 0}
-  .mq-coach-photo{display:none}
+  .mq-coach-grid{grid-template-columns:1fr 1fr;min-height:650px}
+  .mq-coach-copy{max-width:none;padding:62px 28px 62px 0}
+  .mq-coach-photo{display:block;min-height:650px}
+  .mq-coach-photo img{min-height:650px}
   .mq-gallery{grid-template-columns:repeat(2,1fr)}
   .mq-lightbox{padding:34px 28px}
   .mq-lightbox-inner{grid-template-columns:1fr;gap:24px;min-height:0}
@@ -1000,13 +987,13 @@
   .mq-btn{width:210px}
   .mq-level-card{min-height:350px}
   .mq-level-content h2{font-size:24px;letter-spacing:6px}
-  .mq-coach{min-height:620px}
-  .mq-coach::before{left:0;opacity:.42;background-position:center}
-  .mq-coach::after{background:rgba(36,33,39,.72)}
+  .mq-coach{min-height:0}
+  .mq-coach-grid{grid-template-columns:1fr;min-height:0}
   .mq-coach h2,.mq-section-title h2,.mq-gym h2{font-size:44px}
   .mq-coach-copy{max-width:100%;padding:56px 0}
   .mq-coach-facts{grid-template-columns:1fr}
-  .mq-coach-photo{display:none}
+  .mq-coach-photo{display:block;min-height:360px}
+  .mq-coach-photo img{min-height:360px;height:360px;object-position:center 28%}
   .mq-gallery-cta{min-height:230px;gap:28px}
   .mq-gallery-cta p{font-size:22px;line-height:1.5;letter-spacing:5px}
   .mq-gallery{grid-template-columns:1fr;grid-auto-rows:260px}
