@@ -83,31 +83,6 @@
   border-radius:4px;
 }
 .mq-menu a:hover{color:var(--mq-accent)}
-.mq-menu a.mq-nav-action{
-  position:relative;
-  transition:color .22s ease,transform .22s ease,background .22s ease;
-}
-.mq-menu a.mq-nav-action::after{
-  content:'';
-  position:absolute;
-  left:50%;
-  bottom:5px;
-  width:0;
-  height:2px;
-  transform:translateX(-50%);
-  background:var(--mq-accent);
-  transition:width .28s ease;
-}
-.mq-menu a.mq-nav-action:hover{
-  color:var(--mq-accent);
-  transform:translateY(-2px);
-  background:rgba(255,96,71,.06);
-}
-.mq-menu a.mq-nav-action:hover::after{width:72%}
-.mq-menu a.mq-nav-action:active{
-  transform:translateY(0) scale(.93);
-  background:rgba(255,96,71,.14);
-}
 
 .mq-login{
   position:absolute;
