@@ -1405,3 +1405,81 @@ html{scroll-behavior:smooth}
     transition:none!important;
   }
 }
+
+
+/* =========================================================
+   CORRECCIÓN DE NAVEGACIÓN Y ANIMACIÓN DE SECCIONES
+   ========================================================= */
+
+/* Reservar sesión y Planes y precios no muestran raya inferior */
+.mq-menu a.mq-nav-page::after,
+.mq-menu a.mq-nav-page:hover::after{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+}
+.mq-menu a.mq-nav-page:hover{
+  transform:none;
+  text-shadow:none;
+}
+
+/* Entrada de la sección GIMNASIO */
+#gimnasio.mq-section-enter .mq-section-label,
+#gimnasio.mq-section-enter h2,
+#gimnasio.mq-section-enter .mq-gym-intro{
+  animation:mqGymTextIn .62s cubic-bezier(.22,.8,.22,1) both;
+}
+#gimnasio.mq-section-enter .mq-gym-info article{
+  opacity:0;
+  animation:mqGymCardIn .62s cubic-bezier(.22,.8,.22,1) forwards;
+}
+#gimnasio.mq-section-enter .mq-gym-info article:nth-child(1){animation-delay:.12s}
+#gimnasio.mq-section-enter .mq-gym-info article:nth-child(2){animation-delay:.22s}
+#gimnasio.mq-section-enter .mq-gym-info article:nth-child(3){animation-delay:.32s}
+
+@keyframes mqGymTextIn{
+  from{opacity:0;transform:translateX(-34px)}
+  to{opacity:1;transform:translateX(0)}
+}
+@keyframes mqGymCardIn{
+  from{opacity:0;transform:translateY(34px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* Entrada de la sección CONTACTO */
+#contacto.mq-section-enter .mq-contact-copy{
+  animation:mqContactLeftIn .66s cubic-bezier(.22,.8,.22,1) both;
+}
+#contacto.mq-section-enter .mq-contact-form{
+  animation:mqContactRightIn .66s .12s cubic-bezier(.22,.8,.22,1) both;
+}
+#contacto.mq-section-enter .mq-contact-bottom{
+  animation:mqContactBottomIn .58s .24s cubic-bezier(.22,.8,.22,1) both;
+}
+
+@keyframes mqContactLeftIn{
+  from{opacity:0;transform:translateX(-42px)}
+  to{opacity:1;transform:translateX(0)}
+}
+@keyframes mqContactRightIn{
+  from{opacity:0;transform:translateX(42px)}
+  to{opacity:1;transform:translateX(0)}
+}
+@keyframes mqContactBottomIn{
+  from{opacity:0;transform:translateY(28px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #gimnasio.mq-section-enter .mq-section-label,
+  #gimnasio.mq-section-enter h2,
+  #gimnasio.mq-section-enter .mq-gym-intro,
+  #gimnasio.mq-section-enter .mq-gym-info article,
+  #contacto.mq-section-enter .mq-contact-copy,
+  #contacto.mq-section-enter .mq-contact-form,
+  #contacto.mq-section-enter .mq-contact-bottom{
+    animation:none !important;
+    opacity:1 !important;
+    transform:none !important;
+  }
+}
