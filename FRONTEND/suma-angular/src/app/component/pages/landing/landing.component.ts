@@ -13,11 +13,6 @@ import { GymApiService } from '../../../core/services/gym-api.service';
     <div class="mq-public-home">
       <header class="mq-topbar">
         <div class="mq-shell mq-nav">
-          <a class="mq-brand" href="#inicio" (click)="irA('inicio', $event)" aria-label="Mallqui Gym - Inicio">
-            <img src="assets/mallqui-logo.png" alt="Mallqui Gym">
-            <span>MALLQUI GYM</span>
-          </a>
-
           <nav class="mq-menu" aria-label="Navegación principal">
             <a href="#inicio" (click)="irA('inicio', $event)">INICIO</a>
             <a href="#entrenamiento" (click)="irA('entrenamiento', $event)">ENTRENAMIENTO</a>
@@ -70,7 +65,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             <div class="mq-level-shade"></div>
             <div class="mq-level-content">
               <h2>PROFESIONALES</h2>
-              <button type="button" class="mq-circle-arrow" (click)="irA('clases')">›</button>
+              <a class="mq-circle-arrow" routerLink="/clases-gym">›</a>
             </div>
           </article>
         </section>
