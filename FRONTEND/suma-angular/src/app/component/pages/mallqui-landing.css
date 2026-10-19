@@ -71,15 +71,40 @@
   display:flex;
   align-items:center;
   justify-content:flex-end;
-  gap:9px;
+  gap:12px;
   color:var(--mq-accent);
+  font-size:14px;
 }
-.mq-user-dot{
-  width:28px;height:28px;border-radius:50%;
-  display:grid;place-items:center;
-  color:var(--mq-accent);
-  border:2px solid var(--mq-accent);
-  font-size:8px;
+.mq-login:hover{color:#ff755f}
+.mq-user-icon{
+  position:relative;
+  flex:0 0 32px;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  display:block;
+  background:var(--mq-accent);
+  overflow:hidden;
+}
+.mq-user-head{
+  position:absolute;
+  left:50%;
+  top:7px;
+  width:9px;
+  height:9px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:#211f26;
+}
+.mq-user-body{
+  position:absolute;
+  left:50%;
+  bottom:5px;
+  width:18px;
+  height:10px;
+  transform:translateX(-50%);
+  border-radius:10px 10px 4px 4px;
+  background:#211f26;
 }
 
 /* HERO */
@@ -503,6 +528,59 @@
 .mq-footer span{font:400 12px Arial,sans-serif}
 .mq-footer a{margin-left:auto;color:var(--mq-accent);text-decoration:none}
 
+
+/* CHAT FLOTANTE */
+.mq-chat-float{
+  position:fixed;
+  z-index:1500;
+  right:26px;
+  bottom:26px;
+  width:64px;
+  height:64px;
+  display:grid;
+  place-items:center;
+  border:0;
+  border-radius:50%;
+  background:var(--mq-accent);
+  box-shadow:0 12px 32px rgba(0,0,0,.28);
+  cursor:pointer;
+  transition:transform .2s ease,box-shadow .2s ease,background .2s ease;
+}
+.mq-chat-float:hover{
+  transform:translateY(-3px) scale(1.04);
+  background:#ff715c;
+  box-shadow:0 16px 38px rgba(0,0,0,.34);
+}
+.mq-chat-float:active{transform:scale(.96)}
+.mq-chat-bubble{
+  position:relative;
+  width:29px;
+  height:24px;
+  display:block;
+  border-radius:14px;
+  background:#211f26;
+}
+.mq-chat-bubble:after{
+  content:'';
+  position:absolute;
+  left:4px;
+  bottom:-5px;
+  width:10px;
+  height:10px;
+  background:#211f26;
+  clip-path:polygon(0 0,100% 0,0 100%);
+}
+.mq-chat-bubble i{
+  position:absolute;
+  top:10px;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:var(--mq-accent);
+}
+.mq-chat-bubble i:first-child{left:9px}
+.mq-chat-bubble i:last-child{right:9px}
+
 /* TOAST */
 .mq-toast{
   position:fixed;
@@ -561,6 +639,7 @@
 @media(max-width:620px){
   .mq-public-home{--mq-shell:calc(100% - 28px)}
   .mq-brand img{width:46px;height:46px}
+  .mq-chat-float{right:16px;bottom:16px;width:58px;height:58px}
   .mq-hero{min-height:540px}
   .mq-hero-content{padding:70px 0}
   .mq-overline{letter-spacing:3px}
