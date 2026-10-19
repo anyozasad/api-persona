@@ -114,6 +114,7 @@ export class LoginComponent {
   destinoSeleccionado = '';
   claseSeleccionada = '';
   fechaSeleccionada = '';
+  servicioSeleccionado = '';
 
   constructor(
     private router: Router,
@@ -124,6 +125,7 @@ export class LoginComponent {
     this.destinoSeleccionado = this.route.snapshot.queryParamMap.get('destino') ?? '';
     this.claseSeleccionada = this.route.snapshot.queryParamMap.get('clase') ?? '';
     this.fechaSeleccionada = this.route.snapshot.queryParamMap.get('fecha') ?? '';
+    this.servicioSeleccionado = this.route.snapshot.queryParamMap.get('servicio') ?? '';
   }
 
   ingresar(): void {
@@ -146,8 +148,10 @@ export class LoginComponent {
           return;
         }
         if (res.usuario.rol === 'Cliente') {
-          if (this.destinoSeleccionado === 'reservar' && this.claseSeleccionada) {
-            const queryParams: Record<string, string> = { clase: this.claseSeleccionada };
+          if (this.destinoSeleccionado === 'reservar' && (this.claseSeleccionada || this.servicioSeleccionado)) {
+            const queryParams: Record<string, string> = {};
+            if (this.claseSeleccionada) queryParams['clase'] = this.claseSeleccionada;
+            if (this.servicioSeleccionado) queryParams['servicio'] = this.servicioSeleccionado;
             if (this.fechaSeleccionada) queryParams['fecha'] = this.fechaSeleccionada;
             void this.router.navigate(['/reservar'], { queryParams });
             return;
