@@ -176,6 +176,25 @@
 .mq-btn-accent:hover{background:#ff745e;transform:translateY(-2px)}
 .mq-btn-dark{background:#211f26;color:var(--mq-accent);border-color:#211f26}
 .mq-btn-dark:hover{color:#fff;transform:translateY(-2px)}
+
+.mq-btn-reserva{
+  min-width:190px;
+  min-height:58px;
+  padding:0 28px;
+  border:0;
+  border-radius:0;
+  background:#211f26;
+  color:var(--mq-accent);
+  font-size:16px;
+  font-weight:500;
+  letter-spacing:.2px;
+  box-shadow:none;
+}
+.mq-btn-reserva:hover{
+  background:#2a272e;
+  color:#ff765f;
+  transform:translateY(-2px);
+}
 .mq-hero-dots{
   position:absolute;
   z-index:3;
