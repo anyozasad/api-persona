@@ -91,7 +91,11 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               </div>
               <a class="mq-text-link" routerLink="/login">INGRESAR A MI CUENTA →</a>
             </div>
-            <div class="mq-coach-photo" role="img" aria-label="Entrenador en gimnasio"></div>
+            <div class="mq-coach-photo">
+              <img
+                src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1400&q=90"
+                alt="Entrenador en gimnasio">
+            </div>
           </div>
         </section>
 
