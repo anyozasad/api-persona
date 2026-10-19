@@ -23,7 +23,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             <a href="#entrenamiento" (click)="irA('entrenamiento', $event)">ENTRENAMIENTO</a>
             <a href="#entrenador" (click)="irA('entrenador', $event)">SOBRE MÍ</a>
             <a href="#gimnasio" (click)="irA('gimnasio', $event)">GIMNASIO</a>
-            <a href="#clases" (click)="irA('clases', $event)">RESERVAR SESIÓN</a>
+            <a routerLink="/clases-gym">RESERVAR SESIÓN</a>
             <a routerLink="/planes">PLANES Y PRECIOS</a>
             <a href="#contacto" (click)="irA('contacto', $event)">CONTACTO</a>
           </nav>
@@ -46,7 +46,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             <h1>MALLQUI <strong>GYM</strong></h1>
             <p class="mq-hero-sub">ENTRENA CON PROPÓSITO. SUPERA TUS LÍMITES.</p>
             <div class="mq-hero-actions">
-              <a class="mq-btn mq-btn-reserva" href="#clases" (click)="irA('clases', $event)">Reservar sesión</a>
+              <a class="mq-btn mq-btn-reserva" routerLink="/clases-gym">Reservar sesión</a>
             </div>
           </div>
 
@@ -63,7 +63,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             <div class="mq-level-shade"></div>
             <div class="mq-level-content">
               <h2>PRINCIPIANTES</h2>
-              <button type="button" class="mq-circle-arrow" (click)="irA('clases')">›</button>
+              <a class="mq-circle-arrow" routerLink="/clases-gym">›</a>
             </div>
           </article>
           <article class="mq-level-card mq-level-pro">
@@ -103,7 +103,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         <section id="victorias" class="mq-victories">
           <div class="mq-gallery-cta">
             <p>COMIENZA HOY A ENTRENAR</p>
-            <a routerLink="/login" [queryParams]="{ destino: 'reservas' }">Reservar sesión</a>
+            <a routerLink="/clases-gym">Reservar sesión</a>
           </div>
 
           <div class="mq-gallery">
@@ -144,34 +144,6 @@ import { GymApiService } from '../../../core/services/gym-api.service';
                 <small>TELÉFONO</small>
                 <b>{{gymInfo?.telefono || '939398148'}}</b>
                 <a [href]="'tel:' + (gymInfo?.telefono || '939398148')">Llamar ahora</a>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section id="clases" class="mq-classes">
-          <div class="mq-shell">
-            <div class="mq-section-title centered">
-              <p class="mq-section-label">ELIGE TU ENTRENAMIENTO</p>
-              <h2>MIS CLASES</h2>
-            </div>
-
-            <div class="mq-class-grid">
-              <article *ngFor="let c of clases">
-                <img [src]="c.img" [alt]="c.nombre">
-                <div class="mq-class-body">
-                  <h3>{{c.nombre}}</h3>
-                  <p>{{c.descripcion}}</p>
-                  <div class="mq-class-meta">
-                    <span>{{c.nivel}}</span>
-                    <span>{{c.horario}}</span>
-                  </div>
-                  <a
-                    routerLink="/reservar"
-                    [queryParams]="c.id_clase ? { clase: c.id_clase } : { servicio: c.codigo_servicio || c.nombre }">
-                    Reservar ahora
-                  </a>
-                </div>
               </article>
             </div>
           </div>
@@ -247,7 +219,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           <div class="mq-lightbox-copy">
             <h3>{{galeria[galeriaActiva].texto}}</h3>
             <p>{{galeria[galeriaActiva].descripcion}}</p>
-            <a routerLink="/login" [queryParams]="{ destino: 'reservas' }" (click)="cerrarGaleria()">Reservar sesión</a>
+            <a routerLink="/clases-gym" (click)="cerrarGaleria()">Reservar sesión</a>
           </div>
 
           <button type="button" class="mq-lightbox-arrow next" aria-label="Imagen siguiente" (click)="galeriaSiguiente()">›</button>
