@@ -2030,3 +2030,495 @@
     width:100%!important;
   }
 }
+
+
+/* =========================================================
+   LOGIN V7 · PANTALLA INTEGRADA A LA PORTADA
+   ========================================================= */
+.mq-login-screen{
+  min-height:100svh;
+  background:#211f26;
+  color:#fff;
+  overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+}
+.mq-login-screen *{box-sizing:border-box}
+
+.mq-login-topbar{
+  position:fixed;
+  z-index:50;
+  top:0;left:0;right:0;
+  height:120px;
+  background:#211f26;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.mq-login-nav-shell{
+  width:min(1160px,calc(100% - 48px));
+  height:100%;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:54px;
+}
+.mq-login-menu{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:38px;
+}
+.mq-login-menu a{
+  position:relative;
+  color:#e7e2e5;
+  text-decoration:none;
+  font-size:12px;
+  line-height:1;
+  font-weight:700;
+  white-space:nowrap;
+  transition:color .22s ease,transform .22s ease;
+}
+.mq-login-menu a::after{
+  content:'';
+  position:absolute;
+  left:50%;right:50%;bottom:-12px;
+  height:2px;
+  background:#ff6047;
+  transition:left .22s ease,right .22s ease;
+}
+.mq-login-menu a:hover{
+  color:#ff6047;
+  transform:translateY(-1px);
+}
+.mq-login-menu a:hover::after{
+  left:0;right:0;
+}
+.mq-login-current{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:#ff6047;
+  font-size:16px;
+  font-weight:700;
+  white-space:nowrap;
+}
+.mq-login-user-icon{
+  width:43px;height:43px;
+  border-radius:50%;
+  position:relative;
+  display:block;
+  background:#ff6047;
+}
+.mq-login-user-head{
+  position:absolute;
+  width:13px;height:13px;
+  border-radius:50%;
+  background:#211f26;
+  left:15px;top:8px;
+}
+.mq-login-user-body{
+  position:absolute;
+  width:24px;height:12px;
+  border-radius:14px 14px 5px 5px;
+  background:#211f26;
+  left:10px;bottom:7px;
+}
+
+.mq-login-hero{
+  position:relative;
+  min-height:100svh;
+  padding-top:120px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  background:
+    url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2000&q=90')
+    center/cover no-repeat;
+}
+.mq-login-hero-overlay{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(90deg,rgba(25,23,29,.90) 0%,rgba(25,23,29,.72) 42%,rgba(25,23,29,.58) 100%),
+    linear-gradient(180deg,rgba(25,23,29,.08),rgba(25,23,29,.54));
+}
+.mq-login-hero-copy{
+  position:absolute;
+  z-index:2;
+  left:max(6vw,55px);
+  bottom:12%;
+  width:min(52vw,780px);
+}
+.mq-login-hero-copy p{
+  margin:0 0 16px;
+  color:#ff6047;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:6px;
+}
+.mq-login-hero-copy h1{
+  margin:0;
+  color:#fff;
+  font-size:clamp(68px,7vw,118px);
+  line-height:.92;
+  letter-spacing:.07em;
+  font-weight:800;
+  white-space:nowrap;
+}
+.mq-login-hero-copy h1 strong{
+  color:#fff;
+  font-weight:800;
+}
+.mq-login-hero-copy>span{
+  display:block;
+  margin-top:24px;
+  color:#fff;
+  font-size:16px;
+  font-weight:600;
+  letter-spacing:5px;
+}
+
+.mq-login-box{
+  position:absolute;
+  z-index:5;
+  right:max(6vw,55px);
+  top:50%;
+  transform:translateY(-42%);
+  width:min(430px,38vw);
+  padding:30px 30px 26px;
+  border:1px solid rgba(255,255,255,.13);
+  background:rgba(33,31,38,.90);
+  backdrop-filter:blur(17px);
+  box-shadow:0 30px 80px rgba(0,0,0,.38);
+  animation:mqPublicLoginIn .46s cubic-bezier(.22,.8,.22,1) both;
+}
+.mq-login-box::before{
+  content:'';
+  position:absolute;
+  left:0;right:0;top:0;
+  height:4px;
+  background:#ff6047;
+}
+.mq-login-box-head{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin-bottom:23px;
+}
+.mq-login-logo{
+  width:57px;height:57px;
+  flex:0 0 57px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.10);
+  background:#211f26;
+}
+.mq-login-logo img{
+  width:47px;height:47px;
+  object-fit:contain;
+}
+.mq-login-box-head p{
+  margin:0 0 4px;
+  color:#ff6047;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:3px;
+}
+.mq-login-box-head h2{
+  margin:0;
+  color:#fff;
+  font-size:25px;
+  line-height:1.05;
+  font-weight:700;
+}
+.mq-login-box-head div>span{
+  display:block;
+  margin-top:6px;
+  color:#aaa3aa;
+  font-size:11px;
+}
+.mq-selected-plan{
+  margin:0 0 17px;
+  padding:10px 12px;
+  border:1px solid rgba(255,96,71,.35);
+  background:rgba(255,96,71,.08);
+  color:#ded8dc;
+  font-size:10px;
+}
+.mq-selected-plan strong{color:#ff6047}
+
+.mq-login-box form{
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
+.mq-login-box form>label{
+  color:#f4f0f3;
+  font-size:11px;
+  font-weight:700;
+}
+.mq-login-input{
+  height:50px;
+  margin-top:7px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 13px;
+  border:1px solid rgba(255,255,255,.13);
+  background:#211f26;
+  transition:border-color .2s ease,box-shadow .2s ease;
+}
+.mq-login-input:hover{border-color:rgba(255,255,255,.23)}
+.mq-login-input:focus-within{
+  border-color:#ff6047;
+  box-shadow:0 0 0 3px rgba(255,96,71,.10);
+}
+.mq-login-input>span{
+  color:#928a91;
+  font-size:11px;
+}
+.mq-login-input input{
+  flex:1;
+  min-width:0;
+  height:100%;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#fff;
+  font-size:12px;
+  caret-color:#ff6047;
+}
+.mq-login-input input::placeholder{color:#746e75}
+.mq-login-input input:-webkit-autofill,
+.mq-login-input input:-webkit-autofill:hover,
+.mq-login-input input:-webkit-autofill:focus,
+.mq-login-input input:-webkit-autofill:active{
+  -webkit-text-fill-color:#fff!important;
+  -webkit-box-shadow:0 0 0 1000px #211f26 inset!important;
+  box-shadow:0 0 0 1000px #211f26 inset!important;
+  caret-color:#fff!important;
+}
+.mq-show-password,
+.mq-forgot{
+  border:0;
+  background:transparent;
+  color:#ff6047;
+  cursor:pointer;
+  font-size:10px;
+  font-weight:800;
+}
+.mq-show-password:hover,
+.mq-forgot:hover{color:#ff8a78}
+
+.mq-login-options{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.mq-remember{
+  display:flex!important;
+  align-items:center;
+  gap:7px;
+  color:#aaa3aa!important;
+  font-size:10px!important;
+  font-weight:600!important;
+}
+.mq-remember input{accent-color:#ff6047}
+
+.mq-login-error,
+.mq-login-success{
+  margin:0;
+  padding:9px 11px;
+  font-size:10px;
+}
+.mq-login-error{
+  color:#ffd9d2;
+  border:1px solid rgba(255,96,71,.27);
+  background:rgba(255,96,71,.09);
+}
+.mq-login-success{
+  color:#d5f7e2;
+  border:1px solid rgba(45,187,111,.28);
+  background:rgba(45,187,111,.09);
+}
+.mq-login-submit{
+  height:52px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  border:0;
+  background:#ff6047;
+  color:#211f26;
+  font-size:12px;
+  font-weight:850;
+  cursor:pointer;
+  transition:transform .2s ease,background .2s ease,box-shadow .2s ease;
+}
+.mq-login-submit:hover{
+  transform:translateY(-2px);
+  background:#ff735f;
+  box-shadow:0 12px 28px rgba(255,96,71,.21);
+}
+.mq-login-submit:active{transform:translateY(0)}
+.mq-login-submit:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+  transform:none;
+  box-shadow:none;
+}
+.mq-login-register{
+  margin-top:18px;
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.08);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.mq-login-register>div{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.mq-login-register strong{
+  color:#fff;
+  font-size:10px;
+}
+.mq-login-register span{
+  color:#8d868d;
+  font-size:9px;
+}
+.mq-login-register>a{
+  min-height:36px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 12px;
+  border:1px solid #ff6047;
+  color:#ff6047;
+  text-decoration:none;
+  font-size:9px;
+  font-weight:800;
+  transition:background .2s ease,color .2s ease;
+}
+.mq-login-register>a:hover{
+  background:#ff6047;
+  color:#211f26;
+}
+.mq-login-back{
+  display:block;
+  margin-top:18px;
+  color:#9f979e;
+  text-decoration:none;
+  font-size:10px;
+  font-weight:600;
+  transition:color .2s ease;
+}
+.mq-login-back:hover{color:#ff6047}
+
+.mq-login-dots{
+  position:absolute;
+  z-index:4;
+  left:50%;
+  bottom:24px;
+  transform:translateX(-50%);
+  display:flex;
+  gap:8px;
+}
+.mq-login-dots i{
+  width:9px;height:9px;
+  border-radius:50%;
+  background:rgba(255,255,255,.45);
+}
+.mq-login-dots i.active{background:#ff6047}
+
+@keyframes mqPublicLoginIn{
+  from{opacity:0;transform:translateY(-38%) translateX(24px)}
+  to{opacity:1;transform:translateY(-42%) translateX(0)}
+}
+
+@media(max-width:1220px){
+  .mq-login-nav-shell{gap:28px}
+  .mq-login-menu{gap:24px}
+  .mq-login-menu a{font-size:10px}
+  .mq-login-hero-copy{
+    left:42px;
+    width:48vw;
+  }
+  .mq-login-hero-copy h1{font-size:64px}
+  .mq-login-hero-copy>span{font-size:12px;letter-spacing:3px}
+  .mq-login-box{
+    right:42px;
+    width:420px;
+  }
+}
+
+@media(max-width:980px){
+  .mq-login-screen{overflow:auto}
+  .mq-login-topbar{
+    position:relative;
+    height:auto;
+    min-height:90px;
+  }
+  .mq-login-nav-shell{
+    width:calc(100% - 30px);
+    min-height:90px;
+    justify-content:center;
+  }
+  .mq-login-menu{display:none}
+  .mq-login-current{margin-left:auto}
+  .mq-login-hero{
+    min-height:calc(100svh - 90px);
+    padding-top:0;
+    display:block;
+  }
+  .mq-login-hero-copy{
+    position:relative;
+    left:auto;bottom:auto;
+    width:auto;
+    padding:72px 24px 22px;
+  }
+  .mq-login-hero-copy h1{
+    white-space:normal;
+    font-size:52px;
+  }
+  .mq-login-box{
+    position:relative;
+    top:auto;right:auto;
+    transform:none;
+    width:min(520px,calc(100% - 34px));
+    margin:0 auto 70px;
+    animation:none;
+  }
+  .mq-login-dots{display:none}
+}
+
+@media(max-width:560px){
+  .mq-login-topbar{min-height:76px}
+  .mq-login-nav-shell{min-height:76px}
+  .mq-login-current{font-size:14px}
+  .mq-login-user-icon{width:38px;height:38px}
+  .mq-login-user-head{left:13px;top:7px}
+  .mq-login-user-body{left:8px;bottom:6px}
+  .mq-login-hero{min-height:calc(100svh - 76px)}
+  .mq-login-hero-copy{padding:48px 18px 20px}
+  .mq-login-hero-copy p{font-size:8px;letter-spacing:4px}
+  .mq-login-hero-copy h1{font-size:40px}
+  .mq-login-hero-copy>span{font-size:9px;letter-spacing:2px}
+  .mq-login-box{
+    width:calc(100% - 24px);
+    padding:24px 18px 21px;
+  }
+  .mq-login-box-head h2{font-size:21px}
+  .mq-login-options{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .mq-login-register{
+    align-items:stretch;
+    flex-direction:column;
+  }
+  .mq-login-register>a{width:100%}
+}
