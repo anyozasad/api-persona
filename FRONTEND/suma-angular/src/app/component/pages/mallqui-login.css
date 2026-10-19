@@ -1080,3 +1080,386 @@
   color:#fff!important;
   transform:translateY(-2px)!important;
 }
+
+
+/* =========================================================
+   LOGIN V5 · MISMA IDENTIDAD VISUAL DE LA PORTADA MALLQUI GYM
+   ========================================================= */
+.login-page{
+  min-height:100svh!important;
+  height:100svh!important;
+  overflow:hidden!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1.08fr) minmax(480px,.92fr)!important;
+  background:#211f26!important;
+  color:#fff!important;
+}
+
+.login-visual{
+  min-height:100svh!important;
+  height:100svh!important;
+  background:
+    url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2000&q=90')
+    center/cover no-repeat!important;
+}
+.login-overlay{
+  background:
+    linear-gradient(90deg,rgba(24,22,27,.88),rgba(24,22,27,.70)),
+    linear-gradient(180deg,rgba(24,22,27,.14),rgba(24,22,27,.78))!important;
+}
+.login-visual:before{
+  background:
+    radial-gradient(circle at 72% 34%,rgba(255,96,71,.16),transparent 24%)!important;
+}
+.login-visual:after{
+  height:190px!important;
+  background:linear-gradient(180deg,transparent,rgba(24,22,27,.82))!important;
+}
+
+.login-message{
+  left:9%!important;
+  right:7%!important;
+  bottom:12%!important;
+  max-width:760px!important;
+}
+.login-kicker{
+  min-height:auto!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  backdrop-filter:none!important;
+  color:#ff6047!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  letter-spacing:6px!important;
+}
+.login-message h1{
+  margin:22px 0 18px!important;
+  max-width:none!important;
+  font-size:clamp(74px,7vw,118px)!important;
+  line-height:.92!important;
+  letter-spacing:.08em!important;
+  font-weight:800!important;
+  color:#fff!important;
+  text-transform:uppercase!important;
+}
+.login-message h1 strong{
+  color:#fff!important;
+  text-shadow:none!important;
+  font-weight:800!important;
+}
+.login-message p{
+  margin:0!important;
+  color:#f4f0f2!important;
+  font-size:17px!important;
+  line-height:1.5!important;
+  letter-spacing:5px!important;
+  font-weight:600!important;
+}
+.login-benefits{
+  display:flex!important;
+  grid-template-columns:none!important;
+  gap:12px!important;
+  max-width:720px!important;
+  margin-top:34px!important;
+}
+.login-benefits span{
+  min-height:48px!important;
+  padding:0 16px!important;
+  border:1px solid rgba(255,255,255,.15)!important;
+  border-radius:0!important;
+  background:rgba(33,31,38,.62)!important;
+  backdrop-filter:blur(7px)!important;
+  color:#fff!important;
+  font-size:11px!important;
+  font-weight:700!important;
+}
+.login-benefits span:hover{
+  transform:translateY(-2px)!important;
+  border-color:#ff6047!important;
+  background:rgba(33,31,38,.82)!important;
+}
+
+/* Panel de acceso */
+.login-panel{
+  min-height:100svh!important;
+  height:100svh!important;
+  padding:68px 8% 42px!important;
+  background:#211f26!important;
+  color:#fff!important;
+  overflow:auto!important;
+}
+.login-panel:before{
+  content:none!important;
+}
+.login-back{
+  top:26px!important;
+  left:8%!important;
+  min-height:auto!important;
+  padding:0!important;
+  border-radius:0!important;
+  color:#d8d2d5!important;
+  font-size:13px!important;
+  font-weight:600!important;
+}
+.login-back:hover{
+  background:transparent!important;
+  color:#ff6047!important;
+  box-shadow:none!important;
+}
+
+.login-card{
+  width:min(520px,100%)!important;
+  margin:auto!important;
+  padding:38px 38px 32px!important;
+  border:1px solid #403a43!important;
+  border-radius:0!important;
+  background:#2a272f!important;
+  backdrop-filter:none!important;
+  box-shadow:0 26px 70px rgba(0,0,0,.28)!important;
+}
+.login-card:before{
+  height:4px!important;
+  background:#ff6047!important;
+}
+.login-card:after{
+  content:none!important;
+}
+
+.login-heading{
+  margin-bottom:28px!important;
+}
+.login-company-logo{
+  width:62px!important;
+  height:62px!important;
+  flex:0 0 62px!important;
+  padding:5px!important;
+  border:1px solid #4c454f!important;
+  border-radius:50%!important;
+  background:#211f26!important;
+  box-shadow:none!important;
+}
+.login-company-logo img{
+  width:50px!important;
+  height:50px!important;
+}
+.login-heading h2{
+  color:#fff!important;
+  font-size:30px!important;
+  font-weight:700!important;
+  letter-spacing:-.02em!important;
+}
+.login-heading p{
+  color:#aaa2a8!important;
+  font-size:12px!important;
+}
+
+.selected-plan{
+  margin:0 0 20px!important;
+  border:1px solid rgba(255,96,71,.38)!important;
+  border-radius:0!important;
+  background:rgba(255,96,71,.08)!important;
+  color:#ded8dc!important;
+}
+.selected-plan strong{
+  color:#ff6047!important;
+}
+
+/* Campos */
+.login-card form{
+  gap:18px!important;
+}
+.login-card form>label{
+  color:#f4eff2!important;
+  font-size:12px!important;
+  font-weight:700!important;
+}
+.input-wrap{
+  height:54px!important;
+  margin-top:8px!important;
+  padding:0 14px!important;
+  border:1px solid #514a54!important;
+  border-radius:0!important;
+  background:#211f26!important;
+  box-shadow:none!important;
+}
+.input-wrap:hover{
+  border-color:#6e646f!important;
+  background:#211f26!important;
+}
+.input-wrap:focus-within{
+  border-color:#ff6047!important;
+  background:#211f26!important;
+  box-shadow:0 0 0 2px rgba(255,96,71,.12)!important;
+}
+.input-wrap>span{
+  color:#aaa2a8!important;
+}
+.input-wrap input{
+  color:#fff!important;
+  font-size:13px!important;
+  font-weight:500!important;
+}
+.input-wrap input::placeholder{
+  color:#777078!important;
+}
+.show-password{
+  color:#ff6047!important;
+}
+.remember{
+  color:#b8b0b5!important;
+}
+.remember input{
+  accent-color:#ff6047!important;
+}
+.text-button{
+  color:#ff6047!important;
+}
+.login-error{
+  color:#ffd6d1!important;
+  background:rgba(255,96,71,.10)!important;
+  border:1px solid rgba(255,96,71,.32)!important;
+}
+.login-success{
+  color:#cdeedb!important;
+  background:rgba(45,187,111,.10)!important;
+  border:1px solid rgba(45,187,111,.28)!important;
+}
+
+.login-submit{
+  height:56px!important;
+  border-radius:0!important;
+  background:#ff6047!important;
+  color:#211f26!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  box-shadow:none!important;
+}
+.login-submit:hover{
+  transform:translateY(-2px)!important;
+  background:#ff725d!important;
+  box-shadow:0 12px 26px rgba(255,96,71,.20)!important;
+}
+.login-submit:disabled{
+  background:#6e5b59!important;
+  color:#c7bcba!important;
+}
+
+/* Crear cuenta */
+.login-register-box{
+  margin-top:20px!important;
+  padding:16px!important;
+  border:1px solid #403a43!important;
+  border-radius:0!important;
+  background:#211f26!important;
+}
+.login-register-box strong{
+  color:#fff!important;
+  font-size:12px!important;
+}
+.login-register-box span{
+  color:#918990!important;
+  font-size:10px!important;
+}
+.login-register-box .create-account-button,
+.login-register-box .create-account-button:link,
+.login-register-box .create-account-button:visited{
+  min-height:40px!important;
+  border:1px solid #ff6047!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#ff6047!important;
+  box-shadow:none!important;
+}
+.login-register-box .create-account-button:hover{
+  background:#ff6047!important;
+  color:#211f26!important;
+  box-shadow:none!important;
+}
+
+@media(max-width:1100px){
+  .login-page{
+    grid-template-columns:minmax(0,1fr) minmax(430px,.9fr)!important;
+  }
+  .login-message h1{
+    font-size:72px!important;
+  }
+  .login-message p{
+    font-size:13px!important;
+    letter-spacing:3px!important;
+  }
+}
+
+@media(max-width:900px){
+  .login-page{
+    height:auto!important;
+    min-height:100svh!important;
+    overflow:auto!important;
+    grid-template-columns:1fr!important;
+  }
+  .login-visual{
+    min-height:360px!important;
+    height:360px!important;
+  }
+  .login-message{
+    left:26px!important;
+    bottom:30px!important;
+  }
+  .login-message h1{
+    font-size:54px!important;
+    margin:15px 0 10px!important;
+  }
+  .login-message p{
+    font-size:11px!important;
+    letter-spacing:2px!important;
+  }
+  .login-benefits{
+    display:none!important;
+  }
+  .login-panel{
+    height:auto!important;
+    min-height:auto!important;
+    padding:64px 22px 38px!important;
+  }
+  .login-back{
+    top:22px!important;
+    left:22px!important;
+  }
+}
+
+@media(max-width:560px){
+  .login-visual{
+    min-height:260px!important;
+    height:260px!important;
+  }
+  .login-message{
+    left:20px!important;
+    right:20px!important;
+    bottom:20px!important;
+  }
+  .login-kicker{
+    font-size:9px!important;
+    letter-spacing:3px!important;
+  }
+  .login-message h1{
+    font-size:42px!important;
+  }
+  .login-message p{
+    display:block!important;
+    font-size:9px!important;
+    letter-spacing:1.5px!important;
+  }
+  .login-panel{
+    padding:58px 14px 26px!important;
+  }
+  .login-back{
+    left:15px!important;
+  }
+  .login-card{
+    padding:26px 20px 22px!important;
+  }
+  .login-heading h2{
+    font-size:23px!important;
+  }
+}
