@@ -15,9 +15,9 @@ import { AuthService } from '../../../auth.service';
       <section class="login-visual">
         <div class="login-overlay"></div>
         <div class="login-message">
-          <span class="login-kicker">MALLQUI GYM</span>
-          <h1>ENTRENA.<br><strong>SUPÉRATE.</strong><br>AVANZA.</h1>
-          <p>Tu progreso empieza con una decisión. Ingresa y continúa con tu rutina, clases y seguimiento.</p>
+          <span class="login-kicker">ENTRENA CON MALLQUI GYM</span>
+          <h1>MALLQUI <strong>GYM</strong></h1>
+          <p>ENTRENA CON PROPÓSITO. SUPERA TUS LÍMITES.</p>
           <div class="login-benefits">
             <span>✓ Rutinas personalizadas</span>
             <span>✓ Seguimiento de progreso</span>
