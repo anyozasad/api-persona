@@ -981,3 +981,254 @@
 @media(prefers-reduced-motion:reduce){
   *{scroll-behavior:auto!important;transition:none!important}
 }
+
+
+/* =========================================================
+   ANIMACIONES DE BOTONES - PANTALLA PRINCIPAL
+   ========================================================= */
+.mq-public-home a,
+.mq-public-home button{
+  -webkit-tap-highlight-color:transparent;
+}
+
+.mq-menu a,
+.mq-login,
+.mq-btn,
+.mq-circle-arrow,
+.mq-gallery-cta a,
+.mq-class-body a,
+.mq-plan-grid article>a,
+.mq-contact-form button,
+.mq-lightbox-copy a,
+.mq-lightbox-close,
+.mq-lightbox-arrow,
+.mq-chat-input button,
+.mq-chat-float{
+  transition:
+    transform .22s cubic-bezier(.2,.8,.2,1),
+    box-shadow .22s ease,
+    color .22s ease,
+    background-color .22s ease,
+    border-color .22s ease,
+    filter .22s ease;
+}
+
+/* Menú: línea naranja que aparece desde el centro */
+.mq-menu a{
+  position:relative;
+  overflow:visible;
+}
+.mq-menu a::after{
+  content:'';
+  position:absolute;
+  left:50%;
+  bottom:5px;
+  width:0;
+  height:2px;
+  background:var(--mq-accent);
+  transform:translateX(-50%);
+  transition:width .26s ease;
+}
+.mq-menu a:hover::after{width:70%}
+.mq-menu a:hover{
+  transform:translateY(-2px);
+  text-shadow:0 0 14px rgba(255,96,71,.32);
+}
+
+/* Login */
+.mq-login:hover{
+  transform:translateY(-2px);
+}
+.mq-login:hover .mq-user-icon{
+  transform:scale(1.08);
+  box-shadow:0 0 0 5px rgba(255,96,71,.14),0 8px 22px rgba(0,0,0,.20);
+}
+.mq-user-icon{
+  transition:transform .22s ease,box-shadow .22s ease;
+}
+
+/* Botones oscuros principales: raya naranja animada */
+.mq-btn-reserva,
+.mq-gallery-cta a,
+.mq-class-body a,
+.mq-plan-grid article>a,
+.mq-contact-form button,
+.mq-lightbox-copy a{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+}
+.mq-btn-reserva::after,
+.mq-gallery-cta a::after,
+.mq-class-body a::after,
+.mq-plan-grid article>a::after,
+.mq-contact-form button::after,
+.mq-lightbox-copy a::after{
+  content:'';
+  position:absolute;
+  left:50%;
+  bottom:0;
+  width:0;
+  height:3px;
+  background:var(--mq-accent);
+  transform:translateX(-50%);
+  transition:width .28s cubic-bezier(.2,.8,.2,1);
+  z-index:2;
+}
+.mq-btn-reserva:hover::after,
+.mq-gallery-cta a:hover::after,
+.mq-class-body a:hover::after,
+.mq-plan-grid article>a:hover::after,
+.mq-contact-form button:hover::after,
+.mq-lightbox-copy a:hover::after{
+  width:100%;
+}
+
+/* Destello que cruza el botón */
+.mq-btn-reserva::before,
+.mq-gallery-cta a::before,
+.mq-plan-grid article>a::before,
+.mq-contact-form button::before{
+  content:'';
+  position:absolute;
+  top:-30%;
+  left:-55%;
+  width:35%;
+  height:160%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.24),transparent);
+  transform:skewX(-18deg);
+  transition:left .48s ease;
+  pointer-events:none;
+}
+.mq-btn-reserva:hover::before,
+.mq-gallery-cta a:hover::before,
+.mq-plan-grid article>a:hover::before,
+.mq-contact-form button:hover::before{
+  left:125%;
+}
+
+/* Planes: énfasis claro en Elegir plan */
+.mq-plan-grid article>a:hover{
+  transform:translateY(-4px) scale(1.02);
+  box-shadow:0 14px 30px rgba(0,0,0,.24),0 0 0 1px rgba(255,96,71,.18);
+  color:#ff765f;
+}
+.mq-plan-grid article>a:active{
+  transform:translateY(0) scale(.97);
+  box-shadow:0 5px 12px rgba(0,0,0,.22);
+}
+.mq-plan-grid article{
+  transition:transform .28s ease,box-shadow .28s ease,filter .28s ease;
+}
+.mq-plan-grid article:hover{
+  transform:translateY(-8px);
+  box-shadow:0 26px 56px rgba(0,0,0,.24);
+}
+.mq-plan-grid article.featured:hover{
+  transform:translateY(-18px);
+}
+
+/* Reservar sesión y CTAs */
+.mq-btn-reserva:hover,
+.mq-gallery-cta a:hover{
+  transform:translateY(-4px) scale(1.02);
+  box-shadow:0 14px 30px rgba(0,0,0,.28);
+}
+.mq-btn-reserva:active,
+.mq-gallery-cta a:active{
+  transform:translateY(0) scale(.97);
+}
+
+/* Clases */
+.mq-class-body a:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 24px rgba(0,0,0,.20);
+}
+.mq-class-body a:active{transform:scale(.97)}
+
+/* Contacto */
+.mq-contact-form button:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 26px rgba(33,31,38,.28);
+  color:#ff806d;
+}
+.mq-contact-form button:active{transform:scale(.97)}
+
+/* Flechas de niveles */
+.mq-circle-arrow:hover{
+  animation:mq-arrow-pop .55s ease;
+  box-shadow:0 0 0 7px rgba(255,96,71,.12),0 12px 28px rgba(0,0,0,.22);
+}
+.mq-circle-arrow:active{transform:scale(.90)}
+
+/* Galería: zoom + brillo */
+.mq-gallery-item{
+  transition:filter .25s ease,transform .25s ease;
+}
+.mq-gallery-item:hover{
+  filter:brightness(1.05);
+  z-index:2;
+}
+.mq-gallery-item:active{transform:scale(.985)}
+
+/* Lightbox */
+.mq-lightbox-copy a:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 28px rgba(0,0,0,.26);
+}
+.mq-lightbox-close:hover{
+  transform:rotate(90deg) scale(1.06);
+  color:var(--mq-accent);
+}
+.mq-lightbox-arrow:hover{
+  transform:translateY(-50%) scale(1.14);
+}
+
+/* Chat */
+.mq-chat-float{
+  animation:mq-chat-breathe 2.8s ease-in-out infinite;
+}
+.mq-chat-float:hover{
+  animation:none;
+  transform:translateY(-5px) scale(1.08);
+  box-shadow:0 18px 42px rgba(0,0,0,.34),0 0 0 8px rgba(255,96,71,.14);
+}
+.mq-chat-float:active{transform:scale(.92)}
+.mq-chat-input button:hover{
+  transform:rotate(-8deg) scale(1.08);
+  box-shadow:0 8px 18px rgba(255,96,71,.28);
+}
+.mq-chat-input button:active{transform:scale(.92)}
+
+/* Estado de foco accesible */
+.mq-public-home a:focus-visible,
+.mq-public-home button:focus-visible{
+  outline:2px solid var(--mq-accent);
+  outline-offset:4px;
+}
+
+/* Animaciones */
+@keyframes mq-chat-breathe{
+  0%,100%{box-shadow:0 12px 32px rgba(0,0,0,.28),0 0 0 0 rgba(255,96,71,.22)}
+  50%{box-shadow:0 14px 36px rgba(0,0,0,.30),0 0 0 9px rgba(255,96,71,0)}
+}
+@keyframes mq-arrow-pop{
+  0%{transform:scale(1)}
+  35%{transform:scale(1.12)}
+  70%{transform:scale(.98)}
+  100%{transform:scale(1.06)}
+}
+
+/* Respeta preferencia del usuario */
+@media(prefers-reduced-motion:reduce){
+  .mq-chat-float{animation:none!important}
+  .mq-menu a::after,
+  .mq-btn-reserva::after,
+  .mq-gallery-cta a::after,
+  .mq-class-body a::after,
+  .mq-plan-grid article>a::after,
+  .mq-contact-form button::after,
+  .mq-lightbox-copy a::after{
+    transition:none!important;
+  }
+}
