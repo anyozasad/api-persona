@@ -243,7 +243,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               class="mq-back-top"
               aria-label="Volver arriba"
               title="Volver arriba"
-              (click)="irA('inicio')">⌃</button>
+              (click)="volverArriba()">⌃</button>
 
             <div class="mq-copyright">© 2026 MALLQUI GYM · PUCALLPA, PERÚ</div>
           </div>
@@ -449,6 +449,14 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   cambiarHero(index: number): void {
     this.heroIndex = index;
+  }
+
+  volverArriba(): void {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
   }
 
   irA(id: string, event?: Event): void {
