@@ -130,6 +130,8 @@ export class ReservarComponent implements OnInit {
   fechaSeleccionada = '';
   error = '';
   mensaje = '';
+  servicioParametro = '';
+  esServicioTemporal = false;
 
   mesVisible = new Date().getMonth();
   anioVisible = new Date().getFullYear();
@@ -173,11 +175,21 @@ export class ReservarComponent implements OnInit {
   ngOnInit(): void {
     const idClase = Number(this.route.snapshot.queryParamMap.get('clase') || 0);
     const fecha = String(this.route.snapshot.queryParamMap.get('fecha') || '').trim();
+    this.servicioParametro = String(this.route.snapshot.queryParamMap.get('servicio') || '').trim();
 
     this.api.informacionGym().subscribe({
       next: (r: any) => {
         this.clases = Array.isArray(r?.clases) ? r.clases : [];
-        this.clase = this.clases.find((c: any) => Number(c.id_clase) === idClase) || null;
+
+        if (idClase > 0) {
+          this.clase = this.clases.find((c: any) => Number(c.id_clase) === idClase) || null;
+        } else if (this.servicioParametro) {
+          const nombre = this.nombreServicio(this.servicioParametro);
+          this.clase = this.clases.find((c: any) =>
+            String(c?.nombre || '').toLowerCase() === nombre.toLowerCase()
+          ) || this.servicioTemporal(this.servicioParametro);
+          this.esServicioTemporal = !Number(this.clase?.id_clase || 0);
+        }
 
         if (this.clase) {
           if (fecha && this.fechaValidaParaClase(fecha)) {
@@ -193,6 +205,13 @@ export class ReservarComponent implements OnInit {
         this.cargando = false;
       },
       error: () => {
+        if (this.servicioParametro) {
+          this.clase = this.servicioTemporal(this.servicioParametro);
+          this.esServicioTemporal = true;
+          this.elegirProximaFecha();
+          this.cargando = false;
+          return;
+        }
         this.error = 'No se pudo consultar las clases del gimnasio.';
         this.cargando = false;
       }
@@ -267,13 +286,22 @@ export class ReservarComponent implements OnInit {
     }
 
     if (!this.autenticadoCliente) {
-      void this.router.navigate(['/login'], {
-        queryParams: {
-          destino: 'reservar',
-          clase: this.clase.id_clase,
-          fecha: this.fechaSeleccionada
-        }
-      });
+      const queryParams: Record<string, string | number> = {
+        destino: 'reservar',
+        fecha: this.fechaSeleccionada
+      };
+      if (Number(this.clase?.id_clase || 0) > 0) {
+        queryParams['clase'] = Number(this.clase.id_clase);
+      } else if (this.servicioParametro) {
+        queryParams['servicio'] = this.servicioParametro;
+      }
+
+      void this.router.navigate(['/login'], { queryParams });
+      return;
+    }
+
+    if (this.esServicioTemporal || !Number(this.clase?.id_clase || 0)) {
+      this.error = 'El horario ya se muestra, pero esta clase todavía no está registrada en la base de datos. Actualiza la página para cargar el horario real.';
       return;
     }
 
@@ -299,6 +327,45 @@ export class ReservarComponent implements OnInit {
         this.error = e?.error?.mensaje || e?.error?.message || 'No se pudo crear la reserva.';
       }
     });
+  }
+
+  private nombreServicio(codigo: string): string {
+    const clave = String(codigo || '').toLowerCase();
+    if (clave === 'inicial') return 'Entrenamiento inicial';
+    if (clave === 'fuerza') return 'Fuerza y masa muscular';
+    if (clave === 'avanzado') return 'Acondicionamiento avanzado';
+    return codigo;
+  }
+
+  private servicioTemporal(codigo: string): any {
+    const clave = String(codigo || '').toLowerCase();
+    const base: Record<string, any> = {
+      inicial: {
+        id_clase: 0,
+        nombre: 'Entrenamiento inicial',
+        descripcion: 'Aprende técnica, postura y una rutina segura para comenzar.',
+        dia_semana: 'Lunes',
+        hora_inicio: '18:00',
+        hora_fin: '19:00'
+      },
+      fuerza: {
+        id_clase: 0,
+        nombre: 'Fuerza y masa muscular',
+        descripcion: 'Trabajo progresivo con cargas para mejorar fuerza e hipertrofia.',
+        dia_semana: 'Miércoles',
+        hora_inicio: '18:00',
+        hora_fin: '19:00'
+      },
+      avanzado: {
+        id_clase: 0,
+        nombre: 'Acondicionamiento avanzado',
+        descripcion: 'Sesiones intensas orientadas a rendimiento y resistencia.',
+        dia_semana: 'Viernes',
+        hora_inicio: '19:00',
+        hora_fin: '20:00'
+      }
+    };
+    return base[clave] || base['inicial'];
   }
 
   fechaLegible(iso: string): string {
