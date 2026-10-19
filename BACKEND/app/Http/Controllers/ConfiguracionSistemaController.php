@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Clase;
 use App\Models\ConfiguracionSistema;
 use App\Models\Membresia;
 use Illuminate\Http\Request;
@@ -99,6 +100,16 @@ class ConfiguracionSistemaController extends Controller
                 ->where('estado', 'Activo')
                 ->whereIn('nombre', ['Mensualidad 1 mes', 'Promoción 2 meses', 'Promoción 3 meses'])
                 ->orderBy('duracion_meses')
+                ->get(),
+            'clases' => Clase::query()
+                ->select([
+                    'id_clase', 'id_entrenador', 'nombre', 'descripcion',
+                    'dia_semana', 'hora_inicio', 'hora_fin', 'cupo_maximo', 'estado',
+                ])
+                ->with(['entrenador:id_entrenador,nombres,apellidos,especialidad'])
+                ->where('estado', 'Activo')
+                ->orderBy('dia_semana')
+                ->orderBy('hora_inicio')
                 ->get(),
         ]);
     }
