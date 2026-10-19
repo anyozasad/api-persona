@@ -18,7 +18,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             <a routerLink="/" fragment="entrenador">SOBRE MÍ</a>
             <a routerLink="/" fragment="gimnasio">GIMNASIO</a>
             <a routerLink="/clases-gym">RESERVAR SESIÓN</a>
-            <a class="active">PLANES Y PRECIOS</a>
+            <a routerLink="/planes">PLANES Y PRECIOS</a>
             <a routerLink="/" fragment="contacto">CONTACTO</a>
           </nav>
 
