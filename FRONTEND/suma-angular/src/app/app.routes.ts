@@ -27,6 +27,7 @@ import { Auditoria } from './component/pages/auditoria/auditoria';
 import { Reportes } from './component/pages/reportes/reportes';
 import { Pagos } from './component/pages/pagos/pagos';
 import { CheckoutComponent } from './component/pages/checkout/checkout.component';
+import { ReservarComponent } from './component/pages/reservar/reservar.component';
 import { authGuard, logoutOnLoginGuard, roleGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -39,6 +40,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [logoutOnLoginGuard] },
   { path: 'registro', component: RegisterComponent },
   { path: 'checkout', component: CheckoutComponent },
+  { path: 'reservar', component: ReservarComponent },
   { path: 'restablecer', component: ResetPasswordComponent },
   { path: 'usuario', component: UsuarioComponent, canActivate: [authGuard, roleGuard(['Cliente'])] },
   { path: 'entrenador', component: EntrenadorPanelComponent, canActivate: [authGuard, roleGuard(['Entrenador'])] },
