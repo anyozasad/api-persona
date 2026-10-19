@@ -46,8 +46,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             <h1>MALLQUI <strong>GYM</strong></h1>
             <p class="mq-hero-sub">ENTRENA CON PROPÓSITO. SUPERA TUS LÍMITES.</p>
             <div class="mq-hero-actions">
-              <a class="mq-btn mq-btn-accent" routerLink="/login" [queryParams]="{ destino: 'reservas' }">Reservar sesión</a>
-              <a class="mq-btn mq-btn-dark" href="#planes" (click)="irA('planes', $event)">Ver planes</a>
+              <a class="mq-btn mq-btn-reserva" routerLink="/login" [queryParams]="{ destino: 'reservas' }">Reservar sesión</a>
             </div>
           </div>
 
