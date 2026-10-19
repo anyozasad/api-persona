@@ -29,7 +29,10 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           </nav>
 
           <a class="mq-login" routerLink="/login">
-            <span class="mq-user-dot">●</span>
+            <span class="mq-user-icon" aria-hidden="true">
+              <span class="mq-user-head"></span>
+              <span class="mq-user-body"></span>
+            </span>
             <span>Login</span>
           </a>
         </div>
@@ -224,6 +227,18 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           <a routerLink="/login">Login</a>
         </div>
       </footer>
+
+      <button
+        type="button"
+        class="mq-chat-float"
+        aria-label="Ir a contacto"
+        title="Contacto"
+        (click)="irA('contacto')">
+        <span class="mq-chat-bubble" aria-hidden="true">
+          <i></i>
+          <i></i>
+        </span>
+      </button>
 
       <div class="mq-toast" *ngIf="toast">{{toast}}</div>
     </div>
