@@ -184,7 +184,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
                 <ul>
                   <li *ngFor="let item of p.items">✓ {{item}}</li>
                 </ul>
-                <a routerLink="/login" [queryParams]="{ plan: p.nombre }">Elegir plan</a>
+                <a routerLink="/checkout" [queryParams]="{ plan: p.id_membresia || p.nombre }">Elegir plan</a>
               </article>
             </div>
           </div>
@@ -360,9 +360,9 @@ export class LandingComponent implements OnInit, OnDestroy {
   ];
 
   planes = [
-    { nombre: 'Mensualidad 1 mes', precio: 80, duracion_meses: 1, destacado: false, items: ['Acceso al gimnasio', 'Orientación del personal', 'Control de asistencias'] },
-    { nombre: 'Promoción 2 meses', precio: 120, duracion_meses: 2, destacado: true, items: ['Acceso por 2 meses', 'Orientación del personal', 'Control de asistencias'] },
-    { nombre: 'Promoción 3 meses', precio: 150, duracion_meses: 3, destacado: false, items: ['Acceso por 3 meses', 'Orientación del personal', 'Control de asistencias'] }
+    { id_membresia: 0, nombre: 'Mensualidad 1 mes', precio: 80, duracion_meses: 1, destacado: false, items: ['Acceso al gimnasio', 'Orientación del personal', 'Control de asistencias'] },
+    { id_membresia: 0, nombre: 'Promoción 2 meses', precio: 120, duracion_meses: 2, destacado: true, items: ['Acceso por 2 meses', 'Orientación del personal', 'Control de asistencias'] },
+    { id_membresia: 0, nombre: 'Promoción 3 meses', precio: 150, duracion_meses: 3, destacado: false, items: ['Acceso por 3 meses', 'Orientación del personal', 'Control de asistencias'] }
   ];
 
   constructor(private api: GymApiService) {}
@@ -378,6 +378,7 @@ export class LandingComponent implements OnInit, OnDestroy {
         const membresias = Array.isArray(r?.membresias) ? r.membresias : [];
         if (membresias.length) {
           this.planes = membresias.map((m: any, index: number) => ({
+            id_membresia: Number(m.id_membresia || 0),
             nombre: m.nombre,
             precio: Number(m.precio || 0),
             duracion_meses: Number(m.duracion_meses || 1),
