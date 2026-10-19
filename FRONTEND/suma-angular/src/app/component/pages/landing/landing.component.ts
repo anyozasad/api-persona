@@ -76,25 +76,26 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         </section>
 
         <section id="entrenador" class="mq-coach">
-          <div class="mq-shell mq-coach-grid">
+          <img
+            class="mq-coach-bg"
+            src="https://images.unsplash.com/photo-1639504031468-081c8219bb8a?auto=format&fit=crop&w=2000&q=90"
+            alt="Entrenador realizando ejercicio en barra">
+          <div class="mq-coach-overlay"></div>
+
+          <div class="mq-shell mq-coach-content">
             <div class="mq-coach-copy">
-              <p class="mq-section-label">ACOMPAÑAMIENTO</p>
-              <h2>CONOCE AL<br><strong>ENTRENADOR</strong></h2>
+              <p class="mq-section-label">SOBRE MÍ</p>
+              <h2>CONOCE AL<br>ENTRENADOR</h2>
+
               <p>
-                En Mallqui Gym recibes orientación para entrenar de forma clara y ordenada.
-                El acompañamiento se adapta a tu nivel, objetivo y ritmo de progreso.
+                En Mallqui Gym te acompañamos para que entrenes de forma segura,
+                ordenada y de acuerdo con tu nivel.
               </p>
-              <div class="mq-coach-facts">
-                <span><b>01</b> entrenador principal</span>
-                <span><b>03</b> niveles de trabajo</span>
-                <span><b>100%</b> enfoque personal</span>
-              </div>
-              <a class="mq-text-link" routerLink="/login">INGRESAR A MI CUENTA →</a>
-            </div>
-            <div class="mq-coach-photo">
-              <img
-                src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1400&q=90"
-                alt="Entrenador en gimnasio">
+
+              <p>
+                Cada rutina se adapta a tus objetivos y a tu progreso para que
+                avances con técnica, constancia y disciplina.
+              </p>
             </div>
           </div>
         </section>
