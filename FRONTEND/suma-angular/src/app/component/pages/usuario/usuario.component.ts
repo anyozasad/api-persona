@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../auth.service';
 import { GymApiService } from '../../../core/services/gym-api.service';
 import { ClienteExperienciaComponent } from './cliente-experiencia.component';
@@ -2130,12 +2130,18 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargasGym:Record<string,string|number>={};
   ladoCasa:'derecho'|'izquierdo'='derecho';
   private timerCasa:any=null;
+  private planSolicitadoRuta='';
   private autoSyncPortal:any=null;
   private readonly autoSyncCadaMs=15000;
   private onWindowFocus=()=>this.sincronizarPortalAutomatico();
   private onVisibilityChange=()=>{ if(!document.hidden)this.sincronizarPortalAutomatico(); };
 
-  constructor(private api:GymApiService, private auth:AuthService, private router:Router){}
+  constructor(
+    private api:GymApiService,
+    private auth:AuthService,
+    private router:Router,
+    private route:ActivatedRoute
+  ){}
 
   ngOnInit():void{
     try{
@@ -2145,7 +2151,13 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       this.enfoqueInicioSeleccionado='Cardiovascular';
       this.nivelEntrenamiento='Principiante';
     }
-    try{this.moduloActivo=safeModule(localStorage.getItem('mallqui_modulo_cliente')||'inicio');}catch{this.moduloActivo='inicio';}
+    const moduloRuta=String(this.route.snapshot.queryParamMap.get('modulo')||'').trim();
+    this.planSolicitadoRuta=String(this.route.snapshot.queryParamMap.get('plan')||'').trim();
+    try{
+      this.moduloActivo=moduloRuta
+        ? safeModule(moduloRuta)
+        : safeModule(localStorage.getItem('mallqui_modulo_cliente')||'inicio');
+    }catch{this.moduloActivo=moduloRuta ? safeModule(moduloRuta) : 'inicio';}
     this.cargarEstadoSistema();
     this.cargar();
     this.iniciarSincronizacionAutomatica();
@@ -2217,10 +2229,28 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargar():void{
     this.cargando=true; this.error='';
     this.api.cargarPortalCliente().subscribe({
-      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.aplicarPreferenciasPerfil();this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=safeArray(r.membresiasDisponibles);this.gymInfo=r.gymInfo||{};this.pagos=sortNewest(uniqueById(safeArray(r.pagos),['id_pago']),'fecha_pago');this.rutinas=sortNewest(uniqueById(safeArray(r.rutinas),['id_rutina']),'fecha_inicio');this.asistencias=sortNewest(uniqueById(safeArray(r.asistencias),['id_asistencia']),'fecha_hora_entrada');this.reservas=sortNewest(uniqueById(safeArray(r.reservas),['id_reserva']),'fecha_clase');this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));this.compras=sortNewest(uniqueById(safeArray(r.compras),['id_venta']),'fecha_venta');this.productosDisponibles=this.normalizarProductosPortal(r.productos);this.preseleccionarPlanActual();this.cargando=false;this.cargarFotoPerfil();this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
+      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.aplicarPreferenciasPerfil();this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=safeArray(r.membresiasDisponibles);this.gymInfo=r.gymInfo||{};this.pagos=sortNewest(uniqueById(safeArray(r.pagos),['id_pago']),'fecha_pago');this.rutinas=sortNewest(uniqueById(safeArray(r.rutinas),['id_rutina']),'fecha_inicio');this.asistencias=sortNewest(uniqueById(safeArray(r.asistencias),['id_asistencia']),'fecha_hora_entrada');this.reservas=sortNewest(uniqueById(safeArray(r.reservas),['id_reserva']),'fecha_clase');this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));this.compras=sortNewest(uniqueById(safeArray(r.compras),['id_venta']),'fecha_venta');this.productosDisponibles=this.normalizarProductosPortal(r.productos);this.preseleccionarPlanActual();this.aplicarPlanSolicitadoRuta();this.cargando=false;this.cargarFotoPerfil();this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
       error:e=>{this.error=this.errorApi(e);this.cargando=false;}
     });
   }
+  aplicarPlanSolicitadoRuta():void{
+    const parametro=String(this.planSolicitadoRuta||'').trim();
+    if(!parametro)return;
+
+    const numero=Number(parametro);
+    const plan=this.planesRenovacion.find((m:any)=>
+      (numero>0 && Number(m?.id_membresia)===numero) ||
+      String(m?.nombre||'').toLowerCase()===parametro.toLowerCase()
+    );
+
+    if(plan){
+      this.pagoForm={...this.pagoForm,id_membresia:Number(plan.id_membresia)};
+      this.moduloActivo='pagos';
+      try{localStorage.setItem('mallqui_modulo_cliente','pagos');}catch{}
+      this.planSolicitadoRuta='';
+    }
+  }
+
   preseleccionarPlanActual():void{
     if(Number(this.pagoForm?.id_membresia||0)>0)return;
 
