@@ -19,7 +19,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             <a routerLink="/" fragment="entrenamiento">ENTRENAMIENTO</a>
             <a routerLink="/" fragment="entrenador">SOBRE MÍ</a>
             <a routerLink="/" fragment="gimnasio">GIMNASIO</a>
-            <a routerLink="/" fragment="clases">RESERVAR SESIÓN</a>
+            <a routerLink="/clases-gym">RESERVAR SESIÓN</a>
             <a class="active">PLANES Y PRECIOS</a>
             <a routerLink="/" fragment="contacto">CONTACTO</a>
           </nav>
@@ -64,7 +64,6 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         </section>
       </main>
 
-      <a routerLink="/" class="back-home">← Volver al inicio</a>
     </div>
   `
 })
