@@ -1,0 +1,202 @@
+:host{display:block}
+*{box-sizing:border-box}
+.classes-page{
+  --bg:#211f26;
+  --card:#2b272e;
+  --accent:#ff6047;
+  min-height:100vh;
+  background:var(--bg);
+  color:#fff;
+  font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif;
+}
+.classes-shell{
+  width:min(1000px,calc(100% - 44px));
+  margin:0 auto;
+}
+.classes-nav{
+  position:fixed;
+  z-index:1000;
+  top:0;left:0;right:0;
+  background:#211f26;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.nav-inner{
+  min-height:82px;
+  display:grid;
+  grid-template-columns:190px 1fr 90px;
+  align-items:center;
+  gap:18px;
+}
+.brand{
+  color:#fff;
+  text-decoration:none;
+  font-weight:900;
+  letter-spacing:3px;
+  font-size:17px;
+}
+nav{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+}
+nav a{
+  position:relative;
+  padding:31px 10px 28px;
+  color:#ddd8dc;
+  text-decoration:none;
+  font-size:11px;
+  font-weight:700;
+  white-space:nowrap;
+}
+nav a:hover,nav a.active{color:var(--accent)}
+nav a.active:after{
+  content:'';
+  position:absolute;
+  left:16%;right:16%;bottom:20px;
+  height:2px;
+  background:var(--accent);
+}
+.login{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:11px;
+  color:var(--accent);
+  text-decoration:none;
+  font-size:14px;
+}
+.user-icon{
+  position:relative;
+  width:32px;height:32px;
+  flex:0 0 32px;
+  border-radius:50%;
+  background:var(--accent);
+}
+.user-icon i{
+  position:absolute;
+  left:50%;top:7px;
+  width:9px;height:9px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:#211f26;
+}
+.user-icon b{
+  position:absolute;
+  left:50%;bottom:5px;
+  width:18px;height:10px;
+  transform:translateX(-50%);
+  border-radius:10px 10px 4px 4px;
+  background:#211f26;
+}
+.classes-main{
+  min-height:100vh;
+  padding:185px 0 90px;
+}
+.title{
+  text-align:center;
+  margin-bottom:155px;
+}
+.title h1{
+  margin:0;
+  font-size:clamp(64px,6vw,92px);
+  line-height:1;
+  font-weight:500;
+  letter-spacing:2px;
+}
+.class-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:36px;
+}
+.class-grid article{
+  overflow:hidden;
+  background:var(--card);
+  border:1px solid rgba(255,255,255,.06);
+  transition:transform .22s ease,box-shadow .22s ease;
+}
+.class-grid article:hover{
+  transform:translateY(-6px);
+  box-shadow:0 22px 45px rgba(0,0,0,.22);
+}
+.class-grid img{
+  width:100%;
+  height:210px;
+  display:block;
+  object-fit:cover;
+}
+.class-body{
+  padding:27px 32px 32px;
+}
+.class-body h2{
+  margin:0;
+  font-size:22px;
+  font-weight:800;
+}
+.class-body p{
+  min-height:56px;
+  margin:18px 0 0;
+  color:#d0c9ce;
+  font:400 14px/1.6 Arial,sans-serif;
+}
+.class-meta{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  margin:30px 0 24px;
+  color:#a9a2a7;
+  font-size:10px;
+}
+.class-body>a{
+  min-height:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--accent);
+  color:var(--accent);
+  text-decoration:none;
+  font-weight:700;
+  transition:background .2s ease,color .2s ease,transform .2s ease;
+}
+.class-body>a:hover{
+  background:var(--accent);
+  color:#211f26;
+  transform:translateY(-2px);
+}
+.chat-link{
+  position:fixed;
+  right:28px;
+  bottom:24px;
+  width:68px;
+  height:68px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:var(--accent);
+  color:#211f26;
+  text-decoration:none;
+  font-weight:900;
+  box-shadow:0 14px 35px rgba(0,0,0,.28);
+}
+.chat-link span{
+  position:relative;
+  top:-2px;
+  font-size:20px;
+  letter-spacing:1px;
+}
+@media(max-width:980px){
+  .nav-inner{grid-template-columns:150px 1fr 80px}
+  nav{overflow-x:auto;justify-content:flex-start}
+  .class-grid{gap:20px}
+  .title{margin-bottom:90px}
+}
+@media(max-width:760px){
+  .class-grid{grid-template-columns:1fr}
+  .classes-shell{width:calc(100% - 28px)}
+  .nav-inner{grid-template-columns:1fr auto;padding:12px 0}
+  nav{grid-column:1/-1;order:3}
+  nav a{padding:12px 9px}
+  .classes-main{padding-top:165px}
+  .title{margin-bottom:55px}
+  .class-grid img{height:260px}
+}
