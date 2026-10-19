@@ -161,7 +161,11 @@ import { GymApiService } from '../../../core/services/gym-api.service';
                     <span>{{c.nivel}}</span>
                     <span>{{c.horario}}</span>
                   </div>
-                  <a routerLink="/login" [queryParams]="{ destino: 'reservas' }">Reservar sesión</a>
+                  <a
+                    [routerLink]="c.id_clase ? '/reservar' : '/login'"
+                    [queryParams]="c.id_clase ? { clase: c.id_clase } : { destino: 'reservas' }">
+                    Reservar ahora
+                  </a>
                 </div>
               </article>
             </div>
@@ -337,6 +341,7 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   clases = [
     {
+      id_clase: 0,
       nombre: 'Entrenamiento inicial',
       descripcion: 'Aprende técnica, postura y una rutina segura para comenzar.',
       nivel: 'Principiante',
@@ -344,6 +349,7 @@ export class LandingComponent implements OnInit, OnDestroy {
       img: 'https://images.unsplash.com/photo-1534258936925-c58bed479fcb?auto=format&fit=crop&w=900&q=85'
     },
     {
+      id_clase: 0,
       nombre: 'Fuerza y masa muscular',
       descripcion: 'Trabajo progresivo con cargas para mejorar fuerza e hipertrofia.',
       nivel: 'Intermedio',
@@ -351,6 +357,7 @@ export class LandingComponent implements OnInit, OnDestroy {
       img: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=900&q=85'
     },
     {
+      id_clase: 0,
       nombre: 'Acondicionamiento avanzado',
       descripcion: 'Sesiones intensas orientadas a rendimiento y resistencia.',
       nivel: 'Avanzado',
@@ -375,6 +382,26 @@ export class LandingComponent implements OnInit, OnDestroy {
     this.api.informacionGym().subscribe({
       next: (r: any) => {
         this.gymInfo = r || {};
+        const clasesApi = Array.isArray(r?.clases) ? r.clases : [];
+        if (clasesApi.length) {
+          const fotos = [
+            'https://images.unsplash.com/photo-1534258936925-c58bed479fcb?auto=format&fit=crop&w=900&q=85',
+            'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=900&q=85',
+            'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=900&q=85'
+          ];
+
+          this.clases = clasesApi.slice(0, 3).map((clase: any, index: number) => ({
+            id_clase: Number(clase.id_clase || 0),
+            nombre: clase.nombre || 'Clase Mallqui Gym',
+            descripcion: clase.descripcion || 'Sesión programada de Mallqui Gym.',
+            nivel: clase.entrenador?.especialidad || 'Todos los niveles',
+            horario: [clase.dia_semana, String(clase.hora_inicio || '').slice(0, 5)]
+              .filter(Boolean)
+              .join(' · '),
+            img: fotos[index % fotos.length]
+          }));
+        }
+
         const membresias = Array.isArray(r?.membresias) ? r.membresias : [];
         if (membresias.length) {
           this.planes = membresias.map((m: any, index: number) => ({
