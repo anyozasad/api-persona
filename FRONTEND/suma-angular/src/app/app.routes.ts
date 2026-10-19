@@ -28,13 +28,14 @@ import { Reportes } from './component/pages/reportes/reportes';
 import { Pagos } from './component/pages/pagos/pagos';
 import { CheckoutComponent } from './component/pages/checkout/checkout.component';
 import { ReservarComponent } from './component/pages/reservar/reservar.component';
+import { PlanesPublicComponent } from './component/pages/planes-public/planes-public.component';
 import { authGuard, logoutOnLoginGuard, roleGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
   { path: 'nosotros', component: PublicPageComponent, data: { pagina: 'nosotros' } },
   { path: 'clases-gym', component: PublicPageComponent, data: { pagina: 'clases' } },
-  { path: 'planes', component: PublicPageComponent, data: { pagina: 'planes' } },
+  { path: 'planes', component: PlanesPublicComponent },
   { path: 'galeria', component: PublicPageComponent, data: { pagina: 'galeria' } },
   { path: 'contacto', component: PublicPageComponent, data: { pagina: 'contacto' } },
   { path: 'login', component: LoginComponent, canActivate: [logoutOnLoginGuard] },
