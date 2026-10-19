@@ -2870,3 +2870,59 @@
     width:100%!important;
   }
 }
+
+
+/* =========================================================
+   LOGIN V9 · SIN BARRA SUPERIOR
+   Fondo del gimnasio ocupando TODA la pantalla.
+   ========================================================= */
+.mq-login-topbar{
+  display:none!important;
+}
+
+.mq-login-screen{
+  min-height:100svh!important;
+  width:100%!important;
+  overflow:hidden!important;
+  background:#17151b!important;
+}
+
+.mq-login-hero{
+  min-height:100svh!important;
+  height:100svh!important;
+  width:100%!important;
+  padding:0!important;
+  margin:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background-position:center center!important;
+  background-size:cover!important;
+  background-repeat:no-repeat!important;
+}
+
+.mq-login-hero-overlay{
+  inset:0!important;
+}
+
+.mq-login-box{
+  margin:0!important;
+  max-height:calc(100svh - 36px)!important;
+  overflow:auto!important;
+}
+
+@media(max-width:860px){
+  .mq-login-topbar{
+    display:none!important;
+  }
+
+  .mq-login-hero{
+    min-height:100svh!important;
+    height:100svh!important;
+    padding:0!important;
+  }
+
+  .mq-login-box{
+    margin:0 auto!important;
+  }
+}
