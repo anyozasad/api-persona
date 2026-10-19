@@ -21,7 +21,7 @@
   width:100%;
   min-height:100vh;
   margin:0;
-  padding:0;
+  padding:82px 0 0;
   overflow-x:clip;
   background:var(--mq-bg);
   color:var(--mq-text);
@@ -34,8 +34,8 @@
 
 /* NAV */
 .mq-topbar{
-  position:sticky;
-  top:0;
+  position:fixed !important;
+  top:0 !important;
   left:0;
   right:0;
   width:100%;
@@ -953,7 +953,8 @@
   .mq-coach-grid{grid-template-columns:1fr 1.08fr}
 }
 @media(max-width:920px){
-  .mq-topbar{position:relative}
+  .mq-public-home{padding-top:116px}
+  .mq-topbar{position:fixed !important;top:0 !important}
   .mq-nav{
     min-height:0;
     grid-template-columns:1fr auto;
@@ -994,7 +995,10 @@
   .mq-contact-grid{grid-template-columns:1fr;gap:48px}
 }
 @media(max-width:620px){
-  .mq-public-home{--mq-shell:calc(100% - 28px)}
+  .mq-public-home{
+    --mq-shell:calc(100% - 28px);
+    padding-top:116px;
+  }
   .mq-brand img{width:46px;height:46px}
   .mq-chat-float{right:16px;bottom:16px;width:58px;height:58px}
   .mq-chat-panel{
