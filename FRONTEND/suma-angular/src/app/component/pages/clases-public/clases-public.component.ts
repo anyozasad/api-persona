@@ -12,8 +12,6 @@ import { GymApiService } from '../../../core/services/gym-api.service';
     <div class="classes-page">
       <header class="classes-nav">
         <div class="classes-shell nav-inner">
-          <a routerLink="/" class="brand">MALLQUI GYM</a>
-
           <nav>
             <a routerLink="/">INICIO</a>
             <a routerLink="/" fragment="entrenamiento">ENTRENAMIENTO</a>
