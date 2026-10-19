@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -272,7 +272,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
     </div>
   `
 })
-export class LandingComponent implements OnInit, OnDestroy {
+export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   gymInfo: any = {};
   toast = '';
   heroIndex = 0;
@@ -386,7 +386,17 @@ export class LandingComponent implements OnInit, OnDestroy {
     }, 5500);
   }
 
+  ngAfterViewInit(): void {
+    window.addEventListener('hashchange', this.hashChangeHandler);
+
+    const id = window.location.hash.replace('#', '').trim();
+    if (id) {
+      setTimeout(() => this.scrollToSection(id, 'auto'), 60);
+    }
+  }
+
   ngOnDestroy(): void {
+    window.removeEventListener('hashchange', this.hashChangeHandler);
     if (this.heroTimer) clearInterval(this.heroTimer);
     if (this.toastTimer) clearTimeout(this.toastTimer);
     document.body.style.overflow = '';
@@ -406,7 +416,27 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   irA(id: string, event?: Event): void {
     event?.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    if (window.location.hash !== '#' + id) {
+      window.history.pushState(null, '', '#' + id);
+    }
+
+    setTimeout(() => this.scrollToSection(id, 'smooth'), 0);
+  }
+
+  private scrollToSection(id: string, behavior: ScrollBehavior = 'smooth'): void {
+    const section = document.getElementById(id);
+    if (!section) return;
+
+    const header = document.querySelector('.mq-topbar') as HTMLElement | null;
+    const headerHeight = header?.offsetHeight || 0;
+    const top = section.getBoundingClientRect().top + window.scrollY - headerHeight;
+
+    window.scrollTo({
+      top: Math.max(0, top),
+      left: 0,
+      behavior
+    });
   }
 
   abrirGaleria(index: number): void {
