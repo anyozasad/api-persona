@@ -44,7 +44,8 @@ nav a{
   letter-spacing:.45px;
   white-space:nowrap;
 }
-nav a:hover,nav a.active{color:var(--accent)}
+nav a:hover{color:var(--accent)}
+nav a.active{color:#d4d0d2}
 
 .login{
   position:absolute;
@@ -200,28 +201,37 @@ nav a:hover,nav a.active{color:var(--accent)}
   .class-grid img{height:300px}
 }
 
-/* Animación de entrada de la interfaz */
+/* Animación de entrada suave de la interfaz */
+.classes-main{
+  animation:classesPageIn .42s ease-out both;
+}
 .title{
-  animation:classesTitleIn .65s cubic-bezier(.22,.8,.22,1) both;
+  opacity:0;
+  animation:classesTitleIn .58s .08s cubic-bezier(.22,.8,.22,1) forwards;
 }
 .class-grid article{
   opacity:0;
-  animation:classCardIn .65s cubic-bezier(.22,.8,.22,1) forwards;
+  transform:translateY(24px);
+  animation:classCardIn .56s cubic-bezier(.22,.8,.22,1) forwards;
 }
-.class-grid article:nth-child(1){animation-delay:.12s}
-.class-grid article:nth-child(2){animation-delay:.24s}
-.class-grid article:nth-child(3){animation-delay:.36s}
+.class-grid article:nth-child(1){animation-delay:.18s}
+.class-grid article:nth-child(2){animation-delay:.28s}
+.class-grid article:nth-child(3){animation-delay:.38s}
 
+@keyframes classesPageIn{
+  from{opacity:.35}
+  to{opacity:1}
+}
 @keyframes classesTitleIn{
-  from{opacity:0;transform:translateY(-28px) scale(.97)}
-  to{opacity:1;transform:translateY(0) scale(1)}
+  from{opacity:0;transform:translateY(-18px)}
+  to{opacity:1;transform:translateY(0)}
 }
 @keyframes classCardIn{
-  from{opacity:0;transform:translateY(46px) scale(.96)}
-  to{opacity:1;transform:translateY(0) scale(1)}
+  from{opacity:0;transform:translateY(24px)}
+  to{opacity:1;transform:translateY(0)}
 }
 @media (prefers-reduced-motion: reduce){
-  .title,.class-grid article{
+  .classes-main,.title,.class-grid article{
     animation:none !important;
     opacity:1 !important;
     transform:none !important;
