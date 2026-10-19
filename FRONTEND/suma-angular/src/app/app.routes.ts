@@ -29,12 +29,13 @@ import { Pagos } from './component/pages/pagos/pagos';
 import { CheckoutComponent } from './component/pages/checkout/checkout.component';
 import { ReservarComponent } from './component/pages/reservar/reservar.component';
 import { PlanesPublicComponent } from './component/pages/planes-public/planes-public.component';
+import { ClasesPublicComponent } from './component/pages/clases-public/clases-public.component';
 import { authGuard, logoutOnLoginGuard, roleGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
   { path: 'nosotros', component: PublicPageComponent, data: { pagina: 'nosotros' } },
-  { path: 'clases-gym', component: PublicPageComponent, data: { pagina: 'clases' } },
+  { path: 'clases-gym', component: ClasesPublicComponent },
   { path: 'planes', component: PlanesPublicComponent },
   { path: 'galeria', component: PublicPageComponent, data: { pagina: 'galeria' } },
   { path: 'contacto', component: PublicPageComponent, data: { pagina: 'contacto' } },
