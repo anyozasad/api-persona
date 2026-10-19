@@ -21,7 +21,7 @@
   width:100%;
   min-height:100vh;
   margin:0;
-  padding:90px 0 0;
+  padding:112px 0 0;
   overflow-x:clip;
   background:var(--mq-bg);
   color:var(--mq-text);
@@ -56,30 +56,30 @@
 
 .mq-nav{
   position:relative;
-  min-height:90px;
+  min-height:112px;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:0 105px;
+  padding:0 130px;
 }
 .mq-menu{
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:8px;
+  gap:14px;
   flex-wrap:nowrap;
 }
 .mq-menu a,
 .mq-login{
   color:#d4d0d2;
   text-decoration:none;
-  font-size:12px;
-  font-weight:600;
+  font-size:16px;
+  font-weight:700;
   letter-spacing:.45px;
   transition:.2s ease;
 }
 .mq-menu a{
-  padding:13px 10px;
+  padding:16px 13px;
   border-radius:4px;
 }
 .mq-menu a:hover{color:var(--mq-accent)}
@@ -94,14 +94,15 @@
   justify-content:flex-end;
   gap:12px;
   color:var(--mq-accent);
-  font-size:14px;
+  font-size:18px;
+  font-weight:600;
 }
 .mq-login:hover{color:#ff755f}
 .mq-user-icon{
   position:relative;
-  flex:0 0 32px;
-  width:32px;
-  height:32px;
+  flex:0 0 42px;
+  width:42px;
+  height:42px;
   border-radius:50%;
   display:block;
   background:var(--mq-accent);
@@ -110,9 +111,9 @@
 .mq-user-head{
   position:absolute;
   left:50%;
-  top:7px;
-  width:9px;
-  height:9px;
+  top:9px;
+  width:12px;
+  height:12px;
   transform:translateX(-50%);
   border-radius:50%;
   background:#211f26;
@@ -120,9 +121,9 @@
 .mq-user-body{
   position:absolute;
   left:50%;
-  bottom:5px;
-  width:18px;
-  height:10px;
+  bottom:6px;
+  width:24px;
+  height:13px;
   transform:translateX(-50%);
   border-radius:10px 10px 4px 4px;
   background:#211f26;
