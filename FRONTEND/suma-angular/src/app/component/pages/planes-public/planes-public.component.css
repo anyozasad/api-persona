@@ -33,22 +33,16 @@ nav{
 }
 nav a{
   position:relative;
-  padding:42px 13px 38px;
-  color:#ddd8dc;
+  padding:16px 13px;
+  color:#d4d0d2;
   text-decoration:none;
   font-size:16px;
   font-weight:700;
+  letter-spacing:.45px;
   white-space:nowrap;
 }
 nav a:hover,nav a.active{color:var(--accent)}
 
-nav a.active:after{
-  content:'';
-  position:absolute;
-  left:12%;right:12%;bottom:28px;
-  height:2px;
-  background:var(--accent);
-}
 .login{
   position:absolute;
   right:0;
