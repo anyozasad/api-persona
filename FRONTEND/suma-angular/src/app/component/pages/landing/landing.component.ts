@@ -282,6 +282,12 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   mensajesChat: Array<{tipo:'usuario'|'gym'; texto:string}> = [];
   private heroTimer?: ReturnType<typeof setInterval>;
   private toastTimer?: ReturnType<typeof setTimeout>;
+  private readonly hashChangeHandler = (): void => {
+    const id = window.location.hash.replace('#', '').trim();
+    if (id) {
+      this.scrollToSection(id, 'smooth');
+    }
+  };
 
   heroImages = [
     'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2000&q=90',
