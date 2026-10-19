@@ -12,19 +12,29 @@ import { GymApiService } from '../../../core/services/gym-api.service';
   template: `
     <div class="booking-page">
       <header class="booking-topbar">
-        <a routerLink="/" class="booking-brand">MALLQUI GYM</a>
-        <nav>
-          <a routerLink="/">INICIO</a>
-          <a routerLink="/" fragment="entrenamiento">ENTRENAMIENTO</a>
-          <a routerLink="/" fragment="gimnasio">GIMNASIO</a>
-          <a routerLink="/" fragment="planes">PLANES Y PRECIOS</a>
-          <a routerLink="/" fragment="contacto">CONTACTO</a>
-          <a routerLink="/login" class="login-link">Login</a>
-        </nav>
+        <div class="booking-nav-shell">
+          <nav aria-label="Navegación principal">
+            <a routerLink="/">INICIO</a>
+            <a routerLink="/" fragment="entrenamiento">ENTRENAMIENTO</a>
+            <a routerLink="/" fragment="entrenador">SOBRE MÍ</a>
+            <a routerLink="/" fragment="gimnasio">GIMNASIO</a>
+            <a routerLink="/clases-gym">RESERVAR SESIÓN</a>
+            <a routerLink="/planes">PLANES Y PRECIOS</a>
+            <a routerLink="/" fragment="contacto">CONTACTO</a>
+          </nav>
+
+          <a routerLink="/login" class="login-link">
+            <span class="booking-user-icon" aria-hidden="true">
+              <span class="booking-user-head"></span>
+              <span class="booking-user-body"></span>
+            </span>
+            <span>Login</span>
+          </a>
+        </div>
       </header>
 
       <main class="booking-shell" *ngIf="!cargando; else loadingTpl">
-        <a routerLink="/" fragment="clases" class="back-link">‹ Volver</a>
+        <a routerLink="/clases-gym" class="back-link">‹ Volver</a>
 
         <section *ngIf="clase; else noClaseTpl">
           <div class="booking-heading">
@@ -111,7 +121,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           <section class="booking-empty">
             <h1>Clase no disponible</h1>
             <p>Selecciona una clase activa desde la pantalla principal.</p>
-            <a routerLink="/" fragment="clases">Ver clases</a>
+            <a routerLink="/clases-gym">Ver clases</a>
           </section>
         </ng-template>
       </main>
