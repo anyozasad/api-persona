@@ -162,8 +162,8 @@ import { GymApiService } from '../../../core/services/gym-api.service';
                     <span>{{c.horario}}</span>
                   </div>
                   <a
-                    [routerLink]="c.id_clase ? '/reservar' : '/login'"
-                    [queryParams]="c.id_clase ? { clase: c.id_clase } : { destino: 'reservas' }">
+                    routerLink="/reservar"
+                    [queryParams]="c.id_clase ? { clase: c.id_clase } : { servicio: c.codigo_servicio || c.nombre }">
                     Reservar ahora
                   </a>
                 </div>
@@ -342,6 +342,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   clases = [
     {
       id_clase: 0,
+      codigo_servicio: 'inicial',
       nombre: 'Entrenamiento inicial',
       descripcion: 'Aprende técnica, postura y una rutina segura para comenzar.',
       nivel: 'Principiante',
@@ -350,6 +351,7 @@ export class LandingComponent implements OnInit, OnDestroy {
     },
     {
       id_clase: 0,
+      codigo_servicio: 'fuerza',
       nombre: 'Fuerza y masa muscular',
       descripcion: 'Trabajo progresivo con cargas para mejorar fuerza e hipertrofia.',
       nivel: 'Intermedio',
@@ -358,6 +360,7 @@ export class LandingComponent implements OnInit, OnDestroy {
     },
     {
       id_clase: 0,
+      codigo_servicio: 'avanzado',
       nombre: 'Acondicionamiento avanzado',
       descripcion: 'Sesiones intensas orientadas a rendimiento y resistencia.',
       nivel: 'Avanzado',
