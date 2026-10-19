@@ -24,7 +24,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             <a href="#entrenador" (click)="irA('entrenador', $event)">SOBRE MÍ</a>
             <a href="#gimnasio" (click)="irA('gimnasio', $event)">GIMNASIO</a>
             <a href="#clases" (click)="irA('clases', $event)">RESERVAR SESIÓN</a>
-            <a href="#planes" (click)="irA('planes', $event)">PLANES Y PRECIOS</a>
+            <a routerLink="/planes">PLANES Y PRECIOS</a>
             <a href="#contacto" (click)="irA('contacto', $event)">CONTACTO</a>
           </nav>
 
@@ -172,28 +172,6 @@ import { GymApiService } from '../../../core/services/gym-api.service';
                     Reservar ahora
                   </a>
                 </div>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section id="planes" class="mq-pricing">
-          <div class="mq-shell">
-            <div class="mq-section-title centered">
-              <p class="mq-section-label">ENTRENA A TU RITMO</p>
-              <h2>PLANES Y PRECIOS</h2>
-            </div>
-
-            <div class="mq-plan-grid">
-              <article *ngFor="let p of planes; let i = index" [class.featured]="p.destacado || i === 1">
-                <span class="mq-plan-badge" *ngIf="p.destacado || i === 1">RECOMENDADO</span>
-                <h3>{{p.nombre}}</h3>
-                <p class="mq-price"><small>S/</small><b>{{p.precio}}</b></p>
-                <span class="mq-duration">{{p.duracion_meses}} mes{{p.duracion_meses === 1 ? '' : 'es'}}</span>
-                <ul>
-                  <li *ngFor="let item of p.items">✓ {{item}}</li>
-                </ul>
-                <a routerLink="/checkout" [queryParams]="{ plan: p.id_membresia || p.nombre }">Elegir plan</a>
               </article>
             </div>
           </div>
