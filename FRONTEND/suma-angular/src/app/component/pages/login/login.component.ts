@@ -11,43 +11,59 @@ import { AuthService } from '../../../auth.service';
   styleUrls: ['../mallqui-login.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
-    <div class="login-page">
-      <section class="login-visual">
-        <div class="login-overlay"></div>
-        <div class="login-message">
-          <span class="login-kicker">ACCESO MALLQUI GYM</span>
-          <h1>MALLQUI <strong>GYM</strong></h1>
-          <p>Entrena con propósito. Supera tus límites.</p>
-          <div class="login-benefits">
-            <span>✓ Rutinas personalizadas</span>
-            <span>✓ Seguimiento de progreso</span>
-            <span>✓ Reservas y pagos</span>
+    <div class="mq-login-screen">
+      <header class="mq-login-topbar">
+        <div class="mq-login-nav-shell">
+          <nav class="mq-login-menu" aria-label="Navegación principal">
+            <a routerLink="/" fragment="inicio">INICIO</a>
+            <a routerLink="/" fragment="entrenamiento">ENTRENAMIENTO</a>
+            <a routerLink="/" fragment="entrenador">SOBRE MÍ</a>
+            <a routerLink="/" fragment="gimnasio">GIMNASIO</a>
+            <a routerLink="/clases-gym">RESERVAR SESIÓN</a>
+            <a routerLink="/planes">PLANES Y PRECIOS</a>
+            <a routerLink="/" fragment="contacto">CONTACTO</a>
+          </nav>
+
+          <div class="mq-login-current">
+            <span class="mq-login-user-icon" aria-hidden="true">
+              <span class="mq-login-user-head"></span>
+              <span class="mq-login-user-body"></span>
+            </span>
+            <span>Login</span>
           </div>
         </div>
-      </section>
+      </header>
 
-      <section class="login-panel">
-        <a routerLink="/" class="login-back">← Volver al inicio</a>
-        <div class="login-card">
-          <div class="login-heading">
-            <span class="login-icon login-company-logo" aria-hidden="true">
-              <img src="/assets/mallqui-logo.svg" alt="">
+      <main class="mq-login-hero">
+        <div class="mq-login-hero-overlay"></div>
+
+        <div class="mq-login-hero-copy">
+          <p>ACCESO MALLQUI GYM</p>
+          <h1>MALLQUI <strong>GYM</strong></h1>
+          <span>ENTRENA CON PROPÓSITO. SUPERA TUS LÍMITES.</span>
+        </div>
+
+        <section class="mq-login-box" aria-label="Inicio de sesión">
+          <div class="mq-login-box-head">
+            <span class="mq-login-logo">
+              <img src="/assets/mallqui-logo.svg" alt="Mallqui Gym">
             </span>
             <div>
-              <h2>Bienvenido de nuevo</h2>
-              <p>Ingresa a tu cuenta de Mallqui Gym</p>
+              <p>BIENVENIDO</p>
+              <h2>Inicia sesión</h2>
+              <span>Continúa con tu entrenamiento.</span>
             </div>
           </div>
 
-          <div *ngIf="planSeleccionado" class="selected-plan">
+          <div *ngIf="planSeleccionado" class="mq-selected-plan">
             Plan seleccionado: <strong>{{ planSeleccionado }}</strong>
           </div>
 
           <form (ngSubmit)="ingresar()" #loginForm="ngForm">
             <label>
               Gmail
-              <div class="input-wrap">
-                <span>✉</span>
+              <div class="mq-login-input">
+                <span aria-hidden="true">✉</span>
                 <input
                   type="email"
                   name="email"
@@ -60,8 +76,8 @@ import { AuthService } from '../../../auth.service';
 
             <label>
               Contraseña
-              <div class="input-wrap">
-                <span>⌑</span>
+              <div class="mq-login-input">
+                <span aria-hidden="true">●</span>
                 <input
                   [type]="mostrarPassword ? 'text' : 'password'"
                   name="password"
@@ -69,36 +85,47 @@ import { AuthService } from '../../../auth.service';
                   placeholder="Ingresa tu contraseña"
                   autocomplete="current-password"
                   required>
-                <button type="button" class="show-password" (click)="mostrarPassword = !mostrarPassword">
+                <button type="button" class="mq-show-password" (click)="mostrarPassword = !mostrarPassword">
                   {{ mostrarPassword ? 'Ocultar' : 'Ver' }}
                 </button>
               </div>
             </label>
 
-            <div class="login-options">
-              <label class="remember"><input type="checkbox" name="recordar" [(ngModel)]="recordar"> Recordarme</label>
-              <button type="button" class="text-button" (click)="recuperarPassword()">¿Olvidaste tu contraseña?</button>
+            <div class="mq-login-options">
+              <label class="mq-remember">
+                <input type="checkbox" name="recordar" [(ngModel)]="recordar">
+                <span>Recordarme</span>
+              </label>
+
+              <button type="button" class="mq-forgot" (click)="recuperarPassword()">
+                ¿Olvidaste tu contraseña?
+              </button>
             </div>
 
-            <p *ngIf="error" class="login-error">{{ error }}</p>
-            <p *ngIf="mensaje" class="login-success">{{ mensaje }}</p>
+            <p *ngIf="error" class="mq-login-error">{{ error }}</p>
+            <p *ngIf="mensaje" class="mq-login-success">{{ mensaje }}</p>
 
-            <button class="login-submit" type="submit" [disabled]="loginForm.invalid || cargando">
-              <span>{{ cargando ? 'Verificando...' : 'Iniciar sesión' }}</span><b>→</b>
+            <button class="mq-login-submit" type="submit" [disabled]="loginForm.invalid || cargando">
+              <span>{{ cargando ? 'Verificando...' : 'Iniciar sesión' }}</span>
+              <b>→</b>
             </button>
           </form>
 
-          <div class="login-register-box">
+          <div class="mq-login-register">
             <div>
               <strong>¿Aún no tienes cuenta?</strong>
-              <span>Crea tu perfil y empieza a entrenar con nosotros.</span>
+              <span>Crea tu cuenta y empieza a entrenar.</span>
             </div>
-            <a routerLink="/registro" class="create-account-button">Crear cuenta →</a>
+            <a routerLink="/registro">Crear cuenta →</a>
           </div>
 
-          <p class="login-demo-note">Acceso protegido con credenciales reales, sesión segura y permisos según el rol del usuario.</p>
+          <a routerLink="/" class="mq-login-back">← Volver al inicio</a>
+        </section>
+
+        <div class="mq-login-dots" aria-hidden="true">
+          <i></i><i class="active"></i><i></i>
         </div>
-      </section>
+      </main>
     </div>
   `
 })
