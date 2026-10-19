@@ -22,7 +22,7 @@
   min-height:100vh;
   margin:0;
   padding:0;
-  overflow-x:hidden;
+  overflow-x:clip;
   background:var(--mq-bg);
   color:var(--mq-text);
   font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif;
@@ -36,12 +36,26 @@
 .mq-topbar{
   position:sticky;
   top:0;
-  z-index:1000;
+  left:0;
+  right:0;
+  width:100%;
+  z-index:2500;
   background:#211f26;
-  border-bottom:1px solid rgba(255,255,255,.04);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
 }
+.mq-topbar::after{
+  content:'';
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-1px;
+  height:1px;
+  background:rgba(255,96,71,.12);
+}
+
 .mq-nav{
-  min-height:90px;
+  min-height:82px;
   display:grid;
   grid-template-columns:210px minmax(0,1fr) 95px;
   align-items:center;
