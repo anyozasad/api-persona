@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GymApiService } from '../../../core/services/gym-api.service';
@@ -6,7 +7,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
 @Component({
   selector: 'app-clases-public',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   styleUrl: './clases-public.component.css',
   template: `
     <div class="classes-page">
@@ -82,13 +83,57 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         </section>
       </main>
 
-      <a routerLink="/" fragment="contacto" class="chat-link" aria-label="Contacto">
-        <span>••</span>
-      </a>
+      <section class="classes-chat-panel" *ngIf="chatAbierto" aria-label="Chat Mallqui Gym">
+        <header class="classes-chat-header">
+          <div>
+            <strong>Mallqui Gym</strong>
+            <span><i></i> Te responderemos tan pronto como podamos.</span>
+          </div>
+          <button type="button" aria-label="Cerrar chat" (click)="chatAbierto=false">×</button>
+        </header>
+
+        <div class="classes-chat-messages">
+          <div class="classes-chat-welcome">
+            <strong>¡Hola! 👋</strong>
+            <p>Bienvenido a Mallqui Gym. Escríbenos tu consulta y te ayudaremos.</p>
+          </div>
+
+          <div
+            *ngFor="let m of mensajesChat"
+            class="classes-chat-message"
+            [class.usuario]="m.tipo==='usuario'"
+            [class.gym]="m.tipo==='gym'">
+            {{m.texto}}
+          </div>
+        </div>
+
+        <form class="classes-chat-input" (submit)="enviarChat($event)">
+          <input
+            name="mensajeChatClases"
+            [(ngModel)]="mensajeChat"
+            placeholder="Escribe tu mensaje..."
+            autocomplete="off">
+          <button type="submit" aria-label="Enviar mensaje">➤</button>
+        </form>
+      </section>
+
+      <button
+        type="button"
+        class="chat-link"
+        aria-label="Abrir chat"
+        title="Chat"
+        [class.open]="chatAbierto"
+        (click)="chatAbierto=!chatAbierto">
+        <span aria-hidden="true"></span>
+      </button>
     </div>
   `
 })
 export class ClasesPublicComponent implements OnInit {
+  chatAbierto = false;
+  mensajeChat = '';
+  mensajesChat: Array<{tipo:'usuario'|'gym'; texto:string}> = [];
+
   clases:any[]=[
     {
       id_clase:0,
@@ -120,6 +165,22 @@ export class ClasesPublicComponent implements OnInit {
   ];
 
   constructor(private api:GymApiService){}
+
+  enviarChat(event: Event): void {
+    event.preventDefault();
+    const texto = this.mensajeChat.trim();
+    if (!texto) return;
+
+    this.mensajesChat.push({ tipo: 'usuario', texto });
+    this.mensajeChat = '';
+
+    setTimeout(() => {
+      this.mensajesChat.push({
+        tipo: 'gym',
+        texto: 'Gracias por escribirnos. Hemos recibido tu mensaje y te responderemos lo antes posible.'
+      });
+    }, 450);
+  }
 
   ngOnInit():void{
     window.scrollTo({top:0,left:0,behavior:'auto'});
