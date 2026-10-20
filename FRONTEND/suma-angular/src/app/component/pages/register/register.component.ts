@@ -30,13 +30,16 @@ import { AuthService } from '../../../auth.service';
       </section>
 
       <section class="register-panel">
-        <a routerLink="/login" class="register-back">← Ya tengo una cuenta</a>
-        <div class="register-card">
+        <a routerLink="/login" class="register-back">← Volver a iniciar sesión</a>
+        <div id="register-reference" class="register-card">
           <div class="register-heading">
-            <span class="register-icon">＋</span>
+            <span class="register-icon">
+              <img src="assets/mallqui-logo.png" alt="Mallqui Gym">
+            </span>
             <div>
+              <p class="register-welcome">BIENVENIDO</p>
               <h2>Crea tu cuenta</h2>
-              <p>Empieza tu experiencia en Mallqui Gym</p>
+              <span class="register-subtitle">Empieza tu experiencia en Mallqui Gym</span>
             </div>
           </div>
 
