@@ -2213,3 +2213,67 @@ html{scroll-behavior:smooth}
   width:0 !important;
   height:0 !important;
 }
+
+
+/* =========================================================
+   NAVBAR TOTALMENTE ESTATICO · SIN ANIMACION
+   Corrección definitiva:
+   todos los botones del menú quedan estáticos al entrar,
+   al regresar, al pasar el mouse, al enfocar y al hacer clic.
+   ========================================================= */
+.mq-menu a,
+.mq-menu a:link,
+.mq-menu a:visited,
+.mq-menu a:focus,
+.mq-menu a:hover,
+.mq-menu a:active{
+  animation:none !important;
+  transition:none !important;
+  transform:none !important;
+  color:#d6d1d3 !important;
+  letter-spacing:-.15px !important;
+  text-shadow:none !important;
+  text-decoration:none !important;
+  outline:none !important;
+  opacity:1 !important;
+}
+
+.mq-menu a::before,
+.mq-menu a::after,
+.mq-menu a:hover::before,
+.mq-menu a:hover::after,
+.mq-menu a:focus::before,
+.mq-menu a:focus::after,
+.mq-menu a:active::before,
+.mq-menu a:active::after{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  opacity:0 !important;
+  animation:none !important;
+  transition:none !important;
+}
+
+.mq-login,
+.mq-login:link,
+.mq-login:visited,
+.mq-login:focus,
+.mq-login:hover,
+.mq-login:active{
+  animation:none !important;
+  transition:none !important;
+  transform:translateY(-50%) !important;
+  color:#ff6047 !important;
+  text-shadow:none !important;
+  outline:none !important;
+  opacity:1 !important;
+}
+
+.mq-user-icon,
+.mq-login:hover .mq-user-icon{
+  animation:none !important;
+  transition:none !important;
+  transform:none !important;
+  box-shadow:none !important;
+}
