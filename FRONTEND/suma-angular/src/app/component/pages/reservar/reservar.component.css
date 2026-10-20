@@ -308,3 +308,135 @@
   .calendar-title-row{align-items:flex-start;flex-direction:column}
   .availability-panel{padding-top:0}
 }
+
+
+/* =========================================================
+   NAVBAR RESERVA IGUAL AL PRINCIPAL
+   Misma altura, distribución, tipografía, icono y animación
+   suave que la barra principal de Mallqui Gym.
+   ========================================================= */
+@media (min-width:1060px){
+  .booking-topbar{
+    min-height:92px !important;
+    height:92px !important;
+    background:#26232b !important;
+    border-bottom:1px solid rgba(255,255,255,.035) !important;
+  }
+
+  .booking-nav-shell{
+    width:min(1080px,calc(100% - 80px)) !important;
+    min-height:92px !important;
+    height:92px !important;
+    margin:0 auto !important;
+    padding:0 120px 0 0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+
+  .booking-topbar nav{
+    width:860px !important;
+    max-width:calc(100% - 10px) !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:0 !important;
+    flex-wrap:nowrap !important;
+  }
+
+  .booking-topbar nav a,
+  .booking-topbar nav a:link,
+  .booking-topbar nav a:visited,
+  .booking-topbar nav a:focus{
+    flex:0 0 auto !important;
+    margin:0 !important;
+    padding:34px 0 32px !important;
+    color:#d6d1d3 !important;
+    font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
+    font-size:15px !important;
+    font-weight:400 !important;
+    letter-spacing:-.15px !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+    text-decoration:none !important;
+    text-shadow:none !important;
+    outline:none !important;
+    opacity:.92 !important;
+    transform:none !important;
+    animation:none !important;
+    transition:
+      color .28s ease,
+      opacity .28s ease !important;
+  }
+
+  .booking-topbar nav a:hover{
+    color:#ff6047 !important;
+    opacity:1 !important;
+    transform:none !important;
+  }
+
+  .booking-topbar nav a:active{
+    color:#ff6047 !important;
+    opacity:.78 !important;
+    transform:none !important;
+  }
+
+  .booking-topbar nav a::before,
+  .booking-topbar nav a::after{
+    content:none !important;
+    display:none !important;
+  }
+
+  .booking-topbar .login-link,
+  .booking-topbar .login-link:link,
+  .booking-topbar .login-link:visited,
+  .booking-topbar .login-link:focus{
+    position:absolute !important;
+    right:0 !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    display:flex !important;
+    align-items:center !important;
+    gap:10px !important;
+    color:#ff6047 !important;
+    font-size:16px !important;
+    font-weight:400 !important;
+    text-decoration:none !important;
+    opacity:.92 !important;
+    animation:none !important;
+    transition:
+      color .28s ease,
+      opacity .28s ease !important;
+  }
+
+  .booking-topbar .login-link:hover{
+    color:#ff725e !important;
+    opacity:1 !important;
+    transform:translateY(-50%) !important;
+  }
+
+  .booking-topbar .login-link:active{
+    opacity:.78 !important;
+  }
+
+  .booking-user-icon{
+    width:30px !important;
+    height:30px !important;
+    flex:0 0 30px !important;
+    transform:none !important;
+    animation:none !important;
+    box-shadow:none !important;
+  }
+
+  .booking-user-head{
+    top:6px !important;
+    width:9px !important;
+    height:9px !important;
+  }
+
+  .booking-user-body{
+    bottom:4px !important;
+    width:18px !important;
+    height:10px !important;
+  }
+}
