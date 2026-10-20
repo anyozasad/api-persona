@@ -290,6 +290,23 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   };
 
+  private readonly parallaxHandler = (): void => {
+    const hero = document.querySelector('.mq-hero') as HTMLElement | null;
+    const training = document.getElementById('entrenamiento');
+
+    if (hero) {
+      const heroOffset = Math.min(72, window.scrollY * 0.14);
+      hero.style.setProperty('--mq-hero-parallax', `${heroOffset}px`);
+    }
+
+    if (training) {
+      const rect = training.getBoundingClientRect();
+      const distanceFromCenter = rect.top + (rect.height / 2) - (window.innerHeight / 2);
+      const trainingOffset = Math.max(-52, Math.min(52, -distanceFromCenter * 0.08));
+      training.style.setProperty('--mq-training-parallax', `${trainingOffset}px`);
+    }
+  };
+
   heroImages = [
     'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2000&q=90',
     'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=2000&q=90',
@@ -395,6 +412,8 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     window.addEventListener('hashchange', this.hashChangeHandler);
+    window.addEventListener('scroll', this.parallaxHandler, { passive: true });
+    this.parallaxHandler();
 
     const id = window.location.hash.replace('#', '').trim();
     if (id) {
@@ -404,6 +423,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     window.removeEventListener('hashchange', this.hashChangeHandler);
+    window.removeEventListener('scroll', this.parallaxHandler);
     if (this.heroTimer) clearInterval(this.heroTimer);
     if (this.toastTimer) clearTimeout(this.toastTimer);
     document.body.style.overflow = '';
