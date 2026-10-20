@@ -48,7 +48,7 @@ import { AuthService } from '../../../auth.service';
           <span>ENTRENA CON PROPÓSITO. SUPERA TUS LÍMITES.</span>
         </div>
 
-        <section class="mq-login-box" aria-label="Inicio de sesión">
+        <section id="mq-login-reference" class="mq-login-box" aria-label="Inicio de sesión">
           <div class="mq-login-box-head">
             <span class="mq-login-logo">
               <img src="/assets/mallqui-logo.svg" alt="Mallqui Gym">
