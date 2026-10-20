@@ -433,9 +433,19 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     if (this.sinAnimacionDeRegreso) {
+      // Al volver desde otra pantalla el mouse queda exactamente encima
+      // del mismo botón (por ejemplo CONTACTO). No quitamos el bloqueo
+      // inmediatamente para evitar que aparezca "animado" por hover residual.
       setTimeout(() => {
-        this.sinAnimacionDeRegreso = false; // retorno completado
-      }, 180);
+        const liberarHover = () => {
+          this.sinAnimacionDeRegreso = false;
+          window.removeEventListener('pointermove', liberarHover);
+          window.removeEventListener('keydown', liberarHover);
+        };
+
+        window.addEventListener('pointermove', liberarHover, { once: true });
+        window.addEventListener('keydown', liberarHover, { once: true });
+      }, 120);
     }
   }
 
