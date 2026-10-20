@@ -1101,3 +1101,157 @@ nav a.active{color:#d4d0d2}
     letter-spacing:7px !important;
   }
 }
+
+
+/* =========================================================
+   AJUSTE FINAL EXACTO · REFERENCIA WIX MIS CLASES
+   Replica la composición visual de la referencia enviada:
+   título centrado, mucho aire, tarjetas angostas y compactas.
+   ========================================================= */
+
+@media (min-width:981px){
+  .classes-main{
+    padding:92px 0 0 !important;
+    background:#211f26 !important;
+  }
+
+  .classes-content{
+    width:100% !important;
+    max-width:none !important;
+    padding:132px 0 86px !important;
+  }
+
+  .title{
+    display:block !important;
+    margin:0 0 136px !important;
+    text-align:center !important;
+    opacity:1 !important;
+    transform:none !important;
+    animation:none !important;
+  }
+
+  .title h1{
+    margin:0 !important;
+    color:#fff !important;
+    font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
+    font-size:58px !important;
+    line-height:1 !important;
+    font-weight:700 !important;
+    letter-spacing:-1.5px !important;
+    opacity:1 !important;
+    transform:none !important;
+    animation:none !important;
+  }
+
+  .class-grid{
+    width:808px !important;
+    margin:0 auto !important;
+    display:grid !important;
+    grid-template-columns:repeat(3,248px) !important;
+    gap:30px !important;
+    align-items:start !important;
+    justify-content:center !important;
+  }
+
+  .class-grid article{
+    width:248px !important;
+    height:338px !important;
+    min-height:338px !important;
+    margin:0 !important;
+    background:#2a262e !important;
+    border:1px solid rgba(255,255,255,.035) !important;
+    overflow:hidden !important;
+    box-shadow:none !important;
+    transform:none !important;
+    animation:none !important;
+    opacity:1 !important;
+    filter:none !important;
+  }
+
+  .class-image-wrap{
+    width:100% !important;
+    height:168px !important;
+    overflow:hidden !important;
+    background:#18171b !important;
+  }
+
+  .class-grid img{
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    filter:saturate(.82) contrast(1.03) brightness(.82) !important;
+  }
+
+  .class-body{
+    height:170px !important;
+    padding:29px 26px 26px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    justify-content:flex-start !important;
+  }
+
+  .class-body h2{
+    margin:0 !important;
+    color:#fff !important;
+    font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
+    font-size:18px !important;
+    line-height:1.12 !important;
+    font-weight:700 !important;
+    letter-spacing:-.35px !important;
+  }
+
+  .class-price{
+    margin:20px 0 0 !important;
+    color:#fff !important;
+    font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
+    font-size:14px !important;
+    font-weight:400 !important;
+  }
+
+  .class-body>a,
+  .class-body>a:link,
+  .class-body>a:visited,
+  .class-body>a:focus{
+    min-width:0 !important;
+    width:auto !important;
+    height:38px !important;
+    min-height:38px !important;
+    margin-top:21px !important;
+    padding:0 16px !important;
+    background:#ff6047 !important;
+    border:0 !important;
+    color:#211f26 !important;
+    font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
+    font-size:14px !important;
+    font-weight:400 !important;
+    line-height:1 !important;
+    transform:none !important;
+    animation:none !important;
+    box-shadow:none !important;
+    transition:background .22s ease,color .22s ease !important;
+  }
+
+  .class-body>a:hover{
+    background:#ff725e !important;
+    color:#211f26 !important;
+    transform:none !important;
+  }
+
+  .classes-contact{
+    margin-top:0 !important;
+  }
+}
+
+@media (min-width:981px) and (max-width:1180px){
+  .class-grid{
+    width:760px !important;
+    grid-template-columns:repeat(3,233px) !important;
+    gap:30px !important;
+  }
+
+  .class-grid article{
+    width:233px !important;
+  }
+}
