@@ -32,6 +32,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
 
       <main class="classes-main">
         <div class="classes-shell classes-content">
+          <div class="title"><h1>MIS CLASES</h1></div>
           <div class="class-grid">
             <article *ngFor="let c of clases">
               <div class="class-image-wrap">
