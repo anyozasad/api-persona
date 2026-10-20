@@ -10,7 +10,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
   imports: [CommonModule, RouterLink, FormsModule],
   styleUrls: ['../mallqui-landing.css'],
   template: `
-    <div class="mq-public-home">
+    <div class="mq-public-home" [class.mq-no-return-animation]="sinAnimacionDeRegreso">
       <header class="mq-topbar">
         <div class="mq-shell mq-nav">
           <nav class="mq-menu" aria-label="Navegación principal">
@@ -281,6 +281,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   chatAbierto = false;
   mensajeChat = '';
   mensajesChat: Array<{tipo:'usuario'|'gym'; texto:string}> = [];
+  sinAnimacionDeRegreso = false;
   private heroTimer?: ReturnType<typeof setInterval>;
   private toastTimer?: ReturnType<typeof setTimeout>;
   private readonly hashChangeHandler = (): void => {
@@ -358,7 +359,12 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
     { id_membresia: 0, nombre: 'Promoción 3 meses', precio: 150, duracion_meses: 3, destacado: false, items: ['Acceso por 3 meses', 'Orientación del personal', 'Control de asistencias'] }
   ];
 
-  constructor(private api: GymApiService) {}
+  constructor(private api: GymApiService) {
+    if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('mq-return-no-animation') === '1') {
+      this.sinAnimacionDeRegreso = true;
+      sessionStorage.removeItem('mq-return-no-animation');
+    }
+  }
 
   get heroActual(): string {
     return this.heroImages[this.heroIndex] || this.heroImages[0];
@@ -423,7 +429,13 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const id = window.location.hash.replace('#', '').trim();
     if (id) {
-      setTimeout(() => this.scrollToSection(id, 'auto'), 60);
+      setTimeout(() => this.scrollToSection(id, 'auto', !this.sinAnimacionDeRegreso), 60);
+    }
+
+    if (this.sinAnimacionDeRegreso) {
+      setTimeout(() => {
+        this.sinAnimacionDeRegreso = false; // retorno completado
+      }, 180);
     }
   }
 
@@ -457,11 +469,11 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
     setTimeout(() => this.scrollToSection(id, 'smooth'), 0);
   }
 
-  private scrollToSection(id: string, behavior: ScrollBehavior = 'smooth'): void {
+  private scrollToSection(id: string, behavior: ScrollBehavior = 'smooth', animarSeccion = true): void {
     const section = document.getElementById(id);
     if (!section) return;
 
-    if (id === 'entrenamiento' || id === 'gimnasio') {
+    if (animarSeccion && (id === 'entrenamiento' || id === 'gimnasio')) {
       section.classList.remove('mq-section-enter');
       void section.offsetWidth;
       section.classList.add('mq-section-enter');
