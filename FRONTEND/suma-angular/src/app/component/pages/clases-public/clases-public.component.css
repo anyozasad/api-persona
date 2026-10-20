@@ -839,3 +839,36 @@
     width:320px !important;
   }
 }
+
+
+/* =========================================================
+   ENTRADA PROFESIONAL · RESERVAR SESIÓN
+   ========================================================= */
+.classes-page .title{
+  animation:classesTitleIn .72s .06s cubic-bezier(.22,.8,.22,1) both;
+}
+.classes-page .class-grid article{
+  opacity:0;
+  animation:classesCardIn .68s cubic-bezier(.22,.8,.22,1) forwards !important;
+}
+.classes-page .class-grid article:nth-child(1){animation-delay:.16s !important}
+.classes-page .class-grid article:nth-child(2){animation-delay:.24s !important}
+.classes-page .class-grid article:nth-child(3){animation-delay:.32s !important}
+
+@keyframes classesTitleIn{
+  from{opacity:0;transform:translateY(30px);letter-spacing:.08em}
+  to{opacity:1;transform:translateY(0);letter-spacing:inherit}
+}
+@keyframes classesCardIn{
+  from{opacity:0;transform:translateY(38px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .classes-page .title,
+  .classes-page .class-grid article{
+    animation:none !important;
+    opacity:1 !important;
+    transform:none !important;
+  }
+}
