@@ -2152,3 +2152,31 @@ html{scroll-behavior:smooth}
   height:0 !important;
   opacity:0 !important;
 }
+
+
+/* =========================================================
+   REGRESO DESDE PÁGINAS SECUNDARIAS SIN ANIMACIÓN
+   Al volver desde Mis Clases o Planes, el home aparece directo,
+   igual que los botones principales, sin repetir la entrada.
+   ========================================================= */
+.mq-public-home.mq-no-return-animation .mq-topbar,
+.mq-public-home.mq-no-return-animation .mq-menu a,
+.mq-public-home.mq-no-return-animation .mq-login,
+.mq-public-home.mq-no-return-animation .mq-hero-overlay,
+.mq-public-home.mq-no-return-animation .mq-overline,
+.mq-public-home.mq-no-return-animation .mq-hero h1,
+.mq-public-home.mq-no-return-animation .mq-hero-sub,
+.mq-public-home.mq-no-return-animation .mq-hero-actions,
+.mq-public-home.mq-no-return-animation .mq-hero-dots,
+.mq-public-home.mq-no-return-animation #entrenamiento .mq-level-card,
+.mq-public-home.mq-no-return-animation #entrenamiento .mq-level-content h2,
+.mq-public-home.mq-no-return-animation #entrenamiento .mq-circle-arrow,
+.mq-public-home.mq-no-return-animation #gimnasio .mq-section-label,
+.mq-public-home.mq-no-return-animation #gimnasio h2,
+.mq-public-home.mq-no-return-animation #gimnasio .mq-gym-intro,
+.mq-public-home.mq-no-return-animation #gimnasio .mq-gym-info article{
+  animation:none !important;
+  opacity:1 !important;
+  transform:none !important;
+  filter:none !important;
+}
