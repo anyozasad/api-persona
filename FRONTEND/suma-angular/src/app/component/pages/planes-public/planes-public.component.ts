@@ -13,14 +13,14 @@ import { GymApiService } from '../../../core/services/gym-api.service';
       <header class="planes-nav">
         <div class="planes-shell nav-inner">
           <nav>
-            <a routerLink="/">INICIO</a>
-            <a routerLink="/" fragment="entrenamiento">ENTRENAMIENTO</a>
-            <a routerLink="/" fragment="entrenador">SOBRE MÍ</a>
-            <a routerLink="/" fragment="victorias">VICTORIAS</a>
-            <a routerLink="/" fragment="gimnasio">GIMNASIO</a>
+            <a routerLink="/" (click)="volverSinAnimacion()">INICIO</a>
+            <a routerLink="/" fragment="entrenamiento" (click)="volverSinAnimacion()">ENTRENAMIENTO</a>
+            <a routerLink="/" fragment="entrenador" (click)="volverSinAnimacion()">SOBRE MÍ</a>
+            <a routerLink="/" fragment="victorias" (click)="volverSinAnimacion()">VICTORIAS</a>
+            <a routerLink="/" fragment="gimnasio" (click)="volverSinAnimacion()">GIMNASIO</a>
             <a routerLink="/clases-gym">RESERVAR SESIÓN</a>
             <a routerLink="/planes">PLANES Y PRECIOS</a>
-            <a routerLink="/" fragment="contacto">CONTACTO</a>
+            <a routerLink="/" fragment="contacto" (click)="volverSinAnimacion()">CONTACTO</a>
           </nav>
 
           <a routerLink="/login" class="login">
@@ -74,6 +74,10 @@ export class PlanesPublicComponent implements OnInit {
   ];
 
   constructor(private api:GymApiService){}
+
+  volverSinAnimacion():void{
+    sessionStorage.setItem('mq-return-no-animation','1');
+  }
 
   ngOnInit():void{
     window.scrollTo({top:0,left:0,behavior:'auto'});
