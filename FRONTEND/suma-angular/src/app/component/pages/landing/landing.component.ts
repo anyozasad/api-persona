@@ -455,7 +455,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
     const section = document.getElementById(id);
     if (!section) return;
 
-    if (id === 'entrenamiento' || id === 'gimnasio' || id === 'contacto') {
+    if (id === 'entrenamiento' || id === 'gimnasio') {
       section.classList.remove('mq-section-enter');
       void section.offsetWidth;
       section.classList.add('mq-section-enter');
