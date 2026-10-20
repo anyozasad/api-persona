@@ -3710,45 +3710,45 @@
 
 @media(max-height:800px) and (min-width:901px){
   .mq-login-box{
-    max-height:calc(100svh - 34px)!important;
-    padding-top:34px!important;
-    padding-bottom:30px!important;
+    max-height:calc(100svh - 18px)!important;
+    padding-top:42px!important;
+    padding-bottom:38px!important;
   }
 
   .mq-login-box-head{
-    margin-bottom:22px!important;
+    margin-bottom:25px!important;
   }
 
   .mq-login-logo{
-    width:78px!important;
-    height:78px!important;
-    flex-basis:78px!important;
+    width:86px!important;
+    height:86px!important;
+    flex-basis:86px!important;
   }
 
   .mq-login-logo img{
-    width:70px!important;
-    height:70px!important;
+    width:77px!important;
+    height:77px!important;
   }
 
   .mq-login-box-head h2{
-    font-size:36px!important;
+    font-size:38px!important;
   }
 
   .mq-login-box form{
-    gap:16px!important;
+    gap:18px!important;
   }
 
   .mq-login-input{
-    height:54px!important;
+    height:58px!important;
   }
 
   .mq-login-submit{
-    height:54px!important;
+    height:56px!important;
   }
 
   .mq-login-register{
-    margin-top:18px!important;
-    padding-top:16px!important;
+    margin-top:20px!important;
+    padding-top:18px!important;
   }
 }
 
