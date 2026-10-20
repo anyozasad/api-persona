@@ -1241,3 +1241,36 @@ nav a:hover{
     height:60px;
   }
 }
+
+
+/* =========================================================
+   ENTRADA PROFESIONAL · PLANES Y PRECIOS
+   ========================================================= */
+.planes-page .pricing .title{
+  animation:plansTitleIn .72s .06s cubic-bezier(.22,.8,.22,1) both;
+}
+.planes-page .plan-grid article{
+  opacity:0;
+  animation:plansCardIn .70s cubic-bezier(.22,.8,.22,1) forwards;
+}
+.planes-page .plan-grid article:nth-child(1){animation-delay:.16s}
+.planes-page .plan-grid article:nth-child(2){animation-delay:.24s}
+.planes-page .plan-grid article:nth-child(3){animation-delay:.32s}
+
+@keyframes plansTitleIn{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes plansCardIn{
+  from{opacity:0;transform:translateY(42px) scale(.975)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .planes-page .pricing .title,
+  .planes-page .plan-grid article{
+    animation:none !important;
+    opacity:1 !important;
+    transform:none !important;
+  }
+}
