@@ -37,6 +37,11 @@ import { AuthService } from '../../../auth.service';
       <main class="mq-login-hero">
         <div class="mq-login-hero-overlay"></div>
 
+        <a routerLink="/" class="mq-login-home-button" aria-label="Volver al menú principal">
+          <span aria-hidden="true">←</span>
+          <b>Volver al menú principal</b>
+        </a>
+
         <div class="mq-login-hero-copy">
           <p>ACCESO MALLQUI GYM</p>
           <h1>MALLQUI <strong>GYM</strong></h1>
