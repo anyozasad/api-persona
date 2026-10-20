@@ -2180,3 +2180,36 @@ html{scroll-behavior:smooth}
   transform:none !important;
   filter:none !important;
 }
+
+
+/* =========================================================
+   BLOQUEAR HOVER RESIDUAL AL REGRESAR
+   Evita que CONTACTO (o cualquier botón) quede naranja,
+   elevado o con zoom solo porque el cursor quedó encima
+   después de volver desde otra pantalla.
+   ========================================================= */
+.mq-public-home.mq-no-return-animation .mq-menu a,
+.mq-public-home.mq-no-return-animation .mq-menu a:link,
+.mq-public-home.mq-no-return-animation .mq-menu a:visited,
+.mq-public-home.mq-no-return-animation .mq-menu a:focus,
+.mq-public-home.mq-no-return-animation .mq-menu a:hover,
+.mq-public-home.mq-no-return-animation .mq-menu a:active{
+  color:#d6d1d3 !important;
+  transform:none !important;
+  letter-spacing:-.15px !important;
+  text-shadow:none !important;
+  transition:none !important;
+  animation:none !important;
+  outline:none !important;
+}
+
+.mq-public-home.mq-no-return-animation .mq-menu a::before,
+.mq-public-home.mq-no-return-animation .mq-menu a::after,
+.mq-public-home.mq-no-return-animation .mq-menu a:hover::before,
+.mq-public-home.mq-no-return-animation .mq-menu a:hover::after{
+  content:none !important;
+  display:none !important;
+  opacity:0 !important;
+  width:0 !important;
+  height:0 !important;
+}
