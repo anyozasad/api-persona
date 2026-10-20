@@ -585,3 +585,30 @@ nav a.active{color:#d4d0d2}
     transform:translateY(0) scale(.96) !important;
   }
 }
+
+
+/* =========================================================
+   BOTÓN DE RUTA ACTUAL SIN ANIMACIÓN
+   El botón de la página actual no se mueve ni hace zoom.
+   Queda visualmente igual a los botones principales.
+   ========================================================= */
+.classes-nav nav a[href="/clases-gym"],
+.classes-nav nav a[href="/clases-gym"]:hover,
+.classes-nav nav a[href="/clases-gym"]:active,
+.classes-nav nav a[href="/clases-gym"]:focus{
+  transform:none !important;
+  animation:none !important;
+  letter-spacing:-.15px !important;
+  text-shadow:none !important;
+}
+
+.classes-nav nav a[href="/clases-gym"]::before,
+.classes-nav nav a[href="/clases-gym"]::after,
+.classes-nav nav a[href="/clases-gym"]:hover::before,
+.classes-nav nav a[href="/clases-gym"]:hover::after{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  opacity:0 !important;
+}
