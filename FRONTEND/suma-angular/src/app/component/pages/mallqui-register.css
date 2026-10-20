@@ -4,8 +4,10 @@
    ========================================================= */
 
 .register-page{
+  height:100svh;
   min-height:100svh;
   width:100%;
+  box-sizing:border-box;
   position:relative;
   display:grid;
   place-items:center;
@@ -41,7 +43,9 @@
   position:relative;
   z-index:2;
   width:100%;
-  min-height:100svh;
+  height:100svh;
+  min-height:0;
+  box-sizing:border-box;
   padding:24px;
   display:grid;
   place-items:center;
@@ -523,5 +527,26 @@
   #register-reference .register-submit,
   #register-reference .register-login-link{
     animation:none!important;
+  }
+}
+
+
+/* SIN SCROLL VERTICAL EN REGISTRO */
+.register-page,
+.register-panel{
+  overflow:hidden!important;
+}
+
+@media(max-width:900px){
+  .register-page{
+    height:auto;
+    min-height:100svh;
+    overflow:auto!important;
+  }
+
+  .register-panel{
+    height:auto;
+    min-height:100svh;
+    overflow:visible!important;
   }
 }
