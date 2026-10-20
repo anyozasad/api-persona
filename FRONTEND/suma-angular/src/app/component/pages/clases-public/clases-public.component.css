@@ -872,3 +872,140 @@
     transform:none !important;
   }
 }
+
+
+/* NAV SECUNDARIO · ANIMACION COMPLETA TIPO WIX 17:12 */
+.classes-nav nav a,
+.classes-nav nav a:link,
+.classes-nav nav a:visited,
+.classes-nav nav a:focus{
+  position:relative !important;
+  color:#d6d1d3 !important;
+  opacity:.92 !important;
+  transform:translateY(0) !important;
+  animation:classesNavEnter .52s cubic-bezier(.22,.8,.22,1) both !important;
+  transition:
+    color .24s ease,
+    opacity .24s ease,
+    transform .24s cubic-bezier(.22,.8,.22,1) !important;
+}
+
+.classes-nav nav a:nth-child(1){animation-delay:.04s !important}
+.classes-nav nav a:nth-child(2){animation-delay:.08s !important}
+.classes-nav nav a:nth-child(3){animation-delay:.12s !important}
+.classes-nav nav a:nth-child(4){animation-delay:.16s !important}
+.classes-nav nav a:nth-child(5){animation-delay:.20s !important}
+.classes-nav nav a:nth-child(6){animation-delay:.24s !important}
+.classes-nav nav a:nth-child(7){animation-delay:.28s !important}
+
+.classes-nav nav a:hover,
+.classes-nav nav a:focus-visible{
+  color:#ff6047 !important;
+  opacity:1 !important;
+  transform:translateY(-2px) !important;
+}
+
+.classes-nav nav a:active{
+  color:#ff6047 !important;
+  opacity:.82 !important;
+  transform:translateY(0) scale(.97) !important;
+}
+
+.classes-nav nav a::before,
+.classes-nav nav a::after{
+  content:none !important;
+  display:none !important;
+}
+
+.classes-nav .login,
+.classes-nav .login:link,
+.classes-nav .login:visited,
+.classes-nav .login:focus{
+  position:absolute !important;
+  overflow:visible !important;
+  color:#ff6047 !important;
+  opacity:.94 !important;
+  transform:translateY(-50%) !important;
+  animation:classesLoginEnter .58s .30s cubic-bezier(.22,.8,.22,1) both !important;
+  transition:
+    color .26s ease,
+    opacity .26s ease,
+    filter .26s ease !important;
+}
+
+.classes-nav .login::before{
+  content:"" !important;
+  position:absolute !important;
+  left:-14px !important;
+  right:-14px !important;
+  top:-11px !important;
+  bottom:-11px !important;
+  display:block !important;
+  border:1px solid rgba(255,96,71,0) !important;
+  border-radius:999px !important;
+  background:rgba(255,96,71,0) !important;
+  opacity:0 !important;
+  transform:scale(.88) !important;
+  pointer-events:none !important;
+  transition:
+    opacity .26s ease,
+    transform .30s cubic-bezier(.2,.9,.2,1),
+    border-color .26s ease,
+    background-color .26s ease !important;
+}
+
+.classes-nav .login:hover,
+.classes-nav .login:focus-visible{
+  color:#ff725e !important;
+  opacity:1 !important;
+  filter:brightness(1.06) !important;
+  transform:translateY(-50%) !important;
+}
+
+.classes-nav .login:hover::before,
+.classes-nav .login:focus-visible::before{
+  opacity:1 !important;
+  transform:scale(1) !important;
+  border-color:rgba(255,96,71,.48) !important;
+  background:rgba(255,96,71,.045) !important;
+}
+
+.classes-nav .user-icon{
+  transform:none !important;
+  animation:none !important;
+  transition:
+    transform .28s cubic-bezier(.2,.9,.2,1),
+    box-shadow .28s ease,
+    filter .28s ease !important;
+}
+
+.classes-nav .login:hover .user-icon,
+.classes-nav .login:focus-visible .user-icon{
+  transform:scale(1.09) !important;
+  box-shadow:0 0 0 5px rgba(255,96,71,.10) !important;
+  filter:brightness(1.08) !important;
+}
+
+.classes-nav .login:active .user-icon{
+  transform:scale(.94) !important;
+}
+
+@keyframes classesNavEnter{
+  from{opacity:0;transform:translateY(-8px)}
+  to{opacity:.92;transform:translateY(0)}
+}
+
+@keyframes classesLoginEnter{
+  from{opacity:0;transform:translateY(calc(-50% - 8px)) scale(.96)}
+  to{opacity:.94;transform:translateY(-50%) scale(1)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .classes-nav nav a,
+  .classes-nav .login,
+  .classes-nav .user-icon,
+  .classes-nav .login::before{
+    animation:none !important;
+    transition:none !important;
+  }
+}
