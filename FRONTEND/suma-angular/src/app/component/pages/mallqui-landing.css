@@ -2507,7 +2507,7 @@ html{scroll-behavior:smooth}
 
 /* entrada corta al abrir la interfaz, sin dejar estado pegado */
 .mq-public-home:not(.mq-no-return-animation) .mq-login{
-  animation:mqLoginWixEnter .62s .32s cubic-bezier(.22,.8,.22,1) both !important;
+  animation:mqLoginWixEnter .62s .32s cubic-bezier(.22,.8,.22,1) backwards !important;
 }
 
 /* aro sutil que aparece solo al pasar el mouse */
@@ -2595,3 +2595,11 @@ html{scroll-behavior:smooth}
     transition:none !important;
   }
 }
+
+
+/* FIX NAV HOVER 17:23 · liberar propiedades tras animacion */
+/*
+  La animación de entrada usa fill-mode "backwards".
+  Así, al terminar, transform/opacity vuelven al control normal del hover.
+  Evita el bug donde el menú quedaba visualmente "pegado" tras entrar o regresar.
+*/
