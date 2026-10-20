@@ -42,7 +42,10 @@
     justify-content: flex-start !important;
 
     overflow: hidden !important;
-    border-radius: 0 !important;
+    border: none !important;
+    outline: none !important;
+    border-radius: 18px !important;
+    box-shadow: 0 28px 70px rgba(0, 0, 0, .38) !important;
     animation: none !important;
     transform: none !important;
   }
@@ -222,9 +225,13 @@
 }
 
 
-/* LOGIN CUADRADO DE PRUEBA */
+
+
+/* SIN BORDE VISIBLE · acabado profesional */
 @media (min-width: 901px) {
   #mq-login-reference {
-    border-radius: 0 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: 0 28px 70px rgba(0, 0, 0, .38) !important;
   }
 }
