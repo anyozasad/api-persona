@@ -1758,3 +1758,96 @@ html{scroll-behavior:smooth}
     transform:none!important;
   }
 }
+
+
+/* =========================================================
+   ANIMACIÓN WIX · ENTRENAMIENTO
+   Los dos bloques entran desde los lados al abrir la sección.
+   ========================================================= */
+#entrenamiento.mq-section-enter .mq-level-beginner{
+  animation:mqTrainingLeftIn .72s cubic-bezier(.22,.8,.22,1) both;
+}
+
+#entrenamiento.mq-section-enter .mq-level-pro{
+  animation:mqTrainingRightIn .72s cubic-bezier(.22,.8,.22,1) both;
+}
+
+#entrenamiento.mq-section-enter .mq-level-content h2{
+  opacity:0;
+  animation:mqTrainingTextIn .46s ease-out .28s forwards;
+}
+
+#entrenamiento.mq-section-enter .mq-circle-arrow{
+  opacity:0;
+  animation:mqTrainingArrowIn .46s cubic-bezier(.22,.8,.22,1) .38s forwards;
+}
+
+#entrenamiento.mq-section-enter .mq-level-shade{
+  animation:mqTrainingShadeIn .75s ease-out both;
+}
+
+@keyframes mqTrainingLeftIn{
+  from{
+    opacity:0;
+    transform:translateX(-42px) scale(1.015);
+    filter:brightness(.82);
+  }
+  to{
+    opacity:1;
+    transform:translateX(0) scale(1);
+    filter:brightness(1);
+  }
+}
+
+@keyframes mqTrainingRightIn{
+  from{
+    opacity:0;
+    transform:translateX(42px) scale(1.015);
+    filter:brightness(.82);
+  }
+  to{
+    opacity:1;
+    transform:translateX(0) scale(1);
+    filter:brightness(1);
+  }
+}
+
+@keyframes mqTrainingTextIn{
+  from{
+    opacity:0;
+    transform:translateY(16px);
+    letter-spacing:10px;
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes mqTrainingArrowIn{
+  from{
+    opacity:0;
+    transform:translateY(10px) scale(.72);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+@keyframes mqTrainingShadeIn{
+  from{opacity:.94}
+  to{opacity:1}
+}
+
+@media (prefers-reduced-motion:reduce){
+  #entrenamiento.mq-section-enter .mq-level-card,
+  #entrenamiento.mq-section-enter .mq-level-content h2,
+  #entrenamiento.mq-section-enter .mq-circle-arrow,
+  #entrenamiento.mq-section-enter .mq-level-shade{
+    animation:none!important;
+    opacity:1!important;
+    transform:none!important;
+    filter:none!important;
+  }
+}
