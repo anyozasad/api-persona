@@ -12,6 +12,11 @@ import { AuthService } from '../../../auth.service';
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="register-page">
+      <div class="register-bg-slider" aria-hidden="true">
+        <span class="register-bg register-bg-1"></span>
+        <span class="register-bg register-bg-2"></span>
+        <span class="register-bg register-bg-3"></span>
+      </div>
       <section class="register-visual">
         <div class="register-overlay"></div>
         <a routerLink="/" class="register-brand" aria-label="Volver al inicio">
