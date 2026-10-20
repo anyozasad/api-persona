@@ -2111,3 +2111,44 @@ html{scroll-behavior:smooth}
     right:0 !important;
   }
 }
+
+
+/* =========================================================
+   TODOS LOS BOTONES DEL HOME EXACTAMENTE IGUALES
+   RESERVAR SESIÓN, PLANES Y PRECIOS y CONTACTO ya no tienen
+   ningún comportamiento especial al volver a la pantalla.
+   ========================================================= */
+.mq-menu a,
+.mq-menu a:link,
+.mq-menu a:visited,
+.mq-menu a:focus{
+  color:#d6d1d3 !important;
+  text-decoration:none !important;
+  outline:none !important;
+  text-shadow:none !important;
+}
+
+@media (min-width:821px){
+  .mq-menu a:hover{
+    color:#ff6047 !important;
+    transform:translateY(-2px) scale(1.035) !important;
+    letter-spacing:.18px !important;
+  }
+
+  .mq-menu a:active{
+    transform:translateY(0) scale(.96) !important;
+  }
+}
+
+.mq-menu a::before,
+.mq-menu a::after,
+.mq-menu a:hover::before,
+.mq-menu a:hover::after,
+.mq-menu a:focus::before,
+.mq-menu a:focus::after{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  opacity:0 !important;
+}
