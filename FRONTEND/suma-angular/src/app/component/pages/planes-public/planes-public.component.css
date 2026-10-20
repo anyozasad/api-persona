@@ -633,3 +633,30 @@ nav a:hover{
     transform:translateY(0) scale(.96) !important;
   }
 }
+
+
+/* =========================================================
+   BOTÓN DE RUTA ACTUAL SIN ANIMACIÓN
+   El botón de la página actual no se mueve ni hace zoom.
+   Queda visualmente igual a los botones principales.
+   ========================================================= */
+.planes-nav nav a[href="/planes"],
+.planes-nav nav a[href="/planes"]:hover,
+.planes-nav nav a[href="/planes"]:active,
+.planes-nav nav a[href="/planes"]:focus{
+  transform:none !important;
+  animation:none !important;
+  letter-spacing:-.15px !important;
+  text-shadow:none !important;
+}
+
+.planes-nav nav a[href="/planes"]::before,
+.planes-nav nav a[href="/planes"]::after,
+.planes-nav nav a[href="/planes"]:hover::before,
+.planes-nav nav a[href="/planes"]:hover::after{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  opacity:0 !important;
+}
