@@ -423,7 +423,9 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const id = window.location.hash.replace('#', '').trim();
     if (id) {
-      setTimeout(() => this.scrollToSection(id, 'auto', false), 60);
+      setTimeout(() => this.scrollToSection(id, 'auto', true), 60);
+    } else {
+      setTimeout(() => this.activarEntrada('inicio'), 80);
     }
 
   }
@@ -458,14 +460,24 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
     setTimeout(() => this.scrollToSection(id, 'smooth'), 0);
   }
 
+  private activarEntrada(id: string): void {
+    const section = document.getElementById(id);
+    if (!section) return;
+
+    const permitidas = ['inicio','entrenamiento','entrenador','victorias','gimnasio','contacto'];
+    if (!permitidas.includes(id)) return;
+
+    section.classList.remove('mq-section-enter');
+    void section.offsetWidth;
+    section.classList.add('mq-section-enter');
+  }
+
   private scrollToSection(id: string, behavior: ScrollBehavior = 'smooth', animarSeccion = true): void {
     const section = document.getElementById(id);
     if (!section) return;
 
-    if (animarSeccion && (id === 'entrenamiento' || id === 'gimnasio')) {
-      section.classList.remove('mq-section-enter');
-      void section.offsetWidth;
-      section.classList.add('mq-section-enter');
+    if (animarSeccion) {
+      this.activarEntrada(id);
     }
 
     const header = document.querySelector('.mq-topbar') as HTMLElement | null;
