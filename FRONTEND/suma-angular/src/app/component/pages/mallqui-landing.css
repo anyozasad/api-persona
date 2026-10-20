@@ -1966,3 +1966,90 @@ html{scroll-behavior:smooth}
     filter:none!important;
   }
 }
+
+
+/* =========================================================
+   ANIMACIÓN DE BOTONES · NAV WIX
+   Solo afecta los botones del menú superior.
+   ========================================================= */
+@media (min-width: 821px) {
+
+  .mq-menu a{
+    position:relative !important;
+    transition:
+      color .24s ease,
+      transform .24s cubic-bezier(.22,.8,.22,1),
+      letter-spacing .24s ease,
+      opacity .24s ease !important;
+    transform-origin:center !important;
+  }
+
+  .mq-menu a:hover{
+    color:#ff6047 !important;
+    transform:translateY(-2px) scale(1.035) !important;
+    letter-spacing:.18px !important;
+  }
+
+  .mq-menu a:active{
+    transform:translateY(0) scale(.96) !important;
+    transition-duration:.08s !important;
+  }
+
+  .mq-menu a::before{
+    content:'';
+    position:absolute;
+    left:50%;
+    bottom:25px;
+    width:0;
+    height:1px;
+    border-radius:999px;
+    background:#ff6047;
+    transform:translateX(-50%);
+    opacity:0;
+    transition:
+      width .28s cubic-bezier(.22,.8,.22,1),
+      opacity .22s ease;
+    pointer-events:none;
+  }
+
+  .mq-menu a:hover::before{
+    width:58%;
+    opacity:1;
+  }
+
+  .mq-login{
+    transition:
+      color .24s ease,
+      transform .24s cubic-bezier(.22,.8,.22,1) !important;
+  }
+
+  .mq-login:hover{
+    color:#ff725e !important;
+    transform:translateY(-50%) scale(1.035) !important;
+  }
+
+  .mq-login:active{
+    transform:translateY(-50%) scale(.96) !important;
+  }
+
+  .mq-user-icon{
+    transition:
+      transform .24s cubic-bezier(.22,.8,.22,1),
+      box-shadow .24s ease !important;
+  }
+
+  .mq-login:hover .mq-user-icon{
+    transform:rotate(5deg) scale(1.08) !important;
+    box-shadow:0 0 0 5px rgba(255,96,71,.11) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .mq-menu a,
+  .mq-menu a::before,
+  .mq-login,
+  .mq-user-icon{
+    transition:none!important;
+    animation:none!important;
+  }
+}
