@@ -3371,3 +3371,231 @@
     width:100%!important;
   }
 }
+
+
+/* =========================================================
+   LOGIN V11 · TARJETA GRANDE + REGRESO SUPERIOR IZQUIERDO
+   ========================================================= */
+.mq-login-home-button{
+  position:absolute!important;
+  z-index:6!important;
+  top:30px!important;
+  left:34px!important;
+  min-height:48px!important;
+  padding:0 18px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  border-radius:999px!important;
+  background:rgba(23,21,26,.72)!important;
+  color:#fff!important;
+  text-decoration:none!important;
+  backdrop-filter:blur(14px)!important;
+  -webkit-backdrop-filter:blur(14px)!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.22)!important;
+  transition:transform .2s ease,border-color .2s ease,background .2s ease,box-shadow .2s ease!important;
+}
+
+.mq-login-home-button span{
+  color:#ff6650!important;
+  font-size:20px!important;
+  line-height:1!important;
+  transition:transform .2s ease!important;
+}
+
+.mq-login-home-button b{
+  font-size:12px!important;
+  letter-spacing:.15px!important;
+  font-weight:800!important;
+}
+
+.mq-login-home-button:hover{
+  transform:translateY(-2px)!important;
+  border-color:rgba(255,102,80,.72)!important;
+  background:rgba(34,30,36,.88)!important;
+  box-shadow:0 16px 36px rgba(0,0,0,.30)!important;
+}
+
+.mq-login-home-button:hover span{
+  transform:translateX(-3px)!important;
+}
+
+.mq-login-box{
+  width:min(570px,calc(100% - 44px))!important;
+  max-height:calc(100svh - 50px)!important;
+  padding:42px 44px 36px!important;
+  border-radius:26px!important;
+}
+
+.mq-login-box::before{
+  left:44px!important;
+  right:44px!important;
+  height:4px!important;
+}
+
+.mq-login-box-head{
+  margin:2px 0 30px!important;
+}
+
+.mq-login-logo{
+  width:92px!important;
+  height:92px!important;
+  flex:0 0 92px!important;
+  border-radius:23px!important;
+}
+
+.mq-login-logo img{
+  width:82px!important;
+  height:82px!important;
+}
+
+.mq-login-box-head p{
+  margin-bottom:8px!important;
+  font-size:10px!important;
+  letter-spacing:4.5px!important;
+}
+
+.mq-login-box-head h2{
+  font-size:42px!important;
+  line-height:1.02!important;
+}
+
+.mq-login-box-head div>span{
+  margin-top:10px!important;
+  font-size:13px!important;
+}
+
+.mq-login-box form{
+  gap:20px!important;
+}
+
+.mq-login-box form>label{
+  font-size:12px!important;
+}
+
+.mq-login-input{
+  height:64px!important;
+  margin-top:9px!important;
+  padding:0 18px!important;
+  border-radius:14px!important;
+}
+
+.mq-login-input input{
+  font-size:14px!important;
+}
+
+.mq-login-options{
+  min-height:32px!important;
+}
+
+.mq-remember,
+.mq-show-password,
+.mq-forgot{
+  font-size:11px!important;
+}
+
+.mq-login-submit{
+  height:62px!important;
+  border-radius:14px!important;
+  font-size:13px!important;
+}
+
+.mq-login-register{
+  margin-top:24px!important;
+  padding-top:20px!important;
+}
+
+.mq-login-register strong{
+  font-size:12px!important;
+}
+
+.mq-login-register span{
+  font-size:10px!important;
+}
+
+.mq-login-register>a{
+  min-height:44px!important;
+  padding:0 18px!important;
+  font-size:11px!important;
+}
+
+.mq-login-back{
+  display:none!important;
+}
+
+@media(max-width:900px){
+  .mq-login-home-button{
+    top:18px!important;
+    left:18px!important;
+    min-height:42px!important;
+    padding:0 14px!important;
+  }
+
+  .mq-login-home-button b{
+    font-size:11px!important;
+  }
+
+  .mq-login-box{
+    width:min(540px,calc(100% - 28px))!important;
+    max-height:calc(100svh - 88px)!important;
+    padding:34px 30px 30px!important;
+    margin-top:34px!important;
+  }
+
+  .mq-login-box::before{
+    left:30px!important;
+    right:30px!important;
+  }
+
+  .mq-login-box-head h2{
+    font-size:36px!important;
+  }
+}
+
+@media(max-width:560px){
+  .mq-login-home-button{
+    top:14px!important;
+    left:14px!important;
+    min-height:40px!important;
+  }
+
+  .mq-login-home-button b{
+    font-size:10px!important;
+  }
+
+  .mq-login-box{
+    width:calc(100% - 22px)!important;
+    max-height:calc(100svh - 76px)!important;
+    padding:28px 20px 24px!important;
+    margin-top:40px!important;
+    border-radius:20px!important;
+  }
+
+  .mq-login-box-head{
+    margin-bottom:22px!important;
+  }
+
+  .mq-login-logo{
+    width:72px!important;
+    height:72px!important;
+    flex-basis:72px!important;
+  }
+
+  .mq-login-logo img{
+    width:63px!important;
+    height:63px!important;
+  }
+
+  .mq-login-box-head h2{
+    font-size:30px!important;
+  }
+
+  .mq-login-input{
+    height:54px!important;
+  }
+
+  .mq-login-submit{
+    height:54px!important;
+  }
+}
