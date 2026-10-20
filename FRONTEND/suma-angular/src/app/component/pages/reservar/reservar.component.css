@@ -440,3 +440,48 @@
     height:10px !important;
   }
 }
+
+
+/* =========================================================
+   ENTRADA PROFESIONAL · PROGRAMAR SERVICIO
+   ========================================================= */
+.booking-page .back-link{
+  animation:bookingFadeIn .45s .04s ease both;
+}
+.booking-page .booking-heading{
+  animation:bookingHeadingIn .66s .08s cubic-bezier(.22,.8,.22,1) both;
+}
+.booking-page .calendar-panel,
+.booking-page .availability-panel,
+.booking-page .service-panel{
+  opacity:0;
+  animation:bookingPanelIn .68s cubic-bezier(.22,.8,.22,1) forwards;
+}
+.booking-page .calendar-panel{animation-delay:.18s}
+.booking-page .availability-panel{animation-delay:.26s}
+.booking-page .service-panel{animation-delay:.34s}
+
+@keyframes bookingFadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+@keyframes bookingHeadingIn{
+  from{opacity:0;transform:translateY(28px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes bookingPanelIn{
+  from{opacity:0;transform:translateY(34px) scale(.988)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .booking-page .back-link,
+  .booking-page .booking-heading,
+  .booking-page .calendar-panel,
+  .booking-page .availability-panel,
+  .booking-page .service-panel{
+    animation:none !important;
+    opacity:1 !important;
+    transform:none !important;
+  }
+}
