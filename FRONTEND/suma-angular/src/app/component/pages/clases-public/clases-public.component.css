@@ -750,3 +750,86 @@ nav a.active{color:#d4d0d2}
   transform:none !important;
   box-shadow:none !important;
 }
+
+
+/* =========================================================
+   ANIMACION UNIFORME TIPO WIX · SIN MOVER BOTONES
+   Todos los botones se comportan igual:
+   cambio suave de color y opacidad, sin zoom, sin subir,
+   sin subrayados y sin animación residual al regresar.
+   ========================================================= */
+.classes-nav nav a,
+.classes-nav nav a:link,
+.classes-nav nav a:visited,
+.classes-nav nav a:focus{
+  color:#d6d1d3 !important;
+  opacity:.92 !important;
+  transform:none !important;
+  animation:none !important;
+  transition:
+    color .28s ease,
+    opacity .28s ease !important;
+  text-decoration:none !important;
+  text-shadow:none !important;
+  outline:none !important;
+}
+
+.classes-nav nav a:hover{
+  color:#ff6047 !important;
+  opacity:1 !important;
+  transform:none !important;
+  animation:none !important;
+}
+
+.classes-nav nav a:active{
+  color:#ff6047 !important;
+  opacity:.78 !important;
+  transform:none !important;
+  animation:none !important;
+}
+
+.classes-nav nav a::before,
+.classes-nav nav a::after,
+.classes-nav nav a:hover::before,
+.classes-nav nav a:hover::after,
+.classes-nav nav a:focus::before,
+.classes-nav nav a:focus::after,
+.classes-nav nav a:active::before,
+.classes-nav nav a:active::after{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  opacity:0 !important;
+}
+
+.classes-nav .login,
+.classes-nav .login:link,
+.classes-nav .login:visited,
+.classes-nav .login:focus{
+  color:#ff6047 !important;
+  opacity:.92 !important;
+  animation:none !important;
+  transition:
+    color .28s ease,
+    opacity .28s ease !important;
+}
+
+.classes-nav .login:hover{
+  color:#ff725e !important;
+  opacity:1 !important;
+  animation:none !important;
+}
+
+.classes-nav .login:active{
+  opacity:.78 !important;
+}
+
+.classes-nav .user-icon,
+.classes-nav .login:hover .classes-nav .user-icon,
+.classes-nav .login:active .classes-nav .user-icon{
+  transform:none !important;
+  animation:none !important;
+  transition:opacity .28s ease !important;
+  box-shadow:none !important;
+}
