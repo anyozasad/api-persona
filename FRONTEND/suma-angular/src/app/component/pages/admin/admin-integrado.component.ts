@@ -17,6 +17,35 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
   encapsulation: ViewEncapsulation.None,
   template: `
   <div class="admin-shell" [class.admin-sidebar-collapsed]="sidebarCerrado">
+    <header class="admin-wix-topbar">
+      <div class="admin-wix-brand">
+        <span class="admin-wix-brand-mark">M</span>
+        <strong>MALLQUI GYM</strong>
+      </div>
+
+      <div class="admin-wix-site">
+        <span>Panel</span>
+        <i>⌄</i>
+      </div>
+
+      <div class="admin-wix-links" aria-hidden="true">
+        <span>Explorar</span>
+        <span>Administración</span>
+        <span>Ayuda</span>
+      </div>
+
+      <label class="admin-wix-search">
+        <span>⌕</span>
+        <input type="text" placeholder="Buscar herramientas, socios, reportes y más..." aria-label="Buscar en el panel">
+      </label>
+
+      <div class="admin-wix-tools">
+        <span title="Mensajes">▢</span>
+        <span title="Notificaciones">♢</span>
+        <span title="Opciones">▤</span>
+        <span class="admin-wix-top-avatar">{{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}</span>
+      </div>
+    </header>
     <aside class="admin-nav">
       <div class="admin-nav-top">
         <button type="button" class="admin-brand" (click)="cambiarSeccion('dashboard')" aria-label="Volver al dashboard principal" title="Volver al dashboard">
