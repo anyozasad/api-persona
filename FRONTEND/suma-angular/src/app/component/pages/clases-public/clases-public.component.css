@@ -833,3 +833,271 @@ nav a.active{color:#d4d0d2}
   transition:opacity .28s ease !important;
   box-shadow:none !important;
 }
+
+
+/* =========================================================
+   CLASES · DISEÑO FINAL TIPO WIX REFERENCIA
+   Tarjetas compactas, imagen superior corta, precio simple,
+   botón coral y bloque de contacto inferior.
+   ========================================================= */
+
+.classes-main{
+  min-height:100vh !important;
+  padding:92px 0 0 !important;
+  background:#211f26 !important;
+}
+
+.classes-content{
+  width:min(1110px,calc(100% - 44px)) !important;
+  padding:108px 0 86px !important;
+}
+
+.title{
+  display:none !important;
+}
+
+.class-grid{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:38px !important;
+  align-items:stretch !important;
+}
+
+.class-grid article{
+  min-height:0 !important;
+  height:310px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  overflow:hidden !important;
+  background:#2b272e !important;
+  border:1px solid rgba(255,255,255,.055) !important;
+  box-shadow:none !important;
+  transform:none !important;
+  animation:none !important;
+  opacity:1 !important;
+  filter:none !important;
+  transition:none !important;
+}
+
+.class-grid article:hover{
+  transform:none !important;
+  box-shadow:none !important;
+}
+
+.class-image-wrap{
+  height:92px !important;
+  overflow:hidden !important;
+  background:#18171b !important;
+}
+
+.class-grid img{
+  width:100% !important;
+  height:100% !important;
+  display:block !important;
+  object-fit:cover !important;
+  object-position:center 45% !important;
+  filter:saturate(.75) contrast(1.02) brightness(.72) !important;
+}
+
+.class-body{
+  flex:1 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  padding:34px 36px 36px !important;
+}
+
+.class-body h2{
+  min-height:0 !important;
+  margin:0 !important;
+  color:#fff !important;
+  font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
+  font-size:23px !important;
+  line-height:1.15 !important;
+  font-weight:600 !important;
+  letter-spacing:0 !important;
+}
+
+.class-body p,
+.class-meta{
+  display:none !important;
+}
+
+.class-price{
+  margin-top:24px !important;
+  color:#fff !important;
+  font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
+  font-size:17px !important;
+  font-weight:400 !important;
+}
+
+.class-body>a,
+.class-body>a:link,
+.class-body>a:visited,
+.class-body>a:focus{
+  width:auto !important;
+  min-width:132px !important;
+  min-height:48px !important;
+  margin-top:auto !important;
+  padding:0 20px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border:0 !important;
+  background:#ff6047 !important;
+  color:#211f26 !important;
+  text-decoration:none !important;
+  font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
+  font-size:16px !important;
+  font-weight:500 !important;
+  transform:none !important;
+  box-shadow:none !important;
+  animation:none !important;
+  transition:background .22s ease,color .22s ease !important;
+}
+
+.class-body>a:hover{
+  background:#ff725e !important;
+  color:#211f26 !important;
+  transform:none !important;
+}
+
+.class-body>a:active{
+  background:#ef553f !important;
+  transform:none !important;
+}
+
+/* Contacto coral como en la referencia */
+.classes-contact{
+  background:#ff6047 !important;
+  color:#211f26 !important;
+  padding:72px 0 84px !important;
+}
+
+.classes-contact-inner{
+  width:min(1110px,calc(100% - 44px)) !important;
+  margin:0 auto !important;
+  display:grid !important;
+  grid-template-columns:.8fr 1.25fr !important;
+  gap:90px !important;
+  align-items:start !important;
+}
+
+.classes-contact-kicker{
+  font-size:38px !important;
+  line-height:1 !important;
+  letter-spacing:11px !important;
+  font-weight:500 !important;
+}
+
+.classes-contact-copy h2{
+  margin:70px 0 18px !important;
+  font-size:30px !important;
+  line-height:1.1 !important;
+  font-weight:600 !important;
+}
+
+.classes-contact-copy p{
+  max-width:390px !important;
+  margin:0 !important;
+  font:400 15px/1.6 Arial,sans-serif !important;
+}
+
+.classes-contact-form{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:18px !important;
+}
+
+.classes-contact-form .form-row{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:18px !important;
+}
+
+.classes-contact-form label{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:9px !important;
+  color:#211f26 !important;
+  font-size:15px !important;
+  font-weight:400 !important;
+}
+
+.classes-contact-form input,
+.classes-contact-form textarea{
+  width:100% !important;
+  border:1px solid #211f26 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  color:#211f26 !important;
+  padding:12px 13px !important;
+  outline:none !important;
+  font:400 15px Arial,sans-serif !important;
+}
+
+.classes-contact-form input{
+  height:52px !important;
+}
+
+.classes-contact-form textarea{
+  resize:vertical !important;
+}
+
+.classes-contact-form button{
+  align-self:flex-start !important;
+  min-width:138px !important;
+  height:48px !important;
+  border:1px solid #211f26 !important;
+  background:#211f26 !important;
+  color:#fff !important;
+  cursor:pointer !important;
+  font-weight:600 !important;
+}
+
+@media(max-width:900px){
+  .classes-content{
+    padding-top:68px !important;
+  }
+
+  .class-grid{
+    grid-template-columns:1fr !important;
+    gap:22px !important;
+  }
+
+  .class-grid article{
+    height:auto !important;
+  }
+
+  .class-image-wrap{
+    height:210px !important;
+  }
+
+  .class-body{
+    min-height:210px !important;
+  }
+
+  .classes-contact-inner{
+    grid-template-columns:1fr !important;
+    gap:48px !important;
+  }
+}
+
+@media(max-width:620px){
+  .classes-content{
+    width:calc(100% - 28px) !important;
+  }
+
+  .classes-contact-inner{
+    width:calc(100% - 28px) !important;
+  }
+
+  .classes-contact-form .form-row{
+    grid-template-columns:1fr !important;
+  }
+
+  .classes-contact-kicker{
+    font-size:30px !important;
+    letter-spacing:7px !important;
+  }
+}
