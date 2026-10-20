@@ -45,7 +45,13 @@
     border: none !important;
     outline: none !important;
     border-radius: 18px !important;
-    box-shadow: 0 28px 70px rgba(0, 0, 0, .38) !important;
+    background:
+      linear-gradient(180deg,
+        rgba(35, 32, 39, .80) 0%,
+        rgba(27, 25, 31, .84) 100%) !important;
+    backdrop-filter: blur(16px) saturate(112%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(112%) !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .34) !important;
     animation: none !important;
     transform: none !important;
   }
@@ -81,20 +87,20 @@
 
   #mq-login-reference .mq-login-box-head p {
     margin: 0 0 8px !important;
-    font-size: 10px !important;
-    letter-spacing: 4px !important;
+    font-size: 9px !important;
+    letter-spacing: 3.8px !important;
   }
 
   #mq-login-reference .mq-login-box-head h2 {
     margin: 0 !important;
-    font-size: 38px !important;
+    font-size: 35px !important;
     line-height: 1.02 !important;
   }
 
   #mq-login-reference .mq-login-box-head div > span {
     display: block !important;
     margin-top: 8px !important;
-    font-size: 12px !important;
+    font-size: 11px !important;
   }
 
   #mq-login-reference form,
@@ -111,7 +117,7 @@
   }
 
   #mq-login-reference form > label {
-    font-size: 11px !important;
+    font-size: 10px !important;
   }
 
   #mq-login-reference .mq-login-input {
@@ -122,7 +128,7 @@
   }
 
   #mq-login-reference .mq-login-input input {
-    font-size: 13px !important;
+    font-size: 12px !important;
   }
 
   #mq-login-reference .mq-login-options {
@@ -133,14 +139,14 @@
   #mq-login-reference .mq-remember,
   #mq-login-reference .mq-show-password,
   #mq-login-reference .mq-forgot {
-    font-size: 10px !important;
+    font-size: 9px !important;
   }
 
   #mq-login-reference .mq-login-submit {
     height: 56px !important;
     margin-top: 2px !important;
     border-radius: 11px !important;
-    font-size: 12px !important;
+    font-size: 11px !important;
   }
 
   #mq-login-reference .mq-login-submit:disabled {
@@ -156,17 +162,17 @@
   }
 
   #mq-login-reference .mq-login-register strong {
-    font-size: 11px !important;
+    font-size: 10px !important;
   }
 
   #mq-login-reference .mq-login-register span {
-    font-size: 9px !important;
+    font-size: 8px !important;
   }
 
   #mq-login-reference .mq-login-register > a {
     min-height: 40px !important;
     padding: 0 16px !important;
-    font-size: 10px !important;
+    font-size: 9px !important;
   }
 }
 
@@ -196,7 +202,7 @@
   }
 
   #mq-login-reference .mq-login-box-head h2 {
-    font-size: 34px !important;
+    font-size: 32px !important;
   }
 
   #mq-login-reference form {
@@ -232,6 +238,6 @@
   #mq-login-reference {
     border: none !important;
     outline: none !important;
-    box-shadow: 0 28px 70px rgba(0, 0, 0, .38) !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .34) !important;
   }
 }
