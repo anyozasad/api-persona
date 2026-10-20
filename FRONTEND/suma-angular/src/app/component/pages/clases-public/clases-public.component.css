@@ -686,3 +686,67 @@ nav a.active{color:#d4d0d2}
   height:0 !important;
   opacity:0 !important;
 }
+
+
+/* =========================================================
+   NAVBAR TOTALMENTE ESTATICO · SIN ANIMACION
+   Corrección definitiva:
+   todos los botones del menú quedan estáticos al entrar,
+   al regresar, al pasar el mouse, al enfocar y al hacer clic.
+   ========================================================= */
+.classes-nav nav a,
+.classes-nav nav a:link,
+.classes-nav nav a:visited,
+.classes-nav nav a:focus,
+.classes-nav nav a:hover,
+.classes-nav nav a:active{
+  animation:none !important;
+  transition:none !important;
+  transform:none !important;
+  color:#d6d1d3 !important;
+  letter-spacing:-.15px !important;
+  text-shadow:none !important;
+  text-decoration:none !important;
+  outline:none !important;
+  opacity:1 !important;
+}
+
+.classes-nav nav a::before,
+.classes-nav nav a::after,
+.classes-nav nav a:hover::before,
+.classes-nav nav a:hover::after,
+.classes-nav nav a:focus::before,
+.classes-nav nav a:focus::after,
+.classes-nav nav a:active::before,
+.classes-nav nav a:active::after{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  opacity:0 !important;
+  animation:none !important;
+  transition:none !important;
+}
+
+.classes-nav .login,
+.classes-nav .login:link,
+.classes-nav .login:visited,
+.classes-nav .login:focus,
+.classes-nav .login:hover,
+.classes-nav .login:active{
+  animation:none !important;
+  transition:none !important;
+  transform:translateY(-50%) !important;
+  color:#ff6047 !important;
+  text-shadow:none !important;
+  outline:none !important;
+  opacity:1 !important;
+}
+
+.classes-nav .user-icon,
+.classes-nav .login:hover .classes-nav .user-icon{
+  animation:none !important;
+  transition:none !important;
+  transform:none !important;
+  box-shadow:none !important;
+}
