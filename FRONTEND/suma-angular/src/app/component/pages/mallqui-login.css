@@ -4413,3 +4413,187 @@
     padding-top:12px!important;
   }
 }
+
+
+/* =========================================================
+   LOGIN V19 · COPIA DE PROPORCIONES DE LA CAPTURA ENVIADA
+   Desktop 1648x928: tarjeta aprox. 505x670, centrada.
+   ========================================================= */
+@media(min-width:901px){
+  .mq-login-screen .mq-login-hero{
+    display:grid!important;
+    place-items:center!important;
+  }
+
+  .mq-login-screen .mq-login-hero-overlay{
+    background:
+      linear-gradient(90deg,rgba(12,11,15,.62) 0%,rgba(18,16,21,.42) 45%,rgba(18,15,20,.50) 100%),
+      linear-gradient(180deg,rgba(14,12,17,.08) 0%,rgba(14,12,17,.44) 100%)!important;
+  }
+
+  .mq-login-screen .mq-login-box{
+    box-sizing:border-box!important;
+    width:505px!important;
+    max-width:calc(100vw - 56px)!important;
+    height:670px!important;
+    max-height:calc(100svh - 34px)!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:18px 32px 24px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:flex-start!important;
+    overflow:hidden!important;
+    border-radius:24px!important;
+  }
+
+  .mq-login-screen .mq-login-box::before{
+    left:32px!important;
+    right:32px!important;
+    height:3px!important;
+  }
+
+  .mq-login-screen .mq-login-box-head{
+    width:100%!important;
+    max-width:none!important;
+    margin:0 0 18px!important;
+  }
+
+  .mq-login-screen .mq-login-logo{
+    width:92px!important;
+    height:92px!important;
+    flex:0 0 92px!important;
+    margin:0 0 6px!important;
+  }
+
+  .mq-login-screen .mq-login-logo img{
+    width:84px!important;
+    height:84px!important;
+    object-fit:contain!important;
+  }
+
+  .mq-login-screen .mq-login-box-head p{
+    margin:0 0 7px!important;
+    font-size:10px!important;
+    letter-spacing:4.5px!important;
+  }
+
+  .mq-login-screen .mq-login-box-head h2{
+    margin:0!important;
+    font-size:39px!important;
+    line-height:1.02!important;
+  }
+
+  .mq-login-screen .mq-login-box-head div>span{
+    margin-top:7px!important;
+    font-size:12px!important;
+  }
+
+  .mq-login-screen .mq-login-box form,
+  .mq-login-screen .mq-login-register,
+  .mq-login-screen .mq-selected-plan{
+    width:100%!important;
+    max-width:none!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+
+  .mq-login-screen .mq-login-box form{
+    gap:14px!important;
+  }
+
+  .mq-login-screen .mq-login-box form>label{
+    font-size:11px!important;
+  }
+
+  .mq-login-screen .mq-login-input{
+    height:52px!important;
+    margin-top:7px!important;
+    padding:0 15px!important;
+    border-radius:11px!important;
+  }
+
+  .mq-login-screen .mq-login-input input{
+    font-size:13px!important;
+  }
+
+  .mq-login-screen .mq-login-options{
+    min-height:26px!important;
+  }
+
+  .mq-login-screen .mq-remember,
+  .mq-login-screen .mq-show-password,
+  .mq-login-screen .mq-forgot{
+    font-size:10px!important;
+  }
+
+  .mq-login-screen .mq-login-submit{
+    height:54px!important;
+    margin-top:0!important;
+    border-radius:11px!important;
+    font-size:12px!important;
+  }
+
+  .mq-login-screen .mq-login-register{
+    margin-top:16px!important;
+    padding-top:15px!important;
+  }
+
+  .mq-login-screen .mq-login-register strong{
+    font-size:11px!important;
+  }
+
+  .mq-login-screen .mq-login-register span{
+    font-size:9px!important;
+  }
+
+  .mq-login-screen .mq-login-register>a{
+    min-height:40px!important;
+    padding:0 16px!important;
+    font-size:10px!important;
+  }
+}
+
+@media(min-width:901px) and (max-height:720px){
+  .mq-login-screen .mq-login-box{
+    height:calc(100svh - 24px)!important;
+    padding-top:14px!important;
+    padding-bottom:16px!important;
+  }
+
+  .mq-login-screen .mq-login-logo{
+    width:74px!important;
+    height:74px!important;
+    flex-basis:74px!important;
+  }
+
+  .mq-login-screen .mq-login-logo img{
+    width:67px!important;
+    height:67px!important;
+  }
+
+  .mq-login-screen .mq-login-box-head{
+    margin-bottom:12px!important;
+  }
+
+  .mq-login-screen .mq-login-box-head h2{
+    font-size:34px!important;
+  }
+
+  .mq-login-screen .mq-login-box form{
+    gap:10px!important;
+  }
+
+  .mq-login-screen .mq-login-input{
+    height:47px!important;
+  }
+
+  .mq-login-screen .mq-login-submit{
+    height:49px!important;
+  }
+
+  .mq-login-screen .mq-login-register{
+    margin-top:11px!important;
+    padding-top:10px!important;
+  }
+}
