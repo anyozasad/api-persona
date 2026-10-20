@@ -42,7 +42,7 @@
     justify-content: flex-start !important;
 
     overflow: hidden !important;
-    border-radius: 24px !important;
+    border-radius: 0 !important;
     animation: none !important;
     transform: none !important;
   }
@@ -218,5 +218,13 @@
   #mq-login-reference {
     animation: none !important;
     transform: none !important;
+  }
+}
+
+
+/* LOGIN CUADRADO DE PRUEBA */
+@media (min-width: 901px) {
+  #mq-login-reference {
+    border-radius: 0 !important;
   }
 }
