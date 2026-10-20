@@ -19,8 +19,8 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             <a href="#entrenador" (click)="irA('entrenador', $event)">SOBRE MÍ</a>
             <a href="#victorias" (click)="irA('victorias', $event)">VICTORIAS</a>
             <a href="#gimnasio" (click)="irA('gimnasio', $event)">GIMNASIO</a>
-            <a class="mq-nav-page" routerLink="/clases-gym">RESERVAR SESIÓN</a>
-            <a class="mq-nav-page" routerLink="/planes">PLANES Y PRECIOS</a>
+            <a routerLink="/clases-gym">RESERVAR SESIÓN</a>
+            <a routerLink="/planes">PLANES Y PRECIOS</a>
             <a href="#contacto" (click)="irA('contacto', $event)">CONTACTO</a>
           </nav>
 
@@ -411,6 +411,12 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    // Quitar foco residual al regresar desde otra pantalla para que ningún botón quede "activado".
+    setTimeout(() => {
+      const activo = document.activeElement as HTMLElement | null;
+      activo?.blur?.();
+    }, 0);
+
     window.addEventListener('hashchange', this.hashChangeHandler);
     window.addEventListener('scroll', this.parallaxHandler, { passive: true });
     this.parallaxHandler();
