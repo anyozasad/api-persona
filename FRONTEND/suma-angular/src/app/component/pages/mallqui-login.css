@@ -3599,3 +3599,54 @@
     height:54px!important;
   }
 }
+
+
+/* =========================================================
+   LOGIN V12 · MAS ANCHO (rellena los espacios laterales)
+   ========================================================= */
+.mq-login-box{
+  width:min(760px,calc(100% - 72px))!important;
+  padding-left:54px!important;
+  padding-right:54px!important;
+}
+
+.mq-login-box::before{
+  left:54px!important;
+  right:54px!important;
+}
+
+.mq-login-box-head{
+  max-width:620px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+
+.mq-login-box form,
+.mq-login-register,
+.mq-selected-plan{
+  width:100%!important;
+  max-width:650px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+
+@media(max-width:900px){
+  .mq-login-box{
+    width:min(680px,calc(100% - 32px))!important;
+    padding-left:34px!important;
+    padding-right:34px!important;
+  }
+
+  .mq-login-box::before{
+    left:34px!important;
+    right:34px!important;
+  }
+}
+
+@media(max-width:560px){
+  .mq-login-box{
+    width:calc(100% - 22px)!important;
+    padding-left:20px!important;
+    padding-right:20px!important;
+  }
+}
