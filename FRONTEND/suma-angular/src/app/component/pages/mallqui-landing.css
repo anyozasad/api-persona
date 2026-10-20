@@ -2487,3 +2487,111 @@ html{scroll-behavior:smooth}
     transform:none !important;
   }
 }
+
+
+/* LOGIN · ANIMACION PROFESIONAL TIPO WIX 17:09 */
+.mq-login,
+.mq-login:link,
+.mq-login:visited,
+.mq-login:focus{
+  position:absolute !important;
+  overflow:visible !important;
+  color:#ff6047 !important;
+  opacity:.94 !important;
+  transform:translateY(-50%) !important;
+  transition:
+    color .26s ease,
+    opacity .26s ease,
+    filter .26s ease !important;
+}
+
+/* entrada corta al abrir la interfaz, sin dejar estado pegado */
+.mq-public-home:not(.mq-no-return-animation) .mq-login{
+  animation:mqLoginWixEnter .62s .32s cubic-bezier(.22,.8,.22,1) both !important;
+}
+
+/* aro sutil que aparece solo al pasar el mouse */
+.mq-login::before{
+  content:"" !important;
+  position:absolute !important;
+  left:-14px !important;
+  right:-14px !important;
+  top:-11px !important;
+  bottom:-11px !important;
+  width:auto !important;
+  height:auto !important;
+  display:block !important;
+  border:1px solid rgba(255,96,71,0) !important;
+  border-radius:999px !important;
+  opacity:0 !important;
+  transform:scale(.88) !important;
+  background:rgba(255,96,71,0) !important;
+  pointer-events:none !important;
+  transition:
+    opacity .26s ease,
+    transform .32s cubic-bezier(.2,.9,.2,1),
+    border-color .26s ease,
+    background-color .26s ease !important;
+}
+
+.mq-login:hover,
+.mq-login:focus-visible{
+  color:#ff725e !important;
+  opacity:1 !important;
+  filter:brightness(1.06) !important;
+  transform:translateY(-50%) !important;
+}
+
+.mq-login:hover::before,
+.mq-login:focus-visible::before{
+  opacity:1 !important;
+  transform:scale(1) !important;
+  border-color:rgba(255,96,71,.48) !important;
+  background:rgba(255,96,71,.045) !important;
+}
+
+.mq-user-icon{
+  transform:none !important;
+  animation:none !important;
+  transition:
+    transform .30s cubic-bezier(.2,.9,.2,1),
+    box-shadow .30s ease,
+    filter .30s ease !important;
+}
+
+.mq-login:hover .mq-user-icon,
+.mq-login:focus-visible .mq-user-icon{
+  transform:scale(1.09) !important;
+  box-shadow:0 0 0 5px rgba(255,96,71,.10) !important;
+  filter:brightness(1.08) !important;
+}
+
+.mq-login:active{
+  opacity:.84 !important;
+  transform:translateY(-50%) !important;
+}
+
+.mq-login:active .mq-user-icon{
+  transform:scale(.94) !important;
+  box-shadow:0 0 0 3px rgba(255,96,71,.08) !important;
+}
+
+@keyframes mqLoginWixEnter{
+  from{
+    opacity:0;
+    transform:translateY(calc(-50% + 14px)) scale(.96);
+  }
+  to{
+    opacity:.94;
+    transform:translateY(-50%) scale(1);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .mq-public-home .mq-login,
+  .mq-user-icon,
+  .mq-login::before{
+    animation:none !important;
+    transition:none !important;
+  }
+}
