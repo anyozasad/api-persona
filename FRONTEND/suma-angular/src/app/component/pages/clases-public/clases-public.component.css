@@ -237,3 +237,96 @@ nav a.active{color:#d4d0d2}
     transform:none !important;
   }
 }
+
+
+/* =========================================================
+   ANIMACIÓN FINAL · MIS CLASES
+   Misma entrada visual que la pantalla principal.
+   ========================================================= */
+@media (min-width:761px){
+  .classes-nav{
+    animation:classesNavEnter .52s cubic-bezier(.22,.8,.22,1) both;
+  }
+
+  .classes-nav nav a{
+    opacity:0;
+    animation:classesNavItemIn .40s ease-out forwards;
+  }
+
+  .classes-nav nav a:nth-child(1){animation-delay:.08s}
+  .classes-nav nav a:nth-child(2){animation-delay:.12s}
+  .classes-nav nav a:nth-child(3){animation-delay:.16s}
+  .classes-nav nav a:nth-child(4){animation-delay:.20s}
+  .classes-nav nav a:nth-child(5){animation-delay:.24s}
+  .classes-nav nav a:nth-child(6){animation-delay:.28s}
+  .classes-nav nav a:nth-child(7){animation-delay:.32s}
+
+  .classes-nav .login{
+    opacity:0;
+    animation:classesLoginIn .44s ease-out .28s forwards;
+  }
+
+  .classes-main{
+    animation:classesScreenIn .52s ease-out both !important;
+  }
+
+  .title h1{
+    opacity:0;
+    animation:classesBigTitleIn .68s cubic-bezier(.22,.8,.22,1) .14s forwards;
+  }
+
+  .class-grid article{
+    opacity:0;
+    animation:classesCardReveal .62s cubic-bezier(.22,.8,.22,1) forwards !important;
+  }
+
+  .class-grid article:nth-child(1){animation-delay:.26s !important}
+  .class-grid article:nth-child(2){animation-delay:.36s !important}
+  .class-grid article:nth-child(3){animation-delay:.46s !important}
+}
+
+@keyframes classesNavEnter{
+  from{opacity:0;transform:translateY(-18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes classesNavItemIn{
+  from{opacity:0;transform:translateY(-8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes classesLoginIn{
+  from{opacity:0;transform:translateY(-50%) translateX(12px)}
+  to{opacity:1;transform:translateY(-50%) translateX(0)}
+}
+
+@keyframes classesScreenIn{
+  from{opacity:.35}
+  to{opacity:1}
+}
+
+@keyframes classesBigTitleIn{
+  from{
+    opacity:0;
+    transform:translateY(20px) scale(.97);
+    letter-spacing:10px;
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    letter-spacing:3px;
+  }
+}
+
+@keyframes classesCardReveal{
+  from{
+    opacity:0;
+    transform:translateY(30px) scale(.97);
+    filter:blur(2px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    filter:blur(0);
+  }
+}
