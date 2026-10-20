@@ -1610,3 +1610,151 @@ html{scroll-behavior:smooth}
   .mq-login{font-size:14px !important}
   .mq-user-icon{width:28px !important;height:28px !important;flex-basis:28px !important}
 }
+
+
+/* =========================================================
+   ANIMACIÓN DE ENTRADA · HOME WIX
+   Mantiene el diseño y anima solo la entrada visual.
+   ========================================================= */
+@media (min-width: 821px) {
+  .mq-topbar{
+    animation:mqNavEnter .55s cubic-bezier(.22,.8,.22,1) both;
+  }
+
+  .mq-menu a{
+    opacity:0;
+    animation:mqMenuItemEnter .42s ease-out forwards;
+  }
+
+  .mq-menu a:nth-child(1){animation-delay:.08s}
+  .mq-menu a:nth-child(2){animation-delay:.12s}
+  .mq-menu a:nth-child(3){animation-delay:.16s}
+  .mq-menu a:nth-child(4){animation-delay:.20s}
+  .mq-menu a:nth-child(5){animation-delay:.24s}
+  .mq-menu a:nth-child(6){animation-delay:.28s}
+  .mq-menu a:nth-child(7){animation-delay:.32s}
+  .mq-menu a:nth-child(8){animation-delay:.36s}
+
+  .mq-login{
+    opacity:0;
+    animation:mqLoginEnter .46s ease-out .30s forwards;
+  }
+
+  .mq-hero-overlay{
+    animation:mqHeroOverlayIn .72s ease-out both;
+  }
+
+  .mq-overline{
+    opacity:0;
+    animation:mqHeroTextIn .48s ease-out .20s forwards;
+  }
+
+  .mq-hero h1{
+    opacity:0;
+    animation:mqHeroTitleIn .68s cubic-bezier(.22,.8,.22,1) .28s forwards;
+  }
+
+  .mq-hero-sub{
+    opacity:0;
+    animation:mqHeroTextIn .48s ease-out .42s forwards;
+  }
+
+  .mq-hero-actions{
+    opacity:0;
+    animation:mqHeroButtonIn .48s ease-out .54s forwards;
+  }
+
+  .mq-hero-dots{
+    opacity:0;
+    animation:mqHeroTextIn .42s ease-out .66s forwards;
+  }
+}
+
+@keyframes mqNavEnter{
+  from{
+    opacity:0;
+    transform:translateY(-18px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes mqMenuItemEnter{
+  from{
+    opacity:0;
+    transform:translateY(-8px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes mqLoginEnter{
+  from{
+    opacity:0;
+    transform:translateY(-50%) translateX(12px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(-50%) translateX(0);
+  }
+}
+
+@keyframes mqHeroOverlayIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+@keyframes mqHeroTextIn{
+  from{
+    opacity:0;
+    transform:translateY(14px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes mqHeroTitleIn{
+  from{
+    opacity:0;
+    transform:translateY(22px) scale(.97);
+    letter-spacing:18px;
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    letter-spacing:13px;
+  }
+}
+
+@keyframes mqHeroButtonIn{
+  from{
+    opacity:0;
+    transform:translateY(18px) scale(.96);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .mq-topbar,
+  .mq-menu a,
+  .mq-login,
+  .mq-hero-overlay,
+  .mq-overline,
+  .mq-hero h1,
+  .mq-hero-sub,
+  .mq-hero-actions,
+  .mq-hero-dots{
+    animation:none!important;
+    opacity:1!important;
+    transform:none!important;
+  }
+}
