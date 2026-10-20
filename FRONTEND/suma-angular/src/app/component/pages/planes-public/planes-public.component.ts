@@ -16,6 +16,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             <a routerLink="/">INICIO</a>
             <a routerLink="/" fragment="entrenamiento">ENTRENAMIENTO</a>
             <a routerLink="/" fragment="entrenador">SOBRE MÍ</a>
+            <a routerLink="/" fragment="victorias">VICTORIAS</a>
             <a routerLink="/" fragment="gimnasio">GIMNASIO</a>
             <a routerLink="/clases-gym">RESERVAR SESIÓN</a>
             <a routerLink="/planes">PLANES Y PRECIOS</a>
@@ -79,8 +80,14 @@ export class PlanesPublicComponent implements OnInit {
     this.api.informacionGym().subscribe({
       next:(r:any)=>{
         const datos=Array.isArray(r?.membresias)?r.membresias:[];
-        if(!datos.length)return;
-        this.planes=datos.map((m:any)=>({
+
+        const base=[
+          {id_membresia:0,nombre:'Mensualidad 1 mes',precio:80,duracion_meses:1,destacado:false,items:['Acceso al gimnasio durante 1 mes','Guía e instrucciones a cargo del personal del gym','Credencial digital','Rutina y control de asistencias']},
+          {id_membresia:0,nombre:'Promoción 2 meses',precio:120,duracion_meses:2,destacado:true,items:['Acceso al gimnasio durante 2 meses','Guía e instrucciones a cargo del personal del gym','Credencial digital','Rutina y control de asistencias']},
+          {id_membresia:0,nombre:'Promoción 3 meses',precio:150,duracion_meses:3,destacado:false,items:['Acceso al gimnasio durante 3 meses','Guía e instrucciones a cargo del personal del gym','Credencial digital','Rutina y control de asistencias']}
+        ];
+
+        const normalizados=datos.map((m:any)=>({
           id_membresia:Number(m.id_membresia||0),
           nombre:m.nombre,
           precio:Number(m.precio||0),
@@ -95,6 +102,11 @@ export class PlanesPublicComponent implements OnInit {
                 'Rutina y control de asistencias'
               ]
         }));
+
+        this.planes=base.map((fallback:any)=>{
+          const real=normalizados.find((p:any)=>p.duracion_meses===fallback.duracion_meses);
+          return real ? {...fallback,...real,destacado:fallback.duracion_meses===2} : fallback;
+        });
       },
       error:()=>{}
     });
