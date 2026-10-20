@@ -252,3 +252,122 @@ nav a:hover{
   .plan-grid article{transform:none !important}
   .plan-grid article.featured{transform:translateY(-12px) !important}
 }
+
+
+/* =========================================================
+   ANIMACIÓN FINAL · PLANES Y PRECIOS
+   Misma entrada visual que la pantalla principal.
+   ========================================================= */
+@media (min-width:621px){
+  .planes-nav{
+    animation:planesNavEnter .52s cubic-bezier(.22,.8,.22,1) both;
+  }
+
+  .planes-nav nav a{
+    opacity:0;
+    animation:planesNavItemIn .40s ease-out forwards;
+  }
+
+  .planes-nav nav a:nth-child(1){animation-delay:.08s}
+  .planes-nav nav a:nth-child(2){animation-delay:.12s}
+  .planes-nav nav a:nth-child(3){animation-delay:.16s}
+  .planes-nav nav a:nth-child(4){animation-delay:.20s}
+  .planes-nav nav a:nth-child(5){animation-delay:.24s}
+  .planes-nav nav a:nth-child(6){animation-delay:.28s}
+  .planes-nav nav a:nth-child(7){animation-delay:.32s}
+
+  .planes-nav .login{
+    opacity:0;
+    animation:planesLoginIn .44s ease-out .28s forwards;
+  }
+
+  .pricing{
+    animation:planesScreenIn .52s ease-out both !important;
+  }
+
+  .title p{
+    opacity:0;
+    animation:planesEyebrowIn .46s ease-out .12s forwards !important;
+  }
+
+  .title h1{
+    opacity:0;
+    animation:planesHeadingIn .68s cubic-bezier(.22,.8,.22,1) .18s forwards !important;
+  }
+
+  .plan-grid article{
+    opacity:0;
+    animation:planesCardReveal .62s cubic-bezier(.22,.8,.22,1) forwards !important;
+  }
+
+  .plan-grid article:nth-child(1){animation-delay:.30s !important}
+  .plan-grid article:nth-child(2){
+    animation-name:planesFeaturedReveal !important;
+    animation-delay:.40s !important;
+  }
+  .plan-grid article:nth-child(3){animation-delay:.50s !important}
+}
+
+@keyframes planesNavEnter{
+  from{opacity:0;transform:translateY(-18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes planesNavItemIn{
+  from{opacity:0;transform:translateY(-8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes planesLoginIn{
+  from{opacity:0;transform:translateY(-50%) translateX(12px)}
+  to{opacity:1;transform:translateY(-50%) translateX(0)}
+}
+
+@keyframes planesScreenIn{
+  from{opacity:.35}
+  to{opacity:1}
+}
+
+@keyframes planesEyebrowIn{
+  from{opacity:0;transform:translateY(12px);letter-spacing:12px}
+  to{opacity:1;transform:translateY(0);letter-spacing:7px}
+}
+
+@keyframes planesHeadingIn{
+  from{
+    opacity:0;
+    transform:translateY(22px) scale(.97);
+    letter-spacing:9px;
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    letter-spacing:3px;
+  }
+}
+
+@keyframes planesCardReveal{
+  from{
+    opacity:0;
+    transform:translateY(34px) scale(.97);
+    filter:blur(2px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    filter:blur(0);
+  }
+}
+
+@keyframes planesFeaturedReveal{
+  from{
+    opacity:0;
+    transform:translateY(22px) scale(.97);
+    filter:blur(2px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(-12px) scale(1);
+    filter:blur(0);
+  }
+}
