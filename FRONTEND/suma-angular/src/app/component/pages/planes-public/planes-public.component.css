@@ -660,3 +660,39 @@ nav a:hover{
   height:0 !important;
   opacity:0 !important;
 }
+
+
+/* =========================================================
+   CONTACTO Y REGRESO UNIFORMES
+   Todos los enlaces que regresan al home, incluido CONTACTO,
+   quedan con el mismo comportamiento visual que los demás.
+   ========================================================= */
+.planes-nav nav a,
+.planes-nav nav a:visited,
+.planes-nav nav a:focus,
+.planes-nav nav a:hover,
+.planes-nav nav a:active{
+  text-decoration:none !important;
+  outline:none !important;
+}
+
+.planes-nav nav a[href="/#contacto"],
+.planes-nav nav a[href="/#contacto"]:visited,
+.planes-nav nav a[href="/#contacto"]:focus{
+  color:#d6d1d3 !important;
+  transform:none !important;
+  animation:none !important;
+  letter-spacing:-.15px !important;
+  text-shadow:none !important;
+}
+
+@media (min-width:821px){
+  .planes-nav nav a[href="/#contacto"]:hover{
+    color:#ff6047 !important;
+    transform:translateY(-2px) scale(1.035) !important;
+  }
+
+  .planes-nav nav a[href="/#contacto"]:active{
+    transform:translateY(0) scale(.96) !important;
+  }
+}
