@@ -696,3 +696,41 @@ nav a:hover{
     transform:translateY(0) scale(.96) !important;
   }
 }
+
+
+/* =========================================================
+   ENLACES DE REGRESO SIN ANIMACION
+   INICIO, ENTRENAMIENTO, SOBRE MÍ, VICTORIAS, GIMNASIO
+   y CONTACTO no deben animarse cuando sirven para regresar
+   desde una pantalla secundaria.
+   ========================================================= */
+.planes-nav nav a.home-return-link,
+.planes-nav nav a.home-return-link:link,
+.planes-nav nav a.home-return-link:visited,
+.planes-nav nav a.home-return-link:focus,
+.planes-nav nav a.home-return-link:hover,
+.planes-nav nav a.home-return-link:active{
+  color:#d6d1d3 !important;
+  transform:none !important;
+  animation:none !important;
+  transition:none !important;
+  letter-spacing:-.15px !important;
+  text-shadow:none !important;
+  text-decoration:none !important;
+  outline:none !important;
+}
+
+.planes-nav nav a.home-return-link::before,
+.planes-nav nav a.home-return-link::after,
+.planes-nav nav a.home-return-link:hover::before,
+.planes-nav nav a.home-return-link:hover::after,
+.planes-nav nav a.home-return-link:focus::before,
+.planes-nav nav a.home-return-link:focus::after,
+.planes-nav nav a.home-return-link:active::before,
+.planes-nav nav a.home-return-link:active::after{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  opacity:0 !important;
+}
