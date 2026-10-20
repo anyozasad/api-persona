@@ -1,51 +1,101 @@
-:host{display:block}
-*{box-sizing:border-box}
+:host{
+  display:block;
+}
+
+*{
+  box-sizing:border-box;
+}
+
 .classes-page{
   --bg:#211f26;
-  --card:#2b272e;
+  --nav:#26232b;
+  --card:#2a262e;
   --accent:#ff6047;
   min-height:100vh;
   background:var(--bg);
   color:#fff;
-  font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif;
+  font-family:"Arial Narrow","Roboto Condensed","Segoe UI",Arial,sans-serif;
 }
+
 .classes-shell{
   width:min(1180px,calc(100% - 44px));
   margin:0 auto;
 }
+
+/* =========================================================
+   NAVBAR · MISMO ESTILO DEL PRINCIPAL
+   ========================================================= */
 .classes-nav{
   position:fixed;
   z-index:1000;
-  top:0;left:0;right:0;
-  background:#211f26;
-  border-bottom:1px solid rgba(255,255,255,.05);
+  top:0;
+  left:0;
+  right:0;
+  height:92px;
+  background:var(--nav);
+  border-bottom:1px solid rgba(255,255,255,.035);
 }
-.nav-inner{
+
+.classes-shell.nav-inner{
   position:relative;
-  min-height:112px;
+  width:min(1080px,calc(100% - 80px));
+  height:92px;
+  min-height:92px;
+  margin:0 auto;
+  padding:0 120px 0 0;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:0 130px;
 }
-nav{
+
+.classes-nav nav{
+  width:860px;
+  max-width:calc(100% - 10px);
   display:flex;
   align-items:center;
-  justify-content:center;
-  gap:14px;
+  justify-content:space-between;
+  gap:0;
+  flex-wrap:nowrap;
 }
-nav a{
-  position:relative;
-  padding:16px 13px;
-  color:#d4d0d2;
-  text-decoration:none;
-  font-size:16px;
-  font-weight:700;
-  letter-spacing:.45px;
+
+.classes-nav nav a,
+.classes-nav nav a:link,
+.classes-nav nav a:visited,
+.classes-nav nav a:focus{
+  flex:0 0 auto;
+  margin:0;
+  padding:34px 0 32px;
+  color:#d6d1d3;
+  opacity:.92;
+  font-family:"Arial Narrow","Roboto Condensed","Segoe UI",Arial,sans-serif;
+  font-size:15px;
+  font-weight:400;
+  letter-spacing:-.15px;
+  line-height:1;
   white-space:nowrap;
+  text-decoration:none;
+  text-shadow:none;
+  outline:none;
+  transform:none;
+  animation:none;
+  transition:color .25s ease,opacity .25s ease;
 }
-nav a:hover{color:var(--accent)}
-nav a.active{color:#d4d0d2}
+
+.classes-nav nav a:hover{
+  color:var(--accent);
+  opacity:1;
+}
+
+.classes-nav nav a:active{
+  color:var(--accent);
+  opacity:.78;
+}
+
+.classes-nav nav a::before,
+.classes-nav nav a::after{
+  content:none;
+  display:none;
+}
 
 .login{
   position:absolute;
@@ -55,1388 +105,512 @@ nav a.active{color:#d4d0d2}
   display:flex;
   align-items:center;
   justify-content:flex-end;
-  gap:11px;
+  gap:10px;
   color:var(--accent);
+  opacity:.92;
   text-decoration:none;
-  font-size:18px;
-  font-weight:600;
+  font-size:16px;
+  font-weight:400;
+  animation:none;
+  transition:color .25s ease,opacity .25s ease;
 }
+
+.login:hover{
+  color:#ff725e;
+  opacity:1;
+}
+
+.login:active{
+  opacity:.78;
+}
+
 .user-icon{
   position:relative;
-  width:42px;height:42px;
-  flex:0 0 42px;
+  width:30px;
+  height:30px;
+  flex:0 0 30px;
   border-radius:50%;
   background:var(--accent);
+  transform:none;
+  animation:none;
+  box-shadow:none;
 }
+
 .user-icon i{
   position:absolute;
-  left:50%;top:9px;
-  width:12px;height:12px;
+  left:50%;
+  top:6px;
+  width:9px;
+  height:9px;
   transform:translateX(-50%);
   border-radius:50%;
   background:#211f26;
 }
+
 .user-icon b{
   position:absolute;
-  left:50%;bottom:6px;
-  width:24px;height:13px;
+  left:50%;
+  bottom:4px;
+  width:18px;
+  height:10px;
   transform:translateX(-50%);
   border-radius:10px 10px 4px 4px;
   background:#211f26;
 }
+
+/* =========================================================
+   MIS CLASES · COMPOSICIÓN TIPO WIX
+   ========================================================= */
 .classes-main{
   min-height:100vh;
-  padding:145px 0 90px;
-}
-.title{
-  text-align:center;
-  margin-bottom:78px;
-}
-.title h1{
-  margin:0;
-  font-size:clamp(76px,7vw,108px);
-  line-height:1;
-  font-weight:500;
-  letter-spacing:3px;
-}
-.class-grid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:28px;
-}
-.class-grid article{
-  min-height:545px;
-  overflow:hidden;
-  background:var(--card);
-  border:1px solid rgba(255,255,255,.06);
-  transition:transform .22s ease,box-shadow .22s ease;
-}
-.class-grid article:hover{
-  transform:translateY(-6px);
-  box-shadow:0 22px 45px rgba(0,0,0,.22);
-}
-.class-grid img{
-  width:100%;
-  height:285px;
-  display:block;
-  object-fit:cover;
-}
-.class-body{
-  padding:30px 34px 34px;
-}
-.class-body h2{
-  margin:0;
-  font-size:27px;
-  line-height:1.15;
-  font-weight:800;
-}
-.class-body p{
-  min-height:70px;
-  margin:20px 0 0;
-  color:#d0c9ce;
-  font:400 16px/1.65 Arial,sans-serif;
-}
-.class-meta{
-  display:flex;
-  justify-content:space-between;
-  gap:18px;
-  margin:30px 0 26px;
-  color:#a9a2a7;
-  font-size:12px;
-}
-.class-body>a{
-  min-height:58px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border:1px solid var(--accent);
-  color:var(--accent);
-  text-decoration:none;
-  font-weight:700;
-  transition:background .2s ease,color .2s ease,transform .2s ease;
-}
-.class-body>a:hover{
-  background:var(--accent);
-  color:#211f26;
-  transform:translateY(-2px);
-}
-.chat-link{
-  position:fixed;
-  right:28px;
-  bottom:24px;
-  width:68px;
-  height:68px;
-  display:grid;
-  place-items:center;
-  border-radius:50%;
-  background:var(--accent);
-  color:#211f26;
-  text-decoration:none;
-  font-weight:900;
-  box-shadow:0 14px 35px rgba(0,0,0,.28);
-}
-.chat-link span{
-  position:relative;
-  top:-2px;
-  font-size:20px;
-  letter-spacing:1px;
-}
-@media(max-width:980px){
-  .nav-inner{padding:0 90px}
-  nav{overflow-x:auto;justify-content:flex-start}
-  .class-grid{gap:20px}
-  .title{margin-bottom:70px}
-  .class-grid img{height:240px}
-  .class-body h2{font-size:24px}
-}
-@media(max-width:760px){
-  .class-grid{grid-template-columns:1fr}
-  .classes-shell{width:calc(100% - 28px)}
-  .nav-inner{min-height:118px;padding:12px 70px 12px 0;justify-content:flex-start}
-  nav{justify-content:flex-start;flex-wrap:wrap}
-  nav a{padding:12px 9px}
-  .classes-main{padding-top:145px}
-  .title{margin-bottom:48px}
-  .title h1{font-size:56px}
-  .class-grid img{height:300px}
-}
-
-/* Animación de entrada suave de la interfaz */
-.classes-main{
-  animation:classesPageIn .42s ease-out both;
-}
-.title{
-  opacity:0;
-  animation:classesTitleIn .58s .08s cubic-bezier(.22,.8,.22,1) forwards;
-}
-.class-grid article{
-  opacity:0;
-  transform:translateY(24px);
-  animation:classCardIn .56s cubic-bezier(.22,.8,.22,1) forwards;
-}
-.class-grid article:nth-child(1){animation-delay:.18s}
-.class-grid article:nth-child(2){animation-delay:.28s}
-.class-grid article:nth-child(3){animation-delay:.38s}
-
-@keyframes classesPageIn{
-  from{opacity:.35}
-  to{opacity:1}
-}
-@keyframes classesTitleIn{
-  from{opacity:0;transform:translateY(-18px)}
-  to{opacity:1;transform:translateY(0)}
-}
-@keyframes classCardIn{
-  from{opacity:0;transform:translateY(24px)}
-  to{opacity:1;transform:translateY(0)}
-}
-@media (prefers-reduced-motion: reduce){
-  .classes-main,.title,.class-grid article{
-    animation:none !important;
-    opacity:1 !important;
-    transform:none !important;
-  }
-}
-
-
-/* =========================================================
-   ANIMACIÓN FINAL · MIS CLASES
-   Misma entrada visual que la pantalla principal.
-   ========================================================= */
-@media (min-width:761px){
-  .classes-nav{
-    animation:classesNavEnter .52s cubic-bezier(.22,.8,.22,1) both;
-  }
-
-  .classes-nav nav a{
-    opacity:0;
-    animation:classesNavItemIn .40s ease-out forwards;
-  }
-
-  .classes-nav nav a:nth-child(1){animation-delay:.08s}
-  .classes-nav nav a:nth-child(2){animation-delay:.12s}
-  .classes-nav nav a:nth-child(3){animation-delay:.16s}
-  .classes-nav nav a:nth-child(4){animation-delay:.20s}
-  .classes-nav nav a:nth-child(5){animation-delay:.24s}
-  .classes-nav nav a:nth-child(6){animation-delay:.28s}
-  .classes-nav nav a:nth-child(7){animation-delay:.32s}
-  .classes-nav nav a:nth-child(8){animation-delay:.36s}
-
-  .classes-nav .login{
-    opacity:0;
-    animation:classesLoginIn .44s ease-out .28s forwards;
-  }
-
-  .classes-main{
-    animation:classesScreenIn .52s ease-out both !important;
-  }
-
-  .title h1{
-    opacity:0;
-    animation:classesBigTitleIn .68s cubic-bezier(.22,.8,.22,1) .14s forwards;
-  }
-
-  .class-grid article{
-    opacity:0;
-    animation:classesCardReveal .62s cubic-bezier(.22,.8,.22,1) forwards !important;
-  }
-
-  .class-grid article:nth-child(1){animation-delay:.26s !important}
-  .class-grid article:nth-child(2){animation-delay:.36s !important}
-  .class-grid article:nth-child(3){animation-delay:.46s !important}
-}
-
-@keyframes classesNavEnter{
-  from{opacity:0;transform:translateY(-18px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
-@keyframes classesNavItemIn{
-  from{opacity:0;transform:translateY(-8px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
-@keyframes classesLoginIn{
-  from{opacity:0;transform:translateY(-50%) translateX(12px)}
-  to{opacity:1;transform:translateY(-50%) translateX(0)}
-}
-
-@keyframes classesScreenIn{
-  from{opacity:.35}
-  to{opacity:1}
-}
-
-@keyframes classesBigTitleIn{
-  from{
-    opacity:0;
-    transform:translateY(20px) scale(.97);
-    letter-spacing:10px;
-  }
-  to{
-    opacity:1;
-    transform:translateY(0) scale(1);
-    letter-spacing:3px;
-  }
-}
-
-@keyframes classesCardReveal{
-  from{
-    opacity:0;
-    transform:translateY(30px) scale(.97);
-    filter:blur(2px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0) scale(1);
-    filter:blur(0);
-  }
-}
-
-
-/* =========================================================
-   NAVBAR UNIFICADO CON LA PANTALLA PRINCIPAL
-   Misma altura, tipografía, espacios, icono y Login.
-   ========================================================= */
-@media (min-width:981px){
-  .classes-nav{
-    height:92px !important;
-    background:#26232b !important;
-    border-bottom:1px solid rgba(255,255,255,.035) !important;
-    box-shadow:none !important;
-  }
-
-  .classes-shell.nav-inner{
-    width:min(1080px,calc(100% - 80px)) !important;
-    min-height:92px !important;
-    height:92px !important;
-    padding:0 120px 0 0 !important;
-  }
-
-  .classes-nav nav{
-    gap:25px !important;
-    overflow:visible !important;
-  }
-
-  .classes-nav nav a{
-    padding:34px 0 32px !important;
-    color:#d6d1d3 !important;
-    font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
-    font-size:15px !important;
-    font-weight:400 !important;
-    letter-spacing:-.15px !important;
-    line-height:1 !important;
-    white-space:nowrap !important;
-    text-shadow:none !important;
-  }
-
-  .classes-nav nav a::before,
-  .classes-nav nav a::after{
-    content:none !important;
-    display:none !important;
-  }
-
-  .classes-nav nav a:hover{
-    color:#ff6047 !important;
-    transform:translateY(-2px) scale(1.035) !important;
-  }
-
-  .classes-nav .login{
-    right:0 !important;
-    gap:10px !important;
-    color:#ff6047 !important;
-    font-size:16px !important;
-    font-weight:400 !important;
-  }
-
-  .classes-nav .user-icon{
-    width:30px !important;
-    height:30px !important;
-    flex:0 0 30px !important;
-    box-shadow:none !important;
-  }
-
-  .classes-nav .user-icon i{
-    top:6px !important;
-    width:9px !important;
-    height:9px !important;
-  }
-
-  .classes-nav .user-icon b{
-    bottom:4px !important;
-    width:18px !important;
-    height:10px !important;
-  }
-
-  .classes-main{
-    padding-top:125px !important;
-  }
-}
-
-
-/* =========================================================
-   NAVBAR EXACTO Y UNIFORME · CORRECCIÓN DE ESPACIADO
-   Misma distribución en Inicio, Mis Clases y Planes.
-   Corrige la separación visual entre RESERVAR SESIÓN
-   y PLANES Y PRECIOS sin mover Login.
-   ========================================================= */
-@media (min-width:1060px){
-  .classes-shell.nav-inner{
-    display:flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-    padding-right:120px !important;
-  }
-
-  .classes-nav nav{
-    width:860px !important;
-    max-width:calc(100% - 10px) !important;
-    display:flex !important;
-    align-items:center !important;
-    justify-content:space-between !important;
-    gap:0 !important;
-    flex-wrap:nowrap !important;
-  }
-
-  .classes-nav nav a{
-    flex:0 0 auto !important;
-    margin:0 !important;
-    white-space:nowrap !important;
-  }
-
-  .classes-nav nav a::before,
-  .classes-nav nav a::after{
-    content:none !important;
-    display:none !important;
-  }
-
-  .classes-nav .login{
-    right:0 !important;
-  }
-}
-
-
-/* =========================================================
-   MISMA ANIMACIÓN DE BOTONES QUE EL HOME
-   Todos los botones, incluidos RESERVAR SESIÓN y
-   PLANES Y PRECIOS, reaccionan igual que en la pantalla principal.
-   ========================================================= */
-@media (min-width:821px){
-  .classes-nav nav a{
-    position:relative !important;
-    transition:
-      color .24s ease,
-      transform .24s cubic-bezier(.22,.8,.22,1),
-      letter-spacing .24s ease,
-      opacity .24s ease !important;
-    transform-origin:center !important;
-  }
-
-  .classes-nav nav a:hover{
-    color:#ff6047 !important;
-    transform:translateY(-2px) scale(1.035) !important;
-    letter-spacing:.18px !important;
-  }
-
-  .classes-nav nav a:active{
-    transform:translateY(0) scale(.96) !important;
-    transition-duration:.08s !important;
-  }
-
-  .classes-nav nav a::before,
-  .classes-nav nav a:hover::before,
-  .classes-nav nav a::after,
-  .classes-nav nav a:hover::after{
-    content:none !important;
-    display:none !important;
-    width:0 !important;
-    height:0 !important;
-    opacity:0 !important;
-  }
-
-  .classes-nav .login{
-    transition:
-      color .24s ease,
-      transform .24s cubic-bezier(.22,.8,.22,1) !important;
-  }
-
-  .classes-nav .login:hover{
-    color:#ff725e !important;
-    transform:translateY(-50%) scale(1.035) !important;
-  }
-
-  .classes-nav .login:active{
-    transform:translateY(-50%) scale(.96) !important;
-  }
-
-  .classes-nav .user-icon{
-    transition:
-      transform .24s cubic-bezier(.22,.8,.22,1),
-      box-shadow .24s ease !important;
-  }
-
-  .classes-nav .login:hover .user-icon{
-    transform:rotate(5deg) scale(1.08) !important;
-    box-shadow:0 0 0 5px rgba(255,96,71,.11) !important;
-  }
-}
-
-@media (prefers-reduced-motion:reduce){
-  .classes-nav nav a,
-  .classes-nav .login,
-  .classes-nav .user-icon{
-    transition:none !important;
-  }
-}
-
-
-/* =========================================================
-   QUITAR ANIMACIÓN COMPLETA DE RUTA · MIS CLASES
-   La navegación queda igual al menú principal:
-   solo hover/click del botón, sin animar toda la pantalla.
-   ========================================================= */
-.classes-nav,
-.classes-nav nav a,
-.classes-nav .login,
-.classes-main,
-.title,
-.title h1,
-.class-grid article{
-  animation:none !important;
-}
-
-.classes-nav nav a,
-.classes-nav .login,
-.title,
-.title h1,
-.class-grid article{
-  opacity:1 !important;
-}
-
-.classes-nav nav a{
-  transform:none;
-}
-
-.classes-nav .login{
-  transform:translateY(-50%) !important;
-}
-
-.title,
-.title h1,
-.class-grid article{
-  transform:none !important;
-  filter:none !important;
-}
-
-/* Mantener únicamente la animación normal de botón, igual al home */
-@media (min-width:821px){
-  .classes-nav nav a{
-    transition:
-      color .24s ease,
-      transform .24s cubic-bezier(.22,.8,.22,1),
-      letter-spacing .24s ease !important;
-  }
-
-  .classes-nav nav a:hover{
-    color:#ff6047 !important;
-    transform:translateY(-2px) scale(1.035) !important;
-  }
-
-  .classes-nav nav a:active{
-    transform:translateY(0) scale(.96) !important;
-  }
-}
-
-
-/* =========================================================
-   BOTÓN DE RUTA ACTUAL SIN ANIMACIÓN
-   El botón de la página actual no se mueve ni hace zoom.
-   Queda visualmente igual a los botones principales.
-   ========================================================= */
-.classes-nav nav a[href="/clases-gym"],
-.classes-nav nav a[href="/clases-gym"]:hover,
-.classes-nav nav a[href="/clases-gym"]:active,
-.classes-nav nav a[href="/clases-gym"]:focus{
-  transform:none !important;
-  animation:none !important;
-  letter-spacing:-.15px !important;
-  text-shadow:none !important;
-}
-
-.classes-nav nav a[href="/clases-gym"]::before,
-.classes-nav nav a[href="/clases-gym"]::after,
-.classes-nav nav a[href="/clases-gym"]:hover::before,
-.classes-nav nav a[href="/clases-gym"]:hover::after{
-  content:none !important;
-  display:none !important;
-  width:0 !important;
-  height:0 !important;
-  opacity:0 !important;
-}
-
-
-/* =========================================================
-   CONTACTO Y REGRESO UNIFORMES
-   Todos los enlaces que regresan al home, incluido CONTACTO,
-   quedan con el mismo comportamiento visual que los demás.
-   ========================================================= */
-.classes-nav nav a,
-.classes-nav nav a:visited,
-.classes-nav nav a:focus,
-.classes-nav nav a:hover,
-.classes-nav nav a:active{
-  text-decoration:none !important;
-  outline:none !important;
-}
-
-.classes-nav nav a[href="/#contacto"],
-.classes-nav nav a[href="/#contacto"]:visited,
-.classes-nav nav a[href="/#contacto"]:focus{
-  color:#d6d1d3 !important;
-  transform:none !important;
-  animation:none !important;
-  letter-spacing:-.15px !important;
-  text-shadow:none !important;
-}
-
-@media (min-width:821px){
-  .classes-nav nav a[href="/#contacto"]:hover{
-    color:#ff6047 !important;
-    transform:translateY(-2px) scale(1.035) !important;
-  }
-
-  .classes-nav nav a[href="/#contacto"]:active{
-    transform:translateY(0) scale(.96) !important;
-  }
-}
-
-
-/* =========================================================
-   ENLACES DE REGRESO SIN ANIMACION
-   INICIO, ENTRENAMIENTO, SOBRE MÍ, VICTORIAS, GIMNASIO
-   y CONTACTO no deben animarse cuando sirven para regresar
-   desde una pantalla secundaria.
-   ========================================================= */
-.classes-nav nav a.home-return-link,
-.classes-nav nav a.home-return-link:link,
-.classes-nav nav a.home-return-link:visited,
-.classes-nav nav a.home-return-link:focus,
-.classes-nav nav a.home-return-link:hover,
-.classes-nav nav a.home-return-link:active{
-  color:#d6d1d3 !important;
-  transform:none !important;
-  animation:none !important;
-  transition:none !important;
-  letter-spacing:-.15px !important;
-  text-shadow:none !important;
-  text-decoration:none !important;
-  outline:none !important;
-}
-
-.classes-nav nav a.home-return-link::before,
-.classes-nav nav a.home-return-link::after,
-.classes-nav nav a.home-return-link:hover::before,
-.classes-nav nav a.home-return-link:hover::after,
-.classes-nav nav a.home-return-link:focus::before,
-.classes-nav nav a.home-return-link:focus::after,
-.classes-nav nav a.home-return-link:active::before,
-.classes-nav nav a.home-return-link:active::after{
-  content:none !important;
-  display:none !important;
-  width:0 !important;
-  height:0 !important;
-  opacity:0 !important;
-}
-
-
-/* =========================================================
-   NAVBAR TOTALMENTE ESTATICO · SIN ANIMACION
-   Corrección definitiva:
-   todos los botones del menú quedan estáticos al entrar,
-   al regresar, al pasar el mouse, al enfocar y al hacer clic.
-   ========================================================= */
-.classes-nav nav a,
-.classes-nav nav a:link,
-.classes-nav nav a:visited,
-.classes-nav nav a:focus,
-.classes-nav nav a:hover,
-.classes-nav nav a:active{
-  animation:none !important;
-  transition:none !important;
-  transform:none !important;
-  color:#d6d1d3 !important;
-  letter-spacing:-.15px !important;
-  text-shadow:none !important;
-  text-decoration:none !important;
-  outline:none !important;
-  opacity:1 !important;
-}
-
-.classes-nav nav a::before,
-.classes-nav nav a::after,
-.classes-nav nav a:hover::before,
-.classes-nav nav a:hover::after,
-.classes-nav nav a:focus::before,
-.classes-nav nav a:focus::after,
-.classes-nav nav a:active::before,
-.classes-nav nav a:active::after{
-  content:none !important;
-  display:none !important;
-  width:0 !important;
-  height:0 !important;
-  opacity:0 !important;
-  animation:none !important;
-  transition:none !important;
-}
-
-.classes-nav .login,
-.classes-nav .login:link,
-.classes-nav .login:visited,
-.classes-nav .login:focus,
-.classes-nav .login:hover,
-.classes-nav .login:active{
-  animation:none !important;
-  transition:none !important;
-  transform:translateY(-50%) !important;
-  color:#ff6047 !important;
-  text-shadow:none !important;
-  outline:none !important;
-  opacity:1 !important;
-}
-
-.classes-nav .user-icon,
-.classes-nav .login:hover .classes-nav .user-icon{
-  animation:none !important;
-  transition:none !important;
-  transform:none !important;
-  box-shadow:none !important;
-}
-
-
-/* =========================================================
-   ANIMACION UNIFORME TIPO WIX · SIN MOVER BOTONES
-   Todos los botones se comportan igual:
-   cambio suave de color y opacidad, sin zoom, sin subir,
-   sin subrayados y sin animación residual al regresar.
-   ========================================================= */
-.classes-nav nav a,
-.classes-nav nav a:link,
-.classes-nav nav a:visited,
-.classes-nav nav a:focus{
-  color:#d6d1d3 !important;
-  opacity:.92 !important;
-  transform:none !important;
-  animation:none !important;
-  transition:
-    color .28s ease,
-    opacity .28s ease !important;
-  text-decoration:none !important;
-  text-shadow:none !important;
-  outline:none !important;
-}
-
-.classes-nav nav a:hover{
-  color:#ff6047 !important;
-  opacity:1 !important;
-  transform:none !important;
-  animation:none !important;
-}
-
-.classes-nav nav a:active{
-  color:#ff6047 !important;
-  opacity:.78 !important;
-  transform:none !important;
-  animation:none !important;
-}
-
-.classes-nav nav a::before,
-.classes-nav nav a::after,
-.classes-nav nav a:hover::before,
-.classes-nav nav a:hover::after,
-.classes-nav nav a:focus::before,
-.classes-nav nav a:focus::after,
-.classes-nav nav a:active::before,
-.classes-nav nav a:active::after{
-  content:none !important;
-  display:none !important;
-  width:0 !important;
-  height:0 !important;
-  opacity:0 !important;
-}
-
-.classes-nav .login,
-.classes-nav .login:link,
-.classes-nav .login:visited,
-.classes-nav .login:focus{
-  color:#ff6047 !important;
-  opacity:.92 !important;
-  animation:none !important;
-  transition:
-    color .28s ease,
-    opacity .28s ease !important;
-}
-
-.classes-nav .login:hover{
-  color:#ff725e !important;
-  opacity:1 !important;
-  animation:none !important;
-}
-
-.classes-nav .login:active{
-  opacity:.78 !important;
-}
-
-.classes-nav .user-icon,
-.classes-nav .login:hover .classes-nav .user-icon,
-.classes-nav .login:active .classes-nav .user-icon{
-  transform:none !important;
-  animation:none !important;
-  transition:opacity .28s ease !important;
-  box-shadow:none !important;
-}
-
-
-/* =========================================================
-   CLASES · DISEÑO FINAL TIPO WIX REFERENCIA
-   Tarjetas compactas, imagen superior corta, precio simple,
-   botón coral y bloque de contacto inferior.
-   ========================================================= */
-
-.classes-main{
-  min-height:100vh !important;
-  padding:92px 0 0 !important;
-  background:#211f26 !important;
+  padding:92px 0 0;
+  background:var(--bg);
 }
 
 .classes-content{
-  width:min(1110px,calc(100% - 44px)) !important;
-  padding:108px 0 86px !important;
+  width:100%;
+  max-width:none;
+  padding:96px 0 98px;
 }
 
 .title{
-  display:none !important;
+  display:block;
+  margin:0 0 160px;
+  text-align:center;
+  opacity:1;
+  transform:none;
+  animation:none;
+}
+
+.title h1{
+  display:inline-block;
+  margin:0;
+  color:#fff;
+  font-family:"Arial Narrow","Roboto Condensed","Segoe UI",Arial,sans-serif;
+  font-size:72px;
+  line-height:1;
+  font-weight:500;
+  letter-spacing:-1px;
+  font-stretch:condensed;
+  opacity:1;
+  transform:none;
+  animation:none;
 }
 
 .class-grid{
-  display:grid !important;
-  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-  gap:38px !important;
-  align-items:stretch !important;
+  width:1055px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(3,325px);
+  gap:40px;
+  align-items:start;
+  justify-content:center;
 }
 
 .class-grid article{
-  min-height:0 !important;
-  height:310px !important;
-  display:flex !important;
-  flex-direction:column !important;
-  overflow:hidden !important;
-  background:#2b272e !important;
-  border:1px solid rgba(255,255,255,.055) !important;
-  box-shadow:none !important;
-  transform:none !important;
-  animation:none !important;
-  opacity:1 !important;
-  filter:none !important;
-  transition:none !important;
-}
-
-.class-grid article:hover{
-  transform:none !important;
-  box-shadow:none !important;
+  width:325px;
+  height:440px;
+  min-height:440px;
+  margin:0;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  background:var(--card);
+  border:1px solid rgba(255,255,255,.04);
+  box-shadow:none;
+  opacity:1;
+  transform:none;
+  filter:none;
+  animation:none;
+  transition:none;
 }
 
 .class-image-wrap{
-  height:92px !important;
-  overflow:hidden !important;
-  background:#18171b !important;
+  width:100%;
+  height:218px;
+  flex:0 0 218px;
+  overflow:hidden;
+  background:#18171b;
 }
 
 .class-grid img{
-  width:100% !important;
-  height:100% !important;
-  display:block !important;
-  object-fit:cover !important;
-  object-position:center 45% !important;
-  filter:saturate(.75) contrast(1.02) brightness(.72) !important;
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  object-position:center;
+  filter:saturate(.82) contrast(1.03) brightness(.82);
 }
 
 .class-body{
-  flex:1 !important;
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:flex-start !important;
-  padding:34px 36px 36px !important;
+  height:222px;
+  flex:1;
+  padding:34px 30px 30px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
 }
 
 .class-body h2{
-  min-height:0 !important;
-  margin:0 !important;
-  color:#fff !important;
-  font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
-  font-size:23px !important;
-  line-height:1.15 !important;
-  font-weight:600 !important;
-  letter-spacing:0 !important;
+  min-height:0;
+  margin:0;
+  color:#fff;
+  font-family:"Arial Narrow","Roboto Condensed","Segoe UI",Arial,sans-serif;
+  font-size:21px;
+  line-height:1.16;
+  font-weight:650;
+  letter-spacing:-.45px;
 }
 
 .class-body p,
 .class-meta{
-  display:none !important;
+  display:none;
 }
 
 .class-price{
-  margin-top:24px !important;
-  color:#fff !important;
-  font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
-  font-size:17px !important;
-  font-weight:400 !important;
+  margin:24px 0 0;
+  color:#fff;
+  font-family:"Arial Narrow","Roboto Condensed","Segoe UI",Arial,sans-serif;
+  font-size:16px;
+  font-weight:400;
 }
 
 .class-body>a,
 .class-body>a:link,
 .class-body>a:visited,
 .class-body>a:focus{
-  width:auto !important;
-  min-width:132px !important;
-  min-height:48px !important;
-  margin-top:auto !important;
-  padding:0 20px !important;
-  display:inline-flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  border:0 !important;
-  background:#ff6047 !important;
-  color:#211f26 !important;
-  text-decoration:none !important;
-  font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
-  font-size:16px !important;
-  font-weight:500 !important;
-  transform:none !important;
-  box-shadow:none !important;
-  animation:none !important;
-  transition:background .22s ease,color .22s ease !important;
+  width:auto;
+  min-width:140px;
+  height:44px;
+  min-height:44px;
+  margin-top:auto;
+  padding:0 20px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  border-radius:0;
+  background:var(--accent);
+  color:#211f26;
+  text-decoration:none;
+  font-family:"Arial Narrow","Roboto Condensed","Segoe UI",Arial,sans-serif;
+  font-size:15px;
+  font-weight:400;
+  box-shadow:none;
+  transform:none;
+  animation:none;
+  transition:background .22s ease,color .22s ease;
 }
 
 .class-body>a:hover{
-  background:#ff725e !important;
-  color:#211f26 !important;
-  transform:none !important;
+  background:#ff725e;
+  color:#211f26;
 }
 
 .class-body>a:active{
-  background:#ef553f !important;
-  transform:none !important;
+  background:#ef553f;
 }
 
-/* Contacto coral como en la referencia */
+/* =========================================================
+   CONTACTO
+   ========================================================= */
 .classes-contact{
-  background:#ff6047 !important;
-  color:#211f26 !important;
-  padding:72px 0 84px !important;
+  margin:0;
+  padding:76px 0 88px;
+  background:var(--accent);
+  color:#211f26;
 }
 
 .classes-contact-inner{
-  width:min(1110px,calc(100% - 44px)) !important;
-  margin:0 auto !important;
-  display:grid !important;
-  grid-template-columns:.8fr 1.25fr !important;
-  gap:90px !important;
-  align-items:start !important;
+  width:min(1110px,calc(100% - 44px));
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:.8fr 1.25fr;
+  gap:90px;
+  align-items:start;
 }
 
 .classes-contact-kicker{
-  font-size:38px !important;
-  line-height:1 !important;
-  letter-spacing:11px !important;
-  font-weight:500 !important;
+  font-size:38px;
+  line-height:1;
+  letter-spacing:11px;
+  font-weight:500;
 }
 
 .classes-contact-copy h2{
-  margin:70px 0 18px !important;
-  font-size:30px !important;
-  line-height:1.1 !important;
-  font-weight:600 !important;
+  margin:70px 0 18px;
+  font-size:30px;
+  line-height:1.1;
+  font-weight:600;
 }
 
 .classes-contact-copy p{
-  max-width:390px !important;
-  margin:0 !important;
-  font:400 15px/1.6 Arial,sans-serif !important;
+  max-width:390px;
+  margin:0;
+  font:400 15px/1.6 Arial,sans-serif;
 }
 
 .classes-contact-form{
-  display:flex !important;
-  flex-direction:column !important;
-  gap:18px !important;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
 }
 
 .classes-contact-form .form-row{
-  display:grid !important;
-  grid-template-columns:1fr 1fr !important;
-  gap:18px !important;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
 }
 
 .classes-contact-form label{
-  display:flex !important;
-  flex-direction:column !important;
-  gap:9px !important;
-  color:#211f26 !important;
-  font-size:15px !important;
-  font-weight:400 !important;
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  color:#211f26;
+  font-size:15px;
+  font-weight:400;
 }
 
 .classes-contact-form input,
 .classes-contact-form textarea{
-  width:100% !important;
-  border:1px solid #211f26 !important;
-  border-radius:0 !important;
-  background:transparent !important;
-  color:#211f26 !important;
-  padding:12px 13px !important;
-  outline:none !important;
-  font:400 15px Arial,sans-serif !important;
+  width:100%;
+  border:1px solid #211f26;
+  border-radius:0;
+  background:transparent;
+  color:#211f26;
+  padding:12px 13px;
+  outline:none;
+  font:400 15px Arial,sans-serif;
 }
 
 .classes-contact-form input{
-  height:52px !important;
+  height:52px;
 }
 
 .classes-contact-form textarea{
-  resize:vertical !important;
+  resize:vertical;
 }
 
 .classes-contact-form button{
-  align-self:flex-start !important;
-  min-width:138px !important;
-  height:48px !important;
-  border:1px solid #211f26 !important;
-  background:#211f26 !important;
-  color:#fff !important;
-  cursor:pointer !important;
-  font-weight:600 !important;
+  align-self:flex-start;
+  min-width:138px;
+  height:48px;
+  border:1px solid #211f26;
+  border-radius:0;
+  background:#211f26;
+  color:#fff;
+  cursor:pointer;
+  font-weight:600;
 }
-
-@media(max-width:900px){
-  .classes-content{
-    padding-top:68px !important;
-  }
-
-  .class-grid{
-    grid-template-columns:1fr !important;
-    gap:22px !important;
-  }
-
-  .class-grid article{
-    height:auto !important;
-  }
-
-  .class-image-wrap{
-    height:210px !important;
-  }
-
-  .class-body{
-    min-height:210px !important;
-  }
-
-  .classes-contact-inner{
-    grid-template-columns:1fr !important;
-    gap:48px !important;
-  }
-}
-
-@media(max-width:620px){
-  .classes-content{
-    width:calc(100% - 28px) !important;
-  }
-
-  .classes-contact-inner{
-    width:calc(100% - 28px) !important;
-  }
-
-  .classes-contact-form .form-row{
-    grid-template-columns:1fr !important;
-  }
-
-  .classes-contact-kicker{
-    font-size:30px !important;
-    letter-spacing:7px !important;
-  }
-}
-
 
 /* =========================================================
-   AJUSTE FINAL EXACTO · REFERENCIA WIX MIS CLASES
-   Replica la composición visual de la referencia enviada:
-   título centrado, mucho aire, tarjetas angostas y compactas.
+   CHAT FLOTANTE · CUADRADO COMO LA REFERENCIA WIX
    ========================================================= */
-
-@media (min-width:981px){
-  .classes-main{
-    padding:92px 0 0 !important;
-    background:#211f26 !important;
-  }
-
-  .classes-content{
-    width:100% !important;
-    max-width:none !important;
-    padding:132px 0 86px !important;
-  }
-
-  .title{
-    display:block !important;
-    margin:0 0 136px !important;
-    text-align:center !important;
-    opacity:1 !important;
-    transform:none !important;
-    animation:none !important;
-  }
-
-  .title h1{
-    margin:0 !important;
-    color:#fff !important;
-    font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
-    font-size:58px !important;
-    line-height:1 !important;
-    font-weight:700 !important;
-    letter-spacing:-1.5px !important;
-    opacity:1 !important;
-    transform:none !important;
-    animation:none !important;
-  }
-
-  .class-grid{
-    width:808px !important;
-    margin:0 auto !important;
-    display:grid !important;
-    grid-template-columns:repeat(3,248px) !important;
-    gap:30px !important;
-    align-items:start !important;
-    justify-content:center !important;
-  }
-
-  .class-grid article{
-    width:248px !important;
-    height:338px !important;
-    min-height:338px !important;
-    margin:0 !important;
-    background:#2a262e !important;
-    border:1px solid rgba(255,255,255,.035) !important;
-    overflow:hidden !important;
-    box-shadow:none !important;
-    transform:none !important;
-    animation:none !important;
-    opacity:1 !important;
-    filter:none !important;
-  }
-
-  .class-image-wrap{
-    width:100% !important;
-    height:168px !important;
-    overflow:hidden !important;
-    background:#18171b !important;
-  }
-
-  .class-grid img{
-    width:100% !important;
-    height:100% !important;
-    object-fit:cover !important;
-    object-position:center !important;
-    filter:saturate(.82) contrast(1.03) brightness(.82) !important;
-  }
-
-  .class-body{
-    height:170px !important;
-    padding:29px 26px 26px !important;
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:flex-start !important;
-    justify-content:flex-start !important;
-  }
-
-  .class-body h2{
-    margin:0 !important;
-    color:#fff !important;
-    font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
-    font-size:18px !important;
-    line-height:1.12 !important;
-    font-weight:700 !important;
-    letter-spacing:-.35px !important;
-  }
-
-  .class-price{
-    margin:20px 0 0 !important;
-    color:#fff !important;
-    font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
-    font-size:14px !important;
-    font-weight:400 !important;
-  }
-
-  .class-body>a,
-  .class-body>a:link,
-  .class-body>a:visited,
-  .class-body>a:focus{
-    min-width:0 !important;
-    width:auto !important;
-    height:38px !important;
-    min-height:38px !important;
-    margin-top:21px !important;
-    padding:0 16px !important;
-    background:#ff6047 !important;
-    border:0 !important;
-    color:#211f26 !important;
-    font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
-    font-size:14px !important;
-    font-weight:400 !important;
-    line-height:1 !important;
-    transform:none !important;
-    animation:none !important;
-    box-shadow:none !important;
-    transition:background .22s ease,color .22s ease !important;
-  }
-
-  .class-body>a:hover{
-    background:#ff725e !important;
-    color:#211f26 !important;
-    transform:none !important;
-  }
-
-  .classes-contact{
-    margin-top:0 !important;
-  }
-}
-
-@media (min-width:981px) and (max-width:1180px){
-  .class-grid{
-    width:760px !important;
-    grid-template-columns:repeat(3,233px) !important;
-    gap:30px !important;
-  }
-
-  .class-grid article{
-    width:233px !important;
-  }
-}
-
-
-/* =========================================================
-   AJUSTE SUAVE · TARJETAS UN POCO MÁS GRANDES
-   Mantiene el diseño actual, solo aumenta moderadamente
-   tamaño de tarjetas, imágenes y contenido.
-   ========================================================= */
-@media (min-width:981px){
-  .class-grid{
-    width:890px !important;
-    grid-template-columns:repeat(3,270px) !important;
-    gap:40px !important;
-  }
-
-  .class-grid article{
-    width:270px !important;
-    height:365px !important;
-    min-height:365px !important;
-  }
-
-  .class-image-wrap{
-    height:184px !important;
-  }
-
-  .class-body{
-    height:181px !important;
-    padding:30px 28px 28px !important;
-  }
-
-  .class-body h2{
-    font-size:19px !important;
-  }
-
-  .class-price{
-    font-size:15px !important;
-    margin-top:21px !important;
-  }
-
-  .class-body>a,
-  .class-body>a:link,
-  .class-body>a:visited,
-  .class-body>a:focus{
-    height:40px !important;
-    min-height:40px !important;
-    padding:0 18px !important;
-    font-size:14px !important;
-  }
-}
-
-@media (min-width:981px) and (max-width:1180px){
-  .class-grid{
-    width:830px !important;
-    grid-template-columns:repeat(3,255px) !important;
-    gap:32px !important;
-  }
-
-  .class-grid article{
-    width:255px !important;
-  }
-}
-
-
-/* =========================================================
-   AJUSTE FINAL · MÁS GRANDE + CHAT CUADRADO TIPO WIX
-   ========================================================= */
-@media (min-width:981px){
-  .class-grid{
-    width:980px !important;
-    grid-template-columns:repeat(3,300px) !important;
-    gap:40px !important;
-    justify-content:center !important;
-    margin:0 auto !important;
-  }
-
-  .class-grid article{
-    width:300px !important;
-    height:405px !important;
-    min-height:405px !important;
-  }
-
-  .class-image-wrap{
-    height:205px !important;
-  }
-
-  .class-body{
-    height:200px !important;
-    padding:30px 28px 28px !important;
-  }
-
-  .class-body h2{
-    font-size:20px !important;
-    line-height:1.18 !important;
-  }
-
-  .class-price{
-    font-size:15px !important;
-    margin-top:20px !important;
-  }
-
-  .class-body>a,
-  .class-body>a:link,
-  .class-body>a:visited,
-  .class-body>a:focus{
-    min-width:128px !important;
-    height:42px !important;
-    min-height:42px !important;
-    padding:0 18px !important;
-    font-size:14px !important;
-  }
-}
-
-/* Botón flotante de contacto igual al estilo Wix:
-   cuadrado coral con icono oscuro centrado */
 .chat-link,
 .chat-link:link,
 .chat-link:visited,
 .chat-link:focus{
-  position:fixed !important;
-  right:22px !important;
-  bottom:18px !important;
-  width:66px !important;
-  height:66px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  border-radius:0 !important;
-  border:0 !important;
-  background:#ff6047 !important;
-  color:#211f26 !important;
-  text-decoration:none !important;
-  box-shadow:none !important;
-  z-index:9999 !important;
-  transform:none !important;
-  animation:none !important;
-  transition:background .22s ease !important;
+  position:fixed;
+  z-index:9999;
+  right:24px;
+  bottom:20px;
+  width:68px;
+  height:68px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  border-radius:0;
+  background:var(--accent);
+  color:#211f26;
+  text-decoration:none;
+  box-shadow:none;
+  transform:none;
+  animation:none;
+  transition:background .22s ease;
 }
 
 .chat-link:hover{
-  background:#ff705a !important;
-  transform:none !important;
+  background:#ff705a;
 }
 
 .chat-link:active{
-  background:#ef553f !important;
-  transform:none !important;
+  background:#ef553f;
 }
 
 .chat-link span{
-  position:relative !important;
-  top:0 !important;
-  width:34px !important;
-  height:34px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  border-radius:50% !important;
-  background:#211f26 !important;
-  color:#ff6047 !important;
-  font-size:17px !important;
-  line-height:1 !important;
-  letter-spacing:1px !important;
-  font-weight:900 !important;
+  position:relative;
+  top:0;
+  width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:#211f26;
+  color:var(--accent);
+  font-size:16px;
+  line-height:1;
+  letter-spacing:1px;
+  font-weight:900;
 }
 
-/* pequeña cola para que el círculo se vea como burbuja de chat */
 .chat-link span::after{
-  content:"" !important;
-  position:absolute !important;
-  left:7px !important;
-  bottom:-3px !important;
-  width:8px !important;
-  height:8px !important;
-  background:#211f26 !important;
-  transform:rotate(35deg) !important;
-  border-radius:1px !important;
+  content:"";
+  position:absolute;
+  left:7px;
+  bottom:-3px;
+  width:8px;
+  height:8px;
+  background:#211f26;
+  transform:rotate(35deg);
+  border-radius:1px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width:1180px) and (min-width:981px){
+  .class-grid{
+    width:970px;
+    grid-template-columns:repeat(3,300px);
+    gap:35px;
+  }
+
+  .class-grid article{
+    width:300px;
+  }
+}
+
+@media (max-width:1059px){
+  .classes-shell.nav-inner{
+    width:calc(100% - 40px);
+    padding-right:92px;
+  }
+
+  .classes-nav nav{
+    overflow-x:auto;
+    justify-content:flex-start;
+    gap:24px;
+    scrollbar-width:none;
+  }
+
+  .classes-nav nav::-webkit-scrollbar{
+    display:none;
+  }
 }
 
 @media (max-width:980px){
+  .classes-nav{
+    height:auto;
+    min-height:92px;
+  }
+
+  .classes-shell.nav-inner{
+    min-height:92px;
+    height:auto;
+    padding:12px 82px 12px 0;
+    justify-content:flex-start;
+  }
+
+  .classes-nav nav{
+    width:100%;
+  }
+
+  .classes-main{
+    padding-top:92px;
+  }
+
+  .classes-content{
+    width:calc(100% - 36px);
+    padding:72px 0 76px;
+  }
+
+  .title{
+    margin-bottom:82px;
+  }
+
+  .title h1{
+    font-size:58px;
+  }
+
+  .class-grid{
+    width:100%;
+    grid-template-columns:1fr;
+    gap:28px;
+  }
+
+  .class-grid article{
+    width:min(520px,100%);
+    height:auto;
+    min-height:0;
+    margin:0 auto;
+  }
+
+  .class-image-wrap{
+    height:250px;
+    flex-basis:250px;
+  }
+
+  .class-body{
+    height:auto;
+    min-height:210px;
+  }
+
+  .classes-contact-inner{
+    grid-template-columns:1fr;
+    gap:48px;
+  }
+}
+
+@media (max-width:620px){
+  .classes-shell.nav-inner{
+    width:calc(100% - 28px);
+  }
+
+  .classes-content{
+    width:calc(100% - 28px);
+  }
+
+  .title{
+    margin-bottom:54px;
+  }
+
+  .title h1{
+    font-size:48px;
+  }
+
+  .class-image-wrap{
+    height:220px;
+    flex-basis:220px;
+  }
+
+  .classes-contact-inner{
+    width:calc(100% - 28px);
+  }
+
+  .classes-contact-form .form-row{
+    grid-template-columns:1fr;
+  }
+
+  .classes-contact-kicker{
+    font-size:30px;
+    letter-spacing:7px;
+  }
+
   .chat-link{
-    right:16px !important;
-    bottom:16px !important;
-    width:60px !important;
-    height:60px !important;
+    right:16px;
+    bottom:16px;
+    width:60px;
+    height:60px;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .classes-nav nav a,
+  .login,
+  .class-body>a,
+  .chat-link{
+    transition:none;
   }
 }
