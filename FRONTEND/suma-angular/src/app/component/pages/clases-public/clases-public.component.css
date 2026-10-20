@@ -453,3 +453,77 @@ nav a.active{color:#d4d0d2}
     right:0 !important;
   }
 }
+
+
+/* =========================================================
+   MISMA ANIMACIÓN DE BOTONES QUE EL HOME
+   Todos los botones, incluidos RESERVAR SESIÓN y
+   PLANES Y PRECIOS, reaccionan igual que en la pantalla principal.
+   ========================================================= */
+@media (min-width:821px){
+  .classes-nav nav a{
+    position:relative !important;
+    transition:
+      color .24s ease,
+      transform .24s cubic-bezier(.22,.8,.22,1),
+      letter-spacing .24s ease,
+      opacity .24s ease !important;
+    transform-origin:center !important;
+  }
+
+  .classes-nav nav a:hover{
+    color:#ff6047 !important;
+    transform:translateY(-2px) scale(1.035) !important;
+    letter-spacing:.18px !important;
+  }
+
+  .classes-nav nav a:active{
+    transform:translateY(0) scale(.96) !important;
+    transition-duration:.08s !important;
+  }
+
+  .classes-nav nav a::before,
+  .classes-nav nav a:hover::before,
+  .classes-nav nav a::after,
+  .classes-nav nav a:hover::after{
+    content:none !important;
+    display:none !important;
+    width:0 !important;
+    height:0 !important;
+    opacity:0 !important;
+  }
+
+  .classes-nav .login{
+    transition:
+      color .24s ease,
+      transform .24s cubic-bezier(.22,.8,.22,1) !important;
+  }
+
+  .classes-nav .login:hover{
+    color:#ff725e !important;
+    transform:translateY(-50%) scale(1.035) !important;
+  }
+
+  .classes-nav .login:active{
+    transform:translateY(-50%) scale(.96) !important;
+  }
+
+  .classes-nav .user-icon{
+    transition:
+      transform .24s cubic-bezier(.22,.8,.22,1),
+      box-shadow .24s ease !important;
+  }
+
+  .classes-nav .login:hover .user-icon{
+    transform:rotate(5deg) scale(1.08) !important;
+    box-shadow:0 0 0 5px rgba(255,96,71,.11) !important;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .classes-nav nav a,
+  .classes-nav .login,
+  .classes-nav .user-icon{
+    transition:none !important;
+  }
+}
