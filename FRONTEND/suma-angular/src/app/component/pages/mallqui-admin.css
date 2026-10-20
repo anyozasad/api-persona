@@ -4871,3 +4871,463 @@ button.admin-system-card:hover{
   .ux-status-strip,
   .ux-bottom-grid{grid-template-columns:1fr!important}
 }
+
+
+/* ADMIN WIX DASHBOARD V2 · ESTRUCTURA LIMPIA */
+
+/* Wordmark más cercano al encabezado de Wix */
+.admin-wix-brand-mark{display:none!important}
+.admin-wix-wordmark{
+  display:block;
+  color:#111827;
+  font:900 24px/1 "Segoe UI",Arial,sans-serif;
+  letter-spacing:-1.4px;
+}
+
+/* En dashboard se muestra SOLO la nueva composición */
+.wixdash-page ~ section,
+.wixdash-page ~ app-admin-dashboard-tools{
+  display:none!important;
+}
+
+.wixdash-page{
+  display:grid;
+  gap:18px;
+  animation:wixdashIn .24s ease both;
+}
+@keyframes wixdashIn{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:none}
+}
+
+.wixdash-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:24px;
+  padding:4px 8px 0;
+}
+.wixdash-head h2{
+  margin:0;
+  color:#111827;
+  font-size:31px;
+  line-height:1.08;
+  font-weight:700;
+  letter-spacing:-.7px;
+}
+.wixdash-head p{
+  margin:7px 0 0;
+  color:#5f6b7c;
+  font-size:13px;
+  line-height:1.4;
+}
+.wixdash-head-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding-top:4px;
+}
+.wixdash-head-actions button{
+  height:38px;
+  border-radius:20px;
+  padding:0 18px;
+  border:1px solid #d7dee8;
+  background:#fff;
+  color:#1264d6;
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+}
+.wixdash-head-actions button:hover{background:#f7faff}
+.wixdash-head-actions .wixdash-more{
+  width:38px;
+  padding:0;
+  border-radius:50%;
+  font-size:15px;
+}
+.wixdash-head-actions .wixdash-create{
+  min-width:118px;
+  border-color:#116dff;
+  background:#116dff;
+  color:#fff;
+  border-radius:8px;
+}
+.wixdash-head-actions .wixdash-create:hover{background:#0b5de0}
+.wixdash-create span{margin-left:8px}
+
+.wixdash-member-strip{
+  min-height:52px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:0 18px;
+  border:1px solid #e1e6ed;
+  border-radius:10px;
+  background:#fff;
+}
+.wixdash-member-strip>div{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  color:#233047;
+}
+.wixdash-member-icon{
+  width:22px;
+  height:22px;
+  display:grid;
+  place-items:center;
+  color:#34455f;
+  font-size:14px;
+}
+.wixdash-member-strip b{
+  font-size:12px;
+  font-weight:600;
+  text-decoration:underline;
+}
+.wixdash-info{
+  width:16px;
+  height:16px;
+  display:grid;
+  place-items:center;
+  border:1px solid #116dff;
+  border-radius:50%;
+  color:#116dff;
+  font-size:9px;
+  font-weight:800;
+}
+.wixdash-member-strip button{
+  border:0;
+  background:transparent;
+  color:#116dff;
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+}
+.wixdash-member-strip button span{font-size:20px;vertical-align:-2px}
+
+.wixdash-summary{
+  border:1px solid #e1e6ed;
+  border-radius:12px;
+  background:#fff;
+  overflow:hidden;
+}
+.wixdash-summary>header{
+  height:54px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  border-bottom:1px solid #e8ebef;
+}
+.wixdash-summary>header h3{
+  margin:0;
+  color:#111827;
+  font-size:18px;
+}
+.wixdash-summary>header button{
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border:1px solid #dce2ea;
+  border-radius:50%;
+  background:#fff;
+  color:#64748b;
+}
+.wixdash-summary-body{padding:22px 20px 24px}
+.wixdash-summary-tabs{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin-bottom:18px;
+}
+.wixdash-summary-tabs button{
+  min-height:32px;
+  padding:0 14px;
+  border:1px solid #d9e0ea;
+  border-radius:18px;
+  background:#fff;
+  color:#374151;
+  font-size:10px;
+  font-weight:600;
+  cursor:pointer;
+}
+.wixdash-summary-tabs button.active{
+  background:#111827;
+  border-color:#111827;
+  color:#fff;
+}
+.wixdash-summary-copy{
+  margin:0 0 19px;
+  color:#3f4a5d;
+  font-size:12px;
+  line-height:1.45;
+}
+.wixdash-summary-cards{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+}
+.wixdash-summary-cards button{
+  min-height:96px;
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr) 16px;
+  align-items:start;
+  gap:10px;
+  padding:14px;
+  border:1px solid #a9c9ff;
+  border-radius:8px;
+  background:#fff;
+  color:#253047;
+  text-align:left;
+  cursor:pointer;
+}
+.wixdash-summary-cards button:hover{
+  background:#f8fbff;
+  border-color:#78a9ff;
+}
+.wixdash-summary-cards button>span{
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#edf4ff;
+  color:#345f9f;
+  font-size:14px;
+}
+.wixdash-summary-cards div{display:flex;flex-direction:column;gap:4px}
+.wixdash-summary-cards b{
+  color:#1f2937;
+  font-size:12px;
+  line-height:1.25;
+}
+.wixdash-summary-cards small{
+  color:#7b8797;
+  font-size:9px;
+}
+.wixdash-summary-cards em{
+  align-self:center;
+  color:#59677c;
+  font-style:normal;
+  font-size:18px;
+}
+
+.wixdash-table-card{
+  border:1px solid #e1e6ed;
+  border-radius:12px;
+  background:#fff;
+  overflow:hidden;
+}
+.wixdash-toolbar{
+  min-height:62px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:0 18px;
+  border-bottom:1px solid #e5e9ef;
+}
+.wixdash-toolbar-left,
+.wixdash-toolbar-right{
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+.wixdash-toolbar button{
+  border:1px solid #d8e0ea;
+  background:#fff;
+  color:#116dff;
+  font-size:10px;
+  font-weight:600;
+  cursor:pointer;
+}
+.wixdash-view{
+  min-height:34px;
+  padding:0 14px;
+  border-radius:18px;
+  color:#273247!important;
+}
+.wixdash-link{
+  border:0!important;
+  padding:0 4px;
+}
+.wixdash-filter,
+.wixdash-import{
+  min-height:34px;
+  padding:0 13px;
+  border-radius:18px;
+}
+.wixdash-icon-btn{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+}
+.wixdash-search{
+  width:230px;
+  height:34px;
+  display:grid;
+  grid-template-columns:25px 1fr;
+  align-items:center;
+  border:1px solid #d8e0ea;
+  border-radius:18px;
+  padding:0 10px;
+  color:#718097;
+}
+.wixdash-search input{
+  width:100%;
+  min-width:0;
+  border:0;
+  outline:0;
+  background:transparent;
+  font-size:10px;
+  color:#1f2937;
+}
+
+.wixdash-table-wrap{overflow:auto}
+.wixdash-table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:850px;
+}
+.wixdash-table th,
+.wixdash-table td{
+  height:54px;
+  padding:0 14px;
+  border-bottom:1px solid #e8ebef;
+  color:#344054;
+  font-size:10px;
+  text-align:left;
+  vertical-align:middle;
+}
+.wixdash-table th{
+  height:42px;
+  background:#f7f8fa;
+  color:#566174;
+  font-weight:500;
+}
+.wixdash-table td:nth-child(2){
+  display:grid;
+  grid-template-columns:34px 1fr;
+  align-items:center;
+  gap:9px;
+}
+.wixdash-table td:nth-child(2)>div{
+  display:flex;
+  flex-direction:column;
+}
+.wixdash-table td:nth-child(2)b{
+  color:#1f2937;
+  font-size:11px;
+}
+.wixdash-table td:nth-child(2)small{
+  color:#8792a2;
+  font-size:8px;
+  margin-top:2px;
+}
+.wixdash-avatar{
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#e9eef6;
+  color:#34445f;
+  font-size:10px;
+  font-weight:800;
+}
+.wixdash-status{
+  display:inline-flex;
+  align-items:center;
+  min-height:20px;
+  padding:0 8px;
+  border-radius:3px;
+  background:#e7edf7;
+  color:#47566e;
+  font-size:8px;
+  font-weight:700;
+}
+.wixdash-status.ok{
+  background:#dff3e5;
+  color:#2b6a41;
+}
+.wixdash-table td:last-child button{
+  width:30px;
+  height:30px;
+  border:1px solid #d7e4f8;
+  border-radius:50%;
+  background:#fff;
+  color:#116dff;
+  cursor:pointer;
+}
+
+.wixdash-inline-error{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:11px 14px;
+  border:1px solid #f0c8cf;
+  border-radius:10px;
+  background:#fff8f9;
+  color:#7d2433;
+}
+.wixdash-inline-error>span{
+  width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#ffe5e9;
+  color:#c6293d;
+  font-weight:900;
+}
+.wixdash-inline-error>div{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+.wixdash-inline-error b{font-size:10px}
+.wixdash-inline-error small{font-size:9px;color:#8f5a62;margin-top:2px}
+.wixdash-inline-error button{
+  min-height:32px;
+  padding:0 13px;
+  border:1px solid #e4aeb8;
+  border-radius:16px;
+  background:#fff;
+  color:#b92f42;
+  font-size:9px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* El encabezado general del componente sobra en dashboard porque Wix ya tiene encabezado propio */
+.admin-title-block,
+.admin-refresh-box,
+.admin-profile-wrap{
+  transition:opacity .15s ease;
+}
+.admin-content:has(.wixdash-page) .admin-header{
+  display:none!important;
+}
+.admin-content:has(.wixdash-page){
+  padding-top:28px!important;
+}
+
+@media(max-width:1180px){
+  .wixdash-summary-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .wixdash-toolbar{align-items:flex-start;flex-direction:column;padding-top:14px;padding-bottom:14px}
+  .wixdash-toolbar-right{width:100%;flex-wrap:wrap}
+  .wixdash-search{flex:1;min-width:210px}
+}
+@media(max-width:760px){
+  .wixdash-head{flex-direction:column}
+  .wixdash-head-actions{width:100%;flex-wrap:wrap}
+  .wixdash-head-actions .wixdash-create{margin-left:auto}
+  .wixdash-member-strip{align-items:flex-start;flex-direction:column;padding:13px 15px}
+  .wixdash-summary-cards{grid-template-columns:1fr}
+  .wixdash-toolbar-left,
+  .wixdash-toolbar-right{width:100%;flex-wrap:wrap}
+  .wixdash-search{width:100%;flex-basis:100%}
+  .wixdash-head h2{font-size:27px}
+}
