@@ -621,3 +621,162 @@
     transition:none;
   }
 }
+
+
+/* =========================================================
+   CHAT PANEL FUNCIONAL · MIS CLASES
+   El botón ya no navega a otra ruta: abre/cierra este panel.
+   ========================================================= */
+.classes-chat-panel{
+  position:fixed;
+  z-index:9998;
+  right:26px;
+  bottom:105px;
+  width:365px;
+  height:535px;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  overflow:hidden;
+  background:#ffd3cc;
+  border:1px solid rgba(33,31,38,.12);
+  box-shadow:0 20px 60px rgba(0,0,0,.30);
+}
+
+.classes-chat-header{
+  min-height:86px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  padding:18px 18px 14px;
+  background:var(--accent);
+  color:#211f26;
+}
+
+.classes-chat-header strong{
+  display:block;
+  margin-bottom:8px;
+  font-size:17px;
+}
+
+.classes-chat-header span{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font:400 12px/1.35 Arial,sans-serif;
+}
+
+.classes-chat-header span i{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#31c55b;
+}
+
+.classes-chat-header button{
+  width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:#211f26;
+  font-size:30px;
+  line-height:1;
+  cursor:pointer;
+}
+
+.classes-chat-messages{
+  overflow-y:auto;
+  padding:18px;
+  background:#ffd3cc;
+}
+
+.classes-chat-welcome{
+  max-width:82%;
+  padding:13px 14px;
+  background:#fff0ed;
+  color:#2a252a;
+  border-radius:14px 14px 14px 4px;
+  box-shadow:0 5px 16px rgba(0,0,0,.06);
+}
+
+.classes-chat-welcome strong{
+  display:block;
+  margin-bottom:6px;
+}
+
+.classes-chat-welcome p{
+  margin:0;
+  font:400 13px/1.5 Arial,sans-serif;
+}
+
+.classes-chat-message{
+  max-width:82%;
+  margin-top:12px;
+  padding:11px 13px;
+  border-radius:14px;
+  font:400 13px/1.45 Arial,sans-serif;
+}
+
+.classes-chat-message.usuario{
+  margin-left:auto;
+  background:#211f26;
+  color:#fff;
+  border-bottom-right-radius:4px;
+}
+
+.classes-chat-message.gym{
+  margin-right:auto;
+  background:#fff0ed;
+  color:#2a252a;
+  border-bottom-left-radius:4px;
+}
+
+.classes-chat-input{
+  min-height:68px;
+  display:grid;
+  grid-template-columns:1fr 44px;
+  align-items:center;
+  gap:8px;
+  padding:10px 12px;
+  background:#fff;
+  border-top:1px solid rgba(33,31,38,.10);
+}
+
+.classes-chat-input input{
+  width:100%;
+  min-height:46px;
+  border:0;
+  outline:none;
+  padding:0 8px;
+  color:#2b272d;
+  background:#fff;
+  font:400 13px Arial,sans-serif;
+}
+
+.classes-chat-input button{
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:50%;
+  background:var(--accent);
+  color:#211f26;
+  font-size:18px;
+  cursor:pointer;
+}
+
+.chat-link.open{
+  transform:none;
+}
+
+@media(max-width:620px){
+  .classes-chat-panel{
+    left:14px;
+    right:14px;
+    bottom:90px;
+    width:auto;
+    height:min(535px,calc(100vh - 120px));
+  }
+}
