@@ -8,7 +8,7 @@ import { AuthService } from '../../../auth.service';
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  styleUrls: ['../mallqui-login.css'],
+  styleUrls: ['../mallqui-login.css', './login-reference.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="mq-login-screen">
