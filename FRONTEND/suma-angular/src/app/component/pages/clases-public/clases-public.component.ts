@@ -31,22 +31,16 @@ import { GymApiService } from '../../../core/services/gym-api.service';
       </header>
 
       <main class="classes-main">
-        <div class="classes-shell">
-          <div class="title">
-            <h1>MIS CLASES</h1>
-          </div>
-
+        <div class="classes-shell classes-content">
           <div class="class-grid">
             <article *ngFor="let c of clases">
-              <img [src]="c.img" [alt]="c.nombre">
+              <div class="class-image-wrap">
+                <img [src]="c.img" [alt]="c.nombre">
+              </div>
+
               <div class="class-body">
                 <h2>{{c.nombre}}</h2>
-                <p>{{c.descripcion}}</p>
-
-                <div class="class-meta">
-                  <span>{{c.nivel}}</span>
-                  <span>{{c.horario}}</span>
-                </div>
+                <div class="class-price">S/ 60</div>
 
                 <a
                   routerLink="/reservar"
@@ -57,6 +51,34 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             </article>
           </div>
         </div>
+
+        <section class="classes-contact" id="contacto-clases">
+          <div class="classes-contact-inner">
+            <div class="classes-contact-copy">
+              <div class="classes-contact-kicker">CONTACTO</div>
+              <h2>ESCRIBE O LLÁMAME</h2>
+              <p>¿Tienes alguna consulta sobre horarios, clases o reservas? Escríbenos y te ayudamos.</p>
+            </div>
+
+            <form class="classes-contact-form" (submit)="$event.preventDefault()">
+              <div class="form-row">
+                <label>Nombre *
+                  <input type="text">
+                </label>
+                <label>Apellido *
+                  <input type="text">
+                </label>
+              </div>
+              <label>Email *
+                <input type="email">
+              </label>
+              <label>Mensaje
+                <textarea rows="4"></textarea>
+              </label>
+              <button type="submit">Enviar</button>
+            </form>
+          </div>
+        </section>
       </main>
 
       <a routerLink="/" fragment="contacto" class="chat-link" aria-label="Contacto">
