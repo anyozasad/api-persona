@@ -1,0 +1,38 @@
+/* Ajuste final aislado del login.
+   Se carga después de mallqui-login.css para que no lo pisen reglas antiguas. */
+
+@media (min-width: 901px) {
+  .mq-login-hero {
+    place-items: center !important;
+  }
+
+  .mq-login-hero-overlay {
+    background:
+      linear-gradient(90deg,
+        rgba(10, 10, 13, .74) 0%,
+        rgba(14, 12, 17, .48) 44%,
+        rgba(14, 11, 15, .36) 100%),
+      linear-gradient(180deg,
+        rgba(12, 10, 14, .08) 0%,
+        rgba(12, 10, 14, .45) 100%) !important;
+  }
+
+  #mq-login-reference {
+    animation: none !important;
+    transform: translateY(22px) scale(.92) !important;
+    transform-origin: center center !important;
+  }
+
+  #mq-login-reference .mq-login-submit:disabled {
+    opacity: .88 !important;
+    background: linear-gradient(135deg, #ff6047 0%, #ff745b 100%) !important;
+    color: #17151b !important;
+  }
+}
+
+@media (max-width: 900px) {
+  #mq-login-reference {
+    animation: none !important;
+    transform: none !important;
+  }
+}
