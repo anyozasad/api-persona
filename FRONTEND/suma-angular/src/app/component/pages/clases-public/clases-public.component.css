@@ -780,3 +780,62 @@
     height:min(535px,calc(100vh - 120px));
   }
 }
+
+
+/* AJUSTE 16:57 · TARJETAS MÁS GRANDES */
+@media (min-width:981px){
+  .class-grid{
+    width:1110px !important;
+    grid-template-columns:repeat(3,340px) !important;
+    gap:45px !important;
+  }
+
+  .class-grid article{
+    width:340px !important;
+    height:420px !important;
+    min-height:420px !important;
+  }
+
+  .class-image-wrap{
+    height:225px !important;
+    flex:0 0 225px !important;
+  }
+
+  .class-body{
+    height:195px !important;
+    padding:30px 28px 26px !important;
+  }
+
+  .class-body h2{
+    font-size:22px !important;
+    line-height:1.15 !important;
+  }
+
+  .class-price{
+    margin-top:22px !important;
+    font-size:16px !important;
+  }
+
+  .class-body>a,
+  .class-body>a:link,
+  .class-body>a:visited,
+  .class-body>a:focus{
+    min-width:130px !important;
+    height:42px !important;
+    min-height:42px !important;
+    padding:0 18px !important;
+    font-size:15px !important;
+  }
+}
+
+@media (max-width:1180px) and (min-width:981px){
+  .class-grid{
+    width:1020px !important;
+    grid-template-columns:repeat(3,320px) !important;
+    gap:30px !important;
+  }
+
+  .class-grid article{
+    width:320px !important;
+  }
+}
