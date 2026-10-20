@@ -11,16 +11,7 @@
   place-items:center;
   overflow:hidden;
   color:#fff;
-  background:
-    linear-gradient(90deg,
-      rgba(10,9,12,.55) 0%,
-      rgba(12,10,14,.30) 48%,
-      rgba(12,9,12,.30) 100%),
-    linear-gradient(180deg,
-      rgba(10,8,12,.04) 0%,
-      rgba(10,8,12,.34) 100%),
-    url('https://images.unsplash.com/photo-1728486145245-d4cb0c9c3470?auto=format&fit=crop&w=2400&q=90')
-      center center/cover no-repeat;
+  background:#0d0c10;
 }
 
 .register-page::before{
@@ -431,5 +422,86 @@
 
   .register-submit{
     font-size:10px!important;
+  }
+}
+
+
+/* =========================================================
+   FONDO ANIMADO DEL REGISTRO
+   Cambio automático con transición suave y zoom muy sutil.
+   ========================================================= */
+.register-bg-slider{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+
+.register-bg{
+  position:absolute;
+  inset:-2%;
+  opacity:0;
+  background-position:center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  will-change:opacity,transform;
+  animation:registerCrossfade 18s infinite ease-in-out;
+}
+
+.register-bg-1{
+  background-image:url('https://images.unsplash.com/photo-1728486145245-d4cb0c9c3470?auto=format&fit=crop&w=2400&q=90');
+  animation-delay:0s;
+}
+
+.register-bg-2{
+  background-image:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2400&q=90');
+  animation-delay:6s;
+}
+
+.register-bg-3{
+  background-image:url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=2400&q=90');
+  animation-delay:12s;
+}
+
+@keyframes registerCrossfade{
+  0%{
+    opacity:0;
+    transform:scale(1.02) translate3d(0,0,0);
+  }
+  7%{
+    opacity:1;
+  }
+  28%{
+    opacity:1;
+    transform:scale(1.07) translate3d(-0.6%,0,0);
+  }
+  38%{
+    opacity:0;
+  }
+  100%{
+    opacity:0;
+    transform:scale(1.09) translate3d(-1%,0,0);
+  }
+}
+
+/* Mantiene el sombreado encima de las imágenes animadas. */
+.register-page::before{
+  z-index:1;
+}
+
+.register-panel{
+  z-index:2;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .register-bg{
+    animation:none!important;
+    opacity:0!important;
+    transform:none!important;
+  }
+
+  .register-bg-1{
+    opacity:1!important;
   }
 }
