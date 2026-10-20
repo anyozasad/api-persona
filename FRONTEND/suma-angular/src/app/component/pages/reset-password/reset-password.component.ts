@@ -8,7 +8,7 @@ import { AuthService } from '../../../auth.service';
   selector: 'app-reset-password',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  styleUrls: ['../mallqui-login.css'],
+  styleUrls: ['../mallqui-login.css', './reset-reference.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="login-page recovery-page">
@@ -28,9 +28,9 @@ import { AuthService } from '../../../auth.service';
       </section>
 
       <section class="login-panel recovery-panel">
-        <a routerLink="/login" class="login-back">← Volver al login</a>
+        <a routerLink="/login" class="login-back">← Volver a iniciar sesión</a>
 
-        <div class="login-card recovery-card">
+        <div id="reset-reference" class="login-card recovery-card">
           <div class="login-heading">
             <span class="login-icon login-company-logo" aria-hidden="true">
               <img src="/assets/mallqui-logo.svg" alt="">
