@@ -186,31 +186,30 @@
   display:inline-block;
   margin:0;
   color:#fff;
-  font-family:"Arial Narrow","Roboto Condensed","Segoe UI",Arial,sans-serif;
+  font-family:"Bahnschrift Condensed","Arial Narrow","Roboto Condensed",Arial,sans-serif;
   font-size:72px;
   line-height:1;
-  font-weight:500;
-  letter-spacing:-1px;
-  font-stretch:condensed;
+  font-weight:600;
+  letter-spacing:.6px;
   opacity:1;
   transform:none;
   animation:none;
 }
 
 .class-grid{
-  width:1055px;
+  width:944px;
   margin:0 auto;
   display:grid;
-  grid-template-columns:repeat(3,325px);
-  gap:40px;
+  grid-template-columns:repeat(3,292px);
+  gap:34px;
   align-items:start;
   justify-content:center;
 }
 
 .class-grid article{
-  width:325px;
-  height:440px;
-  min-height:440px;
+  width:292px;
+  height:365px;
+  min-height:365px;
   margin:0;
   display:flex;
   flex-direction:column;
@@ -227,8 +226,8 @@
 
 .class-image-wrap{
   width:100%;
-  height:218px;
-  flex:0 0 218px;
+  height:195px;
+  flex:0 0 195px;
   overflow:hidden;
   background:#18171b;
 }
@@ -243,9 +242,9 @@
 }
 
 .class-body{
-  height:222px;
+  height:170px;
   flex:1;
-  padding:34px 30px 30px;
+  padding:27px 25px 24px;
   display:flex;
   flex-direction:column;
   align-items:flex-start;
@@ -255,11 +254,11 @@
   min-height:0;
   margin:0;
   color:#fff;
-  font-family:"Arial Narrow","Roboto Condensed","Segoe UI",Arial,sans-serif;
-  font-size:21px;
-  line-height:1.16;
-  font-weight:650;
-  letter-spacing:-.45px;
+  font-family:"Bahnschrift Condensed","Arial Narrow","Roboto Condensed",Arial,sans-serif;
+  font-size:19px;
+  line-height:1.14;
+  font-weight:600;
+  letter-spacing:.1px;
 }
 
 .class-body p,
@@ -268,10 +267,10 @@
 }
 
 .class-price{
-  margin:24px 0 0;
+  margin:20px 0 0;
   color:#fff;
-  font-family:"Arial Narrow","Roboto Condensed","Segoe UI",Arial,sans-serif;
-  font-size:16px;
+  font-family:"Bahnschrift Condensed","Arial Narrow","Roboto Condensed",Arial,sans-serif;
+  font-size:14px;
   font-weight:400;
 }
 
@@ -280,11 +279,11 @@
 .class-body>a:visited,
 .class-body>a:focus{
   width:auto;
-  min-width:140px;
-  height:44px;
-  min-height:44px;
+  min-width:110px;
+  height:38px;
+  min-height:38px;
   margin-top:auto;
-  padding:0 20px;
+  padding:0 15px;
   display:inline-flex;
   align-items:center;
   justify-content:center;
@@ -293,8 +292,8 @@
   background:var(--accent);
   color:#211f26;
   text-decoration:none;
-  font-family:"Arial Narrow","Roboto Condensed","Segoe UI",Arial,sans-serif;
-  font-size:15px;
+  font-family:"Bahnschrift Condensed","Arial Narrow","Roboto Condensed",Arial,sans-serif;
+  font-size:14px;
   font-weight:400;
   box-shadow:none;
   transform:none;
@@ -412,10 +411,10 @@
 .chat-link:focus{
   position:fixed;
   z-index:9999;
-  right:24px;
+  right:20px;
   bottom:20px;
-  width:68px;
-  height:68px;
+  width:64px;
+  height:64px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -441,24 +440,31 @@
 .chat-link span{
   position:relative;
   top:0;
-  width:32px;
-  height:32px;
+  width:30px;
+  height:30px;
   display:flex;
   align-items:center;
   justify-content:center;
   border-radius:50%;
   background:#211f26;
   color:var(--accent);
-  font-size:16px;
+  font-size:0;
   line-height:1;
-  letter-spacing:1px;
-  font-weight:900;
+}
+
+.chat-link span::before{
+  content:"";
+  width:13px;
+  height:3px;
+  border-radius:3px;
+  background:var(--accent);
+  box-shadow:0 6px 0 var(--accent);
 }
 
 .chat-link span::after{
   content:"";
   position:absolute;
-  left:7px;
+  left:6px;
   bottom:-3px;
   width:8px;
   height:8px;
@@ -472,13 +478,13 @@
    ========================================================= */
 @media (max-width:1180px) and (min-width:981px){
   .class-grid{
-    width:970px;
-    grid-template-columns:repeat(3,300px);
-    gap:35px;
+    width:900px;
+    grid-template-columns:repeat(3,278px);
+    gap:33px;
   }
 
   .class-grid article{
-    width:300px;
+    width:278px;
   }
 }
 
