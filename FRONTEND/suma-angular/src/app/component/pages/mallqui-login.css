@@ -2926,3 +2926,448 @@
     margin:0 auto!important;
   }
 }
+
+
+/* =========================================================
+   LOGIN V10 · PROFESIONAL
+   Fondo nuevo + tarjeta limpia tipo premium.
+   ========================================================= */
+.mq-login-screen{
+  min-height:100svh!important;
+  width:100%!important;
+  overflow:hidden!important;
+  background:#141218!important;
+  color:#fff!important;
+}
+
+.mq-login-topbar{
+  display:none!important;
+}
+
+.mq-login-hero{
+  position:relative!important;
+  min-height:100svh!important;
+  height:100svh!important;
+  width:100%!important;
+  padding:0!important;
+  margin:0!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden!important;
+  background:
+    url('https://images.unsplash.com/photo-1728486145245-d4cb0c9c3470?auto=format&fit=crop&w=2400&q=90')
+    center center/cover no-repeat!important;
+}
+
+.mq-login-hero::before{
+  content:''!important;
+  position:absolute!important;
+  inset:0!important;
+  background:
+    radial-gradient(circle at 73% 32%,rgba(255,96,71,.13),transparent 29%),
+    radial-gradient(circle at 24% 80%,rgba(255,255,255,.055),transparent 26%)!important;
+  z-index:1!important;
+  pointer-events:none!important;
+}
+
+.mq-login-hero-overlay{
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  background:
+    linear-gradient(90deg,rgba(12,11,15,.84) 0%,rgba(17,15,20,.63) 42%,rgba(16,14,19,.73) 100%),
+    linear-gradient(180deg,rgba(14,12,17,.22) 0%,rgba(14,12,17,.72) 100%)!important;
+}
+
+.mq-login-hero-copy,
+.mq-login-dots{
+  display:none!important;
+}
+
+.mq-login-box{
+  position:relative!important;
+  z-index:3!important;
+  top:auto!important;
+  right:auto!important;
+  transform:none!important;
+  width:min(472px,calc(100% - 34px))!important;
+  max-height:calc(100svh - 38px)!important;
+  margin:0!important;
+  padding:34px 34px 30px!important;
+  overflow:auto!important;
+
+  background:
+    linear-gradient(180deg,rgba(38,35,42,.93),rgba(28,25,31,.96))!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  border-radius:22px!important;
+  box-shadow:
+    0 34px 90px rgba(0,0,0,.54),
+    0 0 0 1px rgba(255,96,71,.08) inset!important;
+  backdrop-filter:blur(22px) saturate(120%)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(120%)!important;
+  animation:mqLoginPremiumIn .55s cubic-bezier(.2,.8,.2,1) both!important;
+  scrollbar-width:none!important;
+}
+
+.mq-login-box::-webkit-scrollbar{
+  width:0!important;
+  height:0!important;
+}
+
+.mq-login-box::before{
+  content:''!important;
+  position:absolute!important;
+  left:34px!important;
+  right:34px!important;
+  top:0!important;
+  height:3px!important;
+  border-radius:0 0 999px 999px!important;
+  background:linear-gradient(90deg,transparent,#ff6047 20%,#ff8b73 50%,#ff6047 80%,transparent)!important;
+  box-shadow:0 0 26px rgba(255,96,71,.42)!important;
+}
+
+.mq-login-box-head{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
+  margin:2px 0 26px!important;
+  text-align:center!important;
+}
+
+.mq-login-logo{
+  width:78px!important;
+  height:78px!important;
+  flex:0 0 78px!important;
+  margin:0 0 10px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:20px!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  background:rgba(13,12,16,.28)!important;
+  box-shadow:0 16px 34px rgba(0,0,0,.22)!important;
+}
+
+.mq-login-logo img{
+  width:68px!important;
+  height:68px!important;
+  object-fit:contain!important;
+}
+
+.mq-login-box-head p{
+  margin:0 0 7px!important;
+  color:#ff6a51!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  letter-spacing:4px!important;
+}
+
+.mq-login-box-head h2{
+  margin:0!important;
+  color:#fff!important;
+  font-size:34px!important;
+  line-height:1.05!important;
+  font-weight:800!important;
+  letter-spacing:-.7px!important;
+}
+
+.mq-login-box-head div>span{
+  display:block!important;
+  margin-top:8px!important;
+  color:#aaa3ab!important;
+  font-size:12px!important;
+}
+
+.mq-selected-plan{
+  margin:-7px 0 18px!important;
+  padding:11px 13px!important;
+  border:1px solid rgba(255,96,71,.35)!important;
+  border-radius:10px!important;
+  background:rgba(255,96,71,.09)!important;
+  color:#e7e0e4!important;
+  font-size:11px!important;
+}
+
+.mq-login-box form{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:17px!important;
+}
+
+.mq-login-box form>label{
+  color:#f5f0f3!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  letter-spacing:.15px!important;
+}
+
+.mq-login-input{
+  height:56px!important;
+  margin-top:8px!important;
+  padding:0 15px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+  border-radius:12px!important;
+  background:rgba(14,13,17,.50)!important;
+  transition:border-color .22s ease,background .22s ease,box-shadow .22s ease,transform .22s ease!important;
+}
+
+.mq-login-input:hover{
+  border-color:rgba(255,255,255,.25)!important;
+  background:rgba(20,18,23,.68)!important;
+}
+
+.mq-login-input:focus-within{
+  border-color:#ff6047!important;
+  background:rgba(20,18,23,.83)!important;
+  box-shadow:0 0 0 3px rgba(255,96,71,.10),0 12px 30px rgba(0,0,0,.14)!important;
+  transform:translateY(-1px)!important;
+}
+
+.mq-login-input>span{
+  color:#817a82!important;
+  font-size:12px!important;
+}
+
+.mq-login-input input{
+  min-width:0!important;
+  flex:1!important;
+  border:0!important;
+  outline:0!important;
+  background:transparent!important;
+  color:#fff!important;
+  font-size:13px!important;
+  font-weight:600!important;
+}
+
+.mq-login-input input::placeholder{
+  color:#6e6870!important;
+  font-weight:500!important;
+}
+
+.mq-login-input input:-webkit-autofill,
+.mq-login-input input:-webkit-autofill:hover,
+.mq-login-input input:-webkit-autofill:focus,
+.mq-login-input input:-webkit-autofill:active{
+  -webkit-text-fill-color:#fff!important;
+  -webkit-box-shadow:0 0 0 1000px transparent inset!important;
+  transition:background-color 9999s ease-in-out 0s!important;
+}
+
+.mq-show-password,
+.mq-forgot{
+  border:0!important;
+  background:transparent!important;
+  color:#ff6a51!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  cursor:pointer!important;
+  transition:color .18s ease,transform .18s ease!important;
+}
+
+.mq-show-password:hover,
+.mq-forgot:hover{
+  color:#ff8a75!important;
+  transform:translateY(-1px)!important;
+}
+
+.mq-login-options{
+  min-height:28px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+}
+
+.mq-remember{
+  display:flex!important;
+  align-items:center!important;
+  gap:9px!important;
+  color:#aaa3aa!important;
+  font-size:10px!important;
+  cursor:pointer!important;
+}
+
+.mq-remember input{
+  width:15px!important;
+  height:15px!important;
+  accent-color:#ff6047!important;
+}
+
+.mq-login-error,
+.mq-login-success{
+  margin:0!important;
+  padding:10px 12px!important;
+  border-radius:10px!important;
+  font-size:10px!important;
+}
+
+.mq-login-submit{
+  position:relative!important;
+  height:56px!important;
+  margin-top:2px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:16px!important;
+  border:0!important;
+  border-radius:12px!important;
+  background:linear-gradient(135deg,#ff6047 0%,#ff745b 100%)!important;
+  color:#17151b!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  letter-spacing:.2px!important;
+  box-shadow:0 15px 34px rgba(255,96,71,.22)!important;
+  cursor:pointer!important;
+  overflow:hidden!important;
+  transition:transform .2s ease,box-shadow .2s ease,filter .2s ease!important;
+}
+
+.mq-login-submit::after{
+  content:''!important;
+  position:absolute!important;
+  top:-120%!important;
+  left:-35%!important;
+  width:26%!important;
+  height:340%!important;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent)!important;
+  transform:rotate(19deg)!important;
+  transition:left .55s ease!important;
+}
+
+.mq-login-submit:hover:not(:disabled){
+  transform:translateY(-2px)!important;
+  box-shadow:0 20px 42px rgba(255,96,71,.31)!important;
+  filter:saturate(1.08)!important;
+}
+
+.mq-login-submit:hover:not(:disabled)::after{
+  left:118%!important;
+}
+
+.mq-login-submit:disabled{
+  opacity:.66!important;
+  cursor:not-allowed!important;
+  background:linear-gradient(135deg,#c84d3b,#b84536)!important;
+  color:#17151b!important;
+  box-shadow:none!important;
+}
+
+.mq-login-register{
+  margin-top:21px!important;
+  padding:17px 0 0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  border-top:1px solid rgba(255,255,255,.08)!important;
+}
+
+.mq-login-register strong{
+  display:block!important;
+  margin-bottom:3px!important;
+  color:#fff!important;
+  font-size:11px!important;
+}
+
+.mq-login-register span{
+  display:block!important;
+  color:#777179!important;
+  font-size:9px!important;
+}
+
+.mq-login-register>a{
+  min-height:39px!important;
+  padding:0 15px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:1px solid rgba(255,96,71,.75)!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  color:#ff6a51!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  text-decoration:none!important;
+  white-space:nowrap!important;
+  transition:background .18s ease,color .18s ease,transform .18s ease,box-shadow .18s ease!important;
+}
+
+.mq-login-register>a:hover{
+  background:#ff6047!important;
+  color:#17151b!important;
+  transform:translateY(-2px)!important;
+  box-shadow:0 12px 24px rgba(255,96,71,.17)!important;
+}
+
+.mq-login-back{
+  display:block!important;
+  margin:18px 0 0!important;
+  text-align:center!important;
+  color:#716b72!important;
+  font-size:9px!important;
+  font-weight:600!important;
+  text-decoration:none!important;
+  transition:color .18s ease!important;
+}
+
+.mq-login-back:hover{
+  color:#ff6a51!important;
+}
+
+@keyframes mqLoginPremiumIn{
+  0%{opacity:0;transform:translateY(22px) scale(.985)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+
+@media(max-width:650px){
+  .mq-login-hero{
+    min-height:100svh!important;
+    height:100svh!important;
+    background-position:58% center!important;
+  }
+
+  .mq-login-box{
+    width:calc(100% - 24px)!important;
+    max-height:calc(100svh - 24px)!important;
+    padding:28px 20px 24px!important;
+    border-radius:18px!important;
+  }
+
+  .mq-login-box::before{
+    left:20px!important;
+    right:20px!important;
+  }
+
+  .mq-login-logo{
+    width:68px!important;
+    height:68px!important;
+    flex-basis:68px!important;
+  }
+
+  .mq-login-logo img{
+    width:59px!important;
+    height:59px!important;
+  }
+
+  .mq-login-box-head h2{
+    font-size:29px!important;
+  }
+
+  .mq-login-options{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+
+  .mq-login-register{
+    align-items:stretch!important;
+    flex-direction:column!important;
+  }
+
+  .mq-login-register>a{
+    width:100%!important;
+  }
+}
