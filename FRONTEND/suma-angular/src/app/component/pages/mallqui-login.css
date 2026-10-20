@@ -3776,3 +3776,30 @@
     right:20px!important;
   }
 }
+
+
+/* =========================================================
+   LOGIN V14 · ALTURA REAL (no solo max-height)
+   Hace la tarjeta un poco más alta de arriba hacia abajo.
+   ========================================================= */
+@media(min-width:901px){
+  .mq-login-box{
+    height:calc(100svh - 14px)!important;
+    max-height:calc(100svh - 14px)!important;
+    min-height:0!important;
+    padding-top:46px!important;
+    padding-bottom:42px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+  }
+
+  .mq-login-box-head{
+    margin-top:0!important;
+    margin-bottom:26px!important;
+  }
+
+  .mq-login-register{
+    margin-top:20px!important;
+  }
+}
