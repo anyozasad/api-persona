@@ -881,3 +881,363 @@ nav a:hover{
   transition:opacity .28s ease !important;
   box-shadow:none !important;
 }
+
+
+/* =========================================================
+   CONTINUACIÓN TIPO WIX · CONTACTO EN PLANES
+   Continúa debajo de las tarjetas, como en la referencia.
+   ========================================================= */
+.planes-contact{
+  scroll-margin-top:92px;
+  background:#ff6047;
+  color:#211f26;
+  padding:74px 0 88px;
+}
+
+.planes-contact-inner{
+  width:min(1030px,calc(100% - 44px));
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:.82fr 1.18fr;
+  gap:100px;
+  align-items:start;
+}
+
+.planes-contact-kicker{
+  margin:0 0 66px;
+  font-family:"Bahnschrift Condensed","Arial Narrow","Roboto Condensed",Arial,sans-serif;
+  font-size:37px;
+  line-height:1;
+  font-weight:500;
+  letter-spacing:11px;
+}
+
+.planes-contact-copy h2{
+  margin:0 0 26px;
+  font-family:"Bahnschrift Condensed","Arial Narrow","Roboto Condensed",Arial,sans-serif;
+  font-size:30px;
+  line-height:1.2;
+  font-weight:600;
+}
+
+.planes-contact-copy a,
+.planes-contact-copy p{
+  display:block;
+  margin:8px 0;
+  color:#211f26;
+  text-decoration:none;
+  font-family:"Bahnschrift Condensed","Arial Narrow","Roboto Condensed",Arial,sans-serif;
+  font-size:24px;
+  line-height:1.2;
+}
+
+.planes-contact-copy p{
+  margin-top:18px;
+  font-size:16px;
+}
+
+.planes-contact-form{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.planes-form-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.planes-contact-form label{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  color:#211f26;
+  font-family:"Bahnschrift Condensed","Arial Narrow","Roboto Condensed",Arial,sans-serif;
+  font-size:16px;
+  font-weight:400;
+}
+
+.planes-contact-form input,
+.planes-contact-form textarea{
+  width:100%;
+  border:2px solid #211f26;
+  border-radius:0;
+  background:transparent;
+  color:#211f26;
+  outline:none;
+  padding:10px 12px;
+  font:400 15px Arial,sans-serif;
+}
+
+.planes-contact-form input{
+  height:50px;
+}
+
+.planes-contact-form textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+.planes-contact-form button{
+  align-self:flex-end;
+  width:145px;
+  height:50px;
+  margin-top:0;
+  border:0;
+  border-radius:0;
+  background:#211f26;
+  color:#ff6047;
+  cursor:pointer;
+  font-family:"Bahnschrift Condensed","Arial Narrow","Roboto Condensed",Arial,sans-serif;
+  font-size:17px;
+  transition:background .2s ease,color .2s ease;
+}
+
+.planes-contact-form button:hover{
+  background:#151319;
+  color:#ff725e;
+}
+
+/* Chat flotante funcional, igual al de la principal */
+.planes-chat-float{
+  position:fixed;
+  z-index:9999;
+  right:26px;
+  bottom:26px;
+  width:64px;
+  height:64px;
+  display:grid;
+  place-items:center;
+  border:0;
+  border-radius:50%;
+  background:#ff6047;
+  box-shadow:0 12px 32px rgba(0,0,0,.28);
+  cursor:pointer;
+  transition:transform .2s ease,box-shadow .2s ease,background .2s ease;
+}
+
+.planes-chat-float:hover{
+  transform:translateY(-3px) scale(1.04);
+  background:#ff715c;
+  box-shadow:0 16px 38px rgba(0,0,0,.34);
+}
+
+.planes-chat-float:active{
+  transform:scale(.96);
+}
+
+.planes-chat-float span{
+  position:relative;
+  width:29px;
+  height:24px;
+  display:block;
+  border-radius:14px;
+  background:#211f26;
+}
+
+.planes-chat-float span::before{
+  content:"";
+  position:absolute;
+  top:10px;
+  left:9px;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:#ff6047;
+  box-shadow:8px 0 0 #ff6047;
+}
+
+.planes-chat-float span::after{
+  content:"";
+  position:absolute;
+  left:4px;
+  bottom:-5px;
+  width:10px;
+  height:10px;
+  background:#211f26;
+  clip-path:polygon(0 0,100% 0,0 100%);
+}
+
+.planes-chat-panel{
+  position:fixed;
+  z-index:9998;
+  right:26px;
+  bottom:105px;
+  width:365px;
+  height:535px;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  overflow:hidden;
+  background:#ffd3cc;
+  border:1px solid rgba(33,31,38,.12);
+  box-shadow:0 20px 60px rgba(0,0,0,.30);
+}
+
+.planes-chat-header{
+  min-height:86px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  padding:18px 18px 14px;
+  background:#ff6047;
+  color:#211f26;
+}
+
+.planes-chat-header strong{
+  display:block;
+  margin-bottom:8px;
+  font-size:17px;
+}
+
+.planes-chat-header span{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font:400 12px/1.35 Arial,sans-serif;
+}
+
+.planes-chat-header span i{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#31c55b;
+}
+
+.planes-chat-header button{
+  width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:#211f26;
+  font-size:30px;
+  line-height:1;
+  cursor:pointer;
+}
+
+.planes-chat-messages{
+  overflow-y:auto;
+  padding:18px;
+  background:#ffd3cc;
+}
+
+.planes-chat-welcome{
+  max-width:82%;
+  padding:13px 14px;
+  background:#fff0ed;
+  color:#2a252a;
+  border-radius:14px 14px 14px 4px;
+}
+
+.planes-chat-welcome strong{
+  display:block;
+  margin-bottom:6px;
+}
+
+.planes-chat-welcome p{
+  margin:0;
+  font:400 13px/1.5 Arial,sans-serif;
+}
+
+.planes-chat-message{
+  max-width:82%;
+  margin-top:12px;
+  padding:11px 13px;
+  border-radius:14px;
+  font:400 13px/1.45 Arial,sans-serif;
+}
+
+.planes-chat-message.usuario{
+  margin-left:auto;
+  background:#211f26;
+  color:#fff;
+  border-bottom-right-radius:4px;
+}
+
+.planes-chat-message.gym{
+  margin-right:auto;
+  background:#fff0ed;
+  color:#2a252a;
+  border-bottom-left-radius:4px;
+}
+
+.planes-chat-input{
+  min-height:68px;
+  display:grid;
+  grid-template-columns:1fr 44px;
+  align-items:center;
+  gap:8px;
+  padding:10px 12px;
+  background:#fff;
+  border-top:1px solid rgba(33,31,38,.10);
+}
+
+.planes-chat-input input{
+  width:100%;
+  min-height:46px;
+  border:0;
+  outline:none;
+  padding:0 8px;
+  background:#fff;
+  color:#2b272d;
+  font:400 13px Arial,sans-serif;
+}
+
+.planes-chat-input button{
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:50%;
+  background:#ff6047;
+  color:#211f26;
+  font-size:18px;
+  cursor:pointer;
+}
+
+.planes-toast{
+  position:fixed;
+  z-index:10000;
+  left:50%;
+  bottom:28px;
+  transform:translateX(-50%);
+  max-width:min(520px,calc(100% - 32px));
+  padding:12px 18px;
+  background:#211f26;
+  color:#fff;
+  box-shadow:0 12px 30px rgba(0,0,0,.28);
+  font:400 13px/1.4 Arial,sans-serif;
+}
+
+@media(max-width:760px){
+  .planes-contact-inner{
+    grid-template-columns:1fr;
+    gap:48px;
+  }
+
+  .planes-form-row{
+    grid-template-columns:1fr;
+  }
+
+  .planes-contact-kicker{
+    margin-bottom:40px;
+  }
+
+  .planes-chat-panel{
+    left:14px;
+    right:14px;
+    bottom:90px;
+    width:auto;
+    height:min(535px,calc(100vh - 120px));
+  }
+
+  .planes-chat-float{
+    right:16px;
+    bottom:16px;
+    width:60px;
+    height:60px;
+  }
+}
