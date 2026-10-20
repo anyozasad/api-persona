@@ -4225,3 +4225,649 @@ button.admin-system-card:hover{
     font-size:7px;
   }
 }
+
+
+/* ADMIN WIX-LIKE UI · SOLO INTERFAZ · 20-10-2026 */
+:root{
+  --admin-wix-blue:#116dff;
+  --admin-wix-blue-soft:#eaf2ff;
+  --admin-wix-ink:#0f172a;
+  --admin-wix-muted:#64748b;
+  --admin-wix-bg:#f4f6f8;
+  --admin-wix-line:#e3e7ed;
+  --admin-wix-side:#151b28;
+  --admin-wix-side-2:#1b2230;
+}
+
+/* Estructura general: barra superior blanca + lateral oscuro + contenido claro */
+.admin-shell{
+  display:grid!important;
+  grid-template-columns:252px minmax(0,1fr)!important;
+  grid-template-rows:68px minmax(0,1fr)!important;
+  min-height:100vh!important;
+  background:var(--admin-wix-bg)!important;
+  transition:grid-template-columns .26s ease!important;
+}
+
+.admin-wix-topbar{
+  grid-column:1/-1;
+  grid-row:1;
+  position:sticky;
+  top:0;
+  z-index:3100;
+  min-width:0;
+  height:68px;
+  display:grid;
+  grid-template-columns:auto auto auto minmax(280px,1fr) auto;
+  align-items:center;
+  gap:18px;
+  padding:0 20px;
+  background:#fff;
+  border-bottom:1px solid #dfe3e8;
+  color:#162033;
+  box-shadow:0 1px 0 rgba(15,23,42,.03);
+}
+
+.admin-wix-brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  white-space:nowrap;
+}
+.admin-wix-brand-mark{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border-radius:8px;
+  background:#111827;
+  color:#fff;
+  font-size:22px;
+  font-weight:900;
+}
+.admin-wix-brand strong{
+  font-size:17px;
+  letter-spacing:.1px;
+}
+
+.admin-wix-site{
+  height:38px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:0 13px;
+  border-left:1px solid #d9dee5;
+  color:#273247;
+  font-size:13px;
+  font-weight:700;
+}
+.admin-wix-site i{font-style:normal;color:#6b7280}
+
+.admin-wix-links{
+  display:flex;
+  align-items:center;
+  gap:20px;
+  color:#263247;
+  font-size:12px;
+  white-space:nowrap;
+}
+.admin-wix-links span{cursor:default}
+
+.admin-wix-search{
+  min-width:0;
+  height:40px;
+  display:grid;
+  grid-template-columns:28px 1fr;
+  align-items:center;
+  gap:5px;
+  padding:0 10px;
+  border:1px solid #c9d7ef;
+  border-radius:8px;
+  background:#f6f9ff;
+  color:#6f7e95;
+}
+.admin-wix-search>span{
+  display:grid;
+  place-items:center;
+  color:#4f77bb;
+  font-size:20px;
+}
+.admin-wix-search input{
+  width:100%;
+  min-width:0;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#1e293b;
+  font:400 13px/1.2 "Segoe UI",Arial,sans-serif;
+}
+.admin-wix-search input::placeholder{color:#8592a6}
+
+.admin-wix-tools{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#243047;
+}
+.admin-wix-tools>span:not(.admin-wix-top-avatar){
+  width:32px;
+  height:32px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  font-size:15px;
+}
+.admin-wix-top-avatar{
+  width:34px!important;
+  height:34px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:50%!important;
+  background:#222b3b!important;
+  color:#fff!important;
+  font-size:12px!important;
+  font-weight:800!important;
+}
+
+/* Sidebar similar al panel Wix */
+.admin-nav{
+  grid-column:1!important;
+  grid-row:2!important;
+  position:sticky!important;
+  top:68px!important;
+  height:calc(100vh - 68px)!important;
+  min-height:0!important;
+  padding:14px 12px 16px!important;
+  background:var(--admin-wix-side)!important;
+  border-right:1px solid #252c3a!important;
+  box-shadow:none!important;
+  color:#fff!important;
+}
+.admin-nav:after{display:none!important}
+.admin-nav-top{
+  min-height:78px!important;
+  padding:6px 8px 15px!important;
+  margin-bottom:8px!important;
+  border-bottom:1px solid rgba(255,255,255,.09)!important;
+  gap:10px!important;
+}
+.admin-brand{
+  width:54px!important;
+  height:54px!important;
+  flex:0 0 54px!important;
+}
+.admin-brand img{
+  width:54px!important;
+  height:54px!important;
+}
+.admin-brand-copy strong{
+  color:#fff!important;
+  font-size:13px!important;
+  letter-spacing:.35px!important;
+}
+.admin-brand-copy small{
+  color:#9ba7ba!important;
+  font-size:9px!important;
+}
+.brand-glow{display:none!important}
+
+.admin-main-nav{
+  gap:3px!important;
+  padding:4px 0 10px!important;
+}
+.admin-main-nav button{
+  min-height:42px!important;
+  grid-template-columns:31px 1fr 18px!important;
+  gap:8px!important;
+  padding:7px 10px!important;
+  border-radius:7px!important;
+  color:#d6dce6!important;
+  background:transparent!important;
+  font-size:11px!important;
+  font-weight:600!important;
+  transform:none!important;
+  box-shadow:none!important;
+}
+.admin-main-nav button:hover{
+  background:#202838!important;
+  color:#fff!important;
+  transform:none!important;
+}
+.admin-main-nav button.active{
+  position:relative!important;
+  background:#293242!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.admin-main-nav button.active:before{
+  content:""!important;
+  position:absolute!important;
+  left:-12px!important;
+  top:7px!important;
+  bottom:7px!important;
+  width:4px!important;
+  border-radius:0 4px 4px 0!important;
+  background:var(--admin-wix-blue)!important;
+}
+.admin-main-nav-icon{
+  width:28px!important;
+  height:28px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:7px!important;
+  background:rgba(255,255,255,.055)!important;
+  color:#dbe3ef!important;
+  font-size:12px!important;
+}
+.admin-main-nav button.active .admin-main-nav-icon{
+  background:#344057!important;
+  color:#fff!important;
+}
+.admin-main-nav button b{
+  min-width:18px!important;
+  height:18px!important;
+  padding:0 5px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:9px!important;
+  background:var(--admin-wix-blue)!important;
+  color:#fff!important;
+  font-size:8px!important;
+}
+
+.admin-system-card{
+  margin:10px 0 8px!important;
+  padding:10px 11px!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:8px!important;
+  background:#1d2534!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.admin-system-card b{color:#e8edf5!important}
+.admin-system-card small{color:#99a7ba!important}
+.admin-logout{
+  margin:0!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:transparent!important;
+  color:#d5dce6!important;
+}
+.admin-logout:hover{
+  background:#202838!important;
+  color:#fff!important;
+}
+
+/* Contenido principal */
+.admin-content{
+  grid-column:2!important;
+  grid-row:2!important;
+  min-width:0!important;
+  width:auto!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:30px 38px 52px!important;
+  background:#f4f6f8!important;
+}
+.admin-content>*{
+  width:100%!important;
+  max-width:1280px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.admin-content:before,
+.admin-content:after{display:none!important}
+
+/* Flecha lateral compatible con el nuevo alto */
+.admin-sidebar-toggle{
+  left:238px!important;
+  top:calc(50% + 34px)!important;
+  width:28px!important;
+  height:52px!important;
+  border:1px solid #d7dde5!important;
+  border-left:0!important;
+  border-radius:0 8px 8px 0!important;
+  background:#fff!important;
+  color:#445066!important;
+  box-shadow:0 3px 12px rgba(15,23,42,.08)!important;
+}
+.admin-sidebar-toggle:hover{
+  background:#f7f9fc!important;
+  color:var(--admin-wix-blue)!important;
+}
+
+/* Cabecera de página como Wix */
+.admin-header{
+  min-height:84px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto auto!important;
+  align-items:start!important;
+  gap:16px!important;
+  margin:0 auto 20px!important;
+  padding:3px 2px 14px!important;
+  background:transparent!important;
+}
+.admin-title-kicker{
+  display:block!important;
+  margin:0 0 7px!important;
+  color:#76839a!important;
+  font-size:9px!important;
+  font-weight:700!important;
+  letter-spacing:.85px!important;
+}
+.admin-header h1{
+  margin:0!important;
+  color:#111827!important;
+  font-size:34px!important;
+  line-height:1.08!important;
+  font-weight:700!important;
+  letter-spacing:-.7px!important;
+}
+.admin-header p{
+  margin:6px 0 0!important;
+  color:#59677c!important;
+  font-size:13px!important;
+}
+.admin-refresh-box{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-end!important;
+  gap:5px!important;
+}
+.admin-refresh-actions{
+  display:flex!important;
+  gap:8px!important;
+}
+.admin-secondary,
+.admin-refresh-top,
+.admin-header-mini{
+  min-height:38px!important;
+  border:1px solid #ccd7e6!important;
+  border-radius:18px!important;
+  background:#fff!important;
+  color:#1f4c89!important;
+  box-shadow:none!important;
+  font-size:10px!important;
+  font-weight:700!important;
+}
+.admin-secondary:hover,
+.admin-refresh-top:hover,
+.admin-header-mini:hover{
+  border-color:#9db7dc!important;
+  background:#f7faff!important;
+}
+.admin-header-mini.is-active{
+  border-color:var(--admin-wix-blue)!important;
+  color:var(--admin-wix-blue)!important;
+}
+.admin-refresh-box small{
+  color:#8692a3!important;
+  font-size:8px!important;
+}
+
+.admin-profile{
+  min-width:0!important;
+  width:46px!important;
+  height:46px!important;
+  padding:4px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid #dfe4eb!important;
+  border-radius:50%!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.admin-profile p,
+.admin-profile i{display:none!important}
+.admin-avatar{
+  width:34px!important;
+  height:34px!important;
+  border-radius:50%!important;
+  background:#1f2937!important;
+  color:#fff!important;
+}
+
+/* Dashboard: tarjetas limpias, sin hero oscuro */
+.premium-dashboard-hero,
+.ux-dashboard-head{
+  min-height:132px!important;
+  margin:0 0 18px!important;
+  padding:24px 26px!important;
+  border:1px solid var(--admin-wix-line)!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  color:#111827!important;
+  box-shadow:none!important;
+}
+.premium-dashboard-hero:before,
+.premium-dashboard-hero:after{display:none!important}
+.dashboard-hero-decoration{display:none!important}
+.dashboard-live-pill{
+  color:#345f9f!important;
+  background:#eef5ff!important;
+  border:1px solid #d7e6ff!important;
+}
+.dashboard-live-pill i{background:#20a765!important}
+.ux-overline{
+  color:#7d8899!important;
+  font-size:9px!important;
+  letter-spacing:1px!important;
+}
+.ux-dashboard-head h2{
+  margin:8px 0 5px!important;
+  color:#101828!important;
+  font-size:26px!important;
+  font-weight:700!important;
+  letter-spacing:-.35px!important;
+}
+.ux-dashboard-head h2 strong{
+  color:#101828!important;
+  font-weight:700!important;
+}
+.ux-dashboard-head p{color:#667085!important}
+.dashboard-hero-trust span{color:#667085!important}
+.ux-cash-status{
+  border:1px solid #dfe4ea!important;
+  background:#f8fafc!important;
+  color:#374151!important;
+  border-radius:20px!important;
+}
+
+/* Acciones rápidas */
+.ux-quick-actions{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:12px!important;
+  margin-bottom:18px!important;
+}
+.ux-action{
+  min-height:74px!important;
+  padding:13px 16px!important;
+  border:1px solid var(--admin-wix-line)!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.ux-action:hover{
+  transform:none!important;
+  border-color:#c5d5ea!important;
+  box-shadow:0 4px 12px rgba(15,23,42,.05)!important;
+}
+.ux-action>span{
+  background:#edf4ff!important;
+  color:#2c65b7!important;
+  border-radius:9px!important;
+}
+.ux-action b{color:#111827!important}
+.ux-action small{color:#78859a!important}
+.ux-action.primary-action{
+  background:var(--admin-wix-blue)!important;
+  border-color:var(--admin-wix-blue)!important;
+}
+.ux-action.primary-action>span{background:rgba(255,255,255,.16)!important;color:#fff!important}
+.ux-action.primary-action b,
+.ux-action.primary-action small{color:#fff!important}
+
+/* Resumen estilo tarjeta de dashboard Wix */
+.dashboard-control-center{
+  margin:0 0 18px!important;
+  padding:20px!important;
+  border:1px solid var(--admin-wix-line)!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.dashboard-control-center>header{
+  align-items:center!important;
+  padding-bottom:14px!important;
+  border-bottom:1px solid #edf0f4!important;
+}
+.dashboard-control-center>header span{
+  color:#50617a!important;
+  font-size:9px!important;
+}
+.dashboard-control-center>header h3{
+  color:#111827!important;
+  font-size:21px!important;
+}
+.dashboard-control-center>header>small{color:#8591a3!important}
+.dashboard-control-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:10px!important;
+  padding-top:2px!important;
+}
+.dashboard-control-grid>button{
+  min-height:92px!important;
+  border:1px solid #e5e9ef!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.dashboard-control-grid>button:hover{
+  transform:none!important;
+  border-color:#bdd0eb!important;
+  box-shadow:0 4px 10px rgba(15,23,42,.04)!important;
+}
+.dashboard-control-grid>button>span{
+  background:#edf4ff!important;
+  color:#2d65b0!important;
+}
+.dashboard-control-grid b{color:#111827!important}
+.dashboard-control-grid small,
+.dashboard-control-grid p{color:#7a879a!important}
+
+/* Tarjetas generales */
+.ux-card,
+.ux-kpi,
+.dashboard-health-strip,
+.dashboard-priority-board,
+.admin-portal-live,
+.ux-alert-banner,
+.admin-dashboard-tools,
+.clients-v3-card{
+  border-color:var(--admin-wix-line)!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.ux-kpi-icon,
+.ux-ranking-row>span{
+  background:#edf4ff!important;
+  color:#2c65b4!important;
+}
+.ux-section-label,
+.ux-kpi-head small{color:#7d8a9b!important}
+.ux-kpi h3,
+.ux-card-head h3{color:#111827!important}
+.ux-link{color:var(--admin-wix-blue)!important}
+
+/* Barra de salud menos pesada */
+.dashboard-health-strip{
+  background:#fff!important;
+  padding:12px!important;
+}
+.dashboard-health-strip button{
+  border-radius:18px!important;
+  background:#fff!important;
+  color:var(--admin-wix-blue)!important;
+  border:1px solid #cdd9e9!important;
+}
+
+/* Error/feedback: visible pero sin tapar media pantalla */
+.admin-toast{
+  top:82px!important;
+  right:24px!important;
+  max-width:min(460px,calc(100vw - 48px))!important;
+  max-height:90px!important;
+  overflow:auto!important;
+  padding:11px 14px!important;
+  border-radius:10px!important;
+  box-shadow:0 10px 30px rgba(15,23,42,.12)!important;
+}
+.admin-toast.error{
+  background:#fff7f8!important;
+  color:#8b2636!important;
+  border:1px solid #f3c8d0!important;
+}
+
+/* Colapso del lateral conserva la barra superior */
+.admin-shell.admin-sidebar-collapsed{
+  grid-template-columns:0 minmax(0,1fr)!important;
+  grid-template-rows:68px minmax(0,1fr)!important;
+}
+.admin-shell.admin-sidebar-collapsed .admin-nav{
+  width:0!important;
+  padding-left:0!important;
+  padding-right:0!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+.admin-shell.admin-sidebar-collapsed .admin-content{
+  grid-column:2!important;
+  grid-row:2!important;
+}
+.admin-shell.admin-sidebar-collapsed .admin-sidebar-toggle{
+  left:0!important;
+}
+
+/* Responsive */
+@media(max-width:1180px) and (min-width:851px){
+  .admin-shell{grid-template-columns:214px minmax(0,1fr)!important}
+  .admin-sidebar-toggle{left:200px!important}
+  .admin-content{padding:26px 22px 44px!important}
+  .admin-wix-links{display:none}
+  .admin-wix-topbar{grid-template-columns:auto auto minmax(240px,1fr) auto}
+  .dashboard-control-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:850px){
+  .admin-shell{
+    grid-template-columns:1fr!important;
+    grid-template-rows:62px minmax(0,1fr)!important;
+  }
+  .admin-wix-topbar{
+    height:62px;
+    grid-template-columns:auto minmax(0,1fr) auto;
+    padding:0 12px;
+  }
+  .admin-wix-brand strong,
+  .admin-wix-site,
+  .admin-wix-links,
+  .admin-wix-tools>span:not(.admin-wix-top-avatar){display:none!important}
+  .admin-wix-search{height:38px}
+  .admin-nav,
+  .admin-sidebar-toggle{display:none!important}
+  .admin-content{
+    grid-column:1!important;
+    grid-row:2!important;
+    padding:20px 14px 36px!important;
+  }
+  .admin-header{
+    grid-template-columns:1fr auto!important;
+  }
+  .admin-refresh-box{display:none!important}
+  .admin-header h1{font-size:28px!important}
+  .ux-quick-actions,
+  .dashboard-control-grid,
+  .ux-primary-kpis,
+  .ux-status-strip,
+  .ux-bottom-grid{grid-template-columns:1fr!important}
+}
