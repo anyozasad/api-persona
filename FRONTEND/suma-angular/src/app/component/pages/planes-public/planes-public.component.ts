@@ -13,14 +13,14 @@ import { GymApiService } from '../../../core/services/gym-api.service';
       <header class="planes-nav">
         <div class="planes-shell nav-inner">
           <nav>
-            <a routerLink="/" (click)="volverSinAnimacion()">INICIO</a>
-            <a routerLink="/" fragment="entrenamiento" (click)="volverSinAnimacion()">ENTRENAMIENTO</a>
-            <a routerLink="/" fragment="entrenador" (click)="volverSinAnimacion()">SOBRE MÍ</a>
-            <a routerLink="/" fragment="victorias" (click)="volverSinAnimacion()">VICTORIAS</a>
-            <a routerLink="/" fragment="gimnasio" (click)="volverSinAnimacion()">GIMNASIO</a>
+            <a routerLink="/" class="home-return-link" (click)="volverSinAnimacion()">INICIO</a>
+            <a routerLink="/" fragment="entrenamiento" class="home-return-link" (click)="volverSinAnimacion()">ENTRENAMIENTO</a>
+            <a routerLink="/" fragment="entrenador" class="home-return-link" (click)="volverSinAnimacion()">SOBRE MÍ</a>
+            <a routerLink="/" fragment="victorias" class="home-return-link" (click)="volverSinAnimacion()">VICTORIAS</a>
+            <a routerLink="/" fragment="gimnasio" class="home-return-link" (click)="volverSinAnimacion()">GIMNASIO</a>
             <a routerLink="/clases-gym">RESERVAR SESIÓN</a>
             <a routerLink="/planes">PLANES Y PRECIOS</a>
-            <a routerLink="/" fragment="contacto" (click)="volverSinAnimacion()">CONTACTO</a>
+            <a routerLink="/" fragment="contacto" class="home-return-link" (click)="volverSinAnimacion()">CONTACTO</a>
           </nav>
 
           <a routerLink="/login" class="login">
