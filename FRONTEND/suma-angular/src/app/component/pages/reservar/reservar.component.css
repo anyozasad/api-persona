@@ -497,7 +497,7 @@
     color:#d6d1d3 !important;
     opacity:.92 !important;
     transform:translateY(0) !important;
-    animation:bookingNavEnter .52s cubic-bezier(.22,.8,.22,1) both !important;
+    animation:bookingNavEnter .52s cubic-bezier(.22,.8,.22,1) backwards !important;
     transition:
       color .24s ease,
       opacity .24s ease,
@@ -532,7 +532,7 @@
     color:#ff6047 !important;
     opacity:.94 !important;
     transform:translateY(-50%) !important;
-    animation:bookingLoginEnter .58s .30s cubic-bezier(.22,.8,.22,1) both !important;
+    animation:bookingLoginEnter .58s .30s cubic-bezier(.22,.8,.22,1) backwards !important;
     transition:
       color .26s ease,
       opacity .26s ease,
@@ -601,3 +601,11 @@
   from{opacity:0;transform:translateY(calc(-50% - 8px)) scale(.96)}
   to{opacity:.94;transform:translateY(-50%) scale(1)}
 }
+
+
+/* FIX NAV HOVER 17:23 · liberar propiedades tras animacion */
+/*
+  La animación de entrada usa fill-mode "backwards".
+  Así, al terminar, transform/opacity vuelven al control normal del hover.
+  Evita el bug donde el menú quedaba visualmente "pegado" tras entrar o regresar.
+*/
