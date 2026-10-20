@@ -1851,3 +1851,118 @@ html{scroll-behavior:smooth}
     filter:none!important;
   }
 }
+
+
+/* =========================================================
+   WIX PARALLAX REAL · HOME + ENTRENAMIENTO
+   Inspirado en el efecto parallax de la plantilla Wix 1843.
+   ========================================================= */
+
+/* Hero: la foto se desplaza más lento que el contenido al hacer scroll. */
+.mq-hero{
+  background-position:center calc(34% + var(--mq-hero-parallax, 0px)) !important;
+  will-change:background-position;
+}
+
+/* Entrenamiento: parallax suave en ambas fotografías. */
+.mq-level-card{
+  background-position:center calc(50% + var(--mq-training-parallax, 0px)) !important;
+  will-change:background-position, clip-path, opacity;
+}
+
+/* Al entrar en ENTRENAMIENTO, las dos mitades se abren desde el centro,
+   en lugar de deslizar toda la tarjeta. */
+#entrenamiento.mq-section-enter .mq-level-beginner{
+  animation:mqWixRevealLeft .78s cubic-bezier(.22,.8,.22,1) both !important;
+}
+
+#entrenamiento.mq-section-enter .mq-level-pro{
+  animation:mqWixRevealRight .78s cubic-bezier(.22,.8,.22,1) both !important;
+}
+
+#entrenamiento.mq-section-enter .mq-level-content h2{
+  opacity:0;
+  animation:mqWixTrainingText .54s cubic-bezier(.22,.8,.22,1) .34s forwards !important;
+}
+
+#entrenamiento.mq-section-enter .mq-circle-arrow{
+  opacity:0;
+  animation:mqWixTrainingArrow .50s cubic-bezier(.22,.8,.22,1) .48s forwards !important;
+}
+
+#entrenamiento.mq-section-enter .mq-level-shade{
+  animation:mqWixShade .72s ease-out both !important;
+}
+
+@keyframes mqWixRevealLeft{
+  from{
+    opacity:.25;
+    clip-path:inset(0 0 0 100%);
+    filter:brightness(.72);
+  }
+  to{
+    opacity:1;
+    clip-path:inset(0 0 0 0);
+    filter:brightness(1);
+  }
+}
+
+@keyframes mqWixRevealRight{
+  from{
+    opacity:.25;
+    clip-path:inset(0 100% 0 0);
+    filter:brightness(.72);
+  }
+  to{
+    opacity:1;
+    clip-path:inset(0 0 0 0);
+    filter:brightness(1);
+  }
+}
+
+@keyframes mqWixTrainingText{
+  from{
+    opacity:0;
+    transform:translateY(22px);
+    letter-spacing:13px;
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+    letter-spacing:9px;
+  }
+}
+
+@keyframes mqWixTrainingArrow{
+  from{
+    opacity:0;
+    transform:translateY(16px) scale(.78);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+@keyframes mqWixShade{
+  from{background:rgba(26,24,29,.82)}
+  to{background:rgba(26,24,29,.68)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .mq-hero,
+  .mq-level-card{
+    background-position:center !important;
+  }
+
+  #entrenamiento.mq-section-enter .mq-level-card,
+  #entrenamiento.mq-section-enter .mq-level-content h2,
+  #entrenamiento.mq-section-enter .mq-circle-arrow,
+  #entrenamiento.mq-section-enter .mq-level-shade{
+    animation:none!important;
+    opacity:1!important;
+    clip-path:none!important;
+    transform:none!important;
+    filter:none!important;
+  }
+}
