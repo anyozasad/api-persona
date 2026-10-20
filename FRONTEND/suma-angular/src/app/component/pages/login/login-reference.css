@@ -48,9 +48,8 @@
   }
 
   #mq-login-reference::before {
-    left: 34px !important;
-    right: 34px !important;
-    height: 3px !important;
+    display: none !important;
+    content: none !important;
   }
 
   #mq-login-reference .mq-login-box-head {
