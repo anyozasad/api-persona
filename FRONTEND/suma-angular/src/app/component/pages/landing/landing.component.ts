@@ -17,6 +17,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             <a href="#inicio" (click)="irA('inicio', $event)">INICIO</a>
             <a href="#entrenamiento" (click)="irA('entrenamiento', $event)">ENTRENAMIENTO</a>
             <a href="#entrenador" (click)="irA('entrenador', $event)">SOBRE MÍ</a>
+            <a href="#victorias" (click)="irA('victorias', $event)">VICTORIAS</a>
             <a href="#gimnasio" (click)="irA('gimnasio', $event)">GIMNASIO</a>
             <a class="mq-nav-page" routerLink="/clases-gym">RESERVAR SESIÓN</a>
             <a class="mq-nav-page" routerLink="/planes">PLANES Y PRECIOS</a>
