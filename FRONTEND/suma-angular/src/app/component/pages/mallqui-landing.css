@@ -2053,3 +2053,19 @@ html{scroll-behavior:smooth}
     animation:none!important;
   }
 }
+
+
+/* =========================================================
+   QUITAR RAYA ROJA DEL MENU
+   Mantiene la animación del texto, pero sin subrayado.
+   ========================================================= */
+.mq-menu a::before,
+.mq-menu a:hover::before,
+.mq-menu a::after,
+.mq-menu a:hover::after{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  opacity:0 !important;
+}
