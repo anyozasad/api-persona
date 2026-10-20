@@ -275,6 +275,7 @@ nav a:hover{
   .planes-nav nav a:nth-child(5){animation-delay:.24s}
   .planes-nav nav a:nth-child(6){animation-delay:.28s}
   .planes-nav nav a:nth-child(7){animation-delay:.32s}
+  .planes-nav nav a:nth-child(8){animation-delay:.36s}
 
   .planes-nav .login{
     opacity:0;
@@ -369,5 +370,85 @@ nav a:hover{
     opacity:1;
     transform:translateY(-12px) scale(1);
     filter:blur(0);
+  }
+}
+
+
+/* =========================================================
+   NAVBAR UNIFICADO CON LA PANTALLA PRINCIPAL
+   Misma altura, tipografía, espacios, icono y Login.
+   ========================================================= */
+@media (min-width:981px){
+  .planes-nav{
+    height:92px !important;
+    background:#26232b !important;
+    border-bottom:1px solid rgba(255,255,255,.035) !important;
+    box-shadow:none !important;
+  }
+
+  .planes-shell.nav-inner{
+    width:min(1080px,calc(100% - 80px)) !important;
+    min-height:92px !important;
+    height:92px !important;
+    padding:0 120px 0 0 !important;
+  }
+
+  .planes-nav nav{
+    gap:25px !important;
+    overflow:visible !important;
+  }
+
+  .planes-nav nav a{
+    padding:34px 0 32px !important;
+    color:#d6d1d3 !important;
+    font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
+    font-size:15px !important;
+    font-weight:400 !important;
+    letter-spacing:-.15px !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+    text-shadow:none !important;
+  }
+
+  .planes-nav nav a::before,
+  .planes-nav nav a::after{
+    content:none !important;
+    display:none !important;
+  }
+
+  .planes-nav nav a:hover{
+    color:#ff6047 !important;
+    transform:translateY(-2px) scale(1.035) !important;
+  }
+
+  .planes-nav .login{
+    right:0 !important;
+    gap:10px !important;
+    color:#ff6047 !important;
+    font-size:16px !important;
+    font-weight:400 !important;
+  }
+
+  .planes-nav .user-icon{
+    width:30px !important;
+    height:30px !important;
+    flex:0 0 30px !important;
+    box-shadow:none !important;
+  }
+
+  .planes-nav .user-icon i{
+    top:6px !important;
+    width:9px !important;
+    height:9px !important;
+  }
+
+  .planes-nav .user-icon b{
+    bottom:4px !important;
+    width:18px !important;
+    height:10px !important;
+  }
+
+  .pricing{
+    padding-top:125px !important;
   }
 }
