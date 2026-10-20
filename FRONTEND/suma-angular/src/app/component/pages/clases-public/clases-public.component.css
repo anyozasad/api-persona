@@ -403,7 +403,7 @@
 }
 
 /* =========================================================
-   CHAT FLOTANTE · CUADRADO COMO LA REFERENCIA WIX
+   CHAT FLOTANTE · IGUAL AL BOTÓN PRINCIPAL
    ========================================================= */
 .chat-link,
 .chat-link:link,
@@ -411,66 +411,67 @@
 .chat-link:focus{
   position:fixed;
   z-index:9999;
-  right:20px;
-  bottom:20px;
+  right:26px;
+  bottom:26px;
   width:64px;
   height:64px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:grid;
+  place-items:center;
   border:0;
-  border-radius:0;
+  border-radius:50%;
   background:var(--accent);
   color:#211f26;
   text-decoration:none;
-  box-shadow:none;
+  box-shadow:0 12px 32px rgba(0,0,0,.28);
+  cursor:pointer;
   transform:none;
   animation:none;
-  transition:background .22s ease;
+  transition:transform .2s ease,box-shadow .2s ease,background .2s ease;
 }
 
 .chat-link:hover{
-  background:#ff705a;
+  transform:translateY(-3px) scale(1.04);
+  background:#ff715c;
+  box-shadow:0 16px 38px rgba(0,0,0,.34);
 }
 
 .chat-link:active{
-  background:#ef553f;
+  transform:scale(.96);
 }
 
 .chat-link span{
   position:relative;
-  top:0;
-  width:30px;
-  height:30px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:50%;
+  width:29px;
+  height:24px;
+  display:block;
+  border-radius:14px;
   background:#211f26;
-  color:var(--accent);
+  color:transparent;
   font-size:0;
-  line-height:1;
+  line-height:0;
 }
 
 .chat-link span::before{
   content:"";
-  width:13px;
-  height:3px;
-  border-radius:3px;
+  position:absolute;
+  top:10px;
+  left:9px;
+  width:4px;
+  height:4px;
+  border-radius:50%;
   background:var(--accent);
-  box-shadow:0 6px 0 var(--accent);
+  box-shadow:8px 0 0 var(--accent);
 }
 
 .chat-link span::after{
   content:"";
   position:absolute;
-  left:6px;
-  bottom:-3px;
-  width:8px;
-  height:8px;
+  left:4px;
+  bottom:-5px;
+  width:10px;
+  height:10px;
   background:#211f26;
-  transform:rotate(35deg);
-  border-radius:1px;
+  clip-path:polygon(0 0,100% 0,0 100%);
 }
 
 /* =========================================================
