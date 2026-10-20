@@ -568,3 +568,68 @@ nav a:hover{
     transition:none !important;
   }
 }
+
+
+/* =========================================================
+   QUITAR ANIMACIÓN COMPLETA DE RUTA · PLANES
+   La navegación queda igual al menú principal:
+   solo hover/click del botón, sin animar toda la pantalla.
+   ========================================================= */
+.planes-nav,
+.planes-nav nav a,
+.planes-nav .login,
+.pricing,
+.title p,
+.title h1,
+.plan-grid article{
+  animation:none !important;
+}
+
+.planes-nav nav a,
+.planes-nav .login,
+.title p,
+.title h1,
+.plan-grid article{
+  opacity:1 !important;
+}
+
+.planes-nav nav a{
+  transform:none;
+}
+
+.planes-nav .login{
+  transform:translateY(-50%) !important;
+}
+
+.title p,
+.title h1,
+.plan-grid article{
+  filter:none !important;
+}
+
+.plan-grid article{
+  transform:none !important;
+}
+
+.plan-grid article.featured{
+  transform:translateY(-12px) !important;
+}
+
+/* Mantener únicamente la animación normal de botón, igual al home */
+@media (min-width:821px){
+  .planes-nav nav a{
+    transition:
+      color .24s ease,
+      transform .24s cubic-bezier(.22,.8,.22,1),
+      letter-spacing .24s ease !important;
+  }
+
+  .planes-nav nav a:hover{
+    color:#ff6047 !important;
+    transform:translateY(-2px) scale(1.035) !important;
+  }
+
+  .planes-nav nav a:active{
+    transform:translateY(0) scale(.96) !important;
+  }
+}
