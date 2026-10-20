@@ -452,3 +452,45 @@ nav a:hover{
     padding-top:125px !important;
   }
 }
+
+
+/* =========================================================
+   NAVBAR EXACTO Y UNIFORME · CORRECCIÓN DE ESPACIADO
+   Misma distribución en Inicio, Mis Clases y Planes.
+   Corrige la separación visual entre RESERVAR SESIÓN
+   y PLANES Y PRECIOS sin mover Login.
+   ========================================================= */
+@media (min-width:1060px){
+  .planes-shell.nav-inner{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    padding-right:120px !important;
+  }
+
+  .planes-nav nav{
+    width:860px !important;
+    max-width:calc(100% - 10px) !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:0 !important;
+    flex-wrap:nowrap !important;
+  }
+
+  .planes-nav nav a{
+    flex:0 0 auto !important;
+    margin:0 !important;
+    white-space:nowrap !important;
+  }
+
+  .planes-nav nav a::before,
+  .planes-nav nav a::after{
+    content:none !important;
+    display:none !important;
+  }
+
+  .planes-nav .login{
+    right:0 !important;
+  }
+}
