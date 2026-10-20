@@ -79,10 +79,10 @@
 
 #register-reference{
   box-sizing:border-box;
-  width:min(760px,calc(100vw - 56px));
+  width:min(680px,calc(100vw - 56px));
   max-height:calc(100svh - 42px);
   overflow:auto;
-  padding:26px 34px 24px;
+  padding:22px 30px 22px;
   border:none;
   outline:none;
   border-radius:18px;
@@ -108,12 +108,12 @@
   justify-content:center;
   text-align:center;
   gap:0;
-  margin:0 0 22px;
+  margin:0 0 18px;
 }
 
 .register-icon{
-  width:84px;
-  height:84px;
+  width:78px;
+  height:78px;
   display:grid;
   place-items:center;
   margin:0 0 7px;
@@ -124,8 +124,8 @@
 }
 
 .register-icon img{
-  width:84px;
-  height:84px;
+  width:78px;
+  height:78px;
   object-fit:contain;
 }
 
@@ -146,7 +146,7 @@
 .register-heading h2{
   margin:0;
   color:#fff;
-  font-size:34px;
+  font-size:31px;
   line-height:1.05;
   font-weight:800;
   letter-spacing:-.6px;
@@ -162,7 +162,7 @@
 .register-card form{
   display:flex;
   flex-direction:column;
-  gap:14px;
+  gap:12px;
 }
 
 .register-row{
@@ -179,7 +179,7 @@
 }
 
 .register-input-wrap{
-  height:50px;
+  height:48px;
   margin-top:7px;
   padding:0 14px;
   display:flex;
@@ -309,7 +309,7 @@
 }
 
 .register-submit{
-  height:54px;
+  height:52px;
   border:0;
   border-radius:11px;
   background:linear-gradient(135deg,#ff6047 0%,#ff745b 100%);
@@ -397,5 +397,39 @@
   #register-reference{
     border-radius:16px;
     padding:22px 18px 20px;
+  }
+}
+
+
+/* REGISTRO · ACABADO PROFESIONAL FINAL */
+@media (min-width: 901px) {
+  #register-reference {
+    background:
+      linear-gradient(180deg,
+        rgba(35,32,39,.78) 0%,
+        rgba(27,25,31,.82) 100%)!important;
+    backdrop-filter:blur(16px) saturate(110%)!important;
+    -webkit-backdrop-filter:blur(16px) saturate(110%)!important;
+    box-shadow:0 24px 60px rgba(0,0,0,.32)!important;
+  }
+
+  .register-heading h2{
+    font-size:31px!important;
+  }
+
+  .register-subtitle{
+    font-size:10px!important;
+  }
+
+  .register-row label{
+    font-size:9px!important;
+  }
+
+  .register-input-wrap input{
+    font-size:10px!important;
+  }
+
+  .register-submit{
+    font-size:10px!important;
   }
 }
