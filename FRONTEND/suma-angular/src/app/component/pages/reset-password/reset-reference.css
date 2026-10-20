@@ -93,11 +93,11 @@
   border-radius:18px!important;
   background:
     linear-gradient(180deg,
-      rgba(35,32,39,.80) 0%,
-      rgba(27,25,31,.84) 100%)!important;
-  backdrop-filter:blur(16px) saturate(112%)!important;
-  -webkit-backdrop-filter:blur(16px) saturate(112%)!important;
-  box-shadow:0 24px 60px rgba(0,0,0,.34)!important;
+      rgba(35,32,39,.94) 0%,
+      rgba(27,25,31,.96) 100%)!important;
+  backdrop-filter:blur(10px) saturate(108%)!important;
+  -webkit-backdrop-filter:blur(10px) saturate(108%)!important;
+  box-shadow:0 24px 60px rgba(0,0,0,.38)!important;
   color:#fff!important;
   scrollbar-width:none!important;
 }
