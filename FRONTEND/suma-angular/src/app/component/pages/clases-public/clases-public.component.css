@@ -527,3 +527,61 @@ nav a.active{color:#d4d0d2}
     transition:none !important;
   }
 }
+
+
+/* =========================================================
+   QUITAR ANIMACIÓN COMPLETA DE RUTA · MIS CLASES
+   La navegación queda igual al menú principal:
+   solo hover/click del botón, sin animar toda la pantalla.
+   ========================================================= */
+.classes-nav,
+.classes-nav nav a,
+.classes-nav .login,
+.classes-main,
+.title,
+.title h1,
+.class-grid article{
+  animation:none !important;
+}
+
+.classes-nav nav a,
+.classes-nav .login,
+.title,
+.title h1,
+.class-grid article{
+  opacity:1 !important;
+}
+
+.classes-nav nav a{
+  transform:none;
+}
+
+.classes-nav .login{
+  transform:translateY(-50%) !important;
+}
+
+.title,
+.title h1,
+.class-grid article{
+  transform:none !important;
+  filter:none !important;
+}
+
+/* Mantener únicamente la animación normal de botón, igual al home */
+@media (min-width:821px){
+  .classes-nav nav a{
+    transition:
+      color .24s ease,
+      transform .24s cubic-bezier(.22,.8,.22,1),
+      letter-spacing .24s ease !important;
+  }
+
+  .classes-nav nav a:hover{
+    color:#ff6047 !important;
+    transform:translateY(-2px) scale(1.035) !important;
+  }
+
+  .classes-nav nav a:active{
+    transform:translateY(0) scale(.96) !important;
+  }
+}
