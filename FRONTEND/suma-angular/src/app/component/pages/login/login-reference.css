@@ -241,3 +241,91 @@
     box-shadow: 0 24px 60px rgba(0, 0, 0, .34) !important;
   }
 }
+
+
+/* =========================================================
+   ANIMACIÓN DE ENTRADA DEL LOGIN
+   Solo anima la tarjeta y su contenido. El fondo no se mueve.
+   ========================================================= */
+@media (min-width: 901px) {
+  #mq-login-reference {
+    animation: loginCardEnter .58s cubic-bezier(.22,.8,.22,1) both !important;
+    transform-origin: center center !important;
+    will-change: opacity, transform, filter;
+  }
+
+  #mq-login-reference .mq-login-box-head {
+    animation: loginContentEnter .46s ease-out .10s both;
+  }
+
+  #mq-login-reference form > label:nth-of-type(1) {
+    animation: loginContentEnter .44s ease-out .16s both;
+  }
+
+  #mq-login-reference form > label:nth-of-type(2) {
+    animation: loginContentEnter .44s ease-out .21s both;
+  }
+
+  #mq-login-reference .mq-login-options {
+    animation: loginContentEnter .42s ease-out .26s both;
+  }
+
+  #mq-login-reference .mq-login-submit {
+    animation: loginContentEnter .42s ease-out .31s both;
+  }
+
+  #mq-login-reference .mq-login-register {
+    animation: loginContentEnter .42s ease-out .36s both;
+  }
+
+  .mq-login-home-button {
+    animation: loginBackEnter .42s ease-out .08s both;
+  }
+}
+
+@keyframes loginCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(.97);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes loginContentEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes loginBackEnter {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mq-login-reference,
+  #mq-login-reference .mq-login-box-head,
+  #mq-login-reference form > label,
+  #mq-login-reference .mq-login-options,
+  #mq-login-reference .mq-login-submit,
+  #mq-login-reference .mq-login-register,
+  .mq-login-home-button {
+    animation: none !important;
+  }
+}
