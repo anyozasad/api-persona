@@ -2277,3 +2277,86 @@ html{scroll-behavior:smooth}
   transform:none !important;
   box-shadow:none !important;
 }
+
+
+/* =========================================================
+   ANIMACION UNIFORME TIPO WIX · SIN MOVER BOTONES
+   Todos los botones se comportan igual:
+   cambio suave de color y opacidad, sin zoom, sin subir,
+   sin subrayados y sin animación residual al regresar.
+   ========================================================= */
+.mq-menu a,
+.mq-menu a:link,
+.mq-menu a:visited,
+.mq-menu a:focus{
+  color:#d6d1d3 !important;
+  opacity:.92 !important;
+  transform:none !important;
+  animation:none !important;
+  transition:
+    color .28s ease,
+    opacity .28s ease !important;
+  text-decoration:none !important;
+  text-shadow:none !important;
+  outline:none !important;
+}
+
+.mq-menu a:hover{
+  color:#ff6047 !important;
+  opacity:1 !important;
+  transform:none !important;
+  animation:none !important;
+}
+
+.mq-menu a:active{
+  color:#ff6047 !important;
+  opacity:.78 !important;
+  transform:none !important;
+  animation:none !important;
+}
+
+.mq-menu a::before,
+.mq-menu a::after,
+.mq-menu a:hover::before,
+.mq-menu a:hover::after,
+.mq-menu a:focus::before,
+.mq-menu a:focus::after,
+.mq-menu a:active::before,
+.mq-menu a:active::after{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  opacity:0 !important;
+}
+
+.mq-login,
+.mq-login:link,
+.mq-login:visited,
+.mq-login:focus{
+  color:#ff6047 !important;
+  opacity:.92 !important;
+  animation:none !important;
+  transition:
+    color .28s ease,
+    opacity .28s ease !important;
+}
+
+.mq-login:hover{
+  color:#ff725e !important;
+  opacity:1 !important;
+  animation:none !important;
+}
+
+.mq-login:active{
+  opacity:.78 !important;
+}
+
+.mq-user-icon,
+.mq-login:hover .mq-user-icon,
+.mq-login:active .mq-user-icon{
+  transform:none !important;
+  animation:none !important;
+  transition:opacity .28s ease !important;
+  box-shadow:none !important;
+}
