@@ -3803,3 +3803,86 @@
     margin-top:20px!important;
   }
 }
+
+
+/* =========================================================
+   LOGIN V15 · PROPORCIÓN COMO LA SEGUNDA REFERENCIA
+   Más ancho y menos alto; centrado y completo en pantalla.
+   ========================================================= */
+@media(min-width:901px){
+  .mq-login-box{
+    width:min(720px,calc(100% - 64px))!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:calc(100svh - 96px)!important;
+    padding:30px 48px 28px!important;
+    display:block!important;
+    overflow:auto!important;
+    border-radius:24px!important;
+  }
+
+  .mq-login-box::before{
+    left:48px!important;
+    right:48px!important;
+  }
+
+  .mq-login-box-head{
+    width:100%!important;
+    max-width:590px!important;
+    margin:0 auto 22px!important;
+  }
+
+  .mq-login-logo{
+    width:84px!important;
+    height:84px!important;
+    flex:0 0 84px!important;
+    margin-bottom:8px!important;
+  }
+
+  .mq-login-logo img{
+    width:76px!important;
+    height:76px!important;
+    object-fit:contain!important;
+  }
+
+  .mq-login-box-head h2{
+    font-size:38px!important;
+  }
+
+  .mq-login-box-head div>span{
+    margin-top:7px!important;
+    font-size:12px!important;
+  }
+
+  .mq-login-box form,
+  .mq-login-register,
+  .mq-selected-plan{
+    width:100%!important;
+    max-width:590px!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  .mq-login-box form{
+    gap:16px!important;
+  }
+
+  .mq-login-input{
+    height:56px!important;
+    margin-top:7px!important;
+  }
+
+  .mq-login-options{
+    min-height:28px!important;
+  }
+
+  .mq-login-submit{
+    height:56px!important;
+    margin-top:0!important;
+  }
+
+  .mq-login-register{
+    margin-top:18px!important;
+    padding-top:16px!important;
+  }
+}
