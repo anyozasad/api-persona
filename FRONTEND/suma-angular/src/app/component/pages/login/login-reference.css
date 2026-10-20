@@ -1,32 +1,214 @@
-/* Ajuste final aislado del login.
-   Se carga después de mallqui-login.css para que no lo pisen reglas antiguas. */
+/* LOGIN FINAL AISLADO
+   Referencia visual: captura aprobada 1648x928.
+   Este archivo se carga después de mallqui-login.css. */
 
 @media (min-width: 901px) {
   .mq-login-hero {
     place-items: center !important;
   }
 
+  /* Deja visible el gimnasio y recupera el tono cálido de la referencia. */
   .mq-login-hero-overlay {
     background:
       linear-gradient(90deg,
-        rgba(10, 10, 13, .74) 0%,
-        rgba(14, 12, 17, .48) 44%,
-        rgba(14, 11, 15, .36) 100%),
+        rgba(8, 8, 11, .62) 0%,
+        rgba(12, 10, 14, .34) 48%,
+        rgba(10, 8, 11, .24) 100%),
       linear-gradient(180deg,
-        rgba(12, 10, 14, .08) 0%,
-        rgba(12, 10, 14, .45) 100%) !important;
+        rgba(10, 8, 12, .03) 0%,
+        rgba(10, 8, 12, .32) 100%) !important;
   }
 
+  .mq-login-hero::before {
+    background:
+      radial-gradient(circle at 74% 48%, rgba(255, 116, 55, .20), transparent 30%),
+      radial-gradient(circle at 29% 78%, rgba(255, 136, 72, .09), transparent 28%) !important;
+  }
+
+  /* Medidas y posición de la tarjeta de la referencia. */
   #mq-login-reference {
+    box-sizing: border-box !important;
+    width: 505px !important;
+    height: 670px !important;
+    max-width: calc(100vw - 44px) !important;
+    max-height: calc(100svh - 28px) !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 18px 32px 24px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    overflow: hidden !important;
+    border-radius: 24px !important;
     animation: none !important;
-    transform: translateY(22px) scale(.92) !important;
+    transform: translateY(18px) !important;
     transform-origin: center center !important;
   }
 
+  #mq-login-reference::before {
+    left: 32px !important;
+    right: 32px !important;
+    height: 3px !important;
+  }
+
+  /* Encabezado: logo grande y sin caja alrededor. */
+  #mq-login-reference .mq-login-box-head {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 0 30px !important;
+  }
+
+  #mq-login-reference .mq-login-logo {
+    width: 112px !important;
+    height: 112px !important;
+    flex: 0 0 112px !important;
+    margin: 0 0 7px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  #mq-login-reference .mq-login-logo img {
+    width: 106px !important;
+    height: 106px !important;
+    object-fit: contain !important;
+  }
+
+  #mq-login-reference .mq-login-box-head p {
+    margin: 0 0 7px !important;
+    font-size: 10px !important;
+    letter-spacing: 4.5px !important;
+  }
+
+  #mq-login-reference .mq-login-box-head h2 {
+    margin: 0 !important;
+    font-size: 39px !important;
+    line-height: 1.02 !important;
+  }
+
+  #mq-login-reference .mq-login-box-head div > span {
+    margin-top: 8px !important;
+    font-size: 12px !important;
+  }
+
+  /* Formulario: ocupa visualmente toda la tarjeta como en la referencia. */
+  #mq-login-reference form,
+  #mq-login-reference .mq-login-register,
+  #mq-login-reference .mq-selected-plan {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  #mq-login-reference form {
+    gap: 18px !important;
+  }
+
+  #mq-login-reference form > label {
+    font-size: 11px !important;
+  }
+
+  #mq-login-reference .mq-login-input {
+    height: 56px !important;
+    margin-top: 8px !important;
+    padding: 0 15px !important;
+    border-radius: 11px !important;
+  }
+
+  #mq-login-reference .mq-login-input input {
+    font-size: 13px !important;
+  }
+
+  #mq-login-reference .mq-login-options {
+    min-height: 30px !important;
+  }
+
+  #mq-login-reference .mq-remember,
+  #mq-login-reference .mq-show-password,
+  #mq-login-reference .mq-forgot {
+    font-size: 10px !important;
+  }
+
+  #mq-login-reference .mq-login-submit {
+    height: 58px !important;
+    margin-top: 0 !important;
+    border-radius: 11px !important;
+    font-size: 12px !important;
+  }
+
   #mq-login-reference .mq-login-submit:disabled {
-    opacity: .88 !important;
+    opacity: 1 !important;
     background: linear-gradient(135deg, #ff6047 0%, #ff745b 100%) !important;
     color: #17151b !important;
+    box-shadow: 0 15px 34px rgba(255, 96, 71, .22) !important;
+  }
+
+  #mq-login-reference .mq-login-register {
+    margin-top: 20px !important;
+    padding-top: 18px !important;
+  }
+
+  #mq-login-reference .mq-login-register strong {
+    font-size: 11px !important;
+  }
+
+  #mq-login-reference .mq-login-register span {
+    font-size: 9px !important;
+  }
+
+  #mq-login-reference .mq-login-register > a {
+    min-height: 42px !important;
+    padding: 0 17px !important;
+    font-size: 10px !important;
+  }
+}
+
+/* Si la pantalla es más baja, conserva la misma composición sin cortar nada. */
+@media (min-width: 901px) and (max-height: 760px) {
+  #mq-login-reference {
+    height: calc(100svh - 22px) !important;
+    padding-top: 13px !important;
+    padding-bottom: 15px !important;
+    transform: translateY(8px) !important;
+  }
+
+  #mq-login-reference .mq-login-box-head {
+    margin-bottom: 15px !important;
+  }
+
+  #mq-login-reference .mq-login-logo {
+    width: 78px !important;
+    height: 78px !important;
+    flex-basis: 78px !important;
+  }
+
+  #mq-login-reference .mq-login-logo img {
+    width: 72px !important;
+    height: 72px !important;
+  }
+
+  #mq-login-reference .mq-login-box-head h2 {
+    font-size: 34px !important;
+  }
+
+  #mq-login-reference form {
+    gap: 10px !important;
+  }
+
+  #mq-login-reference .mq-login-input {
+    height: 47px !important;
+  }
+
+  #mq-login-reference .mq-login-submit {
+    height: 49px !important;
+  }
+
+  #mq-login-reference .mq-login-register {
+    margin-top: 11px !important;
+    padding-top: 10px !important;
   }
 }
 
