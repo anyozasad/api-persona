@@ -19,8 +19,7 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
   <div class="admin-shell" [class.admin-sidebar-collapsed]="sidebarCerrado">
     <header class="admin-wix-topbar">
       <div class="admin-wix-brand">
-        <span class="admin-wix-brand-mark">M</span>
-        <strong>MALLQUI GYM</strong>
+        <strong class="admin-wix-wordmark">MALLQUI</strong>
       </div>
 
       <div class="admin-wix-site">
@@ -160,9 +159,145 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
       </nav>
 
       <div *ngIf="toast" class="admin-toast success">{{toast}}</div>
-      <div *ngIf="error" class="admin-toast error">⚠ {{error}}</div>
+      <div *ngIf="error && seccion!=='dashboard'" class="admin-toast error">⚠ {{error}}</div>
 
       <ng-container *ngIf="seccion==='dashboard'">
+        <section class="wixdash-page">
+          <header class="wixdash-head">
+            <div>
+              <h2>Panel Administrador</h2>
+              <p>Administra y haz seguimiento de los socios, servicios y operaciones de Mallqui Gym.</p>
+            </div>
+            <div class="wixdash-head-actions">
+              <button type="button" class="wixdash-more" title="Más opciones">•••</button>
+              <button type="button" class="wixdash-outline" (click)="cambiarSeccion('reportes')">Administrar reportes</button>
+              <button type="button" class="wixdash-create" (click)="abrirNuevoSocioDesdeDashboard()">Crear <span>⌄</span></button>
+            </div>
+          </header>
+
+          <section class="wixdash-member-strip">
+            <div>
+              <span class="wixdash-member-icon">♙</span>
+              <b>{{dashboard?.clientes?.activos ?? 0}} socios activos</b>
+              <span class="wixdash-info">i</span>
+            </div>
+            <button type="button" (click)="cambiarSeccion('clientes')">Administrar socios <span>›</span></button>
+          </section>
+
+          <section class="wixdash-summary">
+            <header>
+              <h3>Resumen</h3>
+              <button type="button" aria-label="Contraer resumen">⌃</button>
+            </header>
+
+            <div class="wixdash-summary-body">
+              <div class="wixdash-summary-tabs">
+                <button type="button" class="active">Vista general</button>
+                <button type="button" (click)="cambiarSeccion('reportes')">Analíticas y reportes</button>
+              </div>
+
+              <p class="wixdash-summary-copy">
+                Revisa lo más importante del gimnasio desde un solo lugar y entra directamente a cada módulo cuando necesites gestionarlo.
+              </p>
+
+              <div class="wixdash-summary-cards">
+                <button type="button" (click)="cambiarSeccion('clientes')">
+                  <span>♙</span>
+                  <div><b>Socios activos</b><small>{{dashboard?.clientes?.activos ?? 0}} registrados</small></div>
+                  <em>›</em>
+                </button>
+                <button type="button" (click)="cambiarSeccion('membresias')">
+                  <span>✦</span>
+                  <div><b>Membresías</b><small>{{dashboard?.membresias?.activas ?? 0}} activas</small></div>
+                  <em>›</em>
+                </button>
+                <button type="button" (click)="cambiarSeccion('reservas')">
+                  <span>◫</span>
+                  <div><b>Reservas de hoy</b><small>{{dashboard?.reservas?.hoy ?? 0}} programadas</small></div>
+                  <em>›</em>
+                </button>
+                <button type="button" (click)="cambiarSeccion('ventas')">
+                  <span>▤</span>
+                  <div><b>Ventas de hoy</b><small>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</small></div>
+                  <em>›</em>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="wixdash-table-card">
+            <div class="wixdash-toolbar">
+              <div class="wixdash-toolbar-left">
+                <button type="button" class="wixdash-view">Todos los módulos <span>⌄</span></button>
+                <button type="button" class="wixdash-link">Administrar vista <span>⌄</span></button>
+              </div>
+              <div class="wixdash-toolbar-right">
+                <button type="button" class="wixdash-filter">▽ Filtrar</button>
+                <button type="button" class="wixdash-icon-btn">☷</button>
+                <label class="wixdash-search">
+                  <span>⌕</span>
+                  <input type="text" placeholder="Buscar...">
+                </label>
+                <button type="button" class="wixdash-import" (click)="exportarDashboardCsv()">Exportar <span>⌄</span></button>
+              </div>
+            </div>
+
+            <div class="wixdash-table-wrap">
+              <table class="wixdash-table">
+                <thead>
+                  <tr>
+                    <th><input type="checkbox" aria-label="Seleccionar todo"></th>
+                    <th>Módulo</th>
+                    <th>Estado</th>
+                    <th>Detalle</th>
+                    <th>Última actualización</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><input type="checkbox" aria-label="Seleccionar socios"></td>
+                    <td><span class="wixdash-avatar">S</span><div><b>Socios</b><small>Clientes del gimnasio</small></div></td>
+                    <td><span class="wixdash-status ok">ACTIVO</span></td>
+                    <td>{{dashboard?.clientes?.activos ?? 0}} activos</td>
+                    <td>{{ultimaActualizacion || 'Ahora'}}</td>
+                    <td><button type="button" (click)="cambiarSeccion('clientes')">•••</button></td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox" aria-label="Seleccionar membresías"></td>
+                    <td><span class="wixdash-avatar">M</span><div><b>Membresías</b><small>Planes y vigencias</small></div></td>
+                    <td><span class="wixdash-status ok">ACTIVO</span></td>
+                    <td>{{dashboard?.membresias?.activas ?? 0}} activas</td>
+                    <td>{{ultimaActualizacion || 'Ahora'}}</td>
+                    <td><button type="button" (click)="cambiarSeccion('membresias')">•••</button></td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox" aria-label="Seleccionar reservas"></td>
+                    <td><span class="wixdash-avatar">R</span><div><b>Reservas</b><small>Agenda de sesiones</small></div></td>
+                    <td><span class="wixdash-status">HOY</span></td>
+                    <td>{{dashboard?.reservas?.hoy ?? 0}} reservas</td>
+                    <td>{{ultimaActualizacion || 'Ahora'}}</td>
+                    <td><button type="button" (click)="cambiarSeccion('reservas')">•••</button></td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox" aria-label="Seleccionar ventas"></td>
+                    <td><span class="wixdash-avatar">V</span><div><b>Ventas</b><small>Caja y operaciones</small></div></td>
+                    <td><span class="wixdash-status">HOY</span></td>
+                    <td>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</td>
+                    <td>{{ultimaActualizacion || 'Ahora'}}</td>
+                    <td><button type="button" (click)="cambiarSeccion('ventas')">•••</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <div *ngIf="dashboardError" class="wixdash-inline-error">
+            <span>!</span>
+            <div><b>No se pudo actualizar algunos datos.</b><small>La interfaz seguirá disponible mientras revisas la conexión o la consulta SQL.</small></div>
+            <button type="button" (click)="reintentarDashboard()">Reintentar</button>
+          </div>
+        </section>
         <section class="dashboard-load-state" *ngIf="dashboardCargando && !dashboard">
           <span class="dashboard-loader"></span><div><b>Cargando información real del gimnasio...</b><small>Consultando Laravel y MySQL.</small></div>
         </section>
