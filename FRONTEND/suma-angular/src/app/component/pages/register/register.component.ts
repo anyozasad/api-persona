@@ -15,7 +15,7 @@ import { AuthService } from '../../../auth.service';
       <section class="register-visual">
         <div class="register-overlay"></div>
         <a routerLink="/" class="register-brand" aria-label="Volver al inicio">
-          <img src="assets/mallqui-logo.png" alt="Mallqui Gym">
+          <img src="/assets/mallqui-logo.svg" alt="Mallqui Gym">
         </a>
         <div class="register-message">
           <span class="register-kicker">ÚNETE A MALLQUI GYM</span>
@@ -34,7 +34,7 @@ import { AuthService } from '../../../auth.service';
         <div id="register-reference" class="register-card">
           <div class="register-heading">
             <span class="register-icon">
-              <img src="assets/mallqui-logo.png" alt="Mallqui Gym">
+              <img src="/assets/mallqui-logo.svg" alt="Mallqui Gym">
             </span>
             <div>
               <p class="register-welcome">BIENVENIDO</p>
