@@ -226,175 +226,226 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <button type="button" [class.active]="moduloActivo==='sistema'" (click)="abrirModuloAdmin('sistema')"><span>⚙</span><b>Sistema</b></button>
       </nav>
 
-      <!-- REPORTES: diseño propio inspirado en la página My Reports -->
-      <section class="cf-special-page cf-reports-special" *ngIf="seccion==='reportes'">
-        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>My Reports</strong><em>Meta semanal: {{progresoSemanal()}}%</em></div>
-
-        <section class="cf-reports-hero">
-          <div class="cf-reports-copy">
-            <span>WELCOME BACK,</span>
-            <h1>{{auth.usuario?.nombre_usuario || 'Administrador'}}</h1>
-            <p>Aquí tienes el resumen de rendimiento de Mallqui Gym.</p>
-
-            <div class="cf-report-pills">
-              <article><i>↗</i><div><b>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.0-0'}}</b><small>Ingresos del mes</small></div></article>
-              <article><i>✓</i><div><b>{{dashboard?.asistencias?.hoy ?? 0}}</b><small>Asistencias hoy</small></div></article>
-              <article><i>▤</i><div><b>{{dashboard?.ventas?.hoy_cantidad ?? 0}}</b><small>Ventas de hoy</small></div></article>
-              <article><i>★</i><div><b>{{dashboard?.membresias?.activas ?? 0}}</b><small>Membresías activas</small></div></article>
-            </div>
-          </div>
-
-          <div class="cf-reports-art" aria-hidden="true">
-            <svg viewBox="0 0 650 300">
-              <rect width="650" height="300" fill="#f8f7ff"/>
-              <path d="M20 250c120-80 220-50 316-30 104 22 198-10 294-45v125H20z" fill="#a6d194"/>
-              <circle cx="545" cy="54" r="30" fill="#ffa119"/>
-              <g fill="#d9d7f4">
-                <rect x="355" y="120" width="44" height="113"/><rect x="408" y="94" width="55" height="139"/>
-                <rect x="472" y="136" width="41" height="97"/><rect x="520" y="108" width="48" height="125"/>
-              </g>
-              <g stroke="#2f3159" stroke-width="5" fill="none">
-                <circle cx="122" cy="226" r="28"/><circle cx="220" cy="226" r="28"/>
-                <path d="M122 226l43-41 29 41h-45l32-57 39 57"/>
-                <circle cx="330" cy="226" r="25"/><circle cx="417" cy="226" r="25"/>
-                <path d="M330 226l39-37 26 37h-41l29-50 34 50"/>
-              </g>
-              <g fill="#ff8e43">
-                <circle cx="172" cy="145" r="12" fill="#2f3159"/>
-                <rect x="166" y="158" width="13" height="54" rx="7" transform="rotate(12 172 185)"/>
-                <circle cx="374" cy="151" r="11" fill="#2f3159"/>
-                <rect x="368" y="162" width="12" height="48" rx="6" transform="rotate(-10 374 186)" fill="#6c63e7"/>
-              </g>
-            </svg>
-          </div>
-        </section>
-
-        <section class="cf-report-charts">
-          <article>
-            <header><span>↗</span><div><h3>Ingresos</h3><p>Últimos 6 meses</p></div><b>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.0-0'}}</b></header>
-            <div class="cf-mini-bars">
-              <i *ngFor="let m of dashboard?.tendencias?.ingresos_6_meses || []" [style.height.%]="alturaIngreso(m.total)"></i>
-            </div>
-          </article>
-          <article>
-            <header><span>⌁</span><div><h3>Asistencias</h3><p>Últimos 7 días</p></div><b>{{totalAsistenciasSemana}}</b></header>
-            <svg class="cf-line-chart" viewBox="0 0 300 120" preserveAspectRatio="none">
-              <polyline points="10,100 55,76 100,88 145,45 190,73 235,91 290,62" fill="none" stroke="#5c57df" stroke-width="4"/>
-              <g fill="#fff" stroke="#5c57df" stroke-width="3"><circle cx="10" cy="100" r="4"/><circle cx="55" cy="76" r="4"/><circle cx="100" cy="88" r="4"/><circle cx="145" cy="45" r="4"/><circle cx="190" cy="73" r="4"/><circle cx="235" cy="91" r="4"/><circle cx="290" cy="62" r="4"/></g>
-            </svg>
-          </article>
-          <article>
-            <header><span>S/</span><div><h3>Ventas</h3><p>Operaciones de hoy</p></div><b>{{dashboard?.ventas?.hoy_cantidad ?? 0}}</b></header>
-            <div class="cf-mini-bars purple">
-              <i style="height:34%"></i><i style="height:48%"></i><i style="height:66%"></i><i style="height:82%"></i><i style="height:58%"></i><i style="height:42%"></i>
-            </div>
-          </article>
-          <article>
-            <header><span>★</span><div><h3>Membresías</h3><p>Estado actual</p></div><b>{{dashboard?.membresias?.activas ?? 0}}</b></header>
-            <svg class="cf-line-chart" viewBox="0 0 300 120" preserveAspectRatio="none">
-              <polyline points="10,82 55,92 100,68 145,55 190,32 235,47 290,77" fill="none" stroke="#6a64e8" stroke-width="4"/>
-            </svg>
-          </article>
-        </section>
-      </section>
-
-      <!-- ENTRENAMIENTO: diseño propio inspirado en My Workout Plan -->
-      <section class="cf-special-page cf-workout-special" *ngIf="seccion==='rutinas'">
-        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>My Workout Plan</strong><em>Meta semanal: {{progresoSemanal()}}%</em></div>
-
-        <section class="cf-workout-hero">
+      <!-- CORE PAGES · Estructura tomada de la demo viva Crossfit -->
+      <section class="cf-live-page" *ngIf="seccion==='reportes'">
+        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>My Reports</strong></div>
+        <section class="cf-live-welcome">
           <div>
-            <h1>Buen trabajo, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1>
-            <p>Has completado {{progresoSemanal()}}% de la actividad semanal registrada.</p>
-            <div class="cf-workout-week">
-              <div><b>Esta semana</b><small>{{totalAsistenciasSemana}} asistencias registradas</small></div>
-              <strong>+{{dashboard?.operacion?.rutinas_activas ?? 0}} rutinas activas</strong>
-            </div>
-            <div class="cf-workout-bars">
-              <i *ngFor="let d of dashboard?.tendencias?.asistencias_7_dias || []" [style.height.%]="alturaAsistenciaSemana(d.total)"></i>
-            </div>
-            <footer><span>Meta: actividad semanal constante</span><b>{{progresoSemanal()>=70 ? 'En buen camino' : 'Requiere seguimiento'}}</b></footer>
+            <small>WELCOME BACK,</small>
+            <h1>{{auth.usuario?.nombre_usuario || 'Administrador'}}</h1>
+            <p>Here's your fitness summary for today</p>
           </div>
-          <div class="cf-workout-art" aria-hidden="true">
-            <svg viewBox="0 0 650 300">
-              <rect width="650" height="300" fill="#f8f7ff"/>
-              <path d="M0 250c130-40 250-43 380-7 90 25 175 10 270-23v80H0z" fill="#eef7ea"/>
-              <g stroke="#f09342" stroke-width="11" stroke-linecap="round">
-                <path d="M190 104h250"/><path d="M205 78v52"/><path d="M425 78v52"/>
-              </g>
-              <circle cx="320" cy="73" r="16" fill="#2c2e50"/>
-              <path d="M310 92h25l14 91h-53z" fill="#7a70e8"/>
-              <path d="M306 105l-70 2M337 105l72 2" stroke="#d99a7a" stroke-width="10" stroke-linecap="round"/>
-              <path d="M303 181l-30 62M337 181l31 62" stroke="#f1c7b2" stroke-width="13" stroke-linecap="round"/>
-              <g fill="#5f5a79"><circle cx="182" cy="105" r="13"/><circle cx="448" cy="105" r="13"/></g>
-              <g transform="translate(470 165)">
-                <circle cx="0" cy="62" r="28" fill="none" stroke="#5b5681" stroke-width="7"/>
-                <circle cx="93" cy="62" r="28" fill="none" stroke="#5b5681" stroke-width="7"/>
-                <path d="M0 62l42-36 27 36H31l30-48 32 48" fill="none" stroke="#ef9641" stroke-width="7"/>
-              </g>
-            </svg>
+          <div class="cf-live-summary4">
+            <article><span>👟</span><b>{{dashboard?.asistencias?.hoy ?? 0}}</b><small>Steps Today</small></article>
+            <article><span>🔥</span><b>{{dashboard?.ventas?.hoy_cantidad ?? 0}}</b><small>Calories Burned</small></article>
+            <article><span>⚡</span><b>{{totalAsistenciasSemana}}</b><small>Active Minutes</small></article>
+            <article><span>♥</span><b>{{progresoSemanal()}}</b><small>Fitness Score</small></article>
           </div>
         </section>
 
-        <section class="cf-workout-tabs">
-          <button *ngFor="let w of [1,2,3,4]" type="button" [class.active]="workoutSemana===w" (click)="workoutSemana=w">▣ Semana {{w}}</button>
-          <button type="button" [class.active]="workoutSemana===0" (click)="workoutSemana=0">▥ Resumen</button>
+        <section class="cf-live-activity4">
+          <article><div class="cf-live-ring">☾</div><div><small>Sleep</small><b>8.3h</b><p>Last night sleep duration</p><em>8.5hrs avg last week.</em></div></article>
+          <article><div class="cf-live-ring">◉</div><div><small>Cycling</small><b>3.5 km</b><p>Distance covered today</p><em>2.3hrs avg last week.</em></div></article>
+          <article><div class="cf-live-ring">↗</div><div><small>Running</small><b>2.8 km</b><p>Distance covered today</p><em>2.6hrs avg last week.</em></div></article>
+          <article><div class="cf-live-ring">🏋</div><div><small>Gym</small><b>{{dashboard?.asistencias?.hoy ?? 0}}h</b><p>Workout duration today</p><em>{{dashboard?.operacion?.rutinas_activas ?? 0}} active routines</em></div></article>
         </section>
 
-        <section class="cf-workout-cards">
-          <article *ngFor="let r of rutinas.slice(0,3)">
-            <div class="cf-exercise-art"><span>🏋</span></div>
-            <div><h3>{{r.nombre_rutina}}</h3><p>{{r.objetivo || 'Entrenamiento personalizado'}}</p><small>{{r.detalles?.length || 0}} ejercicios · {{r.estado}}</small></div>
-          </article>
-          <article *ngIf="!rutinas.length" class="empty"><div class="cf-exercise-art"><span>＋</span></div><div><h3>Primera rutina</h3><p>Crea una rutina real para comenzar.</p></div></article>
-        </section>
-      </section>
-
-      <!-- NUTRICIÓN: diseño propio inspirado en My Diet Plan -->
-      <section class="cf-special-page cf-diet-special" *ngIf="seccion==='nutricion'">
-        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>My Diet Plan</strong><em>Meta semanal: {{progresoSemanal()}}%</em></div>
-
-        <div class="cf-diet-top">
-          <section class="cf-diet-hero">
-            <h1>Hola {{auth.usuario?.nombre_usuario || 'Administrador'}},</h1>
-            <p>Planes de alimentación y seguimiento nutricional del gimnasio.</p>
-            <span class="cf-meal-count">{{nutricionPreview.length || 0}} planes</span>
-            <div class="cf-meal-row">
-              <article *ngFor="let n of nutricionPreview.slice(0,3); let i=index">
-                <span>{{i===0?'🥗':(i===1?'🥣':'🍎')}}</span>
-                <div><b>{{n.titulo}}</b><small>{{n.subtitulo || 'Plan nutricional'}}</small></div>
-                <em>{{n.estado}}</em>
-              </article>
-              <article *ngIf="!nutricionPreview.length"><span>🥗</span><div><b>Plan saludable</b><small>Crea tu primer plan nutricional</small></div><em>Nuevo</em></article>
-            </div>
-          </section>
-
-          <aside class="cf-diet-progress">
-            <header><h2>Progreso</h2><span>Meta semanal</span></header>
-            <div class="cf-diet-bars"><i *ngFor="let d of dashboard?.tendencias?.asistencias_7_dias || []" [style.height.%]="alturaAsistenciaSemana(d.total)"></i></div>
-            <b>{{progresoSemanal()}}%</b><p>de la meta semanal completada.</p>
-          </aside>
-        </div>
-
-        <section class="cf-diet-lower">
-          <article>
-            <header><h2>Planes nutricionales</h2><span>‹　›</span></header>
-            <div class="cf-diet-list">
-              <div *ngFor="let n of nutricionPreview.slice(0,2)"><span>🥗</span><div><b>{{n.titulo}}</b><small>{{n.subtitulo || 'Seguimiento nutricional'}}</small></div><em>{{n.estado}}</em></div>
-              <div *ngIf="!nutricionPreview.length"><span>🥗</span><div><b>Sin planes todavía</b><small>Registra el primero abajo</small></div></div>
+        <section class="cf-live-report-grid">
+          <article class="cf-live-card cf-live-diet-card">
+            <header><div><h2>My Diet Plan</h2><p>Balanced weekly nutrition plan</p></div><b>1,850 kcal/day</b></header>
+            <div class="cf-live-meals">
+              <div *ngFor="let n of nutricionPreview.slice(0,3); let i=index">
+                <span>{{i===0?'🥣':(i===1?'🥗':'🍎')}}</span>
+                <div><b>{{n.titulo || (i===0?'Protein Breakfast Bowl':(i===1?'Lean Chicken Bowl':'Green Detox Salad'))}}</b><small>{{n.subtitulo || 'Healthy meal plan'}}</small></div>
+                <em>{{i===0?'Breakfast':(i===1?'Lunch':'Dinner')}}</em>
+              </div>
+              <div *ngIf="!nutricionPreview.length"><span>🥣</span><div><b>Protein Breakfast Bowl</b><small>Oats + eggs + peanut butter</small></div><em>Breakfast</em></div>
+              <div *ngIf="!nutricionPreview.length"><span>🥗</span><div><b>Lean Chicken Bowl</b><small>Chicken + rice + veggies</small></div><em>Lunch</em></div>
+              <div *ngIf="!nutricionPreview.length"><span>🍎</span><div><b>Green Detox Salad</b><small>Spinach + avocado + seeds</small></div><em>Dinner</em></div>
             </div>
           </article>
-          <article>
-            <header><h2>Objetivos del gimnasio</h2><span>‹　›</span></header>
-            <div class="cf-diet-list">
-              <div><span>🥬</span><div><b>Alimentación saludable</b><small>Seguimiento de objetivos</small></div><em>Activo</em></div>
-              <div><span>🍎</span><div><b>Control y constancia</b><small>Planes vinculados a socios</small></div><em>{{nutricionPreview.length}}</em></div>
+
+          <article class="cf-live-card">
+            <header><div><h2>Upcoming Events</h2><p>Your scheduled fitness activities</p></div><b>{{reservas.length || 0}} Events</b></header>
+            <div class="cf-live-list">
+              <div *ngFor="let r of reservas.slice(0,4)"><span>◫</span><div><b>{{r.clase?.nombre || 'Fitness Session'}}</b><small>{{r.fecha_clase || 'Scheduled'}} · {{nombreEntrenador(r.clase?.entrenador)}}</small></div></div>
+              <div *ngIf="!reservas.length"><span>◫</span><div><b>Fitness Retreat Weekend</b><small>Wellness · Outdoor</small></div></div>
+              <div *ngIf="!reservas.length"><span>◫</span><div><b>Zumba Dance Session</b><small>Cardio · Group Class</small></div></div>
             </div>
+          </article>
+
+          <article class="cf-live-card">
+            <header><div><h2>Personal Trainers</h2><p>Top rated fitness experts</p></div><b>1 Trainer</b></header>
+            <div class="cf-live-trainer-row" *ngIf="entrenadores[0] as t">
+              <img src="assets/showcase/coach-showcase.svg" alt="Trainer">
+              <div><b>{{nombreEntrenador(t)}}</b><small>{{t.especialidad || 'Fitness Coach'}}</small><em>Available</em></div>
+            </div>
+            <div class="cf-live-trainer-row" *ngIf="!entrenadores.length">
+              <img src="assets/showcase/coach-showcase.svg" alt="Trainer"><div><b>Mallqui Trainer</b><small>Strength · Conditioning</small><em>Available</em></div>
+            </div>
+          </article>
+
+          <article class="cf-live-card">
+            <header><div><h2>Workout Goals</h2><p>Weekly targets vs progress</p></div><b>3 Active Goals</b></header>
+            <div class="cf-live-goal"><label><span>Cardio Training</span><b>80%</b></label><div><i style="width:80%"></i></div><small>Running + Cycling</small></div>
+            <div class="cf-live-goal"><label><span>Strength Training</span><b>65%</b></label><div><i style="width:65%"></i></div><small>Weights & Resistance</small></div>
+            <div class="cf-live-goal"><label><span>Mobility & Recovery</span><b>45%</b></label><div><i style="width:45%"></i></div><small>Stretching & Yoga</small></div>
+          </article>
+
+          <article class="cf-live-card cf-live-chart-card">
+            <header><div><h2>Fitness Activity</h2><p>Weekly performance</p></div></header>
+            <svg viewBox="0 0 600 180" preserveAspectRatio="none"><path d="M0 135 C70 112 110 125 165 92 S280 118 350 70 S470 88 600 43" fill="none" stroke="#5b55d9" stroke-width="4"/><path d="M0 150 C70 134 110 143 170 120 S285 130 355 98 S470 108 600 76" fill="none" stroke="#9edcc8" stroke-width="3" stroke-dasharray="6 5"/></svg>
+          </article>
+
+          <article class="cf-live-card cf-live-chart-card">
+            <header><div><h2>Weight Statistics</h2><p>Progress overview</p></div><b>-35 lbs</b></header>
+            <div class="cf-live-weight"><span>Start <b>190 lbs</b></span><div><i style="width:78%"></i></div><span>Current <b>155 lbs</b></span></div>
           </article>
         </section>
       </section>
 
-      <section class="cf-universal-module" *ngIf="seccion!=='dashboard' && !['reportes','rutinas','nutricion'].includes(seccion) && !extraModules.includes(seccion)">
+      <section class="cf-live-page" *ngIf="seccion==='rutinas'">
+        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>My Workout Plan</strong></div>
+        <section class="cf-live-workout-head">
+          <div><h1>Great work, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1><p>You've completed {{progresoSemanal()}}% of your weekly fitness goal.</p></div>
+          <div class="cf-live-workout-progress"><small>This Week</small><b>5 of 7 days active</b><em>+12% ↑ vs last week</em><div><i [style.width.%]="progresoSemanal()"></i></div><span>Goal: 100% weekly activity <strong>On Track</strong></span></div>
+        </section>
+        <section class="cf-live-week-tabs">
+          <button *ngFor="let w of [1,2,3,4]" [class.active]="workoutSemana===w" (click)="workoutSemana=w">Week {{w}}</button>
+          <button [class.active]="workoutSemana===0" (click)="workoutSemana=0">Summary</button>
+        </section>
+        <section class="cf-live-exercise-grid">
+          <article *ngFor="let r of rutinas.slice(0,3); let i=index">
+            <div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Exercise"></div>
+            <h3>{{r.nombre_rutina || (i===0?'Squats':(i===1?'Lunges':'Push Ups'))}}</h3>
+            <p>{{r.objetivo || '4 Sets • 30 Sec'}}</p>
+            <span>{{r.estado || (i===2?'In Progress':'Completed')}}</span>
+          </article>
+          <ng-container *ngIf="!rutinas.length">
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Lunges"></div><h3>Lunges</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Push Ups"></div><h3>Push Ups</h3><p>3 Sets • 40 Sec</p><span>In Progress</span></article>
+          </ng-container>
+        </section>
+        <section class="cf-live-week-summary">
+          <h2>{{workoutSemana===0?'Summary':('Week '+workoutSemana)}}</h2>
+          <p>{{workoutSemana===4?'Recovery & stretching focus':'6 workouts completed • 1h 20m active'}}</p>
+        </section>
+      </section>
+
+      <section class="cf-live-page" *ngIf="seccion==='nutricion'">
+        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>My Diet Plan</strong></div>
+        <section class="cf-live-diet-top">
+          <article class="cf-live-card cf-live-diet-main">
+            <header><div><h1>Hello {{auth.usuario?.nombre_usuario || 'Administrador'}},</h1><p>Your personalized diet plan for today</p></div><b>3 Meals</b></header>
+            <div class="cf-live-dish-grid">
+              <div><img src="assets/showcase/class-showcase.svg" alt="Meal"><b>Greek Salad</b><span>210 kcal</span><small>Breakfast</small></div>
+              <div><img src="assets/showcase/class-showcase.svg" alt="Meal"><b>Lentil Chili</b><span>180 kcal</span><small>Lunch</small></div>
+              <div><img src="assets/showcase/class-showcase.svg" alt="Meal"><b>Apple Salad</b><span>120 kcal</span><small>Dinner</small></div>
+            </div>
+          </article>
+          <article class="cf-live-card cf-live-progress-card">
+            <h2>Progress</h2><p>Weekly goal</p><div class="cf-live-progress-ring"><b>{{progresoSemanal()}}%</b></div><small>{{progresoSemanal()}}% of your goal completed.</small>
+          </article>
+        </section>
+        <section class="cf-live-diet-bottom">
+          <article class="cf-live-card">
+            <header><div><h2>Best Dietitians</h2><p>Nutrition experts</p></div></header>
+            <div class="cf-live-list">
+              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>{{entrenadores[0] ? nombreEntrenador(entrenadores[0]) : 'Mallqui Coach'}}</b><small>Nutrition Specialist</small></div><em>895 reviews</em></div>
+              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>Sports Nutrition</b><small>Wellness Coach</small></div><em>683 reviews</em></div>
+              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>Weight Management</b><small>Fitness Nutrition</small></div><em>669 reviews</em></div>
+            </div>
+          </article>
+          <article class="cf-live-card">
+            <header><div><h2>Best Dishes</h2><p>Recommended meals</p></div></header>
+            <div class="cf-live-meals">
+              <div><span>🥗</span><div><b>Protein Bowl</b><small>High protein meal</small></div><em>320 kcal</em></div>
+              <div><span>🥣</span><div><b>Lean Chicken Bowl</b><small>Balanced lunch</small></div><em>450 kcal</em></div>
+              <div><span>🍎</span><div><b>Green Detox Salad</b><small>Light dinner</small></div><em>280 kcal</em></div>
+            </div>
+          </article>
+        </section>
+      </section>
+
+      <section class="cf-live-page" *ngIf="seccion==='asistencias'">
+        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>Attendance Tracker</strong></div>
+        <section class="cf-live-summary4">
+          <article><span>✓</span><b>{{dashboard?.asistencias?.dentro_ahora ?? 0}}</b><small>Present</small></article>
+          <article><span>−</span><b>{{clientesActivos}}</b><small>Not Checked-In</small></article>
+          <article><span>＋</span><b>{{dashboard?.clientes?.nuevos_mes ?? 0}}</b><small>New Members</small></article>
+          <article><span>♙</span><b>{{entrenadores.length || 1}}</b><small>Trainers</small></article>
+        </section>
+        <section class="cf-live-card cf-live-attendance-card">
+          <header><div><h2>Attendance Tracker</h2><p>Member check-in and check-out activity</p></div>
+            <div class="cf-live-scan">
+              <input [(ngModel)]="asistenciaCodigo" placeholder="MG-000001 or DNI">
+              <button (click)="registrarAccesoPorCodigo()" [disabled]="procesandoAccesoCodigo || !asistenciaCodigo.trim()">Check-In</button>
+            </div>
+          </header>
+          <div class="table-wrap"><table class="management-table"><thead><tr><th>Member</th><th>ID</th><th>Date</th><th>Check-In</th><th>Check-Out</th><th>Trainer</th><th>Plan</th><th>Method</th><th>Status</th></tr></thead><tbody>
+            <tr *ngFor="let a of asistencias.slice(0,12)">
+              <td><b>{{nombreCliente(a.cliente)}}</b></td><td>#M{{a.id_asistencia || a.id || '-'}}</td><td>{{fecha(a.fecha_hora_entrada)}}</td><td>{{fecha(a.fecha_hora_entrada)}}</td><td>{{a.fecha_hora_salida ? fecha(a.fecha_hora_salida) : '-'}}</td><td>{{entrenadores[0] ? nombreEntrenador(entrenadores[0]) : 'Mallqui Trainer'}}</td><td>Mallqui Gym</td><td>Manual</td><td>{{a.estado || 'Completed'}}</td>
+            </tr>
+            <tr *ngIf="!asistencias.length"><td colspan="9">No attendance records yet.</td></tr>
+          </tbody></table></div>
+        </section>
+      </section>
+
+      <section class="cf-live-page" *ngIf="seccion==='entrenador'">
+        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>Trainers</strong></div>
+        <section class="cf-live-welcome cf-live-trainers-head">
+          <div><h1>Hello, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1><p>Checkout the list of our world class trainers.</p></div>
+          <div class="cf-live-summary4">
+            <article><span>🏋</span><b>{{entrenadores[0]?.clases_count || 0}}</b><small>Strength Sessions</small></article>
+            <article><span>◌</span><b>{{clases.length}}</b><small>Yoga Classes</small></article>
+            <article><span>↗</span><b>{{rutinas.length}}</b><small>Cardio Workouts</small></article>
+            <article><span>♙</span><b>1</b><small>Personal Training</small></article>
+          </div>
+        </section>
+        <section class="cf-live-trainer-grid">
+          <article class="cf-live-trainer-card" *ngIf="entrenadores[0] as t; else trainerEmpty">
+            <img src="assets/showcase/coach-showcase.svg" alt="Gym trainer">
+            <h2>{{nombreEntrenador(t)}}</h2><p>{{t.especialidad || 'Strength & Conditioning'}}</p>
+            <ul><li><b>Experience</b><span>Mallqui Gym</span></li><li><b>Available</b><span>{{configuracionForm.hora_apertura}} - {{configuracionForm.hora_cierre}}</span></li><li><b>Clients Trained</b><span>{{clientesActivos}}+</span></li></ul>
+            <button (click)="cambiarSeccion('trainer-profile')">View Profile</button>
+          </article>
+          <ng-template #trainerEmpty><article class="cf-live-trainer-card"><img src="assets/showcase/coach-showcase.svg" alt="Gym trainer"><h2>Mallqui Trainer</h2><p>Strength & Conditioning</p><button (click)="seccion='entrenador-admin'">Register Trainer</button></article></ng-template>
+        </section>
+      </section>
+
+      <section class="cf-live-page" *ngIf="seccion==='planes'">
+        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>Pricing Plans</strong></div>
+        <section class="cf-live-pricing-head"><h1>Try us for Free,</h1><p>Get your free 1-day pass!</p></section>
+        <section class="cf-live-pricing-grid">
+          <article *ngFor="let p of planesMembresia.slice(0,3); let i=index" [class.featured]="i===1">
+            <h2>{{p.nombre || (i===0?'Basic':(i===1?'Premium':'Enterprise'))}}</h2>
+            <h3>S/ {{p.precio || 0}} <small>Per {{p.duracion_meses || 1}} Month</small></h3>
+            <b>{{i===0?'30':(i===1?'70':'150')}} Credits</b>
+            <ul><li>✓ Gym access</li><li>✓ Workout sessions</li><li>✓ Member support</li><li [class.disabled]="i===0">✓ Trainer</li><li [class.disabled]="i<2">✓ Analytics Dashboard</li></ul>
+            <button>{{i===0?'Current Package':'Select Plan'}}</button>
+          </article>
+          <ng-container *ngIf="!planesMembresia.length">
+            <article><h2>Basic</h2><h3>S/ 60 <small>Per Month</small></h3><b>30 Credits</b><ul><li>✓ Gym access</li><li>✓ Workout sessions</li><li>✓ Member support</li><li class="disabled">No Trainer</li><li class="disabled">No Analytics</li></ul><button>Current Package</button></article>
+            <article class="featured"><h2>Premium</h2><h3>S/ 90 <small>Per Month</small></h3><b>70 Credits</b><ul><li>✓ Gym access</li><li>✓ Workout sessions</li><li>✓ Junior Trainer</li><li>✓ Member support</li><li class="disabled">No Analytics</li></ul><button>Select Plan</button></article>
+            <article><h2>Enterprise</h2><h3>S/ 120 <small>Per Month</small></h3><b>150 Credits</b><ul><li>✓ Gym access</li><li>✓ Workout sessions</li><li>✓ Dedicated Trainer</li><li>✓ Member support</li><li>✓ Analytics Dashboard</li></ul><button>Select Plan</button></article>
+          </ng-container>
+        </section>
+        <button class="cf-live-manage" (click)="seccion='planes-admin'">Manage Plans</button>
+      </section>
+
+      <section class="cf-live-page" *ngIf="seccion==='pagos'">
+        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>Payments</strong></div>
+        <section class="cf-live-card cf-live-payments">
+          <header><div><h2>Payments by Month</h2><p>Summary</p></div><b>{{pagos.length}} records</b></header>
+          <div class="table-wrap"><table class="management-table"><thead><tr><th>#</th><th>Invoice No.</th><th>Member Name</th><th>Payment Method</th><th>Paid Date</th><th>Amount</th><th>Status</th></tr></thead><tbody>
+            <tr *ngFor="let p of pagos; let i=index"><td>{{i+1}}</td><td>#INV-{{p.id_pago}}</td><td>{{clientePago(p)}}</td><td>{{p.metodo_pago}}</td><td>{{fecha(p.fecha_pago)}}</td><td>S/ {{p.monto | number:'1.2-2'}}</td><td>{{p.estado_pago}}</td></tr>
+            <tr *ngIf="!pagos.length"><td colspan="7">No payments registered.</td></tr>
+          </tbody></table></div>
+        </section>
+      </section>
+
+      <section class="cf-universal-module" *ngIf="seccion!=='dashboard' && !['reportes','rutinas','nutricion','asistencias','entrenador','planes','pagos'].includes(seccion) && !extraModules.includes(seccion)">
         <div class="cf-special-crumb">
           <span>⌂</span><small>Inicio</small><b>›</b><strong>{{tituloActual}}</strong>
           <em>{{estadoModuloActual}}</em>
@@ -952,7 +1003,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </ng-container>
 
-      <ng-container *ngIf="seccion==='pagos'">
+      <ng-container *ngIf="seccion==='pagos-admin'">
         <section class="admin-list-card">
           <div class="management-heading">
             <div>
@@ -977,7 +1028,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </ng-container>
 
-      <ng-container *ngIf="seccion==='entrenador'">
+      <ng-container *ngIf="seccion==='entrenador-admin'">
         <section class="trainer-single-layout">
           <article class="admin-form-card trainer-single-form" *ngIf="!entrenadores.length || entrenadorEditandoId">
             <div class="management-heading">
@@ -1093,7 +1144,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </ng-container>
 
-      <ng-container *ngIf="seccion==='asistencias'">
+      <ng-container *ngIf="seccion==='attendance-tools'">
         <section class="management-grid">
           <article class="admin-form-card">
             <div class="management-heading">
@@ -1376,7 +1427,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </ng-container>
 
-      <ng-container *ngIf="seccion==='planes'">
+      <ng-container *ngIf="seccion==='planes-admin'">
         <section class="management-grid">
           <article class="admin-form-card">
             <div class="management-heading"><div><h2>{{planEditandoId ? 'Editar tarifa' : 'Nueva tarifa'}}</h2><p>Configura precio, duración y estado.</p></div><span>◆</span></div>
