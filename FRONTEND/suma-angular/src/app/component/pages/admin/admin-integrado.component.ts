@@ -706,6 +706,57 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
                 <p><span><i class="soft"></i>Mobility</span><b>18%</b></p>
               </div>
             </article>
+
+          <section class="cf-ref-secondary">
+            <article class="cf-ref-history">
+              <header><div><h2>Workout History</h2><p>Recent training activity</p></div></header>
+              <div class="cf-ref-history-list">
+                <div><span>↗</span><div><b>Morning Run</b><small>Outdoor • Moderate pace</small></div><em>35 min<br>320 kcal</em><strong>Today</strong></div>
+                <div><span>🏋</span><div><b>Strength Training</b><small>Upper body • Push focus</small></div><em>50 min<br>410 kcal</em><strong>Yesterday</strong></div>
+                <div><span>◉</span><div><b>Cycling Session</b><small>Indoor bike • Resistance 6</small></div><em>40 min<br>290 kcal</em><strong>2d ago</strong></div>
+                <div><span>⚡</span><div><b>HIIT Workout</b><small>High intensity interval</small></div><em>25 min<br>260 kcal</em><strong>3d ago</strong></div>
+              </div>
+            </article>
+
+            <article class="cf-ref-strength">
+              <header><div><h2>Strength Progress</h2><p>Bench Press • 12-week performance trend</p></div><b>+18% Improvement</b></header>
+              <div class="cf-ref-strength-chart">
+                <svg viewBox="0 0 560 180" preserveAspectRatio="none"><path d="M10 150 C80 145 110 128 160 130 S245 112 300 104 S390 80 445 70 S510 48 550 40" fill="none" stroke="#5b55d9" stroke-width="4"/></svg>
+              </div>
+              <footer><span>Start <b>60 kg</b></span><span>Latest <b>85 kg</b></span><span>Best Set <b>90 kg</b></span><span>Target <b>100 kg</b></span></footer>
+            </article>
+          </section>
+
+          <section class="cf-ref-tertiary">
+            <article>
+              <header><div><h2>Sleep Recovery</h2><p>Last 7 days • Quality tracking</p></div><b>7.6h avg • Good</b></header>
+              <div class="cf-ref-sleep-bars"><i style="height:66%"></i><i style="height:78%"></i><i style="height:72%"></i><i style="height:88%"></i><i style="height:81%"></i><i style="height:92%"></i><i style="height:85%"></i></div>
+              <footer><span>Best Night <b>8.4h</b></span><span>Consistency <b>+12%</b></span><span>Deep Sleep <b>2.1h</b></span></footer>
+            </article>
+            <article>
+              <header><div><h2>Workout Frequency</h2><p>Target 60/90</p></div></header>
+              <div class="cf-ref-frequency"><div><strong>{{progresoSemanal()}}%</strong><small>Weekly</small></div></div>
+            </article>
+          </section>
+
+          <section class="cf-ref-insights">
+            <article class="cf-ref-smart">
+              <header><div><h2>Smart Insights</h2><p>AI-based weekly performance summary</p></div><b>Live Analysis</b></header>
+              <div class="cf-ref-insight-list">
+                <div><span>☾</span><div><b>Sleep Improvement</b><small>You slept 12% better than last week with improved recovery cycles.</small></div><em>+12%</em></div>
+                <div><span>↘</span><div><b>Weekend Drop in Activity</b><small>Your workout activity dropped significantly on weekends compared to weekdays.</small></div><em>-18%</em></div>
+                <div><span>◎</span><div><b>Goal Progress</b><small>You've completed {{progresoSemanal()}}% of your weekly fitness goal. Keep the momentum.</small></div><em>{{progresoSemanal()}}%</em></div>
+                <div><span>🔥</span><div><b>Calorie Burn Trend</b><small>Your average calorie burn increased during strength sessions this week.</small></div><em>+9%</em></div>
+              </div>
+            </article>
+            <article class="cf-ref-weight">
+              <header><div><h2>Weight Management</h2><p>Progress overview • Last 12 months</p></div><b>-35 lbs</b></header>
+              <div class="cf-ref-weight-track"><i style="width:78%"></i></div>
+              <div class="cf-ref-weight-labels"><span>Start <b>190 lbs</b></span><span>Steady Fat Loss</span><span>Current <b>155 lbs</b></span></div>
+              <small>Target: 160 lbs</small>
+            </article>
+          </section>
+
           </section>
         </section>
       </ng-container>
