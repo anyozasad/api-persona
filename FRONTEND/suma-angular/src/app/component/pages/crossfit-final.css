@@ -3090,3 +3090,699 @@
   .cf-ref-bottom{margin-left:10px;margin-right:10px}
 }
 
+
+/* CROSSFit 569574 · ALL INTERNAL MODULES UNIFIED */
+
+/* One visual system for every module: compact violet breadcrumb, white content cards, 6px radius. */
+.cf-universal-module{
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+}
+.cf-universal-module .cf-universal-hero,
+.cf-universal-module .cf-universal-panels{
+  display:none!important;
+}
+.cf-special-crumb,
+.cfx-crumb{
+  min-height:41px!important;
+  height:41px!important;
+  margin:0 -24px 12px!important;
+  padding:0 24px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:linear-gradient(90deg,#554fd0,#5f59dd)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.cf-special-crumb span,
+.cfx-crumb>span{font-size:10px!important;color:#fff!important}
+.cf-special-crumb small,
+.cfx-crumb small{font-size:7px!important;color:#dcd9ff!important}
+.cf-special-crumb>b,
+.cfx-crumb>b{font-size:10px!important;color:#cbc8f5!important}
+.cf-special-crumb strong,
+.cfx-crumb strong{font-size:7.5px!important;color:#fff!important}
+.cf-special-crumb em,
+.cfx-crumb em{
+  margin-left:auto!important;
+  min-height:22px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  padding:0 9px!important;
+  border:1px solid rgba(255,255,255,.14)!important;
+  border-radius:3px!important;
+  background:rgba(255,255,255,.05)!important;
+  color:#fff!important;
+  font-size:6.5px!important;
+  font-style:normal!important;
+}
+
+/* Remove legacy tab strips that were not part of the reference pages. */
+.admin-module-tabs{
+  display:none!important;
+}
+
+/* Reports / Workout / Diet keep their real information but use the same compact reference proportions. */
+.cf-special-page{
+  margin:0!important;
+  padding:0 0 18px!important;
+  background:transparent!important;
+}
+.cf-reports-hero,
+.cf-workout-hero{
+  min-height:238px!important;
+  margin:0 0 10px!important;
+  overflow:hidden!important;
+  border:1px solid var(--ref-border)!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  box-shadow:0 2px 7px rgba(63,61,103,.02)!important;
+}
+.cf-reports-copy,
+.cf-workout-hero>div:first-child{
+  padding:18px 20px!important;
+}
+.cf-reports-copy>span{
+  font-size:6.5px!important;
+  color:#8e90a0!important;
+}
+.cf-reports-copy h1,
+.cf-workout-hero h1,
+.cf-diet-hero h1{
+  margin:3px 0 4px!important;
+  color:#2c2b3a!important;
+  font-size:18px!important;
+  line-height:1.15!important;
+}
+.cf-reports-copy>p,
+.cf-workout-hero>div:first-child>p,
+.cf-diet-hero>p{
+  color:#888b99!important;
+  font-size:7px!important;
+}
+.cf-report-pills{
+  gap:8px!important;
+  margin-top:22px!important;
+}
+.cf-report-pills article{
+  min-height:54px!important;
+  padding:8px 9px!important;
+  border:1px solid #ececf3!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.cf-report-pills article i{
+  width:29px!important;
+  height:29px!important;
+  border-radius:50%!important;
+  background:#efefff!important;
+  color:#5b55d9!important;
+}
+.cf-report-pills b{font-size:10px!important}
+.cf-report-pills small{font-size:6px!important}
+
+.cf-report-charts{
+  gap:10px!important;
+  margin:0!important;
+}
+.cf-report-charts>article{
+  min-height:180px!important;
+  padding:12px!important;
+  border:1px solid var(--ref-border)!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.cf-report-charts header span{
+  background:#efefff!important;
+  color:#5b55d9!important;
+}
+.cf-report-charts h3{font-size:9px!important}
+.cf-report-charts p{font-size:6px!important}
+
+.cf-workout-tabs{
+  min-height:42px!important;
+  gap:5px!important;
+  margin:0 0 10px!important;
+  padding:5px!important;
+  border:1px solid var(--ref-border)!important;
+  border-radius:6px!important;
+  background:#fff!important;
+}
+.cf-workout-tabs button{
+  min-height:30px!important;
+  padding:0 10px!important;
+  border:0!important;
+  border-radius:4px!important;
+  background:transparent!important;
+  color:#777988!important;
+  font-size:7px!important;
+}
+.cf-workout-tabs button.active{
+  background:#efefff!important;
+  color:#5751d6!important;
+}
+.cf-workout-cards{
+  gap:10px!important;
+}
+.cf-workout-cards article{
+  min-height:94px!important;
+  padding:10px!important;
+  border:1px solid var(--ref-border)!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.cf-exercise-art{
+  border-radius:5px!important;
+  background:#f3f2ff!important;
+}
+
+.cf-diet-top{
+  gap:10px!important;
+  margin-bottom:10px!important;
+}
+.cf-diet-hero,
+.cf-diet-progress,
+.cf-diet-lower>article{
+  border:1px solid var(--ref-border)!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.cf-diet-hero{padding:16px 18px!important}
+.cf-diet-progress{padding:14px!important}
+.cf-diet-lower{gap:10px!important}
+.cf-meal-row article,
+.cf-diet-list>div{
+  border-color:#eeeff4!important;
+  border-radius:5px!important;
+}
+
+/* Generic CRUD cards used by Members, Trainers, Payments, Pricing, etc. */
+.admin-form-card,
+.admin-list-card,
+.trainer-main-card,
+.report-panel,
+.management-card,
+.data-card{
+  border:1px solid var(--ref-border)!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  box-shadow:0 2px 7px rgba(63,61,103,.02)!important;
+}
+.admin-form-card,
+.admin-list-card,
+.trainer-main-card,
+.report-panel{
+  padding:13px 14px!important;
+}
+.management-grid,
+.trainer-single-layout{
+  gap:10px!important;
+  margin-top:10px!important;
+}
+.management-heading{
+  gap:10px!important;
+  margin-bottom:10px!important;
+}
+.management-heading h2{
+  margin:0!important;
+  color:#2d2c3b!important;
+  font-size:10px!important;
+}
+.management-heading p{
+  margin:2px 0 0!important;
+  color:#9698a5!important;
+  font-size:6.5px!important;
+}
+.management-heading .big-number,
+.big-number{
+  color:#5b55d9!important;
+  font-size:17px!important;
+}
+.admin-primary,
+.admin-secondary,
+.table-action,
+.table-danger{
+  min-height:30px!important;
+  padding:0 9px!important;
+  border-radius:5px!important;
+  font-size:6.5px!important;
+  font-weight:700!important;
+}
+.admin-primary{
+  border:1px solid #5b55d9!important;
+  background:#5b55d9!important;
+  color:#fff!important;
+}
+.admin-secondary,
+.table-action{
+  border:1px solid #e3e3eb!important;
+  background:#fff!important;
+  color:#626574!important;
+}
+.table-danger{
+  border:1px solid #f0d9dc!important;
+  background:#fff7f8!important;
+  color:#c84f5d!important;
+}
+.admin-form-card label{
+  gap:4px!important;
+  color:#666977!important;
+  font-size:6.5px!important;
+}
+.admin-form-card input,
+.admin-form-card select,
+.admin-form-card textarea,
+.management-grid input,
+.management-grid select,
+.management-grid textarea{
+  border:1px solid #e1e2e9!important;
+  border-radius:5px!important;
+  background:#fff!important;
+  color:#383a47!important;
+  font-size:7px!important;
+}
+.admin-form-card input,
+.admin-form-card select,
+.management-grid input,
+.management-grid select{
+  min-height:32px!important;
+}
+.table-wrap{
+  border:1px solid #efeff3!important;
+  border-radius:5px!important;
+  overflow:auto!important;
+}
+.management-table{
+  width:100%!important;
+  border-collapse:collapse!important;
+}
+.management-table th,
+.management-table td{
+  padding:8px 9px!important;
+  border-bottom:1px solid #f0f0f4!important;
+  color:#626574!important;
+  font-size:6.5px!important;
+  vertical-align:middle!important;
+}
+.management-table th{
+  background:#fafafd!important;
+  color:#858895!important;
+  font-weight:700!important;
+  letter-spacing:.2px!important;
+}
+.management-table tbody tr:hover{
+  background:#fbfbfe!important;
+}
+
+/* Members page: same white page header instead of a different violet hero. */
+.clients-v3-shell{
+  display:grid!important;
+  gap:10px!important;
+  margin-top:10px!important;
+}
+.clients-v3-hero{
+  min-height:72px!important;
+  display:flex!important;
+  align-items:center!important;
+  padding:12px 14px!important;
+  border:1px solid var(--ref-border)!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  color:#2d2c3b!important;
+  box-shadow:none!important;
+}
+.clients-v3-hero-copy span{
+  color:#5b55d9!important;
+  font-size:6px!important;
+  letter-spacing:.8px!important;
+}
+.clients-v3-hero-copy h2{
+  margin:2px 0!important;
+  color:#2d2c3b!important;
+  font-size:16px!important;
+}
+.clients-v3-hero-copy p{
+  margin:0!important;
+  color:#9395a2!important;
+  font-size:6.5px!important;
+}
+.clients-v3-new{
+  min-height:31px!important;
+  padding:0 10px!important;
+  border:0!important;
+  border-radius:5px!important;
+  background:#5b55d9!important;
+  color:#fff!important;
+  font-size:7px!important;
+}
+.clients-v3-stats{
+  gap:10px!important;
+}
+.clients-v3-stats article{
+  min-height:70px!important;
+  padding:10px 12px!important;
+  border:1px solid var(--ref-border)!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.clients-v3-stat-icon{
+  width:30px!important;
+  height:30px!important;
+  border-radius:50%!important;
+  background:#efefff!important;
+  color:#5b55d9!important;
+}
+.clients-v3-stat-icon.success{background:#eaf8f2!important;color:#55a97f!important}
+.clients-v3-stat-icon.muted{background:#f2f2f6!important;color:#8b8d99!important}
+.clients-v3-stats small{font-size:6px!important}
+.clients-v3-stats b{font-size:15px!important}
+.clients-v3-stats p{font-size:6px!important}
+.clients-v3-card{
+  border:1px solid var(--ref-border)!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.clients-v3-toolbar{
+  min-height:48px!important;
+  padding:8px 10px!important;
+  border-bottom:1px solid #efeff3!important;
+}
+.clients-v3-search,
+.clients-v3-filter{
+  min-height:31px!important;
+  border:1px solid #e2e3e9!important;
+  border-radius:5px!important;
+  background:#fff!important;
+}
+.clients-v3-table th,
+.clients-v3-table td{
+  padding:8px 9px!important;
+  border-color:#f0f0f4!important;
+  font-size:6.5px!important;
+}
+
+/* Trainer page. */
+.trainer-single-layout{
+  grid-template-columns:minmax(300px,430px) minmax(0,1fr)!important;
+}
+.trainer-main-card{
+  padding:14px!important;
+}
+.trainer-main-avatar{
+  width:46px!important;
+  height:46px!important;
+  border-radius:50%!important;
+  background:#efefff!important;
+  color:#5b55d9!important;
+  font-size:13px!important;
+}
+.trainer-main-top h2{font-size:13px!important}
+.trainer-main-top p{font-size:6.5px!important}
+.trainer-main-status{
+  border-radius:999px!important;
+  font-size:6px!important;
+}
+.trainer-main-data{
+  gap:7px!important;
+  margin:12px 0!important;
+}
+.trainer-main-data article{
+  padding:9px!important;
+  border-radius:5px!important;
+  background:#fafafd!important;
+}
+.trainer-main-note{
+  border-radius:5px!important;
+  background:#f5f4ff!important;
+}
+
+/* Gym Suite pages: Equipments, Events, Gallery, News, Salaries, Income, Invoices. */
+.gym-suite{
+  gap:10px!important;
+  margin-top:10px!important;
+  color:#2d2c3b!important;
+}
+.gym-suite-hero{
+  min-height:72px!important;
+  padding:12px 14px!important;
+  border:1px solid var(--ref-border)!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.gym-suite-heading{
+  gap:10px!important;
+}
+.gym-suite-icon{
+  width:34px!important;
+  height:34px!important;
+  border-radius:50%!important;
+  background:#efefff!important;
+  color:#5b55d9!important;
+  font-size:12px!important;
+}
+.gym-suite-heading small{
+  margin-bottom:2px!important;
+  color:#5b55d9!important;
+  font-size:5.8px!important;
+}
+.gym-suite-heading h2{
+  font-size:15px!important;
+  color:#2d2c3b!important;
+}
+.gym-suite-heading p{
+  margin-top:2px!important;
+  color:#9295a3!important;
+  font-size:6.5px!important;
+}
+.gym-suite-head-actions button{
+  height:31px!important;
+  padding:0 9px!important;
+  border-radius:5px!important;
+  font-size:6.5px!important;
+}
+.gym-suite-head-actions button.primary{
+  border-color:#5b55d9!important;
+  background:#5b55d9!important;
+}
+.gym-suite-kpis{
+  gap:10px!important;
+}
+.gym-suite-kpis article{
+  min-height:66px!important;
+  padding:9px 11px!important;
+  border:1px solid var(--ref-border)!important;
+  border-radius:6px!important;
+}
+.gym-suite-kpis small{font-size:5.8px!important}
+.gym-suite-kpis strong{
+  margin:4px 0 2px!important;
+  font-size:15px!important;
+}
+.gym-suite-kpis span{font-size:5.8px!important}
+.gym-suite-panel{
+  border:1px solid var(--ref-border)!important;
+  border-radius:6px!important;
+  box-shadow:none!important;
+}
+.gym-suite-toolbar{
+  min-height:48px!important;
+  padding:8px 10px!important;
+}
+.gym-suite-search,
+.gym-suite-toolbar select,
+.gym-suite-toolbar .refresh{
+  height:31px!important;
+  border-radius:5px!important;
+  font-size:6.5px!important;
+}
+.gym-suite-table th,
+.gym-suite-table td{
+  padding:8px 9px!important;
+  border-color:#f0f0f4!important;
+  font-size:6.5px!important;
+}
+.gym-suite-table th{
+  height:31px!important;
+  background:#fafafd!important;
+  font-size:6px!important;
+}
+.gym-suite-thumb{
+  width:29px!important;
+  height:29px!important;
+  border-radius:5px!important;
+  background:#efefff!important;
+  color:#5b55d9!important;
+}
+.status-select{
+  height:25px!important;
+  border-radius:4px!important;
+  font-size:6px!important;
+}
+.gym-suite-row-actions button{
+  width:25px!important;
+  height:25px!important;
+  border-radius:4px!important;
+}
+
+/* Crossfit extras / component demo pages: no oversized invented hero. */
+.cfx-page{
+  margin:0!important;
+  padding:0 0 18px!important;
+  background:transparent!important;
+}
+.cfx-hero{
+  min-height:76px!important;
+  display:block!important;
+  margin:0 0 10px!important;
+  overflow:hidden!important;
+  border:1px solid var(--ref-border)!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.cfx-hero>div{
+  padding:13px 14px!important;
+}
+.cfx-hero>aside,
+.cfx-metrics{
+  display:none!important;
+}
+.cfx-kicker{
+  color:#5b55d9!important;
+  font-size:5.8px!important;
+}
+.cfx-hero h1{
+  margin:2px 0!important;
+  color:#2d2c3b!important;
+  font-size:15px!important;
+}
+.cfx-hero p{
+  color:#9295a3!important;
+  font-size:6.5px!important;
+}
+.cfx-grid{
+  gap:10px!important;
+  margin:10px 0 0!important;
+}
+.cfx-card{
+  min-height:130px!important;
+  padding:12px!important;
+  border:1px solid var(--ref-border)!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.cfx-card h2{font-size:10px!important}
+.cfx-card h3{font-size:8px!important}
+.cfx-card p{font-size:6.5px!important}
+.cfx-card>header{margin-bottom:9px!important}
+.cfx-card>header span{font-size:5.5px!important}
+.cfx-card button,
+.cfx-modal button{
+  min-height:29px!important;
+  padding:0 9px!important;
+  border-radius:5px!important;
+  font-size:6.5px!important;
+}
+.cfx-card button.primary,
+.cfx-modal button.primary{
+  border-color:#5b55d9!important;
+  background:#5b55d9!important;
+}
+.cfx-toolbar input,
+.cfx-toolbar select,
+.cfx-input{
+  height:31px!important;
+  border-radius:5px!important;
+  font-size:6.5px!important;
+}
+.cfx-table-wrap{
+  border-radius:5px!important;
+}
+.cfx-table-wrap th,
+.cfx-table-wrap td{
+  padding:8px 9px!important;
+  font-size:6.5px!important;
+}
+.cfx-table-wrap th{
+  background:#fafafd!important;
+  font-size:5.8px!important;
+}
+.cfx-form label{font-size:6.5px!important}
+.cfx-form input,
+.cfx-form select,
+.cfx-form textarea{
+  border-radius:5px!important;
+  font-size:6.5px!important;
+}
+.cfx-form input,
+.cfx-form select{height:31px!important}
+.cfx-badge,
+.cfx-badges span{
+  min-height:20px!important;
+  font-size:5.8px!important;
+}
+.cfx-avatar{background:#5b55d9!important}
+.cfx-gradient{
+  background:linear-gradient(135deg,#5b55d9,#6f68e4)!important;
+}
+
+/* Pricing, payments and other legacy sections follow the same reference cards. */
+.report-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:10px!important;
+  margin:10px 0!important;
+}
+.report-grid article{
+  min-height:68px!important;
+  padding:10px 11px!important;
+  border:1px solid var(--ref-border)!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.report-grid article>span{
+  color:#5b55d9!important;
+}
+.report-grid p{font-size:6px!important}
+.report-grid h2{font-size:14px!important}
+
+/* Keep all forms/tables usable on smaller screens. */
+@media(max-width:980px){
+  .trainer-single-layout{grid-template-columns:1fr!important}
+  .report-grid{grid-template-columns:1fr 1fr!important}
+  .gym-suite-kpis{grid-template-columns:1fr 1fr!important}
+  .cfx-grid-3,.cfx-grid-4{grid-template-columns:1fr 1fr!important}
+}
+@media(max-width:700px){
+  .cf-special-crumb,
+  .cfx-crumb{
+    margin:0 -12px 10px!important;
+    padding:0 12px!important;
+  }
+  .cf-special-crumb em,
+  .cfx-crumb em{display:none!important}
+  .report-grid,
+  .gym-suite-kpis,
+  .clients-v3-stats,
+  .cfx-grid-2,.cfx-grid-3,.cfx-grid-4{
+    grid-template-columns:1fr!important;
+  }
+  .gym-suite-hero,
+  .clients-v3-hero{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+}
+
