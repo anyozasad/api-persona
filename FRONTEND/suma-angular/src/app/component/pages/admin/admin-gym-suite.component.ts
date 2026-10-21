@@ -38,15 +38,15 @@ interface GymModuleConfig {
         <div class="gym-suite-heading">
           <span class="gym-suite-icon">{{config.icon}}</span>
           <div>
-            <small>MALLQUI GYM · MÓDULO ADMINISTRATIVO</small>
+            <small>MALLQUI GYM · FITNESS ADMIN</small>
             <h2>{{config.title}}</h2>
             <p>{{config.subtitle}}</p>
           </div>
         </div>
 
         <div class="gym-suite-head-actions">
-          <button type="button" class="secondary" (click)="exportCsv()">⇩ Exportar CSV</button>
-          <button type="button" class="primary" (click)="nuevoRegistro()">＋ Nuevo registro</button>
+          <button type="button" class="secondary" (click)="exportCsv()">⇩ Export CSV</button>
+          <button type="button" class="primary" (click)="nuevoRegistro()">＋ Add New</button>
         </div>
       </header>
 
@@ -85,16 +85,16 @@ interface GymModuleConfig {
             <input
               [(ngModel)]="busqueda"
               (input)="filtrarLocal()"
-              placeholder="Buscar en {{config.title | lowercase}}...">
+              placeholder="Search in {{config.title | lowercase}}...">
           </label>
 
           <select [(ngModel)]="estadoFiltro" (change)="filtrarLocal()">
-            <option value="">Todos los estados</option>
+            <option value="">All status</option>
             <option *ngFor="let estado of config.states" [value]="estado">{{estado}}</option>
           </select>
 
           <button type="button" class="refresh" [disabled]="loading" (click)="cargar()">
-            {{loading ? 'Actualizando...' : '↻ Actualizar'}}
+            {{loading ? 'Updating...' : '↻ Refresh'}}
           </button>
         </div>
 
@@ -363,7 +363,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
       accent: '#36a269'
     },
     equipos: {
-      title: 'Equipos del gimnasio',
+      title: 'Equipments',
       subtitle: 'Controla máquinas, estado operativo, ubicación y mantenimiento.',
       icon: '🏋',
       primaryLabel: 'Equipo',
@@ -377,7 +377,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
       accent: '#3b6fc3'
     },
     eventos: {
-      title: 'Eventos',
+      title: 'Gym Events',
       subtitle: 'Planifica actividades, competencias, campañas y eventos internos.',
       icon: '📅',
       primaryLabel: 'Evento',
@@ -391,7 +391,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
       accent: '#d47c2f'
     },
     galeria: {
-      title: 'Galería',
+      title: 'Gallery',
       subtitle: 'Administra imágenes y contenidos visuales del gimnasio.',
       icon: '🖼',
       primaryLabel: 'Título',
@@ -405,7 +405,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
       accent: '#8b5cc7'
     },
     noticias: {
-      title: 'Noticias y novedades',
+      title: 'News & Updates',
       subtitle: 'Publica avisos, promociones y comunicados para la comunidad del gimnasio.',
       icon: '📰',
       primaryLabel: 'Título',
@@ -419,7 +419,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
       accent: '#d64e67'
     },
     salarios: {
-      title: 'Salarios',
+      title: 'Salaries',
       subtitle: 'Registra pagos, periodos y estados de remuneración del personal.',
       icon: '💼',
       primaryLabel: 'Colaborador',
@@ -433,7 +433,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
       accent: '#2e8b78'
     },
     ingresos: {
-      title: 'Ingresos',
+      title: 'Income',
       subtitle: 'Registra ingresos adicionales y conceptos financieros del gimnasio.',
       icon: '💰',
       primaryLabel: 'Concepto',
@@ -447,7 +447,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
       accent: '#2f9c5d'
     },
     facturas: {
-      title: 'Facturas',
+      title: 'Invoices',
       subtitle: 'Controla comprobantes, clientes, conceptos, importes y estados.',
       icon: '🧾',
       primaryLabel: 'Cliente / comprobante',
