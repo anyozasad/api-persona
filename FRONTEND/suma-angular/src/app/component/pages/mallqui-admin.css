@@ -8999,3 +8999,34 @@ button.admin-system-card:hover{
   .mghome-module-grid{grid-template-columns:1fr!important}
   .gym-suite-kpis{grid-template-columns:1fr 1fr!important}
 }
+
+
+/* CROSSFit dashboard module palette */
+.crossfit-module-grid .crossfit-card .module-symbol{
+  background:#f1f3f7!important;
+  color:#49556a!important;
+}
+.crossfit-module-grid .crossfit-card:nth-child(4n+1) .module-symbol{
+  background:#fff0ed!important;
+  color:#db5546!important;
+}
+.crossfit-module-grid .crossfit-card:nth-child(4n+2) .module-symbol{
+  background:#eef4ff!important;
+  color:#426bb0!important;
+}
+.crossfit-module-grid .crossfit-card:nth-child(4n+3) .module-symbol{
+  background:#edf8f2!important;
+  color:#2c8254!important;
+}
+.crossfit-module-grid .crossfit-card:nth-child(4n+4) .module-symbol{
+  background:#f5efff!important;
+  color:#7250b7!important;
+}
+.crossfit-module-grid .crossfit-card em{
+  background:#f4f5f7!important;
+  color:#7b8493!important;
+}
+.crossfit-module-grid .crossfit-card:hover em{
+  background:#fff0ed!important;
+  color:#d85245!important;
+}
