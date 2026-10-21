@@ -41,7 +41,7 @@ interface ExtraConfig {
       </aside>
     </section>
 
-    <ng-container [ngSwitch]="section">
+    <ng-container [ngSwitch]="viewSection">
 
       <section class="cfx-grid cfx-grid-4" *ngSwitchCase="'sports-components'">
         <article class="cfx-card cfx-sport-widget"><span class="cfx-sport-icon">🏋</span><h2>Workout Card</h2><strong>12 ejercicios</strong><div class="cfx-progress"><i style="width:76%"></i></div><small>76% completado</small></article>
@@ -78,6 +78,22 @@ interface ExtraConfig {
             <tr *ngFor="let m of filteredMembers"><td>#{{m.id_cliente}}</td><td><b>{{m.nombres}} {{m.apellidos}}</b></td><td>{{m.dni||'—'}}</td><td>{{m.correo||'—'}}</td><td><span class="cfx-badge" [class.success]="m.estado==='Activo'">{{m.estado}}</span></td></tr>
             <tr *ngIf="!filteredMembers.length"><td colspan="5">No hay socios que coincidan.</td></tr>
           </tbody></table></div>
+        </article>
+      </section>
+
+      <section class="cfx-grid cfx-grid-3" *ngSwitchCase="'members-cards'">
+        <article class="cfx-card cfx-profile-card" *ngFor="let m of filteredMembers">
+          <div class="cfx-avatar large">{{(m.nombres||'S').charAt(0)}}{{(m.apellidos||'').charAt(0)}}</div>
+          <h2>{{m.nombres}} {{m.apellidos}}</h2>
+          <p>{{m.correo || 'Sin correo registrado'}}</p>
+          <div class="cfx-info">
+            <p><b>DNI</b><span>{{m.dni||'—'}}</span></p>
+            <p><b>Teléfono</b><span>{{m.telefono||'—'}}</span></p>
+          </div>
+          <div class="cfx-badges"><span [class.success]="m.estado==='Activo'">{{m.estado||'Activo'}}</span><span>Member #{{m.id_cliente}}</span></div>
+        </article>
+        <article class="cfx-card cfx-empty-page span-2" *ngIf="!filteredMembers.length">
+          <span class="cfx-big-icon">♚</span><h2>No hay socios registrados</h2><p>Los socios aparecerán aquí en formato de tarjetas.</p>
         </article>
       </section>
 
@@ -122,6 +138,32 @@ interface ExtraConfig {
         </article>
       </section>
 
+      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'invoice-details'">
+        <article class="cfx-card">
+          <header><div><span>INVOICE DETAILS</span><h2>Detalle de factura</h2></div><button (click)="loadInvoices()">↻ Actualizar</button></header>
+          <div class="cfx-form">
+            <label>Seleccionar factura
+              <select [(ngModel)]="selectedInvoiceId" (ngModelChange)="selectInvoice($event)">
+                <option [ngValue]="0">Seleccionar comprobante</option>
+                <option *ngFor="let x of invoices" [ngValue]="x.id">#{{x.id}} · {{x.titulo}}</option>
+              </select>
+            </label>
+          </div>
+          <div class="cfx-info" *ngIf="selectedInvoiceId">
+            <p><b>Cliente / comprobante</b><span>{{invoiceForm.titulo||'—'}}</span></p>
+            <p><b>Concepto</b><span>{{invoiceForm.subtitulo||'—'}}</span></p>
+            <p><b>Fecha</b><span>{{invoiceForm.fecha||'—'}}</span></p>
+            <p><b>Estado</b><span>{{invoiceForm.estado||'—'}}</span></p>
+          </div>
+        </article>
+        <article class="cfx-card cfx-gradient">
+          <small>TOTAL DE FACTURA</small>
+          <strong>S/ {{selectedInvoiceId ? (invoiceForm.monto||0) : '0.00'}}</strong>
+          <p *ngIf="selectedInvoiceId">Comprobante #{{selectedInvoiceId}} cargado desde la base de datos.</p>
+          <p *ngIf="!selectedInvoiceId">Selecciona una factura para revisar todos sus datos.</p>
+        </article>
+      </section>
+
       <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'add-invoice'">
         <article class="cfx-card"><header><div><span>ADD INVOICE</span><h2>Agregar factura</h2></div></header><div class="cfx-form">
           <label>Cliente / comprobante<input [(ngModel)]="invoiceForm.titulo"></label><label>Concepto<input [(ngModel)]="invoiceForm.subtitulo"></label><label>Fecha<input type="date" [(ngModel)]="invoiceForm.fecha"></label><label>Total<input type="number" min="0" step="0.01" [(ngModel)]="invoiceForm.monto"></label><label>Estado<select [(ngModel)]="invoiceForm.estado"><option>Emitida</option><option>Pagada</option><option>Pendiente</option><option>Anulada</option></select></label>
@@ -137,6 +179,55 @@ interface ExtraConfig {
           <button class="primary" (click)="updateInvoice()" [disabled]="!selectedInvoiceId||savingInvoice">Guardar cambios</button><small *ngIf="invoiceMessage">{{invoiceMessage}}</small>
         </div></article>
         <article class="cfx-card"><h2>Facturas recientes</h2><div class="cfx-list"><div *ngFor="let x of invoices.slice(0,5)"><span>▤</span><div><b>{{x.titulo}}</b><small>{{x.fecha||'Sin fecha'}}</small></div><em>{{x.estado}}</em></div></div></article>
+      </section>
+
+      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'expenses'">
+        <article class="cfx-card">
+          <header><div><span>EXPENSES</span><h2>Registrar gasto</h2></div></header>
+          <div class="cfx-form">
+            <label>Categoría<input [(ngModel)]="expenseForm.titulo" placeholder="Ej. Mantenimiento"></label>
+            <label>Detalle<input [(ngModel)]="expenseForm.subtitulo" placeholder="Descripción del gasto"></label>
+            <label>Fecha<input type="date" [(ngModel)]="expenseForm.fecha"></label>
+            <label>Monto<input type="number" min="0" step="0.01" [(ngModel)]="expenseForm.monto"></label>
+            <label>Estado<select [(ngModel)]="expenseForm.estado"><option>Registrado</option><option>Pagado</option><option>Pendiente</option></select></label>
+            <button class="primary" (click)="saveExpense()" [disabled]="savingExpense">Guardar gasto</button>
+            <small *ngIf="expenseMessage">{{expenseMessage}}</small>
+          </div>
+        </article>
+        <article class="cfx-card">
+          <header><div><span>EXPENSES SUMMARY</span><h2>Gastos registrados</h2></div><b>S/ {{expenseTotal | number:'1.2-2'}}</b></header>
+          <div class="cfx-table-wrap"><table><thead><tr><th>Fecha</th><th>Categoría</th><th>Detalle</th><th>Monto</th><th>Estado</th></tr></thead><tbody>
+            <tr *ngFor="let x of expenses"><td>{{x.fecha||'—'}}</td><td><b>{{x.titulo}}</b></td><td>{{x.subtitulo||'—'}}</td><td>S/ {{x.monto||0}}</td><td><span class="cfx-badge">{{x.estado}}</span></td></tr>
+            <tr *ngIf="!expenses.length"><td colspan="5">Todavía no hay gastos registrados.</td></tr>
+          </tbody></table></div>
+        </article>
+      </section>
+
+      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'payslip'">
+        <article class="cfx-card">
+          <header><div><span>PAYSLIP</span><h2>Boleta de pago</h2></div><button (click)="loadSalaries()">↻ Actualizar</button></header>
+          <div class="cfx-form">
+            <label>Registro salarial
+              <select [(ngModel)]="selectedPayslipId">
+                <option [ngValue]="0">Último registro disponible</option>
+                <option *ngFor="let x of salaries" [ngValue]="x.id">#{{x.id}} · {{x.titulo}}</option>
+              </select>
+            </label>
+          </div>
+          <div class="cfx-info" *ngIf="selectedPayslip as p">
+            <p><b>Empleado</b><span>{{p.titulo||'—'}}</span></p>
+            <p><b>Concepto</b><span>{{p.subtitulo||'Pago salarial'}}</span></p>
+            <p><b>Fecha</b><span>{{p.fecha||'—'}}</span></p>
+            <p><b>Estado</b><span>{{p.estado||'—'}}</span></p>
+          </div>
+        </article>
+        <article class="cfx-card cfx-gradient" *ngIf="selectedPayslip as p; else noPayslip">
+          <small>MALLQUI GYM · PAYSLIP</small>
+          <strong>S/ {{p.monto||0}}</strong>
+          <p>{{p.titulo}} · {{p.fecha||'Sin fecha'}}</p>
+          <button (click)="printPayslip()">Imprimir boleta</button>
+        </article>
+        <ng-template #noPayslip><article class="cfx-card cfx-empty-page"><span class="cfx-big-icon">▤</span><h2>Sin pagos salariales</h2><p>Registra un salario desde Salary List.</p></article></ng-template>
       </section>
 
       <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'tables'">
@@ -350,6 +441,22 @@ interface ExtraConfig {
         <article class="cfx-card cfx-auth"><h2>Crear cuenta</h2><div class="cfx-form"><label>Nombre<input></label><label>Correo<input type="email"></label><label>Contraseña<input type="password"></label><button>Registrarse</button></div></article>
       </section>
 
+      <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'login-page'">
+        <article class="cfx-card cfx-auth"><h2>Login</h2><p>Vista de acceso del sistema Mallqui Gym.</p><div class="cfx-form"><label>Correo<input type="email" placeholder="admin@mallquigym.com"></label><label>Contraseña<input type="password" placeholder="••••••••"></label><button class="primary" (click)="authMessage='Formulario de Login listo para usar.'">Login</button><small *ngIf="authMessage">{{authMessage}}</small></div></article>
+      </section>
+
+      <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'signup-page'">
+        <article class="cfx-card cfx-auth"><h2>Signup</h2><p>Vista de registro de nuevo usuario.</p><div class="cfx-form"><label>Nombres<input></label><label>Correo<input type="email"></label><label>Contraseña<input type="password"></label><label>Confirmar contraseña<input type="password"></label><button class="primary" (click)="authMessage='Formulario de Signup completado.'">Crear cuenta</button><small *ngIf="authMessage">{{authMessage}}</small></div></article>
+      </section>
+
+      <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'forgot-password'">
+        <article class="cfx-card cfx-auth"><h2>Forgot Password</h2><p>Recuperación de acceso mediante correo.</p><div class="cfx-form"><label>Correo<input type="email" [(ngModel)]="forgotEmail" placeholder="correo@ejemplo.com"></label><button class="primary" (click)="authMessage=forgotEmail?'Solicitud de recuperación preparada para '+forgotEmail:'Ingresa un correo válido.'">Enviar enlace</button><small *ngIf="authMessage">{{authMessage}}</small></div></article>
+      </section>
+
+      <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'reset-password-page'">
+        <article class="cfx-card cfx-auth"><h2>Reset Password</h2><p>Actualización de la contraseña de acceso.</p><div class="cfx-form"><label>Nueva contraseña<input type="password" [(ngModel)]="resetForm.password"></label><label>Confirmar contraseña<input type="password" [(ngModel)]="resetForm.confirm"></label><button class="primary" (click)="previewResetPassword()">Restablecer contraseña</button><small *ngIf="authMessage">{{authMessage}}</small></div></article>
+      </section>
+
       <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'page-not-found'"><article class="cfx-card cfx-empty-page"><strong>404</strong><h2>Página no encontrada</h2><p>La ruta solicitada no existe.</p><button class="primary">Volver al dashboard</button></article></section>
 
       <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'maintenance'"><article class="cfx-card cfx-empty-page"><span class="cfx-big-icon">⚙</span><h2>Sistema en mantenimiento</h2><p>Página de mantenimiento del panel.</p><div class="cfx-progress"><i style="width:68%"></i></div></article></section>
@@ -419,6 +526,8 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
   trainers:any[] = [];
   members:any[] = [];
   invoices:any[] = [];
+  expenses:any[] = [];
+  salaries:any[] = [];
   memberSearch = '';
   selectedMemberId = 0;
   selectedInvoiceId = 0;
@@ -429,6 +538,13 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
   newMember:any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
   editMember:any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
   invoiceForm:any = {titulo:'',subtitulo:'',fecha:new Date().toISOString().slice(0,10),monto:0,estado:'Emitida',imagen_url:null,datos:{}};
+  expenseForm:any = {titulo:'',subtitulo:'',fecha:new Date().toISOString().slice(0,10),monto:0,estado:'Registrado',imagen_url:null,datos:{}};
+  expenseMessage = '';
+  savingExpense = false;
+  selectedPayslipId = 0;
+  authMessage = '';
+  forgotEmail = '';
+  resetForm:any = {password:'',confirm:''};
 
   search = '';
   filter = '';
@@ -477,23 +593,29 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
     'sports-components':{title:'Sports Components',subtitle:'Widgets deportivos, progreso, rutinas, nutrición y actividad física.',icon:'🏋',group:'Sports Components'},
     'trainer-profile':{title:'Trainer Profile',subtitle:'Perfil profesional del entrenador principal de Mallqui Gym.',icon:'♙',group:'Trainer'},
     'members-list':{title:'Members List',subtitle:'Listado real de socios registrados en Mallqui Gym.',icon:'♚',group:'Members'},
+    'members-cards':{title:'Members Cards',subtitle:'Tarjetas visuales de los socios reales registrados.',icon:'▦',group:'Members'},
     'add-member':{title:'Add Member',subtitle:'Registro real de nuevos socios.',icon:'＋',group:'Members'},
     'edit-member':{title:'Edit Member',subtitle:'Edición real de datos de socios.',icon:'✎',group:'Members'},
+    'edit-member-details':{title:'Edit Member Details',subtitle:'Edición completa de los datos del socio seleccionado.',icon:'✎',group:'Members'},
     'invoices-list':{title:'Invoices List',subtitle:'Listado de comprobantes registrados.',icon:'▤',group:'Invoices'},
+    'invoice-details':{title:'Invoice Details',subtitle:'Detalle real del comprobante seleccionado.',icon:'▤',group:'Invoices'},
     'add-invoice':{title:'Add Invoice',subtitle:'Creación de facturas del gimnasio.',icon:'＋',group:'Invoices'},
+    'create-invoice':{title:'Create Invoice',subtitle:'Creación de una nueva factura del gimnasio.',icon:'＋',group:'Invoices'},
     'edit-invoice':{title:'Edit Invoice',subtitle:'Actualización de facturas registradas.',icon:'✎',group:'Invoices'},
+    'expenses':{title:'Expenses',subtitle:'Registro y control de gastos reales del gimnasio.',icon:'S/',group:'Payments'},
+    'payslip':{title:'Payslip',subtitle:'Boleta de pago generada desde los registros salariales.',icon:'▤',group:'Salaries'},
     'tables':{title:'Tables',subtitle:'Tablas administrativas con estructura responsive.',icon:'▤',group:'Tables'},
     'data-tables':{title:'Data Tables',subtitle:'Búsqueda, filtros y organización de registros.',icon:'▦',group:'Tables'},
     'graphs':{title:'Graphs',subtitle:'Visualización de métricas y tendencias.',icon:'↗',group:'Graphs'},
     'apex':{title:'Apex Charts',subtitle:'Gráficos modernos para indicadores.',icon:'⌁',group:'Graphs'},
     'morris':{title:'Morris Charts',subtitle:'Gráficos comparativos y tendencias.',icon:'⌘',group:'Graphs'},
     'vector-maps':{title:'Vector Maps',subtitle:'Vista de ubicación y cobertura.',icon:'◎',group:'Maps'},
-    'accordions':{title:'Accordions',subtitle:'Contenido expandible y organizado.',icon:'☷',group:'UI Elements'},
-    'carousel':{title:'Carousel',subtitle:'Contenido destacado deslizable.',icon:'↔',group:'UI Elements'},
-    'modals':{title:'Modals',subtitle:'Ventanas modales para acciones y formularios.',icon:'▣',group:'UI Elements'},
-    'popovers':{title:'Popovers',subtitle:'Información contextual sobre acciones.',icon:'◇',group:'UI Elements'},
-    'tabs-ui':{title:'Tabs',subtitle:'Navegación interna por pestañas.',icon:'▥',group:'UI Elements'},
-    'tooltips':{title:'Tooltips',subtitle:'Ayudas breves sobre controles.',icon:'?',group:'UI Elements'},
+    'accordions':{title:'Accordions',subtitle:'Contenido expandible y organizado.',icon:'☷',group:'Jquery Components'},
+    'carousel':{title:'Carousel',subtitle:'Contenido destacado deslizable.',icon:'↔',group:'Jquery Components'},
+    'modals':{title:'Modals',subtitle:'Ventanas modales para acciones y formularios.',icon:'▣',group:'Jquery Components'},
+    'popovers':{title:'Popovers',subtitle:'Información contextual sobre acciones.',icon:'◇',group:'Jquery Components'},
+    'tabs-ui':{title:'Tabs',subtitle:'Navegación interna por pestañas.',icon:'▥',group:'Jquery Components'},
+    'tooltips':{title:'Tooltips',subtitle:'Ayudas breves sobre controles.',icon:'?',group:'Jquery Components'},
     'forms':{title:'Forms',subtitle:'Formularios administrativos completos.',icon:'☷',group:'Forms'},
     'form-inputs':{title:'Form Inputs',subtitle:'Campos de entrada para formularios.',icon:'⌨',group:'Forms'},
     'checkbox-radio':{title:'Checkbox & Radio',subtitle:'Controles de selección.',icon:'✓',group:'Forms'},
@@ -520,9 +642,16 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
     'contact':{title:'Contact',subtitle:'Formulario y datos de contacto.',icon:'☎',group:'Pages'},
     'typography':{title:'Typography',subtitle:'Jerarquía visual de textos.',icon:'T',group:'Foundation'},
     'login-signup':{title:'Login / Signup',subtitle:'Vistas de autenticación.',icon:'↪',group:'Pages'},
+    'login-page':{title:'Login',subtitle:'Pantalla de inicio de sesión de la plantilla.',icon:'↪',group:'Login/Signup'},
+    'signup-page':{title:'Signup',subtitle:'Pantalla de registro de usuario.',icon:'＋',group:'Login/Signup'},
+    'forgot-password':{title:'Forgot Password',subtitle:'Pantalla de recuperación de contraseña.',icon:'?',group:'Login/Signup'},
+    'reset-password-page':{title:'Reset Password',subtitle:'Pantalla de restablecimiento de contraseña.',icon:'⚙',group:'Login/Signup'},
     'page-not-found':{title:'Page Not Found',subtitle:'Página de error 404.',icon:'404',group:'Pages'},
     'maintenance':{title:'Maintenance',subtitle:'Pantalla de mantenimiento.',icon:'⚙',group:'Pages'},
     'menu-level':{title:'Menu Level',subtitle:'Ejemplo de navegación multinivel.',icon:'☷',group:'Navigation'},
+    'menu-level-1':{title:'Level One Link',subtitle:'Primer nivel de navegación.',icon:'☷',group:'Menu Level'},
+    'menu-level-2':{title:'Level Two Link',subtitle:'Segundo nivel de navegación.',icon:'☷',group:'Menu Level'},
+    'menu-level-3':{title:'Level Three Link',subtitle:'Tercer nivel de navegación.',icon:'☷',group:'Menu Level'},
     'external-link':{title:'External Link',subtitle:'Acceso a recursos externos.',icon:'↗',group:'Navigation'},
     'chip':{title:'Chip',subtitle:'Chips de información y filtros.',icon:'#',group:'Components'},
     'badge-link':{title:'Badge',subtitle:'Badges y contadores visuales.',icon:'●',group:'Components'},
@@ -532,9 +661,12 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
   constructor(private api: AdminApiService) {}
 
   ngOnChanges():void {
+    this.authMessage='';
     if(this.section==='trainer-profile') this.loadTrainers();
-    if(['members-list','add-member','edit-member'].includes(this.section)) this.loadMembers();
-    if(['invoices-list','add-invoice','edit-invoice'].includes(this.section)) this.loadInvoices();
+    if(['members-list','members-cards','add-member','edit-member','edit-member-details'].includes(this.section)) this.loadMembers();
+    if(['invoices-list','invoice-details','add-invoice','create-invoice','edit-invoice'].includes(this.section)) this.loadInvoices();
+    if(this.section==='expenses') this.loadExpenses();
+    if(this.section==='payslip') this.loadSalaries();
   }
 
   loadTrainers(){ this.api.entrenadores().subscribe({next:r=>this.trainers=Array.isArray(r)?r:[],error:()=>this.trainers=[]}); }
@@ -586,6 +718,37 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
       error:e=>{this.savingInvoice=false;this.invoiceMessage=e?.error?.message||'No se pudo actualizar la factura.';}
     });
   }
+
+  loadExpenses(){ this.api.gymRegistros('gastos').subscribe({next:r=>this.expenses=Array.isArray(r)?r:[],error:()=>this.expenses=[]}); }
+  saveExpense(){
+    if(!String(this.expenseForm.titulo||'').trim() || Number(this.expenseForm.monto||0)<=0){this.expenseMessage='Completa la categoría y un monto mayor a 0.';return;}
+    this.savingExpense=true; this.expenseMessage='';
+    this.api.crearGymRegistro('gastos',{...this.expenseForm,titulo:String(this.expenseForm.titulo).trim(),subtitulo:String(this.expenseForm.subtitulo||'').trim()||null}).subscribe({
+      next:()=>{this.savingExpense=false;this.expenseMessage='✓ Gasto registrado correctamente.';this.expenseForm={titulo:'',subtitulo:'',fecha:new Date().toISOString().slice(0,10),monto:0,estado:'Registrado',imagen_url:null,datos:{}};this.loadExpenses();},
+      error:e=>{this.savingExpense=false;this.expenseMessage=e?.error?.message||'No se pudo registrar el gasto.';}
+    });
+  }
+  loadSalaries(){ this.api.gymRegistros('salarios').subscribe({next:r=>this.salaries=Array.isArray(r)?r:[],error:()=>this.salaries=[]}); }
+  printPayslip(){ window.print(); }
+  previewResetPassword(){
+    if(!this.resetForm.password || this.resetForm.password.length<6){this.authMessage='La nueva contraseña debe tener al menos 6 caracteres.';return;}
+    this.authMessage=this.resetForm.password===this.resetForm.confirm?'Contraseña validada correctamente.':'Las contraseñas no coinciden.';
+  }
+
+  get viewSection():string {
+    const aliases:Record<string,string> = {
+      'edit-member-details':'edit-member',
+      'create-invoice':'add-invoice',
+      'menu-level-1':'menu-level',
+      'menu-level-2':'menu-level',
+      'menu-level-3':'menu-level'
+    };
+    return aliases[this.section] || this.section;
+  }
+  get selectedPayslip():any {
+    return this.salaries.find(x=>Number(x.id)===Number(this.selectedPayslipId)) || this.salaries[0] || null;
+  }
+  get expenseTotal():number { return this.expenses.reduce((t,x)=>t+Number(x.monto||0),0); }
 
   get config():ExtraConfig { return this.configs[this.section] || this.configs['tables']; }
   get metric1():string {
