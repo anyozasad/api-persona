@@ -3976,3 +3976,7 @@
 @media(max-width:1050px){.cf-member-card-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:760px){.cf-member-card-grid,.cf-member-form-grid,.cf-invoice-parties,.cf-payslip-parties{grid-template-columns:1fr}.cf-invoice-parties>div:last-child,.cf-payslip-parties>div:last-child{text-align:left}.cf-invoice-head,.cf-payslip-head{flex-direction:column!important;gap:10px}.cf-invoice-head>div:last-child,.cf-payslip-head>div{text-align:left}.cf-member-card-grid{grid-template-columns:1fr}}
 
+
+/* CROSSFit LIVE DEMO · REMOVE GENERIC EXTRA HERO */
+.cfx-page>.cfx-hero{display:none!important}
+.cfx-page>.cfx-grid{margin-top:10px!important}
