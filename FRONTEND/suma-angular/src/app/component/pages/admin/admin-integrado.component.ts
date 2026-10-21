@@ -163,7 +163,175 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
         <button type="button" [class.active]="moduloActivo==='sistema'" (click)="abrirModuloAdmin('sistema')"><span>⚙</span><b>Sistema</b></button>
       </nav>
 
-      <section class="cf-module-hero" *ngIf="seccion!=='dashboard'">
+      <!-- REPORTES: diseño propio inspirado en la página My Reports -->
+      <section class="cf-special-page cf-reports-special" *ngIf="seccion==='reportes'">
+        <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Mis reportes</strong><em>Meta semanal: {{progresoSemanal()}}%</em></div>
+
+        <section class="cf-reports-hero">
+          <div class="cf-reports-copy">
+            <span>BIENVENIDO DE NUEVO,</span>
+            <h1>{{auth.usuario?.nombre_usuario || 'Administrador'}}</h1>
+            <p>Aquí tienes el resumen de rendimiento de Mallqui Gym.</p>
+
+            <div class="cf-report-pills">
+              <article><i>↗</i><div><b>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.0-0'}}</b><small>Ingresos del mes</small></div></article>
+              <article><i>✓</i><div><b>{{dashboard?.asistencias?.hoy ?? 0}}</b><small>Asistencias hoy</small></div></article>
+              <article><i>▤</i><div><b>{{dashboard?.ventas?.hoy_cantidad ?? 0}}</b><small>Ventas de hoy</small></div></article>
+              <article><i>★</i><div><b>{{dashboard?.membresias?.activas ?? 0}}</b><small>Membresías activas</small></div></article>
+            </div>
+          </div>
+
+          <div class="cf-reports-art" aria-hidden="true">
+            <svg viewBox="0 0 650 300">
+              <rect width="650" height="300" fill="#f8f7ff"/>
+              <path d="M20 250c120-80 220-50 316-30 104 22 198-10 294-45v125H20z" fill="#a6d194"/>
+              <circle cx="545" cy="54" r="30" fill="#ffa119"/>
+              <g fill="#d9d7f4">
+                <rect x="355" y="120" width="44" height="113"/><rect x="408" y="94" width="55" height="139"/>
+                <rect x="472" y="136" width="41" height="97"/><rect x="520" y="108" width="48" height="125"/>
+              </g>
+              <g stroke="#2f3159" stroke-width="5" fill="none">
+                <circle cx="122" cy="226" r="28"/><circle cx="220" cy="226" r="28"/>
+                <path d="M122 226l43-41 29 41h-45l32-57 39 57"/>
+                <circle cx="330" cy="226" r="25"/><circle cx="417" cy="226" r="25"/>
+                <path d="M330 226l39-37 26 37h-41l29-50 34 50"/>
+              </g>
+              <g fill="#ff8e43">
+                <circle cx="172" cy="145" r="12" fill="#2f3159"/>
+                <rect x="166" y="158" width="13" height="54" rx="7" transform="rotate(12 172 185)"/>
+                <circle cx="374" cy="151" r="11" fill="#2f3159"/>
+                <rect x="368" y="162" width="12" height="48" rx="6" transform="rotate(-10 374 186)" fill="#6c63e7"/>
+              </g>
+            </svg>
+          </div>
+        </section>
+
+        <section class="cf-report-charts">
+          <article>
+            <header><span>↗</span><div><h3>Ingresos</h3><p>Últimos 6 meses</p></div><b>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.0-0'}}</b></header>
+            <div class="cf-mini-bars">
+              <i *ngFor="let m of dashboard?.tendencias?.ingresos_6_meses || []" [style.height.%]="alturaIngreso(m.total)"></i>
+            </div>
+          </article>
+          <article>
+            <header><span>⌁</span><div><h3>Asistencias</h3><p>Últimos 7 días</p></div><b>{{totalAsistenciasSemana}}</b></header>
+            <svg class="cf-line-chart" viewBox="0 0 300 120" preserveAspectRatio="none">
+              <polyline points="10,100 55,76 100,88 145,45 190,73 235,91 290,62" fill="none" stroke="#5c57df" stroke-width="4"/>
+              <g fill="#fff" stroke="#5c57df" stroke-width="3"><circle cx="10" cy="100" r="4"/><circle cx="55" cy="76" r="4"/><circle cx="100" cy="88" r="4"/><circle cx="145" cy="45" r="4"/><circle cx="190" cy="73" r="4"/><circle cx="235" cy="91" r="4"/><circle cx="290" cy="62" r="4"/></g>
+            </svg>
+          </article>
+          <article>
+            <header><span>S/</span><div><h3>Ventas</h3><p>Operaciones de hoy</p></div><b>{{dashboard?.ventas?.hoy_cantidad ?? 0}}</b></header>
+            <div class="cf-mini-bars purple">
+              <i style="height:34%"></i><i style="height:48%"></i><i style="height:66%"></i><i style="height:82%"></i><i style="height:58%"></i><i style="height:42%"></i>
+            </div>
+          </article>
+          <article>
+            <header><span>★</span><div><h3>Membresías</h3><p>Estado actual</p></div><b>{{dashboard?.membresias?.activas ?? 0}}</b></header>
+            <svg class="cf-line-chart" viewBox="0 0 300 120" preserveAspectRatio="none">
+              <polyline points="10,82 55,92 100,68 145,55 190,32 235,47 290,77" fill="none" stroke="#6a64e8" stroke-width="4"/>
+            </svg>
+          </article>
+        </section>
+      </section>
+
+      <!-- ENTRENAMIENTO: diseño propio inspirado en My Workout Plan -->
+      <section class="cf-special-page cf-workout-special" *ngIf="seccion==='rutinas'">
+        <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Plan de entrenamiento</strong><em>Meta semanal: {{progresoSemanal()}}%</em></div>
+
+        <section class="cf-workout-hero">
+          <div>
+            <h1>Buen trabajo, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1>
+            <p>Has completado {{progresoSemanal()}}% de la actividad semanal registrada.</p>
+            <div class="cf-workout-week">
+              <div><b>Esta semana</b><small>{{totalAsistenciasSemana}} asistencias registradas</small></div>
+              <strong>+{{dashboard?.operacion?.rutinas_activas ?? 0}} rutinas activas</strong>
+            </div>
+            <div class="cf-workout-bars">
+              <i *ngFor="let d of dashboard?.tendencias?.asistencias_7_dias || []" [style.height.%]="alturaAsistenciaSemana(d.total)"></i>
+            </div>
+            <footer><span>Meta: actividad semanal constante</span><b>{{progresoSemanal()>=70 ? 'En buen camino' : 'Requiere seguimiento'}}</b></footer>
+          </div>
+          <div class="cf-workout-art" aria-hidden="true">
+            <svg viewBox="0 0 650 300">
+              <rect width="650" height="300" fill="#f8f7ff"/>
+              <path d="M0 250c130-40 250-43 380-7 90 25 175 10 270-23v80H0z" fill="#eef7ea"/>
+              <g stroke="#f09342" stroke-width="11" stroke-linecap="round">
+                <path d="M190 104h250"/><path d="M205 78v52"/><path d="M425 78v52"/>
+              </g>
+              <circle cx="320" cy="73" r="16" fill="#2c2e50"/>
+              <path d="M310 92h25l14 91h-53z" fill="#7a70e8"/>
+              <path d="M306 105l-70 2M337 105l72 2" stroke="#d99a7a" stroke-width="10" stroke-linecap="round"/>
+              <path d="M303 181l-30 62M337 181l31 62" stroke="#f1c7b2" stroke-width="13" stroke-linecap="round"/>
+              <g fill="#5f5a79"><circle cx="182" cy="105" r="13"/><circle cx="448" cy="105" r="13"/></g>
+              <g transform="translate(470 165)">
+                <circle cx="0" cy="62" r="28" fill="none" stroke="#5b5681" stroke-width="7"/>
+                <circle cx="93" cy="62" r="28" fill="none" stroke="#5b5681" stroke-width="7"/>
+                <path d="M0 62l42-36 27 36H31l30-48 32 48" fill="none" stroke="#ef9641" stroke-width="7"/>
+              </g>
+            </svg>
+          </div>
+        </section>
+
+        <section class="cf-workout-tabs">
+          <button *ngFor="let w of [1,2,3,4]" type="button" [class.active]="workoutSemana===w" (click)="workoutSemana=w">▣ Semana {{w}}</button>
+          <button type="button" [class.active]="workoutSemana===0" (click)="workoutSemana=0">▥ Resumen</button>
+        </section>
+
+        <section class="cf-workout-cards">
+          <article *ngFor="let r of rutinas.slice(0,3)">
+            <div class="cf-exercise-art"><span>🏋</span></div>
+            <div><h3>{{r.nombre_rutina}}</h3><p>{{r.objetivo || 'Entrenamiento personalizado'}}</p><small>{{r.detalles?.length || 0}} ejercicios · {{r.estado}}</small></div>
+          </article>
+          <article *ngIf="!rutinas.length" class="empty"><div class="cf-exercise-art"><span>＋</span></div><div><h3>Primera rutina</h3><p>Crea una rutina real para comenzar.</p></div></article>
+        </section>
+      </section>
+
+      <!-- NUTRICIÓN: diseño propio inspirado en My Diet Plan -->
+      <section class="cf-special-page cf-diet-special" *ngIf="seccion==='nutricion'">
+        <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Plan de alimentación</strong><em>Meta semanal: {{progresoSemanal()}}%</em></div>
+
+        <div class="cf-diet-top">
+          <section class="cf-diet-hero">
+            <h1>Hola {{auth.usuario?.nombre_usuario || 'Administrador'}},</h1>
+            <p>Planes de alimentación y seguimiento nutricional del gimnasio.</p>
+            <span class="cf-meal-count">{{nutricionPreview.length || 0}} planes</span>
+            <div class="cf-meal-row">
+              <article *ngFor="let n of nutricionPreview.slice(0,3); let i=index">
+                <span>{{i===0?'🥗':(i===1?'🥣':'🍎')}}</span>
+                <div><b>{{n.titulo}}</b><small>{{n.subtitulo || 'Plan nutricional'}}</small></div>
+                <em>{{n.estado}}</em>
+              </article>
+              <article *ngIf="!nutricionPreview.length"><span>🥗</span><div><b>Plan saludable</b><small>Crea tu primer plan nutricional</small></div><em>Nuevo</em></article>
+            </div>
+          </section>
+
+          <aside class="cf-diet-progress">
+            <header><h2>Progreso</h2><span>Meta semanal</span></header>
+            <div class="cf-diet-bars"><i *ngFor="let d of dashboard?.tendencias?.asistencias_7_dias || []" [style.height.%]="alturaAsistenciaSemana(d.total)"></i></div>
+            <b>{{progresoSemanal()}}%</b><p>de la meta semanal completada.</p>
+          </aside>
+        </div>
+
+        <section class="cf-diet-lower">
+          <article>
+            <header><h2>Planes nutricionales</h2><span>‹　›</span></header>
+            <div class="cf-diet-list">
+              <div *ngFor="let n of nutricionPreview.slice(0,2)"><span>🥗</span><div><b>{{n.titulo}}</b><small>{{n.subtitulo || 'Seguimiento nutricional'}}</small></div><em>{{n.estado}}</em></div>
+              <div *ngIf="!nutricionPreview.length"><span>🥗</span><div><b>Sin planes todavía</b><small>Registra el primero abajo</small></div></div>
+            </div>
+          </article>
+          <article>
+            <header><h2>Objetivos del gimnasio</h2><span>‹　›</span></header>
+            <div class="cf-diet-list">
+              <div><span>🥬</span><div><b>Alimentación saludable</b><small>Seguimiento de objetivos</small></div><em>Activo</em></div>
+              <div><span>🍎</span><div><b>Control y constancia</b><small>Planes vinculados a socios</small></div><em>{{nutricionPreview.length}}</em></div>
+            </div>
+          </article>
+        </section>
+      </section>
+
+      <section class="cf-module-hero" *ngIf="seccion!=='dashboard' && !['reportes','rutinas','nutricion'].includes(seccion)">
         <div class="cf-module-copy">
           <span>WELCOME BACK,</span>
           <h1>{{tituloActual}}</h1>
@@ -2074,6 +2242,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   autoRefreshActivo = true;
   busquedaAdmin = '';
   mostrarAnalisisAvanzado = false;
+  workoutSemana = 1;
+  nutricionPreview: any[] = [];
   suiteModules = ['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   private autoRefreshId: any = null;
 
@@ -2357,6 +2527,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
           {label:'Caja',value:this.dashboard?.caja?.abierta?'Abierta':'Cerrada',icon:'▣'}
         ];
       case 'nutricion':
+        this.api.gymRegistros('nutricion').subscribe({
+          next:(r:any[])=>this.nutricionPreview=Array.isArray(r)?r:[],
+          error:()=>this.nutricionPreview=[]
+        });
+        break;
       case 'equipos':
       case 'eventos':
       case 'galeria':
