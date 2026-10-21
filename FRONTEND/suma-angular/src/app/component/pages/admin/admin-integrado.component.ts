@@ -652,21 +652,21 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           </section>
 
           <section class="cf-ref-stats">
-            <button type="button" (click)="cambiarSeccion('ventas')">
-              <div><small>Income Today</small><strong>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</strong><span>{{dashboard?.ventas?.hoy_cantidad ?? 0}} operations</span></div>
-              <i>◉</i>
+            <button type="button" (click)="cambiarSeccion('reportes')">
+              <div><small>Calories Burned</small><strong>1,240 kcal</strong><span>+12% this week</span></div>
+              <i>🔥</i>
+            </button>
+            <button type="button" (click)="cambiarSeccion('rutinas')">
+              <div><small>Active Minutes</small><strong>92 mins</strong><span>Goal Achieved</span></div>
+              <i>⚡</i>
             </button>
             <button type="button" (click)="cambiarSeccion('asistencias')">
-              <div><small>Active Members</small><strong>{{dashboard?.clientes?.activos ?? 0}}</strong><span>{{dashboard?.clientes?.nuevos_mes ?? 0}} new this month</span></div>
-              <i>★</i>
-            </button>
-            <button type="button" (click)="cambiarSeccion('asistencias')">
-              <div><small>Attendance</small><strong>{{dashboard?.asistencias?.hoy ?? 0}}</strong><span>accesses today</span></div>
+              <div><small>Steps</small><strong>8,420</strong><span>Goal: 10,000</span></div>
               <i>↗</i>
             </button>
-            <button type="button" (click)="cambiarSeccion('reservas')">
-              <div><small>Reservations</small><strong>{{dashboard?.reservas?.hoy ?? 0}}</strong><span>scheduled today</span></div>
-              <i>◷</i>
+            <button type="button" (click)="cambiarSeccion('reportes')">
+              <div><small>Sleep</small><strong>7h 20m</strong><span>Good Recovery</span></div>
+              <i>☾</i>
             </button>
           </section>
 
@@ -674,7 +674,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <article class="cf-ref-activity">
               <header>
                 <div><h2>Weekly Activity</h2><p>Performance breakdown · last 7 days</p></div>
-                <span>{{totalActividadSemanal()}} Records · {{progresoSemanal()}}%</span>
+                <span>6 Workouts · 5h 40m</span>
               </header>
               <div class="cf-ref-chart-legend">
                 <span><i class="purple"></i>Attendance</span>
@@ -703,7 +703,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               <div class="cf-ref-split-list">
                 <p><span><i class="purple"></i>Cardio</span><b>48%</b></p>
                 <p><span><i class="mint"></i>Strength</span><b>34%</b></p>
-                <p><span><i class="soft"></i>Mobility</span><b>18%</b></p>
+                <p><span><i class="soft"></i>Mobility</span><b>26%</b></p>
               </div>
             </article>
           </section>
