@@ -43,6 +43,17 @@ interface ExtraConfig {
 
     <ng-container [ngSwitch]="section">
 
+      <section class="cfx-grid cfx-grid-4" *ngSwitchCase="'sports-components'">
+        <article class="cfx-card cfx-sport-widget"><span class="cfx-sport-icon">🏋</span><h2>Workout Card</h2><strong>12 ejercicios</strong><div class="cfx-progress"><i style="width:76%"></i></div><small>76% completado</small></article>
+        <article class="cfx-card cfx-sport-widget"><span class="cfx-sport-icon">🔥</span><h2>Calories</h2><strong>1,240 kcal</strong><div class="cfx-bars compact"><i style="height:35%"></i><i style="height:52%"></i><i style="height:68%"></i><i style="height:82%"></i><i style="height:61%"></i></div></article>
+        <article class="cfx-card cfx-sport-widget"><span class="cfx-sport-icon">🏃</span><h2>Active Minutes</h2><strong>92 min</strong><svg class="cfx-line compact-line" viewBox="0 0 240 90"><polyline points="5,72 42,55 78,62 115,30 152,43 190,20 235,36" fill="none" stroke="#5b56dd" stroke-width="4"/></svg></article>
+        <article class="cfx-card cfx-sport-widget"><span class="cfx-sport-icon">🎯</span><h2>Fitness Score</h2><strong>83%</strong><div class="cfx-donut small"><b>83%</b></div></article>
+        <article class="cfx-card cfx-sport-widget"><span class="cfx-sport-icon">🥗</span><h2>Diet Card</h2><p>Plan saludable del día.</p><div class="cfx-badges"><span>Proteína</span><span class="success">Activo</span></div></article>
+        <article class="cfx-card cfx-sport-widget"><span class="cfx-sport-icon">♙</span><h2>Trainer Card</h2><p>Entrenador principal de Mallqui Gym.</p><div class="cfx-avatar">T</div></article>
+        <article class="cfx-card cfx-sport-widget"><span class="cfx-sport-icon">◷</span><h2>Schedule</h2><div class="cfx-info"><p><b>Lunes</b><span>Cardio</span></p><p><b>Miércoles</b><span>Fuerza</span></p><p><b>Viernes</b><span>Crossfit</span></p></div></article>
+        <article class="cfx-card cfx-sport-widget"><span class="cfx-sport-icon">★</span><h2>Weekly Goal</h2><strong>5 / 7 días</strong><div class="cfx-progress"><i style="width:71%"></i></div><small>En buen camino</small></article>
+      </section>
+
       <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'trainer-profile'">
         <article class="cfx-card cfx-profile-card" *ngIf="trainers[0] as t; else noTrainer">
           <div class="cfx-avatar large">{{(t.nombres||'E').charAt(0)}}{{(t.apellidos||'').charAt(0)}}</div>
@@ -348,7 +359,7 @@ interface ExtraConfig {
         <article class="cfx-card"><h2>Menú nivel 2</h2><div class="cfx-tree"><button>▸ Configuración</button><button>▸ Seguridad</button></div></article>
       </section>
 
-      <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'external-link'"><article class="cfx-card cfx-empty-page"><span class="cfx-big-icon">↗</span><h2>Enlace externo</h2><p>Ejemplo de acceso a un recurso externo desde el panel.</p><button class="primary">Abrir recurso</button></article></section>
+      <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'external-link'"><article class="cfx-card cfx-empty-page"><span class="cfx-big-icon">↗</span><h2>Enlace externo</h2><p>Ejemplo de acceso a un recurso externo desde el panel.</p><button class="primary" (click)="openExternal()">Abrir recurso</button></article></section>
 
       <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'chip'"><article class="cfx-card"><h2>Chips</h2><div class="cfx-chips"><span>Socio ×</span><span>VIP ×</span><span>Entrenamiento ×</span><span>Activo ×</span></div></article><article class="cfx-card"><h2>Filtros</h2><div class="cfx-chips"><span>Hoy</span><span>Semana</span><span>Mes</span></div></article></section>
 
@@ -463,6 +474,7 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
   ];
 
   configs:Record<string,ExtraConfig> = {
+    'sports-components':{title:'Sports Components',subtitle:'Widgets deportivos, progreso, rutinas, nutrición y actividad física.',icon:'🏋',group:'Sports Components'},
     'trainer-profile':{title:'Trainer Profile',subtitle:'Perfil profesional del entrenador principal de Mallqui Gym.',icon:'♙',group:'Trainer'},
     'members-list':{title:'Members List',subtitle:'Listado real de socios registrados en Mallqui Gym.',icon:'♚',group:'Members'},
     'add-member':{title:'Add Member',subtitle:'Registro real de nuevos socios.',icon:'＋',group:'Members'},
@@ -592,4 +604,5 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
   fileSelected(e:any){ this.selectedFile=e?.target?.files?.[0]?.name||''; }
   addTag(){ const t=this.newTag.trim(); if(t&&!this.tags.includes(t)) this.tags=[...this.tags,t]; this.newTag=''; }
   removeTag(tag:string){ this.tags=this.tags.filter(t=>t!==tag); }
+  openExternal(){ window.open('https://www.templatemonster.com/admin-templates/crossfit-fitness-gym-admin-dashboard-template-569574.html','_blank','noopener,noreferrer'); }
 }
