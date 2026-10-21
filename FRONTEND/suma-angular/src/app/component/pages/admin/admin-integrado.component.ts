@@ -18,31 +18,37 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
   template: `
   <div class="admin-shell" [class.admin-sidebar-collapsed]="sidebarCerrado">
     <header class="admin-wix-topbar">
-      <div class="admin-wix-brand">
-        <strong class="admin-wix-wordmark">MALLQUI</strong>
-      </div>
+      <button type="button" class="admin-top-brand" (click)="cambiarSeccion('dashboard')" title="Ir al dashboard">
+        <span class="admin-top-brand-mark">MG</span>
+        <span><strong>Mallqui Gym</strong><small>Administración</small></span>
+      </button>
 
-      <div class="admin-wix-site">
-        <span>Panel</span>
-        <i>⌄</i>
-      </div>
-
-      <div class="admin-wix-links" aria-hidden="true">
-        <span>Explorar</span>
-        <span>Administración</span>
-        <span>Ayuda</span>
-      </div>
+      <nav class="admin-top-shortcuts" aria-label="Accesos rápidos">
+        <button type="button" (click)="cambiarSeccion('clientes')">Socios</button>
+        <button type="button" (click)="cambiarSeccion('caja')">Operación</button>
+        <button type="button" (click)="cambiarSeccion('soporte')">Atención</button>
+      </nav>
 
       <label class="admin-wix-search">
         <span>⌕</span>
-        <input type="text" placeholder="Buscar herramientas, socios, reportes y más..." aria-label="Buscar en el panel">
+        <input
+          type="text"
+          [(ngModel)]="busquedaAdmin"
+          (keydown.enter)="buscarEnPanel()"
+          placeholder="Buscar socios, ventas, reservas, inventario..."
+          aria-label="Buscar una función del panel">
+        <button type="button" (click)="buscarEnPanel()">Buscar</button>
       </label>
 
-      <div class="admin-wix-tools">
-        <span title="Mensajes">▢</span>
-        <span title="Notificaciones">♢</span>
-        <span title="Opciones">▤</span>
-        <span class="admin-wix-top-avatar">{{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}</span>
+      <div class="admin-top-actions">
+        <button type="button" (click)="cambiarSeccion('comunicacion')" title="Notificaciones" aria-label="Notificaciones">
+          <span>●</span>
+          <b *ngIf="badgeModulo('atencion')>0">{{badgeModulo('atencion')}}</b>
+        </button>
+        <button type="button" (click)="cambiarSeccion('configuracion')" title="Configuración" aria-label="Configuración">⚙</button>
+        <button type="button" class="admin-top-user" (click)="cambiarSeccion('usuarios')" title="Usuarios">
+          {{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}
+        </button>
       </div>
     </header>
     <aside class="admin-nav">
@@ -109,7 +115,7 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
     </button>
 
     <main class="admin-content">
-      <header class="admin-header">
+      <header class="admin-header" *ngIf="seccion!=='dashboard'">
         <div class="admin-title-block">
           <span class="admin-title-kicker">MALLQUI GYM · ADMIN</span>
           <h1>{{tituloActual}}</h1>
@@ -162,473 +168,210 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
       <div *ngIf="error && seccion!=='dashboard'" class="admin-toast error">⚠ {{error}}</div>
 
       <ng-container *ngIf="seccion==='dashboard'">
-        <section class="wixdash-page">
-          <header class="wixdash-head">
-            <div>
-              <h2>Panel Administrador</h2>
-              <p>Administra y haz seguimiento de los socios, servicios y operaciones de Mallqui Gym.</p>
+        <section class="mg-dashboard">
+          <header class="mg-dashboard-head">
+            <div class="mg-dashboard-title">
+              <span class="mg-eyebrow">MALLQUI GYM · CENTRO DE CONTROL</span>
+              <h1>Panel Administrador</h1>
+              <p>Gestiona socios, servicios, ventas, inventario y atención desde un solo lugar.</p>
             </div>
-            <div class="wixdash-head-actions">
-              <button type="button" class="wixdash-more" title="Más opciones">•••</button>
-              <button type="button" class="wixdash-outline" (click)="cambiarSeccion('reportes')">Administrar reportes</button>
-              <button type="button" class="wixdash-create" (click)="abrirNuevoSocioDesdeDashboard()">Crear <span>⌄</span></button>
+
+            <div class="mg-dashboard-head-actions">
+              <button type="button" class="mg-btn ghost" [disabled]="actualizandoDatos" (click)="actualizarSeccionActual()">
+                {{actualizandoDatos ? 'Actualizando...' : '↻ Actualizar'}}
+              </button>
+              <button type="button" class="mg-btn ghost" (click)="exportarDashboardCsv()">⇩ Exportar</button>
+              <button type="button" class="mg-btn primary" (click)="abrirNuevoSocioDesdeDashboard()">＋ Nuevo socio</button>
             </div>
           </header>
 
-          <section class="wixdash-member-strip">
+          <div class="mg-dashboard-status" [class.warning]="!!dashboardError">
             <div>
-              <span class="wixdash-member-icon">♙</span>
-              <b>{{dashboard?.clientes?.activos ?? 0}} socios activos</b>
-              <span class="wixdash-info">i</span>
-            </div>
-            <button type="button" (click)="cambiarSeccion('clientes')">Administrar socios <span>›</span></button>
-          </section>
-
-          <section class="wixdash-summary">
-            <header>
-              <h3>Resumen</h3>
-              <button type="button" aria-label="Contraer resumen">⌃</button>
-            </header>
-
-            <div class="wixdash-summary-body">
-              <div class="wixdash-summary-tabs">
-                <button type="button" class="active">Vista general</button>
-                <button type="button" (click)="cambiarSeccion('reportes')">Analíticas y reportes</button>
-              </div>
-
-              <p class="wixdash-summary-copy">
-                Revisa lo más importante del gimnasio desde un solo lugar y entra directamente a cada módulo cuando necesites gestionarlo.
-              </p>
-
-              <div class="wixdash-summary-cards">
-                <button type="button" (click)="cambiarSeccion('clientes')">
-                  <span>♙</span>
-                  <div><b>Socios activos</b><small>{{dashboard?.clientes?.activos ?? 0}} registrados</small></div>
-                  <em>›</em>
-                </button>
-                <button type="button" (click)="cambiarSeccion('membresias')">
-                  <span>✦</span>
-                  <div><b>Membresías</b><small>{{dashboard?.membresias?.activas ?? 0}} activas</small></div>
-                  <em>›</em>
-                </button>
-                <button type="button" (click)="cambiarSeccion('reservas')">
-                  <span>◫</span>
-                  <div><b>Reservas de hoy</b><small>{{dashboard?.reservas?.hoy ?? 0}} programadas</small></div>
-                  <em>›</em>
-                </button>
-                <button type="button" (click)="cambiarSeccion('ventas')">
-                  <span>▤</span>
-                  <div><b>Ventas de hoy</b><small>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</small></div>
-                  <em>›</em>
-                </button>
-              </div>
-            </div>
-          </section>
-
-          <section class="wixdash-table-card">
-            <div class="wixdash-toolbar">
-              <div class="wixdash-toolbar-left">
-                <button type="button" class="wixdash-view">Todos los módulos <span>⌄</span></button>
-                <button type="button" class="wixdash-link">Administrar vista <span>⌄</span></button>
-              </div>
-              <div class="wixdash-toolbar-right">
-                <button type="button" class="wixdash-filter">▽ Filtrar</button>
-                <button type="button" class="wixdash-icon-btn">☷</button>
-                <label class="wixdash-search">
-                  <span>⌕</span>
-                  <input type="text" placeholder="Buscar...">
-                </label>
-                <button type="button" class="wixdash-import" (click)="exportarDashboardCsv()">Exportar <span>⌄</span></button>
-              </div>
-            </div>
-
-            <div class="wixdash-table-wrap">
-              <table class="wixdash-table">
-                <thead>
-                  <tr>
-                    <th><input type="checkbox" aria-label="Seleccionar todo"></th>
-                    <th>Módulo</th>
-                    <th>Estado</th>
-                    <th>Detalle</th>
-                    <th>Última actualización</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><input type="checkbox" aria-label="Seleccionar socios"></td>
-                    <td><span class="wixdash-avatar">S</span><div><b>Socios</b><small>Clientes del gimnasio</small></div></td>
-                    <td><span class="wixdash-status ok">ACTIVO</span></td>
-                    <td>{{dashboard?.clientes?.activos ?? 0}} activos</td>
-                    <td>{{ultimaActualizacion || 'Ahora'}}</td>
-                    <td><button type="button" (click)="cambiarSeccion('clientes')">•••</button></td>
-                  </tr>
-                  <tr>
-                    <td><input type="checkbox" aria-label="Seleccionar membresías"></td>
-                    <td><span class="wixdash-avatar">M</span><div><b>Membresías</b><small>Planes y vigencias</small></div></td>
-                    <td><span class="wixdash-status ok">ACTIVO</span></td>
-                    <td>{{dashboard?.membresias?.activas ?? 0}} activas</td>
-                    <td>{{ultimaActualizacion || 'Ahora'}}</td>
-                    <td><button type="button" (click)="cambiarSeccion('membresias')">•••</button></td>
-                  </tr>
-                  <tr>
-                    <td><input type="checkbox" aria-label="Seleccionar reservas"></td>
-                    <td><span class="wixdash-avatar">R</span><div><b>Reservas</b><small>Agenda de sesiones</small></div></td>
-                    <td><span class="wixdash-status">HOY</span></td>
-                    <td>{{dashboard?.reservas?.hoy ?? 0}} reservas</td>
-                    <td>{{ultimaActualizacion || 'Ahora'}}</td>
-                    <td><button type="button" (click)="cambiarSeccion('reservas')">•••</button></td>
-                  </tr>
-                  <tr>
-                    <td><input type="checkbox" aria-label="Seleccionar ventas"></td>
-                    <td><span class="wixdash-avatar">V</span><div><b>Ventas</b><small>Caja y operaciones</small></div></td>
-                    <td><span class="wixdash-status">HOY</span></td>
-                    <td>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</td>
-                    <td>{{ultimaActualizacion || 'Ahora'}}</td>
-                    <td><button type="button" (click)="cambiarSeccion('ventas')">•••</button></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          <div *ngIf="dashboardError" class="wixdash-inline-error">
-            <span>!</span>
-            <div><b>No se pudo actualizar algunos datos.</b><small>La interfaz seguirá disponible mientras revisas la conexión o la consulta SQL.</small></div>
-            <button type="button" (click)="reintentarDashboard()">Reintentar</button>
-          </div>
-        </section>
-        <section class="dashboard-load-state" *ngIf="dashboardCargando && !dashboard">
-          <span class="dashboard-loader"></span><div><b>Cargando información real del gimnasio...</b><small>Consultando Laravel y MySQL.</small></div>
-        </section>
-        <section class="dashboard-load-state is-error" *ngIf="dashboardError">
-          <span>!</span><div><b>No se pudo actualizar el dashboard.</b><small>{{dashboardError}}</small></div>
-          <button type="button" (click)="reintentarDashboard()">Reintentar</button>
-        </section>
-        <section class="ux-dashboard-head premium-dashboard-hero">
-          <div class="dashboard-hero-copy">
-            <span class="dashboard-live-pill"><i></i> OPERACIÓN EN TIEMPO REAL</span>
-            <span class="ux-overline">PANEL ADMINISTRATIVO · {{dashboard?.periodo?.mes || 'MES ACTUAL'}}</span>
-            <h2>Todo lo importante, <strong>sin buscar de más.</strong></h2>
-            <p>Controla ventas, clientes, membresías, caja e inventario desde un solo lugar.</p>
-            <div class="dashboard-hero-trust">
-              <span>✓ Información actualizada</span>
-              <span>✓ Gestión centralizada</span>
-              <span>✓ Control operativo</span>
-            </div>
-          </div>
-          <div class="ux-head-actions premium-head-actions">
-            <div class="dashboard-hero-decoration" aria-hidden="true">
-              <span class="hero-ring one"></span>
-              <span class="hero-ring two"></span>
-              <span class="hero-ring three"></span>
-              <span class="hero-core">MG</span>
-            </div>
-            <div class="ux-cash-status" [class.is-open]="dashboard?.caja?.abierta">
-              <span class="ux-status-dot"></span>
+              <span class="mg-status-dot"></span>
               <div>
-                <b>{{dashboard?.caja?.abierta ? 'Caja abierta' : 'Caja cerrada'}}</b>
-                <small>{{dashboard?.periodo?.fecha || ''}}</small>
+                <b>{{dashboardError ? 'Panel disponible con datos parciales' : 'Sistema administrativo operativo'}}</b>
+                <small>
+                  {{dashboardError ? 'Una consulta del resumen necesita revisión, pero los módulos siguen disponibles.' : '28 áreas administrativas conectadas y accesibles desde este panel.'}}
+                </small>
               </div>
             </div>
-
-          </div>
-        </section>
-
-        <section class="ux-quick-actions" aria-label="Acciones rápidas">
-          <button type="button" class="ux-action primary-action" (click)="dashboard?.caja?.abierta ? cambiarSeccion('ventas') : cambiarSeccion('caja')">
-            <span>{{dashboard?.caja?.abierta ? '＋' : '▣'}}</span>
-            <div>
-              <b>{{dashboard?.caja?.abierta ? 'Nueva venta' : 'Abrir caja'}}</b>
-              <small>{{dashboard?.caja?.abierta ? 'Vender productos' : 'Primero abre caja para vender'}}</small>
-            </div>
-          </button>
-          <button type="button" class="ux-action" (click)="abrirNuevoSocioDesdeDashboard()">
-            <span>♙</span><div><b>Nuevo socio</b><small>Registrar miembro</small></div>
-          </button>
-          <button type="button" class="ux-action" (click)="cambiarSeccion('asistencias')">
-            <span>✓</span><div><b>Registrar asistencia</b><small>Entrada o salida</small></div>
-          </button>
-        </section>
-
-        <section class="dashboard-control-center" aria-label="Resumen operativo del gimnasio">
-          <header>
-            <div>
-              <span>RESUMEN DE HOY</span>
-              <h3>Lo que necesita atención ahora</h3>
-            </div>
-            <small>Datos de la misma base que usa el portal del socio</small>
-          </header>
-          <div class="dashboard-control-grid">
-            <button type="button" (click)="cambiarSeccion('clientes')">
-              <span>♙</span><div><small>SOCIOS ACTIVOS</small><b>{{dashboard?.clientes?.activos ?? 0}}</b><p>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos este mes</p></div>
-            </button>
-            <button type="button" (click)="cambiarSeccion('membresias')">
-              <span>✦</span><div><small>MEMBRESÍAS</small><b>{{dashboard?.membresias?.activas ?? 0}}</b><p>{{dashboard?.membresias?.por_vencer_7_dias ?? 0}} por vencer</p></div>
-            </button>
-            <button type="button" (click)="cambiarSeccion('asistencias')">
-              <span>✓</span><div><small>DENTRO DEL GYM</small><b>{{dashboard?.asistencias?.dentro_ahora ?? 0}}</b><p>{{dashboard?.asistencias?.hoy ?? 0}} accesos hoy</p></div>
-            </button>
-            <button type="button" (click)="cambiarSeccion('reservas')">
-              <span>◫</span><div><small>RESERVAS HOY</small><b>{{dashboard?.reservas?.hoy ?? 0}}</b><p>Agenda del día</p></div>
-            </button>
-            <button type="button" (click)="cambiarSeccion('ventas')">
-              <span>▤</span><div><small>VENTAS HOY</small><b>{{dashboard?.ventas?.hoy_cantidad ?? 0}}</b><p>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</p></div>
-            </button>
-            <button type="button" (click)="cambiarSeccion('clases')">
-              <span>◉</span><div><small>CLASES ACTIVAS</small><b>{{dashboard?.operacion?.clases_activas ?? 0}}</b><p>Disponibles para reservar</p></div>
-            </button>
-            <button type="button" (click)="cambiarSeccion('rutinas')">
-              <span>🏋</span><div><small>RUTINAS ACTIVAS</small><b>{{dashboard?.operacion?.rutinas_activas ?? 0}}</b><p>{{dashboard?.alertas?.rutinas_pendientes ?? 0}} solicitudes pendientes</p></div>
-            </button>
-            <button type="button" (click)="cambiarSeccion('entrenador')">
-              <span>◎</span><div><small>ENTRENADOR</small><b>{{dashboard?.operacion?.entrenadores_activos ?? 0}}</b><p>Entrenador principal activo</p></div>
-            </button>
-          </div>
-        </section>
-
-        <section class="dashboard-health-strip" aria-label="Estado del sistema">
-          <div>
-            <span class="health-dot"></span>
-            <p><b>Base principal conectada</b><small>{{dashboard?.fuente?.base_datos || 'MySQL'}} · {{dashboard?.fuente?.tablas_detectadas?.length || 0}} tablas detectadas</small></p>
-          </div>
-          <div>
-            <span>↻</span>
-            <p><b>Sincronización automática</b><small>Cada 15 segundos con el portal del socio</small></p>
-          </div>
-          <div>
-            <span [class.health-warning]="(dashboard?.alertas?.total ?? 0)>0">!</span>
-            <p><b>{{(dashboard?.alertas?.total ?? 0)>0 ? ((dashboard?.alertas?.total ?? 0)+' pendientes') : 'Sin alertas críticas'}}</b><small>{{(dashboard?.inventario?.productos_stock_bajo ?? 0)}} stock bajo · {{dashboard?.membresias?.por_vencer_7_dias ?? 0}} vencimientos</small></p>
-          </div>
-          <button type="button" (click)="irAlertasPendientes()">Revisar prioridades →</button>
-        </section>
-
-        <app-admin-dashboard-tools
-          [dashboard]="dashboard"
-          (irSeccion)="cambiarSeccion($event)">
-        </app-admin-dashboard-tools>
-
-        <section class="ux-primary-kpis" aria-label="Indicadores principales">
-          <article class="ux-kpi">
-            <div class="ux-kpi-head"><span class="ux-kpi-icon success">♙</span><small>SOCIOS</small></div>
-            <p>Socios activos</p>
-            <h3>{{dashboard?.clientes?.activos ?? 0}}</h3>
-            <span>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos este mes</span>
-          </article>
-          <article class="ux-kpi">
-            <div class="ux-kpi-head"><span class="ux-kpi-icon">↗</span><small>ESTE MES</small></div>
-            <p>Ingresos</p>
-            <h3>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</h3>
-            <span>{{dashboard?.ingresos?.membresias_mes ?? 0 | number:'1.2-2'}} suscripciones + S/ {{dashboard?.ingresos?.ventas_mes ?? 0 | number:'1.2-2'}} ventas</span>
-          </article>
-          <article class="ux-kpi">
-            <div class="ux-kpi-head"><span class="ux-kpi-icon warning">↓</span><small>EGRESOS</small></div>
-            <p>Gastos del mes</p>
-            <h3>S/ {{dashboard?.gastos?.total_mes ?? 0 | number:'1.2-2'}}</h3>
-            <span>Registrados en la tabla de gastos</span>
-          </article>
-          <article class="ux-kpi">
-            <div class="ux-kpi-head"><span class="ux-kpi-icon success">S/</span><small>RESULTADO</small></div>
-            <p>Utilidad neta</p>
-            <h3>S/ {{dashboard?.utilidad?.total_mes ?? 0 | number:'1.2-2'}}</h3>
-            <span>Ingresos menos gastos del mes</span>
-          </article>
-        </section>
-
-        <section class="ux-status-strip" aria-label="Pendientes importantes">
-          <button type="button" (click)="cambiarSeccion('reservas')">
-            <span>◷</span><div><b>{{dashboard?.reservas?.hoy ?? 0}}</b><small>Reservas de hoy</small></div>
-          </button>
-          <button type="button" [class.needs-attention]="(dashboard?.alertas?.rutinas_pendientes ?? 0)>0" (click)="cambiarSeccion('soporte')">
-            <span>🏋</span><div><b>{{dashboard?.alertas?.rutinas_pendientes ?? 0}}</b><small>Rutinas solicitadas</small></div>
-          </button>
-          <button type="button" [class.needs-attention]="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0" (click)="cambiarSeccion('inventario')">
-            <span>!</span><div><b>{{dashboard?.inventario?.productos_stock_bajo ?? 0}}</b><small>Productos con stock bajo</small></div>
-          </button>
-          <button type="button"
-                  [class.needs-attention]="((dashboard?.alertas?.soporte_pendiente ?? 0)+(dashboard?.alertas?.opiniones_pendientes ?? 0))>0"
-                  (click)="(dashboard?.alertas?.soporte_pendiente ?? 0)>0 ? cambiarSeccion('soporte') : cambiarSeccion('opiniones')">
-            <span>?</span>
-            <div>
-              <b>{{(dashboard?.alertas?.soporte_pendiente ?? 0)+(dashboard?.alertas?.opiniones_pendientes ?? 0)}}</b>
-              <small>Atención al cliente</small>
-            </div>
-          </button>
-        </section>
-
-        <section class="dashboard-priority-board" *ngIf="dashboard?.alertas?.prioridades?.length">
-          <header>
-            <div><span>PRIORIDADES</span><h3>Qué atender primero</h3><p>Ordenado con los pendientes reales del sistema.</p></div>
-            <b>{{dashboard?.alertas?.total ?? 0}} pendientes</b>
-          </header>
-          <div class="dashboard-priority-list">
-            <button type="button" *ngFor="let p of dashboard?.alertas?.prioridades" [attr.data-level]="p.nivel" (click)="abrirPrioridad(p)">
-              <span>{{iconoPrioridad(p.tipo)}}</span>
-              <div><small>{{p.cantidad}} PENDIENTE{{p.cantidad===1 ? '' : 'S'}}</small><b>{{p.titulo}}</b><p>{{p.descripcion}}</p></div>
-              <em>Resolver →</em>
-            </button>
-          </div>
-        </section>
-
-        <section class="admin-portal-live">
-          <header>
-            <div>
-              <span>PORTAL DEL CLIENTE · EN TIEMPO REAL</span>
-              <h3>Actividad que llega al administrador</h3>
-              <p>Reservas, pagos, solicitudes de rutina, consultas y opiniones del usuario aparecen aquí desde la misma base de datos.</p>
-            </div>
-            <div class="admin-live-sync"><i></i><span>Sincronización automática · 15 s</span></div>
-          </header>
-
-          <div class="admin-portal-live-list" *ngIf="dashboard?.portal_clientes?.actividad_reciente?.length; else sinActividadPortal">
-            <button type="button"
-                    *ngFor="let a of dashboard?.portal_clientes?.actividad_reciente"
-                    (click)="abrirActividadPortal(a)">
-              <span class="admin-live-icon" [attr.data-kind]="a.tipo">{{iconoActividadPortal(a.tipo)}}</span>
-              <div>
-                <small>{{etiquetaActividadPortal(a.tipo)}} · {{a.estado || 'Registrado'}}</small>
-                <b>{{a.titulo}}</b>
-                <p>{{a.cliente || 'Cliente'}} · {{a.detalle}}</p>
-              </div>
-              <time>{{fecha(a.fecha)}}</time>
-              <em>→</em>
-            </button>
+            <button *ngIf="dashboardError" type="button" (click)="reintentarDashboard()">Reintentar conexión</button>
+            <span *ngIf="!dashboardError && ultimaActualizacion">Actualizado {{ultimaActualizacion}}</span>
           </div>
 
-          <ng-template #sinActividadPortal>
-            <div class="admin-portal-live-empty">
-              <span>◎</span>
-              <div><b>Aún no hay actividad reciente del portal.</b><p>Cuando un cliente reserve, pague, solicite una rutina, envíe una consulta u opinión, aparecerá aquí automáticamente.</p></div>
-            </div>
-          </ng-template>
-        </section>
+          <section class="mg-kpis" aria-label="Resumen del gimnasio">
+            <button type="button" class="mg-kpi" (click)="cambiarSeccion('clientes')">
+              <span class="mg-kpi-icon">♙</span>
+              <div><small>SOCIOS ACTIVOS</small><strong>{{dashboard?.clientes?.activos ?? 0}}</strong><p>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos este mes</p></div>
+              <em>›</em>
+            </button>
 
-        <section class="ux-alert-banner" *ngIf="(dashboard?.alertas?.total ?? 0) > 0">
-          <div><span>!</span><div><b>Hay {{dashboard?.alertas?.total}} alertas operativas.</b><small>Revisa soporte, rutinas solicitadas, opiniones nuevas, stock bajo y membresías próximas a vencer.</small></div></div>
-          <button type="button" (click)="irAlertasPendientes()">Revisar pendientes →</button>
-        </section>
-        <section class="ux-alert-banner is-clear" *ngIf="(dashboard?.alertas?.total ?? 0) === 0">
-          <div><span>✓</span><div><b>Operación al día.</b><small>No hay alertas de soporte, opiniones, stock ni vencimientos que requieran atención inmediata.</small></div></div>
-          <button type="button" (click)="actualizarSeccionActual()">Actualizar datos →</button>
-        </section>
+            <button type="button" class="mg-kpi" (click)="cambiarSeccion('membresias')">
+              <span class="mg-kpi-icon">✦</span>
+              <div><small>MEMBRESÍAS</small><strong>{{dashboard?.membresias?.activas ?? 0}}</strong><p>{{dashboard?.membresias?.por_vencer_7_dias ?? 0}} por vencer</p></div>
+              <em>›</em>
+            </button>
 
-        <section class="ux-chart-layout">
-          <article class="ux-card ux-revenue-card">
-            <div class="ux-card-head">
-              <div><span class="ux-section-label">TENDENCIA</span><h3>Ingresos de los últimos 6 meses</h3><p>Membresías y productos, sin ventas anuladas.</p></div>
-              <div class="chart-legend"><span><i class="legend-membership"></i>Membresías</span><span><i class="legend-sales"></i>Productos</span></div>
-            </div>
-            <div class="revenue-chart ux-revenue-chart" *ngIf="hayIngresosGrafica; else sinIngresosGrafica">
-              <div class="chart-y-label"><span>Mayor</span><span>Menor</span></div>
-              <div class="revenue-columns">
-                <div class="revenue-column" *ngFor="let m of dashboard?.tendencias?.ingresos_6_meses">
-                  <div class="revenue-value">S/ {{m.total | number:'1.0-0'}}</div>
-                  <div class="revenue-bars">
-                    <i class="bar-membership" [style.height.%]="alturaIngreso(m.membresias)" [attr.title]="'Membresías: S/ '+m.membresias"></i>
-                    <i class="bar-sales" [style.height.%]="alturaIngreso(m.ventas)" [attr.title]="'Productos: S/ '+m.ventas"></i>
+            <button type="button" class="mg-kpi" (click)="cambiarSeccion('asistencias')">
+              <span class="mg-kpi-icon">✓</span>
+              <div><small>DENTRO DEL GYM</small><strong>{{dashboard?.asistencias?.dentro_ahora ?? 0}}</strong><p>{{dashboard?.asistencias?.hoy ?? 0}} accesos hoy</p></div>
+              <em>›</em>
+            </button>
+
+            <button type="button" class="mg-kpi" (click)="cambiarSeccion('reservas')">
+              <span class="mg-kpi-icon">◫</span>
+              <div><small>RESERVAS HOY</small><strong>{{dashboard?.reservas?.hoy ?? 0}}</strong><p>Agenda del día</p></div>
+              <em>›</em>
+            </button>
+
+            <button type="button" class="mg-kpi" (click)="cambiarSeccion('ventas')">
+              <span class="mg-kpi-icon">S/</span>
+              <div><small>VENTAS HOY</small><strong>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</strong><p>{{dashboard?.ventas?.hoy_cantidad ?? 0}} operaciones</p></div>
+              <em>›</em>
+            </button>
+
+            <button type="button" class="mg-kpi" (click)="cambiarSeccion('inventario')">
+              <span class="mg-kpi-icon">▦</span>
+              <div><small>STOCK BAJO</small><strong>{{dashboard?.inventario?.productos_stock_bajo ?? 0}}</strong><p>Productos por revisar</p></div>
+              <em>›</em>
+            </button>
+          </section>
+
+          <section class="mg-dashboard-layout">
+            <div class="mg-dashboard-main">
+              <section class="mg-card mg-modules-card">
+                <header class="mg-section-head">
+                  <div>
+                    <span>GESTIÓN COMPLETA</span>
+                    <h2>Módulos del administrador</h2>
+                    <p>Cada acceso abre una función real del sistema. No hay botones de adorno.</p>
                   </div>
-                  <b>{{m.mes}}</b><small>{{m.anio}}</small>
+                  <strong>7 módulos · 28 áreas</strong>
+                </header>
+
+                <div class="mg-modules-grid">
+                  <article class="mg-module">
+                    <header><span>♙</span><div><b>Socios</b><small>Miembros y membresías</small></div></header>
+                    <div class="mg-module-actions">
+                      <button type="button" (click)="cambiarSeccion('clientes')">Clientes</button>
+                      <button type="button" (click)="cambiarSeccion('membresias')">Membresías</button>
+                      <button type="button" (click)="cambiarSeccion('pagos')">Pagos</button>
+                      <button type="button" (click)="cambiarSeccion('asistencias')">Asistencia</button>
+                      <button type="button" (click)="cambiarSeccion('planes')">Tarifas</button>
+                    </div>
+                  </article>
+
+                  <article class="mg-module">
+                    <header><span>◉</span><div><b>Servicios</b><small>Entrenamiento y agenda</small></div></header>
+                    <div class="mg-module-actions">
+                      <button type="button" (click)="cambiarSeccion('clases')">Clases</button>
+                      <button type="button" (click)="cambiarSeccion('reservas')">Reservas</button>
+                      <button type="button" (click)="cambiarSeccion('rutinas')">Rutinas</button>
+                      <button type="button" (click)="cambiarSeccion('entrenador')">Entrenador</button>
+                    </div>
+                  </article>
+
+                  <article class="mg-module">
+                    <header><span>▣</span><div><b>Caja y ventas</b><small>Operación financiera diaria</small></div></header>
+                    <div class="mg-module-actions">
+                      <button type="button" (click)="cambiarSeccion('caja')">Caja</button>
+                      <button type="button" (click)="cambiarSeccion('ventas')">Punto de venta</button>
+                      <button type="button" (click)="cambiarSeccion('historial-ventas')">Historial</button>
+                      <button type="button" (click)="cambiarSeccion('gastos')">Gastos</button>
+                    </div>
+                  </article>
+
+                  <article class="mg-module">
+                    <header><span>▦</span><div><b>Inventario</b><small>Productos y abastecimiento</small></div></header>
+                    <div class="mg-module-actions">
+                      <button type="button" (click)="cambiarSeccion('inventario')">Productos</button>
+                      <button type="button" (click)="cambiarSeccion('compras')">Compras</button>
+                      <button type="button" (click)="cambiarSeccion('proveedores')">Proveedores</button>
+                      <button type="button" (click)="cambiarSeccion('kardex')">Kardex</button>
+                      <button type="button" (click)="cambiarSeccion('categorias')">Categorías</button>
+                    </div>
+                  </article>
+
+                  <article class="mg-module">
+                    <header><span>●</span><div><b>Atención</b><small>Comunicación con socios</small></div></header>
+                    <div class="mg-module-actions">
+                      <button type="button" (click)="cambiarSeccion('soporte')">Soporte</button>
+                      <button type="button" (click)="cambiarSeccion('opiniones')">Opiniones</button>
+                      <button type="button" (click)="cambiarSeccion('comunicacion')">Notificaciones</button>
+                    </div>
+                  </article>
+
+                  <article class="mg-module">
+                    <header><span>↗</span><div><b>Reportes</b><small>Indicadores y análisis</small></div></header>
+                    <div class="mg-module-actions">
+                      <button type="button" (click)="cambiarSeccion('reportes')">Resumen</button>
+                      <button type="button" (click)="cambiarSeccion('reporte-asistencias')">Asistencias</button>
+                      <button type="button" (click)="exportarDashboardCsv()">Exportar CSV</button>
+                    </div>
+                  </article>
+
+                  <article class="mg-module">
+                    <header><span>⚙</span><div><b>Sistema</b><small>Seguridad y configuración</small></div></header>
+                    <div class="mg-module-actions">
+                      <button type="button" (click)="cambiarSeccion('usuarios')">Usuarios</button>
+                      <button type="button" (click)="cambiarSeccion('auditoria')">Auditoría</button>
+                      <button type="button" (click)="cambiarSeccion('configuracion')">Configuración</button>
+                    </div>
+                  </article>
                 </div>
-              </div>
-            </div>
-            <ng-template #sinIngresosGrafica>
-              <div class="ux-empty-state">
-                <span>↗</span>
-                <h4>Aún no hay movimientos para graficar</h4>
-                <p>Cuando registres ventas o pagos de membresías, aquí verás la evolución de los ingresos.</p>
-                <button type="button" (click)="dashboard?.caja?.abierta ? cambiarSeccion('ventas') : cambiarSeccion('caja')">{{dashboard?.caja?.abierta ? 'Registrar una venta' : 'Abrir caja para vender'}}</button>
-              </div>
-            </ng-template>
-          </article>
+              </section>
 
-          <aside class="ux-side-stack">
-            <article class="ux-card ux-cash-card">
-              <div class="ux-card-head compact"><div><span class="ux-section-label">OPERACIÓN</span><h3>Estado de caja</h3></div><button type="button" class="ux-link" (click)="cambiarSeccion('caja')">Administrar →</button></div>
-              <div class="ux-cash-block" [class.is-open]="dashboard?.caja?.abierta">
-                <span>{{dashboard?.caja?.abierta ? 'ABIERTA' : 'CERRADA'}}</span>
-                <h4 *ngIf="dashboard?.caja?.abierta">S/ {{dashboard?.caja?.detalle?.monto_esperado ?? dashboard?.caja?.detalle?.monto_inicial ?? 0 | number:'1.2-2'}}</h4>
-                <h4 *ngIf="!dashboard?.caja?.abierta">Sin caja activa</h4>
-                <small *ngIf="dashboard?.caja?.detalle">Abierta desde {{fecha(dashboard?.caja?.detalle?.fecha_apertura)}}</small>
-              </div>
-            </article>
-
-            <article class="ux-card">
-              <div class="ux-card-head compact"><div><span class="ux-section-label">HOY</span><h3>Asistencias</h3></div><strong class="ux-card-total">{{totalAsistenciasSemana}} / 7 días</strong></div>
-              <div class="attendance-bars-real ux-attendance-chart" *ngIf="hayAsistenciasGrafica; else sinAsistenciasGrafica">
-                <div class="attendance-day" *ngFor="let d of dashboard?.tendencias?.asistencias_7_dias">
-                  <span>{{d.total}}</span>
-                  <div class="attendance-track"><i [style.height.%]="alturaAsistencia(d.total)"></i></div>
-                  <b>{{d.dia}}</b>
-                </div>
-              </div>
-              <ng-template #sinAsistenciasGrafica>
-                <div class="ux-empty-state compact">
-                  <span>✓</span>
-                  <h4>Sin asistencias registradas</h4>
-                  <p>Registra la primera entrada para empezar a medir la afluencia.</p>
-                  <button type="button" (click)="cambiarSeccion('asistencias')">Registrar asistencia</button>
-                </div>
-              </ng-template>
-            </article>
-          </aside>
-        </section>
-
-        <section class="ux-content-grid">
-          <article class="ux-card">
-            <div class="ux-card-head">
-              <div><span class="ux-section-label">ACTIVIDAD</span><h3>Últimas ventas</h3><p>Operaciones válidas más recientes.</p></div>
-              <button type="button" class="ux-link" (click)="cambiarSeccion('ventas')">Ver ventas →</button>
+              <app-admin-dashboard-tools
+                [dashboard]="dashboard"
+                (irSeccion)="cambiarSeccion($event)">
+              </app-admin-dashboard-tools>
             </div>
-            <div class="table-wrap ux-table-wrap">
-              <table class="management-table ux-table">
-                <thead><tr><th>Comprobante</th><th>Cliente</th><th>Método</th><th>Total</th></tr></thead>
-                <tbody>
-                  <tr *ngFor="let v of (dashboard?.ventas?.recientes || []).slice(0,5)">
-                    <td><b>{{v.numero_comprobante}}</b><small>{{fecha(v.fecha_venta)}}</small></td>
-                    <td>{{nombreClienteVenta(v.cliente)}}</td><td>{{v.metodo_pago}}</td><td><strong>S/ {{v.total | number:'1.2-2'}}</strong></td>
-                  </tr>
-                  <tr *ngIf="!(dashboard?.ventas?.recientes?.length)"><td colspan="4">Todavía no hay ventas registradas.</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </article>
 
-          <article class="ux-card">
-            <div class="ux-card-head"><div><span class="ux-section-label">RANKING</span><h3>Productos más vendidos</h3><p>Resultado del mes actual.</p></div></div>
-            <div class="ux-ranking-row" *ngFor="let p of dashboard?.ventas?.top_productos || []; let i=index">
-              <span>{{i+1}}</span><div><b>{{p.nombre_producto}}</b><small>{{p.cantidad}} unidades</small></div><strong>S/ {{p.importe | number:'1.2-2'}}</strong>
-            </div>
-            <div class="dashboard-empty" *ngIf="!(dashboard?.ventas?.top_productos?.length)">Sin ventas de productos este mes.</div>
-          </article>
-        </section>
+            <aside class="mg-dashboard-side">
+              <section class="mg-card mg-quick-card">
+                <header class="mg-section-head compact">
+                  <div><span>ACCIONES RÁPIDAS</span><h2>Trabajo de hoy</h2></div>
+                </header>
 
-        <section class="ux-bottom-grid">
-          <article class="ux-card">
-            <div class="ux-card-head compact"><div><span class="ux-section-label">PRÓXIMOS 7 DÍAS</span><h3>Membresías por vencer</h3></div><button type="button" class="ux-link" (click)="cambiarSeccion('membresias')">Gestionar →</button></div>
-            <div class="ux-list-row" *ngFor="let m of (dashboard?.membresias?.detalle_por_vencer || []).slice(0,5)">
-              <div><b>{{nombreCliente(m.cliente)}}</b><small>{{m.membresia?.nombre}}</small></div><span>{{m.fecha_fin}}</span>
-            </div>
-            <div class="dashboard-empty" *ngIf="!(dashboard?.membresias?.detalle_por_vencer?.length)">No hay membresías próximas a vencer.</div>
-          </article>
+                <button type="button" class="mg-quick primary" (click)="abrirNuevoSocioDesdeDashboard()">
+                  <span>＋</span><div><b>Registrar socio</b><small>Crear miembro y acceso</small></div><em>›</em>
+                </button>
 
-          <article class="ux-card">
-            <div class="ux-card-head compact"><div><span class="ux-section-label">AGENDA</span><h3>Reservas de hoy</h3></div><button type="button" class="ux-link" (click)="cambiarSeccion('reservas')">Ver agenda →</button></div>
-            <div class="ux-list-row" *ngFor="let r of (dashboard?.reservas?.detalle_hoy || []).slice(0,5)">
-              <div><b>{{r.clase?.nombre || 'Clase'}}</b><small>{{nombreCliente(r.cliente)}}</small></div><span>{{r.clase?.hora_inicio || ''}}</span>
-            </div>
-            <div class="dashboard-empty" *ngIf="!(dashboard?.reservas?.detalle_hoy?.length)">No hay reservas para hoy.</div>
-          </article>
+                <button type="button" class="mg-quick" (click)="dashboard?.caja?.abierta ? cambiarSeccion('ventas') : cambiarSeccion('caja')">
+                  <span>▣</span>
+                  <div><b>{{dashboard?.caja?.abierta ? 'Nueva venta' : 'Abrir caja'}}</b><small>{{dashboard?.caja?.abierta ? 'Registrar productos vendidos' : 'Iniciar operación del día'}}</small></div>
+                  <em>›</em>
+                </button>
 
-          <article class="ux-card">
-            <div class="ux-card-head compact"><div><span class="ux-section-label">DISTRIBUCIÓN</span><h3>Membresías por duración</h3></div><strong class="ux-card-total">{{dashboard?.membresias?.activas ?? 0}} activas</strong></div>
-            <div class="membership-progress-list ux-membership-list">
-              <div *ngFor="let p of dashboard?.tendencias?.membresias_por_plan">
-                <div><b>{{p.nombre}}</b><span>{{p.total}} clientes</span></div>
-                <div class="membership-progress"><i [style.width.%]="porcentajePlan(p.total)"></i></div>
-              </div>
-              <div class="dashboard-empty" *ngIf="!(dashboard?.tendencias?.membresias_por_plan?.length)">Todavía no hay membresías activas.</div>
-            </div>
-          </article>
+                <button type="button" class="mg-quick" (click)="cambiarSeccion('asistencias')">
+                  <span>✓</span><div><b>Registrar asistencia</b><small>Entrada o salida de socio</small></div><em>›</em>
+                </button>
+
+                <button type="button" class="mg-quick" (click)="cambiarSeccion('inventario')">
+                  <span>▦</span><div><b>Gestionar productos</b><small>Stock, imágenes y precios</small></div><em>›</em>
+                </button>
+              </section>
+
+              <section class="mg-card mg-today-card">
+                <header class="mg-section-head compact">
+                  <div><span>ESTADO DE HOY</span><h2>Operación</h2></div>
+                  <span class="mg-cash-pill" [class.open]="dashboard?.caja?.abierta">{{dashboard?.caja?.abierta ? 'Caja abierta' : 'Caja cerrada'}}</span>
+                </header>
+
+                <div class="mg-today-row"><span>Clases activas</span><b>{{dashboard?.operacion?.clases_activas ?? 0}}</b></div>
+                <div class="mg-today-row"><span>Rutinas activas</span><b>{{dashboard?.operacion?.rutinas_activas ?? 0}}</b></div>
+                <div class="mg-today-row"><span>Entrenadores</span><b>{{dashboard?.operacion?.entrenadores_activos ?? 0}}</b></div>
+                <div class="mg-today-row"><span>Alertas pendientes</span><b>{{dashboard?.alertas?.total ?? 0}}</b></div>
+                <div class="mg-today-row total"><span>Ingresos del mes</span><b>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</b></div>
+
+                <button type="button" class="mg-full-action" (click)="cambiarSeccion('reportes')">Ver reportes completos →</button>
+              </section>
+            </aside>
+          </section>
+
+          <div *ngIf="dashboardCargando && !dashboard" class="mg-loading">
+            <span></span><div><b>Cargando información...</b><small>Consultando Laravel y MySQL.</small></div>
+          </div>
         </section>
       </ng-container>
 
@@ -2162,6 +1905,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   dashboardCargando = false;
   dashboardError = '';
   autoRefreshActivo = true;
+  busquedaAdmin = '';
   private autoRefreshId: any = null;
 
   diasSemana = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
@@ -2252,6 +1996,59 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       clearInterval(this.autoRefreshId);
       this.autoRefreshId = null;
     }
+  }
+
+
+  buscarEnPanel(): void {
+    const q=String(this.busquedaAdmin||'')
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g,'');
+
+    if(!q){
+      this.ok('Escribe qué módulo necesitas abrir');
+      return;
+    }
+
+    const destinos:Array<{claves:string[],seccion:string}>=[
+      {claves:['historial venta','historial ventas'],seccion:'historial-ventas'},
+      {claves:['reporte asistencia','reporte asistencias'],seccion:'reporte-asistencias'},
+      {claves:['socio','socios','cliente','clientes','miembro','miembros'],seccion:'clientes'},
+      {claves:['membresia','membresias'],seccion:'membresias'},
+      {claves:['pago','pagos'],seccion:'pagos'},
+      {claves:['asistencia','asistencias','entrada','salida'],seccion:'asistencias'},
+      {claves:['tarifa','tarifas','plan','planes'],seccion:'planes'},
+      {claves:['clase','clases'],seccion:'clases'},
+      {claves:['reserva','reservas','agenda'],seccion:'reservas'},
+      {claves:['rutina','rutinas'],seccion:'rutinas'},
+      {claves:['entrenador','entrenadores'],seccion:'entrenador'},
+      {claves:['caja','apertura','cierre'],seccion:'caja'},
+      {claves:['venta','ventas','punto de venta'],seccion:'ventas'},
+      {claves:['gasto','gastos','egreso','egresos'],seccion:'gastos'},
+      {claves:['compra','compras'],seccion:'compras'},
+      {claves:['proveedor','proveedores'],seccion:'proveedores'},
+      {claves:['kardex','movimiento inventario'],seccion:'kardex'},
+      {claves:['categoria','categorias'],seccion:'categorias'},
+      {claves:['producto','productos','inventario','stock'],seccion:'inventario'},
+      {claves:['soporte','consulta','consultas'],seccion:'soporte'},
+      {claves:['opinion','opiniones','comentario'],seccion:'opiniones'},
+      {claves:['notificacion','notificaciones','comunicacion','avisos'],seccion:'comunicacion'},
+      {claves:['reporte','reportes','indicadores'],seccion:'reportes'},
+      {claves:['usuario','usuarios','cuenta interna'],seccion:'usuarios'},
+      {claves:['auditoria','auditoria','logs','registro actividad'],seccion:'auditoria'},
+      {claves:['configuracion','sistema','ajustes'],seccion:'configuracion'},
+      {claves:['dashboard','inicio','panel'],seccion:'dashboard'}
+    ];
+
+    const encontrado=destinos.find(x=>x.claves.some(k=>q.includes(k)));
+    if(encontrado){
+      this.cambiarSeccion(encontrado.seccion);
+      this.busquedaAdmin='';
+      return;
+    }
+
+    this.error='No encontré esa función. Prueba con socios, reservas, caja, ventas, inventario, reportes o sistema.';
   }
 
   toggleSidebar(): void {
