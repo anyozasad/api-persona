@@ -168,209 +168,262 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
       <div *ngIf="error && seccion!=='dashboard'" class="admin-toast error">⚠ {{error}}</div>
 
       <ng-container *ngIf="seccion==='dashboard'">
-        <section class="mg-dashboard">
-          <header class="mg-dashboard-head">
-            <div class="mg-dashboard-title">
-              <span class="mg-eyebrow">MALLQUI GYM · CENTRO DE CONTROL</span>
+        <section class="mgx-dashboard">
+
+          <header class="mgx-head">
+            <div class="mgx-head-copy">
+              <span class="mgx-breadcrumb">MALLQUI GYM / ADMINISTRACIÓN</span>
               <h1>Panel Administrador</h1>
-              <p>Gestiona socios, servicios, ventas, inventario y atención desde un solo lugar.</p>
+              <p>Controla la operación del gimnasio desde un solo lugar, con accesos directos a cada módulo.</p>
             </div>
 
-            <div class="mg-dashboard-head-actions">
-              <button type="button" class="mg-btn ghost" [disabled]="actualizandoDatos" (click)="actualizarSeccionActual()">
-                {{actualizandoDatos ? 'Actualizando...' : '↻ Actualizar'}}
+            <div class="mgx-head-actions">
+              <button type="button" class="mgx-btn secondary" [disabled]="actualizandoDatos" (click)="actualizarSeccionActual()">
+                <span>↻</span>{{actualizandoDatos ? 'Actualizando...' : 'Actualizar'}}
               </button>
-              <button type="button" class="mg-btn ghost" (click)="exportarDashboardCsv()">⇩ Exportar</button>
-              <button type="button" class="mg-btn primary" (click)="abrirNuevoSocioDesdeDashboard()">＋ Nuevo socio</button>
+              <button type="button" class="mgx-btn secondary" (click)="exportarDashboardCsv()">
+                <span>⇩</span>Exportar
+              </button>
+              <button type="button" class="mgx-btn primary" (click)="abrirNuevoSocioDesdeDashboard()">
+                <span>＋</span>Nuevo socio
+              </button>
             </div>
           </header>
 
-          <div class="mg-dashboard-status" [class.warning]="!!dashboardError">
-            <div>
-              <span class="mg-status-dot"></span>
+          <section class="mgx-health" [class.warning]="!!dashboardError">
+            <div class="mgx-health-main">
+              <span class="mgx-health-dot"></span>
               <div>
-                <b>{{dashboardError ? 'Panel disponible con datos parciales' : 'Sistema administrativo operativo'}}</b>
-                <small>
-                  {{dashboardError ? 'Una consulta del resumen necesita revisión, pero los módulos siguen disponibles.' : '26 áreas administrativas conectadas y accesibles desde este panel.'}}
-                </small>
+                <b>{{dashboardError ? 'Panel disponible con información parcial' : 'Sistema administrativo operativo'}}</b>
+                <small>{{dashboardError ? 'Los módulos siguen funcionando mientras se revisa una consulta del resumen.' : 'Laravel, MySQL y los módulos administrativos están disponibles.'}}</small>
               </div>
             </div>
-            <button *ngIf="dashboardError" type="button" (click)="reintentarDashboard()">Reintentar conexión</button>
-            <span *ngIf="!dashboardError && ultimaActualizacion">Actualizado {{ultimaActualizacion}}</span>
-          </div>
+            <div class="mgx-health-side">
+              <span *ngIf="!dashboardError && ultimaActualizacion">Actualizado {{ultimaActualizacion}}</span>
+              <button *ngIf="dashboardError" type="button" (click)="reintentarDashboard()">Reintentar</button>
+            </div>
+          </section>
 
-          <section class="mg-kpis" aria-label="Resumen del gimnasio">
-            <button type="button" class="mg-kpi" (click)="cambiarSeccion('clientes')">
-              <span class="mg-kpi-icon">♙</span>
-              <div><small>SOCIOS ACTIVOS</small><strong>{{dashboard?.clientes?.activos ?? 0}}</strong><p>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos este mes</p></div>
-              <em>›</em>
+          <section class="mgx-kpis">
+            <button type="button" class="mgx-kpi" (click)="cambiarSeccion('clientes')">
+              <div class="mgx-kpi-top">
+                <span class="mgx-kpi-icon">♙</span>
+                <span class="mgx-kpi-arrow">›</span>
+              </div>
+              <small>Socios activos</small>
+              <strong>{{dashboard?.clientes?.activos ?? 0}}</strong>
+              <p>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos este mes</p>
             </button>
 
-            <button type="button" class="mg-kpi" (click)="cambiarSeccion('membresias')">
-              <span class="mg-kpi-icon">✦</span>
-              <div><small>MEMBRESÍAS</small><strong>{{dashboard?.membresias?.activas ?? 0}}</strong><p>{{dashboard?.membresias?.por_vencer_7_dias ?? 0}} por vencer</p></div>
-              <em>›</em>
+            <button type="button" class="mgx-kpi" (click)="cambiarSeccion('membresias')">
+              <div class="mgx-kpi-top">
+                <span class="mgx-kpi-icon">✦</span>
+                <span class="mgx-kpi-arrow">›</span>
+              </div>
+              <small>Membresías activas</small>
+              <strong>{{dashboard?.membresias?.activas ?? 0}}</strong>
+              <p>{{dashboard?.membresias?.por_vencer_7_dias ?? 0}} por vencer</p>
             </button>
 
-            <button type="button" class="mg-kpi" (click)="cambiarSeccion('asistencias')">
-              <span class="mg-kpi-icon">✓</span>
-              <div><small>DENTRO DEL GYM</small><strong>{{dashboard?.asistencias?.dentro_ahora ?? 0}}</strong><p>{{dashboard?.asistencias?.hoy ?? 0}} accesos hoy</p></div>
-              <em>›</em>
+            <button type="button" class="mgx-kpi" (click)="cambiarSeccion('reservas')">
+              <div class="mgx-kpi-top">
+                <span class="mgx-kpi-icon">◫</span>
+                <span class="mgx-kpi-arrow">›</span>
+              </div>
+              <small>Reservas hoy</small>
+              <strong>{{dashboard?.reservas?.hoy ?? 0}}</strong>
+              <p>Agenda de sesiones</p>
             </button>
 
-            <button type="button" class="mg-kpi" (click)="cambiarSeccion('reservas')">
-              <span class="mg-kpi-icon">◫</span>
-              <div><small>RESERVAS HOY</small><strong>{{dashboard?.reservas?.hoy ?? 0}}</strong><p>Agenda del día</p></div>
-              <em>›</em>
-            </button>
-
-            <button type="button" class="mg-kpi" (click)="cambiarSeccion('ventas')">
-              <span class="mg-kpi-icon">S/</span>
-              <div><small>VENTAS HOY</small><strong>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</strong><p>{{dashboard?.ventas?.hoy_cantidad ?? 0}} operaciones</p></div>
-              <em>›</em>
-            </button>
-
-            <button type="button" class="mg-kpi" (click)="cambiarSeccion('inventario')">
-              <span class="mg-kpi-icon">▦</span>
-              <div><small>STOCK BAJO</small><strong>{{dashboard?.inventario?.productos_stock_bajo ?? 0}}</strong><p>Productos por revisar</p></div>
-              <em>›</em>
+            <button type="button" class="mgx-kpi highlight" (click)="cambiarSeccion('ventas')">
+              <div class="mgx-kpi-top">
+                <span class="mgx-kpi-icon">S/</span>
+                <span class="mgx-kpi-arrow">›</span>
+              </div>
+              <small>Ventas de hoy</small>
+              <strong>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</strong>
+              <p>{{dashboard?.ventas?.hoy_cantidad ?? 0}} operaciones</p>
             </button>
           </section>
 
-          <section class="mg-dashboard-layout">
-            <div class="mg-dashboard-main">
-              <section class="mg-card mg-modules-card">
-                <header class="mg-section-head">
-                  <div>
-                    <span>GESTIÓN COMPLETA</span>
-                    <h2>Módulos del administrador</h2>
-                    <p>Cada acceso abre una función real del sistema. No hay botones de adorno.</p>
-                  </div>
-                  <strong>7 módulos · 26 áreas</strong>
-                </header>
-
-                <div class="mg-modules-grid">
-                  <article class="mg-module">
-                    <header><span>♙</span><div><b>Socios</b><small>Miembros y membresías</small></div></header>
-                    <div class="mg-module-actions">
-                      <button type="button" (click)="cambiarSeccion('clientes')">Clientes</button>
-                      <button type="button" (click)="cambiarSeccion('membresias')">Membresías</button>
-                      <button type="button" (click)="cambiarSeccion('pagos')">Pagos</button>
-                      <button type="button" (click)="cambiarSeccion('asistencias')">Asistencia</button>
-                      <button type="button" (click)="cambiarSeccion('planes')">Tarifas</button>
-                    </div>
-                  </article>
-
-                  <article class="mg-module">
-                    <header><span>◉</span><div><b>Servicios</b><small>Entrenamiento y agenda</small></div></header>
-                    <div class="mg-module-actions">
-                      <button type="button" (click)="cambiarSeccion('clases')">Clases</button>
-                      <button type="button" (click)="cambiarSeccion('reservas')">Reservas</button>
-                      <button type="button" (click)="cambiarSeccion('rutinas')">Rutinas</button>
-                      <button type="button" (click)="cambiarSeccion('entrenador')">Entrenador</button>
-                    </div>
-                  </article>
-
-                  <article class="mg-module">
-                    <header><span>▣</span><div><b>Caja y ventas</b><small>Operación financiera diaria</small></div></header>
-                    <div class="mg-module-actions">
-                      <button type="button" (click)="cambiarSeccion('caja')">Caja</button>
-                      <button type="button" (click)="cambiarSeccion('ventas')">Punto de venta</button>
-                      <button type="button" (click)="cambiarSeccion('historial-ventas')">Historial</button>
-                      <button type="button" (click)="cambiarSeccion('gastos')">Gastos</button>
-                    </div>
-                  </article>
-
-                  <article class="mg-module">
-                    <header><span>▦</span><div><b>Inventario</b><small>Productos y abastecimiento</small></div></header>
-                    <div class="mg-module-actions">
-                      <button type="button" (click)="cambiarSeccion('inventario')">Productos</button>
-                      <button type="button" (click)="cambiarSeccion('compras')">Compras</button>
-                      <button type="button" (click)="cambiarSeccion('proveedores')">Proveedores</button>
-                      <button type="button" (click)="cambiarSeccion('kardex')">Kardex</button>
-                      <button type="button" (click)="cambiarSeccion('categorias')">Categorías</button>
-                    </div>
-                  </article>
-
-                  <article class="mg-module">
-                    <header><span>●</span><div><b>Atención</b><small>Comunicación con socios</small></div></header>
-                    <div class="mg-module-actions">
-                      <button type="button" (click)="cambiarSeccion('soporte')">Soporte</button>
-                      <button type="button" (click)="cambiarSeccion('opiniones')">Opiniones</button>
-                      <button type="button" (click)="cambiarSeccion('comunicacion')">Notificaciones</button>
-                    </div>
-                  </article>
-
-                  <article class="mg-module">
-                    <header><span>↗</span><div><b>Reportes</b><small>Indicadores y análisis</small></div></header>
-                    <div class="mg-module-actions">
-                      <button type="button" (click)="cambiarSeccion('reportes')">Resumen</button>
-                      <button type="button" (click)="cambiarSeccion('reporte-asistencias')">Asistencias</button>
-                      <button type="button" (click)="exportarDashboardCsv()">Exportar CSV</button>
-                    </div>
-                  </article>
-
-                  <article class="mg-module">
-                    <header><span>⚙</span><div><b>Sistema</b><small>Seguridad y configuración</small></div></header>
-                    <div class="mg-module-actions">
-                      <button type="button" (click)="cambiarSeccion('usuarios')">Usuarios</button>
-                      <button type="button" (click)="cambiarSeccion('auditoria')">Auditoría</button>
-                      <button type="button" (click)="cambiarSeccion('configuracion')">Configuración</button>
-                    </div>
-                  </article>
+          <section class="mgx-main-grid">
+            <article class="mgx-panel mgx-operation">
+              <header class="mgx-panel-head">
+                <div>
+                  <span>RESUMEN DE HOY</span>
+                  <h2>Operación del gimnasio</h2>
+                  <p>Información que requiere atención durante el día.</p>
                 </div>
-              </section>
+                <button type="button" (click)="cambiarSeccion('reportes')">Ver reportes →</button>
+              </header>
 
-              <app-admin-dashboard-tools
-                [dashboard]="dashboard"
-                (irSeccion)="cambiarSeccion($event)">
-              </app-admin-dashboard-tools>
-            </div>
-
-            <aside class="mg-dashboard-side">
-              <section class="mg-card mg-quick-card">
-                <header class="mg-section-head compact">
-                  <div><span>ACCIONES RÁPIDAS</span><h2>Trabajo de hoy</h2></div>
-                </header>
-
-                <button type="button" class="mg-quick primary" (click)="abrirNuevoSocioDesdeDashboard()">
-                  <span>＋</span><div><b>Registrar socio</b><small>Crear miembro y acceso</small></div><em>›</em>
-                </button>
-
-                <button type="button" class="mg-quick" (click)="dashboard?.caja?.abierta ? cambiarSeccion('ventas') : cambiarSeccion('caja')">
-                  <span>▣</span>
-                  <div><b>{{dashboard?.caja?.abierta ? 'Nueva venta' : 'Abrir caja'}}</b><small>{{dashboard?.caja?.abierta ? 'Registrar productos vendidos' : 'Iniciar operación del día'}}</small></div>
+              <div class="mgx-operation-grid">
+                <button type="button" (click)="cambiarSeccion('asistencias')">
+                  <span class="mgx-op-icon">✓</span>
+                  <div><small>Dentro del gym</small><b>{{dashboard?.asistencias?.dentro_ahora ?? 0}}</b><p>{{dashboard?.asistencias?.hoy ?? 0}} accesos hoy</p></div>
                   <em>›</em>
                 </button>
 
-                <button type="button" class="mg-quick" (click)="cambiarSeccion('asistencias')">
-                  <span>✓</span><div><b>Registrar asistencia</b><small>Entrada o salida de socio</small></div><em>›</em>
+                <button type="button" (click)="cambiarSeccion('inventario')">
+                  <span class="mgx-op-icon">▦</span>
+                  <div><small>Stock bajo</small><b>{{dashboard?.inventario?.productos_stock_bajo ?? 0}}</b><p>Productos por revisar</p></div>
+                  <em>›</em>
                 </button>
 
-                <button type="button" class="mg-quick" (click)="cambiarSeccion('inventario')">
-                  <span>▦</span><div><b>Gestionar productos</b><small>Stock, imágenes y precios</small></div><em>›</em>
+                <button type="button" (click)="cambiarSeccion('clases')">
+                  <span class="mgx-op-icon">◉</span>
+                  <div><small>Clases activas</small><b>{{dashboard?.operacion?.clases_activas ?? 0}}</b><p>Programación vigente</p></div>
+                  <em>›</em>
                 </button>
-              </section>
 
-              <section class="mg-card mg-today-card">
-                <header class="mg-section-head compact">
-                  <div><span>ESTADO DE HOY</span><h2>Operación</h2></div>
-                  <span class="mg-cash-pill" [class.open]="dashboard?.caja?.abierta">{{dashboard?.caja?.abierta ? 'Caja abierta' : 'Caja cerrada'}}</span>
-                </header>
+                <button type="button" (click)="cambiarSeccion('rutinas')">
+                  <span class="mgx-op-icon">↗</span>
+                  <div><small>Rutinas activas</small><b>{{dashboard?.operacion?.rutinas_activas ?? 0}}</b><p>Seguimiento del entrenador</p></div>
+                  <em>›</em>
+                </button>
+              </div>
 
-                <div class="mg-today-row"><span>Clases activas</span><b>{{dashboard?.operacion?.clases_activas ?? 0}}</b></div>
-                <div class="mg-today-row"><span>Rutinas activas</span><b>{{dashboard?.operacion?.rutinas_activas ?? 0}}</b></div>
-                <div class="mg-today-row"><span>Entrenadores</span><b>{{dashboard?.operacion?.entrenadores_activos ?? 0}}</b></div>
-                <div class="mg-today-row"><span>Alertas pendientes</span><b>{{dashboard?.alertas?.total ?? 0}}</b></div>
-                <div class="mg-today-row total"><span>Ingresos del mes</span><b>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</b></div>
+              <div class="mgx-finance-strip">
+                <div>
+                  <span>Ingresos del mes</span>
+                  <b>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</b>
+                </div>
+                <div>
+                  <span>Estado de caja</span>
+                  <b [class.open]="dashboard?.caja?.abierta">{{dashboard?.caja?.abierta ? 'Abierta' : 'Cerrada'}}</b>
+                </div>
+                <div>
+                  <span>Alertas pendientes</span>
+                  <b>{{dashboard?.alertas?.total ?? 0}}</b>
+                </div>
+              </div>
+            </article>
 
-                <button type="button" class="mg-full-action" (click)="cambiarSeccion('reportes')">Ver reportes completos →</button>
-              </section>
+            <aside class="mgx-panel mgx-actions">
+              <header class="mgx-panel-head">
+                <div>
+                  <span>ACCESOS RÁPIDOS</span>
+                  <h2>Trabajo de hoy</h2>
+                  <p>Acciones frecuentes del administrador.</p>
+                </div>
+              </header>
+
+              <button type="button" class="mgx-action primary" (click)="abrirNuevoSocioDesdeDashboard()">
+                <span>＋</span><div><b>Registrar socio</b><small>Crear miembro y acceso</small></div><em>›</em>
+              </button>
+
+              <button type="button" class="mgx-action" (click)="dashboard?.caja?.abierta ? cambiarSeccion('ventas') : cambiarSeccion('caja')">
+                <span>▣</span><div><b>{{dashboard?.caja?.abierta ? 'Nueva venta' : 'Abrir caja'}}</b><small>{{dashboard?.caja?.abierta ? 'Registrar una operación' : 'Iniciar jornada de ventas'}}</small></div><em>›</em>
+              </button>
+
+              <button type="button" class="mgx-action" (click)="cambiarSeccion('asistencias')">
+                <span>✓</span><div><b>Registrar asistencia</b><small>Entrada o salida del socio</small></div><em>›</em>
+              </button>
+
+              <button type="button" class="mgx-action" (click)="cambiarSeccion('reservas')">
+                <span>◫</span><div><b>Gestionar reservas</b><small>Agenda y disponibilidad</small></div><em>›</em>
+              </button>
             </aside>
           </section>
 
-          <div *ngIf="dashboardCargando && !dashboard" class="mg-loading">
-            <span></span><div><b>Cargando información...</b><small>Consultando Laravel y MySQL.</small></div>
+          <section class="mgx-panel mgx-modules">
+            <header class="mgx-panel-head modules-head">
+              <div>
+                <span>GESTIÓN DEL SISTEMA</span>
+                <h2>Módulos administrativos</h2>
+                <p>Todas las funciones principales siguen disponibles, pero ordenadas por área.</p>
+              </div>
+              <strong>26 áreas funcionales</strong>
+            </header>
+
+            <div class="mgx-module-grid">
+              <article class="mgx-module">
+                <header><span>♙</span><div><b>Socios</b><small>Clientes y membresías</small></div></header>
+                <nav>
+                  <button (click)="cambiarSeccion('clientes')">Clientes</button>
+                  <button (click)="cambiarSeccion('membresias')">Membresías</button>
+                  <button (click)="cambiarSeccion('pagos')">Pagos</button>
+                  <button (click)="cambiarSeccion('asistencias')">Asistencia</button>
+                  <button (click)="cambiarSeccion('planes')">Tarifas</button>
+                </nav>
+              </article>
+
+              <article class="mgx-module">
+                <header><span>◉</span><div><b>Servicios</b><small>Entrenamiento y agenda</small></div></header>
+                <nav>
+                  <button (click)="cambiarSeccion('clases')">Clases</button>
+                  <button (click)="cambiarSeccion('reservas')">Reservas</button>
+                  <button (click)="cambiarSeccion('rutinas')">Rutinas</button>
+                  <button (click)="cambiarSeccion('entrenador')">Entrenador</button>
+                </nav>
+              </article>
+
+              <article class="mgx-module">
+                <header><span>▣</span><div><b>Caja y ventas</b><small>Operación financiera</small></div></header>
+                <nav>
+                  <button (click)="cambiarSeccion('caja')">Caja</button>
+                  <button (click)="cambiarSeccion('ventas')">Punto de venta</button>
+                  <button (click)="cambiarSeccion('historial-ventas')">Historial</button>
+                  <button (click)="cambiarSeccion('gastos')">Gastos</button>
+                </nav>
+              </article>
+
+              <article class="mgx-module">
+                <header><span>▦</span><div><b>Inventario</b><small>Productos y abastecimiento</small></div></header>
+                <nav>
+                  <button (click)="cambiarSeccion('inventario')">Productos</button>
+                  <button (click)="cambiarSeccion('compras')">Compras</button>
+                  <button (click)="cambiarSeccion('proveedores')">Proveedores</button>
+                  <button (click)="cambiarSeccion('kardex')">Kardex</button>
+                  <button (click)="cambiarSeccion('categorias')">Categorías</button>
+                </nav>
+              </article>
+
+              <article class="mgx-module">
+                <header><span>●</span><div><b>Atención</b><small>Comunicación con socios</small></div></header>
+                <nav>
+                  <button (click)="cambiarSeccion('soporte')">Soporte</button>
+                  <button (click)="cambiarSeccion('opiniones')">Opiniones</button>
+                  <button (click)="cambiarSeccion('comunicacion')">Notificaciones</button>
+                </nav>
+              </article>
+
+              <article class="mgx-module">
+                <header><span>↗</span><div><b>Reportes y sistema</b><small>Análisis y administración</small></div></header>
+                <nav>
+                  <button (click)="cambiarSeccion('reportes')">Reportes</button>
+                  <button (click)="cambiarSeccion('reporte-asistencias')">Asistencias</button>
+                  <button (click)="cambiarSeccion('usuarios')">Usuarios</button>
+                  <button (click)="cambiarSeccion('auditoria')">Auditoría</button>
+                  <button (click)="cambiarSeccion('configuracion')">Configuración</button>
+                </nav>
+              </article>
+            </div>
+          </section>
+
+          <section class="mgx-panel mgx-advanced">
+            <div class="mgx-advanced-copy">
+              <span class="mgx-advanced-icon">⌁</span>
+              <div>
+                <b>Análisis y revisión avanzada</b>
+                <small>Indicadores detallados, prioridades, actividad del portal y herramientas de validación.</small>
+              </div>
+            </div>
+            <button type="button" (click)="mostrarAnalisisAvanzado=!mostrarAnalisisAvanzado">
+              {{mostrarAnalisisAvanzado ? 'Ocultar herramientas' : 'Abrir herramientas'}}
+              <span>{{mostrarAnalisisAvanzado ? '⌃' : '⌄'}}</span>
+            </button>
+          </section>
+
+          <div class="mgx-advanced-content" *ngIf="mostrarAnalisisAvanzado">
+            <app-admin-dashboard-tools
+              [dashboard]="dashboard"
+              (irSeccion)="cambiarSeccion($event)">
+            </app-admin-dashboard-tools>
+          </div>
+
+          <div *ngIf="dashboardCargando && !dashboard" class="mgx-loading">
+            <span></span><div><b>Cargando panel...</b><small>Consultando información del gimnasio.</small></div>
           </div>
         </section>
       </ng-container>
@@ -1906,6 +1959,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   dashboardError = '';
   autoRefreshActivo = true;
   busquedaAdmin = '';
+  mostrarAnalisisAvanzado = false;
   private autoRefreshId: any = null;
 
   diasSemana = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
