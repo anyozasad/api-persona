@@ -431,7 +431,6 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <article><h2>Enterprise</h2><h3>S/ 120 <small>Per Month</small></h3><b>150 Credits</b><ul><li>✓ Gym access</li><li>✓ Workout sessions</li><li>✓ Dedicated Trainer</li><li>✓ Member support</li><li>✓ Analytics Dashboard</li></ul><button>Select Plan</button></article>
           </ng-container>
         </section>
-        <button class="cf-live-manage" (click)="seccion='planes-admin'">Manage Plans</button>
       </section>
 
       <section class="cf-live-page" *ngIf="seccion==='pagos'">
@@ -445,7 +444,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </section>
 
-      <section class="cf-universal-module" *ngIf="seccion!=='dashboard' && !['reportes','rutinas','nutricion','asistencias','entrenador','planes','pagos'].includes(seccion) && !extraModules.includes(seccion)">
+      <section class="cf-universal-module" *ngIf="seccion!=='dashboard' && !['reportes','rutinas','nutricion','asistencias','entrenador','planes','pagos'].includes(seccion) && !extraModules.includes(seccion) && !suiteModules.includes(seccion)">
         <div class="cf-special-crumb">
           <span>⌂</span><small>Inicio</small><b>›</b><strong>{{tituloActual}}</strong>
           <em>{{estadoModuloActual}}</em>
