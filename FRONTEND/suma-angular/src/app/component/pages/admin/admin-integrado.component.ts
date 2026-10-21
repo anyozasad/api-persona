@@ -14,7 +14,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
   selector: 'app-admin-integrado',
   standalone: true,
   imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminDashboardToolsComponent, AdminGymSuiteComponent],
-  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css'],
+  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css', '../crossfit-final.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
   <div class="admin-shell" [class.admin-sidebar-collapsed]="sidebarCerrado" [class.admin-home-redesign]="seccion==='dashboard'">
@@ -243,7 +243,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
               <small>Inicio</small>
               <b>›</b>
               <strong>Mi Dashboard</strong>
-              <em>{{dashboard?.periodo?.fecha || ''}}</em>
+              <em class="cf-goal">Meta semanal: {{progresoSemanal()}}%</em>
             </section>
 
             <section class="crossfit-welcome-card">
@@ -270,16 +270,66 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
               </div>
 
               <div class="crossfit-welcome-art" aria-hidden="true">
-                <span class="sun"></span>
-                <span class="cloud cloud-a"></span>
-                <span class="cloud cloud-b"></span>
-                <div class="city">
-                  <i></i><i></i><i></i><i></i><i></i>
-                </div>
-                <div class="ground"></div>
-                <div class="bike bike-a"><span></span><span></span><b></b><i class="rider"><u></u></i></div>
-                <div class="bike bike-b"><span></span><span></span><b></b><i class="rider rider-two"><u></u></i></div>
-                <div class="bike bike-c"><span></span><span></span><b></b><i class="rider rider-three"><u></u></i></div>
+                <svg class="cf-hero-svg" viewBox="0 0 760 430" preserveAspectRatio="xMidYMid meet">
+                  <defs>
+                    <linearGradient id="cfSky" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#fbfbff"/>
+                      <stop offset="100%" stop-color="#f4f3ff"/>
+                    </linearGradient>
+                    <linearGradient id="cfHill" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="#b7dda7"/>
+                      <stop offset="100%" stop-color="#91c884"/>
+                    </linearGradient>
+                  </defs>
+                  <rect width="760" height="430" fill="url(#cfSky)"/>
+                  <path d="M54 168c64-92 164-117 267-86 81 24 101 101 189 98 70-2 121-44 183-9v62H54z" fill="#efedff"/>
+                  <circle cx="623" cy="102" r="39" fill="#ffa319"/>
+                  <g fill="#d9d7f4">
+                    <rect x="355" y="190" width="55" height="138" rx="2"/>
+                    <rect x="420" y="166" width="68" height="162" rx="2"/>
+                    <rect x="501" y="208" width="52" height="120" rx="2"/>
+                    <rect x="568" y="176" width="66" height="152" rx="2"/>
+                    <rect x="648" y="218" width="46" height="110" rx="2"/>
+                  </g>
+                  <g fill="#f0effb">
+                    <path d="M355 212h55v11h-55zM355 239h55v11h-55zM355 266h55v11h-55zM355 293h55v11h-55z"/>
+                    <path d="M420 190h68v12h-68zM420 218h68v12h-68zM420 246h68v12h-68zM420 274h68v12h-68z"/>
+                    <path d="M501 232h52v11h-52zM501 258h52v11h-52zM501 284h52v11h-52z"/>
+                    <path d="M568 200h66v12h-66zM568 228h66v12h-66zM568 256h66v12h-66zM568 284h66v12h-66z"/>
+                    <path d="M648 240h46v10h-46zM648 264h46v10h-46zM648 288h46v10h-46z"/>
+                  </g>
+                  <path d="M0 337c112-72 240-70 366-32 140 42 274 15 394 0v125H0z" fill="url(#cfHill)"/>
+                  <g transform="translate(70 250)">
+                    <circle cx="44" cy="92" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
+                    <circle cx="160" cy="92" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
+                    <path d="M44 92l50-48 34 48H76l38-65 46 65" fill="none" stroke="#f28a3a" stroke-width="6" stroke-linejoin="round"/>
+                    <path d="M101 23l31 10" stroke="#2d3157" stroke-width="5" stroke-linecap="round"/>
+                    <circle cx="106" cy="9" r="12" fill="#2f3358"/>
+                    <path d="M99 24c15 15 20 27 18 43" fill="none" stroke="#ff9349" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M115 48l34 12" stroke="#ff9349" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M112 64l-18 40M119 66l28 36" stroke="#334e95" stroke-width="8" stroke-linecap="round"/>
+                  </g>
+                  <g transform="translate(285 238) scale(.94)">
+                    <circle cx="44" cy="92" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
+                    <circle cx="160" cy="92" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
+                    <path d="M44 92l50-48 34 48H76l38-65 46 65" fill="none" stroke="#f28a3a" stroke-width="6" stroke-linejoin="round"/>
+                    <path d="M101 23l31 10" stroke="#2d3157" stroke-width="5" stroke-linecap="round"/>
+                    <circle cx="106" cy="9" r="12" fill="#2f3358"/>
+                    <path d="M99 24c15 15 20 27 18 43" fill="none" stroke="#6d62e7" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M115 48l34 12" stroke="#6d62e7" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M112 64l-18 40M119 66l28 36" stroke="#334e95" stroke-width="8" stroke-linecap="round"/>
+                  </g>
+                  <g transform="translate(490 258) scale(.78)">
+                    <circle cx="44" cy="92" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
+                    <circle cx="160" cy="92" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
+                    <path d="M44 92l50-48 34 48H76l38-65 46 65" fill="none" stroke="#f28a3a" stroke-width="6" stroke-linejoin="round"/>
+                    <path d="M101 23l31 10" stroke="#2d3157" stroke-width="5" stroke-linecap="round"/>
+                    <circle cx="106" cy="9" r="12" fill="#2f3358"/>
+                    <path d="M99 24c15 15 20 27 18 43" fill="none" stroke="#ff9f43" stroke-width="12" stroke-linecap="round"/>
+                    <path d="M115 48l34 12" stroke="#ff9f43" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M112 64l-18 40M119 66l28 36" stroke="#334e95" stroke-width="8" stroke-linecap="round"/>
+                  </g>
+                </svg>
               </div>
             </section>
 
@@ -2328,6 +2378,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(t==='inventario')return '!';
     if(t==='membresias')return '✦';
     return '●';
+  }
+
+  progresoSemanal():number{
+    const total=(this.dashboard?.tendencias?.asistencias_7_dias||[])
+      .reduce((sum:number,x:any)=>sum+Number(x?.total||0),0);
+    const objetivo=35;
+    return Math.max(0,Math.min(100,Math.round((total/objetivo)*100)));
   }
 
   alturaAsistenciaSemana(total:any):number{
