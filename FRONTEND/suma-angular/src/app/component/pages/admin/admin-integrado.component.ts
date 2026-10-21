@@ -119,7 +119,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
     </button>
 
     <main class="admin-content">
-      <header class="admin-header" *ngIf="seccion!=='dashboard'">
+      <header class="admin-header" *ngIf="seccion!=='dashboard' && !suiteModules.includes(seccion)">
         <div class="admin-title-block">
           <span class="admin-title-kicker">MALLQUI GYM · ADMIN</span>
           <h1>{{tituloActual}}</h1>
