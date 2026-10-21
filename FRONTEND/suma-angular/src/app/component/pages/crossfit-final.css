@@ -1466,3 +1466,566 @@
     display:none!important;
   }
 }
+
+
+/* BESPOKE CROSSFIT PAGES · REPORTS WORKOUT DIET */
+.cf-special-page{
+  margin:0 -24px 18px!important;
+  background:var(--cf-page)!important;
+}
+.cf-special-crumb{
+  min-height:49px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 30px;
+  background:linear-gradient(90deg,#5550d6,#5f5ae1);
+  color:#fff;
+}
+.cf-special-crumb span{font-size:15px}
+.cf-special-crumb small{font-size:9px;color:#dbd9ff}
+.cf-special-crumb b{font-size:14px;color:#cbc8f5}
+.cf-special-crumb strong{font-size:10px;color:#fff}
+.cf-special-crumb em{
+  margin-left:auto;
+  min-width:155px;
+  min-height:27px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 12px;
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:4px;
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  font-size:8px;
+  font-style:normal;
+}
+
+/* REPORTS */
+.cf-reports-hero{
+  min-height:265px;
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(380px,.85fr);
+  overflow:hidden;
+  margin:0 24px;
+  border-radius:0 0 11px 11px;
+  background:#fff;
+  box-shadow:0 5px 15px rgba(76,72,126,.04);
+}
+.cf-reports-copy{
+  padding:34px 34px 25px;
+}
+.cf-reports-copy>span{
+  color:#5b56dd;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+.cf-reports-copy h1{
+  margin:4px 0 4px;
+  color:#2c2b3a;
+  font-size:28px;
+  font-weight:750;
+}
+.cf-reports-copy>p{
+  margin:0;
+  color:#747888;
+  font-size:10px;
+}
+.cf-report-pills{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-top:32px;
+}
+.cf-report-pills article{
+  min-width:0;
+  min-height:70px;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  align-items:center;
+  gap:8px;
+  padding:9px 11px;
+  border:1px solid #e9e8f1;
+  border-radius:999px;
+  background:#fff;
+  box-shadow:0 5px 14px rgba(75,70,126,.035);
+}
+.cf-report-pills i{
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#f0efff;
+  color:#5c57dd;
+  font-size:12px;
+  font-style:normal;
+  font-weight:900;
+}
+.cf-report-pills article:nth-child(2) i{background:#eaf8f2;color:#45a97d}
+.cf-report-pills article:nth-child(3) i{background:#fff0e7;color:#e99041}
+.cf-report-pills article:nth-child(4) i{background:#f3efff;color:#7c72e6}
+.cf-report-pills div{min-width:0;display:flex;flex-direction:column}
+.cf-report-pills b{
+  overflow:hidden;
+  color:#5551d9;
+  font-size:16px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.cf-report-pills small{
+  margin-top:2px;
+  overflow:hidden;
+  color:#858999;
+  font-size:7.5px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.cf-reports-art{
+  min-height:265px;
+  overflow:hidden;
+  background:#f7f6ff;
+}
+.cf-reports-art svg{width:100%;height:100%;display:block}
+.cf-report-charts{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+  margin:16px 24px 0;
+}
+.cf-report-charts>article{
+  min-height:250px;
+  padding:17px;
+  border:1px solid #e7e7ef;
+  border-radius:10px;
+  background:#fff;
+  box-shadow:0 4px 13px rgba(75,70,126,.025);
+}
+.cf-report-charts header{
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) auto;
+  align-items:start;
+  gap:9px;
+}
+.cf-report-charts header>span{
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:#f0efff;
+  color:#5b56dd;
+  font-weight:900;
+}
+.cf-report-charts header div{min-width:0}
+.cf-report-charts h3{margin:0;color:#2d2c3b;font-size:13px}
+.cf-report-charts p{margin:3px 0 0;color:#8e92a0;font-size:8px}
+.cf-report-charts header>b{
+  color:#5b56dd;
+  font-size:9px;
+  white-space:nowrap;
+}
+.cf-mini-bars{
+  height:142px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:28px;
+  padding:0 8px;
+}
+.cf-mini-bars i{
+  flex:1;
+  min-height:12%;
+  max-width:28px;
+  border-radius:7px 7px 0 0;
+  background:#d8d6f5;
+}
+.cf-mini-bars i:nth-child(2n){background:#c6c3f0}
+.cf-mini-bars.purple i:nth-child(4){background:#6c66e7}
+.cf-line-chart{
+  width:100%;
+  height:145px;
+  margin-top:26px;
+  overflow:visible;
+}
+
+/* WORKOUT */
+.cf-workout-hero{
+  min-height:330px;
+  display:grid;
+  grid-template-columns:minmax(0,1.08fr) minmax(410px,.92fr);
+  overflow:hidden;
+  margin:0 24px;
+  border-radius:0 0 11px 11px;
+  background:#fff;
+  box-shadow:0 5px 15px rgba(76,72,126,.04);
+}
+.cf-workout-hero>div:first-child{
+  padding:34px 34px 20px;
+}
+.cf-workout-hero h1{
+  margin:0;
+  color:#2d2c3b;
+  font-size:27px;
+}
+.cf-workout-hero>div:first-child>p{
+  margin:5px 0 0;
+  color:#626675;
+  font-size:10px;
+}
+.cf-workout-week{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+  margin-top:23px;
+}
+.cf-workout-week div{display:flex;flex-direction:column}
+.cf-workout-week b{color:#2d2c3b;font-size:11px}
+.cf-workout-week small{margin-top:5px;color:#858999;font-size:8px}
+.cf-workout-week>strong{
+  color:#5b56dd;
+  font-size:9px;
+}
+.cf-workout-bars{
+  height:125px;
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  align-items:end;
+  gap:22px;
+  margin-top:12px;
+  padding:0 12px;
+}
+.cf-workout-bars i{
+  min-height:14%;
+  border-radius:7px 7px 0 0;
+  background:#8f89ea;
+}
+.cf-workout-bars i:nth-child(odd){background:#6d67e2}
+.cf-workout-bars i:nth-child(5),
+.cf-workout-bars i:nth-child(7){background:#c7c4f4}
+.cf-workout-hero footer{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:11px;
+  color:#777b8a;
+  font-size:8px;
+}
+.cf-workout-hero footer b{
+  color:#5d58dc;
+}
+.cf-workout-art{
+  min-height:330px;
+  background:#f8f7ff;
+}
+.cf-workout-art svg{width:100%;height:100%;display:block}
+.cf-workout-tabs{
+  min-height:58px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:16px 24px 0;
+  padding:7px 14px;
+  border:1px solid #e7e7ef;
+  border-radius:10px;
+  background:#fff;
+}
+.cf-workout-tabs button{
+  min-height:37px;
+  padding:0 15px;
+  border:0;
+  border-radius:7px;
+  background:transparent;
+  color:#625edb;
+  font-size:9px;
+  cursor:pointer;
+}
+.cf-workout-tabs button.active{
+  background:#5b56dd;
+  color:#fff;
+}
+.cf-workout-cards{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+  margin:14px 24px 0;
+}
+.cf-workout-cards article{
+  min-height:190px;
+  overflow:hidden;
+  border:1px solid #e7e7ef;
+  border-radius:10px;
+  background:#fff;
+}
+.cf-exercise-art{
+  min-height:118px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#f3f1ff,#ebe9fb);
+}
+.cf-exercise-art span{font-size:48px}
+.cf-workout-cards article>div:last-child{padding:13px 14px}
+.cf-workout-cards h3{margin:0;color:#2d2c3b;font-size:12px}
+.cf-workout-cards p{margin:4px 0 5px;color:#7e8292;font-size:8px}
+.cf-workout-cards small{color:#5b56dd;font-size:8px}
+
+/* DIET */
+.cf-diet-top{
+  display:grid;
+  grid-template-columns:minmax(0,1.4fr) 310px;
+  gap:14px;
+  margin:0 24px;
+}
+.cf-diet-hero,
+.cf-diet-progress,
+.cf-diet-lower>article{
+  border:1px solid #e7e7ef;
+  border-radius:10px;
+  background:#fff;
+  box-shadow:0 4px 13px rgba(75,70,126,.025);
+}
+.cf-diet-hero{
+  position:relative;
+  min-height:255px;
+  overflow:hidden;
+  padding:30px 32px;
+  background:
+    radial-gradient(circle at 80% 35%,rgba(232,229,255,.9),transparent 30%),
+    #fff;
+}
+.cf-diet-hero:after{
+  content:'';
+  position:absolute;
+  right:-30px;
+  bottom:-60px;
+  width:330px;
+  height:160px;
+  border-radius:50%;
+  background:#9dcb8b;
+  opacity:.75;
+}
+.cf-diet-hero h1{
+  position:relative;
+  z-index:2;
+  margin:0;
+  color:#2d2c3b;
+  font-size:27px;
+}
+.cf-diet-hero>p{
+  position:relative;
+  z-index:2;
+  margin:6px 0 0;
+  color:#676b79;
+  font-size:10px;
+}
+.cf-meal-count{
+  position:absolute;
+  right:28px;
+  top:30px;
+  z-index:3;
+  min-height:25px;
+  display:inline-flex;
+  align-items:center;
+  padding:0 9px;
+  border-radius:4px;
+  background:#5b56dd;
+  color:#fff;
+  font-size:8px;
+  font-weight:800;
+}
+.cf-meal-row{
+  position:relative;
+  z-index:3;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-top:63px;
+}
+.cf-meal-row article{
+  min-width:0;
+  min-height:70px;
+  display:grid;
+  grid-template-columns:44px minmax(0,1fr) auto;
+  align-items:center;
+  gap:9px;
+  padding:9px 11px;
+  border-radius:12px;
+  background:#f5f3ff;
+}
+.cf-meal-row>article>span{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#fff;
+  font-size:22px;
+}
+.cf-meal-row div{min-width:0;display:flex;flex-direction:column}
+.cf-meal-row b{
+  overflow:hidden;
+  color:#2d2c3b;
+  font-size:10px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.cf-meal-row small{
+  margin-top:3px;
+  overflow:hidden;
+  color:#777c8b;
+  font-size:7.5px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.cf-meal-row em{
+  color:#5b56dd;
+  font-size:7px;
+  font-style:normal;
+}
+.cf-diet-progress{
+  min-height:255px;
+  padding:18px;
+}
+.cf-diet-progress header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+.cf-diet-progress h2{margin:0;color:#2d2c3b;font-size:15px}
+.cf-diet-progress header span{color:#878b99;font-size:8px}
+.cf-diet-bars{
+  height:118px;
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  align-items:end;
+  gap:10px;
+  margin:20px 4px 0;
+}
+.cf-diet-bars i{
+  min-height:20%;
+  border-radius:5px 5px 0 0;
+  background:#a4a0f0;
+}
+.cf-diet-bars i:first-child{background:#6b65e2}
+.cf-diet-progress>b{
+  display:inline-block;
+  margin-top:18px;
+  color:#5b56dd;
+  font-size:11px;
+}
+.cf-diet-progress>p{
+  display:inline;
+  margin-left:4px;
+  color:#737887;
+  font-size:8px;
+}
+.cf-diet-lower{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin:14px 24px 0;
+}
+.cf-diet-lower>article{
+  min-height:190px;
+  padding:16px;
+}
+.cf-diet-lower header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+.cf-diet-lower h2{margin:0;color:#2d2c3b;font-size:14px}
+.cf-diet-lower header span{color:#ff8c80}
+.cf-diet-list{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+.cf-diet-list>div{
+  min-height:88px;
+  display:grid;
+  grid-template-columns:48px minmax(0,1fr) auto;
+  align-items:center;
+  gap:9px;
+  padding:10px;
+  border:1px solid #e8e8ef;
+  border-radius:9px;
+}
+.cf-diet-list>div>span{
+  width:46px;
+  height:46px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#f1f0ff;
+  font-size:23px;
+}
+.cf-diet-list>div>div{display:flex;min-width:0;flex-direction:column}
+.cf-diet-list b{color:#2d2c3b;font-size:10px}
+.cf-diet-list small{margin-top:3px;color:#888c9b;font-size:7.5px}
+.cf-diet-list em{color:#5b56dd;font-size:7px;font-style:normal}
+
+/* Hide common tabs above bespoke visual pages; original functionality remains below. */
+.cf-special-page + .cf-module-hero{display:none!important}
+
+/* Existing functional blocks under the bespoke page get breathing room. */
+.cf-reports-special ~ .admin-module-tabs,
+.cf-workout-special ~ .admin-module-tabs,
+.cf-diet-special ~ .admin-module-tabs{
+  margin-left:0!important;
+  margin-right:0!important;
+}
+
+/* The old report KPI strip would duplicate the new report design. */
+.cf-reports-special ~ .report-grid{
+  display:none!important;
+}
+
+@media(max-width:1200px){
+  .cf-report-pills{grid-template-columns:1fr 1fr}
+  .cf-report-charts{grid-template-columns:1fr 1fr}
+  .cf-workout-hero{grid-template-columns:1fr 330px}
+  .cf-workout-bars{gap:12px}
+  .cf-diet-top{grid-template-columns:1fr 280px}
+  .cf-meal-row{grid-template-columns:1fr}
+  .cf-diet-hero{min-height:360px}
+}
+@media(max-width:900px){
+  .cf-reports-hero,
+  .cf-workout-hero{grid-template-columns:1fr}
+  .cf-reports-art,
+  .cf-workout-art{min-height:220px}
+  .cf-report-charts{grid-template-columns:1fr 1fr}
+  .cf-workout-cards{grid-template-columns:1fr 1fr}
+  .cf-diet-top{grid-template-columns:1fr}
+  .cf-diet-lower{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .cf-special-page{margin-left:-12px!important;margin-right:-12px!important}
+  .cf-special-crumb{padding:0 14px}
+  .cf-special-crumb em{display:none}
+  .cf-reports-hero,
+  .cf-workout-hero,
+  .cf-diet-top,
+  .cf-report-charts,
+  .cf-workout-tabs,
+  .cf-workout-cards,
+  .cf-diet-lower{
+    margin-left:12px!important;
+    margin-right:12px!important;
+  }
+  .cf-report-pills,
+  .cf-report-charts,
+  .cf-workout-cards,
+  .cf-diet-list{
+    grid-template-columns:1fr;
+  }
+  .cf-reports-art,
+  .cf-workout-art{display:none}
+  .cf-workout-tabs{overflow-x:auto}
+}
