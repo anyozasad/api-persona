@@ -43,6 +43,22 @@ interface ExtraConfig {
 
     <ng-container [ngSwitch]="section">
 
+      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'trainer-profile'">
+        <article class="cfx-card cfx-profile-card" *ngIf="trainers[0] as t; else noTrainer">
+          <div class="cfx-avatar large">{{(t.nombres||'E').charAt(0)}}{{(t.apellidos||'').charAt(0)}}</div>
+          <h2>{{t.nombres}} {{t.apellidos}}</h2>
+          <p>{{t.especialidad || 'Entrenador principal'}}</p>
+          <div class="cfx-badges"><span>{{t.estado||'Activo'}}</span><span class="success">Mallqui Gym</span></div>
+        </article>
+        <ng-template #noTrainer><article class="cfx-card cfx-empty-page"><span class="cfx-big-icon">♙</span><h2>Sin entrenador registrado</h2><p>Registra el entrenador principal desde el módulo Trainers.</p></article></ng-template>
+        <article class="cfx-card">
+          <header><div><span>TRAINER PROFILE</span><h2>Información profesional</h2></div></header>
+          <div class="cfx-info" *ngIf="trainers[0] as t">
+            <p><b>DNI</b><span>{{t.dni||'—'}}</span></p><p><b>Correo</b><span>{{t.correo||'—'}}</span></p><p><b>Teléfono</b><span>{{t.telefono||'—'}}</span></p><p><b>Especialidad</b><span>{{t.especialidad||'—'}}</span></p><p><b>Clases</b><span>{{t.clases_count||0}}</span></p><p><b>Rutinas</b><span>{{t.rutinas_count||0}}</span></p>
+          </div>
+        </article>
+      </section>
+
       <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'members-list'">
         <article class="cfx-card">
           <header><div><span>MEMBERS LIST</span><h2>Lista de socios</h2></div><button (click)="loadMembers()">↻ Actualizar</button></header>
@@ -389,6 +405,7 @@ interface ExtraConfig {
 export class AdminCrossfitExtrasComponent implements OnChanges {
   @Input() section = 'tables';
 
+  trainers:any[] = [];
   members:any[] = [];
   invoices:any[] = [];
   memberSearch = '';
@@ -446,6 +463,7 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
   ];
 
   configs:Record<string,ExtraConfig> = {
+    'trainer-profile':{title:'Trainer Profile',subtitle:'Perfil profesional del entrenador principal de Mallqui Gym.',icon:'♙',group:'Trainer'},
     'members-list':{title:'Members List',subtitle:'Listado real de socios registrados en Mallqui Gym.',icon:'♚',group:'Members'},
     'add-member':{title:'Add Member',subtitle:'Registro real de nuevos socios.',icon:'＋',group:'Members'},
     'edit-member':{title:'Edit Member',subtitle:'Edición real de datos de socios.',icon:'✎',group:'Members'},
@@ -502,10 +520,12 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
   constructor(private api: AdminApiService) {}
 
   ngOnChanges():void {
+    if(this.section==='trainer-profile') this.loadTrainers();
     if(['members-list','add-member','edit-member'].includes(this.section)) this.loadMembers();
     if(['invoices-list','add-invoice','edit-invoice'].includes(this.section)) this.loadInvoices();
   }
 
+  loadTrainers(){ this.api.entrenadores().subscribe({next:r=>this.trainers=Array.isArray(r)?r:[],error:()=>this.trainers=[]}); }
   loadMembers(){ this.api.clientes().subscribe({next:r=>this.members=Array.isArray(r)?r:[],error:()=>this.members=[]}); }
   get filteredMembers():any[] {
     const q=this.memberSearch.trim().toLowerCase();
