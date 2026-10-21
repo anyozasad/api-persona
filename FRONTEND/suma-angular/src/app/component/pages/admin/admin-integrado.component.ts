@@ -2527,11 +2527,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
           {label:'Caja',value:this.dashboard?.caja?.abierta?'Abierta':'Cerrada',icon:'▣'}
         ];
       case 'nutricion':
-        this.api.gymRegistros('nutricion').subscribe({
-          next:(r:any[])=>this.nutricionPreview=Array.isArray(r)?r:[],
-          error:()=>this.nutricionPreview=[]
-        });
-        break;
       case 'equipos':
       case 'eventos':
       case 'galeria':
@@ -2864,6 +2859,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.cargarDashboard();
         break;
       case 'nutricion':
+        this.api.gymRegistros('nutricion').subscribe({
+          next:(r:any[])=>this.nutricionPreview=Array.isArray(r)?r:[],
+          error:()=>this.nutricionPreview=[]
+        });
+        break;
       case 'equipos':
       case 'eventos':
       case 'galeria':
