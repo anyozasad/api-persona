@@ -165,7 +165,7 @@ interface ExtraConfig {
       </section>
 
       <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'add-invoice'">
-        <article class="cfx-card"><header><div><span>ADD INVOICE</span><h2>Agregar factura</h2></div></header><div class="cfx-form">
+        <article class="cfx-card"><header><div><span>{{section==='create-invoice'?'CREATE INVOICE':'ADD INVOICE'}}</span><h2>{{section==='create-invoice'?'Crear factura':'Agregar factura'}}</h2></div></header><div class="cfx-form">
           <label>Cliente / comprobante<input [(ngModel)]="invoiceForm.titulo"></label><label>Concepto<input [(ngModel)]="invoiceForm.subtitulo"></label><label>Fecha<input type="date" [(ngModel)]="invoiceForm.fecha"></label><label>Total<input type="number" min="0" step="0.01" [(ngModel)]="invoiceForm.monto"></label><label>Estado<select [(ngModel)]="invoiceForm.estado"><option>Emitida</option><option>Pagada</option><option>Pendiente</option><option>Anulada</option></select></label>
           <button class="primary" (click)="saveInvoice()" [disabled]="savingInvoice">Crear factura</button><small *ngIf="invoiceMessage">{{invoiceMessage}}</small>
         </div></article>
@@ -457,13 +457,31 @@ interface ExtraConfig {
         <article class="cfx-card cfx-auth"><h2>Reset Password</h2><p>Actualización de la contraseña de acceso.</p><div class="cfx-form"><label>Nueva contraseña<input type="password" [(ngModel)]="resetForm.password"></label><label>Confirmar contraseña<input type="password" [(ngModel)]="resetForm.confirm"></label><button class="primary" (click)="previewResetPassword()">Restablecer contraseña</button><small *ngIf="authMessage">{{authMessage}}</small></div></article>
       </section>
 
-      <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'page-not-found'"><article class="cfx-card cfx-empty-page"><strong>404</strong><h2>Página no encontrada</h2><p>La ruta solicitada no existe.</p><button class="primary">Volver al dashboard</button></article></section>
+      <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'page-not-found'"><article class="cfx-card cfx-empty-page"><strong>404</strong><h2>Página no encontrada</h2><p>La ruta solicitada no existe.</p><button class="primary" (click)="goAdmin()">Volver al dashboard</button></article></section>
 
       <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'maintenance'"><article class="cfx-card cfx-empty-page"><span class="cfx-big-icon">⚙</span><h2>Sistema en mantenimiento</h2><p>Página de mantenimiento del panel.</p><div class="cfx-progress"><i style="width:68%"></i></div></article></section>
 
-      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'menu-level'">
-        <article class="cfx-card"><h2>Menú nivel 1</h2><div class="cfx-tree"><button (click)="treeOpen=!treeOpen">▾ Administración</button><div *ngIf="treeOpen"><button>Socios</button><button>Finanzas</button><button>Inventario</button></div></div></article>
-        <article class="cfx-card"><h2>Menú nivel 2</h2><div class="cfx-tree"><button>▸ Configuración</button><button>▸ Seguridad</button></div></article>
+      <section class="cfx-grid cfx-grid-3" *ngSwitchCase="'menu-level'">
+        <article class="cfx-card">
+          <h2>Level One Link</h2>
+          <p>Primer nivel de navegación directa.</p>
+          <div class="cfx-tree"><button (click)="treeOpen=!treeOpen">{{treeOpen?'▾':'▸'}} Level One Menu</button></div>
+        </article>
+        <article class="cfx-card">
+          <h2>Level Two Menu</h2>
+          <div class="cfx-tree">
+            <button>• Level Two Link</button>
+            <div *ngIf="treeOpen"><button>▾ Level Two Menu</button><div><button>· Level Three Link</button><button>· Level Three Link</button></div></div>
+          </div>
+        </article>
+        <article class="cfx-card">
+          <h2>Jerarquía completa</h2>
+          <div class="cfx-info">
+            <p><b>Nivel 1</b><span>Level One</span></p>
+            <p><b>Nivel 2</b><span>Level Two</span></p>
+            <p><b>Nivel 3</b><span>Level Three</span></p>
+          </div>
+        </article>
       </section>
 
       <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'external-link'"><article class="cfx-card cfx-empty-page"><span class="cfx-big-icon">↗</span><h2>Enlace externo</h2><p>Ejemplo de acceso a un recurso externo desde el panel.</p><button class="primary" (click)="openExternal()">Abrir recurso</button></article></section>
@@ -607,8 +625,8 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
     'tables':{title:'Tables',subtitle:'Tablas administrativas con estructura responsive.',icon:'▤',group:'Tables'},
     'data-tables':{title:'Data Tables',subtitle:'Búsqueda, filtros y organización de registros.',icon:'▦',group:'Tables'},
     'graphs':{title:'Graphs',subtitle:'Visualización de métricas y tendencias.',icon:'↗',group:'Graphs'},
-    'apex':{title:'Apex Charts',subtitle:'Gráficos modernos para indicadores.',icon:'⌁',group:'Graphs'},
-    'morris':{title:'Morris Charts',subtitle:'Gráficos comparativos y tendencias.',icon:'⌘',group:'Graphs'},
+    'apex':{title:'Apex Graphs',subtitle:'Gráficos modernos para indicadores.',icon:'⌁',group:'Graphs'},
+    'morris':{title:'Morris Graphs',subtitle:'Gráficos comparativos y tendencias.',icon:'⌘',group:'Graphs'},
     'vector-maps':{title:'Vector Maps',subtitle:'Vista de ubicación y cobertura.',icon:'◎',group:'Maps'},
     'accordions':{title:'Accordions',subtitle:'Contenido expandible y organizado.',icon:'☷',group:'Jquery Components'},
     'carousel':{title:'Carousel',subtitle:'Contenido destacado deslizable.',icon:'↔',group:'Jquery Components'},
@@ -653,8 +671,8 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
     'menu-level-2':{title:'Level Two Link',subtitle:'Segundo nivel de navegación.',icon:'☷',group:'Menu Level'},
     'menu-level-3':{title:'Level Three Link',subtitle:'Tercer nivel de navegación.',icon:'☷',group:'Menu Level'},
     'external-link':{title:'External Link',subtitle:'Acceso a recursos externos.',icon:'↗',group:'Navigation'},
-    'chip':{title:'Chip',subtitle:'Chips de información y filtros.',icon:'#',group:'Components'},
-    'badge-link':{title:'Badge',subtitle:'Badges y contadores visuales.',icon:'●',group:'Components'},
+    'chip':{title:'Chip 6',subtitle:'Chips de información y filtros.',icon:'#',group:'Components'},
+    'badge-link':{title:'Badge Chip',subtitle:'Badges y contadores visuales.',icon:'●',group:'Components'},
     'disabled-link':{title:'Disabled Link',subtitle:'Estado deshabilitado de navegación.',icon:'⊘',group:'Navigation'}
   };
 
@@ -730,6 +748,7 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
   }
   loadSalaries(){ this.api.gymRegistros('salarios').subscribe({next:r=>this.salaries=Array.isArray(r)?r:[],error:()=>this.salaries=[]}); }
   printPayslip(){ window.print(); }
+  goAdmin(){ window.location.assign('/admin'); }
   previewResetPassword(){
     if(!this.resetForm.password || this.resetForm.password.length<6){this.authMessage='La nueva contraseña debe tener al menos 6 caracteres.';return;}
     this.authMessage=this.resetForm.password===this.resetForm.confirm?'Contraseña validada correctamente.':'Las contraseñas no coinciden.';
