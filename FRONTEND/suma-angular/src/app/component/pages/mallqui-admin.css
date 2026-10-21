@@ -8309,3 +8309,693 @@ button.admin-system-card:hover{
 .mghome-module-grid .fitness:hover{
   border-color:#a9d7bd;
 }
+
+
+/* CROSSFit 569574 INSPIRED ADMIN SHELL · FINAL OVERRIDES */
+:root{
+  --crossfit-accent:#ff5f57;
+  --crossfit-accent-2:#ff7a59;
+  --crossfit-sidebar:#151823;
+  --crossfit-sidebar-2:#1c202d;
+  --crossfit-surface:#ffffff;
+  --crossfit-page:#f4f6f9;
+  --crossfit-border:#e5e8ee;
+  --crossfit-text:#202637;
+  --crossfit-muted:#8b93a3;
+}
+
+/* Mantener sidebar + topbar también en el dashboard */
+.admin-shell,
+.admin-shell.admin-home-redesign{
+  display:grid!important;
+  grid-template-columns:270px minmax(0,1fr)!important;
+  grid-template-rows:70px minmax(0,1fr)!important;
+  min-height:100vh!important;
+  background:var(--crossfit-page)!important;
+}
+.admin-shell.admin-home-redesign>.admin-wix-topbar{
+  display:grid!important;
+}
+.admin-shell.admin-home-redesign>.admin-nav{
+  display:flex!important;
+}
+.admin-shell.admin-home-redesign>.admin-sidebar-toggle{
+  display:grid!important;
+}
+.admin-shell.admin-home-redesign>.admin-content{
+  grid-column:2!important;
+  grid-row:2!important;
+  display:block!important;
+  width:auto!important;
+  max-width:none!important;
+  min-height:calc(100vh - 70px)!important;
+  padding:24px 28px 40px!important;
+  margin:0!important;
+  background:var(--crossfit-page)!important;
+}
+
+/* Topbar inspirado en la plantilla Crossfit */
+.admin-wix-topbar{
+  height:70px!important;
+  grid-template-columns:235px auto minmax(300px,1fr) auto!important;
+  gap:18px!important;
+  padding:0 24px!important;
+  background:#fff!important;
+  border-bottom:1px solid var(--crossfit-border)!important;
+  box-shadow:0 2px 12px rgba(18,24,40,.035)!important;
+}
+.admin-top-brand{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:11px!important;
+  border:0!important;
+  background:transparent!important;
+  color:var(--crossfit-text)!important;
+  text-align:left!important;
+  cursor:pointer!important;
+}
+.admin-top-brand-mark{
+  width:42px!important;
+  height:42px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:12px!important;
+  background:linear-gradient(135deg,#171b27,#242a3a)!important;
+  color:#fff!important;
+  font-size:13px!important;
+  font-weight:950!important;
+  letter-spacing:.7px!important;
+  box-shadow:0 7px 16px rgba(24,28,40,.14)!important;
+}
+.admin-top-brand>span:last-child{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:1px!important;
+}
+.admin-top-brand strong{
+  color:#232a3b!important;
+  font-size:14px!important;
+  font-weight:850!important;
+}
+.admin-top-brand small{
+  color:#969dab!important;
+  font-size:9px!important;
+}
+.crossfit-top-links{
+  display:flex!important;
+  align-items:center!important;
+  gap:3px!important;
+}
+.crossfit-top-links button{
+  height:34px!important;
+  padding:0 11px!important;
+  border:0!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  color:#626c7d!important;
+  font-size:9px!important;
+  font-weight:750!important;
+  cursor:pointer!important;
+}
+.crossfit-top-links button:hover{
+  background:#f2f4f7!important;
+  color:#1f2937!important;
+}
+.admin-wix-search{
+  justify-self:center!important;
+  width:min(640px,100%)!important;
+  height:42px!important;
+  grid-template-columns:28px minmax(0,1fr) auto!important;
+  padding:0 8px 0 10px!important;
+  border:1px solid #dce1e8!important;
+  border-radius:12px!important;
+  background:#f8f9fb!important;
+}
+.admin-wix-search>span{
+  color:#9ba4b3!important;
+  font-size:17px!important;
+}
+.admin-wix-search input{
+  font-size:10px!important;
+}
+.admin-wix-search>button{
+  height:30px!important;
+  padding:0 12px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:#edf0f4!important;
+  color:#4b5565!important;
+  font-size:8px!important;
+  font-weight:800!important;
+  cursor:pointer!important;
+}
+.admin-top-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+}
+.admin-top-actions>button:not(.admin-top-user){
+  position:relative!important;
+  width:36px!important;
+  height:36px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid #e3e7ed!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:#677286!important;
+  cursor:pointer!important;
+}
+.admin-top-actions>button:not(.admin-top-user):hover{
+  background:#f6f7f9!important;
+}
+.admin-top-user{
+  width:39px!important;
+  height:39px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:#181c28!important;
+  color:#fff!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  cursor:pointer!important;
+}
+
+/* Sidebar completo tipo plantilla */
+.admin-nav{
+  grid-column:1!important;
+  grid-row:2!important;
+  top:70px!important;
+  height:calc(100vh - 70px)!important;
+  padding:0 12px 14px!important;
+  background:
+    radial-gradient(circle at 12% 6%,rgba(255,95,87,.12),transparent 18%),
+    linear-gradient(180deg,var(--crossfit-sidebar),var(--crossfit-sidebar-2))!important;
+  border-right:0!important;
+  box-shadow:7px 0 24px rgba(22,27,39,.045)!important;
+}
+.admin-nav-top{
+  min-height:86px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:13px 10px 12px!important;
+  margin:0 0 4px!important;
+  border-bottom:1px solid rgba(255,255,255,.075)!important;
+}
+.admin-brand{
+  width:54px!important;
+  min-width:54px!important;
+  height:54px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:4px!important;
+  border:0!important;
+  border-radius:13px!important;
+  background:rgba(255,255,255,.04)!important;
+  cursor:pointer!important;
+}
+.admin-brand img{
+  width:47px!important;
+  height:47px!important;
+  margin:0!important;
+  object-fit:contain!important;
+}
+.admin-brand-copy{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  gap:2px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#fff!important;
+  text-align:left!important;
+  cursor:pointer!important;
+}
+.admin-brand-copy strong{
+  font-size:12px!important;
+  letter-spacing:.25px!important;
+}
+.admin-brand-copy small{
+  color:#8792a7!important;
+  font-size:7.5px!important;
+}
+.crossfit-sidebar-nav{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:3px!important;
+  padding:8px 5px 12px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#3d4351 transparent!important;
+}
+.crossfit-sidebar-nav::-webkit-scrollbar{width:4px!important}
+.crossfit-sidebar-nav::-webkit-scrollbar-thumb{
+  border-radius:999px!important;
+  background:#3d4351!important;
+}
+.admin-menu-caption{
+  display:block!important;
+  margin:13px 9px 5px!important;
+  color:#687185!important;
+  font-size:7px!important;
+  font-weight:900!important;
+  letter-spacing:1.25px!important;
+}
+.admin-menu-caption:first-child{margin-top:3px!important}
+.crossfit-sidebar-nav button{
+  min-height:39px!important;
+  grid-template-columns:31px minmax(0,1fr) auto!important;
+  gap:8px!important;
+  padding:5px 9px!important;
+  border:1px solid transparent!important;
+  border-radius:10px!important;
+  color:#b9c0cf!important;
+  background:transparent!important;
+  transition:background .16s ease,color .16s ease,transform .16s ease!important;
+}
+.crossfit-sidebar-nav button:hover{
+  background:rgba(255,255,255,.055)!important;
+  border-color:rgba(255,255,255,.035)!important;
+  color:#fff!important;
+  transform:translateX(1px)!important;
+}
+.crossfit-sidebar-nav button.active{
+  background:linear-gradient(100deg,var(--crossfit-accent),#ff7963)!important;
+  border-color:transparent!important;
+  color:#fff!important;
+  box-shadow:0 8px 20px rgba(255,95,87,.20)!important;
+}
+.crossfit-sidebar-nav button.active:before{
+  display:none!important;
+}
+.crossfit-sidebar-nav .admin-main-nav-icon{
+  width:29px!important;
+  height:29px!important;
+  border-radius:8px!important;
+  background:rgba(255,255,255,.065)!important;
+  color:#aeb7c7!important;
+  font-size:10px!important;
+}
+.crossfit-sidebar-nav button.active .admin-main-nav-icon{
+  background:rgba(255,255,255,.18)!important;
+  color:#fff!important;
+}
+.crossfit-sidebar-nav button>span:nth-child(2){
+  font-size:8.5px!important;
+  font-weight:800!important;
+  letter-spacing:.05px!important;
+}
+.crossfit-sidebar-nav button>b{
+  min-width:19px!important;
+  height:19px!important;
+  border-radius:7px!important;
+  background:#ff6b5e!important;
+  color:#fff!important;
+  font-size:7px!important;
+  box-shadow:none!important;
+}
+.crossfit-sidebar-nav button.active>b{
+  background:rgba(255,255,255,.18)!important;
+}
+.admin-system-card{
+  margin:7px 5px 4px!important;
+  padding:10px!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  border-radius:11px!important;
+  background:rgba(255,255,255,.035)!important;
+}
+.admin-system-card b{font-size:8px!important}
+.admin-system-card small{color:#8490a2!important;font-size:7px!important}
+.admin-logout{
+  min-height:38px!important;
+  margin:3px 5px 0!important;
+  border:1px solid rgba(255,255,255,.07)!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  color:#bbc3d0!important;
+  font-size:8px!important;
+}
+.admin-logout:hover{
+  background:rgba(255,255,255,.05)!important;
+  color:#fff!important;
+}
+.admin-sidebar-toggle{
+  top:calc(50% + 20px)!important;
+  left:252px!important;
+  z-index:3200!important;
+  width:35px!important;
+  height:54px!important;
+  border:1px solid #e0e4ea!important;
+  border-left:0!important;
+  border-radius:0 10px 10px 0!important;
+  background:#fff!important;
+  color:#4b5565!important;
+  box-shadow:4px 3px 10px rgba(15,23,42,.06)!important;
+}
+.admin-sidebar-collapsed .admin-sidebar-toggle{left:52px!important}
+
+/* Área central */
+.admin-content{
+  grid-column:2!important;
+  grid-row:2!important;
+  min-width:0!important;
+  padding:24px 28px 40px!important;
+  background:var(--crossfit-page)!important;
+}
+.admin-header{
+  min-height:84px!important;
+  grid-template-columns:minmax(0,1fr) auto auto!important;
+  gap:18px!important;
+  margin-bottom:14px!important;
+  padding:0 2px!important;
+}
+.admin-title-kicker{
+  color:var(--crossfit-accent)!important;
+  font-size:7.5px!important;
+  font-weight:950!important;
+  letter-spacing:1.1px!important;
+}
+.admin-header h1{
+  margin-top:4px!important;
+  color:#202637!important;
+  font-size:27px!important;
+  font-weight:800!important;
+  letter-spacing:-.45px!important;
+}
+.admin-header p{
+  color:#8d96a5!important;
+  font-size:9.5px!important;
+}
+.admin-refresh-box{
+  min-width:0!important;
+}
+.admin-refresh-actions{
+  display:flex!important;
+  gap:7px!important;
+}
+.admin-secondary.admin-refresh-top,
+.admin-header-mini{
+  min-height:36px!important;
+  border:1px solid #dee3e9!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  color:#5b6678!important;
+  font-size:8px!important;
+  font-weight:800!important;
+}
+.admin-profile{
+  min-width:0!important;
+  padding:5px 8px!important;
+  border:1px solid #e5e8ed!important;
+  border-radius:11px!important;
+  background:#fff!important;
+}
+.admin-profile .admin-avatar{
+  width:34px!important;
+  height:34px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:50%!important;
+  background:#1a1f2b!important;
+  color:#fff!important;
+}
+
+/* Tabs interiores */
+.admin-module-tabs{
+  margin:0 0 16px!important;
+  padding:6px!important;
+  border:1px solid #e2e6eb!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+}
+.admin-module-tabs button{
+  min-height:32px!important;
+  border-radius:8px!important;
+  color:#747e8d!important;
+  font-size:8px!important;
+}
+.admin-module-tabs button.active{
+  border-color:#ffd0ca!important;
+  background:#fff2f0!important;
+  color:#d84d42!important;
+}
+
+/* Dashboard: usar un solo shell, no un segundo menú */
+.mghome{
+  min-height:0!important;
+  background:transparent!important;
+  animation:none!important;
+}
+.mghome-topbar{
+  display:none!important;
+}
+.mghome-body{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+}
+.mghome-intro{
+  margin:0 0 18px!important;
+  padding:3px 2px!important;
+}
+.mghome-eyebrow{
+  color:var(--crossfit-accent)!important;
+}
+.mghome-intro h1{
+  color:#202637!important;
+  font-size:29px!important;
+}
+.mghome-intro p{font-size:10px!important}
+.mghome-intro-actions button.primary{
+  border-color:var(--crossfit-accent)!important;
+  background:var(--crossfit-accent)!important;
+}
+
+/* Cards del dashboard con estética Crossfit */
+.mghome-overview{
+  grid-template-columns:minmax(0,1.65fr) minmax(270px,.7fr)!important;
+  gap:14px!important;
+}
+.mghome-balance,
+.mghome-health,
+.mghome-tasks,
+.mghome-shortcuts,
+.mghome-module-grid .module-card{
+  border:1px solid #e3e7ed!important;
+  border-radius:14px!important;
+  box-shadow:0 4px 14px rgba(20,27,40,.035)!important;
+}
+.mghome-balance{
+  position:relative!important;
+  overflow:hidden!important;
+  background:
+    linear-gradient(115deg,#1c2230 0%,#252c3b 60%,#3b3440 100%)!important;
+  color:#fff!important;
+}
+.mghome-balance:after{
+  content:''!important;
+  position:absolute!important;
+  width:260px!important;
+  height:260px!important;
+  right:-70px!important;
+  top:-120px!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  border-radius:50%!important;
+  box-shadow:
+    0 0 0 38px rgba(255,255,255,.025),
+    0 0 0 78px rgba(255,255,255,.015)!important;
+  pointer-events:none!important;
+}
+.mghome-balance-head small,
+.mghome-balance-grid span,
+.mghome-balance-grid small{
+  color:#adb5c4!important;
+}
+.mghome-balance-head strong,
+.mghome-balance-grid b{
+  color:#fff!important;
+}
+.mghome-balance-grid button{
+  position:relative!important;
+  z-index:1!important;
+  border-color:rgba(255,255,255,.08)!important;
+  background:rgba(255,255,255,.055)!important;
+  color:#fff!important;
+}
+.mghome-balance-grid button:hover{
+  border-color:rgba(255,255,255,.17)!important;
+  background:rgba(255,255,255,.09)!important;
+}
+.mghome-status-pill{
+  background:rgba(255,95,87,.16)!important;
+  color:#ffb0a8!important;
+}
+.mghome-status-pill.open{
+  background:rgba(43,190,115,.16)!important;
+  color:#8ee6b8!important;
+}
+.mghome-module-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:11px!important;
+}
+.mghome-module-grid .module-card{
+  min-height:132px!important;
+  border-radius:13px!important;
+}
+.mghome-module-grid .module-card:hover{
+  transform:translateY(-2px)!important;
+  border-color:#d3d9e1!important;
+}
+.mghome-module-grid .module-symbol{
+  border-radius:10px!important;
+}
+.mghome-module-grid .module-card em{
+  border-radius:7px!important;
+}
+.mghome-section-head span,
+.mghome-tasks header span,
+.mghome-shortcuts header span{
+  color:var(--crossfit-accent)!important;
+}
+
+/* Módulos complementarios */
+.gym-suite-hero{
+  border-radius:14px!important;
+  border-color:#e3e7ed!important;
+  box-shadow:none!important;
+}
+.gym-suite-icon{
+  background:#fff0ed!important;
+  color:#d95143!important;
+}
+.gym-suite-head-actions button.primary{
+  border-color:var(--crossfit-accent)!important;
+  background:var(--crossfit-accent)!important;
+}
+.gym-suite-kpis article,
+.gym-suite-panel{
+  border-color:#e3e7ed!important;
+  border-radius:13px!important;
+  box-shadow:none!important;
+}
+
+/* Colapsado */
+.admin-sidebar-collapsed{
+  grid-template-columns:70px minmax(0,1fr)!important;
+}
+.admin-sidebar-collapsed .admin-brand-copy,
+.admin-sidebar-collapsed .admin-main-nav button>span:nth-child(2),
+.admin-sidebar-collapsed .admin-main-nav button>b,
+.admin-sidebar-collapsed .admin-menu-caption,
+.admin-sidebar-collapsed .admin-system-card div,
+.admin-sidebar-collapsed .admin-logout{
+  display:none!important;
+}
+.admin-sidebar-collapsed .admin-nav{
+  padding-left:8px!important;
+  padding-right:8px!important;
+}
+.admin-sidebar-collapsed .admin-nav-top{
+  justify-content:center!important;
+  padding-left:0!important;
+  padding-right:0!important;
+}
+.admin-sidebar-collapsed .crossfit-sidebar-nav button{
+  grid-template-columns:1fr!important;
+  justify-items:center!important;
+  padding:5px!important;
+}
+.admin-sidebar-collapsed .admin-content{
+  grid-column:2!important;
+}
+
+/* Responsive */
+@media(max-width:1280px){
+  .admin-shell,
+  .admin-shell.admin-home-redesign{
+    grid-template-columns:242px minmax(0,1fr)!important;
+  }
+  .admin-wix-topbar{
+    grid-template-columns:205px auto minmax(260px,1fr) auto!important;
+    gap:10px!important;
+    padding:0 16px!important;
+  }
+  .admin-sidebar-toggle{left:224px!important}
+  .mghome-module-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:980px){
+  .admin-shell,
+  .admin-shell.admin-home-redesign{
+    grid-template-columns:72px minmax(0,1fr)!important;
+  }
+  .admin-nav{
+    padding-left:8px!important;
+    padding-right:8px!important;
+  }
+  .admin-brand-copy,
+  .admin-main-nav button>span:nth-child(2),
+  .admin-main-nav button>b,
+  .admin-menu-caption,
+  .admin-system-card div,
+  .admin-logout{
+    display:none!important;
+  }
+  .crossfit-sidebar-nav button{
+    grid-template-columns:1fr!important;
+    justify-items:center!important;
+  }
+  .admin-wix-topbar{
+    grid-template-columns:auto minmax(220px,1fr) auto!important;
+  }
+  .crossfit-top-links{display:none!important}
+  .admin-sidebar-toggle{display:none!important}
+  .admin-content,
+  .admin-shell.admin-home-redesign>.admin-content{
+    padding:20px 18px 34px!important;
+  }
+  .mghome-module-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:700px){
+  .admin-shell,
+  .admin-shell.admin-home-redesign{
+    display:block!important;
+  }
+  .admin-wix-topbar{
+    position:sticky!important;
+    display:grid!important;
+    grid-template-columns:auto 1fr auto!important;
+    height:64px!important;
+    padding:0 10px!important;
+  }
+  .admin-top-brand>span:last-child{display:none!important}
+  .admin-wix-search{display:none!important}
+  .admin-nav{display:none!important}
+  .admin-shell.admin-home-redesign>.admin-nav{display:none!important}
+  .admin-sidebar-toggle{display:none!important}
+  .admin-content,
+  .admin-shell.admin-home-redesign>.admin-content{
+    min-height:calc(100vh - 64px)!important;
+    padding:16px 12px 92px!important;
+  }
+  .admin-mobile-modules,
+  .admin-shell.admin-home-redesign .admin-mobile-modules{
+    display:flex!important;
+  }
+  .mghome-overview,
+  .mghome-lower{
+    grid-template-columns:1fr!important;
+  }
+  .mghome-module-grid{grid-template-columns:1fr!important}
+  .gym-suite-kpis{grid-template-columns:1fr 1fr!important}
+}
