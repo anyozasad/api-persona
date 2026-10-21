@@ -52,7 +52,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
     <aside class="admin-nav">
       <div class="admin-nav-top crossfit-profile-card">
         <button type="button" class="crossfit-profile-avatar" (click)="cambiarSeccion('usuarios')" aria-label="Abrir perfil">
-          <span class="cf-profile-initial">{{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}</span>
+          <img src="assets/showcase/coach-showcase.svg" alt="Administrador Mallqui Gym">
           <span class="crossfit-profile-status"></span>
         </button>
         <div class="crossfit-profile-copy">
