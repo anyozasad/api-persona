@@ -24,10 +24,10 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
         <span><strong>Mallqui Gym</strong><small>Administración</small></span>
       </button>
 
-      <nav class="admin-top-shortcuts" aria-label="Accesos rápidos">
+      <nav class="admin-top-shortcuts crossfit-top-links" aria-label="Accesos rápidos">
+        <button type="button" (click)="cambiarSeccion('dashboard')">Dashboard</button>
+        <button type="button" (click)="cambiarSeccion('reportes')">Reportes</button>
         <button type="button" (click)="cambiarSeccion('clientes')">Socios</button>
-        <button type="button" (click)="cambiarSeccion('caja')">Operación</button>
-        <button type="button" (click)="cambiarSeccion('soporte')">Atención</button>
       </nav>
 
       <label class="admin-wix-search">
@@ -36,7 +36,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
           type="text"
           [(ngModel)]="busquedaAdmin"
           (keydown.enter)="buscarEnPanel()"
-          placeholder="Buscar socios, ventas, reservas, inventario..."
+          placeholder="Buscar módulos, socios, pagos, facturas..."
           aria-label="Buscar una función del panel">
         <button type="button" (click)="buscarEnPanel()">Buscar</button>
       </label>
@@ -64,37 +64,79 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
         </button>
       </div>
 
-      <nav class="admin-main-nav" aria-label="Módulos principales">
-        <button type="button" [class.active]="moduloActivo==='dashboard'" (click)="abrirModuloAdmin('dashboard')">
+      <nav class="admin-main-nav crossfit-sidebar-nav" aria-label="Módulos principales">
+        <small class="admin-menu-caption">PRINCIPAL</small>
+        <button type="button" [class.active]="seccion==='dashboard'" (click)="cambiarSeccion('dashboard')">
           <span class="admin-main-nav-icon">⌂</span><span>Dashboard</span>
         </button>
-        <button type="button" [class.active]="moduloActivo==='socios'" (click)="abrirModuloAdmin('socios')">
-          <span class="admin-main-nav-icon">♙</span><span>Socios</span>
-          <b *ngIf="badgeModulo('socios')>0">{{badgeModulo('socios')}}</b>
+        <button type="button" [class.active]="moduloActivo==='reportes'" (click)="cambiarSeccion('reportes')">
+          <span class="admin-main-nav-icon">▥</span><span>Mis reportes</span>
         </button>
-        <button type="button" [class.active]="moduloActivo==='servicios'" (click)="abrirModuloAdmin('servicios')">
-          <span class="admin-main-nav-icon">◉</span><span>Servicios</span>
+
+        <small class="admin-menu-caption">ENTRENAMIENTO</small>
+        <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSeccion('rutinas')">
+          <span class="admin-main-nav-icon">⚡</span><span>Plan de entrenamiento</span>
           <b *ngIf="badgeModulo('servicios')>0">{{badgeModulo('servicios')}}</b>
         </button>
-        <button type="button" [class.active]="moduloActivo==='operacion'" (click)="abrirModuloAdmin('operacion')">
+        <button type="button" [class.active]="seccion==='nutricion'" (click)="cambiarSeccion('nutricion')">
+          <span class="admin-main-nav-icon">♨</span><span>Plan de alimentación</span>
+        </button>
+        <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSeccion('entrenador')">
+          <span class="admin-main-nav-icon">♙</span><span>Entrenadores</span>
+        </button>
+        <button type="button" [class.active]="seccion==='clases' || seccion==='reservas'" (click)="cambiarSeccion('clases')">
+          <span class="admin-main-nav-icon">◷</span><span>Clases y reservas</span>
+        </button>
+
+        <small class="admin-menu-caption">GESTIÓN DEL GYM</small>
+        <button type="button" [class.active]="moduloActivo==='socios'" (click)="cambiarSeccion('clientes')">
+          <span class="admin-main-nav-icon">♚</span><span>Socios</span>
+          <b *ngIf="badgeModulo('socios')>0">{{badgeModulo('socios')}}</b>
+        </button>
+        <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSeccion('equipos')">
+          <span class="admin-main-nav-icon">◆</span><span>Equipos</span>
+        </button>
+        <button type="button" [class.active]="seccion==='eventos'" (click)="cambiarSeccion('eventos')">
+          <span class="admin-main-nav-icon">◫</span><span>Eventos del gym</span>
+        </button>
+        <button type="button" [class.active]="seccion==='galeria'" (click)="cambiarSeccion('galeria')">
+          <span class="admin-main-nav-icon">▧</span><span>Galería</span>
+        </button>
+        <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSeccion('noticias')">
+          <span class="admin-main-nav-icon">◇</span><span>Noticias y novedades</span>
+        </button>
+        <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSeccion('planes')">
+          <span class="admin-main-nav-icon">★</span><span>Planes y precios</span>
+        </button>
+
+        <small class="admin-menu-caption">FINANZAS</small>
+        <button type="button" [class.active]="seccion==='salarios'" (click)="cambiarSeccion('salarios')">
+          <span class="admin-main-nav-icon">S/</span><span>Salarios</span>
+        </button>
+        <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSeccion('pagos')">
+          <span class="admin-main-nav-icon">✓</span><span>Pagos</span>
+        </button>
+        <button type="button" [class.active]="seccion==='ingresos'" (click)="cambiarSeccion('ingresos')">
+          <span class="admin-main-nav-icon">↗</span><span>Ingresos</span>
+        </button>
+        <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSeccion('facturas')">
+          <span class="admin-main-nav-icon">▤</span><span>Facturas</span>
+        </button>
+        <button type="button" [class.active]="moduloActivo==='operacion'" (click)="cambiarSeccion('caja')">
           <span class="admin-main-nav-icon">▣</span><span>Caja y ventas</span>
         </button>
-        <button type="button" [class.active]="moduloActivo==='inventario'" (click)="abrirModuloAdmin('inventario')">
+
+        <small class="admin-menu-caption">ADMINISTRACIÓN</small>
+        <button type="button" [class.active]="moduloActivo==='inventario'" (click)="cambiarSeccion('inventario')">
           <span class="admin-main-nav-icon">▦</span><span>Inventario</span>
           <b *ngIf="badgeModulo('inventario')>0">{{badgeModulo('inventario')}}</b>
         </button>
-        <button type="button" [class.active]="moduloActivo==='gestion-fitness'" (click)="abrirModuloAdmin('gestion-fitness')">
-          <span class="admin-main-nav-icon">✦</span><span>Gestión Fitness</span>
-        </button>
-        <button type="button" [class.active]="moduloActivo==='atencion'" (click)="abrirModuloAdmin('atencion')">
+        <button type="button" [class.active]="moduloActivo==='atencion'" (click)="cambiarSeccion('soporte')">
           <span class="admin-main-nav-icon">●</span><span>Atención</span>
           <b *ngIf="badgeModulo('atencion')>0">{{badgeModulo('atencion')}}</b>
         </button>
-        <button type="button" [class.active]="moduloActivo==='reportes'" (click)="abrirModuloAdmin('reportes')">
-          <span class="admin-main-nav-icon">↗</span><span>Reportes</span>
-        </button>
-        <button type="button" [class.active]="moduloActivo==='sistema'" (click)="abrirModuloAdmin('sistema')">
-          <span class="admin-main-nav-icon">⚙</span><span>Sistema</span>
+        <button type="button" [class.active]="moduloActivo==='sistema'" (click)="cambiarSeccion('configuracion')">
+          <span class="admin-main-nav-icon">⚙</span><span>Configuración</span>
         </button>
       </nav>
 
