@@ -38,6 +38,7 @@ use App\Http\Controllers\ExperienciaClienteController;
 use App\Http\Controllers\ComunicacionAdminController;
 use App\Http\Controllers\ClienteFichaController;
 use App\Http\Controllers\GymSystemAdminController;
+use App\Http\Controllers\AdminGymRecordController;
 
 // ESTADO REAL DEL SISTEMA: una sola conexión y una sola DB_DATABASE.
 Route::get('/estado-sistema', function () {
@@ -269,6 +270,14 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
     Route::get('/vistas/clientes-membresias', [ReporteController::class, 'clientesMembresias']);
     Route::get('/vistas/stock', [ReporteController::class, 'stock']);
     Route::get('/vistas/ventas', [ReporteController::class, 'ventas']);
+
+    // MÓDULOS COMPLEMENTARIOS DEL DASHBOARD FITNESS
+    Route::get('/admin-gym-registros/{modulo}', [AdminGymRecordController::class, 'index']);
+    Route::post('/admin-gym-registros/{modulo}', [AdminGymRecordController::class, 'store']);
+    Route::put('/admin-gym-registros/{modulo}/{id}', [AdminGymRecordController::class, 'update']);
+    Route::patch('/admin-gym-registros/{modulo}/{id}/estado', [AdminGymRecordController::class, 'cambiarEstado']);
+    Route::delete('/admin-gym-registros/{modulo}/{id}', [AdminGymRecordController::class, 'destroy']);
+
     // FUNCIONES LEGACY DEL DASHBOARD: usan la misma DB_DATABASE que el resto del sistema.
     // Se mantienen en un prefijo separado solo por compatibilidad de rutas.
     Route::prefix('gym-admin')->group(function () {
