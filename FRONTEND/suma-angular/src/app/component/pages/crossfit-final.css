@@ -2311,3 +2311,38 @@
     grid-template-columns:1fr;
   }
 }
+
+
+/* SIDEBAR FULL TEMPLATE MODULES */
+.cf-sidebar-divider{
+  margin:14px 10px 6px!important;
+  padding-top:9px!important;
+  border-top:1px solid #ececf2!important;
+  color:#aaaeba!important;
+  font-size:6.8px!important;
+  font-weight:900!important;
+  letter-spacing:1.15px!important;
+}
+.crossfit-sidebar-nav button.cf-sub-nav{
+  min-height:38px!important;
+  padding-left:18px!important;
+}
+.crossfit-sidebar-nav button.cf-sub-nav .admin-main-nav-icon{
+  width:28px!important;
+  height:28px!important;
+  font-size:8px!important;
+  background:#fafafe!important;
+}
+.crossfit-sidebar-nav button.cf-sub-nav.active .admin-main-nav-icon{
+  background:#5d58df!important;
+  color:#fff!important;
+}
+.crossfit-sidebar-nav button:disabled{
+  opacity:.45!important;
+  cursor:not-allowed!important;
+  pointer-events:none!important;
+}
+@media(max-width:980px){
+  .cf-sidebar-divider{display:none!important}
+  .crossfit-sidebar-nav button.cf-sub-nav{padding-left:5px!important}
+}
