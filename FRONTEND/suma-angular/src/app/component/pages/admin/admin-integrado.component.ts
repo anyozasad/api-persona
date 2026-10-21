@@ -331,61 +331,109 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
         </section>
       </section>
 
-      <section class="cf-module-hero" *ngIf="seccion!=='dashboard' && !['reportes','rutinas','nutricion'].includes(seccion)">
-        <div class="cf-module-copy">
-          <span>WELCOME BACK,</span>
-          <h1>{{tituloActual}}</h1>
-          <p>{{subtituloActual}}</p>
+      <section class="cf-universal-module" *ngIf="seccion!=='dashboard' && !['reportes','rutinas','nutricion'].includes(seccion)">
+        <div class="cf-special-crumb">
+          <span>⌂</span><small>Inicio</small><b>›</b><strong>{{tituloActual}}</strong>
+          <em>{{estadoModuloActual}}</em>
+        </div>
 
-          <div class="cf-module-metrics">
-            <article *ngFor="let m of metricasModuloActual; let i=index">
-              <span class="cf-module-metric-icon">{{m.icon}}</span>
-              <div>
-                <strong>{{m.value}}</strong>
-                <small>{{m.label}}</small>
-              </div>
-            </article>
+        <section class="cf-universal-hero" [ngClass]="'variant-'+estiloModuloActual">
+          <div class="cf-universal-copy">
+            <span>{{etiquetaModuloActual}}</span>
+            <h1>{{tituloActual}}</h1>
+            <p>{{subtituloActual}}</p>
+
+            <div class="cf-universal-metrics">
+              <article *ngFor="let m of metricasModuloActual; let i=index">
+                <span>{{m.icon}}</span>
+                <div><b>{{m.value}}</b><small>{{m.label}}</small></div>
+              </article>
+            </div>
           </div>
-        </div>
 
-        <div class="cf-module-art" aria-hidden="true">
-          <svg viewBox="0 0 560 260" preserveAspectRatio="xMidYMid meet">
-            <defs>
-              <linearGradient id="modSky" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#f8f7ff"/>
-                <stop offset="100%" stop-color="#eeecff"/>
-              </linearGradient>
-            </defs>
-            <rect width="560" height="260" rx="24" fill="url(#modSky)"/>
-            <circle cx="472" cy="48" r="26" fill="#ffa11a"/>
-            <path d="M0 218c103-56 191-34 267-16 105 25 181-4 293-31v89H0z" fill="#9bc886"/>
-            <g fill="#d8d5f4">
-              <rect x="344" y="91" width="40" height="106" rx="2"/>
-              <rect x="393" y="68" width="48" height="129" rx="2"/>
-              <rect x="451" y="102" width="38" height="95" rx="2"/>
-              <rect x="497" y="82" width="42" height="115" rx="2"/>
-            </g>
-            <g stroke="#2e3157" stroke-width="4" fill="none">
-              <circle cx="132" cy="203" r="24"/>
-              <circle cx="218" cy="203" r="24"/>
-              <path d="M132 203l37-35 25 35h-39l28-48 35 48"/>
-            </g>
-            <g>
-              <circle cx="178" cy="132" r="10" fill="#2f3358"/>
-              <path d="M172 146c13 10 17 22 15 35" stroke="#ff8e42" stroke-width="10" stroke-linecap="round"/>
-              <path d="M184 162l27 10" stroke="#ff8e42" stroke-width="7" stroke-linecap="round"/>
-              <path d="M185 177l-14 31M190 179l22 27" stroke="#4b58a8" stroke-width="7" stroke-linecap="round"/>
-            </g>
-            <g transform="translate(96 0)">
-              <circle cx="304" cy="203" r="22" fill="none" stroke="#2e3157" stroke-width="4"/>
-              <circle cx="378" cy="203" r="22" fill="none" stroke="#2e3157" stroke-width="4"/>
-              <path d="M304 203l33-31 22 31h-35l25-43 29 43" fill="none" stroke="#2e3157" stroke-width="4"/>
-              <circle cx="344" cy="141" r="9" fill="#2f3358"/>
-              <path d="M339 154c12 10 15 20 13 32" stroke="#6a62e8" stroke-width="9" stroke-linecap="round"/>
-              <path d="M350 168l24 9" stroke="#6a62e8" stroke-width="6" stroke-linecap="round"/>
-            </g>
-          </svg>
-        </div>
+          <div class="cf-universal-art" aria-hidden="true">
+            <svg *ngIf="estiloModuloActual==='personas'" viewBox="0 0 560 280">
+              <rect width="560" height="280" fill="#f8f7ff"/>
+              <circle cx="472" cy="48" r="28" fill="#ffa11a"/>
+              <path d="M0 225c100-50 205-42 302-10 92 31 171 8 258-28v93H0z" fill="#acd596"/>
+              <g fill="#d9d7f4"><rect x="352" y="102" width="42" height="118"/><rect x="403" y="78" width="51" height="142"/><rect x="465" y="119" width="39" height="101"/></g>
+              <circle cx="160" cy="109" r="24" fill="#2f3159"/>
+              <path d="M135 151c13-28 53-28 67 0l19 68h-106z" fill="#6b64e8"/>
+              <circle cx="277" cy="121" r="21" fill="#ff9b55"/>
+              <path d="M254 155c12-22 46-22 58 0l18 61h-94z" fill="#ff8e42"/>
+              <circle cx="84" cy="132" r="18" fill="#65c99f"/>
+              <path d="M63 161c9-18 39-18 49 0l15 54H48z" fill="#77d1ad"/>
+            </svg>
+
+            <svg *ngIf="estiloModuloActual==='operacion'" viewBox="0 0 560 280">
+              <rect width="560" height="280" fill="#f8f7ff"/>
+              <path d="M0 232c108-44 201-36 288-15 104 25 178 10 272-28v91H0z" fill="#edf6e8"/>
+              <g fill="#d9d7f4"><rect x="355" y="95" width="48" height="132"/><rect x="414" y="72" width="58" height="155"/><rect x="483" y="111" width="40" height="116"/></g>
+              <g stroke="#2f3159" stroke-width="5" fill="none">
+                <circle cx="113" cy="217" r="28"/><circle cx="210" cy="217" r="28"/>
+                <path d="M113 217l43-40 29 40h-45l32-56 38 56"/>
+              </g>
+              <circle cx="162" cy="135" r="12" fill="#2f3159"/>
+              <path d="M156 149c14 12 18 26 16 45" stroke="#ff8e42" stroke-width="11" stroke-linecap="round"/>
+              <path d="M169 169l33 11" stroke="#ff8e42" stroke-width="8" stroke-linecap="round"/>
+              <path d="M170 190l-18 35M176 191l26 32" stroke="#4a57a7" stroke-width="8" stroke-linecap="round"/>
+              <rect x="292" y="173" width="92" height="14" rx="7" fill="#6b65e6"/>
+              <rect x="318" y="128" width="14" height="60" rx="7" fill="#ff9f43"/>
+              <rect x="344" y="137" width="14" height="51" rx="7" fill="#ff9f43"/>
+            </svg>
+
+            <svg *ngIf="estiloModuloActual==='finanzas'" viewBox="0 0 560 280">
+              <rect width="560" height="280" fill="#f8f7ff"/>
+              <circle cx="474" cy="48" r="27" fill="#ffa11a"/>
+              <path d="M0 232c104-50 220-34 309-7 100 30 168 9 251-24v79H0z" fill="#eaf5e5"/>
+              <rect x="86" y="89" width="55" height="137" rx="9" fill="#c8c5f4"/>
+              <rect x="157" y="126" width="55" height="100" rx="9" fill="#aaa6ed"/>
+              <rect x="228" y="67" width="55" height="159" rx="9" fill="#7770e7"/>
+              <rect x="299" y="107" width="55" height="119" rx="9" fill="#928ceb"/>
+              <path d="M76 176c72-54 133-7 197-61 47-40 85-33 147-78" fill="none" stroke="#5a55dd" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="420" cy="37" r="9" fill="#5a55dd"/>
+            </svg>
+
+            <svg *ngIf="estiloModuloActual==='contenido'" viewBox="0 0 560 280">
+              <rect width="560" height="280" fill="#f8f7ff"/>
+              <path d="M0 226c110-60 222-38 308-7 101 36 168 8 252-28v89H0z" fill="#a8d092"/>
+              <circle cx="470" cy="51" r="27" fill="#ffa11a"/>
+              <rect x="89" y="74" width="192" height="133" rx="15" fill="#fff" stroke="#dad8f3" stroke-width="4"/>
+              <rect x="108" y="96" width="154" height="73" rx="9" fill="#eeeefe"/>
+              <circle cx="144" cy="127" r="18" fill="#ff9a54"/>
+              <path d="M119 158l34-24 24 17 33-33 42 51H109z" fill="#8d87e9"/>
+              <rect x="111" y="184" width="89" height="8" rx="4" fill="#c7c4ef"/>
+              <rect x="212" y="184" width="39" height="8" rx="4" fill="#dfddf6"/>
+              <g transform="translate(330 112)">
+                <circle cx="45" cy="20" r="17" fill="#2f3159"/>
+                <path d="M28 49c9-20 38-20 47 0l18 70H10z" fill="#6b64e8"/>
+                <path d="M26 65l-26 24M76 65l27 20" stroke="#efaa83" stroke-width="9" stroke-linecap="round"/>
+              </g>
+            </svg>
+
+            <svg *ngIf="estiloModuloActual==='sistema'" viewBox="0 0 560 280">
+              <rect width="560" height="280" fill="#f8f7ff"/>
+              <circle cx="472" cy="50" r="26" fill="#ffa11a"/>
+              <path d="M0 231c97-48 208-38 292-13 99 30 171 12 268-23v85H0z" fill="#edf6e9"/>
+              <rect x="92" y="71" width="241" height="145" rx="14" fill="#fff" stroke="#d9d7f4" stroke-width="4"/>
+              <rect x="111" y="91" width="203" height="84" rx="8" fill="#f0efff"/>
+              <rect x="169" y="188" width="88" height="9" rx="4" fill="#716be4"/>
+              <circle cx="383" cy="109" r="44" fill="#ebe9ff"/>
+              <path d="M383 78v62M352 109h62" stroke="#625ce1" stroke-width="13" stroke-linecap="round"/>
+              <circle cx="451" cy="173" r="33" fill="#fff0e7"/>
+              <path d="M451 153v40M431 173h40" stroke="#ef9846" stroke-width="10" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </section>
+
+        <section class="cf-universal-panels">
+          <article *ngFor="let p of panelesModuloActual; let i=index" [class.accent]="i===1">
+            <header><span>{{p.icon}}</span><div><h3>{{p.title}}</h3><p>{{p.subtitle}}</p></div><b>{{p.badge}}</b></header>
+            <div class="cf-panel-visual" [ngClass]="'visual-'+estiloModuloActual">
+              <i *ngFor="let h of p.bars" [style.height.%]="h"></i>
+            </div>
+          </article>
+        </section>
       </section>
 
       <nav class="admin-module-tabs" *ngIf="seccion!=='dashboard' && tabsModuloActual.length" [attr.aria-label]="'Opciones de '+nombreModuloActual">
@@ -2401,6 +2449,83 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   toggleSidebar(): void {
     this.sidebarCerrado = !this.sidebarCerrado;
     try{localStorage.setItem('mallqui_admin_sidebar_closed', this.sidebarCerrado ? '1' : '0');}catch{}
+  }
+
+  get estiloModuloActual():string{
+    if(['clientes','membresias','pagos','asistencias','reporte-asistencias','entrenador','clases','reservas','planes'].includes(this.seccion)) return 'personas';
+    if(['ventas','historial-ventas','caja','gastos','inventario','productos','kardex','categorias','proveedores','compras'].includes(this.seccion)) return 'operacion';
+    if(['salarios','ingresos','facturas'].includes(this.seccion)) return 'finanzas';
+    if(['equipos','eventos','galeria','noticias','soporte','opiniones','comunicacion'].includes(this.seccion)) return 'contenido';
+    return 'sistema';
+  }
+
+  get etiquetaModuloActual():string{
+    const mapa:any={
+      clientes:'GESTIÓN DE SOCIOS',membresias:'MEMBRESÍAS',pagos:'PAGOS Y COBROS',
+      asistencias:'CONTROL DE ASISTENCIA','reporte-asistencias':'REPORTE DE ASISTENCIA',
+      entrenador:'EQUIPO DE ENTRENADORES',clases:'CLASES DEL GIMNASIO',reservas:'RESERVAS',
+      planes:'PLANES Y PRECIOS',ventas:'VENTAS', 'historial-ventas':'HISTORIAL DE VENTAS',
+      caja:'CONTROL DE CAJA',gastos:'GASTOS',inventario:'INVENTARIO',productos:'PRODUCTOS',
+      kardex:'MOVIMIENTOS DE STOCK',categorias:'CATEGORÍAS',proveedores:'PROVEEDORES',
+      compras:'COMPRAS',equipos:'EQUIPOS DEL GIMNASIO',eventos:'EVENTOS',galeria:'GALERÍA',
+      noticias:'NOTICIAS',salarios:'SALARIOS',ingresos:'INGRESOS',facturas:'FACTURACIÓN',
+      soporte:'ATENCIÓN AL CLIENTE',opiniones:'OPINIONES',comunicacion:'COMUNICACIÓN',
+      usuarios:'USUARIOS',auditoria:'AUDITORÍA',configuracion:'CONFIGURACIÓN'
+    };
+    return mapa[this.seccion]||'MALLQUI GYM';
+  }
+
+  get estadoModuloActual():string{
+    if(['caja'].includes(this.seccion)) return this.dashboard?.caja?.abierta?'Caja abierta':'Caja cerrada';
+    if(['inventario','productos','kardex'].includes(this.seccion)) return (this.dashboard?.inventario?.productos_stock_bajo||0)+' alertas de stock';
+    if(['pagos','ventas','ingresos','facturas','salarios','gastos'].includes(this.seccion)) return 'Control financiero';
+    if(['clientes','membresias','asistencias','entrenador','clases','reservas','planes'].includes(this.seccion)) return 'Gestión activa';
+    return this.dashboard?.fuente?.base_datos?'Sistema en línea':'Panel administrativo';
+  }
+
+  get panelesModuloActual():Array<{title:string,subtitle:string,badge:string,icon:string,bars:number[]}>{
+    const m=this.metricasModuloActual;
+    const barsA=[28,45,62,78,54,70,42];
+    const barsB=[35,52,40,82,66,58,74];
+    const barsC=[22,38,57,49,71,86,64];
+    const barsD=[30,68,44,76,55,80,61];
+    switch(this.estiloModuloActual){
+      case 'personas':
+        return [
+          {title:'Actividad de socios',subtitle:m[0]?.label||'Actividad',badge:m[0]?.value||'0',icon:'♚',bars:barsA},
+          {title:'Seguimiento',subtitle:m[1]?.label||'Estado',badge:m[1]?.value||'0',icon:'✓',bars:barsB},
+          {title:'Movimiento semanal',subtitle:m[2]?.label||'Semana',badge:m[2]?.value||'0',icon:'⌁',bars:barsC},
+          {title:'Estado general',subtitle:m[3]?.label||'Total',badge:m[3]?.value||'0',icon:'★',bars:barsD}
+        ];
+      case 'operacion':
+        return [
+          {title:'Operación de hoy',subtitle:m[0]?.label||'Operación',badge:m[0]?.value||'0',icon:'▣',bars:barsB},
+          {title:'Movimiento',subtitle:m[1]?.label||'Movimiento',badge:m[1]?.value||'0',icon:'↗',bars:barsD},
+          {title:'Control',subtitle:m[2]?.label||'Control',badge:m[2]?.value||'0',icon:'▦',bars:barsA},
+          {title:'Rendimiento',subtitle:m[3]?.label||'Rendimiento',badge:m[3]?.value||'0',icon:'⌘',bars:barsC}
+        ];
+      case 'finanzas':
+        return [
+          {title:'Resumen financiero',subtitle:m[0]?.label||'Ingresos',badge:m[0]?.value||'0',icon:'S/',bars:barsD},
+          {title:'Flujo del día',subtitle:m[1]?.label||'Ventas',badge:m[1]?.value||'0',icon:'↗',bars:barsB},
+          {title:'Operaciones',subtitle:m[2]?.label||'Operaciones',badge:m[2]?.value||'0',icon:'▤',bars:barsA},
+          {title:'Estado de caja',subtitle:m[3]?.label||'Caja',badge:m[3]?.value||'0',icon:'▣',bars:barsC}
+        ];
+      case 'contenido':
+        return [
+          {title:'Contenido activo',subtitle:m[0]?.label||'Activos',badge:m[0]?.value||'0',icon:'◇',bars:barsA},
+          {title:'Actividad reciente',subtitle:m[1]?.label||'Actividad',badge:m[1]?.value||'0',icon:'◫',bars:barsB},
+          {title:'Participación',subtitle:m[2]?.label||'Participación',badge:m[2]?.value||'0',icon:'♚',bars:barsC},
+          {title:'Estado',subtitle:m[3]?.label||'Sistema',badge:m[3]?.value||'0',icon:'●',bars:barsD}
+        ];
+      default:
+        return [
+          {title:'Usuarios y acceso',subtitle:m[0]?.label||'Usuarios',badge:m[0]?.value||'0',icon:'♙',bars:barsC},
+          {title:'Actividad del sistema',subtitle:m[1]?.label||'Eventos',badge:m[1]?.value||'0',icon:'⌘',bars:barsA},
+          {title:'Estado del servicio',subtitle:m[2]?.label||'Estado',badge:m[2]?.value||'0',icon:'●',bars:barsB},
+          {title:'Base de datos',subtitle:m[3]?.label||'Datos',badge:m[3]?.value||'0',icon:'▦',bars:barsD}
+        ];
+    }
   }
 
   get metricasModuloActual():Array<{label:string,value:string,icon:string}>{
