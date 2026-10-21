@@ -332,7 +332,7 @@ interface GymModuleConfig {
   `]
 })
 export class AdminGymSuiteComponent implements OnInit, OnChanges {
-  @Input() modulo: GymModuleKey = 'nutricion';
+  @Input() modulo = 'nutricion';
 
   records: any[] = [];
   filtered: any[] = [];
@@ -477,7 +477,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   }
 
   get config(): GymModuleConfig {
-    return this.configs[this.modulo] || this.configs.nutricion;
+    return this.configs[this.modulo as GymModuleKey] || this.configs.nutricion;
   }
 
   get activos(): number {
