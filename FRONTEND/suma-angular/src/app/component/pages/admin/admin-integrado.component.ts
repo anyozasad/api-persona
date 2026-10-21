@@ -18,7 +18,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
   styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css', '../crossfit-final.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
-  <div class="admin-shell" [class.admin-sidebar-collapsed]="sidebarCerrado" [class.admin-home-redesign]="seccion==='dashboard'">
+  <div class="admin-shell admin-home-redesign" [class.admin-sidebar-collapsed]="sidebarCerrado">
     <header class="admin-wix-topbar">
       <button type="button" class="admin-top-brand" (click)="toggleSidebar()" title="Abrir o cerrar menú">
         <span class="admin-top-brand-mark">☰</span>
