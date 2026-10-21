@@ -706,6 +706,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
                 <p><span><i class="soft"></i>Mobility</span><b>18%</b></p>
               </div>
             </article>
+          </section>
 
           <section class="cf-ref-secondary">
             <article class="cf-ref-history">
@@ -755,8 +756,6 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               <div class="cf-ref-weight-labels"><span>Start <b>190 lbs</b></span><span>Steady Fat Loss</span><span>Current <b>155 lbs</b></span></div>
               <small>Target: 160 lbs</small>
             </article>
-          </section>
-
           </section>
         </section>
       </ng-container>
