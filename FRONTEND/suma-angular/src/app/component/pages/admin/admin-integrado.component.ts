@@ -322,54 +322,89 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
                 </div>
               </header>
 
-              <div class="mghome-module-grid">
-                <button type="button" class="module-card socios" (click)="cambiarSeccion('clientes')">
+              <div class="mghome-module-grid crossfit-module-grid">
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('reportes')">
+                  <span class="module-symbol">▥</span>
+                  <div><b>Mis reportes</b><small>Indicadores, ingresos, asistencia y análisis</small></div>
+                  <em>Reportes</em><i>→</i>
+                </button>
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('rutinas')">
+                  <span class="module-symbol">⚡</span>
+                  <div><b>Plan de entrenamiento</b><small>Rutinas, ejercicios y seguimiento</small></div>
+                  <em>Entrenamiento</em><i>→</i>
+                </button>
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('nutricion')">
+                  <span class="module-symbol">♨</span>
+                  <div><b>Plan de alimentación</b><small>Nutrición y objetivos de socios</small></div>
+                  <em>Nutrición</em><i>→</i>
+                </button>
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('entrenador')">
                   <span class="module-symbol">♙</span>
-                  <div><b>Socios</b><small>Clientes, membresías, pagos y asistencias</small></div>
-                  <em>5 herramientas</em>
-                  <i>→</i>
+                  <div><b>Entrenadores</b><small>Perfil, especialidad y gestión del entrenador</small></div>
+                  <em>Personal</em><i>→</i>
                 </button>
 
-                <button type="button" class="module-card servicios" (click)="cambiarSeccion('clases')">
-                  <span class="module-symbol">◉</span>
-                  <div><b>Servicios</b><small>Clases, reservas, rutinas y entrenador</small></div>
-                  <em>4 herramientas</em>
-                  <i>→</i>
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('clientes')">
+                  <span class="module-symbol">♚</span>
+                  <div><b>Socios</b><small>Lista, altas, edición y fichas de miembros</small></div>
+                  <em>{{dashboard?.clientes?.total ?? 0}} socios</em><i>→</i>
+                </button>
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('equipos')">
+                  <span class="module-symbol">◆</span>
+                  <div><b>Equipos</b><small>Máquinas, ubicación y mantenimiento</small></div>
+                  <em>Equipamiento</em><i>→</i>
+                </button>
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('eventos')">
+                  <span class="module-symbol">◫</span>
+                  <div><b>Eventos del gym</b><small>Calendario, actividades y campañas</small></div>
+                  <em>Eventos</em><i>→</i>
+                </button>
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('galeria')">
+                  <span class="module-symbol">▧</span>
+                  <div><b>Galería</b><small>Fotos y contenido visual del gimnasio</small></div>
+                  <em>Contenido</em><i>→</i>
                 </button>
 
-                <button type="button" class="module-card ventas" (click)="cambiarSeccion('caja')">
-                  <span class="module-symbol">▣</span>
-                  <div><b>Caja y ventas</b><small>Operaciones, historial y gastos</small></div>
-                  <em>4 herramientas</em>
-                  <i>→</i>
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('noticias')">
+                  <span class="module-symbol">◇</span>
+                  <div><b>Noticias y novedades</b><small>Avisos, promociones y publicaciones</small></div>
+                  <em>Comunidad</em><i>→</i>
+                </button>
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('planes')">
+                  <span class="module-symbol">★</span>
+                  <div><b>Planes y precios</b><small>Tarifas, duración y beneficios</small></div>
+                  <em>Membresías</em><i>→</i>
+                </button>
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('salarios')">
+                  <span class="module-symbol">S/</span>
+                  <div><b>Salarios</b><small>Pagos y remuneraciones del personal</small></div>
+                  <em>Finanzas</em><i>→</i>
+                </button>
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('pagos')">
+                  <span class="module-symbol">✓</span>
+                  <div><b>Pagos</b><small>Cobros de membresías y comprobantes</small></div>
+                  <em>Finanzas</em><i>→</i>
                 </button>
 
-                <button type="button" class="module-card inventario" (click)="cambiarSeccion('inventario')">
-                  <span class="module-symbol">▦</span>
-                  <div><b>Inventario</b><small>Productos, compras y proveedores</small></div>
-                  <em>5 herramientas</em>
-                  <i>→</i>
-                </button>
-
-                <button type="button" class="module-card atencion" (click)="cambiarSeccion('soporte')">
-                  <span class="module-symbol">●</span>
-                  <div><b>Atención</b><small>Soporte, opiniones y notificaciones</small></div>
-                  <em>3 herramientas</em>
-                  <i>→</i>
-                </button>
-
-                <button type="button" class="module-card sistema" (click)="cambiarSeccion('reportes')">
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('ingresos')">
                   <span class="module-symbol">↗</span>
-                  <div><b>Reportes y sistema</b><small>Análisis, usuarios y configuración</small></div>
-                  <em>5 herramientas</em>
-                  <i>→</i>
+                  <div><b>Ingresos</b><small>Registro y control de ingresos adicionales</small></div>
+                  <em>Finanzas</em><i>→</i>
                 </button>
-
-                <button type="button" class="module-card fitness" (click)="cambiarSeccion('nutricion')">
-                  <span class="module-symbol">✦</span>
-                  <div><b>Gestión Fitness</b><small>Nutrición, equipos, eventos, contenido y finanzas</small></div>
-                  <em>8 herramientas</em>
-                  <i>→</i>
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('facturas')">
+                  <span class="module-symbol">▤</span>
+                  <div><b>Facturas</b><small>Emitir, editar y controlar comprobantes</small></div>
+                  <em>Facturación</em><i>→</i>
+                </button>
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('caja')">
+                  <span class="module-symbol">▣</span>
+                  <div><b>Caja y ventas</b><small>Apertura, ventas, movimientos y gastos</small></div>
+                  <em>{{dashboard?.caja?.abierta ? 'Caja abierta' : 'Caja cerrada'}}</em><i>→</i>
+                </button>
+                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('inventario')">
+                  <span class="module-symbol">▦</span>
+                  <div><b>Inventario</b><small>Productos, compras, proveedores y kardex</small></div>
+                  <em>Stock</em><i>→</i>
                 </button>
               </div>
             </section>
