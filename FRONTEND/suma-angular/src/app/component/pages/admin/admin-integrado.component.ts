@@ -9,11 +9,12 @@ import { AdminComunicacionComponent } from './admin-comunicacion.component';
 import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
 import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component';
 import { AdminGymSuiteComponent } from './admin-gym-suite.component';
+import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component';
 
 @Component({
   selector: 'app-admin-integrado',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminDashboardToolsComponent, AdminGymSuiteComponent],
+  imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminDashboardToolsComponent, AdminGymSuiteComponent, AdminCrossfitExtrasComponent],
   styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css', '../crossfit-final.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
@@ -126,7 +127,62 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
         <button type="button" [class.active]="moduloActivo==='sistema'" (click)="cambiarSeccion('configuracion')">
           <span class="admin-main-nav-icon">⚙</span><span>Configuración</span>
         </button>
-      </nav>
+      
+        <div class="cf-sidebar-divider">BIBLIOTECA UI</div>
+        <button type="button" [class.active]="seccion==='tables'" (click)="cambiarSeccion('tables')"><span class="admin-main-nav-icon">▤</span><span>Tables</span></button>
+        <button type="button" [class.active]="seccion==='data-tables'" (click)="cambiarSeccion('data-tables')"><span class="admin-main-nav-icon">▦</span><span>Data Tables</span></button>
+        <button type="button" [class.active]="seccion==='graphs'" (click)="cambiarSeccion('graphs')"><span class="admin-main-nav-icon">↗</span><span>Graphs</span></button>
+        <button type="button" [class.active]="seccion==='apex'" (click)="cambiarSeccion('apex')"><span class="admin-main-nav-icon">⌁</span><span>Apex</span></button>
+        <button type="button" [class.active]="seccion==='morris'" (click)="cambiarSeccion('morris')"><span class="admin-main-nav-icon">⌘</span><span>Morris</span></button>
+        <button type="button" [class.active]="seccion==='vector-maps'" (click)="cambiarSeccion('vector-maps')"><span class="admin-main-nav-icon">◎</span><span>Vector Maps</span></button>
+
+        <div class="cf-sidebar-divider">UI ELEMENTS</div>
+        <button type="button" [class.active]="seccion==='accordions'" (click)="cambiarSeccion('accordions')"><span class="admin-main-nav-icon">☷</span><span>Accordions</span></button>
+        <button type="button" [class.active]="seccion==='carousel'" (click)="cambiarSeccion('carousel')"><span class="admin-main-nav-icon">↔</span><span>Carousel</span></button>
+        <button type="button" [class.active]="seccion==='modals'" (click)="cambiarSeccion('modals')"><span class="admin-main-nav-icon">▣</span><span>Modals</span></button>
+        <button type="button" [class.active]="seccion==='popovers'" (click)="cambiarSeccion('popovers')"><span class="admin-main-nav-icon">◇</span><span>Popovers</span></button>
+        <button type="button" [class.active]="seccion==='tabs-ui'" (click)="cambiarSeccion('tabs-ui')"><span class="admin-main-nav-icon">▥</span><span>Tabs</span></button>
+        <button type="button" [class.active]="seccion==='tooltips'" (click)="cambiarSeccion('tooltips')"><span class="admin-main-nav-icon">?</span><span>Tooltips</span></button>
+
+        <div class="cf-sidebar-divider">FORMS</div>
+        <button type="button" [class.active]="seccion==='forms'" (click)="cambiarSeccion('forms')"><span class="admin-main-nav-icon">☷</span><span>Forms</span></button>
+        <button type="button" [class.active]="seccion==='form-inputs'" (click)="cambiarSeccion('form-inputs')"><span class="admin-main-nav-icon">⌨</span><span>Form Inputs</span></button>
+        <button type="button" [class.active]="seccion==='checkbox-radio'" (click)="cambiarSeccion('checkbox-radio')"><span class="admin-main-nav-icon">✓</span><span>Checkbox & Radio</span></button>
+        <button type="button" [class.active]="seccion==='file-input'" (click)="cambiarSeccion('file-input')"><span class="admin-main-nav-icon">⇧</span><span>File Input</span></button>
+        <button type="button" [class.active]="seccion==='validations'" (click)="cambiarSeccion('validations')"><span class="admin-main-nav-icon">✓</span><span>Validations</span></button>
+        <button type="button" [class.active]="seccion==='date-time'" (click)="cambiarSeccion('date-time')"><span class="admin-main-nav-icon">◷</span><span>Date Time Pickers</span></button>
+        <button type="button" [class.active]="seccion==='input-masks'" (click)="cambiarSeccion('input-masks')"><span class="admin-main-nav-icon">⌘</span><span>Input Masks</span></button>
+        <button type="button" [class.active]="seccion==='input-tags'" (click)="cambiarSeccion('input-tags')"><span class="admin-main-nav-icon">#</span><span>Input Tags</span></button>
+
+        <div class="cf-sidebar-divider">COMPONENTS</div>
+        <button type="button" [class.active]="seccion==='alerts'" (click)="cambiarSeccion('alerts')"><span class="admin-main-nav-icon">!</span><span>Alerts</span></button>
+        <button type="button" [class.active]="seccion==='avatars'" (click)="cambiarSeccion('avatars')"><span class="admin-main-nav-icon">♙</span><span>Avatars</span></button>
+        <button type="button" [class.active]="seccion==='badges'" (click)="cambiarSeccion('badges')"><span class="admin-main-nav-icon">●</span><span>Badges</span></button>
+        <button type="button" [class.active]="seccion==='buttons'" (click)="cambiarSeccion('buttons')"><span class="admin-main-nav-icon">＋</span><span>Buttons</span></button>
+        <button type="button" [class.active]="seccion==='button-groups'" (click)="cambiarSeccion('button-groups')"><span class="admin-main-nav-icon">▦</span><span>Button Groups</span></button>
+        <button type="button" [class.active]="seccion==='cards-ui'" (click)="cambiarSeccion('cards-ui')"><span class="admin-main-nav-icon">▤</span><span>Cards</span></button>
+        <button type="button" [class.active]="seccion==='advanced-cards'" (click)="cambiarSeccion('advanced-cards')"><span class="admin-main-nav-icon">★</span><span>Advanced Cards</span></button>
+        <button type="button" [class.active]="seccion==='dropdowns'" (click)="cambiarSeccion('dropdowns')"><span class="admin-main-nav-icon">▾</span><span>Dropdowns</span></button>
+        <button type="button" [class.active]="seccion==='list-items'" (click)="cambiarSeccion('list-items')"><span class="admin-main-nav-icon">☷</span><span>List Items</span></button>
+        <button type="button" [class.active]="seccion==='progress-bars'" (click)="cambiarSeccion('progress-bars')"><span class="admin-main-nav-icon">↗</span><span>Progress Bars</span></button>
+        <button type="button" [class.active]="seccion==='placeholders'" (click)="cambiarSeccion('placeholders')"><span class="admin-main-nav-icon">▭</span><span>Placeholders</span></button>
+        <button type="button" [class.active]="seccion==='spinners'" (click)="cambiarSeccion('spinners')"><span class="admin-main-nav-icon">◌</span><span>Spinners</span></button>
+        <button type="button" [class.active]="seccion==='icons'" (click)="cambiarSeccion('icons')"><span class="admin-main-nav-icon">★</span><span>Icons</span></button>
+
+        <div class="cf-sidebar-divider">PAGES</div>
+        <button type="button" [class.active]="seccion==='account-settings'" (click)="cambiarSeccion('account-settings')"><span class="admin-main-nav-icon">⚙</span><span>Account Settings</span></button>
+        <button type="button" [class.active]="seccion==='my-profile'" (click)="cambiarSeccion('my-profile')"><span class="admin-main-nav-icon">♙</span><span>My Profile</span></button>
+        <button type="button" [class.active]="seccion==='contact'" (click)="cambiarSeccion('contact')"><span class="admin-main-nav-icon">☎</span><span>Contact</span></button>
+        <button type="button" [class.active]="seccion==='typography'" (click)="cambiarSeccion('typography')"><span class="admin-main-nav-icon">T</span><span>Typography</span></button>
+        <button type="button" [class.active]="seccion==='login-signup'" (click)="cambiarSeccion('login-signup')"><span class="admin-main-nav-icon">↪</span><span>Login / Signup</span></button>
+        <button type="button" [class.active]="seccion==='page-not-found'" (click)="cambiarSeccion('page-not-found')"><span class="admin-main-nav-icon">404</span><span>Page Not Found</span></button>
+        <button type="button" [class.active]="seccion==='maintenance'" (click)="cambiarSeccion('maintenance')"><span class="admin-main-nav-icon">⚙</span><span>Maintenance</span></button>
+        <button type="button" [class.active]="seccion==='menu-level'" (click)="cambiarSeccion('menu-level')"><span class="admin-main-nav-icon">☷</span><span>Menu Level</span></button>
+        <button type="button" [class.active]="seccion==='external-link'" (click)="cambiarSeccion('external-link')"><span class="admin-main-nav-icon">↗</span><span>External Link</span></button>
+        <button type="button" [class.active]="seccion==='chip'" (click)="cambiarSeccion('chip')"><span class="admin-main-nav-icon">#</span><span>Chip</span></button>
+        <button type="button" [class.active]="seccion==='badge-link'" (click)="cambiarSeccion('badge-link')"><span class="admin-main-nav-icon">●</span><span>Badge</span></button>
+        <button type="button" [class.active]="seccion==='disabled-link'" (click)="cambiarSeccion('disabled-link')" disabled><span class="admin-main-nav-icon">⊘</span><span>Disabled Link</span></button>
+</nav>
 
       <button type="button" class="admin-system-card" [class.is-offline]="!dashboard?.fuente?.base_datos" (click)="cambiarSeccion('configuracion')" title="Abrir estado y mantenimiento del sistema">
         <div class="system-live-dot"></div>
@@ -331,7 +387,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
         </section>
       </section>
 
-      <section class="cf-universal-module" *ngIf="seccion!=='dashboard' && !['reportes','rutinas','nutricion'].includes(seccion)">
+      <section class="cf-universal-module" *ngIf="seccion!=='dashboard' && !['reportes','rutinas','nutricion'].includes(seccion) && !extraModules.includes(seccion)">
         <div class="cf-special-crumb">
           <span>⌂</span><small>Inicio</small><b>›</b><strong>{{tituloActual}}</strong>
           <em>{{estadoModuloActual}}</em>
@@ -744,6 +800,11 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
           </main>
         </section>
       </ng-container>
+
+      <app-admin-crossfit-extras
+        *ngIf="extraModules.includes(seccion)"
+        [section]="seccion">
+      </app-admin-crossfit-extras>
 
       <app-admin-gym-suite
         *ngIf="suiteModules.includes(seccion)"
@@ -2293,6 +2354,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   workoutSemana = 1;
   nutricionPreview: any[] = [];
   suiteModules = ['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
+  extraModules = [
+    'tables','data-tables','graphs','apex','morris','vector-maps',
+    'accordions','carousel','modals','popovers','tabs-ui','tooltips',
+    'forms','form-inputs','checkbox-radio','file-input','validations','date-time','input-masks','input-tags',
+    'alerts','avatars','badges','buttons','button-groups','cards-ui','advanced-cards','dropdowns','list-items',
+    'progress-bars','placeholders','spinners','icons','account-settings','my-profile','contact','typography',
+    'login-signup','page-not-found','maintenance','menu-level','external-link','chip','badge-link','disabled-link'
+  ];
+
   private autoRefreshId: any = null;
 
   diasSemana = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
@@ -2432,6 +2502,41 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       {claves:['salario','salarios','sueldo','sueldos'],seccion:'salarios'},
       {claves:['ingreso','ingresos'],seccion:'ingresos'},
       {claves:['factura','facturas','comprobante'],seccion:'facturas'},
+      {claves:['tables','tabla','tablas'],seccion:'tables'},
+      {claves:['data table','datatable','filtros tabla'],seccion:'data-tables'},
+      {claves:['graph','graphs','graficos','gráficos'],seccion:'graphs'},
+      {claves:['apex','apex charts'],seccion:'apex'},
+      {claves:['morris','morris charts'],seccion:'morris'},
+      {claves:['mapa','maps','vector maps'],seccion:'vector-maps'},
+      {claves:['accordion','accordions'],seccion:'accordions'},
+      {claves:['carousel','carrusel'],seccion:'carousel'},
+      {claves:['modal','modals'],seccion:'modals'},
+      {claves:['popover','popovers'],seccion:'popovers'},
+      {claves:['tabs','pestañas'],seccion:'tabs-ui'},
+      {claves:['tooltip','tooltips'],seccion:'tooltips'},
+      {claves:['forms','formularios'],seccion:'forms'},
+      {claves:['inputs','form inputs'],seccion:'form-inputs'},
+      {claves:['checkbox','radio'],seccion:'checkbox-radio'},
+      {claves:['archivo','file input','upload'],seccion:'file-input'},
+      {claves:['validacion','validaciones'],seccion:'validations'},
+      {claves:['fecha hora','date time'],seccion:'date-time'},
+      {claves:['input mask','mascaras'],seccion:'input-masks'},
+      {claves:['tags','etiquetas'],seccion:'input-tags'},
+      {claves:['alerts','alertas'],seccion:'alerts'},
+      {claves:['avatars','avatares'],seccion:'avatars'},
+      {claves:['badges','insignias'],seccion:'badges'},
+      {claves:['buttons','botones'],seccion:'buttons'},
+      {claves:['cards','tarjetas'],seccion:'cards-ui'},
+      {claves:['dropdown','desplegable'],seccion:'dropdowns'},
+      {claves:['progress','progreso'],seccion:'progress-bars'},
+      {claves:['icons','iconos'],seccion:'icons'},
+      {claves:['account settings','cuenta'],seccion:'account-settings'},
+      {claves:['my profile','perfil'],seccion:'my-profile'},
+      {claves:['contact','contacto'],seccion:'contact'},
+      {claves:['typography','tipografia'],seccion:'typography'},
+      {claves:['login signup','autenticacion'],seccion:'login-signup'},
+      {claves:['404','page not found'],seccion:'page-not-found'},
+      {claves:['maintenance','mantenimiento'],seccion:'maintenance'},
       {claves:['configuracion','sistema','ajustes'],seccion:'configuracion'},
       {claves:['dashboard','inicio','panel'],seccion:'dashboard'}
     ];
@@ -2997,6 +3102,53 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       case 'ingresos':
       case 'facturas':
         break;
+      case 'tables':
+      case 'data-tables':
+      case 'graphs':
+      case 'apex':
+      case 'morris':
+      case 'vector-maps':
+      case 'accordions':
+      case 'carousel':
+      case 'modals':
+      case 'popovers':
+      case 'tabs-ui':
+      case 'tooltips':
+      case 'forms':
+      case 'form-inputs':
+      case 'checkbox-radio':
+      case 'file-input':
+      case 'validations':
+      case 'date-time':
+      case 'input-masks':
+      case 'input-tags':
+      case 'alerts':
+      case 'avatars':
+      case 'badges':
+      case 'buttons':
+      case 'button-groups':
+      case 'cards-ui':
+      case 'advanced-cards':
+      case 'dropdowns':
+      case 'list-items':
+      case 'progress-bars':
+      case 'placeholders':
+      case 'spinners':
+      case 'icons':
+      case 'account-settings':
+      case 'my-profile':
+      case 'contact':
+      case 'typography':
+      case 'login-signup':
+      case 'page-not-found':
+      case 'maintenance':
+      case 'menu-level':
+      case 'external-link':
+      case 'chip':
+      case 'badge-link':
+      case 'disabled-link':
+        break;
+
       case 'socios-hub':
         this.cargarSeccion('clientes');
         break;
