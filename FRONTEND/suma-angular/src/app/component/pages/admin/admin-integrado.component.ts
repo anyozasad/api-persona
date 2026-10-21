@@ -8,11 +8,12 @@ import { ProductosComponent } from './pages/productos/productos';
 import { AdminComunicacionComponent } from './admin-comunicacion.component';
 import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
 import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component';
+import { AdminGymSuiteComponent } from './admin-gym-suite.component';
 
 @Component({
   selector: 'app-admin-integrado',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminDashboardToolsComponent],
+  imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminDashboardToolsComponent, AdminGymSuiteComponent],
   styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
@@ -82,6 +83,9 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
           <span class="admin-main-nav-icon">▦</span><span>Inventario</span>
           <b *ngIf="badgeModulo('inventario')>0">{{badgeModulo('inventario')}}</b>
         </button>
+        <button type="button" [class.active]="moduloActivo==='gestion-fitness'" (click)="abrirModuloAdmin('gestion-fitness')">
+          <span class="admin-main-nav-icon">✦</span><span>Gestión Fitness</span>
+        </button>
         <button type="button" [class.active]="moduloActivo==='atencion'" (click)="abrirModuloAdmin('atencion')">
           <span class="admin-main-nav-icon">●</span><span>Atención</span>
           <b *ngIf="badgeModulo('atencion')>0">{{badgeModulo('atencion')}}</b>
@@ -149,6 +153,7 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
         <button type="button" [class.active]="moduloActivo==='servicios'" (click)="abrirModuloAdmin('servicios')"><span>◉</span><b>Servicios</b><i *ngIf="badgeModulo('servicios')>0">{{badgeModulo('servicios')}}</i></button>
         <button type="button" [class.active]="moduloActivo==='operacion'" (click)="abrirModuloAdmin('operacion')"><span>▣</span><b>Caja</b></button>
         <button type="button" [class.active]="moduloActivo==='inventario'" (click)="abrirModuloAdmin('inventario')"><span>▦</span><b>Stock</b><i *ngIf="badgeModulo('inventario')>0">{{badgeModulo('inventario')}}</i></button>
+        <button type="button" [class.active]="moduloActivo==='gestion-fitness'" (click)="abrirModuloAdmin('gestion-fitness')"><span>✦</span><b>Fitness</b></button>
         <button type="button" [class.active]="moduloActivo==='atencion'" (click)="abrirModuloAdmin('atencion')"><span>●</span><b>Atención</b><i *ngIf="badgeModulo('atencion')>0">{{badgeModulo('atencion')}}</i></button>
         <button type="button" [class.active]="moduloActivo==='reportes'" (click)="abrirModuloAdmin('reportes')"><span>↗</span><b>Reportes</b></button>
         <button type="button" [class.active]="moduloActivo==='sistema'" (click)="abrirModuloAdmin('sistema')"><span>⚙</span><b>Sistema</b></button>
@@ -316,6 +321,13 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
                   <em>5 herramientas</em>
                   <i>→</i>
                 </button>
+
+                <button type="button" class="module-card fitness" (click)="cambiarSeccion('nutricion')">
+                  <span class="module-symbol">✦</span>
+                  <div><b>Gestión Fitness</b><small>Nutrición, equipos, eventos, contenido y finanzas</small></div>
+                  <em>8 herramientas</em>
+                  <i>→</i>
+                </button>
               </div>
             </section>
 
@@ -368,6 +380,11 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
           </main>
         </section>
       </ng-container>
+
+      <app-admin-gym-suite
+        *ngIf="suiteModules.includes(seccion)"
+        [modulo]="seccion">
+      </app-admin-gym-suite>
 
       <ng-container *ngIf="seccion==='clientes'">
         <section class="clients-v3-shell">
@@ -1889,7 +1906,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     comunicacion:['Notificaciones','Avisos que reciben los clientes en su portal'], soporte:['Soporte','Consultas y solicitudes enviadas desde el portal del cliente'],
     opiniones:['Opiniones','Comentarios y calificaciones enviadas desde el portal del cliente'],
     auditoria:['Auditoría','Historial de acciones, usuarios, rutas y resultados del sistema'],
-    configuracion:['Configuración','Ajustes generales y mantenimiento del sistema']
+    configuracion:['Configuración','Ajustes generales y mantenimiento del sistema'],
+    nutricion:['Plan de alimentación','Planes nutricionales y seguimiento de socios'],
+    equipos:['Equipos del gimnasio','Máquinas, mantenimiento y estado operativo'],
+    eventos:['Eventos','Actividades, campañas y eventos del gimnasio'],
+    galeria:['Galería','Contenido visual y fotografías del gimnasio'],
+    noticias:['Noticias y novedades','Avisos, promociones y comunicados'],
+    salarios:['Salarios','Remuneraciones y pagos del personal'],
+    ingresos:['Ingresos','Ingresos adicionales y conceptos financieros'],
+    facturas:['Facturas','Comprobantes, importes y estados de pago']
   };
 
   sidebarCerrado = false;
@@ -1901,6 +1926,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   autoRefreshActivo = true;
   busquedaAdmin = '';
   mostrarAnalisisAvanzado = false;
+  suiteModules = ['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   private autoRefreshId: any = null;
 
   diasSemana = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
@@ -2032,6 +2058,14 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       {claves:['reporte','reportes','indicadores'],seccion:'reportes'},
       {claves:['usuario','usuarios','cuenta interna'],seccion:'usuarios'},
       {claves:['auditoria','auditoria','logs','registro actividad'],seccion:'auditoria'},
+      {claves:['nutricion','dieta','alimentacion','plan alimentacion'],seccion:'nutricion'},
+      {claves:['equipo','equipos','maquina','maquinas','mantenimiento'],seccion:'equipos'},
+      {claves:['evento','eventos','actividad'],seccion:'eventos'},
+      {claves:['galeria','foto','fotos','imagen'],seccion:'galeria'},
+      {claves:['noticia','noticias','novedad','novedades','promocion'],seccion:'noticias'},
+      {claves:['salario','salarios','sueldo','sueldos'],seccion:'salarios'},
+      {claves:['ingreso','ingresos'],seccion:'ingresos'},
+      {claves:['factura','facturas','comprobante'],seccion:'facturas'},
       {claves:['configuracion','sistema','ajustes'],seccion:'configuracion'},
       {claves:['dashboard','inicio','panel'],seccion:'dashboard'}
     ];
@@ -2063,7 +2097,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     return ['soporte','opiniones','comunicacion'].includes(this.seccion);
   }
   get esSeccionGestionSecundaria(): boolean {
-    return ['entrenador','planes','gastos','reportes','reporte-asistencias','usuarios','auditoria','configuracion','caja','ventas','historial-ventas','inventario','kardex','proveedores','compras','categorias','productos'].includes(this.seccion);
+    return ['entrenador','planes','gastos','reportes','reporte-asistencias','usuarios','auditoria','configuracion','caja','ventas','historial-ventas','inventario','kardex','proveedores','compras','categorias','productos','nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'].includes(this.seccion);
   }
 
   get puedeAutoActualizar(): boolean {
@@ -2089,6 +2123,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(['clases','reservas','rutinas','entrenador'].includes(s)) return 'servicios';
     if(['caja','ventas','historial-ventas','gastos'].includes(s)) return 'operacion';
     if(['inventario','productos','kardex','proveedores','compras','categorias'].includes(s)) return 'inventario';
+    if(['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'].includes(s)) return 'gestion-fitness';
     if(['soporte','opiniones','comunicacion'].includes(s)) return 'atencion';
     if(['reportes','reporte-asistencias'].includes(s)) return 'reportes';
     if(['usuarios','auditoria','configuracion'].includes(s)) return 'sistema';
@@ -2099,7 +2134,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     const nombres:any={
       dashboard:'Dashboard',socios:'Socios',servicios:'Servicios',
       operacion:'Caja y ventas',inventario:'Inventario',
-      atencion:'Atención al cliente',reportes:'Reportes',sistema:'Sistema'
+      atencion:'Atención al cliente',reportes:'Reportes',sistema:'Sistema','gestion-fitness':'Gestión Fitness'
     };
     return nombres[this.moduloActivo]||'Administración';
   }
@@ -2136,6 +2171,17 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
           {id:'kardex',nombre:'Kardex'},
           {id:'categorias',nombre:'Categorías'}
         ];
+      case 'gestion-fitness':
+        return [
+          {id:'nutricion',nombre:'Nutrición'},
+          {id:'equipos',nombre:'Equipos'},
+          {id:'eventos',nombre:'Eventos'},
+          {id:'galeria',nombre:'Galería'},
+          {id:'noticias',nombre:'Noticias'},
+          {id:'salarios',nombre:'Salarios'},
+          {id:'ingresos',nombre:'Ingresos'},
+          {id:'facturas',nombre:'Facturas'}
+        ];
       case 'atencion':
         return [
           {id:'soporte',nombre:'Soporte'},
@@ -2165,6 +2211,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       servicios:'clases',
       operacion:'caja',
       inventario:'inventario',
+      'gestion-fitness':'nutricion',
       atencion:'soporte',
       reportes:'reportes',
       sistema:'configuracion'
@@ -2334,6 +2381,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     switch (id) {
       case 'dashboard':
         this.cargarDashboard();
+        break;
+      case 'nutricion':
+      case 'equipos':
+      case 'eventos':
+      case 'galeria':
+      case 'noticias':
+      case 'salarios':
+      case 'ingresos':
+      case 'facturas':
         break;
       case 'socios-hub':
         this.cargarSeccion('clientes');
