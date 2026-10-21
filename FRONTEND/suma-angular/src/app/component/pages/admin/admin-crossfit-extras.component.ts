@@ -70,62 +70,75 @@ interface ExtraConfig {
         </article>
       </section>
 
-      <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'members-list'">
+      <section class="cfx-grid cfx-grid-1 cf-live-members-list" *ngSwitchCase="'members-list'">
         <article class="cfx-card">
-          <header><div><span>MEMBERS LIST</span><h2>Lista de socios</h2></div><button (click)="loadMembers()">↻ Actualizar</button></header>
-          <div class="cfx-toolbar"><input [(ngModel)]="memberSearch" placeholder="Buscar por nombre, DNI o correo..."></div>
-          <div class="cfx-table-wrap"><table><thead><tr><th>ID</th><th>Socio</th><th>DNI</th><th>Correo</th><th>Estado</th></tr></thead><tbody>
-            <tr *ngFor="let m of filteredMembers"><td>#{{m.id_cliente}}</td><td><b>{{m.nombres}} {{m.apellidos}}</b></td><td>{{m.dni||'—'}}</td><td>{{m.correo||'—'}}</td><td><span class="cfx-badge" [class.success]="m.estado==='Activo'">{{m.estado}}</span></td></tr>
-            <tr *ngIf="!filteredMembers.length"><td colspan="5">No hay socios que coincidan.</td></tr>
+          <header><div><span>MEMBERS</span><h2>Members List</h2></div><button class="primary" (click)="memberMessage='Use Add Member from the sidebar to create a new member.'">＋ Add New Member</button></header>
+          <div class="cfx-table-wrap"><table><thead><tr><th>#</th><th>Member</th><th>Age</th><th>Gender</th><th>Contact</th><th>Email</th><th>Joined On</th><th>Actions</th></tr></thead><tbody>
+            <tr *ngFor="let m of filteredMembers; let i=index">
+              <td>{{String(i+1).padStart(3,'0')}}</td>
+              <td><div class="cf-member-cell"><div class="cfx-avatar small-avatar">{{(m.nombres||'M').charAt(0)}}{{(m.apellidos||'').charAt(0)}}</div><b>{{m.nombres}} {{m.apellidos}}</b></div></td>
+              <td>{{m.edad || '—'}}</td><td>{{m.genero || '—'}}</td><td>{{m.telefono || '—'}}</td><td>{{m.correo || '—'}}</td>
+              <td>{{m.created_at ? (m.created_at | date:'yyyy-MM-dd') : '—'}}</td>
+              <td><div class="cf-member-actions"><button title="Edit" (click)="selectedMemberId=m.id_cliente;selectMember(m.id_cliente)">✎</button><button class="danger" title="Delete / deactivate">×</button></div></td>
+            </tr>
+            <tr *ngIf="!filteredMembers.length"><td colspan="8">No members found.</td></tr>
           </tbody></table></div>
+          <small *ngIf="memberMessage">{{memberMessage}}</small>
         </article>
       </section>
 
-      <section class="cfx-grid cfx-grid-3" *ngSwitchCase="'members-cards'">
-        <article class="cfx-card cfx-profile-card" *ngFor="let m of filteredMembers">
-          <div class="cfx-avatar large">{{(m.nombres||'S').charAt(0)}}{{(m.apellidos||'').charAt(0)}}</div>
-          <h2>{{m.nombres}} {{m.apellidos}}</h2>
-          <p>{{m.correo || 'Sin correo registrado'}}</p>
-          <div class="cfx-info">
-            <p><b>DNI</b><span>{{m.dni||'—'}}</span></p>
-            <p><b>Teléfono</b><span>{{m.telefono||'—'}}</span></p>
-          </div>
-          <div class="cfx-badges"><span [class.success]="m.estado==='Activo'">{{m.estado||'Activo'}}</span><span>Member #{{m.id_cliente}}</span></div>
+      <section class="cfx-grid cfx-grid-1 cf-live-member-cards" *ngSwitchCase="'members-cards'">
+        <article class="cfx-card cf-member-search-card">
+          <div class="cfx-toolbar"><input [(ngModel)]="memberSearch" placeholder="Search trainers, members, or ID..."><button class="primary">Search</button><button (click)="memberSearch=''">Reset</button></div>
         </article>
-        <article class="cfx-card cfx-empty-page span-2" *ngIf="!filteredMembers.length">
-          <span class="cfx-big-icon">♚</span><h2>No hay socios registrados</h2><p>Los socios aparecerán aquí en formato de tarjetas.</p>
-        </article>
+        <section class="cf-member-card-grid">
+          <article class="cf-member-profile-card" *ngFor="let m of filteredMembers">
+            <img src="assets/showcase/coach-showcase.svg" [alt]="m.nombres">
+            <div><h2>{{m.nombres}} {{m.apellidos}}</h2><p>{{m.objetivo || 'Fitness Member'}}</p><small>{{m.antiguedad || 'Mallqui Gym Member'}}</small><button>Contact</button></div>
+          </article>
+          <article class="cfx-card cfx-empty-page" *ngIf="!filteredMembers.length"><span class="cfx-big-icon">♚</span><h2>No members found</h2><p>Try another search.</p></article>
+        </section>
       </section>
 
-      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'add-member'">
+      <section class="cfx-grid cfx-grid-1 cf-live-member-form" *ngSwitchCase="'add-member'">
         <article class="cfx-card">
-          <header><div><span>ADD MEMBER</span><h2>Agregar socio</h2></div></header>
-          <div class="cfx-form">
-            <label>DNI<input [(ngModel)]="newMember.dni" maxlength="15"></label>
-            <label>Nombres<input [(ngModel)]="newMember.nombres"></label>
-            <label>Apellidos<input [(ngModel)]="newMember.apellidos"></label>
-            <label>Correo<input type="email" [(ngModel)]="newMember.correo"></label>
-            <label>Teléfono<input [(ngModel)]="newMember.telefono"></label>
-            <label>Dirección<input [(ngModel)]="newMember.direccion"></label>
-            <button class="primary" (click)="saveMember()" [disabled]="savingMember">Guardar socio</button>
-            <small *ngIf="memberMessage">{{memberMessage}}</small>
+          <header><div><span>MEMBERS</span><h2>Add New Member</h2><p>* Required fields</p></div></header>
+          <div class="cf-member-form-grid">
+            <label class="span-2">Full Name *<input [(ngModel)]="newMemberFullName" placeholder="John Anderson"></label>
+            <label>Email Address *<input type="email" [(ngModel)]="newMember.correo" placeholder="john@email.com"></label>
+            <label>Phone Number *<input [(ngModel)]="newMember.telefono" placeholder="+51 999 999 999"></label>
+            <label>Member ID / DNI *<input [(ngModel)]="newMember.dni" maxlength="15" placeholder="12345678"></label>
+            <label>Gender *<div class="cf-radio-row"><label><input type="radio" [(ngModel)]="memberUi.gender" value="Male"> Male</label><label><input type="radio" [(ngModel)]="memberUi.gender" value="Female"> Female</label><label><input type="radio" [(ngModel)]="memberUi.gender" value="Other"> Other</label></div></label>
+            <label>Date of Birth *<input type="date" [(ngModel)]="memberUi.dob"></label>
+            <label>Membership Plan *<select [(ngModel)]="memberUi.plan"><option>Basic</option><option>Premium</option><option>Enterprise</option></select></label>
+            <label>Fitness Goal<select [(ngModel)]="memberUi.goal"><option>Weight Loss</option><option>Muscle Gain</option><option>Endurance</option><option>General Fitness</option></select></label>
+            <label>City / Location<input [(ngModel)]="newMember.direccion" placeholder="Pucallpa"></label>
+            <label class="span-2">Additional Notes<textarea rows="4" [(ngModel)]="memberUi.notes"></textarea></label>
           </div>
+          <footer class="cf-form-footer"><button (click)="resetNewMember()">Cancel</button><button class="primary" (click)="saveMember()" [disabled]="savingMember">{{savingMember?'Saving...':'Save Member'}}</button></footer>
+          <small *ngIf="memberMessage">{{memberMessage}}</small>
         </article>
-        <article class="cfx-card cfx-profile-card"><div class="cfx-avatar large">＋</div><h2>Nuevo miembro</h2><p>Este formulario usa la API real de clientes de Mallqui Gym.</p><div class="cfx-badges"><span>MySQL</span><span class="success">Laravel API</span></div></article>
       </section>
 
-      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'edit-member'">
+      <section class="cfx-grid cfx-grid-1 cf-live-member-form" *ngSwitchCase="'edit-member'">
         <article class="cfx-card">
-          <header><div><span>EDIT MEMBER</span><h2>Editar socio</h2></div></header>
-          <div class="cfx-form">
-            <label>Seleccionar socio<select [(ngModel)]="selectedMemberId" (ngModelChange)="selectMember($event)"><option [ngValue]="0">Seleccionar</option><option *ngFor="let m of members" [ngValue]="m.id_cliente">{{m.nombres}} {{m.apellidos}}</option></select></label>
-            <label>DNI<input [(ngModel)]="editMember.dni"></label><label>Nombres<input [(ngModel)]="editMember.nombres"></label><label>Apellidos<input [(ngModel)]="editMember.apellidos"></label>
-            <label>Correo<input type="email" [(ngModel)]="editMember.correo"></label><label>Teléfono<input [(ngModel)]="editMember.telefono"></label><label>Estado<select [(ngModel)]="editMember.estado"><option>Activo</option><option>Inactivo</option></select></label>
-            <button class="primary" (click)="updateMember()" [disabled]="!selectedMemberId||savingMember">Guardar cambios</button>
-            <small *ngIf="memberMessage">{{memberMessage}}</small>
+          <header><div><span>MEMBERS</span><h2>Edit Member</h2><p>Member ID: {{selectedMemberId ? ('#MBR-'+selectedMemberId) : 'Select a member'}}</p></div></header>
+          <div class="cf-member-select"><label>Select Member<select [(ngModel)]="selectedMemberId" (ngModelChange)="selectMember($event)"><option [ngValue]="0">Select a member</option><option *ngFor="let m of members" [ngValue]="m.id_cliente">{{m.nombres}} {{m.apellidos}}</option></select></label></div>
+          <div class="cf-member-form-grid">
+            <label class="span-2">Full Name<input [(ngModel)]="editMemberFullName"></label>
+            <label>Email Address<input type="email" [(ngModel)]="editMember.correo"></label>
+            <label>Phone Number<input [(ngModel)]="editMember.telefono"></label>
+            <label>Gender<div class="cf-radio-row"><label><input type="radio" [(ngModel)]="memberUi.gender" value="Male"> Male</label><label><input type="radio" [(ngModel)]="memberUi.gender" value="Female"> Female</label><label><input type="radio" [(ngModel)]="memberUi.gender" value="Other"> Other</label></div></label>
+            <label>Date of Birth<input type="date" [(ngModel)]="memberUi.dob"></label>
+            <label>Membership Plan<select [(ngModel)]="memberUi.plan"><option>Basic</option><option>Premium</option><option>Enterprise</option></select></label>
+            <label>Fitness Goal<select [(ngModel)]="memberUi.goal"><option>Weight Loss</option><option>Muscle Gain</option><option>Endurance</option><option>General Fitness</option></select></label>
+            <label>City / Location<input [(ngModel)]="editMember.direccion"></label>
+            <label class="span-2">Notes<textarea rows="4" [(ngModel)]="memberUi.notes" placeholder="Prefers evening sessions. No injuries."></textarea></label>
           </div>
+          <div class="cf-form-danger">Remove Member</div>
+          <footer class="cf-form-footer"><button (click)="selectedMemberId=0">Cancel</button><button class="primary" (click)="updateMember()" [disabled]="!selectedMemberId||savingMember">{{savingMember?'Saving...':'Update Details'}}</button></footer>
+          <small *ngIf="memberMessage">{{memberMessage}}</small>
         </article>
-        <article class="cfx-card"><h2>Socios cargados</h2><div class="cfx-list"><div *ngFor="let m of members.slice(0,5)"><span>{{(m.nombres||'S').charAt(0)}}</span><div><b>{{m.nombres}} {{m.apellidos}}</b><small>{{m.dni||'Sin DNI'}}</small></div><em>{{m.estado}}</em></div></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'invoices-list'">
@@ -138,38 +151,29 @@ interface ExtraConfig {
         </article>
       </section>
 
-      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'invoice-details'">
-        <article class="cfx-card">
-          <header><div><span>INVOICE DETAILS</span><h2>Detalle de factura</h2></div><button (click)="loadInvoices()">↻ Actualizar</button></header>
-          <div class="cfx-form">
-            <label>Seleccionar factura
-              <select [(ngModel)]="selectedInvoiceId" (ngModelChange)="selectInvoice($event)">
-                <option [ngValue]="0">Seleccionar comprobante</option>
-                <option *ngFor="let x of invoices" [ngValue]="x.id">#{{x.id}} · {{x.titulo}}</option>
-              </select>
-            </label>
-          </div>
-          <div class="cfx-info" *ngIf="selectedInvoiceId">
-            <p><b>Cliente / comprobante</b><span>{{invoiceForm.titulo||'—'}}</span></p>
-            <p><b>Concepto</b><span>{{invoiceForm.subtitulo||'—'}}</span></p>
-            <p><b>Fecha</b><span>{{invoiceForm.fecha||'—'}}</span></p>
-            <p><b>Estado</b><span>{{invoiceForm.estado||'—'}}</span></p>
-          </div>
-        </article>
-        <article class="cfx-card cfx-gradient">
-          <small>TOTAL DE FACTURA</small>
-          <strong>S/ {{selectedInvoiceId ? (invoiceForm.monto||0) : '0.00'}}</strong>
-          <p *ngIf="selectedInvoiceId">Comprobante #{{selectedInvoiceId}} cargado desde la base de datos.</p>
-          <p *ngIf="!selectedInvoiceId">Selecciona una factura para revisar todos sus datos.</p>
+      <section class="cfx-grid cfx-grid-1 cf-live-invoice" *ngSwitchCase="'invoice-details'">
+        <article class="cfx-card cf-invoice-paper">
+          <div class="cf-invoice-select"><label>Select Invoice<select [(ngModel)]="selectedInvoiceId" (ngModelChange)="selectInvoice($event)"><option [ngValue]="0">Select invoice</option><option *ngFor="let x of invoices" [ngValue]="x.id">#INV-{{x.id}} · {{x.titulo}}</option></select></label></div>
+          <header class="cf-invoice-head"><div class="cf-invoice-logo"><img src="assets/mallqui-logo.svg" alt="Mallqui Gym"></div><div><h2>Invoice #INV-{{selectedInvoiceId || '2026-145'}}</h2><p>Issued: {{invoiceForm.fecha || '02 May 2026'}}</p><p>Due: {{invoiceUi.dueDate || '06 May 2026'}}</p><span>{{invoiceForm.estado || 'Overdue'}}</span></div></header>
+          <div class="cf-invoice-parties"><div><h3>Billed To</h3><b>{{invoiceForm.titulo || 'Member Name'}}</b><p>{{invoiceUi.address || 'Pucallpa, Ucayali, Peru'}}</p><p>{{invoiceUi.email}}</p></div><div><h3>From</h3><b>Mallqui Gym</b><p>Jr. Los Laureles Mz 17 Lt 18</p><p>Pucallpa, Ucayali</p></div></div>
+          <div class="cfx-table-wrap"><table><thead><tr><th>Service</th><th>Description</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead><tbody>
+            <tr *ngFor="let item of invoiceItems"><td><b>{{item.service}}</b></td><td>{{item.description}}</td><td>{{item.qty}}</td><td>S/ {{item.unitPrice | number:'1.2-2'}}</td><td>S/ {{item.qty*item.unitPrice | number:'1.2-2'}}</td></tr>
+          </tbody></table></div>
+          <div class="cf-invoice-totals"><p><span>Subtotal</span><b>S/ {{invoiceSubtotal | number:'1.2-2'}}</b></p><p><span>Discount</span><b>- S/ {{invoiceDiscount | number:'1.2-2'}}</b></p><p><span>Tax (5%)</span><b>S/ {{invoiceTax | number:'1.2-2'}}</b></p><h3><span>Total</span><b>S/ {{invoiceTotal | number:'1.2-2'}}</b></h3></div>
+          <div class="cf-invoice-notes"><h3>Notes</h3><p>{{invoiceUi.notes || 'Thank you for choosing Mallqui Gym. Payments are due within 4 days of invoice date.'}}</p></div>
+          <footer class="cf-form-footer"><button>Download PDF</button><button (click)="printPayslip()">Print</button><button class="primary">Pay Now</button></footer>
         </article>
       </section>
 
-      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'add-invoice'">
-        <article class="cfx-card"><header><div><span>{{section==='create-invoice'?'CREATE INVOICE':'ADD INVOICE'}}</span><h2>{{section==='create-invoice'?'Crear factura':'Agregar factura'}}</h2></div></header><div class="cfx-form">
-          <label>Cliente / comprobante<input [(ngModel)]="invoiceForm.titulo"></label><label>Concepto<input [(ngModel)]="invoiceForm.subtitulo"></label><label>Fecha<input type="date" [(ngModel)]="invoiceForm.fecha"></label><label>Total<input type="number" min="0" step="0.01" [(ngModel)]="invoiceForm.monto"></label><label>Estado<select [(ngModel)]="invoiceForm.estado"><option>Emitida</option><option>Pagada</option><option>Pendiente</option><option>Anulada</option></select></label>
-          <button class="primary" (click)="saveInvoice()" [disabled]="savingInvoice">Crear factura</button><small *ngIf="invoiceMessage">{{invoiceMessage}}</small>
-        </div></article>
-        <article class="cfx-card cfx-gradient"><small>FACTURACIÓN</small><strong>S/ {{invoiceForm.monto||0}}</strong><p>Registro conectado al módulo real de facturas.</p></article>
+      <section class="cfx-grid cfx-grid-1 cf-live-invoice-create" *ngSwitchCase="'add-invoice'">
+        <article class="cfx-card">
+          <section class="cf-invoice-form-section"><h2>Client Details</h2><div class="cf-member-form-grid"><label>Full Name<input [(ngModel)]="invoiceForm.titulo" placeholder="e.g. Arjun Mehta"></label><label>Email Address<input [(ngModel)]="invoiceUi.email" type="email" placeholder="member@example.com"></label><label>Phone<input [(ngModel)]="invoiceUi.phone" placeholder="+51 999 999 999"></label><label>Billing Address<input [(ngModel)]="invoiceUi.address"></label></div></section>
+          <section class="cf-invoice-form-section"><h2>Invoice Details</h2><div class="cf-member-form-grid"><label>Invoice Number<input [(ngModel)]="invoiceUi.invoiceNumber" placeholder="INV-2026-145"></label><label>Currency<select [(ngModel)]="invoiceUi.currency"><option>PEN</option><option>USD</option></select></label><label>Issue Date<input [(ngModel)]="invoiceForm.fecha" type="date"></label><label>Due Date<input [(ngModel)]="invoiceUi.dueDate" type="date"></label><label>Payment Terms<select [(ngModel)]="invoiceUi.paymentTerms"><option>Due in 4 days</option><option>Due in 7 days</option><option>Due in 15 days</option></select></label><label>Tax ID / RUC<input [(ngModel)]="invoiceUi.taxId"></label><label class="span-2">Notes<textarea [(ngModel)]="invoiceUi.notes" rows="3"></textarea></label></div></section>
+          <section class="cf-invoice-items"><div class="cfx-table-wrap"><table><thead><tr><th>Service</th><th>Description</th><th>Qty</th><th>Unit Price</th><th>Tax (%)</th><th>Total</th></tr></thead><tbody><tr *ngFor="let item of invoiceItems"><td><input [(ngModel)]="item.service"></td><td><input [(ngModel)]="item.description"></td><td><input type="number" [(ngModel)]="item.qty"></td><td><input type="number" [(ngModel)]="item.unitPrice"></td><td><input type="number" [(ngModel)]="item.tax"></td><td>S/ {{item.qty*item.unitPrice | number:'1.2-2'}}</td></tr></tbody></table></div><button (click)="addInvoiceItem()">＋ Add Item</button></section>
+          <div class="cf-invoice-totals"><p><span>Subtotal</span><b>S/ {{invoiceSubtotal | number:'1.2-2'}}</b></p><p><span>Discount</span><b>- S/ {{invoiceDiscount | number:'1.2-2'}}</b></p><p><span>Tax</span><b>S/ {{invoiceTax | number:'1.2-2'}}</b></p><h3><span>Total</span><b>S/ {{invoiceTotal | number:'1.2-2'}}</b></h3></div>
+          <footer class="cf-form-footer"><button>Save Draft</button><button class="primary" (click)="saveInvoice()" [disabled]="savingInvoice">{{savingInvoice?'Saving...':'Generate Invoice'}}</button></footer>
+          <small *ngIf="invoiceMessage">{{invoiceMessage}}</small>
+        </article>
       </section>
 
       <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'edit-invoice'">
@@ -181,53 +185,31 @@ interface ExtraConfig {
         <article class="cfx-card"><h2>Facturas recientes</h2><div class="cfx-list"><div *ngFor="let x of invoices.slice(0,5)"><span>▤</span><div><b>{{x.titulo}}</b><small>{{x.fecha||'Sin fecha'}}</small></div><em>{{x.estado}}</em></div></div></article>
       </section>
 
-      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'expenses'">
+      <section class="cfx-grid cfx-grid-1 cf-live-expenses" *ngSwitchCase="'expenses'">
         <article class="cfx-card">
-          <header><div><span>EXPENSES</span><h2>Registrar gasto</h2></div></header>
-          <div class="cfx-form">
-            <label>Categoría<input [(ngModel)]="expenseForm.titulo" placeholder="Ej. Mantenimiento"></label>
-            <label>Detalle<input [(ngModel)]="expenseForm.subtitulo" placeholder="Descripción del gasto"></label>
-            <label>Fecha<input type="date" [(ngModel)]="expenseForm.fecha"></label>
-            <label>Monto<input type="number" min="0" step="0.01" [(ngModel)]="expenseForm.monto"></label>
-            <label>Estado<select [(ngModel)]="expenseForm.estado"><option>Registrado</option><option>Pagado</option><option>Pendiente</option></select></label>
-            <button class="primary" (click)="saveExpense()" [disabled]="savingExpense">Guardar gasto</button>
-            <small *ngIf="expenseMessage">{{expenseMessage}}</small>
-          </div>
-        </article>
-        <article class="cfx-card">
-          <header><div><span>EXPENSES SUMMARY</span><h2>Gastos registrados</h2></div><b>S/ {{expenseTotal | number:'1.2-2'}}</b></header>
-          <div class="cfx-table-wrap"><table><thead><tr><th>Fecha</th><th>Categoría</th><th>Detalle</th><th>Monto</th><th>Estado</th></tr></thead><tbody>
-            <tr *ngFor="let x of expenses"><td>{{x.fecha||'—'}}</td><td><b>{{x.titulo}}</b></td><td>{{x.subtitulo||'—'}}</td><td>S/ {{x.monto||0}}</td><td><span class="cfx-badge">{{x.estado}}</span></td></tr>
-            <tr *ngIf="!expenses.length"><td colspan="5">Todavía no hay gastos registrados.</td></tr>
+          <header><div><span>EXPENSES</span><h2>Expenses by Month</h2><p>Summary</p></div><button class="primary" (click)="expenseEditor=!expenseEditor">＋ Add Expense</button></header>
+          <div class="cfx-table-wrap"><table><thead><tr><th>#</th><th>Product</th><th>Supplier</th><th>Equipment</th><th>Purchase Date</th><th>Payment Method</th><th>Amount</th><th>Status</th></tr></thead><tbody>
+            <tr *ngFor="let x of expenses; let i=index"><td>{{i+1}}</td><td><b>{{x.titulo}}</b></td><td>{{x.subtitulo || 'Mallqui Supplier'}}</td><td>{{x.datos?.detalle || 'Gym Equipment'}}</td><td>{{x.fecha || '—'}}</td><td>Bank Transfer</td><td>S/ {{x.monto || 0 | number:'1.2-2'}}</td><td>{{x.estado}}</td></tr>
+            <tr *ngIf="!expenses.length"><td colspan="8">No expenses registered.</td></tr>
           </tbody></table></div>
         </article>
+        <article class="cfx-card" *ngIf="expenseEditor"><header><div><span>NEW EXPENSE</span><h2>Add Expense</h2></div></header><div class="cf-member-form-grid"><label>Product<input [(ngModel)]="expenseForm.titulo"></label><label>Supplier<input [(ngModel)]="expenseForm.subtitulo"></label><label>Purchase Date<input type="date" [(ngModel)]="expenseForm.fecha"></label><label>Amount<input type="number" [(ngModel)]="expenseForm.monto"></label><label>Status<select [(ngModel)]="expenseForm.estado"><option>Completed</option><option>Processing</option><option>Ordered</option><option>Delayed</option></select></label></div><footer class="cf-form-footer"><button (click)="expenseEditor=false">Cancel</button><button class="primary" (click)="saveExpense()">Save Expense</button></footer></article>
       </section>
 
-      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'payslip'">
-        <article class="cfx-card">
-          <header><div><span>PAYSLIP</span><h2>Boleta de pago</h2></div><button (click)="loadSalaries()">↻ Actualizar</button></header>
-          <div class="cfx-form">
-            <label>Registro salarial
-              <select [(ngModel)]="selectedPayslipId">
-                <option [ngValue]="0">Último registro disponible</option>
-                <option *ngFor="let x of salaries" [ngValue]="x.id">#{{x.id}} · {{x.titulo}}</option>
-              </select>
-            </label>
-          </div>
-          <div class="cfx-info" *ngIf="selectedPayslip as p">
-            <p><b>Empleado</b><span>{{p.titulo||'—'}}</span></p>
-            <p><b>Concepto</b><span>{{p.subtitulo||'Pago salarial'}}</span></p>
-            <p><b>Fecha</b><span>{{p.fecha||'—'}}</span></p>
-            <p><b>Estado</b><span>{{p.estado||'—'}}</span></p>
-          </div>
+      <section class="cfx-grid cfx-grid-1 cf-live-payslip" *ngSwitchCase="'payslip'">
+        <article class="cfx-card cf-payslip-paper">
+          <div class="cf-invoice-select"><label>Salary Record<select [(ngModel)]="selectedPayslipId"><option [ngValue]="0">Latest record</option><option *ngFor="let x of salaries" [ngValue]="x.id">#{{x.id}} · {{x.titulo}}</option></select></label></div>
+          <header class="cf-payslip-head"><img src="assets/mallqui-logo.svg" alt="Mallqui Gym"><div><h2>Payslip No. - #PS-2026-{{selectedPayslip?.id || '052'}}</h2><p>{{selectedPayslip?.fecha || 'October 2026'}}</p><span>{{selectedPayslip?.estado || 'Paid'}}</span></div></header>
+          <section class="cf-payslip-parties"><div><h3>Employee Details</h3><b>{{selectedPayslip?.titulo || 'Mallqui Trainer'}}</b><p>{{selectedPayslip?.subtitulo || 'Senior Fitness Consultant'}}</p><p>Employee ID: EMP-{{selectedPayslip?.id || '1045'}}</p><p>Pucallpa, Ucayali, Peru</p></div><div><h3>Gym Details</h3><b>Mallqui Gym</b><p>Jr. Los Laureles Mz 17 Lt 18</p><p>Pucallpa, Ucayali, Peru</p></div></section>
+          <div class="cfx-table-wrap"><table><thead><tr><th>Earnings</th><th>Working Days</th><th>Amount (PEN)</th><th>Deductions</th><th>Amount (PEN)</th></tr></thead><tbody>
+            <tr><td>Basic Salary</td><td>26</td><td>S/ {{payslipBasic | number:'1.2-2'}}</td><td>Income Tax</td><td>S/ {{payslipTax | number:'1.2-2'}}</td></tr>
+            <tr><td>Housing / Mobility</td><td></td><td>S/ {{payslipHousing | number:'1.2-2'}}</td><td>Health Insurance</td><td>S/ {{payslipInsurance | number:'1.2-2'}}</td></tr>
+            <tr><td>Performance Bonus</td><td></td><td>S/ {{payslipBonus | number:'1.2-2'}}</td><td></td><td></td></tr>
+          </tbody></table></div>
+          <div class="cf-payslip-totals"><p><span>Gross Earnings</span><b>S/ {{payslipGross | number:'1.2-2'}}</b></p><p><span>Total Deductions</span><b>S/ {{payslipDeductions | number:'1.2-2'}}</b></p><h3><span>Net Pay</span><b>S/ {{payslipNet | number:'1.2-2'}}</b></h3></div>
+          <div class="cf-invoice-notes"><h3>Note</h3><p>This is a system-generated payslip. Salary has been credited to the employee's registered payment method.</p></div>
+          <footer class="cf-form-footer"><button>Download</button><button class="primary" (click)="printPayslip()">Print</button></footer>
         </article>
-        <article class="cfx-card cfx-gradient" *ngIf="selectedPayslip as p; else noPayslip">
-          <small>MALLQUI GYM · PAYSLIP</small>
-          <strong>S/ {{p.monto||0}}</strong>
-          <p>{{p.titulo}} · {{p.fecha||'Sin fecha'}}</p>
-          <button (click)="printPayslip()">Imprimir boleta</button>
-        </article>
-        <ng-template #noPayslip><article class="cfx-card cfx-empty-page"><span class="cfx-big-icon">▤</span><h2>Sin pagos salariales</h2><p>Registra un salario desde Salary List.</p></article></ng-template>
       </section>
 
       <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'tables'">
@@ -359,8 +341,11 @@ interface ExtraConfig {
         <article class="cfx-card"><header><div><span>TAGS</span><h2>Etiquetas</h2></div></header><div class="cfx-tag-editor"><span *ngFor="let tag of tags">{{tag}} <button (click)="removeTag(tag)">×</button></span><input [(ngModel)]="newTag" (keydown.enter)="addTag()" placeholder="Agregar etiqueta y Enter"></div></article>
       </section>
 
-      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'alerts'">
-        <article class="cfx-card span-2"><div class="cfx-alert success">✓ Operación completada correctamente.</div><div class="cfx-alert info">i Información disponible para el administrador.</div><div class="cfx-alert warning">! Hay elementos que requieren revisión.</div><div class="cfx-alert danger">× No se pudo completar una operación de ejemplo.</div></article>
+      <section class="cfx-grid cfx-grid-2 cf-live-alerts" *ngSwitchCase="'alerts'">
+        <article class="cfx-card"><header><div><span>ALERTS</span><h2>Basic Click Alerts</h2></div></header><div class="cfx-buttons"><button class="primary">Primary Alert</button><button class="success">Success Alert</button><button>Info Alert</button><button class="danger">Danger Alert</button></div></article>
+        <article class="cfx-card"><header><div><span>ALERTS</span><h2>Alerts</h2></div></header><div class="cfx-alert success">✓ A simple success alert—check it out!</div><div class="cfx-alert info">i A simple info alert—check it out!</div><div class="cfx-alert warning">! A simple warning alert—check it out!</div><div class="cfx-alert danger">× A simple danger alert—check it out!</div></article>
+        <article class="cfx-card"><header><div><span>LINKS</span><h2>Alerts with Links</h2></div></header><div class="cfx-alert info">A simple alert with <u>an example link</u>.</div><div class="cfx-alert warning">Need attention? <u>Review details</u>.</div></article>
+        <article class="cfx-card"><header><div><span>ICONS</span><h2>Alerts with Icons & Actions</h2></div></header><div class="cfx-alert success">✓ Membership payment completed. <b>View</b></div><div class="cfx-alert warning">⚑ Equipment requires maintenance. <b>Review</b></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-4" *ngSwitchCase="'avatars'">
@@ -555,10 +540,21 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
   invoiceMessage = '';
   newMember:any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
   editMember:any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
+  newMemberFullName = '';
+  editMemberFullName = '';
+  memberUi:any = {gender:'Male',dob:'',plan:'Basic',goal:'General Fitness',notes:''};
   invoiceForm:any = {titulo:'',subtitulo:'',fecha:new Date().toISOString().slice(0,10),monto:0,estado:'Emitida',imagen_url:null,datos:{}};
+  invoiceUi:any = {email:'',phone:'',address:'',invoiceNumber:'',currency:'PEN',dueDate:'',paymentTerms:'Due in 4 days',taxId:'',notes:''};
+  invoiceItems:any[] = [
+    {service:'Monthly Membership',description:'Full gym access',qty:1,unitPrice:70,tax:5},
+    {service:'Personal Training',description:'5 sessions (strength & conditioning)',qty:5,unitPrice:15,tax:5},
+    {service:'Group Classes',description:'Weekly batch',qty:4,unitPrice:10,tax:5}
+  ];
+  invoiceDiscount = 10;
   expenseForm:any = {titulo:'',subtitulo:'',fecha:new Date().toISOString().slice(0,10),monto:0,estado:'Registrado',imagen_url:null,datos:{}};
   expenseMessage = '';
   savingExpense = false;
+  expenseEditor = false;
   selectedPayslipId = 0;
   authMessage = '';
   forgotEmail = '';
@@ -694,7 +690,8 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
     return this.members.filter(m=>!q||[m.dni,m.nombres,m.apellidos,m.correo,m.telefono].filter(Boolean).join(' ').toLowerCase().includes(q));
   }
   saveMember(){
-    if(!this.newMember.dni||!this.newMember.nombres||!this.newMember.apellidos){this.memberMessage='Completa DNI, nombres y apellidos.';return;}
+    this.applyFullName(this.newMemberFullName,this.newMember);
+    if(!this.newMember.dni||!this.newMember.nombres||!this.newMember.apellidos){this.memberMessage='Complete Full Name and DNI.';return;}
     this.savingMember=true; this.memberMessage='';
     this.api.crearCliente({...this.newMember}).subscribe({
       next:()=>{this.savingMember=false;this.memberMessage='✓ Socio registrado correctamente.';this.newMember={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};this.loadMembers();},
@@ -704,9 +701,11 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
   selectMember(id:number){
     const m=this.members.find(x=>Number(x.id_cliente)===Number(id));
     this.editMember=m?{dni:m.dni||'',nombres:m.nombres||'',apellidos:m.apellidos||'',telefono:m.telefono||'',correo:m.correo||'',direccion:m.direccion||'',estado:m.estado||'Activo'}:{dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
+    this.editMemberFullName=m?[m.nombres,m.apellidos].filter(Boolean).join(' '):'';
   }
   updateMember(){
     if(!this.selectedMemberId)return;
+    this.applyFullName(this.editMemberFullName,this.editMember);
     this.savingMember=true; this.memberMessage='';
     this.api.actualizarCliente(this.selectedMemberId,{...this.editMember}).subscribe({
       next:()=>{this.savingMember=false;this.memberMessage='✓ Socio actualizado correctamente.';this.loadMembers();},
@@ -714,10 +713,27 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
     });
   }
 
+  resetNewMember(){
+    this.newMember={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
+    this.newMemberFullName=''; this.memberUi={gender:'Male',dob:'',plan:'Basic',goal:'General Fitness',notes:''}; this.memberMessage='';
+  }
+  private applyFullName(full:string,target:any){
+    const parts=String(full||'').trim().split(/\s+/).filter(Boolean);
+    if(parts.length){ target.nombres=parts.shift()||''; target.apellidos=parts.join(' ')||target.nombres; }
+  }
+
+  get invoiceSubtotal():number { return this.invoiceItems.reduce((t:any,x:any)=>t+Number(x.qty||0)*Number(x.unitPrice||0),0); }
+  get invoiceTax():number { return this.invoiceItems.reduce((t:any,x:any)=>t+(Number(x.qty||0)*Number(x.unitPrice||0)*Number(x.tax||0)/100),0); }
+  get invoiceTotal():number { return Math.max(0,this.invoiceSubtotal-this.invoiceDiscount+this.invoiceTax); }
+  addInvoiceItem(){ this.invoiceItems=[...this.invoiceItems,{service:'',description:'',qty:1,unitPrice:0,tax:5}]; }
+
   loadInvoices(){ this.api.gymRegistros('facturas').subscribe({next:r=>this.invoices=Array.isArray(r)?r:[],error:()=>this.invoices=[]}); }
   resetInvoice(){ this.invoiceForm={titulo:'',subtitulo:'',fecha:new Date().toISOString().slice(0,10),monto:0,estado:'Emitida',imagen_url:null,datos:{}}; }
   saveInvoice(){
-    if(!String(this.invoiceForm.titulo||'').trim()){this.invoiceMessage='Completa el cliente o comprobante.';return;}
+    this.invoiceForm.monto=this.invoiceTotal;
+    this.invoiceForm.subtitulo=this.invoiceItems.map(x=>x.service).filter(Boolean).join(', ');
+    this.invoiceForm.datos={...(this.invoiceForm.datos||{}),...this.invoiceUi,items:this.invoiceItems,discount:this.invoiceDiscount};
+    if(!String(this.invoiceForm.titulo||'').trim()){this.invoiceMessage='Complete the client name.';return;}
     this.savingInvoice=true; this.invoiceMessage='';
     this.api.crearGymRegistro('facturas',{...this.invoiceForm,titulo:String(this.invoiceForm.titulo).trim(),subtitulo:String(this.invoiceForm.subtitulo||'').trim()||null}).subscribe({
       next:()=>{this.savingInvoice=false;this.invoiceMessage='✓ Factura creada correctamente.';this.resetInvoice();this.loadInvoices();},
@@ -727,6 +743,7 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
   selectInvoice(id:number){
     const x=this.invoices.find(r=>Number(r.id)===Number(id));
     this.invoiceForm=x?{titulo:x.titulo||'',subtitulo:x.subtitulo||'',fecha:x.fecha||'',monto:Number(x.monto||0),estado:x.estado||'Emitida',imagen_url:x.imagen_url||null,datos:x.datos||{}}:{titulo:'',subtitulo:'',fecha:'',monto:0,estado:'Emitida',imagen_url:null,datos:{}};
+    if(x?.datos){ this.invoiceUi={...this.invoiceUi,...x.datos}; if(Array.isArray(x.datos.items)&&x.datos.items.length)this.invoiceItems=x.datos.items; this.invoiceDiscount=Number(x.datos.discount??10); }
   }
   updateInvoice(){
     if(!this.selectedInvoiceId)return;
@@ -764,6 +781,15 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
     };
     return aliases[this.section] || this.section;
   }
+  get payslipBasic():number { return Number(this.selectedPayslip?.monto||0); }
+  get payslipHousing():number { return this.payslipBasic*0.18; }
+  get payslipBonus():number { return this.payslipBasic*0.08; }
+  get payslipTax():number { return this.payslipBasic*0.07; }
+  get payslipInsurance():number { return this.payslipBasic*0.03; }
+  get payslipGross():number { return this.payslipBasic+this.payslipHousing+this.payslipBonus; }
+  get payslipDeductions():number { return this.payslipTax+this.payslipInsurance; }
+  get payslipNet():number { return Math.max(0,this.payslipGross-this.payslipDeductions); }
+
   get selectedPayslip():any {
     return this.salaries.find(x=>Number(x.id)===Number(this.selectedPayslipId)) || this.salaries[0] || null;
   }
