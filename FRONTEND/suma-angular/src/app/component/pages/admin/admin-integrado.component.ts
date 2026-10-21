@@ -33,8 +33,8 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           type="text"
           [(ngModel)]="busquedaAdmin"
           (keydown.enter)="buscarEnPanel()"
-          placeholder="Buscar módulos, socios, pagos, facturas..."
-          aria-label="Buscar una función del panel">
+          placeholder="Search modules, members, payments, invoices..."
+          aria-label="Search dashboard">
         <button type="button" (click)="buscarEnPanel()">Buscar</button>
       </label>
 
@@ -208,11 +208,11 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
 
       <!-- REPORTES: diseño propio inspirado en la página My Reports -->
       <section class="cf-special-page cf-reports-special" *ngIf="seccion==='reportes'">
-        <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Mis reportes</strong><em>Meta semanal: {{progresoSemanal()}}%</em></div>
+        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>My Reports</strong><em>Meta semanal: {{progresoSemanal()}}%</em></div>
 
         <section class="cf-reports-hero">
           <div class="cf-reports-copy">
-            <span>BIENVENIDO DE NUEVO,</span>
+            <span>WELCOME BACK,</span>
             <h1>{{auth.usuario?.nombre_usuario || 'Administrador'}}</h1>
             <p>Aquí tienes el resumen de rendimiento de Mallqui Gym.</p>
 
@@ -280,7 +280,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
 
       <!-- ENTRENAMIENTO: diseño propio inspirado en My Workout Plan -->
       <section class="cf-special-page cf-workout-special" *ngIf="seccion==='rutinas'">
-        <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Plan de entrenamiento</strong><em>Meta semanal: {{progresoSemanal()}}%</em></div>
+        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>My Workout Plan</strong><em>Meta semanal: {{progresoSemanal()}}%</em></div>
 
         <section class="cf-workout-hero">
           <div>
@@ -332,7 +332,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
 
       <!-- NUTRICIÓN: diseño propio inspirado en My Diet Plan -->
       <section class="cf-special-page cf-diet-special" *ngIf="seccion==='nutricion'">
-        <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Plan de alimentación</strong><em>Meta semanal: {{progresoSemanal()}}%</em></div>
+        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>My Diet Plan</strong><em>Meta semanal: {{progresoSemanal()}}%</em></div>
 
         <div class="cf-diet-top">
           <section class="cf-diet-hero">
@@ -2151,33 +2151,33 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
   titulos: Record<string,[string,string]> = {
-    dashboard:['Panel Administrador','Datos reales del gimnasio'], clientes:['Socios','Registro y administración de miembros'],
-    membresias:['Membresías','Asignación, renovación y vigencia de socios'], pagos:['Pagos de membresía','Compras realizadas desde el portal del cliente'],
-    planes:['Tarifas','Precios, duración y beneficios visibles para los clientes'],
+    dashboard:['Panel Administrador','Datos reales del gimnasio'], clientes:['Members','Member registration and management'],
+    membresias:['Membresías','Asignación, renovación y vigencia de socios'], pagos:['Payments','Membership payments and member purchases'],
+    planes:['Pricing Plans','Prices, duration and membership benefits'],
     gastos:['Gastos','Registro de egresos de la caja activa'],
     inventario:['Inventario','Productos, stock y control del inventario'],
     kardex:['Kardex y stock','Ajustes manuales y trazabilidad de movimientos de inventario'],
     'historial-ventas':['Historial de Ventas','Consulta de todas las ventas registradas'],
     'reporte-asistencias':['Reporte de Asistencias','Resumen y detalle de asistencias registradas'],
-    entrenador:['Entrenador','Gestión del entrenador principal'], clases:['Clases','Programación, horarios y cupos'],
-    asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['Rutinas','Asignación de rutinas solicitadas por clientes'],
+    entrenador:['Trainers','Main trainer management'], clases:['Clases','Programación, horarios y cupos'],
+    asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['My Workout Plan','Workout routines and member tracking'],
     reservas:['Reservas','Reservas creadas desde el portal y control de asistencia'], categorias:['Categorías','Clasificación de productos'],
     productos:['Productos','Registro, precios y control de stock'], proveedores:['Proveedores','Proveedores de productos'],
     compras:['Compras','Ingreso de productos e inventario'], ventas:['Ventas','Ventas de productos y stock'],
     caja:['Caja','Apertura, movimientos y cierre'],
-    reportes:['Reportes','Indicadores de gestión del gimnasio'], usuarios:['Usuarios','Cuentas internas y permisos'],
+    reportes:['My Reports','Gym performance indicators'], usuarios:['Usuarios','Cuentas internas y permisos'],
     comunicacion:['Notificaciones','Avisos que reciben los clientes en su portal'], soporte:['Soporte','Consultas y solicitudes enviadas desde el portal del cliente'],
     opiniones:['Opiniones','Comentarios y calificaciones enviadas desde el portal del cliente'],
     auditoria:['Auditoría','Historial de acciones, usuarios, rutas y resultados del sistema'],
     configuracion:['Configuración','Ajustes generales y mantenimiento del sistema'],
-    nutricion:['Plan de alimentación','Planes nutricionales y seguimiento de socios'],
-    equipos:['Equipos del gimnasio','Máquinas, mantenimiento y estado operativo'],
-    eventos:['Eventos','Actividades, campañas y eventos del gimnasio'],
-    galeria:['Galería','Contenido visual y fotografías del gimnasio'],
-    noticias:['Noticias y novedades','Avisos, promociones y comunicados'],
-    salarios:['Salarios','Remuneraciones y pagos del personal'],
-    ingresos:['Ingresos','Ingresos adicionales y conceptos financieros'],
-    facturas:['Facturas','Comprobantes, importes y estados de pago']
+    nutricion:['My Diet Plan','Nutrition plans and member tracking'],
+    equipos:['Equipments','Machines, maintenance and operating status'],
+    eventos:['Gym Events','Gym activities, campaigns and events'],
+    galeria:['Gallery','Gym visual content and photos'],
+    noticias:['News & Updates','Announcements, promotions and updates'],
+    salarios:['Salaries','Staff remuneration and payments'],
+    ingresos:['Income','Additional income and financial concepts'],
+    facturas:['Invoices','Invoices, amounts and payment status']
   };
 
   sidebarCerrado = false;
