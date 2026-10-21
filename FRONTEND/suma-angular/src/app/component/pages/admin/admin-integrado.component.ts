@@ -181,7 +181,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
 
       <button type="button" class="cf-fitness-center-card" (click)="cambiarSeccion('contact')">
         <span>☎</span>
-        <div><small>Fitness Center</small><b>000000000</b></div>
+        <div><small>Fitness Center</small><b>{{configuracionForm.telefono || '000000000'}}</b></div>
       </button>
       <button type="button" class="admin-system-card" [class.is-offline]="!dashboard?.fuente?.base_datos" (click)="cambiarSeccion('configuracion')" title="Estado del sistema">
         <div class="system-live-dot"></div>
