@@ -317,6 +317,35 @@ export class AdminApiService {
   comprobanteGym(suscripcionId:number): Observable<any> { return this.http.get(`/api/gym-admin/documentos/comprobante/${suscripcionId}`); }
   ticketGym(ventaId:number): Observable<any> { return this.http.get(`/api/gym-admin/documentos/ticket/${ventaId}`); }
 
+
+  // =========================================================
+  // MÓDULOS ADMINISTRATIVOS COMPLEMENTARIOS
+  // Nutrición, equipos, eventos, galería, noticias, salarios,
+  // ingresos y facturas.
+  // =========================================================
+  gymRegistros(modulo: string, buscar = '', estado = ''): Observable<any[]> {
+    let params = new HttpParams();
+    if (buscar) params = params.set('buscar', buscar);
+    if (estado) params = params.set('estado', estado);
+    return this.http.get<any[]>(`/api/admin-gym-registros/${modulo}`, { params });
+  }
+
+  crearGymRegistro(modulo: string, datos: any): Observable<any> {
+    return this.http.post(`/api/admin-gym-registros/${modulo}`, datos);
+  }
+
+  actualizarGymRegistro(modulo: string, id: number, datos: any): Observable<any> {
+    return this.http.put(`/api/admin-gym-registros/${modulo}/${id}`, datos);
+  }
+
+  cambiarEstadoGymRegistro(modulo: string, id: number, estado: string): Observable<any> {
+    return this.http.patch(`/api/admin-gym-registros/${modulo}/${id}/estado`, { estado });
+  }
+
+  eliminarGymRegistro(modulo: string, id: number): Observable<any> {
+    return this.http.delete(`/api/admin-gym-registros/${modulo}/${id}`);
+  }
+
   private rangoFechas(desde?: string, hasta?: string): HttpParams {
     let params = new HttpParams();
     if (desde) params = params.set('desde', desde);
