@@ -67,135 +67,125 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <span class="admin-main-nav-icon">⌂</span><span>Dashboard</span>
         </button>
         <button type="button" [class.active]="seccion==='reportes'" (click)="cambiarSeccion('reportes')">
-          <span class="admin-main-nav-icon">⌘</span><span>Mis reportes</span>
+          <span class="admin-main-nav-icon">⌘</span><span>My Reports</span>
         </button>
         <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSeccion('rutinas')">
-          <span class="admin-main-nav-icon">☷</span><span>Plan de entrenamiento</span>
-          <b *ngIf="badgeModulo('servicios')>0">{{badgeModulo('servicios')}}</b>
+          <span class="admin-main-nav-icon">☷</span><span>My Workout Plan</span>
         </button>
         <button type="button" [class.active]="seccion==='nutricion'" (click)="cambiarSeccion('nutricion')">
-          <span class="admin-main-nav-icon">♨</span><span>Plan de alimentación</span>
+          <span class="admin-main-nav-icon">♨</span><span>My Diet Plan</span>
         </button>
         <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSeccion('asistencias')">
-          <span class="admin-main-nav-icon">▣</span><span>Control de asistencia</span>
+          <span class="admin-main-nav-icon">▣</span><span>Attendance Tracker</span>
         </button>
         <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSeccion('entrenador')">
-          <span class="admin-main-nav-icon">♙</span><span>Entrenadores</span>
+          <span class="admin-main-nav-icon">♙</span><span>Trainers</span>
         </button>
         <button type="button" [class.active]="seccion==='trainer-profile'" (click)="cambiarSeccion('trainer-profile')">
-          <span class="admin-main-nav-icon">◎</span><span>Perfil del entrenador</span>
+          <span class="admin-main-nav-icon">◎</span><span>Trainer Profile</span>
         </button>
-        <button type="button" [class.active]="moduloActivo==='socios'" (click)="cambiarSeccion('clientes')">
-          <span class="admin-main-nav-icon">♚</span><span>Socios</span>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="['clientes','members-list','add-member','edit-member'].includes(seccion)" (click)="toggleNavGroup('members')">
+          <span class="admin-main-nav-icon">♚</span><span>Gym Members</span><i>{{navGroups.members?'⌄':'›'}}</i>
         </button>
-        <button type="button" class="cf-sub-nav" [class.active]="seccion==='members-list'" (click)="cambiarSeccion('members-list')"><span class="admin-main-nav-icon">☷</span><span>Members List</span></button>
-        <button type="button" class="cf-sub-nav" [class.active]="seccion==='add-member'" (click)="cambiarSeccion('add-member')"><span class="admin-main-nav-icon">＋</span><span>Add Member</span></button>
-        <button type="button" class="cf-sub-nav" [class.active]="seccion==='edit-member'" (click)="cambiarSeccion('edit-member')"><span class="admin-main-nav-icon">✎</span><span>Edit Member</span></button>
-        <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSeccion('equipos')">
-          <span class="admin-main-nav-icon">◆</span><span>Equipos</span>
+        <div class="cf-nav-children" *ngIf="navGroups.members">
+          <button type="button" [class.active]="seccion==='clientes'" (click)="cambiarSeccion('clientes')"><span>•</span><span>Members</span></button>
+          <button type="button" [class.active]="seccion==='members-list'" (click)="cambiarSeccion('members-list')"><span>•</span><span>Members List</span></button>
+          <button type="button" [class.active]="seccion==='add-member'" (click)="cambiarSeccion('add-member')"><span>•</span><span>Add Member</span></button>
+          <button type="button" [class.active]="seccion==='edit-member'" (click)="cambiarSeccion('edit-member')"><span>•</span><span>Edit Member</span></button>
+        </div>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="['salarios','pagos','ingresos','facturas','invoices-list','add-invoice','edit-invoice'].includes(seccion)" (click)="toggleNavGroup('payments')">
+          <span class="admin-main-nav-icon">S/</span><span>Payments</span><i>{{navGroups.payments?'⌄':'›'}}</i>
         </button>
-        <button type="button" [class.active]="seccion==='eventos'" (click)="cambiarSeccion('eventos')">
-          <span class="admin-main-nav-icon">◫</span><span>Eventos</span>
+        <div class="cf-nav-children" *ngIf="navGroups.payments">
+          <button type="button" [class.active]="seccion==='salarios'" (click)="cambiarSeccion('salarios')"><span>•</span><span>Salaries</span></button>
+          <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSeccion('pagos')"><span>•</span><span>Payments</span></button>
+          <button type="button" [class.active]="seccion==='ingresos'" (click)="cambiarSeccion('ingresos')"><span>•</span><span>Income</span></button>
+          <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSeccion('facturas')"><span>•</span><span>Invoices</span></button>
+          <button type="button" [class.active]="seccion==='invoices-list'" (click)="cambiarSeccion('invoices-list')"><span>•</span><span>Invoices List</span></button>
+          <button type="button" [class.active]="seccion==='add-invoice'" (click)="cambiarSeccion('add-invoice')"><span>•</span><span>Add Invoice</span></button>
+          <button type="button" [class.active]="seccion==='edit-invoice'" (click)="cambiarSeccion('edit-invoice')"><span>•</span><span>Edit Invoice</span></button>
+        </div>
+
+        <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSeccion('equipos')"><span class="admin-main-nav-icon">◆</span><span>Equipments</span></button>
+        <button type="button" [class.active]="seccion==='eventos'" (click)="cambiarSeccion('eventos')"><span class="admin-main-nav-icon">◫</span><span>Gym Events</span></button>
+        <button type="button" [class.active]="seccion==='galeria'" (click)="cambiarSeccion('galeria')"><span class="admin-main-nav-icon">▧</span><span>Gallery</span></button>
+        <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSeccion('noticias')"><span class="admin-main-nav-icon">◇</span><span>News & Updates</span></button>
+        <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSeccion('planes')"><span class="admin-main-nav-icon">★</span><span>Pricing Plans</span></button>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="['accordions','carousel','modals','popovers','tabs-ui','tooltips','alerts','avatars','badges','buttons','button-groups','cards-ui','advanced-cards','dropdowns','list-items','progress-bars','placeholders','spinners','chip','badge-link'].includes(seccion)" (click)="toggleNavGroup('ui')">
+          <span class="admin-main-nav-icon">✦</span><span>UI Elements</span><i>{{navGroups.ui?'⌄':'›'}}</i>
         </button>
-        <button type="button" [class.active]="seccion==='galeria'" (click)="cambiarSeccion('galeria')">
-          <span class="admin-main-nav-icon">▧</span><span>Galería</span>
+        <div class="cf-nav-children" *ngIf="navGroups.ui">
+          <button *ngFor="let x of uiElementLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSeccion(x.id)"><span>•</span><span>{{x.label}}</span></button>
+        </div>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="seccion==='sports-components'" (click)="toggleNavGroup('sports')">
+          <span class="admin-main-nav-icon">🏋</span><span>Sports Components</span><i>{{navGroups.sports?'⌄':'›'}}</i>
         </button>
-        <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSeccion('noticias')">
-          <span class="admin-main-nav-icon">◇</span><span>Noticias</span>
+        <div class="cf-nav-children" *ngIf="navGroups.sports">
+          <button type="button" [class.active]="seccion==='sports-components'" (click)="cambiarSeccion('sports-components')"><span>•</span><span>Fitness Widgets</span></button>
+          <button type="button" (click)="cambiarSeccion('rutinas')"><span>•</span><span>Workout Cards</span></button>
+          <button type="button" (click)="cambiarSeccion('nutricion')"><span>•</span><span>Diet Cards</span></button>
+          <button type="button" (click)="cambiarSeccion('trainer-profile')"><span>•</span><span>Trainer Card</span></button>
+        </div>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="['forms','form-inputs','checkbox-radio','file-input','validations','date-time','input-masks','input-tags'].includes(seccion)" (click)="toggleNavGroup('forms')">
+          <span class="admin-main-nav-icon">☷</span><span>Forms</span><i>{{navGroups.forms?'⌄':'›'}}</i>
         </button>
-        <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSeccion('planes')">
-          <span class="admin-main-nav-icon">★</span><span>Planes y precios</span>
+        <div class="cf-nav-children" *ngIf="navGroups.forms">
+          <button *ngFor="let x of formLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSeccion(x.id)"><span>•</span><span>{{x.label}}</span></button>
+        </div>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="['tables','data-tables'].includes(seccion)" (click)="toggleNavGroup('tables')">
+          <span class="admin-main-nav-icon">▤</span><span>Tables</span><i>{{navGroups.tables?'⌄':'›'}}</i>
         </button>
-        <button type="button" [class.active]="seccion==='salarios'" (click)="cambiarSeccion('salarios')">
-          <span class="admin-main-nav-icon">S/</span><span>Salarios</span>
+        <div class="cf-nav-children" *ngIf="navGroups.tables">
+          <button type="button" [class.active]="seccion==='tables'" (click)="cambiarSeccion('tables')"><span>•</span><span>Tables</span></button>
+          <button type="button" [class.active]="seccion==='data-tables'" (click)="cambiarSeccion('data-tables')"><span>•</span><span>Data Tables</span></button>
+        </div>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="['graphs','apex','morris'].includes(seccion)" (click)="toggleNavGroup('graphs')">
+          <span class="admin-main-nav-icon">↗</span><span>Graphs</span><i>{{navGroups.graphs?'⌄':'›'}}</i>
         </button>
-        <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSeccion('pagos')">
-          <span class="admin-main-nav-icon">✓</span><span>Pagos</span>
-        </button>
-        <button type="button" [class.active]="seccion==='ingresos'" (click)="cambiarSeccion('ingresos')">
-          <span class="admin-main-nav-icon">↗</span><span>Ingresos</span>
-        </button>
-        <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSeccion('facturas')">
-          <span class="admin-main-nav-icon">▤</span><span>Facturas</span>
-        </button>
-        <button type="button" class="cf-sub-nav" [class.active]="seccion==='invoices-list'" (click)="cambiarSeccion('invoices-list')"><span class="admin-main-nav-icon">☷</span><span>Invoices List</span></button>
-        <button type="button" class="cf-sub-nav" [class.active]="seccion==='add-invoice'" (click)="cambiarSeccion('add-invoice')"><span class="admin-main-nav-icon">＋</span><span>Add Invoice</span></button>
-        <button type="button" class="cf-sub-nav" [class.active]="seccion==='edit-invoice'" (click)="cambiarSeccion('edit-invoice')"><span class="admin-main-nav-icon">✎</span><span>Edit Invoice</span></button>
-        <button type="button" [class.active]="moduloActivo==='operacion'" (click)="cambiarSeccion('caja')">
-          <span class="admin-main-nav-icon">▣</span><span>Caja y ventas</span>
-        </button>
-        <button type="button" [class.active]="moduloActivo==='inventario'" (click)="cambiarSeccion('inventario')">
-          <span class="admin-main-nav-icon">▦</span><span>Inventario</span>
-        </button>
-        <button type="button" [class.active]="moduloActivo==='atencion'" (click)="cambiarSeccion('soporte')">
-          <span class="admin-main-nav-icon">●</span><span>Atención</span>
-        </button>
-        <button type="button" [class.active]="moduloActivo==='sistema'" (click)="cambiarSeccion('configuracion')">
-          <span class="admin-main-nav-icon">⚙</span><span>Configuración</span>
-        </button>
-      
-        <div class="cf-sidebar-divider">BIBLIOTECA UI</div>
-        <button type="button" [class.active]="seccion==='tables'" (click)="cambiarSeccion('tables')"><span class="admin-main-nav-icon">▤</span><span>Tables</span></button>
-        <button type="button" [class.active]="seccion==='data-tables'" (click)="cambiarSeccion('data-tables')"><span class="admin-main-nav-icon">▦</span><span>Data Tables</span></button>
-        <button type="button" [class.active]="seccion==='graphs'" (click)="cambiarSeccion('graphs')"><span class="admin-main-nav-icon">↗</span><span>Graphs</span></button>
-        <button type="button" [class.active]="seccion==='apex'" (click)="cambiarSeccion('apex')"><span class="admin-main-nav-icon">⌁</span><span>Apex</span></button>
-        <button type="button" [class.active]="seccion==='morris'" (click)="cambiarSeccion('morris')"><span class="admin-main-nav-icon">⌘</span><span>Morris</span></button>
+        <div class="cf-nav-children" *ngIf="navGroups.graphs">
+          <button type="button" [class.active]="seccion==='graphs'" (click)="cambiarSeccion('graphs')"><span>•</span><span>Graphs</span></button>
+          <button type="button" [class.active]="seccion==='apex'" (click)="cambiarSeccion('apex')"><span>•</span><span>Apex</span></button>
+          <button type="button" [class.active]="seccion==='morris'" (click)="cambiarSeccion('morris')"><span>•</span><span>Morris</span></button>
+        </div>
+
         <button type="button" [class.active]="seccion==='vector-maps'" (click)="cambiarSeccion('vector-maps')"><span class="admin-main-nav-icon">◎</span><span>Vector Maps</span></button>
-
-        <div class="cf-sidebar-divider">UI ELEMENTS</div>
-        <button type="button" [class.active]="seccion==='accordions'" (click)="cambiarSeccion('accordions')"><span class="admin-main-nav-icon">☷</span><span>Accordions</span></button>
-        <button type="button" [class.active]="seccion==='carousel'" (click)="cambiarSeccion('carousel')"><span class="admin-main-nav-icon">↔</span><span>Carousel</span></button>
-        <button type="button" [class.active]="seccion==='modals'" (click)="cambiarSeccion('modals')"><span class="admin-main-nav-icon">▣</span><span>Modals</span></button>
-        <button type="button" [class.active]="seccion==='popovers'" (click)="cambiarSeccion('popovers')"><span class="admin-main-nav-icon">◇</span><span>Popovers</span></button>
-        <button type="button" [class.active]="seccion==='tabs-ui'" (click)="cambiarSeccion('tabs-ui')"><span class="admin-main-nav-icon">▥</span><span>Tabs</span></button>
-        <button type="button" [class.active]="seccion==='tooltips'" (click)="cambiarSeccion('tooltips')"><span class="admin-main-nav-icon">?</span><span>Tooltips</span></button>
-
-        <div class="cf-sidebar-divider">FORMS</div>
-        <button type="button" [class.active]="seccion==='forms'" (click)="cambiarSeccion('forms')"><span class="admin-main-nav-icon">☷</span><span>Forms</span></button>
-        <button type="button" [class.active]="seccion==='form-inputs'" (click)="cambiarSeccion('form-inputs')"><span class="admin-main-nav-icon">⌨</span><span>Form Inputs</span></button>
-        <button type="button" [class.active]="seccion==='checkbox-radio'" (click)="cambiarSeccion('checkbox-radio')"><span class="admin-main-nav-icon">✓</span><span>Checkbox & Radio</span></button>
-        <button type="button" [class.active]="seccion==='file-input'" (click)="cambiarSeccion('file-input')"><span class="admin-main-nav-icon">⇧</span><span>File Input</span></button>
-        <button type="button" [class.active]="seccion==='validations'" (click)="cambiarSeccion('validations')"><span class="admin-main-nav-icon">✓</span><span>Validations</span></button>
-        <button type="button" [class.active]="seccion==='date-time'" (click)="cambiarSeccion('date-time')"><span class="admin-main-nav-icon">◷</span><span>Date Time Pickers</span></button>
-        <button type="button" [class.active]="seccion==='input-masks'" (click)="cambiarSeccion('input-masks')"><span class="admin-main-nav-icon">⌘</span><span>Input Masks</span></button>
-        <button type="button" [class.active]="seccion==='input-tags'" (click)="cambiarSeccion('input-tags')"><span class="admin-main-nav-icon">#</span><span>Input Tags</span></button>
-
-        <div class="cf-sidebar-divider">COMPONENTS</div>
-        <button type="button" [class.active]="seccion==='alerts'" (click)="cambiarSeccion('alerts')"><span class="admin-main-nav-icon">!</span><span>Alerts</span></button>
-        <button type="button" [class.active]="seccion==='avatars'" (click)="cambiarSeccion('avatars')"><span class="admin-main-nav-icon">♙</span><span>Avatars</span></button>
-        <button type="button" [class.active]="seccion==='badges'" (click)="cambiarSeccion('badges')"><span class="admin-main-nav-icon">●</span><span>Badges</span></button>
-        <button type="button" [class.active]="seccion==='buttons'" (click)="cambiarSeccion('buttons')"><span class="admin-main-nav-icon">＋</span><span>Buttons</span></button>
-        <button type="button" [class.active]="seccion==='button-groups'" (click)="cambiarSeccion('button-groups')"><span class="admin-main-nav-icon">▦</span><span>Button Groups</span></button>
-        <button type="button" [class.active]="seccion==='cards-ui'" (click)="cambiarSeccion('cards-ui')"><span class="admin-main-nav-icon">▤</span><span>Cards</span></button>
-        <button type="button" [class.active]="seccion==='advanced-cards'" (click)="cambiarSeccion('advanced-cards')"><span class="admin-main-nav-icon">★</span><span>Advanced Cards</span></button>
-        <button type="button" [class.active]="seccion==='dropdowns'" (click)="cambiarSeccion('dropdowns')"><span class="admin-main-nav-icon">▾</span><span>Dropdowns</span></button>
-        <button type="button" [class.active]="seccion==='list-items'" (click)="cambiarSeccion('list-items')"><span class="admin-main-nav-icon">☷</span><span>List Items</span></button>
-        <button type="button" [class.active]="seccion==='progress-bars'" (click)="cambiarSeccion('progress-bars')"><span class="admin-main-nav-icon">↗</span><span>Progress Bars</span></button>
-        <button type="button" [class.active]="seccion==='placeholders'" (click)="cambiarSeccion('placeholders')"><span class="admin-main-nav-icon">▭</span><span>Placeholders</span></button>
-        <button type="button" [class.active]="seccion==='spinners'" (click)="cambiarSeccion('spinners')"><span class="admin-main-nav-icon">◌</span><span>Spinners</span></button>
         <button type="button" [class.active]="seccion==='icons'" (click)="cambiarSeccion('icons')"><span class="admin-main-nav-icon">★</span><span>Icons</span></button>
-
-        <div class="cf-sidebar-divider">PAGES</div>
         <button type="button" [class.active]="seccion==='account-settings'" (click)="cambiarSeccion('account-settings')"><span class="admin-main-nav-icon">⚙</span><span>Account Settings</span></button>
         <button type="button" [class.active]="seccion==='my-profile'" (click)="cambiarSeccion('my-profile')"><span class="admin-main-nav-icon">♙</span><span>My Profile</span></button>
         <button type="button" [class.active]="seccion==='contact'" (click)="cambiarSeccion('contact')"><span class="admin-main-nav-icon">☎</span><span>Contact</span></button>
         <button type="button" [class.active]="seccion==='typography'" (click)="cambiarSeccion('typography')"><span class="admin-main-nav-icon">T</span><span>Typography</span></button>
-        <button type="button" [class.active]="seccion==='login-signup'" (click)="cambiarSeccion('login-signup')"><span class="admin-main-nav-icon">↪</span><span>Login / Signup</span></button>
+        <button type="button" [class.active]="seccion==='login-signup'" (click)="cambiarSeccion('login-signup')"><span class="admin-main-nav-icon">↪</span><span>Login/Signup</span></button>
         <button type="button" [class.active]="seccion==='page-not-found'" (click)="cambiarSeccion('page-not-found')"><span class="admin-main-nav-icon">404</span><span>Page Not Found</span></button>
         <button type="button" [class.active]="seccion==='maintenance'" (click)="cambiarSeccion('maintenance')"><span class="admin-main-nav-icon">⚙</span><span>Maintenance</span></button>
-        <button type="button" [class.active]="seccion==='menu-level'" (click)="cambiarSeccion('menu-level')"><span class="admin-main-nav-icon">☷</span><span>Menu Level</span></button>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="seccion==='menu-level'" (click)="toggleNavGroup('menu')">
+          <span class="admin-main-nav-icon">☷</span><span>Menu Level</span><i>{{navGroups.menu?'⌄':'›'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.menu">
+          <button type="button" [class.active]="seccion==='menu-level'" (click)="cambiarSeccion('menu-level')"><span>•</span><span>Menu Level 1</span></button>
+          <button type="button" (click)="cambiarSeccion('menu-level')"><span>•</span><span>Menu Level 2</span></button>
+        </div>
+
         <button type="button" [class.active]="seccion==='external-link'" (click)="cambiarSeccion('external-link')"><span class="admin-main-nav-icon">↗</span><span>External Link</span></button>
         <button type="button" [class.active]="seccion==='chip'" (click)="cambiarSeccion('chip')"><span class="admin-main-nav-icon">#</span><span>Chip</span></button>
         <button type="button" [class.active]="seccion==='badge-link'" (click)="cambiarSeccion('badge-link')"><span class="admin-main-nav-icon">●</span><span>Badge</span></button>
-        <button type="button" [class.active]="seccion==='disabled-link'" (click)="cambiarSeccion('disabled-link')" disabled><span class="admin-main-nav-icon">⊘</span><span>Disabled Link</span></button>
-</nav>
+        <button type="button" disabled><span class="admin-main-nav-icon">⊘</span><span>Disabled Link</span></button>
+      </nav>
 
-      <button type="button" class="admin-system-card" [class.is-offline]="!dashboard?.fuente?.base_datos" (click)="cambiarSeccion('configuracion')" title="Abrir estado y mantenimiento del sistema">
+      <button type="button" class="cf-fitness-center-card" (click)="cambiarSeccion('contact')">
+        <span>☎</span>
+        <div><small>Fitness Center</small><b>000000000</b></div>
+      </button>
+      <button type="button" class="admin-system-card" [class.is-offline]="!dashboard?.fuente?.base_datos" (click)="cambiarSeccion('configuracion')" title="Estado del sistema">
         <div class="system-live-dot"></div>
-        <div>
-          <b>{{dashboard?.fuente?.base_datos ? 'Sistema en línea' : 'Verificando sistema'}}</b>
-          <small>{{dashboard?.fuente?.base_datos ? ('BD: '+dashboard.fuente.base_datos) : 'Esperando conexión con Laravel y MySQL'}}</small>
-        </div>
+        <div><b>{{dashboard?.fuente?.base_datos ? 'Sistema en línea' : 'Verificando sistema'}}</b><small>{{dashboard?.fuente?.base_datos ? ('BD: '+dashboard.fuente.base_datos) : 'Esperando conexión'}}</small></div>
       </button>
       <button type="button" class="admin-logout" (click)="cerrarSesion()"><span>↪</span> Cerrar sesión</button>
     </aside>
@@ -2360,8 +2350,24 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   workoutSemana = 1;
   nutricionPreview: any[] = [];
   suiteModules = ['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
+  navGroups:any = {members:false,payments:false,ui:false,sports:false,forms:false,tables:false,graphs:false,menu:false};
+  uiElementLinks = [
+    {id:'accordions',label:'Accordions'},{id:'carousel',label:'Carousel'},{id:'modals',label:'Modals'},
+    {id:'popovers',label:'Popovers'},{id:'tabs-ui',label:'Tabs'},{id:'tooltips',label:'Tooltips'},
+    {id:'alerts',label:'Alerts'},{id:'avatars',label:'Avatars'},{id:'badges',label:'Badges'},
+    {id:'buttons',label:'Buttons'},{id:'button-groups',label:'Button Groups'},{id:'cards-ui',label:'Cards'},
+    {id:'advanced-cards',label:'Advanced Cards'},{id:'dropdowns',label:'Dropdowns'},{id:'list-items',label:'List Items'},
+    {id:'progress-bars',label:'Progress Bars'},{id:'placeholders',label:'Placeholders'},{id:'spinners',label:'Spinners'},
+    {id:'chip',label:'Chip'},{id:'badge-link',label:'Badge'}
+  ];
+  formLinks = [
+    {id:'forms',label:'Forms'},{id:'form-inputs',label:'Form Inputs'},{id:'checkbox-radio',label:'Checkbox & Radio'},
+    {id:'file-input',label:'File Input'},{id:'validations',label:'Validations'},{id:'date-time',label:'Date Time Pickers'},
+    {id:'input-masks',label:'Input Masks'},{id:'input-tags',label:'Input Tags'}
+  ];
+
   extraModules = [
-    'trainer-profile','members-list','add-member','edit-member','invoices-list','add-invoice','edit-invoice',
+    'sports-components','trainer-profile','members-list','add-member','edit-member','invoices-list','add-invoice','edit-invoice',
     'tables','data-tables','graphs','apex','morris','vector-maps',
     'accordions','carousel','modals','popovers','tabs-ui','tooltips',
     'forms','form-inputs','checkbox-radio','file-input','validations','date-time','input-masks','input-tags',
@@ -2488,6 +2494,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       {claves:['rutina','rutinas'],seccion:'rutinas'},
       {claves:['entrenador','entrenadores'],seccion:'entrenador'},
       {claves:['trainer profile','perfil entrenador'],seccion:'trainer-profile'},
+      {claves:['sports components','componentes deportivos','fitness widgets'],seccion:'sports-components'},
       {claves:['caja','apertura','cierre'],seccion:'caja'},
       {claves:['venta','ventas','punto de venta'],seccion:'ventas'},
       {claves:['gasto','gastos','egreso','egresos'],seccion:'gastos'},
@@ -2563,6 +2570,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     }
 
     this.error='No encontré esa función. Prueba con socios, reservas, caja, ventas, inventario, reportes o sistema.';
+  }
+
+  toggleNavGroup(group:string):void{
+    this.navGroups[group]=!this.navGroups[group];
   }
 
   toggleSidebar(): void {
@@ -3116,6 +3127,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       case 'ingresos':
       case 'facturas':
         break;
+      case 'sports-components':
       case 'trainer-profile':
       case 'members-list':
       case 'add-member':
