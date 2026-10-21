@@ -326,77 +326,117 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
             </aside>
           </section>
 
-          <section class="mgx-panel mgx-modules">
-            <header class="mgx-panel-head modules-head">
+          <section class="mgx-panel mgx-management">
+            <header class="mgx-management-head">
               <div>
-                <span>GESTIÓN DEL SISTEMA</span>
-                <h2>Módulos administrativos</h2>
-                <p>Todas las funciones principales siguen disponibles, pero ordenadas por área.</p>
+                <span class="mgx-management-kicker">CENTRO DE GESTIÓN</span>
+                <h2>Administración del gimnasio</h2>
+                <p>Accede a cada área de trabajo sin salir del panel principal.</p>
               </div>
-              <strong>26 áreas funcionales</strong>
+              <div class="mgx-management-summary">
+                <b>26</b>
+                <span>funciones<br>disponibles</span>
+              </div>
             </header>
 
-            <div class="mgx-module-grid">
-              <article class="mgx-module">
-                <header><span>♙</span><div><b>Socios</b><small>Clientes y membresías</small></div></header>
-                <nav>
-                  <button (click)="cambiarSeccion('clientes')">Clientes</button>
-                  <button (click)="cambiarSeccion('membresias')">Membresías</button>
-                  <button (click)="cambiarSeccion('pagos')">Pagos</button>
-                  <button (click)="cambiarSeccion('asistencias')">Asistencia</button>
-                  <button (click)="cambiarSeccion('planes')">Tarifas</button>
+            <div class="mgx-management-table">
+              <div class="mgx-management-table-head">
+                <span>ÁREA</span>
+                <span>ACCESOS DISPONIBLES</span>
+                <span>FUNCIONES</span>
+                <span></span>
+              </div>
+
+              <article class="mgx-management-row">
+                <div class="mgx-management-area">
+                  <span class="mgx-management-icon socios">♙</span>
+                  <div><b>Socios</b><small>Clientes, membresías y control de acceso</small></div>
+                </div>
+                <nav class="mgx-management-links">
+                  <button type="button" (click)="cambiarSeccion('clientes')">Clientes</button>
+                  <button type="button" (click)="cambiarSeccion('membresias')">Membresías</button>
+                  <button type="button" (click)="cambiarSeccion('pagos')">Pagos</button>
+                  <button type="button" (click)="cambiarSeccion('asistencias')">Asistencia</button>
+                  <button type="button" (click)="cambiarSeccion('planes')">Tarifas</button>
                 </nav>
+                <span class="mgx-management-count">5 funciones</span>
+                <button type="button" class="mgx-management-open" (click)="cambiarSeccion('clientes')">Abrir <span>→</span></button>
               </article>
 
-              <article class="mgx-module">
-                <header><span>◉</span><div><b>Servicios</b><small>Entrenamiento y agenda</small></div></header>
-                <nav>
-                  <button (click)="cambiarSeccion('clases')">Clases</button>
-                  <button (click)="cambiarSeccion('reservas')">Reservas</button>
-                  <button (click)="cambiarSeccion('rutinas')">Rutinas</button>
-                  <button (click)="cambiarSeccion('entrenador')">Entrenador</button>
+              <article class="mgx-management-row">
+                <div class="mgx-management-area">
+                  <span class="mgx-management-icon servicios">◉</span>
+                  <div><b>Servicios</b><small>Clases, reservas y entrenamiento</small></div>
+                </div>
+                <nav class="mgx-management-links">
+                  <button type="button" (click)="cambiarSeccion('clases')">Clases</button>
+                  <button type="button" (click)="cambiarSeccion('reservas')">Reservas</button>
+                  <button type="button" (click)="cambiarSeccion('rutinas')">Rutinas</button>
+                  <button type="button" (click)="cambiarSeccion('entrenador')">Entrenador</button>
                 </nav>
+                <span class="mgx-management-count">4 funciones</span>
+                <button type="button" class="mgx-management-open" (click)="cambiarSeccion('clases')">Abrir <span>→</span></button>
               </article>
 
-              <article class="mgx-module">
-                <header><span>▣</span><div><b>Caja y ventas</b><small>Operación financiera</small></div></header>
-                <nav>
-                  <button (click)="cambiarSeccion('caja')">Caja</button>
-                  <button (click)="cambiarSeccion('ventas')">Punto de venta</button>
-                  <button (click)="cambiarSeccion('historial-ventas')">Historial</button>
-                  <button (click)="cambiarSeccion('gastos')">Gastos</button>
+              <article class="mgx-management-row">
+                <div class="mgx-management-area">
+                  <span class="mgx-management-icon ventas">▣</span>
+                  <div><b>Caja y ventas</b><small>Operaciones, ingresos e historial</small></div>
+                </div>
+                <nav class="mgx-management-links">
+                  <button type="button" (click)="cambiarSeccion('caja')">Caja</button>
+                  <button type="button" (click)="cambiarSeccion('ventas')">Punto de venta</button>
+                  <button type="button" (click)="cambiarSeccion('historial-ventas')">Historial</button>
+                  <button type="button" (click)="cambiarSeccion('gastos')">Gastos</button>
                 </nav>
+                <span class="mgx-management-count">4 funciones</span>
+                <button type="button" class="mgx-management-open" (click)="cambiarSeccion('caja')">Abrir <span>→</span></button>
               </article>
 
-              <article class="mgx-module">
-                <header><span>▦</span><div><b>Inventario</b><small>Productos y abastecimiento</small></div></header>
-                <nav>
-                  <button (click)="cambiarSeccion('inventario')">Productos</button>
-                  <button (click)="cambiarSeccion('compras')">Compras</button>
-                  <button (click)="cambiarSeccion('proveedores')">Proveedores</button>
-                  <button (click)="cambiarSeccion('kardex')">Kardex</button>
-                  <button (click)="cambiarSeccion('categorias')">Categorías</button>
+              <article class="mgx-management-row">
+                <div class="mgx-management-area">
+                  <span class="mgx-management-icon inventario">▦</span>
+                  <div><b>Inventario</b><small>Productos, compras y abastecimiento</small></div>
+                </div>
+                <nav class="mgx-management-links">
+                  <button type="button" (click)="cambiarSeccion('inventario')">Productos</button>
+                  <button type="button" (click)="cambiarSeccion('compras')">Compras</button>
+                  <button type="button" (click)="cambiarSeccion('proveedores')">Proveedores</button>
+                  <button type="button" (click)="cambiarSeccion('kardex')">Kardex</button>
+                  <button type="button" (click)="cambiarSeccion('categorias')">Categorías</button>
                 </nav>
+                <span class="mgx-management-count">5 funciones</span>
+                <button type="button" class="mgx-management-open" (click)="cambiarSeccion('inventario')">Abrir <span>→</span></button>
               </article>
 
-              <article class="mgx-module">
-                <header><span>●</span><div><b>Atención</b><small>Comunicación con socios</small></div></header>
-                <nav>
-                  <button (click)="cambiarSeccion('soporte')">Soporte</button>
-                  <button (click)="cambiarSeccion('opiniones')">Opiniones</button>
-                  <button (click)="cambiarSeccion('comunicacion')">Notificaciones</button>
+              <article class="mgx-management-row">
+                <div class="mgx-management-area">
+                  <span class="mgx-management-icon atencion">●</span>
+                  <div><b>Atención</b><small>Soporte y comunicación con socios</small></div>
+                </div>
+                <nav class="mgx-management-links">
+                  <button type="button" (click)="cambiarSeccion('soporte')">Soporte</button>
+                  <button type="button" (click)="cambiarSeccion('opiniones')">Opiniones</button>
+                  <button type="button" (click)="cambiarSeccion('comunicacion')">Notificaciones</button>
                 </nav>
+                <span class="mgx-management-count">3 funciones</span>
+                <button type="button" class="mgx-management-open" (click)="cambiarSeccion('soporte')">Abrir <span>→</span></button>
               </article>
 
-              <article class="mgx-module">
-                <header><span>↗</span><div><b>Reportes y sistema</b><small>Análisis y administración</small></div></header>
-                <nav>
-                  <button (click)="cambiarSeccion('reportes')">Reportes</button>
-                  <button (click)="cambiarSeccion('reporte-asistencias')">Asistencias</button>
-                  <button (click)="cambiarSeccion('usuarios')">Usuarios</button>
-                  <button (click)="cambiarSeccion('auditoria')">Auditoría</button>
-                  <button (click)="cambiarSeccion('configuracion')">Configuración</button>
+              <article class="mgx-management-row">
+                <div class="mgx-management-area">
+                  <span class="mgx-management-icon sistema">↗</span>
+                  <div><b>Reportes y sistema</b><small>Análisis, usuarios y configuración</small></div>
+                </div>
+                <nav class="mgx-management-links">
+                  <button type="button" (click)="cambiarSeccion('reportes')">Reportes</button>
+                  <button type="button" (click)="cambiarSeccion('reporte-asistencias')">Asistencias</button>
+                  <button type="button" (click)="cambiarSeccion('usuarios')">Usuarios</button>
+                  <button type="button" (click)="cambiarSeccion('auditoria')">Auditoría</button>
+                  <button type="button" (click)="cambiarSeccion('configuracion')">Configuración</button>
                 </nav>
+                <span class="mgx-management-count">5 funciones</span>
+                <button type="button" class="mgx-management-open" (click)="cambiarSeccion('reportes')">Abrir <span>→</span></button>
               </article>
             </div>
           </section>
