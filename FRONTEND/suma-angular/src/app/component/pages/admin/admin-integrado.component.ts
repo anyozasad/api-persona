@@ -82,7 +82,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSeccion('entrenador')">
           <span class="admin-main-nav-icon">♙</span><span>Entrenadores</span>
         </button>
-        <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSeccion('entrenador')">
+        <button type="button" [class.active]="seccion==='trainer-profile'" (click)="cambiarSeccion('trainer-profile')">
           <span class="admin-main-nav-icon">◎</span><span>Perfil del entrenador</span>
         </button>
         <button type="button" [class.active]="moduloActivo==='socios'" (click)="cambiarSeccion('clientes')">
@@ -2361,7 +2361,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   nutricionPreview: any[] = [];
   suiteModules = ['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   extraModules = [
-    'members-list','add-member','edit-member','invoices-list','add-invoice','edit-invoice',
+    'trainer-profile','members-list','add-member','edit-member','invoices-list','add-invoice','edit-invoice',
     'tables','data-tables','graphs','apex','morris','vector-maps',
     'accordions','carousel','modals','popovers','tabs-ui','tooltips',
     'forms','form-inputs','checkbox-radio','file-input','validations','date-time','input-masks','input-tags',
@@ -2487,6 +2487,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       {claves:['reserva','reservas','agenda'],seccion:'reservas'},
       {claves:['rutina','rutinas'],seccion:'rutinas'},
       {claves:['entrenador','entrenadores'],seccion:'entrenador'},
+      {claves:['trainer profile','perfil entrenador'],seccion:'trainer-profile'},
       {claves:['caja','apertura','cierre'],seccion:'caja'},
       {claves:['venta','ventas','punto de venta'],seccion:'ventas'},
       {claves:['gasto','gastos','egreso','egresos'],seccion:'gastos'},
@@ -3115,6 +3116,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       case 'ingresos':
       case 'facturas':
         break;
+      case 'trainer-profile':
       case 'members-list':
       case 'add-member':
       case 'edit-member':
