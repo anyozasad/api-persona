@@ -27,22 +27,22 @@ class DashboardController extends Controller
         $finMes = now()->endOfMonth();
 
         $tablas = [
-            'socios' => $this->tabla(['socios', 'clientes']),
-            'planes' => $this->tabla(['planes', 'membresias']),
-            'suscripciones' => $this->tabla(['suscripciones', 'cliente_membresia']),
-            'pagos' => $this->tabla(['pagos_membresia']),
-            'asistencias' => $this->tabla(['asistencias']),
-            'ventas' => $this->tabla(['ventas']),
-            'detalle_ventas' => $this->tabla(['detalle_ventas', 'detalle_venta']),
-            'productos' => $this->tabla(['productos']),
-            'gastos' => $this->tabla(['gastos', 'movimientos_caja']),
-            'cajas' => $this->tabla(['cajas']),
-            'reservas' => $this->tabla(['reservas']),
-            'soporte' => $this->tabla(['solicitudes_soporte']),
-            'clases' => $this->tabla(['clases']),
-            'rutinas' => $this->tabla(['rutinas']),
-            'entrenadores' => $this->tabla(['entrenadores']),
-            'usuarios' => $this->tabla(['usuarios']),
+            'socios' => $this->tabla(['socios', 'clientes', 'app_socios', 'app_clientes']),
+            'planes' => $this->tabla(['planes', 'membresias', 'app_planes', 'app_membresias']),
+            'suscripciones' => $this->tabla(['suscripciones', 'cliente_membresia', 'app_suscripciones', 'app_cliente_membresia']),
+            'pagos' => $this->tabla(['pagos_membresia', 'app_pagos_membresia']),
+            'asistencias' => $this->tabla(['asistencias', 'app_asistencias']),
+            'ventas' => $this->tabla(['ventas', 'app_ventas']),
+            'detalle_ventas' => $this->tabla(['detalle_ventas', 'detalle_venta', 'app_detalle_ventas', 'app_detalle_venta']),
+            'productos' => $this->tabla(['productos', 'app_productos']),
+            'gastos' => $this->tabla(['gastos', 'movimientos_caja', 'app_gastos', 'app_movimientos_caja']),
+            'cajas' => $this->tabla(['cajas', 'app_cajas']),
+            'reservas' => $this->tabla(['reservas', 'app_reservas']),
+            'soporte' => $this->tabla(['solicitudes_soporte', 'app_solicitudes_soporte']),
+            'clases' => $this->tabla(['clases', 'app_clases']),
+            'rutinas' => $this->tabla(['rutinas', 'app_rutinas']),
+            'entrenadores' => $this->tabla(['entrenadores', 'app_entrenadores']),
+            'usuarios' => $this->tabla(['usuarios', 'app_usuarios']),
         ];
 
         $socios = $this->resumenSocios($tablas['socios'], $inicioMes, $finMes);
@@ -700,9 +700,9 @@ class DashboardController extends Controller
             return [];
         }
 
-        $idVentaDetalle = $this->columna($detalle, ['id_venta']);
-        $idProductoDetalle = $this->columna($detalle, ['id_producto']);
-        $cantidad = $this->columna($detalle, ['cantidad', 'cantidad_vendida']);
+        $idVentaDetalle = $this->columna($detalle, ['id_venta', 'venta_id']);
+        $idProductoDetalle = $this->columna($detalle, ['id_producto', 'producto_id']);
+        $cantidad = $this->columna($detalle, ['cantidad', 'cantidad_vendida', 'cantidad_producto', 'cantidad_item', 'cantidad_venta', 'qty']);
         $subtotal = $this->columna($detalle, ['subtotal', 'importe', 'total']);
         $precio = $this->columna($detalle, ['precio_unitario', 'precio', 'precio_venta']);
         $idVenta = $this->columna($ventas, ['id_venta', 'id']);
@@ -740,12 +740,17 @@ class DashboardController extends Controller
             });
         }
 
-        return $q
-            ->groupBy('p.' . $idProducto, 'p.' . $nombreProducto)
-            ->orderByDesc('cantidad')
-            ->limit(5)
-            ->get()
-            ->all();
+        try {
+            return $q
+                ->groupBy('p.' . $idProducto, 'p.' . $nombreProducto)
+                ->orderByDesc('cantidad')
+                ->limit(5)
+                ->get()
+                ->all();
+        } catch (Throwable $e) {
+            // Un esquema legacy de detalle de venta no debe bloquear todo el dashboard.
+            return [];
+        }
     }
 
     private function resumenInventario(?string $tabla): array
