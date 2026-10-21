@@ -149,33 +149,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
     </button>
 
     <main class="admin-content">
-      <header class="admin-header" *ngIf="seccion!=='dashboard' && !suiteModules.includes(seccion)">
-        <div class="admin-title-block">
-          <span class="admin-title-kicker">MALLQUI GYM · ADMIN</span>
-          <h1>{{tituloActual}}</h1>
-          <p>{{subtituloActual}}</p>
-        </div>
-        <div class="admin-refresh-box">
-          <div class="admin-refresh-actions">
-            <button class="admin-secondary admin-refresh-top" type="button" [disabled]="actualizandoDatos" (click)="actualizarSeccionActual()">
-              {{actualizandoDatos ? '↻ Actualizando...' : '↻ Actualizar datos'}}
-            </button>
-            <button *ngIf="seccion==='dashboard'" class="admin-header-mini" type="button" (click)="exportarDashboardCsv()" title="Descargar resumen del dashboard">⇩ CSV</button>
-            <button *ngIf="seccion==='dashboard'" class="admin-header-mini" type="button" (click)="imprimirDashboard()" title="Imprimir dashboard">⎙</button>
-            <button *ngIf="seccion==='dashboard'" class="admin-header-mini" type="button" [class.is-active]="autoRefreshActivo" (click)="toggleAutoRefresh()" [title]="autoRefreshActivo ? 'Desactivar actualización automática' : 'Activar actualización automática'">
-              {{autoRefreshActivo ? 'AUTO ON' : 'AUTO OFF'}}
-            </button>
-          </div>
-          <small *ngIf="ultimaActualizacion" [class.is-stale]="datosDesactualizados">Última actualización: {{ultimaActualizacion}}{{datosDesactualizados ? ' · datos antiguos' : ''}}</small>
-        </div>
-        <div class="admin-profile-wrap">
-          <button type="button" class="admin-profile" (click)="cambiarSeccion('usuarios')" title="Administrar cuenta y usuarios internos">
-            <span class="admin-avatar">A</span>
-            <p><strong>{{auth.usuario?.nombre_usuario || 'Administrador'}}</strong><small>{{auth.usuario?.correo || ''}}</small></p>
-            <i>→</i>
-          </button>
-        </div>
-      </header>
+      
 
       <nav class="admin-mobile-modules" aria-label="Módulos principales en móvil">
         <button type="button" [class.active]="moduloActivo==='dashboard'" (click)="abrirModuloAdmin('dashboard')"><span>⌂</span><b>Inicio</b></button>
@@ -188,6 +162,63 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
         <button type="button" [class.active]="moduloActivo==='reportes'" (click)="abrirModuloAdmin('reportes')"><span>↗</span><b>Reportes</b></button>
         <button type="button" [class.active]="moduloActivo==='sistema'" (click)="abrirModuloAdmin('sistema')"><span>⚙</span><b>Sistema</b></button>
       </nav>
+
+      <section class="cf-module-hero" *ngIf="seccion!=='dashboard'">
+        <div class="cf-module-copy">
+          <span>WELCOME BACK,</span>
+          <h1>{{tituloActual}}</h1>
+          <p>{{subtituloActual}}</p>
+
+          <div class="cf-module-metrics">
+            <article *ngFor="let m of metricasModuloActual; let i=index">
+              <span class="cf-module-metric-icon">{{m.icon}}</span>
+              <div>
+                <strong>{{m.value}}</strong>
+                <small>{{m.label}}</small>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="cf-module-art" aria-hidden="true">
+          <svg viewBox="0 0 560 260" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <linearGradient id="modSky" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#f8f7ff"/>
+                <stop offset="100%" stop-color="#eeecff"/>
+              </linearGradient>
+            </defs>
+            <rect width="560" height="260" rx="24" fill="url(#modSky)"/>
+            <circle cx="472" cy="48" r="26" fill="#ffa11a"/>
+            <path d="M0 218c103-56 191-34 267-16 105 25 181-4 293-31v89H0z" fill="#9bc886"/>
+            <g fill="#d8d5f4">
+              <rect x="344" y="91" width="40" height="106" rx="2"/>
+              <rect x="393" y="68" width="48" height="129" rx="2"/>
+              <rect x="451" y="102" width="38" height="95" rx="2"/>
+              <rect x="497" y="82" width="42" height="115" rx="2"/>
+            </g>
+            <g stroke="#2e3157" stroke-width="4" fill="none">
+              <circle cx="132" cy="203" r="24"/>
+              <circle cx="218" cy="203" r="24"/>
+              <path d="M132 203l37-35 25 35h-39l28-48 35 48"/>
+            </g>
+            <g>
+              <circle cx="178" cy="132" r="10" fill="#2f3358"/>
+              <path d="M172 146c13 10 17 22 15 35" stroke="#ff8e42" stroke-width="10" stroke-linecap="round"/>
+              <path d="M184 162l27 10" stroke="#ff8e42" stroke-width="7" stroke-linecap="round"/>
+              <path d="M185 177l-14 31M190 179l22 27" stroke="#4b58a8" stroke-width="7" stroke-linecap="round"/>
+            </g>
+            <g transform="translate(96 0)">
+              <circle cx="304" cy="203" r="22" fill="none" stroke="#2e3157" stroke-width="4"/>
+              <circle cx="378" cy="203" r="22" fill="none" stroke="#2e3157" stroke-width="4"/>
+              <path d="M304 203l33-31 22 31h-35l25-43 29 43" fill="none" stroke="#2e3157" stroke-width="4"/>
+              <circle cx="344" cy="141" r="9" fill="#2f3358"/>
+              <path d="M339 154c12 10 15 20 13 32" stroke="#6a62e8" stroke-width="9" stroke-linecap="round"/>
+              <path d="M350 168l24 9" stroke="#6a62e8" stroke-width="6" stroke-linecap="round"/>
+            </g>
+          </svg>
+        </div>
+      </section>
 
       <nav class="admin-module-tabs" *ngIf="seccion!=='dashboard' && tabsModuloActual.length" [attr.aria-label]="'Opciones de '+nombreModuloActual">
         <button type="button"
@@ -2200,6 +2231,150 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   toggleSidebar(): void {
     this.sidebarCerrado = !this.sidebarCerrado;
     try{localStorage.setItem('mallqui_admin_sidebar_closed', this.sidebarCerrado ? '1' : '0');}catch{}
+  }
+
+  get metricasModuloActual():Array<{label:string,value:string,icon:string}>{
+    const n=(v:any)=>Number(v||0);
+    const len=(v:any)=>Array.isArray(v)?v.length:0;
+    const money=(v:any)=>'S/ '+n(v).toFixed(2);
+    const activos=(lista:any[])=>Array.isArray(lista)
+      ? lista.filter((x:any)=>String(x?.estado||'').toLowerCase()==='activo').length
+      : 0;
+
+    switch(this.seccion){
+      case 'clientes':
+        return [
+          {label:'Socios registrados',value:String(len(this.clientes)),icon:'♚'},
+          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'✓'},
+          {label:'Nuevos este mes',value:String(n(this.dashboard?.clientes?.nuevos_mes)),icon:'+'},
+          {label:'Membresías activas',value:String(n(this.dashboard?.membresias?.activas)),icon:'★'}
+        ];
+      case 'membresias':
+      case 'planes':
+        return [
+          {label:'Membresías activas',value:String(n(this.dashboard?.membresias?.activas)),icon:'★'},
+          {label:'Por vencer',value:String(n(this.dashboard?.membresias?.por_vencer_7_dias)),icon:'!'},
+          {label:'Planes disponibles',value:String(len(this.planesMembresia)),icon:'▤'},
+          {label:'Pagos registrados',value:String(len(this.pagos)),icon:'S/'}
+        ];
+      case 'pagos':
+        return [
+          {label:'Pagos registrados',value:String(len(this.pagos)),icon:'S/'},
+          {label:'Ingresos del mes',value:money(this.dashboard?.ingresos?.total_mes),icon:'↗'},
+          {label:'Membresías activas',value:String(n(this.dashboard?.membresias?.activas)),icon:'★'},
+          {label:'Por vencer',value:String(n(this.dashboard?.membresias?.por_vencer_7_dias)),icon:'!'}
+        ];
+      case 'asistencias':
+      case 'reporte-asistencias':
+        return [
+          {label:'Dentro del gym',value:String(n(this.dashboard?.asistencias?.dentro_ahora)),icon:'✓'},
+          {label:'Accesos hoy',value:String(n(this.dashboard?.asistencias?.hoy)),icon:'⌁'},
+          {label:'Registros',value:String(len(this.asistencias)),icon:'▣'},
+          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'♚'}
+        ];
+      case 'rutinas':
+        return [
+          {label:'Rutinas',value:String(len(this.rutinas)),icon:'☷'},
+          {label:'Pendientes',value:String(n(this.dashboard?.alertas?.rutinas_pendientes)),icon:'!'},
+          {label:'Entrenadores',value:String(len(this.entrenadores)),icon:'♙'},
+          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'♚'}
+        ];
+      case 'clases':
+      case 'reservas':
+        return [
+          {label:'Clases activas',value:String(n(this.dashboard?.operacion?.clases_activas)),icon:'◷'},
+          {label:'Reservas hoy',value:String(n(this.dashboard?.reservas?.hoy)),icon:'◫'},
+          {label:'Entrenadores',value:String(len(this.entrenadores)),icon:'♙'},
+          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'♚'}
+        ];
+      case 'entrenador':
+        return [
+          {label:'Entrenadores',value:String(len(this.entrenadores)),icon:'♙'},
+          {label:'Activos',value:String(activos(this.entrenadores)),icon:'✓'},
+          {label:'Clases activas',value:String(n(this.dashboard?.operacion?.clases_activas)),icon:'◷'},
+          {label:'Rutinas',value:String(len(this.rutinas)),icon:'☷'}
+        ];
+      case 'ventas':
+      case 'historial-ventas':
+        return [
+          {label:'Ventas hoy',value:money(this.dashboard?.ventas?.hoy_total),icon:'S/'},
+          {label:'Operaciones',value:String(n(this.dashboard?.ventas?.hoy_cantidad)),icon:'▤'},
+          {label:'Ingresos del mes',value:money(this.dashboard?.ingresos?.total_mes),icon:'↗'},
+          {label:'Ventas registradas',value:String(len(this.ventas)),icon:'✓'}
+        ];
+      case 'caja':
+      case 'gastos':
+        return [
+          {label:'Estado de caja',value:this.dashboard?.caja?.abierta?'Abierta':'Cerrada',icon:'▣'},
+          {label:'Ventas hoy',value:money(this.dashboard?.ventas?.hoy_total),icon:'S/'},
+          {label:'Ingresos del mes',value:money(this.dashboard?.ingresos?.total_mes),icon:'↗'},
+          {label:'Gastos actuales',value:money(this.totalGastosCajaActual),icon:'↓'}
+        ];
+      case 'inventario':
+      case 'productos':
+      case 'kardex':
+      case 'categorias':
+      case 'proveedores':
+      case 'compras':
+        return [
+          {label:'Productos',value:String(len(this.productos)),icon:'▦'},
+          {label:'Stock bajo',value:String(n(this.dashboard?.inventario?.productos_stock_bajo)),icon:'!'},
+          {label:'Proveedores',value:String(len(this.proveedores)),icon:'◆'},
+          {label:'Compras',value:String(len(this.compras)),icon:'↘'}
+        ];
+      case 'reportes':
+        return [
+          {label:'Ingresos del mes',value:money(this.dashboard?.ingresos?.total_mes),icon:'↗'},
+          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'♚'},
+          {label:'Asistencias hoy',value:String(n(this.dashboard?.asistencias?.hoy)),icon:'✓'},
+          {label:'Ventas hoy',value:money(this.dashboard?.ventas?.hoy_total),icon:'S/'}
+        ];
+      case 'usuarios':
+      case 'auditoria':
+      case 'configuracion':
+        return [
+          {label:'Usuarios',value:String(len(this.usuarios)),icon:'♙'},
+          {label:'Auditorías',value:String(len(this.auditorias)),icon:'⌘'},
+          {label:'Sistema',value:this.dashboard?.fuente?.base_datos?'En línea':'Revisando',icon:'●'},
+          {label:'Base de datos',value:String(this.dashboard?.fuente?.base_datos||'—'),icon:'▦'}
+        ];
+      case 'soporte':
+      case 'opiniones':
+      case 'comunicacion':
+        return [
+          {label:'Alertas',value:String(n(this.dashboard?.alertas?.total)),icon:'!'},
+          {label:'Opiniones',value:String(len(this.opiniones)),icon:'◇'},
+          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'♚'},
+          {label:'Reservas hoy',value:String(n(this.dashboard?.reservas?.hoy)),icon:'◫'}
+        ];
+      case 'salarios':
+      case 'ingresos':
+      case 'facturas':
+        return [
+          {label:'Ingresos del mes',value:money(this.dashboard?.ingresos?.total_mes),icon:'↗'},
+          {label:'Ventas hoy',value:money(this.dashboard?.ventas?.hoy_total),icon:'S/'},
+          {label:'Operaciones hoy',value:String(n(this.dashboard?.ventas?.hoy_cantidad)),icon:'▤'},
+          {label:'Caja',value:this.dashboard?.caja?.abierta?'Abierta':'Cerrada',icon:'▣'}
+        ];
+      case 'nutricion':
+      case 'equipos':
+      case 'eventos':
+      case 'galeria':
+      case 'noticias':
+        return [
+          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'♚'},
+          {label:'Clases activas',value:String(n(this.dashboard?.operacion?.clases_activas)),icon:'◷'},
+          {label:'Reservas hoy',value:String(n(this.dashboard?.reservas?.hoy)),icon:'◫'},
+          {label:'Sistema',value:this.dashboard?.fuente?.base_datos?'En línea':'Revisando',icon:'●'}
+        ];
+      default:
+        return [
+          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'♚'},
+          {label:'Ingresos',value:money(this.dashboard?.ingresos?.total_mes),icon:'↗'},
+          {label:'Reservas',value:String(n(this.dashboard?.reservas?.hoy)),icon:'◫'},
+          {label:'Alertas',value:String(n(this.dashboard?.alertas?.total)),icon:'!'}
+        ];
+    }
   }
 
   get tituloActual(): string { return this.titulos[this.seccion]?.[0] ?? 'Administrador'; }
