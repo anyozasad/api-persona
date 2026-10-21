@@ -1183,3 +1183,286 @@
     max-width:1320px!important;
   }
 }
+
+
+/* EVERY MODULE · SAME CROSSFIT PAGE LAYOUT */
+
+/* Un único encabezado visual para todas las pantallas internas. */
+.cf-module-hero{
+  position:relative!important;
+  min-height:250px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1.2fr) minmax(360px,.8fr)!important;
+  overflow:hidden!important;
+  margin:0 -24px 18px!important;
+  border-bottom:1px solid #dedcf8!important;
+  background:linear-gradient(90deg,#5a55dc 0 100px,#f8f7ff 100px)!important;
+}
+.cf-module-copy{
+  position:relative!important;
+  z-index:2!important;
+  padding:30px 24px 24px 58px!important;
+  background:#fff!important;
+}
+.cf-module-copy>span{
+  display:block!important;
+  margin-bottom:5px!important;
+  color:#5b56dd!important;
+  font-size:8px!important;
+  font-weight:900!important;
+  letter-spacing:1px!important;
+}
+.cf-module-copy h1{
+  margin:0!important;
+  color:#2d2c3b!important;
+  font-size:28px!important;
+  line-height:1.08!important;
+  font-weight:750!important;
+  letter-spacing:-.4px!important;
+}
+.cf-module-copy>p{
+  margin:6px 0 0!important;
+  max-width:620px!important;
+  color:#818696!important;
+  font-size:10px!important;
+  line-height:1.45!important;
+}
+
+.cf-module-metrics{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:10px!important;
+  margin-top:28px!important;
+}
+.cf-module-metrics article{
+  min-width:0!important;
+  min-height:70px!important;
+  display:grid!important;
+  grid-template-columns:40px minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:9px!important;
+  padding:10px 11px!important;
+  border:1px solid #e7e7ef!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  box-shadow:0 5px 14px rgba(75,70,126,.035)!important;
+}
+.cf-module-metric-icon{
+  width:38px!important;
+  height:38px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:50%!important;
+  background:#efefff!important;
+  color:#5c57dd!important;
+  font-size:12px!important;
+  font-weight:900!important;
+}
+.cf-module-metrics article:nth-child(2) .cf-module-metric-icon{
+  background:#fff0e7!important;
+  color:#ef9141!important;
+}
+.cf-module-metrics article:nth-child(3) .cf-module-metric-icon{
+  background:#eaf9f2!important;
+  color:#49ad80!important;
+}
+.cf-module-metrics article:nth-child(4) .cf-module-metric-icon{
+  background:#f2efff!important;
+  color:#8178e8!important;
+}
+.cf-module-metrics article>div{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+.cf-module-metrics strong{
+  overflow:hidden!important;
+  color:#5350d7!important;
+  font-size:17px!important;
+  line-height:1.05!important;
+  font-weight:800!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.cf-module-metrics small{
+  margin-top:3px!important;
+  overflow:hidden!important;
+  color:#7d8190!important;
+  font-size:7.5px!important;
+  line-height:1.2!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+
+.cf-module-art{
+  position:relative!important;
+  min-height:250px!important;
+  overflow:hidden!important;
+  background:#f7f6ff!important;
+}
+.cf-module-art:before{
+  content:''!important;
+  position:absolute!important;
+  left:-45px!important;
+  top:-32px!important;
+  width:170px!important;
+  height:170px!important;
+  border-radius:50%!important;
+  background:rgba(255,255,255,.48)!important;
+}
+.cf-module-art svg{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  display:block!important;
+}
+
+/* Los encabezados viejos se eliminan visualmente para no duplicar diseño. */
+.clients-v3-hero,
+.gym-suite-hero,
+.audit-hero,
+.config-hero{
+  display:none!important;
+}
+
+/* El contenido real de cada módulo queda como card blanca debajo del banner. */
+.clients-v3-shell,
+.gym-suite,
+.management-grid,
+.report-grid,
+.config-shell,
+.audit-shell{
+  gap:14px!important;
+}
+.clients-v3-stats,
+.gym-suite-kpis{
+  margin-top:0!important;
+}
+.clients-v3-card,
+.gym-suite-panel,
+.admin-form-card,
+.admin-list-card,
+.report-panel,
+.config-card,
+.trainer-main-card,
+.wide-card{
+  border:1px solid #e6e7ef!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:0 4px 14px rgba(75,70,126,.025)!important;
+}
+
+/* Toolbar/table alineado con TemplateMonster */
+.clients-v3-toolbar,
+.gym-suite-toolbar{
+  min-height:56px!important;
+  padding:9px 12px!important;
+  background:#fff!important;
+}
+.clients-v3-search,
+.gym-suite-search{
+  height:36px!important;
+  border:1px solid #dedfe7!important;
+  border-radius:8px!important;
+  background:#fff!important;
+}
+.clients-v3-filter,
+.gym-suite-toolbar select{
+  height:36px!important;
+  border:1px solid #dedfe7!important;
+  border-radius:8px!important;
+  background:#fff!important;
+}
+.management-table th,
+.clients-v3-table th,
+.gym-suite-table th{
+  background:#f8f8fb!important;
+  color:#7f8493!important;
+}
+
+/* Tabs pegados debajo del banner para mantener la navegación interna. */
+.admin-module-tabs{
+  margin-top:-2px!important;
+  margin-bottom:15px!important;
+}
+
+/* La suite complementaria ya tiene métricas en el banner común: evitamos repetir KPIs. */
+.gym-suite-kpis{
+  display:none!important;
+}
+
+/* Socios también usa el bloque común superior. */
+.clients-v3-stats{
+  display:none!important;
+}
+
+/* Para auditoría/configuración: menos espacio al ocultar hero antiguo. */
+.audit-shell,
+.config-shell{
+  margin-top:0!important;
+}
+
+/* Desktop principal */
+@media(min-width:1250px){
+  .cf-module-copy{
+    padding-left:60px!important;
+  }
+  .cf-module-metrics{
+    max-width:760px!important;
+  }
+}
+
+/* Laptop */
+@media(max-width:1240px){
+  .cf-module-hero{
+    grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr)!important;
+    margin-left:-18px!important;
+    margin-right:-18px!important;
+  }
+  .cf-module-copy{
+    padding-left:34px!important;
+  }
+  .cf-module-metrics{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    margin-top:20px!important;
+  }
+}
+
+/* Tablet */
+@media(max-width:980px){
+  .cf-module-hero{
+    grid-template-columns:1fr!important;
+    margin-left:-18px!important;
+    margin-right:-18px!important;
+  }
+  .cf-module-art{
+    min-height:210px!important;
+  }
+  .cf-module-copy{
+    padding:26px 24px!important;
+  }
+}
+
+/* Mobile */
+@media(max-width:700px){
+  .cf-module-hero{
+    margin-left:-12px!important;
+    margin-right:-12px!important;
+  }
+  .cf-module-copy{
+    padding:22px 16px!important;
+  }
+  .cf-module-copy h1{
+    font-size:24px!important;
+  }
+  .cf-module-metrics{
+    grid-template-columns:1fr 1fr!important;
+  }
+  .cf-module-metrics article{
+    border-radius:12px!important;
+  }
+  .cf-module-art{
+    display:none!important;
+  }
+}
