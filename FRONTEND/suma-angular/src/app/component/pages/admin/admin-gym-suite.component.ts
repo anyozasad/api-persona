@@ -33,212 +33,107 @@ interface GymModuleConfig {
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <section class="gym-suite" *ngIf="config">
-      <header class="gym-suite-hero">
-        <div class="gym-suite-heading">
-          <span class="gym-suite-icon">{{config.icon}}</span>
-          <div>
-            <small>MALLQUI GYM · FITNESS ADMIN</small>
-            <h2>{{config.title}}</h2>
-            <p>{{config.subtitle}}</p>
+    <section class="gym-suite cf-live-suite" *ngIf="config">
+      <div class="cfx-crumb">
+        <span>⌂</span><small>Home</small><b>›</b><strong>{{config.title}}</strong>
+      </div>
+
+      <div class="cf-suite-toolbar">
+        <div><h1>{{config.title}}</h1><p>{{config.subtitle}}</p></div>
+        <div><button type="button" class="secondary" (click)="exportCsv()">⇩ Export CSV</button><button type="button" class="primary" (click)="nuevoRegistro()">＋ Add New</button></div>
+      </div>
+
+      <ng-container [ngSwitch]="modulo">
+        <section class="cf-suite-equipment-grid" *ngSwitchCase="'equipos'">
+          <article *ngFor="let item of (records.length ? records : equipmentFallback)">
+            <div class="cf-suite-equipment-art">
+              <img *ngIf="item.imagen_url" [src]="item.imagen_url" [alt]="item.titulo">
+              <span *ngIf="!item.imagen_url">🏋</span>
+            </div>
+            <div><h3>{{item.titulo}}</h3><b>{{item.count || item.monto || 1}}</b><p>{{item.subtitulo || 'Gym equipment'}}</p></div>
+          </article>
+        </section>
+
+        <section class="cf-suite-events" *ngSwitchCase="'eventos'">
+          <header><h2>Upcoming Events</h2></header>
+          <article *ngFor="let item of (records.length ? records : eventFallback); let i=index">
+            <div class="cf-suite-event-date"><b>{{item.day || (15+i)}}</b><small>th</small></div>
+            <div class="cf-suite-event-main"><span>{{item.estado || 'Going fast'}}</span><h3>{{item.titulo}}</h3><p>{{item.fecha || 'Tuesday'}} · {{item.subtitulo || 'Mallqui Gym'}}</p></div>
+            <div class="cf-suite-event-meta"><b>{{item.bookings || (40+i*10)}} Bookings</b><small>{{item.detalle || 'Fitness event'}}</small></div>
+          </article>
+        </section>
+
+        <section class="cf-suite-gallery" *ngSwitchCase="'galeria'">
+          <article *ngFor="let item of (records.length ? records : galleryFallback)">
+            <img [src]="item.imagen_url || 'assets/showcase/class-showcase.svg'" [alt]="item.titulo">
+            <div><b>＋ {{item.titulo}}</b><span>{{item.count || 52}}</span></div>
+          </article>
+        </section>
+
+        <section class="cf-suite-news" *ngSwitchCase="'noticias'">
+          <article *ngFor="let item of (records.length ? records : newsFallback)">
+            <img [src]="item.imagen_url || 'assets/showcase/hero-showcase.svg'" [alt]="item.titulo">
+            <div><h3>{{item.titulo}}</h3><small>Posted on - {{item.fecha || '30/06/2026'}}</small><p>{{item.subtitulo || item.detalle || 'Latest news and updates from Mallqui Gym.'}}</p><button type="button">Read More</button></div>
+          </article>
+        </section>
+
+        <section class="cf-suite-salary" *ngSwitchCase="'salarios'">
+          <header><div><h2>Salary Overview</h2><p>Staff payroll summary</p></div><select><option>October 2026</option></select></header>
+          <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>Employee ID</th><th>Employee</th><th>Role</th><th>Location</th><th>Days</th><th>Period</th><th>Salary</th><th>Action</th></tr></thead><tbody>
+            <tr *ngFor="let item of filtered"><td>EMP-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Trainer'}}</td><td>Pucallpa</td><td>26</td><td>{{item.fecha || 'Oct 2026'}}</td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><button class="cf-suite-link">Payslip</button></td></tr>
+            <tr *ngIf="!filtered.length"><td colspan="8">No salary records yet.</td></tr>
+          </tbody></table></div>
+        </section>
+
+        <section class="cf-suite-income" *ngSwitchCase="'ingresos'">
+          <div class="cf-suite-income-cards">
+            <article><small>Net Profit</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>+18.4%</span></article>
+            <article><small>Total Income</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>+12.5%</span></article>
+            <article><small>Expenses</small><b>S/ {{(totalMonto*0.36) | number:'1.2-2'}}</b><span>+4.2%</span></article>
+            <article><small>Member Revenue</small><b>S/ {{(totalMonto*0.64) | number:'1.2-2'}}</b><span>Top source</span></article>
           </div>
-        </div>
+          <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>Concept</th><th>Detail</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead><tbody>
+            <tr *ngFor="let item of filtered"><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || '—'}}</td><td>{{item.fecha || '—'}}</td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><span class="status-select">{{item.estado}}</span></td></tr>
+            <tr *ngIf="!filtered.length"><td colspan="5">No income records yet.</td></tr>
+          </tbody></table></div>
+        </section>
 
-        <div class="gym-suite-head-actions">
-          <button type="button" class="secondary" (click)="exportCsv()">⇩ Export CSV</button>
-          <button type="button" class="primary" (click)="nuevoRegistro()">＋ Add New</button>
-        </div>
-      </header>
+        <section class="cf-suite-invoices" *ngSwitchCase="'facturas'">
+          <div class="cf-suite-invoice-note"><span>Select all checkboxes to send an update.</span><button type="button">Send to everyone</button></div>
+          <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th><input type="checkbox"></th><th>Invoice No.</th><th>Gym Member</th><th>Created Date</th><th>Due Date</th><th>Status</th><th>Amount</th><th>Actions</th></tr></thead><tbody>
+            <tr *ngFor="let item of filtered"><td><input type="checkbox"></td><td>#INV-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.fecha || '—'}}</td><td>{{item.fecha || '—'}}</td><td><span class="status-select">{{item.estado}}</span></td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><button class="cf-suite-link" (click)="editar(item)">View</button></td></tr>
+            <tr *ngIf="!filtered.length"><td colspan="8">No invoices registered.</td></tr>
+          </tbody></table></div>
+        </section>
 
-      <section class="gym-suite-kpis">
-        <article>
-          <small>Total registros</small>
-          <strong>{{records.length}}</strong>
-          <span>Información guardada</span>
-        </article>
-        <article>
-          <small>Activos</small>
-          <strong>{{activos}}</strong>
-          <span>En operación</span>
-        </article>
-        <article>
-          <small>Este mes</small>
-          <strong>{{esteMes}}</strong>
-          <span>Registros recientes</span>
-        </article>
-        <article *ngIf="config.showAmount">
-          <small>Total acumulado</small>
-          <strong>S/ {{totalMonto | number:'1.2-2'}}</strong>
-          <span>Según registros visibles</span>
-        </article>
-        <article *ngIf="!config.showAmount">
-          <small>Pendientes</small>
-          <strong>{{pendientes}}</strong>
-          <span>Requieren revisión</span>
-        </article>
-      </section>
-
-      <section class="gym-suite-panel">
-        <div class="gym-suite-toolbar">
-          <label class="gym-suite-search">
-            <span>⌕</span>
-            <input
-              [(ngModel)]="busqueda"
-              (input)="filtrarLocal()"
-              placeholder="Search in {{config.title | lowercase}}...">
-          </label>
-
-          <select [(ngModel)]="estadoFiltro" (change)="filtrarLocal()">
-            <option value="">All status</option>
-            <option *ngFor="let estado of config.states" [value]="estado">{{estado}}</option>
-          </select>
-
-          <button type="button" class="refresh" [disabled]="loading" (click)="cargar()">
-            {{loading ? 'Updating...' : '↻ Refresh'}}
-          </button>
-        </div>
-
-        <div class="gym-suite-table-wrap" *ngIf="filtered.length; else emptyState">
-          <table class="gym-suite-table">
-            <thead>
-              <tr>
-                <th>{{config.primaryLabel}}</th>
-                <th>{{config.secondaryLabel}}</th>
-                <th *ngIf="config.showDate">{{config.dateLabel}}</th>
-                <th *ngIf="config.showAmount">{{config.amountLabel}}</th>
-                <th>Estado</th>
-                <th>Actualizado</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of filtered">
-                <td>
-                  <div class="gym-suite-main-cell">
-                    <span class="gym-suite-thumb" *ngIf="config.showImage && item.imagen_url; else defaultThumb">
-                      <img [src]="item.imagen_url" [alt]="item.titulo">
-                    </span>
-                    <ng-template #defaultThumb>
-                      <span class="gym-suite-thumb fallback">{{config.icon}}</span>
-                    </ng-template>
-                    <div>
-                      <b>{{item.titulo}}</b>
-                      <small>#{{item.id}}</small>
-                    </div>
-                  </div>
-                </td>
-                <td>{{item.subtitulo || '—'}}</td>
-                <td *ngIf="config.showDate">{{item.fecha || '—'}}</td>
-                <td *ngIf="config.showAmount">S/ {{item.monto || 0 | number:'1.2-2'}}</td>
-                <td>
-                  <select class="status-select"
-                          [ngModel]="item.estado"
-                          (ngModelChange)="cambiarEstado(item,$event)">
-                    <option *ngFor="let estado of config.states" [value]="estado">{{estado}}</option>
-                  </select>
-                </td>
-                <td>{{item.updated_at ? (item.updated_at | date:'dd/MM/yyyy HH:mm') : '—'}}</td>
-                <td>
-                  <div class="gym-suite-row-actions">
-                    <button type="button" title="Editar" (click)="editar(item)">✎</button>
-                    <button type="button" class="danger" title="Eliminar" (click)="eliminar(item)">×</button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <ng-template #emptyState>
-          <div class="gym-suite-empty">
-            <span>{{config.icon}}</span>
-            <h3>{{busqueda || estadoFiltro ? 'No encontramos coincidencias' : 'Todavía no hay registros'}}</h3>
-            <p>
-              {{busqueda || estadoFiltro
-                ? 'Cambia los filtros o prueba con otra búsqueda.'
-                : 'Crea el primer registro para comenzar a utilizar este módulo.'}}
-            </p>
-            <button type="button" (click)="nuevoRegistro()">＋ Crear registro</button>
+        <section class="gym-suite-panel" *ngSwitchDefault>
+          <div class="gym-suite-toolbar">
+            <label class="gym-suite-search"><span>⌕</span><input [(ngModel)]="busqueda" (input)="filtrarLocal()" placeholder="Search..."></label>
+            <select [(ngModel)]="estadoFiltro" (change)="filtrarLocal()"><option value="">All status</option><option *ngFor="let estado of config.states" [value]="estado">{{estado}}</option></select>
           </div>
-        </ng-template>
-      </section>
+          <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>{{config.primaryLabel}}</th><th>{{config.secondaryLabel}}</th><th>Estado</th><th></th></tr></thead><tbody>
+            <tr *ngFor="let item of filtered"><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || '—'}}</td><td>{{item.estado}}</td><td><button (click)="editar(item)">Edit</button></td></tr>
+          </tbody></table></div>
+        </section>
+      </ng-container>
 
       <div class="gym-suite-toast success" *ngIf="toast">{{toast}}</div>
       <div class="gym-suite-toast error" *ngIf="error">{{error}}</div>
 
       <div class="gym-suite-modal-backdrop" *ngIf="modalAbierto" (click)="cerrarModal()"></div>
       <section class="gym-suite-modal" *ngIf="modalAbierto">
-        <header>
-          <div>
-            <small>{{editandoId ? 'EDITAR REGISTRO' : 'NUEVO REGISTRO'}}</small>
-            <h3>{{config.title}}</h3>
-          </div>
-          <button type="button" (click)="cerrarModal()">×</button>
-        </header>
-
+        <header><div><small>{{editandoId ? 'EDIT RECORD' : 'NEW RECORD'}}</small><h3>{{config.title}}</h3></div><button type="button" (click)="cerrarModal()">×</button></header>
         <form (ngSubmit)="guardar()" #gymForm="ngForm">
           <div class="gym-suite-form-grid">
-            <label>
-              {{config.primaryLabel}} *
-              <input
-                name="titulo"
-                [(ngModel)]="form.titulo"
-                required
-                maxlength="180"
-                [placeholder]="config.primaryLabel">
-            </label>
-
-            <label>
-              {{config.secondaryLabel}}
-              <input
-                name="subtitulo"
-                [(ngModel)]="form.subtitulo"
-                maxlength="255"
-                [placeholder]="config.secondaryLabel">
-            </label>
-
-            <label *ngIf="config.showDate">
-              {{config.dateLabel}}
-              <input name="fecha" type="date" [(ngModel)]="form.fecha">
-            </label>
-
-            <label *ngIf="config.showAmount">
-              {{config.amountLabel}}
-              <input name="monto" type="number" min="0" step="0.01" [(ngModel)]="form.monto">
-            </label>
-
-            <label>
-              Estado *
-              <select name="estado" [(ngModel)]="form.estado" required>
-                <option *ngFor="let estado of config.states" [value]="estado">{{estado}}</option>
-              </select>
-            </label>
-
-            <label *ngIf="config.showImage" class="span-2">
-              URL de imagen
-              <input
-                name="imagen_url"
-                [(ngModel)]="form.imagen_url"
-                maxlength="500"
-                placeholder="https://...">
-            </label>
-
-            <label class="span-2">
-              Detalle / observación
-              <textarea
-                name="detalle"
-                [(ngModel)]="form.detalle"
-                rows="4"
-                placeholder="Información adicional del registro"></textarea>
-            </label>
+            <label>{{config.primaryLabel}} *<input name="titulo" [(ngModel)]="form.titulo" required maxlength="180" [placeholder]="config.primaryLabel"></label>
+            <label>{{config.secondaryLabel}}<input name="subtitulo" [(ngModel)]="form.subtitulo" maxlength="255" [placeholder]="config.secondaryLabel"></label>
+            <label *ngIf="config.showDate">{{config.dateLabel}}<input name="fecha" type="date" [(ngModel)]="form.fecha"></label>
+            <label *ngIf="config.showAmount">{{config.amountLabel}}<input name="monto" type="number" min="0" step="0.01" [(ngModel)]="form.monto"></label>
+            <label>Estado *<select name="estado" [(ngModel)]="form.estado" required><option *ngFor="let estado of config.states" [value]="estado">{{estado}}</option></select></label>
+            <label *ngIf="config.showImage" class="span-2">URL de imagen<input name="imagen_url" [(ngModel)]="form.imagen_url" maxlength="500" placeholder="https://..."></label>
+            <label class="span-2">Detalle / observación<textarea name="detalle" [(ngModel)]="form.detalle" rows="4"></textarea></label>
           </div>
-
-          <footer>
-            <button type="button" class="secondary" (click)="cerrarModal()">Cancelar</button>
-            <button type="submit" class="primary" [disabled]="saving || gymForm.invalid">
-              {{saving ? 'Guardando...' : (editandoId ? 'Guardar cambios' : 'Crear registro')}}
-            </button>
-          </footer>
+          <footer><button type="button" class="secondary" (click)="cerrarModal()">Cancel</button><button type="submit" class="primary" [disabled]="saving || gymForm.invalid">{{saving ? 'Saving...' : (editandoId ? 'Save Changes' : 'Create')}}</button></footer>
         </form>
       </section>
     </section>
@@ -461,6 +356,27 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
       accent: '#5269aa'
     }
   };
+
+
+  equipmentFallback:any[] = [
+    {titulo:'Dumbbells',count:48,subtitulo:'2-40 kg range'},{titulo:'Strength Machines',count:26,subtitulo:'Chest, leg & cable'},
+    {titulo:'Workout Stations',count:18,subtitulo:'Multi-functional rigs'},{titulo:'Air Bikes',count:14,subtitulo:'HIIT cardio'},
+    {titulo:'Spin Bikes',count:20,subtitulo:'Indoor cycling'},{titulo:'Kettlebells',count:60,subtitulo:'4-32 kg range'},
+    {titulo:'Workout Benches',count:22,subtitulo:'Flat & adjustable'},{titulo:'Barbells',count:35,subtitulo:'Olympic bars'},
+    {titulo:'Bumper Plates',count:90,subtitulo:'Rubber coated'},{titulo:'Foam Rollers',count:30,subtitulo:'Recovery tools'},
+    {titulo:'Squat Racks',count:10,subtitulo:'Heavy-duty racks'},{titulo:'Treadmills',count:24,subtitulo:'Commercial grade'}
+  ];
+  eventFallback:any[] = [
+    {day:15,titulo:'Sensual dance workout for complete beginners.',subtitulo:'Mallqui Gym · 10:30 - 11:30',estado:'Sales end soon',bookings:120},
+    {day:19,titulo:'Rehab and Return to Sport.',subtitulo:'Mallqui Gym · 12:30 - 03:30',estado:'Going fast',bookings:100},
+    {day:23,titulo:'Crossfit Training Day.',subtitulo:'Mallqui Gym · 08:30 - 10:30',estado:'Almost full',bookings:60}
+  ];
+  galleryFallback:any[] = Array.from({length:12},(_,i)=>({titulo:'Mallqui Gym',count:[86,94,55,39,68,33,74,88,93,39,66,52][i],imagen_url:i%2?'assets/showcase/class-showcase.svg':'assets/showcase/hero-showcase.svg'}));
+  newsFallback:any[] = [
+    {titulo:'Mallqui Gym Update',fecha:'20/10/2026',subtitulo:'News and updates from the gym.',imagen_url:'assets/showcase/hero-showcase.svg'},
+    {titulo:'Training Program',fecha:'18/10/2026',subtitulo:'New fitness activities available.',imagen_url:'assets/showcase/class-showcase.svg'},
+    {titulo:'Member Progress',fecha:'15/10/2026',subtitulo:'Community achievements and highlights.',imagen_url:'assets/showcase/coach-showcase.svg'}
+  ];
 
   constructor(private api: AdminApiService) {}
 
