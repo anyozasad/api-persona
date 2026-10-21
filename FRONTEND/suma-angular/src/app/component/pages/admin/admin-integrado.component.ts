@@ -2201,11 +2201,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   abrirPrioridad(p:any):void{
-    const tipo=String(p?.tipo||'');
-    if(tipo==='rutinas' || tipo==='soporte'){ this.cambiarSeccion('soporte'); return; }
+    const tipo=String(p?.tipo||'').toLowerCase();
+    if(tipo==='rutinas'){ this.cambiarSeccion('rutinas'); return; }
+    if(tipo==='soporte'){ this.cambiarSeccion('soporte'); return; }
     if(tipo==='opiniones'){ this.cambiarSeccion('opiniones'); return; }
     if(tipo==='inventario'){ this.cambiarSeccion('inventario'); return; }
     if(tipo==='membresias'){ this.cambiarSeccion('membresias'); return; }
+    if(tipo==='pagos'){ this.cambiarSeccion('pagos'); return; }
     this.cambiarSeccion('dashboard');
   }
 
