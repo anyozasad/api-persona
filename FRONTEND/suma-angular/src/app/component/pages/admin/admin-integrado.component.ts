@@ -2870,7 +2870,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   alturaAsistenciaSemana(total:any):number{
-    const datos=(this.dashboard?.tendencias?.asistencias_7_dias||[]).map((x:any)=>Number(x?.total||0));
+    const datos=this.diasActividadDashboard().map((x:any)=>Number(x?.total||0));
     const max=Math.max(1,...datos);
     const valor=Math.max(0,Number(total||0));
     return Math.max(12,Math.min(100,(valor/max)*100));
