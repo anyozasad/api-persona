@@ -168,7 +168,7 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
       <div *ngIf="error && seccion!=='dashboard'" class="admin-toast error">⚠ {{error}}</div>
 
       <ng-container *ngIf="seccion==='dashboard'">
-        <section class="mghome">
+        <section class="mghome" data-dashboard-ui="mallqui-v9">
 
           <header class="mghome-topbar">
             <button class="mghome-brand" type="button" (click)="cambiarSeccion('dashboard')">
@@ -204,8 +204,8 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
           <main class="mghome-body">
             <section class="mghome-intro">
               <div>
-                <span class="mghome-eyebrow">PANEL GENERAL</span>
-                <h1>Buenos días, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1>
+                <span class="mghome-eyebrow">MALLQUI GYM · NUEVO PANEL</span>
+                <h1>Panel administrativo</h1>
                 <p>Aquí tienes el estado del gimnasio y los accesos que necesitas para trabajar hoy.</p>
               </div>
               <div class="mghome-intro-actions">
