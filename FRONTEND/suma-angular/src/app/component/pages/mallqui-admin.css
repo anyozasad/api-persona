@@ -5217,11 +5217,11 @@ button.admin-system-card:hover{
   display:flex;
   flex-direction:column;
 }
-.wixdash-table td:nth-child(2)b{
+.wixdash-table td:nth-child(2) b{
   color:#1f2937;
   font-size:11px;
 }
-.wixdash-table td:nth-child(2)small{
+.wixdash-table td:nth-child(2) small{
   color:#8792a2;
   font-size:8px;
   margin-top:2px;
