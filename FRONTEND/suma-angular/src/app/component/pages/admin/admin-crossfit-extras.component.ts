@@ -75,7 +75,7 @@ interface ExtraConfig {
           <header><div><span>MEMBERS</span><h2>Members List</h2></div><button class="primary" (click)="memberMessage='Use Add Member from the sidebar to create a new member.'">＋ Add New Member</button></header>
           <div class="cfx-table-wrap"><table><thead><tr><th>#</th><th>Member</th><th>Age</th><th>Gender</th><th>Contact</th><th>Email</th><th>Joined On</th><th>Actions</th></tr></thead><tbody>
             <tr *ngFor="let m of filteredMembers; let i=index">
-              <td>{{String(i+1).padStart(3,'0')}}</td>
+              <td>{{i+1}}</td>
               <td><div class="cf-member-cell"><div class="cfx-avatar small-avatar">{{(m.nombres||'M').charAt(0)}}{{(m.apellidos||'').charAt(0)}}</div><b>{{m.nombres}} {{m.apellidos}}</b></div></td>
               <td>{{m.edad || '—'}}</td><td>{{m.genero || '—'}}</td><td>{{m.telefono || '—'}}</td><td>{{m.correo || '—'}}</td>
               <td>{{m.created_at ? (m.created_at | date:'yyyy-MM-dd') : '—'}}</td>
@@ -694,7 +694,7 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
     if(!this.newMember.dni||!this.newMember.nombres||!this.newMember.apellidos){this.memberMessage='Complete Full Name and DNI.';return;}
     this.savingMember=true; this.memberMessage='';
     this.api.crearCliente({...this.newMember}).subscribe({
-      next:()=>{this.savingMember=false;this.memberMessage='✓ Socio registrado correctamente.';this.newMember={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};this.loadMembers();},
+      next:()=>{this.savingMember=false;this.memberMessage='✓ Member saved successfully.';this.newMember={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};this.newMemberFullName='';this.loadMembers();},
       error:e=>{this.savingMember=false;this.memberMessage=e?.error?.message||'No se pudo registrar el socio.';}
     });
   }
