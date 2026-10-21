@@ -6799,3 +6799,229 @@ button.admin-system-card:hover{
   .mgx-advanced{align-items:flex-start;flex-direction:column}
   .mgx-advanced>button{width:100%;justify-content:center}
 }
+
+
+/* MALLQUI ADMIN V6 · MANAGEMENT DIRECTORY */
+.mgx-management{
+  overflow:hidden;
+  padding:0!important;
+  border-radius:16px!important;
+  background:#fff;
+}
+
+.mgx-management-head{
+  min-height:104px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  padding:24px 26px 22px;
+  border-bottom:1px solid #e8ecf1;
+}
+.mgx-management-kicker{
+  display:block;
+  margin-bottom:5px;
+  color:#e94f39;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1.15px;
+}
+.mgx-management-head h2{
+  margin:0;
+  color:#172033;
+  font-size:23px;
+  line-height:1.15;
+  font-weight:760;
+}
+.mgx-management-head p{
+  margin:6px 0 0;
+  color:#7a8698;
+  font-size:11px;
+}
+.mgx-management-summary{
+  min-width:132px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:11px;
+  padding:12px 15px;
+  border:1px solid #e3e8ef;
+  border-radius:12px;
+  background:#f8fafc;
+}
+.mgx-management-summary b{
+  color:#172033;
+  font-size:25px;
+  line-height:1;
+}
+.mgx-management-summary span{
+  color:#7b8797;
+  font-size:9px;
+  line-height:1.25;
+}
+
+.mgx-management-table{
+  width:100%;
+}
+.mgx-management-table-head,
+.mgx-management-row{
+  display:grid;
+  grid-template-columns:minmax(205px,1.05fr) minmax(430px,2.25fr) 100px 82px;
+  align-items:center;
+  gap:20px;
+}
+.mgx-management-table-head{
+  min-height:40px;
+  padding:0 26px;
+  border-bottom:1px solid #edf0f3;
+  background:#f8f9fb;
+  color:#8a95a5;
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:.75px;
+}
+.mgx-management-row{
+  min-height:92px;
+  padding:13px 26px;
+  border-bottom:1px solid #edf0f3;
+  background:#fff;
+  transition:background .16s ease;
+}
+.mgx-management-row:last-child{border-bottom:0}
+.mgx-management-row:hover{background:#fbfcfd}
+
+.mgx-management-area{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.mgx-management-icon{
+  width:42px;
+  height:42px;
+  flex:0 0 42px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:#f2f4f7;
+  color:#344054;
+  font-size:15px;
+  font-weight:800;
+}
+.mgx-management-icon.socios{background:#fff0ed;color:#d94a35}
+.mgx-management-icon.servicios{background:#eef4ff;color:#355ea8}
+.mgx-management-icon.ventas{background:#eef8f2;color:#28794e}
+.mgx-management-icon.inventario{background:#fff6e8;color:#9a6214}
+.mgx-management-icon.atencion{background:#f4efff;color:#6d4bb5}
+.mgx-management-icon.sistema{background:#eef1f5;color:#475467}
+.mgx-management-area div{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.mgx-management-area b{
+  color:#263247;
+  font-size:12px;
+}
+.mgx-management-area small{
+  color:#8994a5;
+  font-size:9px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.mgx-management-links{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:7px;
+}
+.mgx-management-links button{
+  min-height:31px;
+  padding:0 11px;
+  border:1px solid #dfe5ec;
+  border-radius:8px;
+  background:#fff;
+  color:#526074;
+  font-size:9px;
+  font-weight:650;
+  cursor:pointer;
+  transition:border-color .16s ease,background .16s ease,color .16s ease;
+}
+.mgx-management-links button:hover{
+  border-color:#ffb6aa;
+  background:#fff7f5;
+  color:#c74734;
+}
+.mgx-management-count{
+  justify-self:start;
+  min-height:25px;
+  display:inline-flex;
+  align-items:center;
+  padding:0 9px;
+  border-radius:13px;
+  background:#f1f3f6;
+  color:#667085;
+  font-size:8px;
+  font-weight:700;
+  white-space:nowrap;
+}
+.mgx-management-open{
+  height:34px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  border:0;
+  border-radius:8px;
+  background:#172033;
+  color:#fff;
+  font-size:9px;
+  font-weight:700;
+  cursor:pointer;
+  transition:background .16s ease,transform .16s ease;
+}
+.mgx-management-open:hover{
+  background:#263247;
+  transform:translateX(1px);
+}
+.mgx-management-open span{font-size:13px}
+
+@media(max-width:1180px){
+  .mgx-management-table-head{display:none}
+  .mgx-management-row{
+    grid-template-columns:minmax(190px,.8fr) minmax(360px,1.7fr) auto;
+  }
+  .mgx-management-count{display:none}
+}
+@media(max-width:900px){
+  .mgx-management-row{
+    grid-template-columns:1fr auto;
+    gap:12px;
+  }
+  .mgx-management-links{
+    grid-column:1/-1;
+    padding-left:54px;
+  }
+}
+@media(max-width:620px){
+  .mgx-management-head{
+    align-items:flex-start;
+    flex-direction:column;
+    padding:20px 18px;
+  }
+  .mgx-management-summary{min-width:0}
+  .mgx-management-row{
+    grid-template-columns:1fr;
+    padding:16px 18px;
+  }
+  .mgx-management-links{
+    grid-column:auto;
+    padding-left:0;
+  }
+  .mgx-management-open{
+    width:100%;
+  }
+}
