@@ -19,15 +19,13 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
   template: `
   <div class="admin-shell" [class.admin-sidebar-collapsed]="sidebarCerrado" [class.admin-home-redesign]="seccion==='dashboard'">
     <header class="admin-wix-topbar">
-      <button type="button" class="admin-top-brand" (click)="cambiarSeccion('dashboard')" title="Ir al dashboard">
-        <span class="admin-top-brand-mark">MG</span>
-        <span><strong>Mallqui Gym</strong><small>Administración</small></span>
+      <button type="button" class="admin-top-brand" (click)="toggleSidebar()" title="Abrir o cerrar menú">
+        <span class="admin-top-brand-mark">☰</span>
+        <span class="crossfit-top-logo"><img src="assets/mallqui-logo.svg" alt=""><strong>Mallqui Gym</strong></span>
       </button>
 
-      <nav class="admin-top-shortcuts crossfit-top-links" aria-label="Accesos rápidos">
-        <button type="button" (click)="cambiarSeccion('dashboard')">Dashboard</button>
-        <button type="button" (click)="cambiarSeccion('reportes')">Reportes</button>
-        <button type="button" (click)="cambiarSeccion('clientes')">Socios</button>
+      <nav class="admin-top-shortcuts crossfit-top-links" aria-label="Ubicación actual">
+        <span>Home</span><i>›</i><b>{{tituloActual}}</b>
       </nav>
 
       <label class="admin-wix-search">
@@ -53,15 +51,16 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
       </div>
     </header>
     <aside class="admin-nav">
-      <div class="admin-nav-top">
-        <button type="button" class="admin-brand" (click)="cambiarSeccion('dashboard')" aria-label="Volver al dashboard principal" title="Volver al dashboard">
-          <span class="brand-glow"></span>
-          <img src="assets/mallqui-logo.svg" alt="Mallqui Gym">
+      <div class="admin-nav-top crossfit-profile-card">
+        <button type="button" class="crossfit-profile-avatar" (click)="cambiarSeccion('usuarios')" aria-label="Abrir perfil">
+          {{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}
+          <span><img src="assets/mallqui-logo.svg" alt=""></span>
         </button>
-        <button type="button" class="admin-brand-copy" (click)="cambiarSeccion('dashboard')" aria-label="Volver al dashboard principal">
-          <strong>MALLQUI GYM</strong>
-          <small>Centro de administración</small>
-        </button>
+        <div class="crossfit-profile-copy">
+          <strong>{{auth.usuario?.nombre_usuario || 'Administrador'}}</strong>
+          <small>Gym Admin</small>
+          <em>Administrador</em>
+        </div>
       </div>
 
       <nav class="admin-main-nav crossfit-sidebar-nav" aria-label="Módulos principales">
@@ -250,67 +249,67 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
           </header>
 
           <main class="mghome-body">
-            <section class="mghome-intro">
-              <div>
-                <span class="mghome-eyebrow">MALLQUI GYM · NUEVO PANEL</span>
-                <h1>Panel administrativo</h1>
-                <p>Aquí tienes el estado del gimnasio y los accesos que necesitas para trabajar hoy.</p>
+            <section class="crossfit-dashboard-breadcrumb">
+              <span>⌂</span>
+              <small>Home</small>
+              <b>›</b>
+              <strong>My Dashboard</strong>
+              <em>{{dashboard?.periodo?.fecha || ''}}</em>
+            </section>
+
+            <section class="crossfit-welcome-card">
+              <div class="crossfit-welcome-content">
+                <span class="crossfit-welcome-kicker">MALLQUI GYM</span>
+                <h1>Hola, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1>
+                <p>Aquí tienes tu actividad diaria y el resumen operativo del gimnasio.</p>
+
+                <div class="crossfit-week-chart">
+                  <div class="crossfit-week-bars">
+                    <div class="crossfit-week-day" *ngFor="let d of dashboard?.tendencias?.asistencias_7_dias || []">
+                      <div class="crossfit-bar-shell">
+                        <i [style.height.%]="alturaAsistenciaSemana(d.total)"></i>
+                      </div>
+                      <b>{{d.total}}</b>
+                      <small>{{d.dia}}</small>
+                    </div>
+                  </div>
+                  <div class="crossfit-chart-legend">
+                    <span><i></i> Asistencias</span>
+                    <b>Últimos 7 días</b>
+                  </div>
+                </div>
               </div>
-              <div class="mghome-intro-actions">
-                <button type="button" class="secondary" (click)="actualizarSeccionActual()" [disabled]="actualizandoDatos">↻ Actualizar</button>
-                <button type="button" class="primary" (click)="abrirNuevoSocioDesdeDashboard()">＋ Nuevo socio</button>
+
+              <div class="crossfit-welcome-art" aria-hidden="true">
+                <span class="sun"></span>
+                <span class="cloud cloud-a"></span>
+                <span class="cloud cloud-b"></span>
+                <div class="city">
+                  <i></i><i></i><i></i><i></i><i></i>
+                </div>
+                <div class="ground"></div>
+                <div class="bike bike-a"><span></span><span></span><b></b></div>
+                <div class="bike bike-b"><span></span><span></span><b></b></div>
               </div>
             </section>
 
-            <section class="mghome-overview">
-              <article class="mghome-balance">
-                <div class="mghome-balance-head">
-                  <div>
-                    <small>INGRESOS DEL MES</small>
-                    <strong>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</strong>
-                  </div>
-                  <span class="mghome-status-pill" [class.open]="dashboard?.caja?.abierta">
-                    {{dashboard?.caja?.abierta ? 'Caja abierta' : 'Caja cerrada'}}
-                  </span>
-                </div>
-
-                <div class="mghome-balance-grid">
-                  <button type="button" (click)="cambiarSeccion('ventas')">
-                    <span>Ventas hoy</span>
-                    <b>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</b>
-                    <small>{{dashboard?.ventas?.hoy_cantidad ?? 0}} operaciones</small>
-                  </button>
-                  <button type="button" (click)="cambiarSeccion('membresias')">
-                    <span>Membresías</span>
-                    <b>{{dashboard?.membresias?.activas ?? 0}}</b>
-                    <small>{{dashboard?.membresias?.por_vencer_7_dias ?? 0}} por vencer</small>
-                  </button>
-                  <button type="button" (click)="cambiarSeccion('asistencias')">
-                    <span>Dentro del gym</span>
-                    <b>{{dashboard?.asistencias?.dentro_ahora ?? 0}}</b>
-                    <small>{{dashboard?.asistencias?.hoy ?? 0}} accesos hoy</small>
-                  </button>
-                </div>
-              </article>
-
-              <aside class="mghome-health">
-                <div class="mghome-health-head">
-                  <span class="live-dot"></span>
-                  <div>
-                    <small>ESTADO DEL SISTEMA</small>
-                    <b>{{dashboardError ? 'Revisión necesaria' : 'Todo operativo'}}</b>
-                  </div>
-                </div>
-
-                <div class="mghome-health-list">
-                  <div><span>Socios activos</span><b>{{dashboard?.clientes?.activos ?? 0}}</b></div>
-                  <div><span>Reservas hoy</span><b>{{dashboard?.reservas?.hoy ?? 0}}</b></div>
-                  <div><span>Clases activas</span><b>{{dashboard?.operacion?.clases_activas ?? 0}}</b></div>
-                  <div><span>Stock bajo</span><b>{{dashboard?.inventario?.productos_stock_bajo ?? 0}}</b></div>
-                </div>
-
-                <button type="button" (click)="cambiarSeccion('configuracion')">Ver estado del sistema →</button>
-              </aside>
+            <section class="crossfit-stat-row">
+              <button type="button" (click)="cambiarSeccion('ventas')">
+                <div><small>Ventas de hoy</small><strong>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</strong><span>{{dashboard?.ventas?.hoy_cantidad ?? 0}} operaciones</span></div>
+                <i>↗</i>
+              </button>
+              <button type="button" (click)="cambiarSeccion('membresias')">
+                <div><small>Membresías activas</small><strong>{{dashboard?.membresias?.activas ?? 0}}</strong><span>{{dashboard?.membresias?.por_vencer_7_dias ?? 0}} por vencer</span></div>
+                <i>✦</i>
+              </button>
+              <button type="button" (click)="cambiarSeccion('clientes')">
+                <div><small>Socios activos</small><strong>{{dashboard?.clientes?.activos ?? 0}}</strong><span>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos este mes</span></div>
+                <i>♙</i>
+              </button>
+              <button type="button" (click)="cambiarSeccion('reservas')">
+                <div><small>Reservas hoy</small><strong>{{dashboard?.reservas?.hoy ?? 0}}</strong><span>{{dashboard?.asistencias?.hoy ?? 0}} accesos hoy</span></div>
+                <i>◫</i>
+              </button>
             </section>
 
             <section class="mghome-section">
@@ -2339,6 +2338,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(t==='inventario')return '!';
     if(t==='membresias')return '✦';
     return '●';
+  }
+
+  alturaAsistenciaSemana(total:any):number{
+    const datos=(this.dashboard?.tendencias?.asistencias_7_dias||[]).map((x:any)=>Number(x?.total||0));
+    const max=Math.max(1,...datos);
+    const valor=Math.max(0,Number(total||0));
+    return Math.max(12,Math.min(100,(valor/max)*100));
   }
 
   exportarDashboardCsv():void{
