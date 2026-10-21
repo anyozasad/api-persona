@@ -653,28 +653,28 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <section class="clients-v3-shell">
           <header class="clients-v3-hero">
             <div class="clients-v3-hero-copy">
-              <span>GESTIÓN DE MIEMBROS</span>
-              <h2>Clientes</h2>
+              <span>MEMBERS MANAGEMENT</span>
+              <h2>Members</h2>
               <p>Administra los datos, accesos y estado de tus miembros desde un solo lugar.</p>
             </div>
             <button type="button" class="clients-v3-new" (click)="nuevoCliente()">
               <span>＋</span>
-              Nuevo cliente
+              Add Member
             </button>
           </header>
 
           <section class="clients-v3-stats">
             <article>
               <span class="clients-v3-stat-icon">♙</span>
-              <div><small>TOTAL CLIENTES</small><b>{{clientes.length}}</b><p>registros en el sistema</p></div>
+              <div><small>TOTAL MEMBERS</small><b>{{clientes.length}}</b><p>registros en el sistema</p></div>
             </article>
             <article>
               <span class="clients-v3-stat-icon success">✓</span>
-              <div><small>ACTIVOS</small><b>{{clientesActivos}}</b><p>pueden usar el servicio</p></div>
+              <div><small>ACTIVE MEMBERS</small><b>{{clientesActivos}}</b><p>pueden usar el servicio</p></div>
             </article>
             <article>
               <span class="clients-v3-stat-icon muted">–</span>
-              <div><small>INACTIVOS</small><b>{{clientesInactivos}}</b><p>historial conservado</p></div>
+              <div><small>INACTIVE MEMBERS</small><b>{{clientesInactivos}}</b><p>historial conservado</p></div>
             </article>
           </section>
 
@@ -1564,7 +1564,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </ng-container>
 
-      <ng-container *ngIf="seccion==='rutinas'">
+      <ng-container *ngIf="seccion==='rutinas-admin'">
         <div *ngIf="solicitudRutinaContexto" class="admin-request-context">
           <div>
             <span>SOLICITUD DEL PORTAL DEL CLIENTE</span>
@@ -1719,7 +1719,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </ng-container>
 
-      <ng-container *ngIf="seccion==='reportes'">
+      <ng-container *ngIf="seccion==='reportes-admin'">
         <section class="report-grid">
           <article><span>👥</span><p>Clientes registrados</p><h2>{{dashboard?.clientes?.total ?? clientes.length}}</h2></article>
           <article><span>✦</span><p>Membresías activas</p><h2>{{dashboard?.membresias?.activas ?? 0}}</h2></article>
@@ -2195,7 +2195,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     {dia:'Fri',total:6},{dia:'Sat',total:9},{dia:'Sun',total:4}
   ];
   nutricionPreview: any[] = [];
-  suiteModules = ['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
+  suiteModules = ['equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   navGroups:any = {members:false,invoices:false,ui:false,jquery:false,forms:false,graphs:false,menu:false};
   uiElementLinks = [
     {id:'alerts',label:'Alerts'},{id:'avatars',label:'Avatars'},{id:'badges',label:'Badges'},
