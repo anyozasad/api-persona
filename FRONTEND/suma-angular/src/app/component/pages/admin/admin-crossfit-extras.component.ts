@@ -17,7 +17,7 @@ interface ExtraConfig {
   template: `
   <section class="cfx-page" *ngIf="config">
     <div class="cfx-crumb">
-      <span>⌂</span><small>Inicio</small><b>›</b><strong>{{config.title}}</strong>
+      <span>⌂</span><small>Home</small><b>›</b><strong>{{config.title}}</strong>
       <em>{{config.group}}</em>
     </div>
 
