@@ -191,7 +191,7 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
               <div>
                 <b>{{dashboardError ? 'Panel disponible con datos parciales' : 'Sistema administrativo operativo'}}</b>
                 <small>
-                  {{dashboardError ? 'Una consulta del resumen necesita revisión, pero los módulos siguen disponibles.' : '28 áreas administrativas conectadas y accesibles desde este panel.'}}
+                  {{dashboardError ? 'Una consulta del resumen necesita revisión, pero los módulos siguen disponibles.' : '26 áreas administrativas conectadas y accesibles desde este panel.'}}
                 </small>
               </div>
             </div>
@@ -246,7 +246,7 @@ import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component'
                     <h2>Módulos del administrador</h2>
                     <p>Cada acceso abre una función real del sistema. No hay botones de adorno.</p>
                   </div>
-                  <strong>7 módulos · 28 áreas</strong>
+                  <strong>7 módulos · 26 áreas</strong>
                 </header>
 
                 <div class="mg-modules-grid">
