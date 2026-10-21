@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AdminApiService } from './admin-api.service';
 
 interface ExtraConfig {
   title: string;
@@ -41,6 +42,75 @@ interface ExtraConfig {
     </section>
 
     <ng-container [ngSwitch]="section">
+
+      <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'members-list'">
+        <article class="cfx-card">
+          <header><div><span>MEMBERS LIST</span><h2>Lista de socios</h2></div><button (click)="loadMembers()">↻ Actualizar</button></header>
+          <div class="cfx-toolbar"><input [(ngModel)]="memberSearch" placeholder="Buscar por nombre, DNI o correo..."></div>
+          <div class="cfx-table-wrap"><table><thead><tr><th>ID</th><th>Socio</th><th>DNI</th><th>Correo</th><th>Estado</th></tr></thead><tbody>
+            <tr *ngFor="let m of filteredMembers"><td>#{{m.id_cliente}}</td><td><b>{{m.nombres}} {{m.apellidos}}</b></td><td>{{m.dni||'—'}}</td><td>{{m.correo||'—'}}</td><td><span class="cfx-badge" [class.success]="m.estado==='Activo'">{{m.estado}}</span></td></tr>
+            <tr *ngIf="!filteredMembers.length"><td colspan="5">No hay socios que coincidan.</td></tr>
+          </tbody></table></div>
+        </article>
+      </section>
+
+      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'add-member'">
+        <article class="cfx-card">
+          <header><div><span>ADD MEMBER</span><h2>Agregar socio</h2></div></header>
+          <div class="cfx-form">
+            <label>DNI<input [(ngModel)]="newMember.dni" maxlength="15"></label>
+            <label>Nombres<input [(ngModel)]="newMember.nombres"></label>
+            <label>Apellidos<input [(ngModel)]="newMember.apellidos"></label>
+            <label>Correo<input type="email" [(ngModel)]="newMember.correo"></label>
+            <label>Teléfono<input [(ngModel)]="newMember.telefono"></label>
+            <label>Dirección<input [(ngModel)]="newMember.direccion"></label>
+            <button class="primary" (click)="saveMember()" [disabled]="savingMember">Guardar socio</button>
+            <small *ngIf="memberMessage">{{memberMessage}}</small>
+          </div>
+        </article>
+        <article class="cfx-card cfx-profile-card"><div class="cfx-avatar large">＋</div><h2>Nuevo miembro</h2><p>Este formulario usa la API real de clientes de Mallqui Gym.</p><div class="cfx-badges"><span>MySQL</span><span class="success">Laravel API</span></div></article>
+      </section>
+
+      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'edit-member'">
+        <article class="cfx-card">
+          <header><div><span>EDIT MEMBER</span><h2>Editar socio</h2></div></header>
+          <div class="cfx-form">
+            <label>Seleccionar socio<select [(ngModel)]="selectedMemberId" (ngModelChange)="selectMember($event)"><option [ngValue]="0">Seleccionar</option><option *ngFor="let m of members" [ngValue]="m.id_cliente">{{m.nombres}} {{m.apellidos}}</option></select></label>
+            <label>DNI<input [(ngModel)]="editMember.dni"></label><label>Nombres<input [(ngModel)]="editMember.nombres"></label><label>Apellidos<input [(ngModel)]="editMember.apellidos"></label>
+            <label>Correo<input type="email" [(ngModel)]="editMember.correo"></label><label>Teléfono<input [(ngModel)]="editMember.telefono"></label><label>Estado<select [(ngModel)]="editMember.estado"><option>Activo</option><option>Inactivo</option></select></label>
+            <button class="primary" (click)="updateMember()" [disabled]="!selectedMemberId||savingMember">Guardar cambios</button>
+            <small *ngIf="memberMessage">{{memberMessage}}</small>
+          </div>
+        </article>
+        <article class="cfx-card"><h2>Socios cargados</h2><div class="cfx-list"><div *ngFor="let m of members.slice(0,5)"><span>{{(m.nombres||'S').charAt(0)}}</span><div><b>{{m.nombres}} {{m.apellidos}}</b><small>{{m.dni||'Sin DNI'}}</small></div><em>{{m.estado}}</em></div></div></article>
+      </section>
+
+      <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'invoices-list'">
+        <article class="cfx-card">
+          <header><div><span>INVOICES LIST</span><h2>Lista de facturas</h2></div><button (click)="loadInvoices()">↻ Actualizar</button></header>
+          <div class="cfx-table-wrap"><table><thead><tr><th>ID</th><th>Cliente / comprobante</th><th>Concepto</th><th>Fecha</th><th>Total</th><th>Estado</th></tr></thead><tbody>
+            <tr *ngFor="let x of invoices"><td>#{{x.id}}</td><td><b>{{x.titulo}}</b></td><td>{{x.subtitulo||'—'}}</td><td>{{x.fecha||'—'}}</td><td>S/ {{x.monto||0}}</td><td><span class="cfx-badge">{{x.estado}}</span></td></tr>
+            <tr *ngIf="!invoices.length"><td colspan="6">No hay facturas registradas.</td></tr>
+          </tbody></table></div>
+        </article>
+      </section>
+
+      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'add-invoice'">
+        <article class="cfx-card"><header><div><span>ADD INVOICE</span><h2>Agregar factura</h2></div></header><div class="cfx-form">
+          <label>Cliente / comprobante<input [(ngModel)]="invoiceForm.titulo"></label><label>Concepto<input [(ngModel)]="invoiceForm.subtitulo"></label><label>Fecha<input type="date" [(ngModel)]="invoiceForm.fecha"></label><label>Total<input type="number" min="0" step="0.01" [(ngModel)]="invoiceForm.monto"></label><label>Estado<select [(ngModel)]="invoiceForm.estado"><option>Emitida</option><option>Pagada</option><option>Pendiente</option><option>Anulada</option></select></label>
+          <button class="primary" (click)="saveInvoice()" [disabled]="savingInvoice">Crear factura</button><small *ngIf="invoiceMessage">{{invoiceMessage}}</small>
+        </div></article>
+        <article class="cfx-card cfx-gradient"><small>FACTURACIÓN</small><strong>S/ {{invoiceForm.monto||0}}</strong><p>Registro conectado al módulo real de facturas.</p></article>
+      </section>
+
+      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'edit-invoice'">
+        <article class="cfx-card"><header><div><span>EDIT INVOICE</span><h2>Editar factura</h2></div></header><div class="cfx-form">
+          <label>Seleccionar factura<select [(ngModel)]="selectedInvoiceId" (ngModelChange)="selectInvoice($event)"><option [ngValue]="0">Seleccionar</option><option *ngFor="let x of invoices" [ngValue]="x.id">#{{x.id}} · {{x.titulo}}</option></select></label>
+          <label>Cliente / comprobante<input [(ngModel)]="invoiceForm.titulo"></label><label>Concepto<input [(ngModel)]="invoiceForm.subtitulo"></label><label>Fecha<input type="date" [(ngModel)]="invoiceForm.fecha"></label><label>Total<input type="number" min="0" step="0.01" [(ngModel)]="invoiceForm.monto"></label><label>Estado<select [(ngModel)]="invoiceForm.estado"><option>Emitida</option><option>Pagada</option><option>Pendiente</option><option>Anulada</option></select></label>
+          <button class="primary" (click)="updateInvoice()" [disabled]="!selectedInvoiceId||savingInvoice">Guardar cambios</button><small *ngIf="invoiceMessage">{{invoiceMessage}}</small>
+        </div></article>
+        <article class="cfx-card"><h2>Facturas recientes</h2><div class="cfx-list"><div *ngFor="let x of invoices.slice(0,5)"><span>▤</span><div><b>{{x.titulo}}</b><small>{{x.fecha||'Sin fecha'}}</small></div><em>{{x.estado}}</em></div></div></article>
+      </section>
 
       <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'tables'">
         <article class="cfx-card span-2">
@@ -316,8 +386,21 @@ interface ExtraConfig {
     @media(max-width:700px){.cfx-page{margin-left:-12px;margin-right:-12px}.cfx-hero,.cfx-grid{margin-left:12px;margin-right:12px}.cfx-crumb{padding:0 14px}.cfx-crumb em{display:none}.cfx-metrics{grid-template-columns:1fr 1fr}.cfx-icon-grid{grid-template-columns:repeat(3,1fr)}}
   `]
 })
-export class AdminCrossfitExtrasComponent {
+export class AdminCrossfitExtrasComponent implements OnChanges {
   @Input() section = 'tables';
+
+  members:any[] = [];
+  invoices:any[] = [];
+  memberSearch = '';
+  selectedMemberId = 0;
+  selectedInvoiceId = 0;
+  savingMember = false;
+  savingInvoice = false;
+  memberMessage = '';
+  invoiceMessage = '';
+  newMember:any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
+  editMember:any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
+  invoiceForm:any = {titulo:'',subtitulo:'',fecha:new Date().toISOString().slice(0,10),monto:0,estado:'Emitida',imagen_url:null,datos:{}};
 
   search = '';
   filter = '';
@@ -363,6 +446,12 @@ export class AdminCrossfitExtrasComponent {
   ];
 
   configs:Record<string,ExtraConfig> = {
+    'members-list':{title:'Members List',subtitle:'Listado real de socios registrados en Mallqui Gym.',icon:'♚',group:'Members'},
+    'add-member':{title:'Add Member',subtitle:'Registro real de nuevos socios.',icon:'＋',group:'Members'},
+    'edit-member':{title:'Edit Member',subtitle:'Edición real de datos de socios.',icon:'✎',group:'Members'},
+    'invoices-list':{title:'Invoices List',subtitle:'Listado de comprobantes registrados.',icon:'▤',group:'Invoices'},
+    'add-invoice':{title:'Add Invoice',subtitle:'Creación de facturas del gimnasio.',icon:'＋',group:'Invoices'},
+    'edit-invoice':{title:'Edit Invoice',subtitle:'Actualización de facturas registradas.',icon:'✎',group:'Invoices'},
     'tables':{title:'Tables',subtitle:'Tablas administrativas con estructura responsive.',icon:'▤',group:'Tables'},
     'data-tables':{title:'Data Tables',subtitle:'Búsqueda, filtros y organización de registros.',icon:'▦',group:'Tables'},
     'graphs':{title:'Graphs',subtitle:'Visualización de métricas y tendencias.',icon:'↗',group:'Graphs'},
@@ -409,6 +498,62 @@ export class AdminCrossfitExtrasComponent {
     'badge-link':{title:'Badge',subtitle:'Badges y contadores visuales.',icon:'●',group:'Components'},
     'disabled-link':{title:'Disabled Link',subtitle:'Estado deshabilitado de navegación.',icon:'⊘',group:'Navigation'}
   };
+
+  constructor(private api: AdminApiService) {}
+
+  ngOnChanges():void {
+    if(['members-list','add-member','edit-member'].includes(this.section)) this.loadMembers();
+    if(['invoices-list','add-invoice','edit-invoice'].includes(this.section)) this.loadInvoices();
+  }
+
+  loadMembers(){ this.api.clientes().subscribe({next:r=>this.members=Array.isArray(r)?r:[],error:()=>this.members=[]}); }
+  get filteredMembers():any[] {
+    const q=this.memberSearch.trim().toLowerCase();
+    return this.members.filter(m=>!q||[m.dni,m.nombres,m.apellidos,m.correo,m.telefono].filter(Boolean).join(' ').toLowerCase().includes(q));
+  }
+  saveMember(){
+    if(!this.newMember.dni||!this.newMember.nombres||!this.newMember.apellidos){this.memberMessage='Completa DNI, nombres y apellidos.';return;}
+    this.savingMember=true; this.memberMessage='';
+    this.api.crearCliente({...this.newMember}).subscribe({
+      next:()=>{this.savingMember=false;this.memberMessage='✓ Socio registrado correctamente.';this.newMember={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};this.loadMembers();},
+      error:e=>{this.savingMember=false;this.memberMessage=e?.error?.message||'No se pudo registrar el socio.';}
+    });
+  }
+  selectMember(id:number){
+    const m=this.members.find(x=>Number(x.id_cliente)===Number(id));
+    this.editMember=m?{dni:m.dni||'',nombres:m.nombres||'',apellidos:m.apellidos||'',telefono:m.telefono||'',correo:m.correo||'',direccion:m.direccion||'',estado:m.estado||'Activo'}:{dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo'};
+  }
+  updateMember(){
+    if(!this.selectedMemberId)return;
+    this.savingMember=true; this.memberMessage='';
+    this.api.actualizarCliente(this.selectedMemberId,{...this.editMember}).subscribe({
+      next:()=>{this.savingMember=false;this.memberMessage='✓ Socio actualizado correctamente.';this.loadMembers();},
+      error:e=>{this.savingMember=false;this.memberMessage=e?.error?.message||'No se pudo actualizar el socio.';}
+    });
+  }
+
+  loadInvoices(){ this.api.gymRegistros('facturas').subscribe({next:r=>this.invoices=Array.isArray(r)?r:[],error:()=>this.invoices=[]}); }
+  resetInvoice(){ this.invoiceForm={titulo:'',subtitulo:'',fecha:new Date().toISOString().slice(0,10),monto:0,estado:'Emitida',imagen_url:null,datos:{}}; }
+  saveInvoice(){
+    if(!String(this.invoiceForm.titulo||'').trim()){this.invoiceMessage='Completa el cliente o comprobante.';return;}
+    this.savingInvoice=true; this.invoiceMessage='';
+    this.api.crearGymRegistro('facturas',{...this.invoiceForm,titulo:String(this.invoiceForm.titulo).trim(),subtitulo:String(this.invoiceForm.subtitulo||'').trim()||null}).subscribe({
+      next:()=>{this.savingInvoice=false;this.invoiceMessage='✓ Factura creada correctamente.';this.resetInvoice();this.loadInvoices();},
+      error:e=>{this.savingInvoice=false;this.invoiceMessage=e?.error?.message||'No se pudo crear la factura.';}
+    });
+  }
+  selectInvoice(id:number){
+    const x=this.invoices.find(r=>Number(r.id)===Number(id));
+    this.invoiceForm=x?{titulo:x.titulo||'',subtitulo:x.subtitulo||'',fecha:x.fecha||'',monto:Number(x.monto||0),estado:x.estado||'Emitida',imagen_url:x.imagen_url||null,datos:x.datos||{}}:{titulo:'',subtitulo:'',fecha:'',monto:0,estado:'Emitida',imagen_url:null,datos:{}};
+  }
+  updateInvoice(){
+    if(!this.selectedInvoiceId)return;
+    this.savingInvoice=true; this.invoiceMessage='';
+    this.api.actualizarGymRegistro('facturas',this.selectedInvoiceId,{...this.invoiceForm}).subscribe({
+      next:()=>{this.savingInvoice=false;this.invoiceMessage='✓ Factura actualizada.';this.loadInvoices();},
+      error:e=>{this.savingInvoice=false;this.invoiceMessage=e?.error?.message||'No se pudo actualizar la factura.';}
+    });
+  }
 
   get config():ExtraConfig { return this.configs[this.section] || this.configs['tables']; }
   get metric1():string {
