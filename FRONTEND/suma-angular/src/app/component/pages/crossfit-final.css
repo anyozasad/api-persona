@@ -737,3 +737,449 @@
     padding-top:64px!important;
   }
 }
+
+
+/* MODULE PAGES UNIFIED · CROSSFit REFERENCE */
+
+/* El dashboard de referencia no usa un catálogo gigante de módulos en el home. */
+.mghome-section,
+.mghome-lower{
+  display:none!important;
+}
+
+/* Espacio inferior del dashboard después de las 4 métricas. */
+.crossfit-stat-row{
+  margin-bottom:26px!important;
+}
+
+/* Base visual compartida para TODAS las páginas internas. */
+.admin-content{
+  color:#2d2c3b!important;
+}
+.admin-header{
+  min-height:82px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:20px!important;
+  margin:0!important;
+  padding:22px 4px 16px!important;
+  border:0!important;
+  background:transparent!important;
+}
+.admin-title-kicker{
+  display:block!important;
+  margin-bottom:5px!important;
+  color:#5b56dd!important;
+  font-size:7px!important;
+  font-weight:900!important;
+  letter-spacing:1px!important;
+}
+.admin-header h1{
+  margin:0!important;
+  color:#2c2b3a!important;
+  font-size:25px!important;
+  line-height:1.1!important;
+  font-weight:750!important;
+}
+.admin-header p{
+  margin:5px 0 0!important;
+  color:#8a8e9e!important;
+  font-size:9px!important;
+}
+.admin-refresh-box small{color:#a0a3b0!important;font-size:7px!important}
+.admin-secondary,
+.admin-header-mini{
+  border:1px solid #e1e2ea!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#5c6070!important;
+  box-shadow:none!important;
+}
+.admin-secondary:hover,
+.admin-header-mini:hover{
+  border-color:#cbc9f2!important;
+  background:#f6f5ff!important;
+  color:#5752d8!important;
+}
+
+/* Tabs como la plantilla */
+.admin-module-tabs{
+  min-height:47px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:3px!important;
+  margin:0 0 16px!important;
+  padding:6px!important;
+  border:1px solid #e7e8ef!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.admin-module-tabs button{
+  min-height:33px!important;
+  padding:0 12px!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:transparent!important;
+  color:#747888!important;
+  font-size:8px!important;
+  font-weight:700!important;
+}
+.admin-module-tabs button:hover{
+  background:#f7f6ff!important;
+  color:#5954d9!important;
+}
+.admin-module-tabs button.active{
+  background:#efefff!important;
+  color:#5752da!important;
+  box-shadow:none!important;
+}
+.admin-module-tabs button b{
+  background:#ff6b65!important;
+  color:#fff!important;
+}
+
+/* Cards generales */
+.admin-form-card,
+.admin-list-card,
+.wide-card,
+.report-panel,
+.config-card,
+.trainer-main-card,
+.management-grid>section,
+.management-grid>article,
+.management-grid>.admin-list-card,
+.management-grid>.admin-form-card{
+  border:1px solid #e6e7ee!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  box-shadow:0 4px 14px rgba(74,70,124,.025)!important;
+}
+.admin-form-card,
+.admin-list-card,
+.wide-card,
+.report-panel,
+.config-card,
+.trainer-main-card{
+  padding:16px!important;
+}
+.management-grid{
+  gap:14px!important;
+}
+.management-heading{
+  margin:0 0 12px!important;
+  color:#2d2c3d!important;
+  font-size:15px!important;
+  line-height:1.2!important;
+  font-weight:750!important;
+}
+.management-heading small{
+  color:#9094a3!important;
+  font-size:8px!important;
+  font-weight:500!important;
+}
+
+/* Formularios */
+.form-row{
+  gap:6px!important;
+  color:#5f6474!important;
+  font-size:8px!important;
+  font-weight:700!important;
+}
+.form-row input,
+.form-row select,
+.form-row textarea,
+.admin-form-card input,
+.admin-form-card select,
+.admin-form-card textarea{
+  min-height:38px!important;
+  box-sizing:border-box!important;
+  border:1px solid #dfe1e9!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#343444!important;
+  font-size:9px!important;
+  outline:none!important;
+  box-shadow:none!important;
+}
+.form-row input,
+.form-row select,
+.admin-form-card input,
+.admin-form-card select{
+  padding:0 10px!important;
+}
+.form-row textarea,
+.admin-form-card textarea{
+  padding:9px 10px!important;
+}
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus,
+.admin-form-card input:focus,
+.admin-form-card select:focus,
+.admin-form-card textarea:focus{
+  border-color:#9d99ef!important;
+  box-shadow:0 0 0 3px rgba(91,86,221,.08)!important;
+}
+
+/* Botones principales */
+.admin-primary{
+  min-height:37px!important;
+  padding:0 13px!important;
+  border:1px solid #5b56dd!important;
+  border-radius:8px!important;
+  background:#5b56dd!important;
+  color:#fff!important;
+  font-size:8px!important;
+  font-weight:800!important;
+  box-shadow:none!important;
+}
+.admin-primary:hover{
+  border-color:#4d48cb!important;
+  background:#4d48cb!important;
+  transform:none!important;
+}
+.table-action{
+  min-height:29px!important;
+  padding:0 9px!important;
+  border:1px solid #e0e2e9!important;
+  border-radius:7px!important;
+  background:#fff!important;
+  color:#5c6171!important;
+  font-size:7.5px!important;
+  box-shadow:none!important;
+}
+.table-action:hover{
+  border-color:#cbc9f1!important;
+  background:#f6f5ff!important;
+  color:#5853d9!important;
+}
+.table-danger{
+  border-color:#f5d7da!important;
+  background:#fff7f8!important;
+  color:#cf4c5d!important;
+}
+
+/* Tablas de TODOS los módulos */
+.table-wrap,
+.clients-v3-table-wrap,
+.gym-suite-table-wrap{
+  overflow:auto!important;
+  border:1px solid #e7e8ef!important;
+  border-radius:10px!important;
+  background:#fff!important;
+}
+.management-table,
+.clients-v3-table,
+.gym-suite-table{
+  width:100%!important;
+  border-collapse:collapse!important;
+  background:#fff!important;
+}
+.management-table thead,
+.clients-v3-table thead,
+.gym-suite-table thead{
+  background:#f8f8fb!important;
+}
+.management-table th,
+.clients-v3-table th,
+.gym-suite-table th{
+  min-height:37px!important;
+  padding:10px 12px!important;
+  border-bottom:1px solid #e8e9ef!important;
+  color:#818695!important;
+  font-size:7.5px!important;
+  font-weight:800!important;
+  letter-spacing:.35px!important;
+  text-transform:uppercase!important;
+}
+.management-table td,
+.clients-v3-table td,
+.gym-suite-table td{
+  padding:11px 12px!important;
+  border-bottom:1px solid #eef0f4!important;
+  color:#4d5262!important;
+  font-size:8.5px!important;
+}
+.management-table tbody tr:hover,
+.clients-v3-table tbody tr:hover,
+.gym-suite-table tbody tr:hover{
+  background:#fafaff!important;
+}
+
+/* Página Socios: elimina el hero oscuro/gradiente y usa el mismo lenguaje de la plantilla. */
+.clients-v3-shell{
+  display:grid!important;
+  gap:14px!important;
+}
+.clients-v3-hero{
+  min-height:104px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:20px!important;
+  padding:19px 22px!important;
+  border:1px solid #e6e7ef!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  box-shadow:0 4px 14px rgba(74,70,124,.025)!important;
+}
+.clients-v3-hero:before,
+.clients-v3-hero:after{
+  display:none!important;
+}
+.clients-v3-hero-copy small{
+  color:#5b56dd!important;
+  font-size:7px!important;
+  font-weight:900!important;
+  letter-spacing:1px!important;
+}
+.clients-v3-hero-copy h2{
+  margin:4px 0 4px!important;
+  color:#2c2b3b!important;
+  font-size:21px!important;
+}
+.clients-v3-hero-copy p{
+  margin:0!important;
+  color:#8d91a0!important;
+  font-size:9px!important;
+}
+.clients-v3-new{
+  min-height:38px!important;
+  padding:0 14px!important;
+  border:1px solid #5b56dd!important;
+  border-radius:8px!important;
+  background:#5b56dd!important;
+  color:#fff!important;
+  font-size:8px!important;
+  font-weight:800!important;
+}
+.clients-v3-stats{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+.clients-v3-stats article{
+  min-height:88px!important;
+  padding:14px!important;
+  border:1px solid #e6e7ee!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.clients-v3-stat-icon{
+  background:#f0efff!important;
+  color:#5b56dd!important;
+}
+.clients-v3-card{
+  border:1px solid #e6e7ee!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.clients-v3-toolbar{
+  min-height:58px!important;
+  padding:10px 12px!important;
+  border-bottom:1px solid #e9eaf0!important;
+}
+.clients-v3-search,
+.clients-v3-filter{
+  min-height:36px!important;
+  border:1px solid #dfe1e9!important;
+  border-radius:8px!important;
+  background:#fff!important;
+}
+.clients-v3-refresh{
+  min-height:36px!important;
+  border:1px solid #dfe1e9!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#5c6171!important;
+}
+
+/* Entrenador */
+.trainer-main-card{
+  background:#fff!important;
+  color:#2d2c3b!important;
+}
+.trainer-required-note{
+  border-radius:8px!important;
+  background:#f8f7ff!important;
+  color:#706c9b!important;
+}
+
+/* Configuración */
+.config-hero{
+  min-height:104px!important;
+  padding:19px 22px!important;
+  border:1px solid #e6e7ef!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  color:#2d2c3b!important;
+}
+.config-card-head{
+  border-bottom:1px solid #ececf2!important;
+}
+.config-card{
+  box-shadow:none!important;
+}
+
+/* Reportes */
+.report-grid{
+  gap:14px!important;
+}
+.report-panel{
+  min-height:0!important;
+}
+.report-panel h3{
+  color:#2d2c3b!important;
+  font-size:14px!important;
+}
+
+/* Suite nueva: mismo aspecto que las demás páginas */
+.gym-suite-hero{
+  min-height:104px!important;
+  padding:18px 20px!important;
+  border:1px solid #e6e7ef!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.gym-suite-heading h2{color:#2c2b3b!important;font-size:21px!important}
+.gym-suite-heading p{color:#8d91a0!important}
+.gym-suite-icon{
+  background:#efefff!important;
+  color:#5752d8!important;
+}
+.gym-suite-kpis{
+  gap:12px!important;
+}
+.gym-suite-kpis article{
+  min-height:84px!important;
+  border:1px solid #e6e7ee!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.gym-suite-panel{
+  border:1px solid #e6e7ee!important;
+  border-radius:11px!important;
+  box-shadow:none!important;
+}
+
+/* Evita gradientes antiguos dentro de módulos. */
+.admin-content .hero,
+.admin-content [class*="-hero"]:not(.crossfit-welcome-card):not(.crossfit-dashboard-breadcrumb){
+  box-shadow:none!important;
+}
+
+/* En desktop, el contenido interno no debe verse gigantesco. */
+@media(min-width:981px){
+  .admin-content>ng-container,
+  .admin-content .clients-v3-shell,
+  .admin-content .gym-suite,
+  .admin-content .management-grid,
+  .admin-content .report-grid{
+    max-width:1320px!important;
+  }
+}
