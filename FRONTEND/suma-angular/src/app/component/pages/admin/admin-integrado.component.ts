@@ -187,6 +187,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
               <button type="button" (click)="cambiarSeccion('reservas')">Reservas</button>
               <button type="button" (click)="cambiarSeccion('ventas')">Ventas</button>
               <button type="button" (click)="cambiarSeccion('inventario')">Inventario</button>
+              <button type="button" (click)="cambiarSeccion('nutricion')">Fitness</button>
               <button type="button" (click)="cambiarSeccion('reportes')">Reportes</button>
             </nav>
 
