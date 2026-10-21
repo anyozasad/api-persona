@@ -2029,3 +2029,285 @@
   .cf-workout-art{display:none}
   .cf-workout-tabs{overflow-x:auto}
 }
+
+
+/* UNIVERSAL CROSSFIT MODULES · ALL REMAINING PAGES */
+.cf-universal-module{
+  margin:0 -24px 18px!important;
+  background:var(--cf-page)!important;
+}
+.cf-universal-hero{
+  min-height:285px;
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);
+  overflow:hidden;
+  margin:0 24px;
+  border-radius:0 0 11px 11px;
+  background:#fff;
+  box-shadow:0 5px 15px rgba(76,72,126,.04);
+}
+.cf-universal-copy{
+  padding:32px 34px 24px;
+}
+.cf-universal-copy>span{
+  display:block;
+  margin-bottom:5px;
+  color:#5b56dd;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+.cf-universal-copy h1{
+  margin:0;
+  color:#2d2c3b;
+  font-size:28px;
+  line-height:1.08;
+  font-weight:750;
+}
+.cf-universal-copy>p{
+  margin:6px 0 0;
+  max-width:650px;
+  color:#747888;
+  font-size:10px;
+  line-height:1.45;
+}
+.cf-universal-metrics{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-top:30px;
+}
+.cf-universal-metrics article{
+  min-width:0;
+  min-height:72px;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  align-items:center;
+  gap:9px;
+  padding:9px 11px;
+  border:1px solid #e8e8f0;
+  border-radius:999px;
+  background:#fff;
+  box-shadow:0 5px 14px rgba(75,70,126,.035);
+}
+.cf-universal-metrics article>span{
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#f0efff;
+  color:#5c57dd;
+  font-size:12px;
+  font-weight:900;
+}
+.cf-universal-metrics article:nth-child(2)>span{
+  background:#eaf8f2;
+  color:#48aa80;
+}
+.cf-universal-metrics article:nth-child(3)>span{
+  background:#fff1e8;
+  color:#eb9244;
+}
+.cf-universal-metrics article:nth-child(4)>span{
+  background:#f3efff;
+  color:#7a71e5;
+}
+.cf-universal-metrics article>div{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+.cf-universal-metrics b{
+  overflow:hidden;
+  color:#5551d9;
+  font-size:15px;
+  line-height:1.05;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.cf-universal-metrics small{
+  margin-top:3px;
+  overflow:hidden;
+  color:#858999;
+  font-size:7.5px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.cf-universal-art{
+  min-height:285px;
+  overflow:hidden;
+  background:#f8f7ff;
+}
+.cf-universal-art svg{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+/* family accents */
+.cf-universal-hero.variant-personas .cf-universal-copy>span{color:#5b56dd}
+.cf-universal-hero.variant-operacion .cf-universal-copy>span{color:#ef8d42}
+.cf-universal-hero.variant-finanzas .cf-universal-copy>span{color:#4fa97d}
+.cf-universal-hero.variant-contenido .cf-universal-copy>span{color:#7a70e5}
+.cf-universal-hero.variant-sistema .cf-universal-copy>span{color:#5d6374}
+
+.cf-universal-panels{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+  margin:16px 24px 0;
+}
+.cf-universal-panels>article{
+  min-height:225px;
+  padding:16px;
+  border:1px solid #e7e7ef;
+  border-radius:10px;
+  background:#fff;
+  box-shadow:0 4px 13px rgba(75,70,126,.025);
+}
+.cf-universal-panels header{
+  display:grid;
+  grid-template-columns:40px minmax(0,1fr) auto;
+  align-items:start;
+  gap:9px;
+}
+.cf-universal-panels header>span{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:10px;
+  background:#f0efff;
+  color:#5c57dd;
+  font-size:11px;
+  font-weight:900;
+}
+.cf-universal-panels article.accent header>span{
+  background:#fff1e8;
+  color:#ed9344;
+}
+.cf-universal-panels header>div{
+  min-width:0;
+}
+.cf-universal-panels h3{
+  margin:0;
+  color:#2e2d3d;
+  font-size:12px;
+}
+.cf-universal-panels p{
+  margin:3px 0 0;
+  overflow:hidden;
+  color:#8c90a0;
+  font-size:7.5px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.cf-universal-panels header>b{
+  max-width:95px;
+  overflow:hidden;
+  color:#5c57dd;
+  font-size:8px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.cf-panel-visual{
+  height:125px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:25px;
+  padding:0 7px;
+}
+.cf-panel-visual i{
+  flex:1;
+  min-height:14%;
+  max-width:24px;
+  border-radius:6px 6px 0 0;
+  background:#d6d3f5;
+}
+.cf-panel-visual i:nth-child(2n){
+  background:#b7b3ef;
+}
+.cf-panel-visual.visual-operacion i:nth-child(4){
+  background:#ff9b4a;
+}
+.cf-panel-visual.visual-finanzas i:nth-child(4){
+  background:#65c59a;
+}
+.cf-panel-visual.visual-contenido i:nth-child(3){
+  background:#8b83e9;
+}
+.cf-panel-visual.visual-sistema i:nth-child(5){
+  background:#6b7184;
+}
+
+/* place real module navigation directly under custom template */
+.cf-universal-module + .admin-module-tabs{
+  margin-top:0!important;
+}
+
+/* functional content sits below the visual template as its working area */
+.cf-universal-module ~ .management-grid,
+.cf-universal-module ~ .admin-list-card,
+.cf-universal-module ~ .clients-v3-shell,
+.cf-universal-module ~ .gym-suite,
+.cf-universal-module ~ .report-grid,
+.cf-universal-module ~ .report-panel,
+.cf-universal-module ~ .audit-page,
+.cf-universal-module ~ .config-page{
+  margin-top:14px!important;
+}
+
+/* hide repeated old top summaries when the universal module already provides them */
+.cf-universal-module ~ .clients-v3-stats,
+.cf-universal-module ~ .gym-suite-kpis{
+  display:none!important;
+}
+
+@media(max-width:1260px){
+  .cf-universal-metrics{
+    grid-template-columns:1fr 1fr;
+  }
+  .cf-universal-panels{
+    grid-template-columns:1fr 1fr;
+  }
+}
+@media(max-width:980px){
+  .cf-universal-hero{
+    grid-template-columns:1fr;
+  }
+  .cf-universal-art{
+    min-height:220px;
+  }
+}
+@media(max-width:700px){
+  .cf-universal-module{
+    margin-left:-12px!important;
+    margin-right:-12px!important;
+  }
+  .cf-universal-hero,
+  .cf-universal-panels{
+    margin-left:12px!important;
+    margin-right:12px!important;
+  }
+  .cf-universal-copy{
+    padding:24px 18px;
+  }
+  .cf-universal-copy h1{
+    font-size:24px;
+  }
+  .cf-universal-metrics{
+    grid-template-columns:1fr 1fr;
+  }
+  .cf-universal-metrics article{
+    border-radius:12px;
+  }
+  .cf-universal-art{
+    display:none;
+  }
+  .cf-universal-panels{
+    grid-template-columns:1fr;
+  }
+}
