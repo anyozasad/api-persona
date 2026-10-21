@@ -24,9 +24,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
         <span class="crossfit-top-logo"><img src="assets/mallqui-logo.svg" alt=""><strong>Mallqui Gym</strong></span>
       </button>
 
-      <nav class="admin-top-shortcuts crossfit-top-links" aria-label="Ubicación actual">
-        <span>Home</span><i>›</i><b>{{tituloActual}}</b>
-      </nav>
+      <div class="crossfit-top-spacer"></div>
 
       <label class="admin-wix-search">
         <span>⌕</span>
@@ -64,51 +62,46 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
       </div>
 
       <nav class="admin-main-nav crossfit-sidebar-nav" aria-label="Módulos principales">
-        <small class="admin-menu-caption">PRINCIPAL</small>
         <button type="button" [class.active]="seccion==='dashboard'" (click)="cambiarSeccion('dashboard')">
           <span class="admin-main-nav-icon">⌂</span><span>Dashboard</span>
         </button>
-        <button type="button" [class.active]="moduloActivo==='reportes'" (click)="cambiarSeccion('reportes')">
-          <span class="admin-main-nav-icon">▥</span><span>Mis reportes</span>
+        <button type="button" [class.active]="seccion==='reportes'" (click)="cambiarSeccion('reportes')">
+          <span class="admin-main-nav-icon">⌘</span><span>Mis reportes</span>
         </button>
-
-        <small class="admin-menu-caption">ENTRENAMIENTO</small>
         <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSeccion('rutinas')">
-          <span class="admin-main-nav-icon">⚡</span><span>Plan de entrenamiento</span>
+          <span class="admin-main-nav-icon">☷</span><span>Plan de entrenamiento</span>
           <b *ngIf="badgeModulo('servicios')>0">{{badgeModulo('servicios')}}</b>
         </button>
         <button type="button" [class.active]="seccion==='nutricion'" (click)="cambiarSeccion('nutricion')">
           <span class="admin-main-nav-icon">♨</span><span>Plan de alimentación</span>
         </button>
+        <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSeccion('asistencias')">
+          <span class="admin-main-nav-icon">▣</span><span>Control de asistencia</span>
+        </button>
         <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSeccion('entrenador')">
           <span class="admin-main-nav-icon">♙</span><span>Entrenadores</span>
         </button>
-        <button type="button" [class.active]="seccion==='clases' || seccion==='reservas'" (click)="cambiarSeccion('clases')">
-          <span class="admin-main-nav-icon">◷</span><span>Clases y reservas</span>
+        <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSeccion('entrenador')">
+          <span class="admin-main-nav-icon">◎</span><span>Perfil del entrenador</span>
         </button>
-
-        <small class="admin-menu-caption">GESTIÓN DEL GYM</small>
         <button type="button" [class.active]="moduloActivo==='socios'" (click)="cambiarSeccion('clientes')">
           <span class="admin-main-nav-icon">♚</span><span>Socios</span>
-          <b *ngIf="badgeModulo('socios')>0">{{badgeModulo('socios')}}</b>
         </button>
         <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSeccion('equipos')">
           <span class="admin-main-nav-icon">◆</span><span>Equipos</span>
         </button>
         <button type="button" [class.active]="seccion==='eventos'" (click)="cambiarSeccion('eventos')">
-          <span class="admin-main-nav-icon">◫</span><span>Eventos del gym</span>
+          <span class="admin-main-nav-icon">◫</span><span>Eventos</span>
         </button>
         <button type="button" [class.active]="seccion==='galeria'" (click)="cambiarSeccion('galeria')">
           <span class="admin-main-nav-icon">▧</span><span>Galería</span>
         </button>
         <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSeccion('noticias')">
-          <span class="admin-main-nav-icon">◇</span><span>Noticias y novedades</span>
+          <span class="admin-main-nav-icon">◇</span><span>Noticias</span>
         </button>
         <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSeccion('planes')">
           <span class="admin-main-nav-icon">★</span><span>Planes y precios</span>
         </button>
-
-        <small class="admin-menu-caption">FINANZAS</small>
         <button type="button" [class.active]="seccion==='salarios'" (click)="cambiarSeccion('salarios')">
           <span class="admin-main-nav-icon">S/</span><span>Salarios</span>
         </button>
@@ -124,15 +117,11 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
         <button type="button" [class.active]="moduloActivo==='operacion'" (click)="cambiarSeccion('caja')">
           <span class="admin-main-nav-icon">▣</span><span>Caja y ventas</span>
         </button>
-
-        <small class="admin-menu-caption">ADMINISTRACIÓN</small>
         <button type="button" [class.active]="moduloActivo==='inventario'" (click)="cambiarSeccion('inventario')">
           <span class="admin-main-nav-icon">▦</span><span>Inventario</span>
-          <b *ngIf="badgeModulo('inventario')>0">{{badgeModulo('inventario')}}</b>
         </button>
         <button type="button" [class.active]="moduloActivo==='atencion'" (click)="cambiarSeccion('soporte')">
           <span class="admin-main-nav-icon">●</span><span>Atención</span>
-          <b *ngIf="badgeModulo('atencion')>0">{{badgeModulo('atencion')}}</b>
         </button>
         <button type="button" [class.active]="moduloActivo==='sistema'" (click)="cambiarSeccion('configuracion')">
           <span class="admin-main-nav-icon">⚙</span><span>Configuración</span>
@@ -251,9 +240,9 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
           <main class="mghome-body">
             <section class="crossfit-dashboard-breadcrumb">
               <span>⌂</span>
-              <small>Home</small>
+              <small>Inicio</small>
               <b>›</b>
-              <strong>My Dashboard</strong>
+              <strong>Mi Dashboard</strong>
               <em>{{dashboard?.periodo?.fecha || ''}}</em>
             </section>
 
@@ -261,7 +250,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
               <div class="crossfit-welcome-content">
                 <span class="crossfit-welcome-kicker">MALLQUI GYM</span>
                 <h1>Hola, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1>
-                <p>Aquí tienes tu actividad diaria y el resumen operativo del gimnasio.</p>
+                <p>Aquí tienes tu actividad diaria y tus reportes del gimnasio.</p>
 
                 <div class="crossfit-week-chart">
                   <div class="crossfit-week-bars">
