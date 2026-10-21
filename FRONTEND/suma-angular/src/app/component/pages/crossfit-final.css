@@ -3922,3 +3922,57 @@
 @media(max-width:1050px){.cf-suite-equipment-grid,.cf-suite-gallery{grid-template-columns:repeat(3,1fr)}.cf-suite-news{grid-template-columns:1fr 1fr}.cf-suite-income-cards{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){.cf-suite-equipment-grid,.cf-suite-gallery,.cf-suite-news,.cf-suite-income-cards{grid-template-columns:1fr}.cf-suite-events article{grid-template-columns:48px 1fr}.cf-suite-event-meta{grid-column:2;text-align:left}.cf-suite-toolbar{align-items:flex-start;flex-direction:column}}
 
+
+/* CROSSFit LIVE DEMO · MEMBERS INVOICES PAYSLIP */
+.cf-live-members-list .cfx-card,
+.cf-live-member-form .cfx-card,
+.cf-live-invoice .cfx-card,
+.cf-live-invoice-create .cfx-card,
+.cf-live-expenses .cfx-card,
+.cf-live-payslip .cfx-card,
+.cf-live-alerts .cfx-card{
+  border:1px solid #ececf3!important;
+  border-radius:6px!important;
+  box-shadow:0 2px 7px rgba(63,61,103,.02)!important;
+}
+.cf-live-members-list .cfx-card>header,
+.cf-live-member-form .cfx-card>header,
+.cf-live-expenses .cfx-card>header{
+  min-height:44px!important;
+  align-items:center!important;
+}
+.cf-member-cell{display:flex;align-items:center;gap:7px}
+.small-avatar{width:28px!important;height:28px!important;font-size:7px!important}
+.cf-member-actions{display:flex;gap:4px}.cf-member-actions button{width:25px!important;height:25px!important;min-height:25px!important;padding:0!important;border-radius:4px!important}
+.cf-member-search-card{min-height:58px!important;padding:10px!important}
+.cf-member-search-card .cfx-toolbar{margin:0!important}
+.cf-member-card-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.cf-member-profile-card{overflow:hidden;border:1px solid #ececf3;border-radius:6px;background:#fff}
+.cf-member-profile-card>img{width:100%;height:150px;display:block;object-fit:cover;background:#f4f3ff}
+.cf-member-profile-card>div{padding:10px;text-align:center}.cf-member-profile-card h2{margin:0;font-size:8px}.cf-member-profile-card p{margin:3px 0;color:#5b55d9;font-size:6px}.cf-member-profile-card small{display:block;color:#999ca8;font-size:5.7px}.cf-member-profile-card button{height:27px;margin-top:8px;padding:0 9px;border:0;border-radius:4px;background:#5b55d9;color:#fff;font-size:5.8px}
+.cf-member-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cf-member-form-grid label{display:grid;gap:5px;color:#606371;font-size:6.5px;font-weight:700}
+.cf-member-form-grid input,.cf-member-form-grid select,.cf-member-form-grid textarea{width:100%;box-sizing:border-box;border:1px solid #dfe1e9;border-radius:5px;background:#fff;color:#383b49;font-size:6.5px;outline:0}
+.cf-member-form-grid input,.cf-member-form-grid select{height:32px;padding:0 8px}.cf-member-form-grid textarea{padding:8px;resize:vertical}
+.cf-radio-row{min-height:32px;display:flex;align-items:center;gap:13px;padding:0 8px;border:1px solid #dfe1e9;border-radius:5px}.cf-radio-row label{display:flex!important;align-items:center;gap:4px;font-size:6px;font-weight:500}.cf-radio-row input{width:auto!important;height:auto!important}
+.cf-member-select{margin-bottom:10px}.cf-member-select label{display:grid;gap:5px;max-width:340px;color:#616473;font-size:6.5px;font-weight:700}.cf-member-select select{height:32px;border:1px solid #dfe1e9;border-radius:5px;font-size:6.5px}
+.cf-form-footer{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:6px!important;margin-top:12px!important;padding-top:10px!important;border-top:1px solid #f0f0f4!important}
+.cf-form-footer button{height:29px!important;min-height:29px!important;border-radius:4px!important;font-size:6px!important}
+.cf-form-danger{margin-top:12px;color:#c64b5b;font-size:6.5px;font-weight:700}
+
+.cf-invoice-select{display:flex;justify-content:flex-end;margin-bottom:10px}.cf-invoice-select label{display:grid;gap:4px;min-width:240px;color:#686b79;font-size:6px}.cf-invoice-select select{height:30px;border:1px solid #dfe1e9;border-radius:4px;font-size:6px}
+.cf-invoice-paper,.cf-payslip-paper{max-width:980px;margin:0 auto!important;padding:18px!important}
+.cf-invoice-head,.cf-payslip-head{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;padding-bottom:14px!important;border-bottom:1px solid #ececf3!important}
+.cf-invoice-logo img,.cf-payslip-head>img{width:72px;height:72px;object-fit:contain}.cf-invoice-head>div:last-child,.cf-payslip-head>div{text-align:right}.cf-invoice-head h2,.cf-payslip-head h2{font-size:11px!important}.cf-invoice-head p,.cf-payslip-head p{margin:2px 0!important;color:#8f929f!important;font-size:6px!important}.cf-invoice-head span,.cf-payslip-head span{display:inline-flex;margin-top:4px;padding:3px 6px;border-radius:999px;background:#fff1e9;color:#c96e39;font-size:5.8px}
+.cf-invoice-parties,.cf-payslip-parties{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:15px 0}.cf-invoice-parties>div:last-child,.cf-payslip-parties>div:last-child{text-align:right}.cf-invoice-parties h3,.cf-payslip-parties h3,.cf-invoice-notes h3{margin:0 0 5px;font-size:7px}.cf-invoice-parties b,.cf-payslip-parties b{font-size:7px}.cf-invoice-parties p,.cf-payslip-parties p,.cf-invoice-notes p{margin:2px 0;color:#8f929f;font-size:6px}
+.cf-invoice-totals,.cf-payslip-totals{width:min(340px,100%);margin:12px 0 12px auto;padding:9px 0;border-top:1px solid #ececf3}.cf-invoice-totals p,.cf-payslip-totals p,.cf-invoice-totals h3,.cf-payslip-totals h3{display:flex;justify-content:space-between;margin:0;padding:5px 0;font-size:6.5px}.cf-invoice-totals h3,.cf-payslip-totals h3{border-top:1px solid #ececf3;color:#5b55d9;font-size:8px}
+.cf-invoice-notes{padding:10px;border-radius:5px;background:#fafafd}
+.cf-invoice-form-section{padding:12px 0;border-bottom:1px solid #ececf3}.cf-invoice-form-section:first-child{padding-top:0}.cf-invoice-form-section h2{margin:0 0 10px!important;font-size:9px!important}
+.cf-invoice-items{padding:12px 0}.cf-invoice-items input{width:100%;height:28px;box-sizing:border-box;border:1px solid #e1e2e9;border-radius:4px;padding:0 6px;font-size:6px}.cf-invoice-items>button{height:27px!important;min-height:27px!important;margin-top:8px!important;border-radius:4px!important;font-size:5.8px!important}
+.cf-payslip-parties{margin-bottom:6px}
+.cf-live-expenses .cfx-grid{margin:0!important}
+.cf-live-alerts{align-items:start}.cf-live-alerts .cfx-card{min-height:150px!important}
+
+@media(max-width:1050px){.cf-member-card-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.cf-member-card-grid,.cf-member-form-grid,.cf-invoice-parties,.cf-payslip-parties{grid-template-columns:1fr}.cf-invoice-parties>div:last-child,.cf-payslip-parties>div:last-child{text-align:left}.cf-invoice-head,.cf-payslip-head{flex-direction:column!important;gap:10px}.cf-invoice-head>div:last-child,.cf-payslip-head>div{text-align:left}.cf-member-card-grid{grid-template-columns:1fr}}
+
