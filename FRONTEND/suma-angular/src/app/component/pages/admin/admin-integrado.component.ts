@@ -39,15 +39,48 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
       </label>
 
       <div class="admin-top-actions">
-        <button type="button" (click)="cambiarSeccion('comunicacion')" title="Activity" aria-label="Activity">＋</button>
-        <button type="button" (click)="cambiarSeccion('comunicacion')" title="Alerts" aria-label="Alerts">⚑</button>
-        <button type="button" (click)="cambiarSeccion('comunicacion')" title="Messages" aria-label="Messages">✉</button>
+        <button type="button" (click)="toggleTopPanel('activity')" title="Activity" aria-label="Activity">＋</button>
+        <button type="button" (click)="toggleTopPanel('alerts')" title="Alerts" aria-label="Alerts">⚑</button>
+        <button type="button" (click)="toggleTopPanel('messages')" title="Messages" aria-label="Messages">✉</button>
         <button type="button" (click)="cambiarSeccion('configuracion')" title="Settings" aria-label="Settings">⚙</button>
         <button type="button" class="admin-top-user" (click)="cambiarSeccion('my-profile')" title="My Profile">
           {{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}
         </button>
       </div>
     </header>
+
+    <section class="cf-top-dropdown activity" *ngIf="topPanel==='activity'">
+      <header><h3>Activity</h3><button (click)="topPanel=''">×</button></header>
+      <div class="cf-top-feed">
+        <article><span>S/</span><div><b>Membership Payments</b><p>18 members renewed subscriptions.</p><small>10:20 AM · Today</small></div></article>
+        <article><span>◆</span><div><b>Equipment Update</b><p>New cardio and strength equipment registered.</p><small>01:15 PM · Today</small></div></article>
+        <article><span>🏋</span><div><b>Training Sessions</b><p>Personal training sessions completed today.</p><small>05:40 PM · Today</small></div></article>
+        <article><span>♚</span><div><b>New Members Joined</b><p>{{dashboard?.clientes?.nuevos_mes ?? 0}} new members this month.</p><small>06:50 PM · Today</small></div></article>
+        <article><span>!</span><div><b>Maintenance Request</b><p>Equipment maintenance review pending.</p><small>08:10 PM · Today</small></div></article>
+      </div>
+      <button class="cf-top-viewall" (click)="cambiarSeccion('comunicacion');topPanel=''">View all</button>
+    </section>
+
+    <section class="cf-top-dropdown" *ngIf="topPanel==='alerts'">
+      <header><h3>Alerts</h3><button (click)="topPanel=''">×</button></header>
+      <div class="cf-top-feed">
+        <article><span>NH</span><div><b>Training completed</b><p>5 personal training sessions completed today.</p><small>Today, 07:30 PM</small></div></article>
+        <article><span>WT</span><div><b>Member milestone</b><p>A member achieved a new fitness milestone.</p><small>Today, 08:00 PM</small></div></article>
+        <article><span>TJ</span><div><b>Workout update</b><p>A new HIIT workout was published.</p><small>Today, 09:30 PM</small></div></article>
+      </div>
+      <button class="cf-top-viewall" (click)="cambiarSeccion('comunicacion');topPanel=''">View all</button>
+    </section>
+
+    <section class="cf-top-dropdown messages" *ngIf="topPanel==='messages'">
+      <header><h3>Messages</h3><button (click)="topPanel=''">×</button></header>
+      <div class="cf-top-feed">
+        <article><img src="assets/showcase/coach-showcase.svg" alt="Trainer"><div><b>Mallqui Trainer</b><p>Completed training sessions today.</p><small>Today, 07:30 PM</small></div></article>
+        <article><img src="assets/showcase/coach-showcase.svg" alt="Trainer"><div><b>Fitness Update</b><p>New personal record registered.</p><small>Today, 08:00 PM</small></div></article>
+        <article><img src="assets/showcase/coach-showcase.svg" alt="Trainer"><div><b>Member Message</b><p>Membership renewal confirmed.</p><small>Today, 10:15 PM</small></div></article>
+      </div>
+      <button class="cf-top-viewall" (click)="cambiarSeccion('comunicacion');topPanel=''">View all</button>
+    </section>
+
     <aside class="admin-nav">
       <div class="admin-nav-top crossfit-profile-card">
         <button type="button" class="crossfit-profile-avatar" (click)="cambiarSeccion('usuarios')" aria-label="Abrir perfil">
@@ -57,7 +90,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <div class="crossfit-profile-copy">
           <strong>{{auth.usuario?.nombre_usuario || 'Administrador'}}</strong>
           <small>Gym Admin</small>
-          <em>Administrador</em>
+          <em>Gold Plan</em>
         </div>
       </div>
 
@@ -2308,6 +2341,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   dashboardError = '';
   autoRefreshActivo = true;
   busquedaAdmin = '';
+  topPanel = '';
   mostrarAnalisisAvanzado = false;
   workoutSemana = 1;
   semanaDashboardDemo = [
@@ -2545,6 +2579,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   toggleNavGroup(group:string):void{
     this.navGroups[group]=!this.navGroups[group];
   }
+
+  toggleTopPanel(panel:string):void { this.topPanel=this.topPanel===panel?'':panel; }
 
   toggleSidebar(): void {
     this.sidebarCerrado = !this.sidebarCerrado;
