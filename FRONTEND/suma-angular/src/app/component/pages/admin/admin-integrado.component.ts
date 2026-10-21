@@ -22,7 +22,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
     <header class="admin-wix-topbar">
       <button type="button" class="admin-top-brand" (click)="toggleSidebar()" title="Abrir o cerrar menú">
         <span class="admin-top-brand-mark">☰</span>
-        <span class="crossfit-top-logo"><span class="crossfit-brand-badge">MG</span><strong>Mallqui Gym</strong></span>
+        <span class="crossfit-top-logo"><span class="cf-logo-stack" aria-hidden="true"><i></i><i></i><i></i></span><strong>Mallqui Gym</strong></span>
       </button>
 
       <div class="crossfit-top-spacer"></div>
@@ -52,7 +52,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
     <aside class="admin-nav">
       <div class="admin-nav-top crossfit-profile-card">
         <button type="button" class="crossfit-profile-avatar" (click)="cambiarSeccion('usuarios')" aria-label="Abrir perfil">
-          <img src="assets/mallqui-logo.svg" alt="Mallqui Gym">
+          <span class="cf-profile-initial">{{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}</span>
           <span class="crossfit-profile-status"></span>
         </button>
         <div class="crossfit-profile-copy">
@@ -525,298 +525,149 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
       <div *ngIf="error && seccion!=='dashboard'" class="admin-toast error">⚠ {{error}}</div>
 
       <ng-container *ngIf="seccion==='dashboard'">
-        <section class="mghome" data-dashboard-ui="mallqui-v9">
+        <section class="cf-reference-dashboard" data-dashboard-ui="crossfit-reference">
+          <section class="crossfit-dashboard-breadcrumb">
+            <span>⌂</span>
+            <small>Home</small>
+            <b>›</b>
+            <strong>My Dashboard</strong>
+            <em class="cf-goal">Weekly Goal Progress: {{progresoSemanal()}}% Achieved</em>
+          </section>
 
-          <header class="mghome-topbar">
-            <button class="mghome-brand" type="button" (click)="cambiarSeccion('dashboard')">
-              <img src="assets/mallqui-logo.svg" alt="Mallqui Gym">
-              <span><b>Mallqui Gym</b><small>Administración</small></span>
-            </button>
+          <section class="cf-ref-hero">
+            <div class="cf-ref-hero-copy">
+              <h1>Hey, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1>
+              <p>Here is your daily activity and reports.</p>
 
-            <nav class="mghome-nav" aria-label="Navegación del administrador">
-              <button type="button" class="active">Resumen</button>
-              <button type="button" (click)="cambiarSeccion('clientes')">Socios</button>
-              <button type="button" (click)="cambiarSeccion('reservas')">Reservas</button>
-              <button type="button" (click)="cambiarSeccion('ventas')">Ventas</button>
-              <button type="button" (click)="cambiarSeccion('inventario')">Inventario</button>
-              <button type="button" (click)="cambiarSeccion('nutricion')">Fitness</button>
-              <button type="button" (click)="cambiarSeccion('reportes')">Reportes</button>
-            </nav>
-
-            <div class="mghome-top-actions">
-              <label class="mghome-search">
-                <span>⌕</span>
-                <input
-                  type="text"
-                  [(ngModel)]="busquedaAdmin"
-                  (keydown.enter)="buscarEnPanel()"
-                  placeholder="Buscar en el panel">
-              </label>
-              <button type="button" class="mghome-bell" (click)="cambiarSeccion('comunicacion')" aria-label="Notificaciones">●</button>
-              <button type="button" class="mghome-user" (click)="cambiarSeccion('usuarios')">
-                {{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}
-              </button>
-            </div>
-          </header>
-
-          <main class="mghome-body">
-            <section class="crossfit-dashboard-breadcrumb">
-              <span>⌂</span>
-              <small>Inicio</small>
-              <b>›</b>
-              <strong>Mi Dashboard</strong>
-              <em class="cf-goal">Meta semanal: {{progresoSemanal()}}%</em>
-            </section>
-
-            <section class="crossfit-welcome-card">
-              <div class="crossfit-welcome-content">
-                <span class="crossfit-welcome-kicker">MALLQUI GYM</span>
-                <h1>Hola, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1>
-                <p>Aquí tienes tu actividad diaria y tus reportes del gimnasio.</p>
-
-                <div class="crossfit-week-chart">
-                  <div class="crossfit-week-bars">
-                    <div class="crossfit-week-day" *ngFor="let d of dashboard?.tendencias?.asistencias_7_dias || []">
-                      <div class="crossfit-bar-shell">
-                        <i [style.height.%]="alturaAsistenciaSemana(d.total)"></i>
-                      </div>
-                      <b>{{d.total}}</b>
-                      <small>{{d.dia}}</small>
+              <div class="cf-ref-mini-chart" aria-label="Actividad semanal">
+                <div class="cf-ref-mini-day" *ngFor="let d of diasActividadDashboard()">
+                  <div class="cf-ref-mini-track">
+                    <div class="cf-ref-mini-fill" [style.height.%]="alturaAsistenciaSemana(d.total)">
+                      <span></span><i></i>
                     </div>
                   </div>
-                  <div class="crossfit-chart-legend">
-                    <span><i></i> Asistencias</span>
-                    <b>Últimos 7 días</b>
-                  </div>
+                  <small>{{d.dia}}</small>
                 </div>
               </div>
+              <div class="cf-ref-mini-legend">
+                <span><i class="mint"></i>Cardio</span>
+                <span><i class="purple"></i>Strength</span>
+              </div>
+            </div>
 
-              <div class="crossfit-welcome-art" aria-hidden="true">
-                <svg class="cf-hero-svg" viewBox="0 0 760 430" preserveAspectRatio="xMidYMid meet">
+            <div class="cf-ref-hero-art" aria-hidden="true">
+              <svg viewBox="0 0 760 430" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                  <linearGradient id="refHill" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#b7dda7"/>
+                    <stop offset="100%" stop-color="#8cc67d"/>
+                  </linearGradient>
+                </defs>
+                <rect width="760" height="430" fill="#fbfbff"/>
+                <path d="M55 170c73-98 177-120 280-82 84 31 103 103 188 96 65-6 113-45 182-10v95H55z" fill="#f0effd"/>
+                <circle cx="623" cy="97" r="39" fill="#ffa31a"/>
+                <g fill="#d9d8ef">
+                  <rect x="352" y="188" width="54" height="139" rx="2"/>
+                  <rect x="419" y="165" width="67" height="162" rx="2"/>
+                  <rect x="499" y="208" width="53" height="119" rx="2"/>
+                  <rect x="566" y="177" width="65" height="150" rx="2"/>
+                  <rect x="646" y="216" width="47" height="111" rx="2"/>
+                </g>
+                <g fill="#f3f2fb">
+                  <path d="M352 212h54v10h-54zM352 240h54v10h-54zM352 268h54v10h-54zM352 296h54v10h-54z"/>
+                  <path d="M419 190h67v11h-67zM419 219h67v11h-67zM419 248h67v11h-67zM419 277h67v11h-67z"/>
+                  <path d="M499 232h53v10h-53zM499 258h53v10h-53zM499 284h53v10h-53z"/>
+                  <path d="M566 200h65v11h-65zM566 228h65v11h-65zM566 256h65v11h-65zM566 284h65v11h-65z"/>
+                  <path d="M646 240h47v10h-47zM646 265h47v10h-47zM646 290h47v10h-47z"/>
+                </g>
+                <path d="M0 340c111-69 238-69 365-32 141 41 273 12 395-2v124H0z" fill="url(#refHill)"/>
+
+                <g transform="translate(60 253)">
+                  <circle cx="44" cy="90" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
+                  <circle cx="160" cy="90" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
+                  <path d="M44 90l50-48 34 48H76l38-65 46 65" fill="none" stroke="#f18b3d" stroke-width="6" stroke-linejoin="round"/>
+                  <circle cx="106" cy="7" r="12" fill="#293053"/>
+                  <path d="M100 23c15 15 20 27 18 43" fill="none" stroke="#ff984f" stroke-width="12" stroke-linecap="round"/>
+                  <path d="M116 47l32 12M113 63l-19 40M119 65l29 36" fill="none" stroke="#354d96" stroke-width="8" stroke-linecap="round"/>
+                </g>
+
+                <g transform="translate(275 241) scale(.93)">
+                  <circle cx="44" cy="90" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
+                  <circle cx="160" cy="90" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
+                  <path d="M44 90l50-48 34 48H76l38-65 46 65" fill="none" stroke="#f18b3d" stroke-width="6" stroke-linejoin="round"/>
+                  <circle cx="106" cy="7" r="12" fill="#293053"/>
+                  <path d="M100 23c15 15 20 27 18 43" fill="none" stroke="#6962df" stroke-width="12" stroke-linecap="round"/>
+                  <path d="M116 47l32 12M113 63l-19 40M119 65l29 36" fill="none" stroke="#354d96" stroke-width="8" stroke-linecap="round"/>
+                </g>
+
+                <g transform="translate(484 260) scale(.78)">
+                  <circle cx="44" cy="90" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
+                  <circle cx="160" cy="90" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
+                  <path d="M44 90l50-48 34 48H76l38-65 46 65" fill="none" stroke="#f18b3d" stroke-width="6" stroke-linejoin="round"/>
+                  <circle cx="106" cy="7" r="12" fill="#293053"/>
+                  <path d="M100 23c15 15 20 27 18 43" fill="none" stroke="#ff9f43" stroke-width="12" stroke-linecap="round"/>
+                  <path d="M116 47l32 12M113 63l-19 40M119 65l29 36" fill="none" stroke="#354d96" stroke-width="8" stroke-linecap="round"/>
+                </g>
+              </svg>
+            </div>
+          </section>
+
+          <section class="cf-ref-stats">
+            <button type="button" (click)="cambiarSeccion('ventas')">
+              <div><small>Income Today</small><strong>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</strong><span>{{dashboard?.ventas?.hoy_cantidad ?? 0}} operations</span></div>
+              <i>◉</i>
+            </button>
+            <button type="button" (click)="cambiarSeccion('asistencias')">
+              <div><small>Active Members</small><strong>{{dashboard?.clientes?.activos ?? 0}}</strong><span>{{dashboard?.clientes?.nuevos_mes ?? 0}} new this month</span></div>
+              <i>★</i>
+            </button>
+            <button type="button" (click)="cambiarSeccion('asistencias')">
+              <div><small>Attendance</small><strong>{{dashboard?.asistencias?.hoy ?? 0}}</strong><span>accesses today</span></div>
+              <i>↗</i>
+            </button>
+            <button type="button" (click)="cambiarSeccion('reservas')">
+              <div><small>Reservations</small><strong>{{dashboard?.reservas?.hoy ?? 0}}</strong><span>scheduled today</span></div>
+              <i>◷</i>
+            </button>
+          </section>
+
+          <section class="cf-ref-bottom">
+            <article class="cf-ref-activity">
+              <header>
+                <div><h2>Weekly Activity</h2><p>Performance breakdown · last 7 days</p></div>
+                <span>{{totalActividadSemanal()}} Records · {{progresoSemanal()}}%</span>
+              </header>
+              <div class="cf-ref-chart-legend">
+                <span><i class="purple"></i>Attendance</span>
+                <span><i class="mint"></i>Progress</span>
+              </div>
+              <div class="cf-ref-line-chart">
+                <div class="cf-ref-grid-lines"><i></i><i></i><i></i><i></i><i></i></div>
+                <svg viewBox="0 0 760 220" preserveAspectRatio="none" aria-hidden="true">
                   <defs>
-                    <linearGradient id="cfSky" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#fbfbff"/>
-                      <stop offset="100%" stop-color="#f4f3ff"/>
-                    </linearGradient>
-                    <linearGradient id="cfHill" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stop-color="#b7dda7"/>
-                      <stop offset="100%" stop-color="#91c884"/>
+                    <linearGradient id="activityFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#6a63df" stop-opacity=".22"/>
+                      <stop offset="100%" stop-color="#6a63df" stop-opacity=".01"/>
                     </linearGradient>
                   </defs>
-                  <rect width="760" height="430" fill="url(#cfSky)"/>
-                  <path d="M54 168c64-92 164-117 267-86 81 24 101 101 189 98 70-2 121-44 183-9v62H54z" fill="#efedff"/>
-                  <circle cx="623" cy="102" r="39" fill="#ffa319"/>
-                  <g fill="#d9d7f4">
-                    <rect x="355" y="190" width="55" height="138" rx="2"/>
-                    <rect x="420" y="166" width="68" height="162" rx="2"/>
-                    <rect x="501" y="208" width="52" height="120" rx="2"/>
-                    <rect x="568" y="176" width="66" height="152" rx="2"/>
-                    <rect x="648" y="218" width="46" height="110" rx="2"/>
-                  </g>
-                  <g fill="#f0effb">
-                    <path d="M355 212h55v11h-55zM355 239h55v11h-55zM355 266h55v11h-55zM355 293h55v11h-55z"/>
-                    <path d="M420 190h68v12h-68zM420 218h68v12h-68zM420 246h68v12h-68zM420 274h68v12h-68z"/>
-                    <path d="M501 232h52v11h-52zM501 258h52v11h-52zM501 284h52v11h-52z"/>
-                    <path d="M568 200h66v12h-66zM568 228h66v12h-66zM568 256h66v12h-66zM568 284h66v12h-66z"/>
-                    <path d="M648 240h46v10h-46zM648 264h46v10h-46zM648 288h46v10h-46z"/>
-                  </g>
-                  <path d="M0 337c112-72 240-70 366-32 140 42 274 15 394 0v125H0z" fill="url(#cfHill)"/>
-                  <g transform="translate(70 250)">
-                    <circle cx="44" cy="92" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
-                    <circle cx="160" cy="92" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
-                    <path d="M44 92l50-48 34 48H76l38-65 46 65" fill="none" stroke="#f28a3a" stroke-width="6" stroke-linejoin="round"/>
-                    <path d="M101 23l31 10" stroke="#2d3157" stroke-width="5" stroke-linecap="round"/>
-                    <circle cx="106" cy="9" r="12" fill="#2f3358"/>
-                    <path d="M99 24c15 15 20 27 18 43" fill="none" stroke="#ff9349" stroke-width="12" stroke-linecap="round"/>
-                    <path d="M115 48l34 12" stroke="#ff9349" stroke-width="8" stroke-linecap="round"/>
-                    <path d="M112 64l-18 40M119 66l28 36" stroke="#334e95" stroke-width="8" stroke-linecap="round"/>
-                  </g>
-                  <g transform="translate(285 238) scale(.94)">
-                    <circle cx="44" cy="92" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
-                    <circle cx="160" cy="92" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
-                    <path d="M44 92l50-48 34 48H76l38-65 46 65" fill="none" stroke="#f28a3a" stroke-width="6" stroke-linejoin="round"/>
-                    <path d="M101 23l31 10" stroke="#2d3157" stroke-width="5" stroke-linecap="round"/>
-                    <circle cx="106" cy="9" r="12" fill="#2f3358"/>
-                    <path d="M99 24c15 15 20 27 18 43" fill="none" stroke="#6d62e7" stroke-width="12" stroke-linecap="round"/>
-                    <path d="M115 48l34 12" stroke="#6d62e7" stroke-width="8" stroke-linecap="round"/>
-                    <path d="M112 64l-18 40M119 66l28 36" stroke="#334e95" stroke-width="8" stroke-linecap="round"/>
-                  </g>
-                  <g transform="translate(490 258) scale(.78)">
-                    <circle cx="44" cy="92" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
-                    <circle cx="160" cy="92" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
-                    <path d="M44 92l50-48 34 48H76l38-65 46 65" fill="none" stroke="#f28a3a" stroke-width="6" stroke-linejoin="round"/>
-                    <path d="M101 23l31 10" stroke="#2d3157" stroke-width="5" stroke-linecap="round"/>
-                    <circle cx="106" cy="9" r="12" fill="#2f3358"/>
-                    <path d="M99 24c15 15 20 27 18 43" fill="none" stroke="#ff9f43" stroke-width="12" stroke-linecap="round"/>
-                    <path d="M115 48l34 12" stroke="#ff9f43" stroke-width="8" stroke-linecap="round"/>
-                    <path d="M112 64l-18 40M119 66l28 36" stroke="#334e95" stroke-width="8" stroke-linecap="round"/>
-                  </g>
+                  <path d="M0 157 C80 137 110 124 170 132 S275 150 335 119 S445 91 510 78 S625 58 760 68 L760 220 L0 220Z" fill="url(#activityFill)"/>
+                  <path d="M0 157 C80 137 110 124 170 132 S275 150 335 119 S445 91 510 78 S625 58 760 68" fill="none" stroke="#5d57d8" stroke-width="3"/>
+                  <path d="M0 167 C80 147 120 139 175 143 S278 151 340 130 S448 108 515 95 S625 75 760 82" fill="none" stroke="#9edac4" stroke-width="2" stroke-dasharray="5 5"/>
                 </svg>
+                <div class="cf-ref-xaxis"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
               </div>
-            </section>
+            </article>
 
-            <section class="crossfit-stat-row">
-              <button type="button" (click)="cambiarSeccion('ventas')">
-                <div><small>Ventas de hoy</small><strong>S/ {{dashboard?.ventas?.hoy_total ?? 0 | number:'1.2-2'}}</strong><span>{{dashboard?.ventas?.hoy_cantidad ?? 0}} operaciones</span></div>
-                <i>↗</i>
-              </button>
-              <button type="button" (click)="cambiarSeccion('membresias')">
-                <div><small>Membresías activas</small><strong>{{dashboard?.membresias?.activas ?? 0}}</strong><span>{{dashboard?.membresias?.por_vencer_7_dias ?? 0}} por vencer</span></div>
-                <i>✦</i>
-              </button>
-              <button type="button" (click)="cambiarSeccion('clientes')">
-                <div><small>Socios activos</small><strong>{{dashboard?.clientes?.activos ?? 0}}</strong><span>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos este mes</span></div>
-                <i>♙</i>
-              </button>
-              <button type="button" (click)="cambiarSeccion('reservas')">
-                <div><small>Reservas hoy</small><strong>{{dashboard?.reservas?.hoy ?? 0}}</strong><span>{{dashboard?.asistencias?.hoy ?? 0}} accesos hoy</span></div>
-                <i>◫</i>
-              </button>
-            </section>
-
-            <section class="mghome-section">
-              <header class="mghome-section-head">
-                <div>
-                  <span>GESTIÓN</span>
-                  <h2>¿Qué quieres administrar?</h2>
-                  <p>Selecciona un área para entrar directamente a sus herramientas.</p>
-                </div>
-              </header>
-
-              <div class="mghome-module-grid crossfit-module-grid">
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('reportes')">
-                  <span class="module-symbol">▥</span>
-                  <div><b>Mis reportes</b><small>Indicadores, ingresos, asistencia y análisis</small></div>
-                  <em>Reportes</em><i>→</i>
-                </button>
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('rutinas')">
-                  <span class="module-symbol">⚡</span>
-                  <div><b>Plan de entrenamiento</b><small>Rutinas, ejercicios y seguimiento</small></div>
-                  <em>Entrenamiento</em><i>→</i>
-                </button>
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('nutricion')">
-                  <span class="module-symbol">♨</span>
-                  <div><b>Plan de alimentación</b><small>Nutrición y objetivos de socios</small></div>
-                  <em>Nutrición</em><i>→</i>
-                </button>
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('entrenador')">
-                  <span class="module-symbol">♙</span>
-                  <div><b>Entrenadores</b><small>Perfil, especialidad y gestión del entrenador</small></div>
-                  <em>Personal</em><i>→</i>
-                </button>
-
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('clientes')">
-                  <span class="module-symbol">♚</span>
-                  <div><b>Socios</b><small>Lista, altas, edición y fichas de miembros</small></div>
-                  <em>{{dashboard?.clientes?.total ?? 0}} socios</em><i>→</i>
-                </button>
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('equipos')">
-                  <span class="module-symbol">◆</span>
-                  <div><b>Equipos</b><small>Máquinas, ubicación y mantenimiento</small></div>
-                  <em>Equipamiento</em><i>→</i>
-                </button>
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('eventos')">
-                  <span class="module-symbol">◫</span>
-                  <div><b>Eventos del gym</b><small>Calendario, actividades y campañas</small></div>
-                  <em>Eventos</em><i>→</i>
-                </button>
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('galeria')">
-                  <span class="module-symbol">▧</span>
-                  <div><b>Galería</b><small>Fotos y contenido visual del gimnasio</small></div>
-                  <em>Contenido</em><i>→</i>
-                </button>
-
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('noticias')">
-                  <span class="module-symbol">◇</span>
-                  <div><b>Noticias y novedades</b><small>Avisos, promociones y publicaciones</small></div>
-                  <em>Comunidad</em><i>→</i>
-                </button>
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('planes')">
-                  <span class="module-symbol">★</span>
-                  <div><b>Planes y precios</b><small>Tarifas, duración y beneficios</small></div>
-                  <em>Membresías</em><i>→</i>
-                </button>
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('salarios')">
-                  <span class="module-symbol">S/</span>
-                  <div><b>Salarios</b><small>Pagos y remuneraciones del personal</small></div>
-                  <em>Finanzas</em><i>→</i>
-                </button>
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('pagos')">
-                  <span class="module-symbol">✓</span>
-                  <div><b>Pagos</b><small>Cobros de membresías y comprobantes</small></div>
-                  <em>Finanzas</em><i>→</i>
-                </button>
-
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('ingresos')">
-                  <span class="module-symbol">↗</span>
-                  <div><b>Ingresos</b><small>Registro y control de ingresos adicionales</small></div>
-                  <em>Finanzas</em><i>→</i>
-                </button>
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('facturas')">
-                  <span class="module-symbol">▤</span>
-                  <div><b>Facturas</b><small>Emitir, editar y controlar comprobantes</small></div>
-                  <em>Facturación</em><i>→</i>
-                </button>
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('caja')">
-                  <span class="module-symbol">▣</span>
-                  <div><b>Caja y ventas</b><small>Apertura, ventas, movimientos y gastos</small></div>
-                  <em>{{dashboard?.caja?.abierta ? 'Caja abierta' : 'Caja cerrada'}}</em><i>→</i>
-                </button>
-                <button type="button" class="module-card crossfit-card" (click)="cambiarSeccion('inventario')">
-                  <span class="module-symbol">▦</span>
-                  <div><b>Inventario</b><small>Productos, compras, proveedores y kardex</small></div>
-                  <em>Stock</em><i>→</i>
-                </button>
+            <article class="cf-ref-split">
+              <header><div><h2>Workout Split</h2><p>Last 7 days activity</p></div><span>12 Sessions</span></header>
+              <div class="cf-ref-donut"><div><strong>100%</strong><small>Total</small></div></div>
+              <div class="cf-ref-split-list">
+                <p><span><i class="purple"></i>Cardio</span><b>48%</b></p>
+                <p><span><i class="mint"></i>Strength</span><b>34%</b></p>
+                <p><span><i class="soft"></i>Mobility</span><b>18%</b></p>
               </div>
-            </section>
-
-            <section class="mghome-lower">
-              <article class="mghome-tasks">
-                <header>
-                  <div><span>OPERACIÓN DEL DÍA</span><h2>Pendientes y actividad</h2></div>
-                  <button type="button" (click)="cambiarSeccion('reportes')">Ver todo</button>
-                </header>
-
-                <div class="mghome-task-list">
-                  <button type="button" (click)="cambiarSeccion('reservas')">
-                    <span class="task-icon">◫</span>
-                    <div><b>Reservas programadas</b><small>Agenda de sesiones para hoy</small></div>
-                    <strong>{{dashboard?.reservas?.hoy ?? 0}}</strong>
-                    <i>›</i>
-                  </button>
-
-                  <button type="button" (click)="cambiarSeccion('rutinas')">
-                    <span class="task-icon">↗</span>
-                    <div><b>Rutinas activas</b><small>Seguimiento de entrenamiento</small></div>
-                    <strong>{{dashboard?.operacion?.rutinas_activas ?? 0}}</strong>
-                    <i>›</i>
-                  </button>
-
-                  <button type="button" (click)="cambiarSeccion('soporte')">
-                    <span class="task-icon">!</span>
-                    <div><b>Alertas pendientes</b><small>Casos que requieren atención</small></div>
-                    <strong>{{dashboard?.alertas?.total ?? 0}}</strong>
-                    <i>›</i>
-                  </button>
-                </div>
-              </article>
-
-              <aside class="mghome-shortcuts">
-                <header><span>ATAJOS</span><h2>Acciones rápidas</h2></header>
-                <button type="button" (click)="abrirNuevoSocioDesdeDashboard()"><span>＋</span><div><b>Registrar socio</b><small>Nuevo miembro</small></div></button>
-                <button type="button" (click)="cambiarSeccion('asistencias')"><span>✓</span><div><b>Registrar asistencia</b><small>Entrada o salida</small></div></button>
-                <button type="button" (click)="dashboard?.caja?.abierta ? cambiarSeccion('ventas') : cambiarSeccion('caja')"><span>▣</span><div><b>{{dashboard?.caja?.abierta ? 'Registrar venta' : 'Abrir caja'}}</b><small>Operación financiera</small></div></button>
-                <button type="button" (click)="mostrarAnalisisAvanzado=!mostrarAnalisisAvanzado"><span>⌁</span><div><b>Análisis avanzado</b><small>Indicadores y revisión</small></div></button>
-              </aside>
-            </section>
-
-            <div class="mghome-advanced" *ngIf="mostrarAnalisisAvanzado">
-              <app-admin-dashboard-tools
-                [dashboard]="dashboard"
-                (irSeccion)="cambiarSeccion($event)">
-              </app-admin-dashboard-tools>
-            </div>
-          </main>
+            </article>
+          </section>
         </section>
       </ng-container>
 
@@ -2371,6 +2222,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   busquedaAdmin = '';
   mostrarAnalisisAvanzado = false;
   workoutSemana = 1;
+  semanaDashboardDemo = [
+    {dia:'Mon',total:5},{dia:'Tue',total:7},{dia:'Wed',total:4},{dia:'Thu',total:6},
+    {dia:'Fri',total:6},{dia:'Sat',total:9},{dia:'Sun',total:4}
+  ];
   nutricionPreview: any[] = [];
   suiteModules = ['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   navGroups:any = {members:false,payments:false,salaries:false,ui:false,jquery:false,sports:false,forms:false,tables:false,graphs:false,auth:false,menu:false};
@@ -3099,6 +2954,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     const pagina=Math.min(Math.max(1,this.clientesPagina),this.clientesPaginasTotal);
     const inicio=(pagina-1)*this.clientesPorPagina;
     return this.clientesFiltrados.slice(inicio,inicio+this.clientesPorPagina);
+  }
+
+  diasActividadDashboard(): any[] {
+    const dias = this.dashboard?.tendencias?.asistencias_7_dias;
+    return Array.isArray(dias) && dias.length ? dias.slice(-7) : this.semanaDashboardDemo;
+  }
+
+  totalActividadSemanal(): number {
+    return this.diasActividadDashboard().reduce((total:number, d:any) => total + Number(d?.total || 0), 0);
   }
 
   cambiarSeccion(id: string): void {
