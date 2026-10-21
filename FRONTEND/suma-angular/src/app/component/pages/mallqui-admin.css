@@ -8296,3 +8296,16 @@ button.admin-system-card:hover{
   .mghome-module-grid{grid-template-columns:1fr}
   .mghome-balance-head{flex-direction:column}
 }
+
+
+/* GESTION FITNESS CARD */
+.mghome-module-grid .fitness .module-symbol{
+  background:#ecfdf3;
+  color:#18794e;
+}
+.mghome-module-grid .fitness{
+  border-color:#d9eee3;
+}
+.mghome-module-grid .fitness:hover{
+  border-color:#a9d7bd;
+}
