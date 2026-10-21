@@ -88,6 +88,9 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <button type="button" [class.active]="moduloActivo==='socios'" (click)="cambiarSeccion('clientes')">
           <span class="admin-main-nav-icon">♚</span><span>Socios</span>
         </button>
+        <button type="button" class="cf-sub-nav" [class.active]="seccion==='members-list'" (click)="cambiarSeccion('members-list')"><span class="admin-main-nav-icon">☷</span><span>Members List</span></button>
+        <button type="button" class="cf-sub-nav" [class.active]="seccion==='add-member'" (click)="cambiarSeccion('add-member')"><span class="admin-main-nav-icon">＋</span><span>Add Member</span></button>
+        <button type="button" class="cf-sub-nav" [class.active]="seccion==='edit-member'" (click)="cambiarSeccion('edit-member')"><span class="admin-main-nav-icon">✎</span><span>Edit Member</span></button>
         <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSeccion('equipos')">
           <span class="admin-main-nav-icon">◆</span><span>Equipos</span>
         </button>
@@ -115,6 +118,9 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSeccion('facturas')">
           <span class="admin-main-nav-icon">▤</span><span>Facturas</span>
         </button>
+        <button type="button" class="cf-sub-nav" [class.active]="seccion==='invoices-list'" (click)="cambiarSeccion('invoices-list')"><span class="admin-main-nav-icon">☷</span><span>Invoices List</span></button>
+        <button type="button" class="cf-sub-nav" [class.active]="seccion==='add-invoice'" (click)="cambiarSeccion('add-invoice')"><span class="admin-main-nav-icon">＋</span><span>Add Invoice</span></button>
+        <button type="button" class="cf-sub-nav" [class.active]="seccion==='edit-invoice'" (click)="cambiarSeccion('edit-invoice')"><span class="admin-main-nav-icon">✎</span><span>Edit Invoice</span></button>
         <button type="button" [class.active]="moduloActivo==='operacion'" (click)="cambiarSeccion('caja')">
           <span class="admin-main-nav-icon">▣</span><span>Caja y ventas</span>
         </button>
@@ -2355,6 +2361,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   nutricionPreview: any[] = [];
   suiteModules = ['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   extraModules = [
+    'members-list','add-member','edit-member','invoices-list','add-invoice','edit-invoice',
     'tables','data-tables','graphs','apex','morris','vector-maps',
     'accordions','carousel','modals','popovers','tabs-ui','tooltips',
     'forms','form-inputs','checkbox-radio','file-input','validations','date-time','input-masks','input-tags',
@@ -2502,6 +2509,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       {claves:['salario','salarios','sueldo','sueldos'],seccion:'salarios'},
       {claves:['ingreso','ingresos'],seccion:'ingresos'},
       {claves:['factura','facturas','comprobante'],seccion:'facturas'},
+      {claves:['members list','lista socios','lista miembros'],seccion:'members-list'},
+      {claves:['add member','agregar socio','nuevo socio'],seccion:'add-member'},
+      {claves:['edit member','editar socio','editar miembro'],seccion:'edit-member'},
+      {claves:['invoices list','lista facturas'],seccion:'invoices-list'},
+      {claves:['add invoice','agregar factura','nueva factura'],seccion:'add-invoice'},
+      {claves:['edit invoice','editar factura'],seccion:'edit-invoice'},
       {claves:['tables','tabla','tablas'],seccion:'tables'},
       {claves:['data table','datatable','filtros tabla'],seccion:'data-tables'},
       {claves:['graph','graphs','graficos','gráficos'],seccion:'graphs'},
@@ -3101,6 +3114,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       case 'salarios':
       case 'ingresos':
       case 'facturas':
+        break;
+      case 'members-list':
+      case 'add-member':
+      case 'edit-member':
+      case 'invoices-list':
+      case 'add-invoice':
+      case 'edit-invoice':
         break;
       case 'tables':
       case 'data-tables':
