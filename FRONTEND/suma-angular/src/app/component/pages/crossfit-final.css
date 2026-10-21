@@ -2543,6 +2543,12 @@
   box-shadow:0 0 0 4px #f1f0ff!important;
   overflow:hidden!important;
 }
+.admin-home-redesign .crossfit-profile-avatar img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  border-radius:50%!important;
+}
 .cf-profile-initial{
   width:100%;
   height:100%;
