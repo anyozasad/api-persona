@@ -21,7 +21,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
     <header class="admin-wix-topbar">
       <button type="button" class="admin-top-brand" (click)="toggleSidebar()" title="Abrir o cerrar menú">
         <span class="admin-top-brand-mark">☰</span>
-        <span class="crossfit-top-logo"><img src="assets/mallqui-logo.svg" alt=""><strong>Mallqui Gym</strong></span>
+        <span class="crossfit-top-logo"><span class="crossfit-brand-badge">MG</span><strong>Mallqui Gym</strong></span>
       </button>
 
       <div class="crossfit-top-spacer"></div>
@@ -51,8 +51,8 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
     <aside class="admin-nav">
       <div class="admin-nav-top crossfit-profile-card">
         <button type="button" class="crossfit-profile-avatar" (click)="cambiarSeccion('usuarios')" aria-label="Abrir perfil">
-          {{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}
-          <span><img src="assets/mallqui-logo.svg" alt=""></span>
+          <img src="assets/mallqui-logo.svg" alt="Mallqui Gym">
+          <span class="crossfit-profile-status"></span>
         </button>
         <div class="crossfit-profile-copy">
           <strong>{{auth.usuario?.nombre_usuario || 'Administrador'}}</strong>
@@ -277,8 +277,9 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
                   <i></i><i></i><i></i><i></i><i></i>
                 </div>
                 <div class="ground"></div>
-                <div class="bike bike-a"><span></span><span></span><b></b></div>
-                <div class="bike bike-b"><span></span><span></span><b></b></div>
+                <div class="bike bike-a"><span></span><span></span><b></b><i class="rider"><u></u></i></div>
+                <div class="bike bike-b"><span></span><span></span><b></b><i class="rider rider-two"><u></u></i></div>
+                <div class="bike bike-c"><span></span><span></span><b></b><i class="rider rider-three"><u></u></i></div>
               </div>
             </section>
 
