@@ -95,83 +95,55 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
       </div>
 
       <nav class="admin-main-nav crossfit-sidebar-nav" aria-label="Módulos principales">
-        <div class="cf-nav-section-label">PRINCIPAL</div>
-
         <button type="button" [class.active]="seccion==='dashboard'" (click)="cambiarSegcion('dashboard')">
           <span class="admin-main-nav-icon">▦</span><span>Panel Principal</span>
         </button>
+        <button type="button" [class.active]="seccion==='reportes'" (click)="cambiarSegcion('reportes')">
+          <span class="admin-main-nav-icon">⌁</span><span>Mis Reportes</span>
+        </button>
+        <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSegcion('rutinas')">
+          <span class="admin-main-nav-icon">▣</span><span>Mi Plan de Entrenamiento</span>
+        </button>
+        <button type="button" [class.active]="seccion==='nutricion'" (click)="cambiarSegcion('nutricion')">
+          <span class="admin-main-nav-icon">♨</span><span>Mi Plan de Alimentación</span>
+        </button>
+        <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSegcion('asistencias')">
+          <span class="admin-main-nav-icon">▦</span><span>Control de Asistencia</span>
+        </button>
+        <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSegcion('entrenador')">
+          <span class="admin-main-nav-icon">♙</span><span>Entrenadores</span>
+        </button>
+        <button type="button" [class.active]="seccion==='trainer-profile'" (click)="cambiarSegcion('trainer-profile')">
+          <span class="admin-main-nav-icon">◎</span><span>Perfil del Entrenador</span>
+        </button>
 
-        <button type="button" class="cf-nav-group-head" [class.active]="['clientes','members-list','members-cards','add-member','edit-member','edit-member-details'].includes(seccion)" (click)="toggleNavGroup('members')">
-          <span class="admin-main-nav-icon">♚</span><span>Socios</span><i>{{navGroups.members?'⌄':'›'}}</i>
+        <button type="button" class="cf-nav-group-head" [class.active]="['clientes','membresias','members-list','members-cards','add-member','edit-member','edit-member-details'].includes(seccion)" (click)="toggleNavGroup('members')">
+          <span class="admin-main-nav-icon">♚</span><span>Socios del Gimnasio</span><i>{{navGroups.members?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.members">
           <button type="button" [class.active]="seccion==='clientes'" (click)="cambiarSegcion('clientes')"><span>•</span><span>Gestión de Socios</span></button>
+          <button type="button" [class.active]="seccion==='membresias'" (click)="cambiarSegcion('membresias')"><span>•</span><span>Membresías</span></button>
           <button type="button" [class.active]="seccion==='members-list'" (click)="cambiarSegcion('members-list')"><span>•</span><span>Lista de Socios</span></button>
           <button type="button" [class.active]="seccion==='members-cards'" (click)="cambiarSegcion('members-cards')"><span>•</span><span>Tarjetas de Socios</span></button>
           <button type="button" [class.active]="seccion==='add-member'" (click)="cambiarSegcion('add-member')"><span>•</span><span>Agregar Socio</span></button>
           <button type="button" [class.active]="seccion==='edit-member' || seccion==='edit-member-details'" (click)="cambiarSegcion('edit-member')"><span>•</span><span>Editar Socio</span></button>
         </div>
 
-        <button type="button" class="cf-nav-group-head" [class.active]="['pagos','invoices-list','invoice-details','create-invoice','add-invoice','edit-invoice','expenses'].includes(seccion)" (click)="toggleNavGroup('payments')">
+        <button type="button" class="cf-nav-group-head" [class.active]="['pagos','facturas','invoice-details','create-invoice','add-invoice','edit-invoice','invoices-list','expenses'].includes(seccion)" (click)="toggleNavGroup('payments')">
           <span class="admin-main-nav-icon">S/</span><span>Pagos</span><i>{{navGroups.payments?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.payments">
           <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSegcion('pagos')"><span>•</span><span>Pagos Registrados</span></button>
-          <button type="button" [class.active]="seccion==='invoices-list'" (click)="cambiarSegcion('invoices-list')"><span>•</span><span>Lista de Facturas</span></button>
+          <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSegcion('facturas')"><span>•</span><span>Facturas</span></button>
           <button type="button" [class.active]="seccion==='invoice-details'" (click)="cambiarSegcion('invoice-details')"><span>•</span><span>Detalle de Factura</span></button>
           <button type="button" [class.active]="seccion==='create-invoice' || seccion==='add-invoice'" (click)="cambiarSegcion('create-invoice')"><span>•</span><span>Crear Factura</span></button>
+          <button type="button" [class.active]="seccion==='edit-invoice'" (click)="cambiarSegcion('edit-invoice')"><span>•</span><span>Editar Factura</span></button>
+          <button type="button" [class.active]="seccion==='invoices-list'" (click)="cambiarSegcion('invoices-list')"><span>•</span><span>Lista de Facturas</span></button>
           <button type="button" [class.active]="seccion==='expenses'" (click)="cambiarSegcion('expenses')"><span>•</span><span>Gastos</span></button>
         </div>
 
-        <button type="button" [class.active]="seccion==='membresias'" (click)="cambiarSegcion('membresias')">
-          <span class="admin-main-nav-icon">▣</span><span>Membresías</span>
-        </button>
-
-        <button type="button" class="cf-nav-group-head" [class.active]="['entrenador','trainer-profile'].includes(seccion)" (click)="toggleNavGroup('trainers')">
-          <span class="admin-main-nav-icon">♙</span><span>Entrenadores</span><i>{{navGroups.trainers?'⌄':'›'}}</i>
-        </button>
-        <div class="cf-nav-children" *ngIf="navGroups.trainers">
-          <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSegcion('entrenador')"><span>•</span><span>Gestión de Entrenador</span></button>
-          <button type="button" [class.active]="seccion==='trainer-profile'" (click)="cambiarSegcion('trainer-profile')"><span>•</span><span>Perfil del Entrenador</span></button>
-        </div>
-
-        <button type="button" class="cf-nav-group-head" [class.active]="['rutinas','sports-components'].includes(seccion)" (click)="toggleNavGroup('training')">
-          <span class="admin-main-nav-icon">🏋</span><span>Mi Plan de Entrenamiento</span><i>{{navGroups.training?'⌄':'›'}}</i>
-        </button>
-        <div class="cf-nav-children" *ngIf="navGroups.training">
-          <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSegcion('rutinas')"><span>•</span><span>Rutinas</span></button>
-          <button type="button" [class.active]="seccion==='sports-components'" (click)="cambiarSegcion('sports-components')"><span>•</span><span>Seguimiento Deportivo</span></button>
-        </div>
-
-        <button type="button" [class.active]="seccion==='reportes'" (click)="cambiarSegcion('reportes')">
-          <span class="admin-main-nav-icon">⌁</span><span>Mis Reportes</span>
-        </button>
-
-        <button type="button" class="cf-nav-group-head" [class.active]="seccion==='nutricion'" (click)="toggleNavGroup('diet')">
-          <span class="admin-main-nav-icon">♨</span><span>Mi Plan de Alimentación</span><i>{{navGroups.diet?'⌄':'›'}}</i>
-        </button>
-        <div class="cf-nav-children" *ngIf="navGroups.diet">
-          <button type="button" [class.active]="seccion==='nutricion'" (click)="cambiarSegcion('nutricion')"><span>•</span><span>Planes Nutricionales</span></button>
-        </div>
-
-        <button type="button" class="cf-nav-group-head" [class.active]="['equipos','inventario','kardex'].includes(seccion)" (click)="toggleNavGroup('equipment')">
-          <span class="admin-main-nav-icon">◆</span><span>Equipos</span><i>{{navGroups.equipment?'⌄':'›'}}</i>
-        </button>
-        <div class="cf-nav-children" *ngIf="navGroups.equipment">
-          <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSegcion('equipos')"><span>•</span><span>Equipos del Gimnasio</span></button>
-          <button type="button" [class.active]="seccion==='inventario'" (click)="cambiarSegcion('inventario')"><span>•</span><span>Inventario de Productos</span></button>
-          <button type="button" [class.active]="seccion==='kardex'" (click)="cambiarSegcion('kardex')"><span>•</span><span>Kardex / Stock</span></button>
-        </div>
-
-        <button type="button" class="cf-nav-group-head" [class.active]="['eventos','reservas','clases'].includes(seccion)" (click)="toggleNavGroup('events')">
-          <span class="admin-main-nav-icon">◫</span><span>Eventos del Gimnasio</span><i>{{navGroups.events?'⌄':'›'}}</i>
-        </button>
-        <div class="cf-nav-children" *ngIf="navGroups.events">
-          <button type="button" [class.active]="seccion==='eventos'" (click)="cambiarSegcion('eventos')"><span>•</span><span>Eventos</span></button>
-          <button type="button" [class.active]="seccion==='clases'" (click)="cambiarSegcion('clases')"><span>•</span><span>Clases</span></button>
-          <button type="button" [class.active]="seccion==='reservas'" (click)="cambiarSegcion('reservas')"><span>•</span><span>Reservas</span></button>
-        </div>
-
+        <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSegcion('equipos')"><span class="admin-main-nav-icon">◆</span><span>Equipos</span></button>
+        <button type="button" [class.active]="seccion==='eventos'" (click)="cambiarSegcion('eventos')"><span class="admin-main-nav-icon">◫</span><span>Eventos del Gimnasio</span></button>
         <button type="button" [class.active]="seccion==='galeria'" (click)="cambiarSegcion('galeria')"><span class="admin-main-nav-icon">▧</span><span>Galería</span></button>
         <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSegcion('noticias')"><span class="admin-main-nav-icon">◇</span><span>Noticias y Novedades</span></button>
         <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSegcion('planes')"><span class="admin-main-nav-icon">★</span><span>Planes y Precios</span></button>
@@ -182,30 +154,8 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <button type="button" class="cf-nav-group-head" [class.active]="['alerts','avatars','badges','buttons','button-groups','cards-ui','advanced-cards','dropdowns','list-items','progress-bars','placeholders','spinners'].includes(seccion)" (click)="toggleNavGroup('ui')">
           <span class="admin-main-nav-icon">✦</span><span>Elementos de Interfaz</span><i>{{navGroups.ui?'⌄':'›'}}</i>
         </button>
-        <div class="cf-nav-children cf-nav-ui-list" *ngIf="navGroups.ui">
+        <div class="cf-nav-children" *ngIf="navGroups.ui">
           <button *ngFor="let x of uiElementLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSegcion(x.id)"><span>•</span><span>{{x.label}}</span></button>
-        </div>
-
-        <div class="cf-nav-section-label cf-nav-section-label-secondary">OTRAS FUNCIONES</div>
-        <button type="button" class="cf-nav-group-head" [class.active]="['asistencias','reporte-asistencias','caja','ventas','historial-ventas','gastos','compras','proveedores','categorias','soporte','opiniones','comunicacion','usuarios','auditoria','configuracion'].includes(seccion)" (click)="toggleNavGroup('operations')">
-          <span class="admin-main-nav-icon">☷</span><span>Administración</span><i>{{navGroups.operations?'⌄':'›'}}</i>
-        </button>
-        <div class="cf-nav-children" *ngIf="navGroups.operations">
-          <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSegcion('asistencias')"><span>•</span><span>Asistencias</span></button>
-          <button type="button" [class.active]="seccion==='reporte-asistencias'" (click)="cambiarSegcion('reporte-asistencias')"><span>•</span><span>Reporte de Asistencias</span></button>
-          <button type="button" [class.active]="seccion==='caja'" (click)="cambiarSegcion('caja')"><span>•</span><span>Caja</span></button>
-          <button type="button" [class.active]="seccion==='ventas'" (click)="cambiarSegcion('ventas')"><span>•</span><span>Ventas</span></button>
-          <button type="button" [class.active]="seccion==='historial-ventas'" (click)="cambiarSegcion('historial-ventas')"><span>•</span><span>Historial de Ventas</span></button>
-          <button type="button" [class.active]="seccion==='gastos'" (click)="cambiarSegcion('gastos')"><span>•</span><span>Gastos</span></button>
-          <button type="button" [class.active]="seccion==='compras'" (click)="cambiarSegcion('compras')"><span>•</span><span>Compras</span></button>
-          <button type="button" [class.active]="seccion==='proveedores'" (click)="cambiarSegcion('proveedores')"><span>•</span><span>Proveedores</span></button>
-          <button type="button" [class.active]="seccion==='categorias'" (click)="cambiarSegcion('categorias')"><span>•</span><span>Categorías</span></button>
-          <button type="button" [class.active]="seccion==='soporte'" (click)="cambiarSegcion('soporte')"><span>•</span><span>Soporte</span></button>
-          <button type="button" [class.active]="seccion==='opiniones'" (click)="cambiarSegcion('opiniones')"><span>•</span><span>Opiniones</span></button>
-          <button type="button" [class.active]="seccion==='comunicacion'" (click)="cambiarSegcion('comunicacion')"><span>•</span><span>Notificaciones</span></button>
-          <button type="button" [class.active]="seccion==='usuarios'" (click)="cambiarSegcion('usuarios')"><span>•</span><span>Usuarios</span></button>
-          <button type="button" [class.active]="seccion==='auditoria'" (click)="cambiarSegcion('auditoria')"><span>•</span><span>Auditoría</span></button>
-          <button type="button" [class.active]="seccion==='configuracion'" (click)="cambiarSegcion('configuracion')"><span>•</span><span>Configuración</span></button>
         </div>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['accordions','carousel','modals','popovers','tabs-ui','tooltips'].includes(seccion)" (click)="toggleNavGroup('jquery')">
@@ -798,21 +748,21 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           </section>
 
           <section class="cf-ref-stats">
-            <button type="button" (click)="cambiarSegcion('reportes')">
-              <div><small>Calorías Quemadas</small><strong>1,240 kcal</strong><span>+12% esta semana</span></div>
-              <i>🔥</i>
-            </button>
-            <button type="button" (click)="cambiarSegcion('rutinas')">
-              <div><small>Minutos Activos</small><strong>92 mins</strong><span>Meta Alcanzada</span></div>
-              <i>⚡</i>
+            <button type="button" (click)="cambiarSegcion('clientes')">
+              <div><small>Socios Activos</small><strong>{{dashboard?.clientes?.activos ?? 0}}</strong><span>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos este mes</span></div>
+              <i>♚</i>
             </button>
             <button type="button" (click)="cambiarSegcion('asistencias')">
-              <div><small>Pasos</small><strong>8,420</strong><span>Meta: 10,000</span></div>
-              <i>↗</i>
+              <div><small>Asistencias Hoy</small><strong>{{dashboard?.asistencias?.hoy ?? 0}}</strong><span>{{dashboard?.asistencias?.dentro_ahora ?? 0}} dentro del gimnasio</span></div>
+              <i>✓</i>
             </button>
-            <button type="button" (click)="cambiarSegcion('reportes')">
-              <div><small>Sueño</small><strong>7h 20m</strong><span>Buena recuperación</span></div>
-              <i>☾</i>
+            <button type="button" (click)="cambiarSegcion('ingresos')">
+              <div><small>Ingresos del Mes</small><strong>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</strong><span>Control financiero</span></div>
+              <i>S/</i>
+            </button>
+            <button type="button" (click)="cambiarSegcion('reservas')">
+              <div><small>Reservas Hoy</small><strong>{{dashboard?.reservas?.hoy ?? 0}}</strong><span>Agenda del gimnasio</span></div>
+              <i>◫</i>
             </button>
           </section>
 
@@ -820,7 +770,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <article class="cf-ref-activity">
               <header>
                 <div><h2>Actividad Semanal</h2><p>Resumen de rendimiento · últimos 7 días</p></div>
-                <span>6 Entrenamientos · 5h 40m</span>
+                <span>{{dashboard?.asistencias?.hoy ?? 0}} asistencias hoy</span>
               </header>
               <div class="cf-ref-chart-legend">
                 <span><i class="purple"></i>Asistencia</span>
@@ -844,12 +794,12 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             </article>
 
             <article class="cf-ref-split">
-              <header><div><h2>Distribución de Entrenamiento</h2><p>Actividad de los últimos 7 días</p></div><span>12 sesiones</span></header>
+              <header><div><h2>Distribución Operativa</h2><p>Actividad actual del gimnasio</p></div><span>{{totalActividadOperativa()}} movimientos</span></header>
               <div class="cf-ref-donut"><div><strong>100%</strong><small>Total</small></div></div>
               <div class="cf-ref-split-list">
-                <p><span><i class="purple"></i>Cardio</span><b>48%</b></p>
-                <p><span><i class="mint"></i>Fuerza</span><b>34%</b></p>
-                <p><span><i class="soft"></i>Movilidad</span><b>26%</b></p>
+                <p><span><i class="purple"></i>Asistencias</span><b>{{porcentajeActividadOperativa('asistencias')}}%</b></p>
+                <p><span><i class="mint"></i>Reservas</span><b>{{porcentajeActividadOperativa('reservas')}}%</b></p>
+                <p><span><i class="soft"></i>Ventas</span><b>{{porcentajeActividadOperativa('ventas')}}%</b></p>
               </div>
             </article>
           </section>
@@ -3149,6 +3099,23 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(t==='inventario')return '!';
     if(t==='membresias')return '✦';
     return '●';
+  }
+
+  totalActividadOperativa():number{
+    return Number(this.dashboard?.asistencias?.hoy||0)
+      + Number(this.dashboard?.reservas?.hoy||0)
+      + Number(this.dashboard?.ventas?.hoy_cantidad||0);
+  }
+
+  porcentajeActividadOperativa(tipo:'asistencias'|'reservas'|'ventas'):number{
+    const total=this.totalActividadOperativa();
+    if(total<=0) return tipo==='asistencias'?34:(tipo==='reservas'?33:33);
+    const valor=tipo==='asistencias'
+      ? Number(this.dashboard?.asistencias?.hoy||0)
+      : tipo==='reservas'
+        ? Number(this.dashboard?.reservas?.hoy||0)
+        : Number(this.dashboard?.ventas?.hoy_cantidad||0);
+    return Math.round((valor/total)*100);
   }
 
   progresoSemanal():number{
