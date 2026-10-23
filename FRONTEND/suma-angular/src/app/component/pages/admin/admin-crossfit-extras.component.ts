@@ -697,6 +697,30 @@ interface ExtraConfig {
     .cf-member-profile-card,.cf-invoice-paper,.cf-payslip-paper{border:1px solid #ecebf3!important;border-radius:5px!important;background:#fff!important;box-shadow:0 1px 5px rgba(61,57,102,.025)!important}
     @media(max-width:700px){.cfx-page{margin:0!important}.cfx-grid{margin:8px!important}}
 
+
+    /* TEMPLATE569574_ACCOUNT_EXT */
+    .cf-settings-plans{grid-column:1/-1!important}
+    .cf-plan-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+    .cf-plan-row>div{min-height:135px;display:flex;flex-direction:column;gap:6px;padding:12px;border:1px solid #ecebf3;border-radius:5px;background:#fff}
+    .cf-plan-row>div.featured{border-color:#c8c4ef;background:#f8f7ff}
+    .cf-plan-row small{color:#8f92a0;font-size:7.5px;font-weight:700;letter-spacing:.5px}
+    .cf-plan-row b{color:#2d2c3c;font-size:18px}.cf-plan-row b em{color:#999ba8;font-size:8px;font-style:normal;font-weight:500}
+    .cf-plan-row p{margin:0!important;min-height:34px}
+    .cf-plan-row button{margin-top:auto}
+    .cf-app-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .cf-app-grid>div{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;gap:2px 8px;align-items:center;padding:10px;border:1px solid #ecebf3;border-radius:5px;background:#fff}
+    .cf-app-grid b{font-size:9px;color:#373746}.cf-app-grid small{font-size:7.5px;color:#999ba8}.cf-app-grid button{grid-column:2;grid-row:1/3}
+    .cf-danger-zone{border-color:#f1dadd!important;background:#fffafa!important}
+    .cf-danger-zone header span{color:#c95d6b!important}
+    .cf-datatable-toolbar{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;margin-bottom:8px!important}
+    .cf-datatable-toolbar label{display:flex!important;align-items:center!important;gap:5px!important;color:#777a89!important;font-size:8px!important}
+    .cf-datatable-toolbar select{width:auto!important;min-width:62px!important;height:28px!important}
+    .cf-datatable-toolbar input{width:190px!important;height:28px!important}
+    .cf-datatable-footer{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;margin-top:8px!important;color:#9698a6!important;font-size:7.5px!important}
+    .cf-datatable-footer>div{display:flex!important;gap:4px!important}
+    .cf-auth-overview{align-items:start!important}
+    @media(max-width:850px){.cf-plan-row,.cf-app-grid{grid-template-columns:1fr}.cf-datatable-toolbar,.cf-datatable-footer{align-items:stretch!important;flex-direction:column!important}.cf-datatable-toolbar input{width:100%!important}}
+
   `]
 })
 export class AdminCrossfitExtrasComponent implements OnChanges {
