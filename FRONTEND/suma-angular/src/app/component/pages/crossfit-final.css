@@ -4060,3 +4060,9 @@
 @media(max-width:900px){.cf-member-card-grid,.cf-icon-actions{grid-template-columns:repeat(3,1fr)}.cf-settings-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:700px){.cf-sport-stats,.cf-settings-grid,.cf-icon-actions{grid-template-columns:1fr}.cf-account-profile{grid-template-columns:50px 1fr!important}.cf-account-profile>button{grid-column:1/-1}.cf-inline-form{align-items:stretch;flex-direction:column}.cf-inline-form input{width:100%}}
 
+
+/* CROSSFit LIVE DEMO · HIDE LEGACY MOBILE MENU */
+.admin-mobile-modules,
+.admin-shell.admin-home-redesign .admin-mobile-modules{
+  display:none!important;
+}
