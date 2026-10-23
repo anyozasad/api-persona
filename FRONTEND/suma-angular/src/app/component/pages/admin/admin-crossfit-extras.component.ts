@@ -568,9 +568,9 @@ interface ExtraConfig {
             <div><b>Slack</b><small>Successfully connected</small><button>Disconnect</button></div>
             <div><b>Facebook</b><small>Successfully connected</small><button>Disconnect</button></div>
             <div><b>Notion</b><small>Successfully connected</small><button>Disconnect</button></div>
-            <div><b>GitHub</b><small>Conectar your GitHub account</small><button>Conectar</button></div>
-            <div><b>Google</b><small>Conectar your Google account</small><button>Conectar</button></div>
-            <div><b>X / Twitter</b><small>Conectar your X account</small><button>Conectar</button></div>
+            <div><b>GitHub</b><small>Conecta tu cuenta de GitHub</small><button>Conectar</button></div>
+            <div><b>Google</b><small>Conecta tu cuenta de Google</small><button>Conectar</button></div>
+            <div><b>X / Twitter</b><small>Conecta tu cuenta de X</small><button>Conectar</button></div>
           </div>
         </article>
 
