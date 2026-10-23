@@ -33,52 +33,52 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           type="text"
           [(ngModel)]="busquedaAdmin"
           (keydown.enter)="buscarEnPanel()"
-          placeholder="Search"
-          aria-label="Search dashboard">
+          placeholder="Buscar"
+          aria-label="Buscar en el panel">
         <button type="button" (click)="buscarEnPanel()">Buscar</button>
       </label>
 
       <div class="admin-top-actions">
-        <button type="button" (click)="toggleTopPanel('activity')" title="Activity" aria-label="Activity">＋</button>
-        <button type="button" (click)="toggleTopPanel('alerts')" title="Alerts" aria-label="Alerts">⚑</button>
-        <button type="button" (click)="toggleTopPanel('messages')" title="Messages" aria-label="Messages">✉</button>
-        <button type="button" (click)="cambiarSeccion('account-settings')" title="Settings" aria-label="Settings">⚙</button>
-        <button type="button" class="admin-top-user" (click)="cambiarSeccion('my-profile')" title="My Profile">
+        <button type="button" (click)="toggleTopPanel('activity')" title="Actividad" aria-label="Actividad">＋</button>
+        <button type="button" (click)="toggleTopPanel('alerts')" title="Alertas" aria-label="Alertas">⚑</button>
+        <button type="button" (click)="toggleTopPanel('messages')" title="Mensajes" aria-label="Mensajes">✉</button>
+        <button type="button" (click)="cambiarSeccion('account-settings')" title="Configuración" aria-label="Configuración">⚙</button>
+        <button type="button" class="admin-top-user" (click)="cambiarSeccion('my-profile')" title="Mi perfil">
           {{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}
         </button>
       </div>
     </header>
 
     <section class="cf-top-dropdown activity" *ngIf="topPanel==='activity'">
-      <header><h3>Activity</h3><button (click)="topPanel=''">×</button></header>
+      <header><h3>Actividad</h3><button (click)="topPanel=''">×</button></header>
       <div class="cf-top-feed">
-        <article><span>S/</span><div><b>Membership Payments</b><p>18 members renewed subscriptions.</p><small>10:20 AM · Today</small></div></article>
-        <article><span>◆</span><div><b>Equipment Update</b><p>New cardio and strength equipment registered.</p><small>01:15 PM · Today</small></div></article>
-        <article><span>🏋</span><div><b>Training Sessions</b><p>Personal training sessions completed today.</p><small>05:40 PM · Today</small></div></article>
-        <article><span>♚</span><div><b>New Members Joined</b><p>{{dashboard?.clientes?.nuevos_mes ?? 0}} new members this month.</p><small>06:50 PM · Today</small></div></article>
-        <article><span>!</span><div><b>Maintenance Request</b><p>Equipment maintenance review pending.</p><small>08:10 PM · Today</small></div></article>
+        <article><span>S/</span><div><b>Pagos de membresías</b><p>18 socios renovaron sus membresías.</p><small>10:20 AM · Today</small></div></article>
+        <article><span>◆</span><div><b>Actualización de equipos</b><p>Nuevos equipos de cardio y fuerza registrados.</p><small>01:15 PM · Today</small></div></article>
+        <article><span>🏋</span><div><b>Sesiones de entrenamiento</b><p>Sesiones personales completadas hoy.</p><small>05:40 PM · Today</small></div></article>
+        <article><span>♚</span><div><b>Nuevos socios</b><p>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos socios este mes.</p><small>06:50 PM · Today</small></div></article>
+        <article><span>!</span><div><b>Solicitud de mantenimiento</b><p>Revisión de mantenimiento pendiente.</p><small>08:10 PM · Today</small></div></article>
       </div>
-      <button class="cf-top-viewall" (click)="cambiarSeccion('comunicacion');topPanel=''">View all</button>
+      <button class="cf-top-viewall" (click)="cambiarSeccion('comunicacion');topPanel=''">Ver todo</button>
     </section>
 
     <section class="cf-top-dropdown" *ngIf="topPanel==='alerts'">
-      <header><h3>Alerts</h3><button (click)="topPanel=''">×</button></header>
+      <header><h3>Alertas</h3><button (click)="topPanel=''">×</button></header>
       <div class="cf-top-feed">
-        <article><span>NH</span><div><b>Training completed</b><p>5 personal training sessions completed today.</p><small>Today, 07:30 PM</small></div></article>
-        <article><span>WT</span><div><b>Member milestone</b><p>A member achieved a new fitness milestone.</p><small>Today, 08:00 PM</small></div></article>
-        <article><span>TJ</span><div><b>Workout update</b><p>A new HIIT workout was published.</p><small>Today, 09:30 PM</small></div></article>
+        <article><span>NH</span><div><b>Entrenamiento completado</b><p>5 sesiones personales completadas hoy.</p><small>Hoy, 07:30 PM</small></div></article>
+        <article><span>WT</span><div><b>Logro de socio</b><p>Un socio alcanzó un nuevo logro.</p><small>Hoy, 08:00 PM</small></div></article>
+        <article><span>TJ</span><div><b>Actualización de rutina</b><p>Se publicó una nueva rutina HIIT.</p><small>Hoy, 09:30 PM</small></div></article>
       </div>
-      <button class="cf-top-viewall" (click)="cambiarSeccion('comunicacion');topPanel=''">View all</button>
+      <button class="cf-top-viewall" (click)="cambiarSeccion('comunicacion');topPanel=''">Ver todo</button>
     </section>
 
     <section class="cf-top-dropdown messages" *ngIf="topPanel==='messages'">
-      <header><h3>Messages</h3><button (click)="topPanel=''">×</button></header>
+      <header><h3>Mensajes</h3><button (click)="topPanel=''">×</button></header>
       <div class="cf-top-feed">
-        <article><img src="assets/showcase/coach-showcase.svg" alt="Trainer"><div><b>Mallqui Trainer</b><p>Completed training sessions today.</p><small>Today, 07:30 PM</small></div></article>
-        <article><img src="assets/showcase/coach-showcase.svg" alt="Trainer"><div><b>Fitness Update</b><p>New personal record registered.</p><small>Today, 08:00 PM</small></div></article>
-        <article><img src="assets/showcase/coach-showcase.svg" alt="Trainer"><div><b>Member Message</b><p>Membership renewal confirmed.</p><small>Today, 10:15 PM</small></div></article>
+        <article><img src="assets/showcase/coach-showcase.svg" alt="Entrenador"><div><b>Entrenador Mallqui</b><p>Completado training sessions today.</p><small>Hoy, 07:30 PM</small></div></article>
+        <article><img src="assets/showcase/coach-showcase.svg" alt="Entrenador"><div><b>Actualización Fitness</b><p>Nuevo récord personal registrado.</p><small>Hoy, 08:00 PM</small></div></article>
+        <article><img src="assets/showcase/coach-showcase.svg" alt="Entrenador"><div><b>Mensaje de socio</b><p>Renovación de membresía confirmada.</p><small>Hoy, 10:15 PM</small></div></article>
       </div>
-      <button class="cf-top-viewall" (click)="cambiarSeccion('comunicacion');topPanel=''">View all</button>
+      <button class="cf-top-viewall" (click)="cambiarSeccion('comunicacion');topPanel=''">Ver todo</button>
     </section>
 
     <aside class="admin-nav">
@@ -89,132 +89,132 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </button>
         <div class="crossfit-profile-copy">
           <strong>{{auth.usuario?.nombre_usuario || 'Administrador'}}</strong>
-          <small>Gym Admin</small>
-          <em>Gold Plan</em>
+          <small>Administrador</small>
+          <em>Plan Gold</em>
         </div>
       </div>
 
       <nav class="admin-main-nav crossfit-sidebar-nav" aria-label="Módulos principales">
         <button type="button" [class.active]="seccion==='dashboard'" (click)="cambiarSeccion('dashboard')">
-          <span class="admin-main-nav-icon">⌂</span><span>Dashboard</span>
+          <span class="admin-main-nav-icon">⌂</span><span>Panel Principal</span>
         </button>
         <button type="button" [class.active]="seccion==='reportes'" (click)="cambiarSeccion('reportes')">
-          <span class="admin-main-nav-icon">⌁</span><span>My Reports</span>
+          <span class="admin-main-nav-icon">⌁</span><span>Mis Reportes</span>
         </button>
         <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSeccion('rutinas')">
-          <span class="admin-main-nav-icon">▣</span><span>My Workout Plan</span>
+          <span class="admin-main-nav-icon">▣</span><span>Mi Plan de Entrenamiento</span>
         </button>
         <button type="button" [class.active]="seccion==='nutricion'" (click)="cambiarSeccion('nutricion')">
-          <span class="admin-main-nav-icon">♨</span><span>My Diet Plan</span>
+          <span class="admin-main-nav-icon">♨</span><span>Mi Plan de Alimentación</span>
         </button>
         <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSeccion('asistencias')">
-          <span class="admin-main-nav-icon">▦</span><span>Attendance Tracker</span>
+          <span class="admin-main-nav-icon">▦</span><span>Control de Asistencia</span>
         </button>
         <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSeccion('entrenador')">
-          <span class="admin-main-nav-icon">♙</span><span>Trainers</span>
+          <span class="admin-main-nav-icon">♙</span><span>Entrenador</span>
         </button>
         <button type="button" [class.active]="seccion==='trainer-profile'" (click)="cambiarSeccion('trainer-profile')">
-          <span class="admin-main-nav-icon">◎</span><span>Trainer Profile</span>
+          <span class="admin-main-nav-icon">◎</span><span>Perfil del Entrenador</span>
         </button>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['members-list','members-cards','add-member','edit-member','edit-member-details'].includes(seccion)" (click)="toggleNavGroup('members')">
-          <span class="admin-main-nav-icon">♚</span><span>Gym Members</span><i>{{navGroups.members?'⌄':'›'}}</i>
+          <span class="admin-main-nav-icon">♚</span><span>Socios del Gimnasio</span><i>{{navGroups.members?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.members">
-          <button type="button" [class.active]="seccion==='members-list'" (click)="cambiarSeccion('members-list')"><span>•</span><span>Members List</span></button>
-          <button type="button" [class.active]="seccion==='members-cards'" (click)="cambiarSeccion('members-cards')"><span>•</span><span>Members Cards</span></button>
-          <button type="button" [class.active]="seccion==='add-member'" (click)="cambiarSeccion('add-member')"><span>•</span><span>Add Member</span></button>
-          <button type="button" [class.active]="seccion==='edit-member' || seccion==='edit-member-details'" (click)="cambiarSeccion('edit-member')"><span>•</span><span>Edit Member</span></button>
+          <button type="button" [class.active]="seccion==='members-list'" (click)="cambiarSeccion('members-list')"><span>•</span><span>Lista de Socios</span></button>
+          <button type="button" [class.active]="seccion==='members-cards'" (click)="cambiarSeccion('members-cards')"><span>•</span><span>Tarjetas de Socios</span></button>
+          <button type="button" [class.active]="seccion==='add-member'" (click)="cambiarSeccion('add-member')"><span>•</span><span>Agregar Socio</span></button>
+          <button type="button" [class.active]="seccion==='edit-member' || seccion==='edit-member-details'" (click)="cambiarSeccion('edit-member')"><span>•</span><span>Editar Socio</span></button>
         </div>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['ingresos','pagos','facturas','invoice-details','create-invoice','add-invoice','edit-invoice','invoices-list','expenses'].includes(seccion)" (click)="toggleNavGroup('payments')">
-          <span class="admin-main-nav-icon">S/</span><span>Payments</span><i>{{navGroups.payments?'⌄':'›'}}</i>
+          <span class="admin-main-nav-icon">S/</span><span>Pagos</span><i>{{navGroups.payments?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.payments">
-          <button type="button" [class.active]="seccion==='ingresos'" (click)="cambiarSeccion('ingresos')"><span>•</span><span>Income</span></button>
-          <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSeccion('pagos')"><span>•</span><span>Payments</span></button>
-          <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSeccion('facturas')"><span>•</span><span>Invoices</span></button>
-          <button type="button" [class.active]="seccion==='invoice-details'" (click)="cambiarSeccion('invoice-details')"><span>•</span><span>Invoice Details</span></button>
-          <button type="button" [class.active]="seccion==='create-invoice' || seccion==='add-invoice'" (click)="cambiarSeccion('create-invoice')"><span>•</span><span>Create Invoice</span></button>
-          <button type="button" [class.active]="seccion==='add-invoice'" (click)="cambiarSeccion('add-invoice')"><span>•</span><span>Add Invoice</span></button>
-          <button type="button" [class.active]="seccion==='edit-invoice'" (click)="cambiarSeccion('edit-invoice')"><span>•</span><span>Edit Invoice</span></button>
-          <button type="button" [class.active]="seccion==='invoices-list'" (click)="cambiarSeccion('invoices-list')"><span>•</span><span>Invoices List</span></button>
-          <button type="button" [class.active]="seccion==='expenses'" (click)="cambiarSeccion('expenses')"><span>•</span><span>Expenses</span></button>
+          <button type="button" [class.active]="seccion==='ingresos'" (click)="cambiarSeccion('ingresos')"><span>•</span><span>Ingresos</span></button>
+          <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSeccion('pagos')"><span>•</span><span>Pagos</span></button>
+          <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSeccion('facturas')"><span>•</span><span>Facturas</span></button>
+          <button type="button" [class.active]="seccion==='invoice-details'" (click)="cambiarSeccion('invoice-details')"><span>•</span><span>Detalle de Factura</span></button>
+          <button type="button" [class.active]="seccion==='create-invoice' || seccion==='add-invoice'" (click)="cambiarSeccion('create-invoice')"><span>•</span><span>Crear Factura</span></button>
+          <button type="button" [class.active]="seccion==='add-invoice'" (click)="cambiarSeccion('add-invoice')"><span>•</span><span>Agregar Factura</span></button>
+          <button type="button" [class.active]="seccion==='edit-invoice'" (click)="cambiarSeccion('edit-invoice')"><span>•</span><span>Editar Factura</span></button>
+          <button type="button" [class.active]="seccion==='invoices-list'" (click)="cambiarSeccion('invoices-list')"><span>•</span><span>Lista de Facturas</span></button>
+          <button type="button" [class.active]="seccion==='expenses'" (click)="cambiarSeccion('expenses')"><span>•</span><span>Gastos</span></button>
         </div>
 
-        <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSeccion('equipos')"><span class="admin-main-nav-icon">◆</span><span>Equipments</span></button>
-        <button type="button" [class.active]="seccion==='eventos'" (click)="cambiarSeccion('eventos')"><span class="admin-main-nav-icon">◫</span><span>Gym Events</span></button>
-        <button type="button" [class.active]="seccion==='galeria'" (click)="cambiarSeccion('galeria')"><span class="admin-main-nav-icon">▧</span><span>Gallery</span></button>
-        <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSeccion('noticias')"><span class="admin-main-nav-icon">◇</span><span>News & Updates</span></button>
-        <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSeccion('planes')"><span class="admin-main-nav-icon">★</span><span>Pricing Plans</span></button>
+        <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSeccion('equipos')"><span class="admin-main-nav-icon">◆</span><span>Equipos</span></button>
+        <button type="button" [class.active]="seccion==='eventos'" (click)="cambiarSeccion('eventos')"><span class="admin-main-nav-icon">◫</span><span>Eventos del Gimnasio</span></button>
+        <button type="button" [class.active]="seccion==='galeria'" (click)="cambiarSeccion('galeria')"><span class="admin-main-nav-icon">▧</span><span>Galería</span></button>
+        <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSeccion('noticias')"><span class="admin-main-nav-icon">◇</span><span>Noticias y Novedades</span></button>
+        <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSeccion('planes')"><span class="admin-main-nav-icon">★</span><span>Planes de Membresía</span></button>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['salarios','payslip'].includes(seccion)" (click)="toggleNavGroup('salaries')">
-          <span class="admin-main-nav-icon">▤</span><span>Salaries</span><i>{{navGroups.salaries?'⌄':'›'}}</i>
+          <span class="admin-main-nav-icon">▤</span><span>Salarios</span><i>{{navGroups.salaries?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.salaries">
-          <button type="button" [class.active]="seccion==='salarios'" (click)="cambiarSeccion('salarios')"><span>•</span><span>Salary List</span></button>
-          <button type="button" [class.active]="seccion==='payslip'" (click)="cambiarSeccion('payslip')"><span>•</span><span>Payslip</span></button>
+          <button type="button" [class.active]="seccion==='salarios'" (click)="cambiarSeccion('salarios')"><span>•</span><span>Lista de Salarios</span></button>
+          <button type="button" [class.active]="seccion==='payslip'" (click)="cambiarSeccion('payslip')"><span>•</span><span>Boleta de Pago</span></button>
         </div>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['alerts','avatars','badges','buttons','button-groups','cards-ui','advanced-cards','dropdowns','list-items','progress-bars','placeholders','spinners'].includes(seccion)" (click)="toggleNavGroup('ui')">
-          <span class="admin-main-nav-icon">✦</span><span>UI Elements</span><i>{{navGroups.ui?'⌄':'›'}}</i>
+          <span class="admin-main-nav-icon">✦</span><span>Elementos de Interfaz</span><i>{{navGroups.ui?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.ui">
           <button *ngFor="let x of uiElementLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSeccion(x.id)"><span>•</span><span>{{x.label}}</span></button>
         </div>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['accordions','carousel','modals','popovers','tabs-ui','tooltips'].includes(seccion)" (click)="toggleNavGroup('jquery')">
-          <span class="admin-main-nav-icon">⌘</span><span>Jquery Components</span><i>{{navGroups.jquery?'⌄':'›'}}</i>
+          <span class="admin-main-nav-icon">⌘</span><span>Componentes jQuery</span><i>{{navGroups.jquery?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.jquery">
           <button *ngFor="let x of jqueryLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSeccion(x.id)"><span>•</span><span>{{x.label}}</span></button>
         </div>
 
-        <button type="button" [class.active]="seccion==='sports-components'" (click)="cambiarSeccion('sports-components')"><span class="admin-main-nav-icon">🏋</span><span>Sports Components</span></button>
+        <button type="button" [class.active]="seccion==='sports-components'" (click)="cambiarSeccion('sports-components')"><span class="admin-main-nav-icon">🏋</span><span>Componentes Deportivos</span></button>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['forms','form-inputs','checkbox-radio','file-input','validations','date-time','input-masks','input-tags'].includes(seccion)" (click)="toggleNavGroup('forms')">
-          <span class="admin-main-nav-icon">☷</span><span>Forms</span><i>{{navGroups.forms?'⌄':'›'}}</i>
+          <span class="admin-main-nav-icon">☷</span><span>Formularios</span><i>{{navGroups.forms?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.forms">
-          <button type="button" [class.active]="seccion==='forms'" (click)="cambiarSeccion('forms')"><span>•</span><span>Forms</span></button>
+          <button type="button" [class.active]="seccion==='forms'" (click)="cambiarSeccion('forms')"><span>•</span><span>Formularios</span></button>
           <button *ngFor="let x of formLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSeccion(x.id)"><span>•</span><span>{{x.label}}</span></button>
         </div>
 
-        <button type="button" [class.active]="seccion==='tables'" (click)="cambiarSeccion('tables')"><span class="admin-main-nav-icon">▦</span><span>Tables</span></button>
-        <button type="button" [class.active]="seccion==='data-tables'" (click)="cambiarSeccion('data-tables')"><span class="admin-main-nav-icon">▦</span><span>Data Tables</span></button>
+        <button type="button" [class.active]="seccion==='tables'" (click)="cambiarSeccion('tables')"><span class="admin-main-nav-icon">▦</span><span>Tablas</span></button>
+        <button type="button" [class.active]="seccion==='data-tables'" (click)="cambiarSeccion('data-tables')"><span class="admin-main-nav-icon">▦</span><span>Tablas de Datos</span></button>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['graphs','apex','morris'].includes(seccion)" (click)="toggleNavGroup('graphs')">
-          <span class="admin-main-nav-icon">↗</span><span>Graphs</span><i>{{navGroups.graphs?'⌄':'›'}}</i>
+          <span class="admin-main-nav-icon">↗</span><span>Gráficos</span><i>{{navGroups.graphs?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.graphs">
-          <button type="button" [class.active]="seccion==='graphs'" (click)="cambiarSeccion('graphs')"><span>•</span><span>Graphs</span></button>
+          <button type="button" [class.active]="seccion==='graphs'" (click)="cambiarSeccion('graphs')"><span>•</span><span>Gráficos</span></button>
           <button type="button" [class.active]="seccion==='apex'" (click)="cambiarSeccion('apex')"><span>•</span><span>Apex</span></button>
           <button type="button" [class.active]="seccion==='morris'" (click)="cambiarSeccion('morris')"><span>•</span><span>Morris</span></button>
         </div>
 
-        <button type="button" [class.active]="seccion==='vector-maps'" (click)="cambiarSeccion('vector-maps')"><span class="admin-main-nav-icon">◎</span><span>Vector Maps</span></button>
-        <button type="button" [class.active]="seccion==='icons'" (click)="cambiarSeccion('icons')"><span class="admin-main-nav-icon">★</span><span>Icons</span></button>
-        <button type="button" [class.active]="seccion==='account-settings'" (click)="cambiarSeccion('account-settings')"><span class="admin-main-nav-icon">⚙</span><span>Account Settings</span></button>
-        <button type="button" [class.active]="seccion==='my-profile'" (click)="cambiarSeccion('my-profile')"><span class="admin-main-nav-icon">♙</span><span>My Profile</span></button>
-        <button type="button" [class.active]="seccion==='contact'" (click)="cambiarSeccion('contact')"><span class="admin-main-nav-icon">☎</span><span>Contact</span></button>
-        <button type="button" [class.active]="seccion==='typography'" (click)="cambiarSeccion('typography')"><span class="admin-main-nav-icon">T</span><span>Typography</span></button>
+        <button type="button" [class.active]="seccion==='vector-maps'" (click)="cambiarSeccion('vector-maps')"><span class="admin-main-nav-icon">◎</span><span>Mapas Vectoriales</span></button>
+        <button type="button" [class.active]="seccion==='icons'" (click)="cambiarSeccion('icons')"><span class="admin-main-nav-icon">★</span><span>Iconos</span></button>
+        <button type="button" [class.active]="seccion==='account-settings'" (click)="cambiarSeccion('account-settings')"><span class="admin-main-nav-icon">⚙</span><span>Configuración de Cuenta</span></button>
+        <button type="button" [class.active]="seccion==='my-profile'" (click)="cambiarSeccion('my-profile')"><span class="admin-main-nav-icon">♙</span><span>Mi Perfil</span></button>
+        <button type="button" [class.active]="seccion==='contact'" (click)="cambiarSeccion('contact')"><span class="admin-main-nav-icon">☎</span><span>Contacto</span></button>
+        <button type="button" [class.active]="seccion==='typography'" (click)="cambiarSeccion('typography')"><span class="admin-main-nav-icon">T</span><span>Tipografía</span></button>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['login-signup','login-page','signup-page','forgot-password','reset-password-page'].includes(seccion)" (click)="toggleNavGroup('auth')">
-          <span class="admin-main-nav-icon">↪</span><span>Login/Signup</span><i>{{navGroups.auth?'⌄':'›'}}</i>
+          <span class="admin-main-nav-icon">↪</span><span>Acceso / Registro</span><i>{{navGroups.auth?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.auth">
-          <button type="button" [class.active]="seccion==='login-signup'" (click)="cambiarSeccion('login-signup')"><span>•</span><span>Login/Signup</span></button>
-          <button type="button" [class.active]="seccion==='login-page'" (click)="cambiarSeccion('login-page')"><span>•</span><span>Login</span></button>
-          <button type="button" [class.active]="seccion==='signup-page'" (click)="cambiarSeccion('signup-page')"><span>•</span><span>Signup</span></button>
-          <button type="button" [class.active]="seccion==='forgot-password'" (click)="cambiarSeccion('forgot-password')"><span>•</span><span>Forgot Password</span></button>
-          <button type="button" [class.active]="seccion==='reset-password-page'" (click)="cambiarSeccion('reset-password-page')"><span>•</span><span>Reset Password</span></button>
+          <button type="button" [class.active]="seccion==='login-signup'" (click)="cambiarSeccion('login-signup')"><span>•</span><span>Acceso / Registro</span></button>
+          <button type="button" [class.active]="seccion==='login-page'" (click)="cambiarSeccion('login-page')"><span>•</span><span>Iniciar Sesión</span></button>
+          <button type="button" [class.active]="seccion==='signup-page'" (click)="cambiarSeccion('signup-page')"><span>•</span><span>Registrarse</span></button>
+          <button type="button" [class.active]="seccion==='forgot-password'" (click)="cambiarSeccion('forgot-password')"><span>•</span><span>Recuperar Contraseña</span></button>
+          <button type="button" [class.active]="seccion==='reset-password-page'" (click)="cambiarSeccion('reset-password-page')"><span>•</span><span>Restablecer Contraseña</span></button>
         </div>
 
-        <button type="button" [class.active]="seccion==='page-not-found'" (click)="cambiarSeccion('page-not-found')"><span class="admin-main-nav-icon">404</span><span>Page Not Found</span></button>
-        <button type="button" [class.active]="seccion==='maintenance'" (click)="cambiarSeccion('maintenance')"><span class="admin-main-nav-icon">⚙</span><span>Maintenance</span></button>
+        <button type="button" [class.active]="seccion==='page-not-found'" (click)="cambiarSeccion('page-not-found')"><span class="admin-main-nav-icon">404</span><span>Página no encontrada</span></button>
+        <button type="button" [class.active]="seccion==='maintenance'" (click)="cambiarSeccion('maintenance')"><span class="admin-main-nav-icon">⚙</span><span>Mantenimiento</span></button>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['menu-level-1','menu-level-2','menu-level-3'].includes(seccion)" (click)="toggleNavGroup('menu')">
-          <span class="admin-main-nav-icon">☷</span><span>Menu Level</span><i>{{navGroups.menu?'⌄':'›'}}</i>
+          <span class="admin-main-nav-icon">☷</span><span>Nivel de Menú</span><i>{{navGroups.menu?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.menu">
           <button type="button" [class.active]="seccion==='menu-level-1'" (click)="cambiarSeccion('menu-level-1')"><span>•</span><span>Level One Link</span></button>
@@ -226,10 +226,10 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <button type="button" [class.active]="seccion==='menu-level-1'" (click)="cambiarSeccion('menu-level-1')"><span>•</span><span>Level One Link</span></button>
         </div>
 
-        <button type="button" [class.active]="seccion==='external-link'" (click)="cambiarSeccion('external-link')"><span class="admin-main-nav-icon">↗</span><span>External Link</span></button>
+        <button type="button" [class.active]="seccion==='external-link'" (click)="cambiarSeccion('external-link')"><span class="admin-main-nav-icon">↗</span><span>Enlace Externo</span></button>
         <button type="button" [class.active]="seccion==='chip'" (click)="cambiarSeccion('chip')"><span class="admin-main-nav-icon">#</span><span>Chip</span></button>
-        <button type="button" [class.active]="seccion==='badge-link'" (click)="cambiarSeccion('badge-link')"><span class="admin-main-nav-icon">●</span><span>Badge</span></button>
-        <button type="button" disabled><span class="admin-main-nav-icon">⊘</span><span>Disabled Link</span></button>
+        <button type="button" [class.active]="seccion==='badge-link'" (click)="cambiarSeccion('badge-link')"><span class="admin-main-nav-icon">●</span><span>Insignia</span></button>
+        <button type="button" disabled><span class="admin-main-nav-icon">⊘</span><span>Enlace Deshabilitado</span></button>
       </nav>
 
       <button type="button" class="cf-fitness-center-card" (click)="cambiarSeccion('contact')">
@@ -270,45 +270,45 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
 
       <!-- CORE PAGES · Estructura tomada de la demo viva Crossfit -->
       <section class="cf-live-page" *ngIf="seccion==='reportes'">
-        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>My Reports</strong></div>
+        <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Mis Reportes</strong></div>
         <section class="cf-live-welcome">
           <div>
-            <small>WELCOME BACK,</small>
+            <small>BIENVENIDO,</small>
             <h1>{{auth.usuario?.nombre_usuario || 'Administrador'}}</h1>
-            <p>Here's your fitness summary for today</p>
+            <p>Este es tu resumen de actividad de hoy</p>
           </div>
           <div class="cf-live-summary4">
-            <article><span>👟</span><b>{{dashboard?.asistencias?.hoy ?? 0}}</b><small>Steps Today</small></article>
-            <article><span>🔥</span><b>{{dashboard?.ventas?.hoy_cantidad ?? 0}}</b><small>Calories Burned</small></article>
-            <article><span>⚡</span><b>{{totalAsistenciasSemana}}</b><small>Active Minutes</small></article>
-            <article><span>♥</span><b>{{progresoSemanal()}}</b><small>Fitness Score</small></article>
+            <article><span>👟</span><b>{{dashboard?.asistencias?.hoy ?? 0}}</b><small>Pasos Today</small></article>
+            <article><span>🔥</span><b>{{dashboard?.ventas?.hoy_cantidad ?? 0}}</b><small>Calorías Quemadas</small></article>
+            <article><span>⚡</span><b>{{totalAsistenciasSemana}}</b><small>Minutos Activos</small></article>
+            <article><span>♥</span><b>{{progresoSemanal()}}</b><small>Puntaje Fitness</small></article>
           </div>
         </section>
 
         <section class="cf-live-activity4">
-          <article><div class="cf-live-ring">☾</div><div><small>Sleep</small><b>8.3h</b><p>Last night sleep duration</p><em>8.5hrs avg last week.</em></div></article>
-          <article><div class="cf-live-ring">◉</div><div><small>Cycling</small><b>3.5 km</b><p>Distance covered today</p><em>2.3hrs avg last week.</em></div></article>
-          <article><div class="cf-live-ring">↗</div><div><small>Running</small><b>2.8 km</b><p>Distance covered today</p><em>2.6hrs avg last week.</em></div></article>
-          <article><div class="cf-live-ring">🏋</div><div><small>Gym</small><b>{{dashboard?.asistencias?.hoy ?? 0}}h</b><p>Workout duration today</p><em>{{dashboard?.operacion?.rutinas_activas ?? 0}} active routines</em></div></article>
+          <article><div class="cf-live-ring">☾</div><div><small>Sueño</small><b>8.3h</b><p>Duración del sueño de anoche</p><em>8.5hrs avg last week.</em></div></article>
+          <article><div class="cf-live-ring">◉</div><div><small>Cycling</small><b>3.5 km</b><p>Distancia recorrida hoy</p><em>2.3hrs avg last week.</em></div></article>
+          <article><div class="cf-live-ring">↗</div><div><small>Running</small><b>2.8 km</b><p>Distancia recorrida hoy</p><em>2.6hrs avg last week.</em></div></article>
+          <article><div class="cf-live-ring">🏋</div><div><small>Gym</small><b>{{dashboard?.asistencias?.hoy ?? 0}}h</b><p>Duración de entrenamiento de hoy</p><em>{{dashboard?.operacion?.rutinas_activas ?? 0}} active routines</em></div></article>
         </section>
 
         <section class="cf-live-report-grid">
           <article class="cf-live-card cf-live-diet-card">
-            <header><div><h2>My Diet Plan</h2><p>Balanced weekly nutrition plan</p></div><b>1,850 kcal/day</b></header>
+            <header><div><h2>Mi Plan de Alimentación</h2><p>Balanced weekly nutrition plan</p></div><b>1,850 kcal/day</b></header>
             <div class="cf-live-meals">
               <div *ngFor="let n of nutricionPreview.slice(0,3); let i=index">
                 <span>{{i===0?'🥣':(i===1?'🥗':'🍎')}}</span>
-                <div><b>{{n.titulo || (i===0?'Protein Breakfast Bowl':(i===1?'Lean Chicken Bowl':'Green Detox Salad'))}}</b><small>{{n.subtitulo || 'Healthy meal plan'}}</small></div>
-                <em>{{i===0?'Breakfast':(i===1?'Lunch':'Dinner')}}</em>
+                <div><b>{{n.titulo || (i===0?'Proteína Desayuno Bowl':(i===1?'Lean Chicken Bowl':'Green Detox Salad'))}}</b><small>{{n.subtitulo || 'Healthy meal plan'}}</small></div>
+                <em>{{i===0?'Desayuno':(i===1?'Almuerzo':'Cena')}}</em>
               </div>
-              <div *ngIf="!nutricionPreview.length"><span>🥣</span><div><b>Protein Breakfast Bowl</b><small>Oats + eggs + peanut butter</small></div><em>Breakfast</em></div>
-              <div *ngIf="!nutricionPreview.length"><span>🥗</span><div><b>Lean Chicken Bowl</b><small>Chicken + rice + veggies</small></div><em>Lunch</em></div>
-              <div *ngIf="!nutricionPreview.length"><span>🍎</span><div><b>Green Detox Salad</b><small>Spinach + avocado + seeds</small></div><em>Dinner</em></div>
+              <div *ngIf="!nutricionPreview.length"><span>🥣</span><div><b>Proteína Desayuno Bowl</b><small>Oats + eggs + peanut butter</small></div><em>Desayuno</em></div>
+              <div *ngIf="!nutricionPreview.length"><span>🥗</span><div><b>Lean Chicken Bowl</b><small>Chicken + rice + veggies</small></div><em>Almuerzo</em></div>
+              <div *ngIf="!nutricionPreview.length"><span>🍎</span><div><b>Green Detox Salad</b><small>Spinach + avocado + seeds</small></div><em>Cena</em></div>
             </div>
           </article>
 
           <article class="cf-live-card">
-            <header><div><h2>Upcoming Events</h2><p>Your scheduled fitness activities</p></div><b>{{reservas.length || 0}} Events</b></header>
+            <header><div><h2>Próximos Eventos</h2><p>Tus actividades programadas</p></div><b>{{reservas.length || 0}} Events</b></header>
             <div class="cf-live-list">
               <div *ngFor="let r of reservas.slice(0,4)"><span>◫</span><div><b>{{r.clase?.nombre || 'Fitness Session'}}</b><small>{{r.fecha_clase || 'Scheduled'}} · {{nombreEntrenador(r.clase?.entrenador)}}</small></div></div>
               <div *ngIf="!reservas.length"><span>◫</span><div><b>Fitness Retreat Weekend</b><small>Wellness · Outdoor</small></div></div>
@@ -317,116 +317,116 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           </article>
 
           <article class="cf-live-card">
-            <header><div><h2>Personal Trainers</h2><p>Top rated fitness experts</p></div><b>1 Trainer</b></header>
+            <header><div><h2>Entrenador Personal</h2><p>Especialista del gimnasio</p></div><b>1 Entrenador</b></header>
             <div class="cf-live-trainer-row" *ngIf="entrenadores[0] as t">
-              <img src="assets/showcase/coach-showcase.svg" alt="Trainer">
+              <img src="assets/showcase/coach-showcase.svg" alt="Entrenador">
               <div><b>{{nombreEntrenador(t)}}</b><small>{{t.especialidad || 'Fitness Coach'}}</small><em>Available</em></div>
             </div>
             <div class="cf-live-trainer-row" *ngIf="!entrenadores.length">
-              <img src="assets/showcase/coach-showcase.svg" alt="Trainer"><div><b>Mallqui Trainer</b><small>Strength · Conditioning</small><em>Available</em></div>
+              <img src="assets/showcase/coach-showcase.svg" alt="Entrenador"><div><b>Entrenador Mallqui</b><small>Fuerza · Conditioning</small><em>Available</em></div>
             </div>
           </article>
 
           <article class="cf-live-card">
-            <header><div><h2>Workout Goals</h2><p>Weekly targets vs progress</p></div><b>3 Active Goals</b></header>
+            <header><div><h2>Objetivos de Entrenamiento</h2><p>Metas semanales y avance</p></div><b>3 Active Goals</b></header>
             <div class="cf-live-goal"><label><span>Cardio Training</span><b>80%</b></label><div><i style="width:80%"></i></div><small>Running + Cycling</small></div>
-            <div class="cf-live-goal"><label><span>Strength Training</span><b>65%</b></label><div><i style="width:65%"></i></div><small>Weights & Resistance</small></div>
+            <div class="cf-live-goal"><label><span>Fuerza Training</span><b>65%</b></label><div><i style="width:65%"></i></div><small>Weights & Resistance</small></div>
             <div class="cf-live-goal"><label><span>Mobility & Recovery</span><b>45%</b></label><div><i style="width:45%"></i></div><small>Stretching & Yoga</small></div>
           </article>
 
           <article class="cf-live-card cf-live-chart-card">
-            <header><div><h2>Fitness Activity</h2><p>Weekly performance</p></div></header>
+            <header><div><h2>Actividad Física</h2><p>Rendimiento semanal</p></div></header>
             <svg viewBox="0 0 600 180" preserveAspectRatio="none"><path d="M0 135 C70 112 110 125 165 92 S280 118 350 70 S470 88 600 43" fill="none" stroke="#5b55d9" stroke-width="4"/><path d="M0 150 C70 134 110 143 170 120 S285 130 355 98 S470 108 600 76" fill="none" stroke="#9edcc8" stroke-width="3" stroke-dasharray="6 5"/></svg>
           </article>
 
           <article class="cf-live-card cf-live-chart-card">
-            <header><div><h2>Weight Statistics</h2><p>Progress overview</p></div><b>-35 lbs</b></header>
+            <header><div><h2>Estadísticas de Peso</h2><p>Progreso overview</p></div><b>-35 lbs</b></header>
             <div class="cf-live-weight"><span>Start <b>190 lbs</b></span><div><i style="width:78%"></i></div><span>Current <b>155 lbs</b></span></div>
           </article>
         </section>
       </section>
 
       <section class="cf-live-page cf-workout-live-page" *ngIf="seccion==='rutinas'">
-        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>My Workout Plan</strong></div>
+        <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Mi Plan de Entrenamiento</strong></div>
 
         <section class="cf-live-workout-head">
           <div>
-            <h1>Great work, {{auth.usuario?.nombre_usuario || 'James'}}</h1>
-            <p>You've completed {{progresoSemanal()}}% of your weekly fitness goal.</p>
+            <h1>Buen trabajo, {{auth.usuario?.nombre_usuario || 'James'}}</h1>
+            <p>Has completado {{progresoSemanal()}}% de tu meta semanal.</p>
           </div>
           <div class="cf-live-workout-progress">
-            <small>This Week</small>
-            <b>5 of 7 days active</b>
-            <em>+12% ↑ <span>vs last week</span></em>
+            <small>Esta Semana</small>
+            <b>5 of 7 días activos</b>
+            <em>+12% ↑ <span>vs. semana anterior</span></em>
             <div><i [style.width.%]="progresoSemanal()"></i></div>
-            <span>Goal: 100% weekly activity <strong>On Track</strong></span>
+            <span>Meta: 100% de actividad semanal <strong>En camino</strong></span>
           </div>
         </section>
 
         <section class="cf-workout-block">
           <div class="cf-live-exercise-grid">
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Lunges"></div><h3>Lunges</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Push Ups"></div><h3>Push Ups</h3><p>3 Sets • 40 Sec</p><span>In Progress</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>Completado</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Lunges"></div><h3>Lunges</h3><p>4 Sets • 30 Sec</p><span>Completado</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Push Ups"></div><h3>Push Ups</h3><p>3 Sets • 40 Sec</p><span>In Progreso</span></article>
           </div>
         </section>
 
         <section class="cf-workout-block">
-          <div class="cf-live-week-summary"><h2>Week 1</h2><p>6 workouts completed • 1h 20m active</p></div>
+          <div class="cf-live-week-summary"><h2>Semana 1</h2><p>6 workouts completed • 1h 20m active</p></div>
           <div class="cf-live-exercise-grid">
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Plank"></div><h3>Plank</h3><p>3 Sets • 45 Sec</p><span>Completed</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Burpees"></div><h3>Burpees</h3><p>5 Sets • 20 Sec</p><span>In Progress</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>Completado</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Plank"></div><h3>Plank</h3><p>3 Sets • 45 Sec</p><span>Completado</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Burpees"></div><h3>Burpees</h3><p>5 Sets • 20 Sec</p><span>In Progreso</span></article>
           </div>
         </section>
 
         <section class="cf-workout-block">
-          <div class="cf-live-week-summary"><h2>Week 2</h2><p>7 workouts completed • 1h 30m active</p></div>
+          <div class="cf-live-week-summary"><h2>Semana 2</h2><p>7 workouts completed • 1h 30m active</p></div>
           <div class="cf-live-exercise-grid">
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Jump Rope"></div><h3>Jump Rope</h3><p>10 Min</p><span>Completed</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>In Progress</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Lunges"></div><h3>Lunges</h3><p>4 Sets • 30 Sec</p><span>Not Started</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Jump Rope"></div><h3>Jump Rope</h3><p>10 Min</p><span>Completado</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>In Progreso</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Lunges"></div><h3>Lunges</h3><p>4 Sets • 30 Sec</p><span>No Iniciado</span></article>
           </div>
         </section>
 
         <section class="cf-workout-block">
-          <div class="cf-live-week-summary"><h2>Week 3</h2><p>4 workouts completed • 55m active</p></div>
+          <div class="cf-live-week-summary"><h2>Semana 3</h2><p>4 workouts completed • 55m active</p></div>
           <div class="cf-live-exercise-grid">
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Rest Day"></div><h3>Rest Day</h3><p>Recovery</p><span>Not Started</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Rest Day"></div><h3>Rest Day</h3><p>Recovery</p><span>No Iniciado</span></article>
           </div>
         </section>
 
         <section class="cf-workout-block">
-          <div class="cf-live-week-summary"><h2>Week 4</h2><p>Recovery & stretching focus</p></div>
+          <div class="cf-live-week-summary"><h2>Semana 4</h2><p>Recovery & stretching focus</p></div>
           <div class="cf-live-exercise-grid">
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Full Body Test"></div><h3>Full Body Test</h3><p>Performance Review</p><span>Pending</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Full Body Test"></div><h3>Full Body Test</h3><p>Performance Review</p><span>Pendiente</span></article>
           </div>
         </section>
 
         <section class="cf-live-week-summary cf-workout-summary-final">
-          <h2>Summary</h2><p>Overall weekly progress overview</p>
+          <h2>Resumen</h2><p>Resumen general del progreso semanal</p>
         </section>
       </section>
 
       <section class="cf-live-page cf-diet-template-page" *ngIf="seccion==='nutricion'">
-        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>My Diet Plan</strong></div>
+        <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Mi Plan de Alimentación</strong></div>
 
         <section class="cf-diet-template-top">
           <article class="cf-live-card cf-diet-today-card">
             <div class="cf-diet-today-copy">
-              <h1>Hello {{auth.usuario?.nombre_usuario || 'Kim'}},</h1>
-              <p>Your today's Diet plan.</p>
+              <h1>Hola {{auth.usuario?.nombre_usuario || 'Usuario'}}, </h1>
+              <p>Este es tu plan de alimentación de hoy.</p>
               <div class="cf-diet-today-meals">
-                <div><span class="meal-thumb">🥗</span><b>Greek Salad</b><small>Breakfast</small><em>210 Calories</em></div>
-                <div><span class="meal-thumb">🥣</span><b>Lentil Chili</b><small>Lunch</small><em>180 Calories</em></div>
-                <div><span class="meal-thumb">🍎</span><b>Apple Salad</b><small>Dinner</small><em>120 Calories</em></div>
+                <div><span class="meal-thumb">🥗</span><b>Greek Salad</b><small>Desayuno</small><em>210 Calorías</em></div>
+                <div><span class="meal-thumb">🥣</span><b>Lentil Chili</b><small>Almuerzo</small><em>180 Calorías</em></div>
+                <div><span class="meal-thumb">🍎</span><b>Apple Salad</b><small>Cena</small><em>120 Calorías</em></div>
               </div>
             </div>
             <div class="cf-diet-today-art"><img src="assets/showcase/hero-showcase.svg" alt="Diet plan illustration"></div>
           </article>
 
           <article class="cf-live-card cf-diet-progress-card">
-            <h2>Progress</h2>
+            <h2>Progreso</h2>
             <div class="cf-diet-progress-bars">
               <div><i style="height:58%"></i><small>S</small></div>
               <div><i style="height:76%"></i><small>M</small></div>
@@ -442,7 +442,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
 
         <section class="cf-diet-template-middle">
           <article class="cf-live-card">
-            <header><div><h2>Best Dietitians</h2></div><span>‹ ›</span></header>
+            <header><div><h2>Nutricionistas Destacados</h2></div><span>‹ ›</span></header>
             <div class="cf-diet-people-grid">
               <div><img src="assets/showcase/coach-showcase.svg" alt="Dietitian"><div><b>Gilbert Sandoval</b><small>6 yrs experience</small><em>★★★★★ 895</em></div></div>
               <div><img src="assets/showcase/coach-showcase.svg" alt="Dietitian"><div><b>Eugene Mata</b><small>8 yrs experience</small><em>★★★★★ 832</em></div></div>
@@ -450,28 +450,28 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           </article>
 
           <article class="cf-live-card">
-            <header><div><h2>Best Dishes</h2></div><span>‹ ›</span></header>
+            <header><div><h2>Platos Destacados</h2></div><span>‹ ›</span></header>
             <div class="cf-diet-dish-grid">
-              <div><span class="dish-round">🥗</span><div><b>Thai Crab</b><small>180 Calories</small><em>★★★★★ 866</em></div></div>
-              <div><span class="dish-round">🥙</span><div><b>Mexican Salad</b><small>210 Calories</small><em>★★★★★ 668</em></div></div>
+              <div><span class="dish-round">🥗</span><div><b>Thai Crab</b><small>180 Calorías</small><em>★★★★★ 866</em></div></div>
+              <div><span class="dish-round">🥙</span><div><b>Mexican Salad</b><small>210 Calorías</small><em>★★★★★ 668</em></div></div>
             </div>
           </article>
         </section>
 
         <section class="cf-live-card cf-weekly-diet-template">
-          <header><div><h2>My Weekly Diet Plan</h2></div></header>
+          <header><div><h2>Mi Plan Semanal de Alimentación</h2></div></header>
           <nav class="cf-diet-day-tabs">
-            <button class="active">Sunday</button><button>Monday</button><button>Tuesday</button><button>Wednesday</button><button>Thursday</button><button>Friday</button><button>Saturday</button>
+            <button class="active">Domingo</button><button>Lunes</button><button>Martes</button><button>Miércoles</button><button>Jueves</button><button>Viernes</button><button>Sábado</button>
           </nav>
           <div class="cf-weekly-diet-template-grid">
-            <article><span class="dish-large">🥗</span><h3>Greek Green Salad</h3><dl><div><dt>Calories</dt><dd>330 Kcal</dd></div><div><dt>Protein</dt><dd>60 g</dd></div><div><dt>Fat</dt><dd>10 g</dd></div></dl></article>
-            <article><span class="dish-large">🥑</span><h3>Avocado Toast</h3><dl><div><dt>Calories</dt><dd>280 Kcal</dd></div><div><dt>Protein</dt><dd>80 g</dd></div><div><dt>Fat</dt><dd>30 g</dd></div></dl></article>
-            <article><span class="dish-large">🥩</span><h3>Beef Steak</h3><dl><div><dt>Calories</dt><dd>480 Kcal</dd></div><div><dt>Protein</dt><dd>90 g</dd></div><div><dt>Fat</dt><dd>20 g</dd></div></dl></article>
+            <article><span class="dish-large">🥗</span><h3>Greek Green Salad</h3><dl><div><dt>Calorías</dt><dd>330 Kcal</dd></div><div><dt>Proteína</dt><dd>60 g</dd></div><div><dt>Grasa</dt><dd>10 g</dd></div></dl></article>
+            <article><span class="dish-large">🥑</span><h3>Avocado Toast</h3><dl><div><dt>Calorías</dt><dd>280 Kcal</dd></div><div><dt>Proteína</dt><dd>80 g</dd></div><div><dt>Grasa</dt><dd>30 g</dd></div></dl></article>
+            <article><span class="dish-large">🥩</span><h3>Beef Steak</h3><dl><div><dt>Calorías</dt><dd>480 Kcal</dd></div><div><dt>Proteína</dt><dd>90 g</dd></div><div><dt>Grasa</dt><dd>20 g</dd></div></dl></article>
           </div>
         </section>
 
         <section class="cf-live-card cf-diet-calories-card">
-          <header><div><h2>Diet Plan Calories</h2><p>Daily calories overview</p></div></header>
+          <header><div><h2>Diet Plan Calorías</h2><p>Resumen diario de calorías</p></div></header>
           <div class="cf-diet-calorie-chart">
             <div class="grid"><i></i><i></i><i></i><i></i></div>
             <svg viewBox="0 0 700 180" preserveAspectRatio="none"><path d="M0 145 C70 132 115 118 170 125 S275 92 335 104 S440 68 510 79 S615 52 700 62" fill="none" stroke="#5f57d9" stroke-width="3"/><path d="M0 156 C80 145 125 139 180 142 S285 120 345 127 S450 95 515 104 S620 82 700 89" fill="none" stroke="#c2bff0" stroke-width="2"/></svg>
@@ -481,70 +481,70 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
       </section>
 
       <section class="cf-live-page" *ngIf="seccion==='asistencias'">
-        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>Attendance Tracker</strong></div>
+        <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Control de Asistencia</strong></div>
         <section class="cf-live-summary4">
-          <article><span>✓</span><b>{{dashboard?.asistencias?.dentro_ahora ?? 0}}</b><small>Present</small></article>
-          <article><span>−</span><b>{{clientesActivos}}</b><small>Not Checked-In</small></article>
-          <article><span>＋</span><b>{{dashboard?.clientes?.nuevos_mes ?? 0}}</b><small>New Members</small></article>
-          <article><span>♙</span><b>{{entrenadores.length || 1}}</b><small>Trainers</small></article>
+          <article><span>✓</span><b>{{dashboard?.asistencias?.dentro_ahora ?? 0}}</b><small>Presentes</small></article>
+          <article><span>−</span><b>{{clientesActivos}}</b><small>Sin Registrar Entrada</small></article>
+          <article><span>＋</span><b>{{dashboard?.clientes?.nuevos_mes ?? 0}}</b><small>Nuevos Socios</small></article>
+          <article><span>♙</span><b>{{entrenadores.length || 1}}</b><small>Entrenador</small></article>
         </section>
         <section class="cf-live-card cf-live-attendance-card">
-          <header><div><h2>Attendance Tracker</h2><p>Member check-in and check-out activity</p></div></header>
-          <div class="table-wrap"><table class="management-table"><thead><tr><th>Member</th><th>ID</th><th>Date</th><th>Check-In</th><th>Check-Out</th><th>Duration</th><th>Trainer</th><th>Plan</th><th>Method</th><th>Status</th></tr></thead><tbody>
+          <header><div><h2>Control de Asistencia</h2><p>Registro de entradas y salidas</p></div></header>
+          <div class="table-wrap"><table class="management-table"><thead><tr><th>Socio</th><th>ID</th><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Duración</th><th>Entrenador</th><th>Plan</th><th>Método</th><th>Estado</th></tr></thead><tbody>
             <tr *ngFor="let a of asistencias.slice(0,12)">
-              <td><b>{{nombreCliente(a.cliente)}}</b></td><td>#M{{a.id_asistencia || a.id || '-'}}</td><td>{{fecha(a.fecha_hora_entrada)}}</td><td>{{fecha(a.fecha_hora_entrada)}}</td><td>{{a.fecha_hora_salida ? fecha(a.fecha_hora_salida) : '-'}}</td><td>{{duracionAsistencia(a)}}</td><td>{{entrenadores[0] ? nombreEntrenador(entrenadores[0]) : 'Mallqui Trainer'}}</td><td>Mallqui Gym</td><td>Manual</td><td>{{a.estado || 'Completed'}}</td>
+              <td><b>{{nombreCliente(a.cliente)}}</b></td><td>#M{{a.id_asistencia || a.id || '-'}}</td><td>{{fecha(a.fecha_hora_entrada)}}</td><td>{{fecha(a.fecha_hora_entrada)}}</td><td>{{a.fecha_hora_salida ? fecha(a.fecha_hora_salida) : '-'}}</td><td>{{duracionAsistencia(a)}}</td><td>{{entrenadores[0] ? nombreEntrenador(entrenadores[0]) : 'Entrenador Mallqui'}}</td><td>Mallqui Gym</td><td>Manual</td><td>{{a.estado || 'Completado'}}</td>
             </tr>
-            <tr *ngIf="!asistencias.length"><td colspan="10">No attendance records yet.</td></tr>
+            <tr *ngIf="!asistencias.length"><td colspan="10">Aún no hay registros de asistencia.</td></tr>
           </tbody></table></div>
         </section>
       </section>
 
       <section class="cf-live-page" *ngIf="seccion==='entrenador'">
-        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>Trainers</strong></div>
+        <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Entrenador</strong></div>
         <section class="cf-live-welcome cf-live-trainers-head">
-          <div><h1>Hello, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1><p>Checkout the list of our world class trainers.</p></div>
+          <div><h1>Hello, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1><p>Revisa la información del entrenador del gimnasio.</p></div>
           <div class="cf-live-summary4">
-            <article><span>🏋</span><b>{{entrenadores[0]?.clases_count || 0}}</b><small>Strength Sessions</small></article>
-            <article><span>◌</span><b>{{clases.length}}</b><small>Yoga Classes</small></article>
-            <article><span>↗</span><b>{{rutinas.length}}</b><small>Cardio Workouts</small></article>
-            <article><span>♙</span><b>1</b><small>Personal Training</small></article>
+            <article><span>🏋</span><b>{{entrenadores[0]?.clases_count || 0}}</b><small>Fuerza Sessions</small></article>
+            <article><span>◌</span><b>{{clases.length}}</b><small>Clases de Yoga</small></article>
+            <article><span>↗</span><b>{{rutinas.length}}</b><small>Rutinas de Cardio</small></article>
+            <article><span>♙</span><b>1</b><small>Entrenamiento Personal</small></article>
           </div>
         </section>
         <section class="cf-live-trainer-grid">
           <article class="cf-live-trainer-card" *ngIf="entrenadores[0] as t; else trainerEmpty">
             <img src="assets/showcase/coach-showcase.svg" alt="Gym trainer">
-            <h2>{{nombreEntrenador(t)}}</h2><p>{{t.especialidad || 'Strength & Conditioning'}}</p>
+            <h2>{{nombreEntrenador(t)}}</h2><p>{{t.especialidad || 'Fuerza & Conditioning'}}</p>
             <ul><li><b>Experience</b><span>Mallqui Gym</span></li><li><b>Available</b><span>{{configuracionForm.hora_apertura}} - {{configuracionForm.hora_cierre}}</span></li><li><b>Clients Trained</b><span>{{clientesActivos}}+</span></li></ul>
-            <button (click)="cambiarSeccion('trainer-profile')">View Profile</button>
+            <button (click)="cambiarSeccion('trainer-profile')">Ver Perfil</button>
           </article>
-          <ng-template #trainerEmpty><article class="cf-live-trainer-card"><img src="assets/showcase/coach-showcase.svg" alt="Gym trainer"><h2>Mallqui Trainer</h2><p>Strength & Conditioning</p><button (click)="seccion='entrenador-admin'">Register Trainer</button></article></ng-template>
+          <ng-template #trainerEmpty><article class="cf-live-trainer-card"><img src="assets/showcase/coach-showcase.svg" alt="Gym trainer"><h2>Entrenador Mallqui</h2><p>Fuerza & Conditioning</p><button (click)="seccion='entrenador-admin'">Register Entrenador</button></article></ng-template>
         </section>
       </section>
 
       <section class="cf-live-page" *ngIf="seccion==='planes'">
-        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>Pricing Plans</strong></div>
+        <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Planes de Membresía</strong></div>
         <section class="cf-live-pricing-head"><h1>Try us for Free,</h1><p>Get your free 1-day pass!</p></section>
         <section class="cf-live-pricing-grid">
           <article *ngFor="let p of planesMembresia.slice(0,3); let i=index" [class.featured]="i===1">
             <h2>{{p.nombre || (i===0?'Basic':(i===1?'Premium':'Enterprise'))}}</h2>
             <h3>S/ {{p.precio || 0}} <small>Per {{p.duracion_meses || 1}} Month</small></h3>
             <b>{{i===0?'30':(i===1?'70':'150')}} Credits</b>
-            <ul><li>✓ {{i===0?'2':(i===1?'5':'10')}} Yoga Sessions</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} Hour Gym</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} Hour Dance</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} Hour Workout</li><li [class.disabled]="i===0">{{i===0?'No Trainer':(i===1?'Junior Trainer':'Dedicated Trainer')}}</li><li [class.disabled]="i<2">{{i<2?'No Analytics':'Analytics Dashboard'}}</li></ul>
+            <ul><li>✓ {{i===0?'2':(i===1?'5':'10')}} Yoga Sessions</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} Hour Gym</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} Hour Dance</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} Hour Workout</li><li [class.disabled]="i===0">{{i===0?'No Entrenador':(i===1?'Junior Entrenador':'Dedicated Entrenador')}}</li><li [class.disabled]="i<2">{{i<2?'No Analytics':'Analytics Dashboard'}}</li></ul>
             <button>{{i===0?'Current Package':'Select Plan'}}</button>
           </article>
           <ng-container *ngIf="!planesMembresia.length">
-            <article><h2>Basic</h2><h3>S/ 60 <small>Per Month</small></h3><b>30 Credits</b><ul><li>✓ 2 Yoga Sessions</li><li>✓ 1 Hour Gym</li><li>✓ 1 Hour Dance</li><li>✓ 1 Hour Workout</li><li class="disabled">No Trainer</li><li class="disabled">No Analytics</li></ul><button>Current Package</button></article>
-            <article class="featured"><h2>Premium</h2><h3>S/ 90 <small>Per Month</small></h3><b>70 Credits</b><ul><li>✓ 5 Yoga Sessions</li><li>✓ 2 Hour Gym</li><li>✓ 2 Hour Dance</li><li>✓ 2 Hour Workout</li><li>✓ Junior Trainer</li><li class="disabled">No Analytics</li></ul><button>Select Plan</button></article>
-            <article><h2>Enterprise</h2><h3>S/ 120 <small>Per Month</small></h3><b>150 Credits</b><ul><li>✓ 10 Yoga Sessions</li><li>✓ 5 Hour Gym</li><li>✓ 5 Hour Dance</li><li>✓ 5 Hour Workout</li><li>✓ Dedicated Trainer</li><li>✓ Analytics Dashboard</li></ul><button>Select Plan</button></article>
+            <article><h2>Basic</h2><h3>S/ 60 <small>Per Month</small></h3><b>30 Credits</b><ul><li>✓ 2 Yoga Sessions</li><li>✓ 1 Hour Gym</li><li>✓ 1 Hour Dance</li><li>✓ 1 Hour Workout</li><li class="disabled">No Entrenador</li><li class="disabled">No Analytics</li></ul><button>Current Package</button></article>
+            <article class="featured"><h2>Premium</h2><h3>S/ 90 <small>Per Month</small></h3><b>70 Credits</b><ul><li>✓ 5 Yoga Sessions</li><li>✓ 2 Hour Gym</li><li>✓ 2 Hour Dance</li><li>✓ 2 Hour Workout</li><li>✓ Junior Entrenador</li><li class="disabled">No Analytics</li></ul><button>Select Plan</button></article>
+            <article><h2>Enterprise</h2><h3>S/ 120 <small>Per Month</small></h3><b>150 Credits</b><ul><li>✓ 10 Yoga Sessions</li><li>✓ 5 Hour Gym</li><li>✓ 5 Hour Dance</li><li>✓ 5 Hour Workout</li><li>✓ Dedicated Entrenador</li><li>✓ Analytics Dashboard</li></ul><button>Select Plan</button></article>
           </ng-container>
         </section>
       </section>
 
       <section class="cf-live-page" *ngIf="seccion==='pagos'">
-        <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>Payments</strong></div>
+        <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Pagos</strong></div>
         <section class="cf-live-card cf-live-payments">
-          <header><div><h2>Payments by Month</h2><p>Summary</p></div><b>{{pagos.length}} records</b></header>
-          <div class="table-wrap"><table class="management-table"><thead><tr><th>#</th><th>Invoice No.</th><th>Member Name</th><th>Payment Method</th><th>Paid Date</th><th>Amount</th><th>Status</th></tr></thead><tbody>
+          <header><div><h2>Payments by Month</h2><p>Resumen</p></div><b>{{pagos.length}} records</b></header>
+          <div class="table-wrap"><table class="management-table"><thead><tr><th>#</th><th>Invoice No.</th><th>Socio Name</th><th>Payment Método</th><th>Paid Fecha</th><th>Amount</th><th>Estado</th></tr></thead><tbody>
             <tr *ngFor="let p of pagos; let i=index"><td>{{i+1}}</td><td>#INV-{{p.id_pago}}</td><td>{{clientePago(p)}}</td><td>{{p.metodo_pago}}</td><td>{{fecha(p.fecha_pago)}}</td><td>S/ {{p.monto | number:'1.2-2'}}</td><td>{{p.estado_pago}}</td></tr>
             <tr *ngIf="!pagos.length"><td colspan="7">No payments registered.</td></tr>
           </tbody></table></div>
@@ -673,16 +673,16 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <section class="cf-reference-dashboard" data-dashboard-ui="crossfit-reference">
           <section class="crossfit-dashboard-breadcrumb">
             <span>⌂</span>
-            <small>Home</small>
+            <small>Inicio</small>
             <b>›</b>
             <strong>My Dashboard</strong>
-            <em class="cf-goal">Weekly Goal Progress: {{progresoSemanal()}}% Achieved</em>
+            <em class="cf-goal">Weekly Goal Progreso: {{progresoSemanal()}}% Achieved</em>
           </section>
 
           <section class="cf-ref-hero">
             <div class="cf-ref-hero-copy">
-              <h1>Hey, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1>
-              <p>Here is your daily activity and reports.</p>
+              <h1>Hola, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1>
+              <p>Aquí tienes tu actividad y tus reportes de hoy.</p>
 
               <div class="cf-ref-mini-chart" aria-label="Actividad semanal">
                 <div class="cf-ref-mini-day" *ngFor="let d of diasActividadDashboard()">
@@ -696,7 +696,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               </div>
               <div class="cf-ref-mini-legend">
                 <span><i class="mint"></i>Cardio</span>
-                <span><i class="purple"></i>Strength</span>
+                <span><i class="purple"></i>Fuerza</span>
               </div>
             </div>
 
@@ -759,19 +759,19 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
 
           <section class="cf-ref-stats">
             <button type="button" (click)="cambiarSeccion('reportes')">
-              <div><small>Calories Burned</small><strong>1,240 kcal</strong><span>+12% this week</span></div>
+              <div><small>Calorías Quemadas</small><strong>1,240 kcal</strong><span>+12% this week</span></div>
               <i>🔥</i>
             </button>
             <button type="button" (click)="cambiarSeccion('rutinas')">
-              <div><small>Active Minutes</small><strong>92 mins</strong><span>Goal Achieved</span></div>
+              <div><small>Minutos Activos</small><strong>92 mins</strong><span>Goal Achieved</span></div>
               <i>⚡</i>
             </button>
             <button type="button" (click)="cambiarSeccion('asistencias')">
-              <div><small>Steps</small><strong>8,420</strong><span>Goal: 10,000</span></div>
+              <div><small>Pasos</small><strong>8,420</strong><span>Goal: 10,000</span></div>
               <i>↗</i>
             </button>
             <button type="button" (click)="cambiarSeccion('reportes')">
-              <div><small>Sleep</small><strong>7h 20m</strong><span>Good Recovery</span></div>
+              <div><small>Sueño</small><strong>7h 20m</strong><span>Good Recovery</span></div>
               <i>☾</i>
             </button>
           </section>
@@ -779,12 +779,12 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <section class="cf-ref-bottom">
             <article class="cf-ref-activity">
               <header>
-                <div><h2>Weekly Activity</h2><p>Performance breakdown · last 7 days</p></div>
+                <div><h2>Actividad Semanal</h2><p>Performance breakdown · last 7 days</p></div>
                 <span>6 Workouts · 5h 40m</span>
               </header>
               <div class="cf-ref-chart-legend">
-                <span><i class="purple"></i>Attendance</span>
-                <span><i class="mint"></i>Progress</span>
+                <span><i class="purple"></i>Asistencia</span>
+                <span><i class="mint"></i>Progreso</span>
               </div>
               <div class="cf-ref-line-chart">
                 <div class="cf-ref-grid-lines"><i></i><i></i><i></i><i></i><i></i></div>
@@ -804,11 +804,11 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             </article>
 
             <article class="cf-ref-split">
-              <header><div><h2>Workout Split</h2><p>Last 7 days activity</p></div><span>12 Sessions</span></header>
+              <header><div><h2>Distribución de Entrenamiento</h2><p>Last 7 days activity</p></div><span>12 Sessions</span></header>
               <div class="cf-ref-donut"><div><strong>100%</strong><small>Total</small></div></div>
               <div class="cf-ref-split-list">
                 <p><span><i class="purple"></i>Cardio</span><b>48%</b></p>
-                <p><span><i class="mint"></i>Strength</span><b>34%</b></p>
+                <p><span><i class="mint"></i>Fuerza</span><b>34%</b></p>
                 <p><span><i class="soft"></i>Mobility</span><b>26%</b></p>
               </div>
             </article>
@@ -819,14 +819,14 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               <header><div><h2>Workout History</h2><p>Recent training activity</p></div></header>
               <div class="cf-ref-history-list">
                 <div><span>↗</span><div><b>Morning Run</b><small>Outdoor • Moderate pace</small></div><em>35 min<br>320 kcal</em><strong>Today</strong></div>
-                <div><span>🏋</span><div><b>Strength Training</b><small>Upper body • Push focus</small></div><em>50 min<br>410 kcal</em><strong>Yesterday</strong></div>
+                <div><span>🏋</span><div><b>Fuerza Training</b><small>Upper body • Push focus</small></div><em>50 min<br>410 kcal</em><strong>Yesterday</strong></div>
                 <div><span>◉</span><div><b>Cycling Session</b><small>Indoor bike • Resistance 6</small></div><em>40 min<br>290 kcal</em><strong>2d ago</strong></div>
                 <div><span>⚡</span><div><b>HIIT Workout</b><small>High intensity interval</small></div><em>25 min<br>260 kcal</em><strong>3d ago</strong></div>
               </div>
             </article>
 
             <article class="cf-ref-strength">
-              <header><div><h2>Strength Progress</h2><p>Bench Press • 12-week performance trend</p></div><b>+18% Improvement</b></header>
+              <header><div><h2>Fuerza Progreso</h2><p>Bench Press • 12-week performance trend</p></div><b>+18% Improvement</b></header>
               <div class="cf-ref-strength-chart">
                 <svg viewBox="0 0 560 180" preserveAspectRatio="none"><path d="M10 150 C80 145 110 128 160 130 S245 112 300 104 S390 80 445 70 S510 48 550 40" fill="none" stroke="#5b55d9" stroke-width="4"/></svg>
               </div>
@@ -836,9 +836,9 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
 
           <section class="cf-ref-tertiary">
             <article>
-              <header><div><h2>Sleep Recovery</h2><p>Last 7 days • Quality tracking</p></div><b>7.6h avg • Good</b></header>
+              <header><div><h2>Sueño Recovery</h2><p>Last 7 days • Quality tracking</p></div><b>7.6h avg • Good</b></header>
               <div class="cf-ref-sleep-bars"><i style="height:66%"></i><i style="height:78%"></i><i style="height:72%"></i><i style="height:88%"></i><i style="height:81%"></i><i style="height:92%"></i><i style="height:85%"></i></div>
-              <footer><span>Best Night <b>8.4h</b></span><span>Consistency <b>+12%</b></span><span>Deep Sleep <b>2.1h</b></span></footer>
+              <footer><span>Best Night <b>8.4h</b></span><span>Consistency <b>+12%</b></span><span>Deep Sueño <b>2.1h</b></span></footer>
             </article>
             <article>
               <header><div><h2>Workout Frequency</h2><p>Target 60/90</p></div></header>
@@ -850,16 +850,16 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <article class="cf-ref-smart">
               <header><div><h2>Smart Insights</h2><p>AI-based weekly performance summary</p></div><b>Live Analysis</b></header>
               <div class="cf-ref-insight-list">
-                <div><span>☾</span><div><b>Sleep Improvement</b><small>You slept 12% better than last week with improved recovery cycles.</small></div><em>+12%</em></div>
+                <div><span>☾</span><div><b>Sueño Improvement</b><small>You slept 12% better than last week with improved recovery cycles.</small></div><em>+12%</em></div>
                 <div><span>↘</span><div><b>Weekend Drop in Activity</b><small>Your workout activity dropped significantly on weekends compared to weekdays.</small></div><em>-18%</em></div>
-                <div><span>◎</span><div><b>Goal Progress</b><small>You've completed {{progresoSemanal()}}% of your weekly fitness goal. Keep the momentum.</small></div><em>{{progresoSemanal()}}%</em></div>
+                <div><span>◎</span><div><b>Goal Progreso</b><small>Has completado {{progresoSemanal()}}% de tu meta semanal. Keep the momentum.</small></div><em>{{progresoSemanal()}}%</em></div>
                 <div><span>🔥</span><div><b>Calorie Burn Trend</b><small>Your average calorie burn increased during strength sessions this week.</small></div><em>+9%</em></div>
               </div>
             </article>
             <article class="cf-ref-weight">
-              <header><div><h2>Weight Management</h2><p>Progress overview • Last 12 months</p></div><b>-35 lbs</b></header>
+              <header><div><h2>Weight Management</h2><p>Progreso overview • Last 12 months</p></div><b>-35 lbs</b></header>
               <div class="cf-ref-weight-track"><i style="width:78%"></i></div>
-              <div class="cf-ref-weight-labels"><span>Start <b>190 lbs</b></span><span>Steady Fat Loss</span><span>Current <b>155 lbs</b></span></div>
+              <div class="cf-ref-weight-labels"><span>Start <b>190 lbs</b></span><span>Steady Grasa Loss</span><span>Current <b>155 lbs</b></span></div>
               <small>Target: 160 lbs</small>
             </article>
           </section>
@@ -881,12 +881,12 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <header class="clients-v3-hero">
             <div class="clients-v3-hero-copy">
               <span>MEMBERS MANAGEMENT</span>
-              <h2>Members</h2>
+              <h2>Socios</h2>
               <p>Administra los datos, accesos y estado de tus miembros desde un solo lugar.</p>
             </div>
             <button type="button" class="clients-v3-new" (click)="nuevoCliente()">
               <span>＋</span>
-              Add Member
+              Add Socio
             </button>
           </header>
 
@@ -2428,19 +2428,19 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   suiteModules = ['equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   navGroups:any = {members:true,payments:true,salaries:true,ui:true,jquery:true,forms:true,graphs:true,auth:true,menu:true};
   uiElementLinks = [
-    {id:'alerts',label:'Alerts'},{id:'avatars',label:'Avatars'},{id:'badges',label:'Badges'},
-    {id:'buttons',label:'Buttons'},{id:'button-groups',label:'Button Groups'},{id:'cards-ui',label:'Cards'},
-    {id:'advanced-cards',label:'Advanced Cards'},{id:'dropdowns',label:'Dropdowns'},{id:'list-items',label:'List Items'},
-    {id:'progress-bars',label:'Progress Bars'},{id:'placeholders',label:'Placeholders'},{id:'spinners',label:'Spinners'}
+    {id:'alerts',label:'Alertas'},{id:'avatars',label:'Avatares'},{id:'badges',label:'Insignias'},
+    {id:'buttons',label:'Botones'},{id:'button-groups',label:'Grupos de Botones'},{id:'cards-ui',label:'Tarjetas'},
+    {id:'advanced-cards',label:'Tarjetas Avanzadas'},{id:'dropdowns',label:'Menús Desplegables'},{id:'list-items',label:'Elementos de Lista'},
+    {id:'progress-bars',label:'Barras de Progreso'},{id:'placeholders',label:'Marcadores'},{id:'spinners',label:'Indicadores de Carga'}
   ];
   jqueryLinks = [
-    {id:'accordions',label:'Accordions'},{id:'carousel',label:'Carousel'},{id:'modals',label:'Modals'},
-    {id:'popovers',label:'Popovers'},{id:'tabs-ui',label:'Tabs'},{id:'tooltips',label:'Tooltips'}
+    {id:'accordions',label:'Acordeones'},{id:'carousel',label:'Carrusel'},{id:'modals',label:'Modales'},
+    {id:'popovers',label:'Ventanas Emergentes'},{id:'tabs-ui',label:'Pestañas'},{id:'tooltips',label:'Ayudas Emergentes'}
   ];
   formLinks = [
-    {id:'form-inputs',label:'Form Inputs'},{id:'checkbox-radio',label:'Checkbox & Radio'},
-    {id:'file-input',label:'File Input'},{id:'validations',label:'Validations'},{id:'date-time',label:'Date Time Pickers'},
-    {id:'input-masks',label:'Input Masks'},{id:'input-tags',label:'Input Tags'}
+    {id:'form-inputs',label:'Campos de Formulario'},{id:'checkbox-radio',label:'Casillas y Opciones'},
+    {id:'file-input',label:'Carga de Archivos'},{id:'validations',label:'Validaciones'},{id:'date-time',label:'Fecha y Hora'},
+    {id:'input-masks',label:'Máscaras de Entrada'},{id:'input-tags',label:'Etiquetas'}
   ];
 
   extraModules = [
