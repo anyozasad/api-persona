@@ -323,6 +323,35 @@ interface GymModuleConfig {
     @media(max-width:650px){.cf-suite-kpis,.cf-event-calendar,.cf-news-categories,.cf-payroll-notes,.cf-payment-status-grid{grid-template-columns:1fr}.cf-suite-events>article{grid-template-columns:50px 1fr!important}.cf-suite-event-meta,.cf-suite-events>article>button{grid-column:2}.cf-suite-page-head{align-items:flex-start!important;flex-direction:column!important}}
 
 
+
+    /* PRESENTACION_LEGIBLE_SUITE */
+    :host .gym-suite{font-size:12px!important}
+    :host .cfx-crumb{height:46px!important;min-height:46px!important;padding:0 16px!important}
+    :host .cfx-crumb small,:host .cfx-crumb strong{font-size:11px!important}
+    :host .cf-suite-complete{gap:12px!important;margin:0 16px 14px!important}
+    :host .cf-suite-page-head{min-height:64px!important;padding:13px 14px!important}
+    :host .cf-suite-page-head h1{font-size:18px!important}
+    :host .cf-suite-page-head p{font-size:11px!important}
+    :host .cf-suite-page-head button,:host .cf-suite-card button,:host .cf-suite-gallery-filter button,:host .cf-news-featured button{min-height:34px!important;padding:0 12px!important;font-size:11px!important}
+    :host .cf-suite-kpis{gap:10px!important}
+    :host .cf-suite-kpis article{min-height:86px!important;padding:12px 13px!important}
+    :host .cf-suite-kpis small{font-size:10px!important}
+    :host .cf-suite-kpis b{font-size:20px!important}
+    :host .cf-suite-kpis span{font-size:9.5px!important}
+    :host .cf-suite-card{padding:14px!important}
+    :host .cf-suite-card h2{font-size:14px!important}
+    :host .cf-suite-card p{font-size:10px!important}
+    :host .cf-suite-equipment-grid h3,:host .cf-suite-event-main h3,:host .cf-suite-news h3{font-size:13px!important}
+    :host .cf-suite-equipment-grid p,:host .cf-suite-event-main p,:host .cf-suite-news p{font-size:10px!important}
+    :host .gym-suite-table th{padding:9px 10px!important;font-size:10.5px!important}
+    :host .gym-suite-table td{padding:10px!important;font-size:11px!important}
+    :host .gym-suite-form-grid label{font-size:11px!important}
+    :host .gym-suite-form-grid input,:host .gym-suite-form-grid select,:host .gym-suite-form-grid textarea{min-height:38px!important;padding:8px 10px!important;font-size:11px!important}
+    :host .status-select{min-height:26px!important;font-size:10px!important}
+    :host .cf-news-featured h2{font-size:20px!important}
+    :host .cf-news-featured p{font-size:11px!important}
+    @media(max-width:700px){:host .cf-suite-complete{margin-left:10px!important;margin-right:10px!important}}
+
   `]
 })
 export class AdminGymSuiteComponent implements OnInit, OnChanges {
