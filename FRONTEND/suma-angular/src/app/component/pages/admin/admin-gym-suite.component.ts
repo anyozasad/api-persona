@@ -92,10 +92,14 @@ interface GymModuleConfig {
             <article><small>Expenses</small><b>S/ {{(totalMonto*0.36) | number:'1.2-2'}}</b><span>+4.2%</span></article>
             <article><small>Member Revenue</small><b>S/ {{(totalMonto*0.64) | number:'1.2-2'}}</b><span>Top source</span></article>
           </div>
-          <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>Concept</th><th>Detail</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead><tbody>
-            <tr *ngFor="let item of filtered"><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || '—'}}</td><td>{{item.fecha || '—'}}</td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><span class="status-select">{{item.estado}}</span></td></tr>
-            <tr *ngIf="!filtered.length"><td colspan="5">No income records yet.</td></tr>
-          </tbody></table></div>
+          <div class="gym-suite-table-wrap">
+            <table class="gym-suite-table cf-income-matrix">
+              <thead><tr><th>Location</th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th><th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th><th>Year</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let row of incomeMatrix"><td><b>{{row.location}}</b></td><td *ngFor="let m of row.months">S/ {{m}}</td><td><b>S/ {{row.year}}</b></td></tr>
+              </tbody>
+            </table>
+          </div>
         </section>
 
         <section class="cf-suite-invoices" *ngSwitchCase="'facturas'">
@@ -357,6 +361,14 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
     }
   };
 
+
+  incomeMatrix:any[] = [
+    {location:'Pucallpa Centro',months:[1339,2220,5755,1318,3320,3983,9229,5546,5660,1789,2329,7097],year:43300},
+    {location:'Yarinacocha',months:[1032,2084,3364,7130,2182,6961,1890,8422,4465,7634,5190,4532],year:58200},
+    {location:'Manantay',months:[2230,3036,4221,7656,2226,1166,6120,1709,9932,8776,6593,9991],year:83700},
+    {location:'Callería',months:[4339,8739,5529,6138,2239,2933,3389,8739,7663,9236,9125,6631],year:74100},
+    {location:'Campo Verde',months:[2980,3480,1980,2080,2480,7680,8480,6680,1080,3280,2080,1680],year:95900}
+  ];
 
   equipmentFallback:any[] = [
     {titulo:'Dumbbells',count:48,subtitulo:'2-40 kg range'},{titulo:'Strength Machines',count:26,subtitulo:'Chest, leg & cable'},
