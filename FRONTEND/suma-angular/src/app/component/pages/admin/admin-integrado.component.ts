@@ -746,11 +746,54 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             </div>
 
             <div class="cf-ref-hero-art" aria-hidden="true">
-              <img src="assets/showcase/hero-showcase.svg" alt="Entrenamiento en Mallqui Gym">
-              <div class="cf-ref-hero-photo-caption">
-                <small>MALLQUI GYM</small>
-                <b>ENTRENA · PROGRESA · SUPÉRATE</b>
-              </div>
+              <svg class="cf-ref-hero-scene" viewBox="0 0 720 330" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                  <linearGradient id="mallquiSky" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#fcfbff"/>
+                    <stop offset="100%" stop-color="#f3f1ff"/>
+                  </linearGradient>
+                </defs>
+                <rect width="720" height="330" fill="url(#mallquiSky)"/>
+                <circle cx="625" cy="72" r="34" fill="#ffae16"/>
+                <path d="M430 64c55-38 124-43 191-10" fill="none" stroke="#e6e3fb" stroke-width="13" stroke-linecap="round"/>
+                <g fill="#e2e0f5">
+                  <rect x="435" y="118" width="42" height="88" rx="2"/>
+                  <rect x="487" y="94" width="52" height="112" rx="2"/>
+                  <rect x="551" y="126" width="38" height="80" rx="2"/>
+                  <rect x="601" y="105" width="56" height="101" rx="2"/>
+                </g>
+                <g stroke="#d1cef0" stroke-width="4">
+                  <path d="M448 137h16M448 153h16M448 169h16M501 115h24M501 132h24M501 149h24M614 125h28M614 143h28M614 161h28"/>
+                </g>
+                <path d="M390 240c74-39 170-43 300-17v74H363z" fill="#d7f1e8"/>
+                <g transform="translate(350 170)">
+                  <circle cx="34" cy="83" r="31" fill="none" stroke="#49506a" stroke-width="5"/>
+                  <circle cx="112" cy="83" r="31" fill="none" stroke="#49506a" stroke-width="5"/>
+                  <path d="M34 83l31-38 47 38H63l-18-45h28" fill="none" stroke="#5a58df" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="70" cy="18" r="12" fill="#f3a16d"/>
+                  <path d="M65 31l20 16-18 30-23-9 12-33z" fill="#5a58df"/>
+                  <path d="M79 48l28 6" stroke="#f3a16d" stroke-width="7" stroke-linecap="round"/>
+                  <path d="M61 59l-20 23M70 68l26 25" stroke="#30354d" stroke-width="7" stroke-linecap="round"/>
+                </g>
+                <g transform="translate(470 155)">
+                  <circle cx="34" cy="98" r="31" fill="none" stroke="#49506a" stroke-width="5"/>
+                  <circle cx="112" cy="98" r="31" fill="none" stroke="#49506a" stroke-width="5"/>
+                  <path d="M34 98l31-38 47 38H63l-18-45h28" fill="none" stroke="#7bc8b6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="70" cy="28" r="12" fill="#e79963"/>
+                  <path d="M64 42l22 14-17 31-25-8 12-34z" fill="#ff9460"/>
+                  <path d="M80 57l28 7" stroke="#e79963" stroke-width="7" stroke-linecap="round"/>
+                  <path d="M61 70l-20 24M72 78l25 25" stroke="#30354d" stroke-width="7" stroke-linecap="round"/>
+                </g>
+                <g transform="translate(585 177) scale(.86)">
+                  <circle cx="34" cy="83" r="31" fill="none" stroke="#49506a" stroke-width="5"/>
+                  <circle cx="112" cy="83" r="31" fill="none" stroke="#49506a" stroke-width="5"/>
+                  <path d="M34 83l31-38 47 38H63l-18-45h28" fill="none" stroke="#5a58df" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="70" cy="18" r="12" fill="#f3a16d"/>
+                  <path d="M65 31l20 16-18 30-23-9 12-33z" fill="#83d5c4"/>
+                  <path d="M79 48l28 6" stroke="#f3a16d" stroke-width="7" stroke-linecap="round"/>
+                  <path d="M61 59l-20 23M70 68l26 25" stroke="#30354d" stroke-width="7" stroke-linecap="round"/>
+                </g>
+              </svg>
             </div>
           </section>
 
