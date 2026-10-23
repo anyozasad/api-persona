@@ -95,72 +95,117 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
       </div>
 
       <nav class="admin-main-nav crossfit-sidebar-nav" aria-label="Módulos principales">
+        <div class="cf-nav-section-label">PRINCIPAL</div>
+
         <button type="button" [class.active]="seccion==='dashboard'" (click)="cambiarSegcion('dashboard')">
-          <span class="admin-main-nav-icon">⌂</span><span>Panel Principal</span>
-        </button>
-        <button type="button" [class.active]="seccion==='reportes'" (click)="cambiarSegcion('reportes')">
-          <span class="admin-main-nav-icon">⌁</span><span>Mis Reportes</span>
-        </button>
-        <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSegcion('rutinas')">
-          <span class="admin-main-nav-icon">▣</span><span>Mi Plan de Entrenamiento</span>
-        </button>
-        <button type="button" [class.active]="seccion==='nutricion'" (click)="cambiarSegcion('nutricion')">
-          <span class="admin-main-nav-icon">♨</span><span>Mi Plan de Alimentación</span>
-        </button>
-        <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSegcion('asistencias')">
-          <span class="admin-main-nav-icon">▦</span><span>Control de Asistencia</span>
-        </button>
-        <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSegcion('entrenador')">
-          <span class="admin-main-nav-icon">♙</span><span>Entrenador</span>
-        </button>
-        <button type="button" [class.active]="seccion==='trainer-profile'" (click)="cambiarSegcion('trainer-profile')">
-          <span class="admin-main-nav-icon">◎</span><span>Perfil del Entrenador</span>
+          <span class="admin-main-nav-icon">▦</span><span>Panel Principal</span>
         </button>
 
-        <button type="button" class="cf-nav-group-head" [class.active]="['members-list','members-cards','add-member','edit-member','edit-member-details'].includes(seccion)" (click)="toggleNavGroup('members')">
-          <span class="admin-main-nav-icon">♚</span><span>Socios del Gimnasio</span><i>{{navGroups.members?'⌄':'›'}}</i>
+        <button type="button" class="cf-nav-group-head" [class.active]="['clientes','members-list','members-cards','add-member','edit-member','edit-member-details'].includes(seccion)" (click)="toggleNavGroup('members')">
+          <span class="admin-main-nav-icon">♚</span><span>Socios</span><i>{{navGroups.members?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.members">
+          <button type="button" [class.active]="seccion==='clientes'" (click)="cambiarSegcion('clientes')"><span>•</span><span>Gestión de Socios</span></button>
           <button type="button" [class.active]="seccion==='members-list'" (click)="cambiarSegcion('members-list')"><span>•</span><span>Lista de Socios</span></button>
           <button type="button" [class.active]="seccion==='members-cards'" (click)="cambiarSegcion('members-cards')"><span>•</span><span>Tarjetas de Socios</span></button>
           <button type="button" [class.active]="seccion==='add-member'" (click)="cambiarSegcion('add-member')"><span>•</span><span>Agregar Socio</span></button>
           <button type="button" [class.active]="seccion==='edit-member' || seccion==='edit-member-details'" (click)="cambiarSegcion('edit-member')"><span>•</span><span>Editar Socio</span></button>
         </div>
 
-        <button type="button" class="cf-nav-group-head" [class.active]="['ingresos','pagos','facturas','invoice-details','create-invoice','add-invoice','edit-invoice','invoices-list','expenses'].includes(seccion)" (click)="toggleNavGroup('payments')">
+        <button type="button" class="cf-nav-group-head" [class.active]="['pagos','invoices-list','invoice-details','create-invoice','add-invoice','edit-invoice','expenses'].includes(seccion)" (click)="toggleNavGroup('payments')">
           <span class="admin-main-nav-icon">S/</span><span>Pagos</span><i>{{navGroups.payments?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.payments">
-          <button type="button" [class.active]="seccion==='ingresos'" (click)="cambiarSegcion('ingresos')"><span>•</span><span>Ingresos</span></button>
-          <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSegcion('pagos')"><span>•</span><span>Pagos</span></button>
-          <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSegcion('facturas')"><span>•</span><span>Facturas</span></button>
+          <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSegcion('pagos')"><span>•</span><span>Pagos Registrados</span></button>
+          <button type="button" [class.active]="seccion==='invoices-list'" (click)="cambiarSegcion('invoices-list')"><span>•</span><span>Lista de Facturas</span></button>
           <button type="button" [class.active]="seccion==='invoice-details'" (click)="cambiarSegcion('invoice-details')"><span>•</span><span>Detalle de Factura</span></button>
           <button type="button" [class.active]="seccion==='create-invoice' || seccion==='add-invoice'" (click)="cambiarSegcion('create-invoice')"><span>•</span><span>Crear Factura</span></button>
-          <button type="button" [class.active]="seccion==='add-invoice'" (click)="cambiarSegcion('add-invoice')"><span>•</span><span>Agregar Factura</span></button>
-          <button type="button" [class.active]="seccion==='edit-invoice'" (click)="cambiarSegcion('edit-invoice')"><span>•</span><span>Editar Factura</span></button>
-          <button type="button" [class.active]="seccion==='invoices-list'" (click)="cambiarSegcion('invoices-list')"><span>•</span><span>Lista de Facturas</span></button>
           <button type="button" [class.active]="seccion==='expenses'" (click)="cambiarSegcion('expenses')"><span>•</span><span>Gastos</span></button>
         </div>
 
-        <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSegcion('equipos')"><span class="admin-main-nav-icon">◆</span><span>Equipos</span></button>
-        <button type="button" [class.active]="seccion==='eventos'" (click)="cambiarSegcion('eventos')"><span class="admin-main-nav-icon">◫</span><span>Eventos del Gimnasio</span></button>
+        <button type="button" [class.active]="seccion==='membresias'" (click)="cambiarSegcion('membresias')">
+          <span class="admin-main-nav-icon">▣</span><span>Membresías</span>
+        </button>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="['entrenador','trainer-profile'].includes(seccion)" (click)="toggleNavGroup('trainers')">
+          <span class="admin-main-nav-icon">♙</span><span>Entrenadores</span><i>{{navGroups.trainers?'⌄':'›'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.trainers">
+          <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSegcion('entrenador')"><span>•</span><span>Gestión de Entrenador</span></button>
+          <button type="button" [class.active]="seccion==='trainer-profile'" (click)="cambiarSegcion('trainer-profile')"><span>•</span><span>Perfil del Entrenador</span></button>
+        </div>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="['rutinas','sports-components'].includes(seccion)" (click)="toggleNavGroup('training')">
+          <span class="admin-main-nav-icon">🏋</span><span>Mi Plan de Entrenamiento</span><i>{{navGroups.training?'⌄':'›'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.training">
+          <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSegcion('rutinas')"><span>•</span><span>Rutinas</span></button>
+          <button type="button" [class.active]="seccion==='sports-components'" (click)="cambiarSegcion('sports-components')"><span>•</span><span>Seguimiento Deportivo</span></button>
+        </div>
+
+        <button type="button" [class.active]="seccion==='reportes'" (click)="cambiarSegcion('reportes')">
+          <span class="admin-main-nav-icon">⌁</span><span>Mis Reportes</span>
+        </button>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="seccion==='nutricion'" (click)="toggleNavGroup('diet')">
+          <span class="admin-main-nav-icon">♨</span><span>Mi Plan de Alimentación</span><i>{{navGroups.diet?'⌄':'›'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.diet">
+          <button type="button" [class.active]="seccion==='nutricion'" (click)="cambiarSegcion('nutricion')"><span>•</span><span>Planes Nutricionales</span></button>
+        </div>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="['equipos','inventario','kardex'].includes(seccion)" (click)="toggleNavGroup('equipment')">
+          <span class="admin-main-nav-icon">◆</span><span>Equipos</span><i>{{navGroups.equipment?'⌄':'›'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.equipment">
+          <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSegcion('equipos')"><span>•</span><span>Equipos del Gimnasio</span></button>
+          <button type="button" [class.active]="seccion==='inventario'" (click)="cambiarSegcion('inventario')"><span>•</span><span>Inventario de Productos</span></button>
+          <button type="button" [class.active]="seccion==='kardex'" (click)="cambiarSegcion('kardex')"><span>•</span><span>Kardex / Stock</span></button>
+        </div>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="['eventos','reservas','clases'].includes(seccion)" (click)="toggleNavGroup('events')">
+          <span class="admin-main-nav-icon">◫</span><span>Eventos del Gimnasio</span><i>{{navGroups.events?'⌄':'›'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.events">
+          <button type="button" [class.active]="seccion==='eventos'" (click)="cambiarSegcion('eventos')"><span>•</span><span>Eventos</span></button>
+          <button type="button" [class.active]="seccion==='clases'" (click)="cambiarSegcion('clases')"><span>•</span><span>Clases</span></button>
+          <button type="button" [class.active]="seccion==='reservas'" (click)="cambiarSegcion('reservas')"><span>•</span><span>Reservas</span></button>
+        </div>
+
         <button type="button" [class.active]="seccion==='galeria'" (click)="cambiarSegcion('galeria')"><span class="admin-main-nav-icon">▧</span><span>Galería</span></button>
         <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSegcion('noticias')"><span class="admin-main-nav-icon">◇</span><span>Noticias y Novedades</span></button>
-        <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSegcion('planes')"><span class="admin-main-nav-icon">★</span><span>Planes de Membresía</span></button>
-
-        <button type="button" class="cf-nav-group-head" [class.active]="['salarios','payslip'].includes(seccion)" (click)="toggleNavGroup('salaries')">
-          <span class="admin-main-nav-icon">▤</span><span>Salarios</span><i>{{navGroups.salaries?'⌄':'›'}}</i>
-        </button>
-        <div class="cf-nav-children" *ngIf="navGroups.salaries">
-          <button type="button" [class.active]="seccion==='salarios'" (click)="cambiarSegcion('salarios')"><span>•</span><span>Lista de Salarios</span></button>
-          <button type="button" [class.active]="seccion==='payslip'" (click)="cambiarSegcion('payslip')"><span>•</span><span>Boleta de Pago</span></button>
-        </div>
+        <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSegcion('planes')"><span class="admin-main-nav-icon">★</span><span>Planes y Precios</span></button>
+        <button type="button" [class.active]="seccion==='salarios'" (click)="cambiarSegcion('salarios')"><span class="admin-main-nav-icon">▤</span><span>Salarios</span></button>
+        <button type="button" [class.active]="seccion==='ingresos'" (click)="cambiarSegcion('ingresos')"><span class="admin-main-nav-icon">↗</span><span>Ingresos</span></button>
+        <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSegcion('facturas')"><span class="admin-main-nav-icon">▥</span><span>Facturas</span></button>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['alerts','avatars','badges','buttons','button-groups','cards-ui','advanced-cards','dropdowns','list-items','progress-bars','placeholders','spinners'].includes(seccion)" (click)="toggleNavGroup('ui')">
           <span class="admin-main-nav-icon">✦</span><span>Elementos de Interfaz</span><i>{{navGroups.ui?'⌄':'›'}}</i>
         </button>
-        <div class="cf-nav-children" *ngIf="navGroups.ui">
+        <div class="cf-nav-children cf-nav-ui-list" *ngIf="navGroups.ui">
           <button *ngFor="let x of uiElementLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSegcion(x.id)"><span>•</span><span>{{x.label}}</span></button>
+        </div>
+
+        <div class="cf-nav-section-label cf-nav-section-label-secondary">OTRAS FUNCIONES</div>
+        <button type="button" class="cf-nav-group-head" [class.active]="['asistencias','reporte-asistencias','caja','ventas','historial-ventas','gastos','compras','proveedores','categorias','soporte','opiniones','comunicacion','usuarios','auditoria','configuracion'].includes(seccion)" (click)="toggleNavGroup('operations')">
+          <span class="admin-main-nav-icon">☷</span><span>Administración</span><i>{{navGroups.operations?'⌄':'›'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.operations">
+          <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSegcion('asistencias')"><span>•</span><span>Asistencias</span></button>
+          <button type="button" [class.active]="seccion==='reporte-asistencias'" (click)="cambiarSegcion('reporte-asistencias')"><span>•</span><span>Reporte de Asistencias</span></button>
+          <button type="button" [class.active]="seccion==='caja'" (click)="cambiarSegcion('caja')"><span>•</span><span>Caja</span></button>
+          <button type="button" [class.active]="seccion==='ventas'" (click)="cambiarSegcion('ventas')"><span>•</span><span>Ventas</span></button>
+          <button type="button" [class.active]="seccion==='historial-ventas'" (click)="cambiarSegcion('historial-ventas')"><span>•</span><span>Historial de Ventas</span></button>
+          <button type="button" [class.active]="seccion==='gastos'" (click)="cambiarSegcion('gastos')"><span>•</span><span>Gastos</span></button>
+          <button type="button" [class.active]="seccion==='compras'" (click)="cambiarSegcion('compras')"><span>•</span><span>Compras</span></button>
+          <button type="button" [class.active]="seccion==='proveedores'" (click)="cambiarSegcion('proveedores')"><span>•</span><span>Proveedores</span></button>
+          <button type="button" [class.active]="seccion==='categorias'" (click)="cambiarSegcion('categorias')"><span>•</span><span>Categorías</span></button>
+          <button type="button" [class.active]="seccion==='soporte'" (click)="cambiarSegcion('soporte')"><span>•</span><span>Soporte</span></button>
+          <button type="button" [class.active]="seccion==='opiniones'" (click)="cambiarSegcion('opiniones')"><span>•</span><span>Opiniones</span></button>
+          <button type="button" [class.active]="seccion==='comunicacion'" (click)="cambiarSegcion('comunicacion')"><span>•</span><span>Notificaciones</span></button>
+          <button type="button" [class.active]="seccion==='usuarios'" (click)="cambiarSegcion('usuarios')"><span>•</span><span>Usuarios</span></button>
+          <button type="button" [class.active]="seccion==='auditoria'" (click)="cambiarSegcion('auditoria')"><span>•</span><span>Auditoría</span></button>
+          <button type="button" [class.active]="seccion==='configuracion'" (click)="cambiarSegcion('configuracion')"><span>•</span><span>Configuración</span></button>
         </div>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['accordions','carousel','modals','popovers','tabs-ui','tooltips'].includes(seccion)" (click)="toggleNavGroup('jquery')">
@@ -2289,6 +2334,45 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
       .trainer-main-status{grid-column:1/-1;justify-self:start}
       .trainer-main-data{grid-template-columns:1fr}
     }
+
+    /* SIDEBAR_REFERENCIA_569574_2026_10_23 */
+    .admin-home-redesign .cf-nav-section-label{
+      padding:14px 10px 7px!important;
+      color:#8f91a8!important;
+      font-size:10px!important;
+      font-weight:800!important;
+      letter-spacing:.45px!important;
+      text-transform:uppercase!important;
+    }
+    .admin-home-redesign .cf-nav-section-label-secondary{
+      margin-top:8px!important;
+      padding-top:16px!important;
+      border-top:1px solid rgba(255,255,255,.055)!important;
+    }
+    .admin-home-redesign .crossfit-sidebar-nav>button{
+      min-height:44px!important;
+      border-radius:5px!important;
+    }
+    .admin-home-redesign .crossfit-sidebar-nav>button>span:nth-child(2){
+      font-size:12.5px!important;
+      font-weight:600!important;
+    }
+    .admin-home-redesign .cf-nav-group-head>i{
+      margin-left:auto!important;
+      font-size:14px!important;
+      opacity:.8!important;
+    }
+    .admin-home-redesign .cf-nav-ui-list{
+      padding-top:4px!important;
+      padding-bottom:8px!important;
+    }
+    .admin-home-redesign .cf-nav-ui-list button{
+      min-height:36px!important;
+    }
+    .admin-home-redesign .cf-nav-ui-list button>span:nth-child(2){
+      font-size:11.5px!important;
+    }
+
   `]
 })
 export class AdminIntegradoComponent implements OnInit, OnDestroy {
@@ -2334,7 +2418,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   titulos: Record<string,[string,string]> = {
     dashboard:['Panel Administrador','Datos reales del gimnasio'], clientes:['Socios','Registro y administración de socios'],
     membresias:['Membresías','Asignación, renovación y vigencia de socios'], pagos:['Pagos','Pagos de membresías y compras de socios'],
-    planes:['Pricing Plans','Prices, duration and membership benefits'],
+    planes:['Planes y Precios','Precios, duración y beneficios de membresía'],
     gastos:['Gastos','Registro de egresos de la caja activa'],
     inventario:['Inventario','Productos, stock y control del inventario'],
     kardex:['Kardex y stock','Ajustes manuales y trazabilidad de movimientos de inventario'],
@@ -2352,8 +2436,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     auditoria:['Auditoría','Historial de acciones, usuarios, rutas y resultados del sistema'],
     configuracion:['Configuración','Ajustes generales y mantenimiento del sistema'],
     nutricion:['Mi Plan de Alimentación','Planes de nutrición y seguimiento de socios'],
-    equipos:['Equipments','Machines, maintenance and operating status'],
-    eventos:['Gym Eventos','Gym activities, campaigns and events'],
+    equipos:['Equipos','Máquinas, mantenimiento y estado operativo'],
+    eventos:['Eventos del Gimnasio','Actividades, campañas and events'],
     galeria:['Gallery','Gym visual content and photos'],
     noticias:['News & Updates','Announcements, promotions and updates'],
     salarios:['Salaries','Staff remuneration and payments'],
@@ -2378,7 +2462,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ];
   nutricionPreview: any[] = [];
   suiteModules = ['equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
-  navGroups:any = {members:true,payments:true,salaries:true,ui:true,jquery:true,forms:true,graphs:true,auth:true,menu:true};
+  navGroups:any = {members:false,payments:false,trainers:false,training:false,diet:false,equipment:false,events:false,ui:true,operations:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
   uiElementLinks = [
     {id:'alerts',label:'Alertas'},{id:'avatars',label:'Avatares'},{id:'badges',label:'Insignias'},
     {id:'buttons',label:'Botones'},{id:'button-groups',label:'Grupos de Botones'},{id:'cards-ui',label:'Tarjetas'},
