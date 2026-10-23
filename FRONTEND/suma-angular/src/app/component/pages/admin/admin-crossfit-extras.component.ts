@@ -24,12 +24,12 @@ interface ExtraConfig {
     <ng-container [ngSwitch]="viewSection">
 
       <section class="cfx-grid cfx-grid-3 cf-component-showcase" *ngSwitchCase="'sports-components'">
-        <article class="cfx-card"><header><div><span>ENTRENAMIENTO</span><h2>Resumen de Entrenamiento</h2></div><b>76%</b></header><div class="cfx-progress-row"><label><span>Meta Semanal</span><b>76%</b></label><div class="cfx-progress"><i style="width:76%"></i></div></div><div class="cf-sport-stats"><span><b>12</b><small>Exercises</small></span><span><b>5h 40m</b><small>Duración</small></span><span><b>1,240</b><small>Calorías</small></span></div></article>
-        <article class="cfx-card"><header><div><span>RITMO CARDÍACO</span><h2>Zonas de Entrenamiento</h2></div><b>142 BPM</b></header><svg class="cfx-line" viewBox="0 0 320 130"><polyline points="5,102 44,82 82,91 120,50 158,72 196,34 234,58 272,43 315,60" fill="none" stroke="#5b56dd" stroke-width="4"/></svg><div class="cfx-badges"><span>Warm Up</span><span class="warning">Cardio</span><span class="danger">Peak</span></div></article>
-        <article class="cfx-card"><header><div><span>CALORÍAS</span><h2>Calorías Burned</h2></div><b>1,240 kcal</b></header><div class="cfx-bars"><i style="height:38%"></i><i style="height:55%"></i><i style="height:62%"></i><i style="height:80%"></i><i style="height:70%"></i><i style="height:86%"></i><i style="height:64%"></i></div></article>
-        <article class="cfx-card"><header><div><span>HIDRATACIÓN</span><h2>Water Intake</h2></div></header><div class="cfx-donut"><b>72%</b></div><p class="centered-copy">2.1 L de 3 L de meta diaria</p></article>
-        <article class="cfx-card"><header><div><span>BMI</span><h2>Body Metrics</h2></div></header><div class="cf-sport-stats vertical"><span><b>23.4</b><small>BMI</small></span><span><b>18%</b><small>Body Fat</small></span><span><b>68 kg</b><small>Weight</small></span></div></article>
-        <article class="cfx-card"><header><div><span>RECOVERY</span><h2>Recuperación Score</h2></div><b>Good</b></header><div class="cfx-progress-row"><label><span>Sueño</span><b>82%</b></label><div class="cfx-progress"><i style="width:82%"></i></div></div><div class="cfx-progress-row"><label><span>Movilidad</span><b>64%</b></label><div class="cfx-progress"><i style="width:64%"></i></div></div></article>
+        <article class="cfx-card"><header><div><span>ENTRENAMIENTO</span><h2>Resumen de Entrenamiento</h2></div><b>76%</b></header><div class="cfx-progress-row"><label><span>Meta Semanal</span><b>76%</b></label><div class="cfx-progress"><i style="width:76%"></i></div></div><div class="cf-sport-stats"><span><b>12</b><small>Ejercicios</small></span><span><b>5h 40m</b><small>Duración</small></span><span><b>1,240</b><small>Calorías</small></span></div></article>
+        <article class="cfx-card"><header><div><span>RITMO CARDÍACO</span><h2>Zonas de Entrenamiento</h2></div><b>142 BPM</b></header><svg class="cfx-line" viewBox="0 0 320 130"><polyline points="5,102 44,82 82,91 120,50 158,72 196,34 234,58 272,43 315,60" fill="none" stroke="#5b56dd" stroke-width="4"/></svg><div class="cfx-badges"><span>Calentamiento</span><span class="warning">Cardio</span><span class="danger">Máximo</span></div></article>
+        <article class="cfx-card"><header><div><span>CALORÍAS</span><h2>Calorías Quemadas</h2></div><b>1,240 kcal</b></header><div class="cfx-bars"><i style="height:38%"></i><i style="height:55%"></i><i style="height:62%"></i><i style="height:80%"></i><i style="height:70%"></i><i style="height:86%"></i><i style="height:64%"></i></div></article>
+        <article class="cfx-card"><header><div><span>HIDRATACIÓN</span><h2>Consumo de Agua</h2></div></header><div class="cfx-donut"><b>72%</b></div><p class="centered-copy">2.1 L de 3 L de meta diaria</p></article>
+        <article class="cfx-card"><header><div><span>BMI</span><h2>Métricas Corporales</h2></div></header><div class="cf-sport-stats vertical"><span><b>23.4</b><small>BMI</small></span><span><b>18%</b><small>Grasa Corporal</small></span><span><b>68 kg</b><small>Peso</small></span></div></article>
+        <article class="cfx-card"><header><div><span>RECUPERACIÓN</span><h2>Puntaje de Recuperación</h2></div><b>Bueno</b></header><div class="cfx-progress-row"><label><span>Sueño</span><b>82%</b></label><div class="cfx-progress"><i style="width:82%"></i></div></div><div class="cfx-progress-row"><label><span>Movilidad</span><b>64%</b></label><div class="cfx-progress"><i style="width:64%"></i></div></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-1 cf-live-trainer-profile" *ngSwitchCase="'trainer-profile'">
@@ -40,32 +40,32 @@ interface ExtraConfig {
               <small>ENTRENADOR PERSONAL</small>
               <h1>{{t.nombres}} {{t.apellidos}}</h1>
               <p>{{t.especialidad || 'Fuerza • Pérdida de Grasa • Entrenamiento Funcional'}}</p>
-              <div class="cf-trainer-badges"><span>16+ Years Experience</span><span>Entrenador certificado</span><span>★ 4.9 (2,896 reviews)</span></div>
+              <div class="cf-trainer-badges"><span>16+ Años de Experiencia</span><span>Entrenador certificado</span><span>★ 4.9 (2,896 reseñas)</span></div>
             </div>
           </article>
 
           <section class="cf-trainer-profile-stats">
             <article><small>Socios Activos</small><b>{{t.clientes_count || 920}}</b><span>+12 esta semana</span></article>
-            <article><small>Ingresos Mensuales</small><b>S/ {{t.ingresos_mes || '9.6K'}}</b><span>+18% growth</span></article>
+            <article><small>Ingresos Mensuales</small><b>S/ {{t.ingresos_mes || '9.6K'}}</b><span>+18% de crecimiento</span></article>
             <article><small>Total Reseñas</small><b>3.6K</b><span>+42 esta semana</span></article>
           </section>
 
           <article class="cfx-card cf-trainer-about">
-            <header><div><span>ABOUT</span><h2>About</h2></div></header>
+            <header><div><span>ACERCA DEL ENTRENADOR</span><h2>Acerca del Entrenador</h2></div></header>
             <p>{{t.nombres}} es el entrenador principal de Mallqui Gym, enfocado en hábitos sostenibles, desarrollo de fuerza, pérdida de grasa, ganancia muscular y acondicionamiento funcional. Los planes de entrenamiento se adaptan a los objetivos y nivel de cada socio.</p>
-            <div class="cf-trainer-about-stats"><span><b>16+ Years</b><small>Experience</small></span><span><b>{{t.clientes_count || '900+'}}</b><small>Clients Trained</small></span><span><b>4.9 Rating</b><small>Client Satisfaction</small></span></div>
+            <div class="cf-trainer-about-stats"><span><b>16+ Años</b><small>Experiencia</small></span><span><b>{{t.clientes_count || '900+'}}</b><small>Socios Entrenados</small></span><span><b>Calificación 4.9</b><small>Satisfacción de Socios</small></span></div>
           </article>
 
           <article class="cfx-card">
-            <header><div><span>SPECIALIZATIONS</span><h2>Specializations</h2></div></header>
-            <div class="cfx-chips"><span>Entrenamiento de Fuerza</span><span>Fat Loss</span><span>Muscle Building</span><span>Functional Fitness</span><span>Lifestyle Coaching</span></div>
+            <header><div><span>ESPECIALIDADES</span><h2>Especialidades</h2></div></header>
+            <div class="cfx-chips"><span>Entrenamiento de Fuerza</span><span>Pérdida de Grasa</span><span>Ganancia Muscular</span><span>Acondicionamiento Funcional</span><span>Asesoría de Hábitos</span></div>
           </article>
 
           <article class="cfx-card cf-trainer-reviews">
-            <header><div><span>RESEÑAS</span><h2>Reseñas</h2></div><button>Load More Reseñas</button></header>
+            <header><div><span>RESEÑAS</span><h2>Reseñas</h2></div><button>Cargar más reseñas</button></header>
             <div class="cf-review-list">
-              <div><div class="cfx-avatar">WM</div><div><b>Socio del Gimnasio</b><small>2 weeks ago</small><strong>★★★★★ Excellent</strong><p>El programa de entrenamiento mejoró la constancia, la fuerza y la condición física general.</p><em>Recommends • Fat Loss Program</em></div></div>
-              <div><div class="cfx-avatar">NM</div><div><b>Socio del Gimnasio</b><small>1 month ago</small><strong>★★★★★ Excellent</strong><p>Las rutinas son simples, efectivas y fáciles de seguir. El progreso ha sido constante.</p><em>Recommends • Entrenamiento de Fuerza</em></div></div>
+              <div><div class="cfx-avatar">WM</div><div><b>Socio del Gimnasio</b><small>Hace 2 semanas</small><strong>★★★★★ Excelente</strong><p>El programa de entrenamiento mejoró la constancia, la fuerza y la condición física general.</p><em>Recomienda • Programa de Pérdida de Grasa</em></div></div>
+              <div><div class="cfx-avatar">NM</div><div><b>Socio del Gimnasio</b><small>Hace 1 mes</small><strong>★★★★★ Excelente</strong><p>Las rutinas son simples, efectivas y fáciles de seguir. El progreso ha sido constante.</p><em>Recomienda • Entrenamiento de Fuerza</em></div></div>
               <div><div class="cfx-avatar">CD</div><div><b>Socio del Gimnasio</b><small>Hace 3 semanas</small><strong>★★★★☆ Bueno</strong><p>Buen programa y seguimiento. Las sesiones se enfocan en los objetivos de cada socio.</p><em>Acondicionamiento general</em></div></div>
             </div>
           </article>
@@ -112,7 +112,7 @@ interface ExtraConfig {
 
       <section class="cfx-grid cfx-grid-1 cf-live-member-form" *ngSwitchCase="'add-member'">
         <article class="cfx-card">
-          <header><div><span>SOCIOS</span><h2>Agregar Socio</h2><p>* Required fields</p></div></header>
+          <header><div><span>SOCIOS</span><h2>Agregar Socio</h2><p>* Campos obligatorios</p></div></header>
           <div class="cf-member-form-grid">
             <label class="span-2">Nombre Completo *<input [(ngModel)]="newSocioFullName" placeholder="Juan Pérez"></label>
             <label>Correo Electrónico *<input type="email" [(ngModel)]="newSocio.correo" placeholder="socio@correo.com"></label>
@@ -172,8 +172,8 @@ interface ExtraConfig {
       <section class="cfx-grid cfx-grid-1 cf-live-invoice" *ngSwitchCase="'invoice-details'">
         <article class="cfx-card cf-invoice-paper">
           <div class="cf-invoice-select"><label>Seleccionar Factura<select [(ngModel)]="selectedFacturaId" (ngModelChange)="selectFactura($event)"><option [ngValue]="0">Seleccionar factura</option><option *ngFor="let x of invoices" [ngValue]="x.id">#INV-{{x.id}} · {{x.titulo}}</option></select></label></div>
-          <header class="cf-invoice-head"><div class="cf-invoice-logo"><img src="assets/mallqui-logo.svg" alt="Mallqui Gym"></div><div><h2>Factura #INV-{{selectedFacturaId || '2026-145'}}</h2><p>Emitida: {{invoiceForm.fecha || '02 May 2026'}}</p><p>Vence: {{invoiceUi.dueFecha || '06 May 2026'}}</p><span>{{invoiceForm.estado || 'Vencida'}}</span></div></header>
-          <div class="cf-invoice-parties"><div><h3>Facturado a</h3><b>{{invoiceForm.titulo || 'Nombre del Socio'}}</b><p>{{invoiceUi.address || 'Pucallpa, Ucayali, Peru'}}</p><p>{{invoiceUi.email}}</p></div><div><h3>Emisor</h3><b>Mallqui Gym</b><p>Jr. Los Laureles Mz 17 Lt 18</p><p>Pucallpa, Ucayali</p></div></div>
+          <header class="cf-invoice-head"><div class="cf-invoice-logo"><img src="assets/mallqui-logo.svg" alt="Mallqui Gym"></div><div><h2>Factura #INV-{{selectedFacturaId || '2026-145'}}</h2><p>Emitida: {{invoiceForm.fecha || '02 may 2026'}}</p><p>Vence: {{invoiceUi.dueFecha || '06 may 2026'}}</p><span>{{invoiceForm.estado || 'Vencida'}}</span></div></header>
+          <div class="cf-invoice-parties"><div><h3>Facturado a</h3><b>{{invoiceForm.titulo || 'Nombre del Socio'}}</b><p>{{invoiceUi.address || 'Pucallpa, Ucayali, Perú'}}</p><p>{{invoiceUi.email}}</p></div><div><h3>Emisor</h3><b>Mallqui Gym</b><p>Jr. Los Laureles Mz 17 Lt 18</p><p>Pucallpa, Ucayali</p></div></div>
           <div class="cfx-table-wrap"><table><thead><tr><th>Servicio</th><th>Descripción</th><th>Cant.</th><th>Precio Unitario</th><th>Total</th></tr></thead><tbody>
             <tr *ngFor="let item of invoiceItems"><td><b>{{item.service}}</b></td><td>{{item.description}}</td><td>{{item.qty}}</td><td>S/ {{item.unitPrice | number:'1.2-2'}}</td><td>S/ {{item.qty*item.unitPrice | number:'1.2-2'}}</td></tr>
           </tbody></table></div>
@@ -222,7 +222,7 @@ interface ExtraConfig {
         <article class="cfx-card cf-payslip-paper">
           <div class="cf-invoice-select"><label>Registro Salarial<select [(ngModel)]="selectedPayslipId"><option [ngValue]="0">Último registro</option><option *ngFor="let x of salaries" [ngValue]="x.id">#{{x.id}} · {{x.titulo}}</option></select></label></div>
           <header class="cf-payslip-head"><img src="assets/mallqui-logo.svg" alt="Mallqui Gym"><div><h2>Payslip No. - #PS-2026-{{selectedPayslip?.id || '052'}}</h2><p>{{selectedPayslip?.fecha || 'October 2026'}}</p><span>{{selectedPayslip?.estado || 'Pagada'}}</span></div></header>
-          <section class="cf-payslip-parties"><div><h3>Datos del Empleado</h3><b>{{selectedPayslip?.titulo || 'Entrenador Mallqui'}}</b><p>{{selectedPayslip?.subtitulo || 'Senior Fitness Consultant'}}</p><p>Empleado ID: EMP-{{selectedPayslip?.id || '1045'}}</p><p>Pucallpa, Ucayali, Peru</p></div><div><h3>Gym Details</h3><b>Mallqui Gym</b><p>Jr. Los Laureles Mz 17 Lt 18</p><p>Pucallpa, Ucayali, Peru</p></div></section>
+          <section class="cf-payslip-parties"><div><h3>Datos del Empleado</h3><b>{{selectedPayslip?.titulo || 'Entrenador Mallqui'}}</b><p>{{selectedPayslip?.subtitulo || 'Senior Fitness Consultant'}}</p><p>Empleado ID: EMP-{{selectedPayslip?.id || '1045'}}</p><p>Pucallpa, Ucayali, Perú</p></div><div><h3>Gym Details</h3><b>Mallqui Gym</b><p>Jr. Los Laureles Mz 17 Lt 18</p><p>Pucallpa, Ucayali, Perú</p></div></section>
           <div class="cfx-table-wrap"><table><thead><tr><th>Ingresos</th><th>Días Trabajados</th><th>Monto (PEN)</th><th>Deducciones</th><th>Monto (PEN)</th></tr></thead><tbody>
             <tr><td>Básico Salario</td><td>26</td><td>S/ {{payslipBásico | number:'1.2-2'}}</td><td>Impuesto</td><td>S/ {{payslipTax | number:'1.2-2'}}</td></tr>
             <tr><td>Housing / Movilidad</td><td></td><td>S/ {{payslipHousing | number:'1.2-2'}}</td><td>Health Insurance</td><td>S/ {{payslipInsurance | number:'1.2-2'}}</td></tr>
@@ -247,13 +247,13 @@ interface ExtraConfig {
 
       <section class="cfx-grid cfx-grid-1 cf-template-table-page" *ngSwitchCase="'data-tables'">
         <article class="cfx-card">
-          <header><div><span>DATA TABLAS</span><h2>Tablas de Datos</h2><p>Buscar, sort and filter records</p></div></header>
+          <header><div><span>TABLAS DE DATOS</span><h2>Tablas de Datos</h2><p>Buscar, ordenar y filtrar registros</p></div></header>
           <div class="cfx-toolbar cf-datatable-toolbar">
             <label>Mostrar <select><option>10</option><option>25</option><option>50</option></select> registros</label>
             <input [(ngModel)]="search" placeholder="Buscar registros...">
           </div>
           <div class="cfx-table-wrap"><table>
-            <thead><tr><th>#</th><th>Name</th><th>Module</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+            <thead><tr><th>#</th><th>Nombre</th><th>Módulo</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
             <tbody><tr *ngFor="let row of filteredRows"><td>{{row.id}}</td><td><b>{{row.name}}</b></td><td>{{row.module}}</td><td><span class="cfx-badge">{{row.status}}</span></td><td>{{row.date}}</td><td><button class="tiny">Ver</button></td></tr></tbody>
           </table></div>
           <footer class="cf-datatable-footer"><span>Mostrando 1 a {{filteredRows.length}} de {{filteredRows.length}} registros</span><div><button disabled>Anterior</button><button class="primary">1</button><button disabled>Siguiente</button></div></footer>
@@ -268,72 +268,72 @@ interface ExtraConfig {
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'apex'">
-        <article class="cfx-card"><header><div><span>APEX GRAPH</span><h2>Gráfico de Área</h2></div></header><div class="cfx-area"><svg viewBox="0 0 420 170" preserveAspectRatio="none"><path d="M0 145 C60 115,80 145,130 86 S210 40,260 82 S350 30,420 58 L420 170 L0 170Z" fill="#eceaff"/><path d="M0 145 C60 115,80 145,130 86 S210 40,260 82 S350 30,420 58" fill="none" stroke="#5b56dd" stroke-width="4"/></svg></div></article>
-        <article class="cfx-card"><header><div><span>APEX GRAPH</span><h2>Gráfico de Columnas</h2></div></header><div class="cfx-bars"><i *ngFor="let h of bars2" [style.height.%]="h"></i></div></article>
-        <article class="cfx-card"><header><div><span>APEX GRAPH</span><h2>Gráfico de Líneas</h2></div></header><svg class="cfx-line tall" viewBox="0 0 420 180"><polyline points="5,145 55,115 105,132 155,70 205,92 255,44 305,65 355,24 415,52" fill="none" stroke="#5b56dd" stroke-width="4"/></svg></article>
-        <article class="cfx-card"><header><div><span>APEX GRAPH</span><h2>Radial / Donut</h2></div></header><div class="cfx-donut"><b>78%</b></div></article>
+        <article class="cfx-card"><header><div><span>GRÁFICO APEX</span><h2>Gráfico de Área</h2></div></header><div class="cfx-area"><svg viewBox="0 0 420 170" preserveAspectRatio="none"><path d="M0 145 C60 115,80 145,130 86 S210 40,260 82 S350 30,420 58 L420 170 L0 170Z" fill="#eceaff"/><path d="M0 145 C60 115,80 145,130 86 S210 40,260 82 S350 30,420 58" fill="none" stroke="#5b56dd" stroke-width="4"/></svg></div></article>
+        <article class="cfx-card"><header><div><span>GRÁFICO APEX</span><h2>Gráfico de Columnas</h2></div></header><div class="cfx-bars"><i *ngFor="let h of bars2" [style.height.%]="h"></i></div></article>
+        <article class="cfx-card"><header><div><span>GRÁFICO APEX</span><h2>Gráfico de Líneas</h2></div></header><svg class="cfx-line tall" viewBox="0 0 420 180"><polyline points="5,145 55,115 105,132 155,70 205,92 255,44 305,65 355,24 415,52" fill="none" stroke="#5b56dd" stroke-width="4"/></svg></article>
+        <article class="cfx-card"><header><div><span>GRÁFICO APEX</span><h2>Radial / Dona</h2></div></header><div class="cfx-donut"><b>78%</b></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'morris'">
         <article class="cfx-card"><header><div><span>MORRIS</span><h2>Gráfico de Área</h2></div></header><div class="cfx-area"><svg viewBox="0 0 420 170" preserveAspectRatio="none"><path d="M0 148 C60 125 105 141 145 100 S215 120 255 72 S330 95 420 42 L420 170 L0 170Z" fill="#eef8f3"/><path d="M0 148 C60 125 105 141 145 100 S215 120 255 72 S330 95 420 42" fill="none" stroke="#6bca9f" stroke-width="4"/></svg></div></article>
         <article class="cfx-card"><header><div><span>MORRIS</span><h2>Gráfico de Barras</h2></div></header><div class="cfx-bars"><i *ngFor="let h of bars3" [style.height.%]="h"></i></div></article>
-        <article class="cfx-card"><header><div><span>MORRIS</span><h2>Line Negative Values</h2></div></header><svg class="cfx-line tall" viewBox="0 0 420 180"><polyline points="5,92 55,55 105,118 155,62 205,130 255,46 305,102 355,30 415,78" fill="none" stroke="#6c66e8" stroke-width="4"/></svg></article>
-        <article class="cfx-card"><header><div><span>MORRIS</span><h2>Donut Format</h2></div></header><div class="cf-double-donut"><div class="cfx-donut"><b>64%</b></div><div class="cfx-donut alt"><b>36%</b></div></div></article>
+        <article class="cfx-card"><header><div><span>MORRIS</span><h2>Línea con Valores Negativos</h2></div></header><svg class="cfx-line tall" viewBox="0 0 420 180"><polyline points="5,92 55,55 105,118 155,62 205,130 255,46 305,102 355,30 415,78" fill="none" stroke="#6c66e8" stroke-width="4"/></svg></article>
+        <article class="cfx-card"><header><div><span>MORRIS</span><h2>Formato Dona</h2></div></header><div class="cf-double-donut"><div class="cfx-donut"><b>64%</b></div><div class="cfx-donut alt"><b>36%</b></div></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'vector-maps'">
-        <article class="cfx-card span-2"><header><div><span>MAPAS VECTORIALES</span><h2>Gym Coverage</h2><p>Actividad de socios y cobertura del servicio por zona.</p></div></header><div class="cfx-map"><span class="pin p1">Pucallpa Centro</span><span class="pin p2">Yarinacocha</span><span class="pin p3">Manantay</span><span class="pin p4">Callería</span></div></article>
-        <article class="cfx-card"><h2>Top Ubicacións</h2><div class="cfx-info"><p><b>Pucallpa Centro</b><span>42%</span></p><p><b>Yarinacocha</b><span>28%</span></p><p><b>Manantay</b><span>18%</span></p><p><b>Callería</b><span>12%</span></p></div></article>
-        <article class="cfx-card"><h2>Coverage Estado</h2><div class="cfx-progress-row"><label><span>Urban coverage</span><b>88%</b></label><div class="cfx-progress"><i style="width:88%"></i></div></div><div class="cfx-progress-row"><label><span>Alcance de Socios</span><b>74%</b></label><div class="cfx-progress"><i style="width:74%"></i></div></div></article>
+        <article class="cfx-card span-2"><header><div><span>MAPAS VECTORIALES</span><h2>Cobertura del Gimnasio</h2><p>Actividad de socios y cobertura del servicio por zona.</p></div></header><div class="cfx-map"><span class="pin p1">Pucallpa Centro</span><span class="pin p2">Yarinacocha</span><span class="pin p3">Manantay</span><span class="pin p4">Callería</span></div></article>
+        <article class="cfx-card"><h2>Principales Ubicaciones</h2><div class="cfx-info"><p><b>Pucallpa Centro</b><span>42%</span></p><p><b>Yarinacocha</b><span>28%</span></p><p><b>Manantay</b><span>18%</span></p><p><b>Callería</b><span>12%</span></p></div></article>
+        <article class="cfx-card"><h2>Estado de Cobertura</h2><div class="cfx-progress-row"><label><span>Cobertura urbana</span><b>88%</b></label><div class="cfx-progress"><i style="width:88%"></i></div></div><div class="cfx-progress-row"><label><span>Alcance de Socios</span><b>74%</b></label><div class="cfx-progress"><i style="width:74%"></i></div></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'accordions'">
         <article class="cfx-card"><header><div><span>ACORDEÓN</span><h2>Preguntas de Socios</h2></div></header><div class="cfx-accordion" *ngFor="let x of accordionItems; let i=index"><button (click)="accordionOpen=accordionOpen===i?-1:i">{{x.title}} <span>{{accordionOpen===i?'−':'+'}}</span></button><p *ngIf="accordionOpen===i">{{x.text}}</p></div></article>
         <article class="cfx-card"><header><div><span>ENTRENAMIENTO FAQ</span><h2>Preguntas de Entrenamiento</h2></div></header><div class="cfx-accordion"><button>¿Cómo cambio mi plan de entrenamiento? <span>+</span></button></div><div class="cfx-accordion"><button>¿Cómo se calcula el progreso? <span>+</span></button></div><div class="cfx-accordion"><button>¿El entrenador puede ajustar mi rutina? <span>+</span></button></div></article>
-        <article class="cfx-card span-2"><header><div><span>POLICIES</span><h2>Membresía Policies</h2></div></header><div class="cf-accordion-grid"><div><b>Membresía Freeze</b><p>Las membresías pueden pausarse según el plan seleccionado.</p></div><div><b>Class Booking</b><p>Los socios pueden reservar sesiones disponibles mientras su plan esté activo.</p></div><div><b>Cancelarlation</b><p>Las sesiones canceladas se administran desde el perfil del socio.</p></div></div></article>
+        <article class="cfx-card span-2"><header><div><span>POLÍTICAS</span><h2>Políticas de Membresía</h2></div></header><div class="cf-accordion-grid"><div><b>Pausa de Membresía</b><p>Las membresías pueden pausarse según el plan seleccionado.</p></div><div><b>Reserva de Clases</b><p>Los socios pueden reservar sesiones disponibles mientras su plan esté activo.</p></div><div><b>Cancelación</b><p>Las sesiones canceladas se administran desde el perfil del socio.</p></div></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'carousel'">
-        <article class="cfx-card span-2"><header><div><span>CARRUSEL</span><h2>Gym Highlights</h2></div><div class="cfx-buttons"><button (click)="prevSlide()">‹</button><button (click)="nextSlide()">›</button></div></header><div class="cfx-carousel"><img [src]="slides[slide].image" alt="Carousel"><div><small>FEATURED</small><h2>{{slides[slide].title}}</h2><p>{{slides[slide].text}}</p><div class="cf-carousel-dots"><i *ngFor="let x of slides; let i=index" [class.active]="i===slide"></i></div></div></div></article>
-        <article class="cfx-card"><h2>Entrenador Spotlight</h2><img class="cf-card-cover" src="assets/showcase/coach-showcase.svg" alt="Entrenador"><p>Conoce al entrenador y revisa su disponibilidad actual.</p><button>Ver Perfil</button></article>
-        <article class="cfx-card"><h2>Class Spotlight</h2><img class="cf-card-cover" src="assets/showcase/class-showcase.svg" alt="Class"><p>Clases destacadas y actividades de socios.</p><button>Ver Classes</button></article>
+        <article class="cfx-card span-2"><header><div><span>CARRUSEL</span><h2>Destacados del Gimnasio</h2></div><div class="cfx-buttons"><button (click)="prevSlide()">‹</button><button (click)="nextSlide()">›</button></div></header><div class="cfx-carousel"><img [src]="slides[slide].image" alt="Carrusel"><div><small>DESTACADO</small><h2>{{slides[slide].title}}</h2><p>{{slides[slide].text}}</p><div class="cf-carousel-dots"><i *ngFor="let x of slides; let i=index" [class.active]="i===slide"></i></div></div></div></article>
+        <article class="cfx-card"><h2>Entrenador Destacado</h2><img class="cf-card-cover" src="assets/showcase/coach-showcase.svg" alt="Entrenador"><p>Conoce al entrenador y revisa su disponibilidad actual.</p><button>Ver Perfil</button></article>
+        <article class="cfx-card"><h2>Clase Destacada</h2><img class="cf-card-cover" src="assets/showcase/class-showcase.svg" alt="Clase"><p>Clases destacadas y actividades de socios.</p><button>Ver Clases</button></article>
       </section>
 
       <section class="cfx-grid cfx-grid-3 cf-component-showcase" *ngSwitchCase="'modals'">
-        <article class="cfx-card"><h2>Básico Modal</h2><p>Standard confirmation dialog.</p><button class="primary" (click)="modal='basic'">Abrir Modal</button></article>
-        <article class="cfx-card"><h2>Modal de Formulario</h2><p>Modal con campos de entrada.</p><button class="primary" (click)="modal='form'">Open Form</button></article>
-        <article class="cfx-card"><h2>Modal de Peligro</h2><p>Confirm destructive action.</p><button class="danger" (click)="modal='danger'">Eliminar Registro</button></article>
-        <article class="cfx-card"><h2>Modal Centrado</h2><p>Vertically centered dialog.</p><button (click)="modal='basic'">Open Centered</button></article>
-        <article class="cfx-card"><h2>Modal con Desplazamiento</h2><p>Long content example.</p><button (click)="modal='basic'">Open Scrollable</button></article>
-        <article class="cfx-card"><h2>Modal Grande</h2><p>Ventana grande del panel.</p><button (click)="modal='form'">Open Large</button></article>
+        <article class="cfx-card"><h2>Modal Básico</h2><p>Diálogo estándar de confirmación.</p><button class="primary" (click)="modal='basic'">Abrir Modal</button></article>
+        <article class="cfx-card"><h2>Modal de Formulario</h2><p>Modal con campos de entrada.</p><button class="primary" (click)="modal='form'">Abrir Formulario</button></article>
+        <article class="cfx-card"><h2>Modal de Peligro</h2><p>Confirma una acción destructiva.</p><button class="danger" (click)="modal='danger'">Eliminar Registro</button></article>
+        <article class="cfx-card"><h2>Modal Centrado</h2><p>Diálogo centrado verticalmente.</p><button (click)="modal='basic'">Abrir Centrado</button></article>
+        <article class="cfx-card"><h2>Modal con Desplazamiento</h2><p>Ejemplo de contenido extenso.</p><button (click)="modal='basic'">Abrir con Desplazamiento</button></article>
+        <article class="cfx-card"><h2>Modal Grande</h2><p>Ventana grande del panel.</p><button (click)="modal='form'">Abrir Grande</button></article>
       </section>
 
       <section class="cfx-grid cfx-grid-4 cf-component-showcase" *ngSwitchCase="'popovers'">
-        <article class="cfx-card centered"><h2>Popover Superior</h2><button class="primary" (click)="popover=popover===1?0:1">Top</button><div class="cfx-pop" *ngIf="popover===1">Informaciónrmación emergente en la parte superior.</div></article>
-        <article class="cfx-card centered"><h2>Popover Derecho</h2><button class="primary" (click)="popover=popover===2?0:2">Derecha</button><div class="cfx-pop" *ngIf="popover===2">Informaciónrmación emergente a la derecha.</div></article>
-        <article class="cfx-card centered"><h2>Popover Inferior</h2><button class="primary" (click)="popover=popover===3?0:3">Bottom</button><div class="cfx-pop" *ngIf="popover===3">Informaciónrmación emergente en la parte inferior.</div></article>
-        <article class="cfx-card centered"><h2>Popover Izquierdo</h2><button class="primary" (click)="popover=popover===4?0:4">Izquierda</button><div class="cfx-pop" *ngIf="popover===4">Informaciónrmación emergente a la izquierda.</div></article>
+        <article class="cfx-card centered"><h2>Popover Superior</h2><button class="primary" (click)="popover=popover===1?0:1">Arriba</button><div class="cfx-pop" *ngIf="popover===1">Información emergente en la parte superior.</div></article>
+        <article class="cfx-card centered"><h2>Popover Derecho</h2><button class="primary" (click)="popover=popover===2?0:2">Derecha</button><div class="cfx-pop" *ngIf="popover===2">Información emergente a la derecha.</div></article>
+        <article class="cfx-card centered"><h2>Popover Inferior</h2><button class="primary" (click)="popover=popover===3?0:3">Abajo</button><div class="cfx-pop" *ngIf="popover===3">Información emergente en la parte inferior.</div></article>
+        <article class="cfx-card centered"><h2>Popover Izquierdo</h2><button class="primary" (click)="popover=popover===4?0:4">Izquierda</button><div class="cfx-pop" *ngIf="popover===4">Información emergente a la izquierda.</div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-1 cf-component-showcase" *ngSwitchCase="'tabs-ui'">
-        <article class="cfx-card"><header><div><span>PESTAÑAS</span><h2>Pestañas Predeterminadas</h2></div></header><div class="cfx-tabs"><button *ngFor="let t of ['Panel Principal','Analytics','Configuración','Messages'];let i=index" [class.active]="tab===i" (click)="tab=i">{{t}}</button></div><div class="cfx-tab-content"><h2>{{['Panel Principal Overview','Analytics & Insights','Preferences & Configuración','Messages'][tab]}}</h2><p>{{['Ver your key statistics, recent updates and quick links in one place.','Track trends and analyze gym performance.','Customize account and notification preferences.','Check latest conversations and member messages.'][tab]}}</p></div></article>
-        <article class="cfx-card"><h2>Pill Navigation</h2><div class="cfx-button-group"><button class="active">Overview</button><button>Socios</button><button>Pagos</button><button>Reportes</button></div></article>
+        <article class="cfx-card"><header><div><span>PESTAÑAS</span><h2>Pestañas Predeterminadas</h2></div></header><div class="cfx-tabs"><button *ngFor="let t of ['Panel Principal','Analítica','Configuración','Mensajes'];let i=index" [class.active]="tab===i" (click)="tab=i">{{t}}</button></div><div class="cfx-tab-content"><h2>{{['Resumen del Panel Principal','Analítica e Indicadores','Preferencias y Configuración','Mensajes'][tab]}}</h2><p>{{['Consulta tus estadísticas principales, actualizaciones recientes y accesos rápidos en un solo lugar.','Sigue tendencias y analiza el rendimiento del gimnasio.','Personaliza las preferencias de cuenta y notificaciones.','Revisa las conversaciones recientes y mensajes de socios.'][tab]}}</p></div></article>
+        <article class="cfx-card"><h2>Navegación con Pestañas</h2><div class="cfx-button-group"><button class="active">Resumen</button><button>Socios</button><button>Pagos</button><button>Reportes</button></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'tooltips'">
-        <article class="cfx-card centered"><h2>Ayuda Superior</h2><button class="cfx-tooltip primary">Hover me<span>Ayuda en la parte superior</span></button><p>Useful for compact icon actions.</p></article>
-        <article class="cfx-card centered"><h2>Ayuda Derecha</h2><button class="cfx-tooltip">Informaciónrmación del socio<span>Abrir detalles del socio</span></button><p>Muestra contexto sin salir de la página.</p></article>
+        <article class="cfx-card centered"><h2>Ayuda Superior</h2><button class="cfx-tooltip primary">Pasa el cursor<span>Ayuda en la parte superior</span></button><p>Útil para acciones compactas con iconos.</p></article>
+        <article class="cfx-card centered"><h2>Ayuda Derecha</h2><button class="cfx-tooltip">Información del socio<span>Abrir detalles del socio</span></button><p>Muestra contexto sin salir de la página.</p></article>
         <article class="cfx-card centered"><h2>Ayuda Inferior</h2><button class="cfx-tooltip success">Pago<span>Pago completado</span></button><p>Muestra información del estado.</p></article>
-        <article class="cfx-card centered"><h2>Ayuda Izquierda</h2><button class="cfx-tooltip danger">Eliminar<span>Eliminar this record</span></button><p>Useful for destructive actions.</p></article>
+        <article class="cfx-card centered"><h2>Ayuda Izquierda</h2><button class="cfx-tooltip danger">Eliminar<span>Eliminar este registro</span></button><p>Útil para acciones de eliminación.</p></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'forms'">
         <article class="cfx-card"><header><div><span>FORMULARIOS</span><h2>Formulario Básico</h2></div></header><div class="cfx-form"><label>Nombre Completo<input [(ngModel)]="form.name" placeholder="Ingresa el nombre completo"></label><label>Correo Electrónico<input [(ngModel)]="form.email" type="email" placeholder="nombre@correo.com"></label><label>Estado<select [(ngModel)]="form.status"><option>Activo</option><option>Pendiente</option></select></label><label>Mensaje<textarea rows="4" placeholder="Escribe un mensaje..."></textarea></label><button class="primary" (click)="saved=true">Enviar Formulario</button><small *ngIf="saved" class="success-text">✓ Formulario enviado correctamente.</small></div></article>
-        <article class="cfx-card"><header><div><span>FORMULARIO HORIZONTAL</span><h2>Informaciónrmación de Cuenta</h2></div></header><div class="cfx-form"><label>Usuario<input value="mallqui-admin"></label><label>Teléfono<input placeholder="+51 999 999 999"></label><label>Ciudad<select><option>Pucallpa</option><option>Yarinacocha</option></select></label><label class="check"><input type="checkbox" checked> Recibir notificaciones</label><div class="cfx-buttons"><button>Cancelar</button><button class="primary">Guardar Cambios</button></div></div></article>
+        <article class="cfx-card"><header><div><span>FORMULARIO HORIZONTAL</span><h2>Información de Cuenta</h2></div></header><div class="cfx-form"><label>Usuario<input value="mallqui-admin"></label><label>Teléfono<input placeholder="+51 999 999 999"></label><label>Ciudad<select><option>Pucallpa</option><option>Yarinacocha</option></select></label><label class="check"><input type="checkbox" checked> Recibir notificaciones</label><div class="cfx-buttons"><button>Cancelar</button><button class="primary">Guardar Cambios</button></div></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'form-inputs'">
-        <article class="cfx-card"><header><div><span>CAMPOS DE FORMULARIO</span><h2>Tipos de Campos</h2></div></header><div class="cfx-form"><label>Nombre Completo<input placeholder="Ingresa el nombre completo"></label><label>Correo<input type="email" placeholder="Ingresa el correo"></label><label>Contraseña<input type="password" placeholder="Contraseña"></label><label>Solo Lectura<input readonly value="Solo Lectura input"></label><label>Deshabilitado<input disabled value="Campo deshabilitado"></label></div></article>
+        <article class="cfx-card"><header><div><span>CAMPOS DE FORMULARIO</span><h2>Tipos de Campos</h2></div></header><div class="cfx-form"><label>Nombre Completo<input placeholder="Ingresa el nombre completo"></label><label>Correo<input type="email" placeholder="Ingresa el correo"></label><label>Contraseña<input type="password" placeholder="Contraseña"></label><label>Solo Lectura<input readonly value="Campo de solo lectura"></label><label>Deshabilitado<input disabled value="Campo deshabilitado"></label></div></article>
         <article class="cfx-card"><header><div><span>TAMAÑOS</span><h2>Tamaños de Campos y Selectores</h2></div></header><div class="cfx-form"><input class="large" placeholder=".form-control-lg"><input placeholder="Campo predeterminado"><input class="small" placeholder=".form-control-sm"><select><option>Selector predeterminado</option></select><textarea rows="5" placeholder="Área de texto de ejemplo"></textarea></div></article>
         <article class="cfx-card"><header><div><span>EN LÍNEA</span><h2>Formulario en Línea</h2></div></header><div class="cf-inline-form"><input value="Jane Doe"><span>@</span><input placeholder="Usuario"><label class="check"><input type="checkbox"> Recordarme</label><button class="primary">Enviar</button></div></article>
         <article class="cfx-card"><header><div><span>AYUDA</span><h2>Texto de Ayuda</h2></div></header><div class="cfx-form"><label>Contraseña<input type="password"></label><small>Tu contraseña debe tener entre 8 y 20 caracteres e incluir letras y números.</small></div></article>
@@ -349,12 +349,12 @@ interface ExtraConfig {
         <article class="cfx-card"><header><div><span>CARGA DE ARCHIVOS</span><h2>Carga de Archivo Predeterminada</h2></div></header><label class="cfx-upload"><span>⇧</span><b>Elige un archivo o arrástralo aquí</b><small>PNG, JPG o PDF de hasta 5 MB</small><input type="file" (change)="fileSelected($event)"></label></article>
         <article class="cfx-card"><header><div><span>ARCHIVO SELECCIONADO</span><h2>Vista Previa de Carga</h2></div></header><div class="cfx-file-result"><span>▤</span><b>{{selectedFile || 'Ningún archivo seleccionado'}}</b><small *ngIf="selectedFile">Listo para cargar</small></div><div class="cfx-progress" *ngIf="selectedFile"><i style="width:100%"></i></div></article>
         <article class="cfx-card"><header><div><span>FOTO DEL SOCIO</span><h2>Imagen de Perfil</h2></div></header><div class="cf-file-avatar"><img src="assets/showcase/coach-showcase.svg" alt="Perfil"><div><b>perfil-socio.jpg</b><small>JPG · 824 KB</small><button>Reemplazar</button></div></div></article>
-        <article class="cfx-card"><header><div><span>DOCUMENTOOS</span><h2>Cargas Recientes</h2></div></header><div class="cfx-list"><div><span>PDF</span><div><b>evaluacion-fitness.pdf</b><small>1.2 MB</small></div><em>Completado</em></div><div><span>IMG</span><div><b>foto-socio.jpg</b><small>824 KB</small></div><em>Completado</em></div></div></article>
+        <article class="cfx-card"><header><div><span>DOCUMENTOS</span><h2>Cargas Recientes</h2></div></header><div class="cfx-list"><div><span>PDF</span><div><b>evaluacion-fitness.pdf</b><small>1.2 MB</small></div><em>Completado</em></div><div><span>IMG</span><div><b>foto-socio.jpg</b><small>824 KB</small></div><em>Completado</em></div></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'validations'">
         <article class="cfx-card"><header><div><span>VALIDACIÓN</span><h2>Validación Personalizada</h2></div></header><div class="cfx-form"><label>Nombres<input [(ngModel)]="validation.name" [class.invalid]="validationTried&&!validation.name"></label><small class="success-text" *ngIf="validation.name">¡Correcto!</small><label>Correo<input [(ngModel)]="validation.email" [class.invalid]="validationTried&&!validCorreo"></label><small class="danger-text" *ngIf="validationTried&&!validCorreo">Ingresa un correo válido.</small><label>Región<select><option>Pucallpa</option><option>Ucayali</option></select></label><label class="check"><input type="checkbox"> Acepto los términos y condiciones</label><button class="primary" (click)="validationTried=true">Enviar Formulario</button></div></article>
-        <article class="cfx-card"><header><div><span>ESTADO</span><h2>Estado de Validación</h2></div></header><div class="cfx-validation-state" [class.ok]="validation.name&&validCorreo"><span>{{validation.name&&validCorreo?'✓':'!'}}</span><b>{{validation.name&&validCorreo?'El formulario es válido':'Completado required fields'}}</b></div></article>
+        <article class="cfx-card"><header><div><span>ESTADO</span><h2>Estado de Validación</h2></div></header><div class="cfx-validation-state" [class.ok]="validation.name&&validCorreo"><span>{{validation.name&&validCorreo?'✓':'!'}}</span><b>{{validation.name&&validCorreo?'El formulario es válido':'Completa los campos obligatorios'}}</b></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-3 cf-component-showcase" *ngSwitchCase="'date-time'">
@@ -492,20 +492,20 @@ interface ExtraConfig {
         <article class="cfx-card centered"><h2>Indicador Pequeño</h2><div class="cfx-spinner small-spin"></div><small>Guardando cambios</small></article>
         <article class="cfx-card centered"><h2>Botón Cargando</h2><button class="primary"><span class="cf-inline-spinner"></span> Cargando...</button></article>
         <article class="cfx-card centered"><h2>Growing Dots</h2><div class="cf-loading-dots"><i></i><i></i><i></i></div><small>Syncing records</small></article>
-        <article class="cfx-card centered"><h2>Progreso Loader</h2><div class="cfx-progress striped animated"><i style="width:72%"></i></div><small>72% complete</small></article>
+        <article class="cfx-card centered"><h2>Indicador de Progreso</h2><div class="cfx-progress striped animated"><i style="width:72%"></i></div><small>72% completado</small></article>
       </section>
 
       <section class="cfx-grid cfx-grid-1 cf-component-showcase" *ngSwitchCase="'icons'">
-        <article class="cfx-card"><header><div><span>ICONOS</span><h2>Interface Icons</h2><p>Iconos reutilizables para navegación, acciones y estados.</p></div></header><div class="cfx-icon-grid"><div *ngFor="let icon of icons"><span>{{icon}}</span><small>Icon</small></div></div></article>
+        <article class="cfx-card"><header><div><span>ICONOS</span><h2>Iconos de Interfaz</h2><p>Iconos reutilizables para navegación, acciones y estados.</p></div></header><div class="cfx-icon-grid"><div *ngFor="let icon of icons"><span>{{icon}}</span><small>Icono</small></div></div></article>
         <article class="cfx-card"><header><div><span>ACCIONES</span><h2>Iconos de Acción</h2></div></header><div class="cf-icon-action-grid"><button>＋<small>Agregar</small></button><button>✎<small>Editar</small></button><button>⌕<small>Ver</small></button><button>⇩<small>Descargar</small></button><button>⚙<small>Configuración</small></button><button>×<small>Eliminar</small></button></div></article>
-        <article class="cfx-card"><header><div><span>FITNESS</span><h2>Fitness Icons</h2></div></header><div class="cf-icon-action-grid"><button>🏋<small>Entrenamiento</small></button><button>⚡<small>Actividad</small></button><button>◉<small>Cardio</small></button><button>☾<small>Sueño</small></button><button>↗<small>Progreso</small></button><button>♨<small>Alimentación</small></button></div></article>
+        <article class="cfx-card"><header><div><span>FITNESS</span><h2>Iconos Fitness</h2></div></header><div class="cf-icon-action-grid"><button>🏋<small>Entrenamiento</small></button><button>⚡<small>Actividad</small></button><button>◉<small>Cardio</small></button><button>☾<small>Sueño</small></button><button>↗<small>Progreso</small></button><button>♨<small>Alimentación</small></button></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-account-page" *ngSwitchCase="'account-settings'">
         <article class="cfx-card span-2 cf-account-profile">
           <img src="assets/showcase/coach-showcase.svg" alt="Perfil">
           <div><h2>Configuración de Cuenta</h2><p>Administra datos de perfil, notificaciones, facturación, seguridad y aplicaciones conectadas.</p></div>
-          <button class="primary">Upload New</button>
+          <button class="primary">Subir Nueva Imagen</button>
         </article>
 
         <article class="cfx-card">
@@ -520,7 +520,7 @@ interface ExtraConfig {
         </article>
 
         <article class="cfx-card">
-          <header><div><span>LINK ACCOUNTS</span><h2>Link Accounts</h2></div></header>
+          <header><div><span>VINCULAR CUENTAS</span><h2>Vincular Cuentas</h2></div></header>
           <div class="cf-linked-accounts">
             <div><b>Facebook</b><button>Conectar</button></div>
             <div><b>X / Twitter</b><button>Conectar</button></div>
@@ -531,34 +531,34 @@ interface ExtraConfig {
         </article>
 
         <article class="cfx-card span-2">
-          <header><div><span>NOTIFICACIONES</span><h2>Preferencias de Notificaciones</h2><p>Choose which updates you want to receive.</p></div></header>
+          <header><div><span>NOTIFICACIONES</span><h2>Preferencias de Notificaciones</h2><p>Elige qué actualizaciones deseas recibir.</p></div></header>
           <div class="cf-settings-grid">
             <label class="switch"><input type="checkbox" checked><span></span> Mensajes</label>
-            <label class="switch"><input type="checkbox" checked><span></span> Review</label>
-            <label class="switch"><input type="checkbox" checked><span></span> Updates</label>
+            <label class="switch"><input type="checkbox" checked><span></span> Reseñas</label>
+            <label class="switch"><input type="checkbox" checked><span></span> Actualizaciones</label>
             <label class="switch"><input type="checkbox"><span></span> Notificaciones de Escritorio</label>
             <label class="switch"><input type="checkbox" checked><span></span> Correo</label>
             <label class="switch"><input type="checkbox"><span></span> Chat</label>
-            <label class="switch"><input type="checkbox" checked><span></span> Reminder</label>
-            <label class="switch"><input type="checkbox"><span></span> Comment</label>
+            <label class="switch"><input type="checkbox" checked><span></span> Recordatorios</label>
+            <label class="switch"><input type="checkbox"><span></span> Comentarios</label>
           </div>
         </article>
 
         <article class="cfx-card span-2 cf-settings-plans">
-          <header><div><span>PLAN</span><h2>Plan de Membresía</h2><p>You can upgrade and downgrade whenever you want.</p></div></header>
+          <header><div><span>PLAN</span><h2>Plan de Membresía</h2><p>Puedes cambiar de plan cuando lo desees.</p></div></header>
           <div class="cf-plan-row">
             <div><small>BÁSICO</small><b>S/ 60<em>/mes</em></b><p>5 proyectos · Soporte básico · Reportes por correo</p><button>Elegir Básico</button></div>
-            <div class="featured"><small>MOST POPULAR</small><b>S/ 90<em>/mes</em></b><p>Proyectos ilimitados · Soporte prioritario · Análisis avanzado</p><button class="primary">Plan Actual</button></div>
-            <div><small>BUSINESS</small><b>S/ 120<em>/mes</em></b><p>Everything in Pro · Dedicated Manager · Custom Integrations</p><button>Contacto Sales</button></div>
+            <div class="featured"><small>MÁS POPULAR</small><b>S/ 90<em>/mes</em></b><p>Proyectos ilimitados · Soporte prioritario · Análisis avanzado</p><button class="primary">Plan Actual</button></div>
+            <div><small>EMPRESARIAL</small><b>S/ 120<em>/mes</em></b><p>Todo lo del plan Pro · Administrador dedicado · Integraciones personalizadas</p><button>Contactar Ventas</button></div>
           </div>
         </article>
 
         <article class="cfx-card span-2">
           <header><div><span>FACTURACIÓN</span><h2>Historial de Facturación</h2></div></header>
           <div class="cfx-table-wrap"><table><thead><tr><th>N.º de Orden</th><th>Fecha</th><th>Monto</th><th>Estado</th></tr></thead><tbody>
-            <tr><td>MG-10982</td><td>09 October 2026</td><td>S/ 90.00</td><td><span class="cfx-badge">Pagada</span></td></tr>
-            <tr><td>MG-10841</td><td>09 September 2026</td><td>S/ 90.00</td><td><span class="cfx-badge">Pagada</span></td></tr>
-            <tr><td>MG-10721</td><td>09 August 2026</td><td>S/ 90.00</td><td><span class="cfx-badge">Pagada</span></td></tr>
+            <tr><td>MG-10982</td><td>09 octubre 2026</td><td>S/ 90.00</td><td><span class="cfx-badge">Pagada</span></td></tr>
+            <tr><td>MG-10841</td><td>09 septiembre 2026</td><td>S/ 90.00</td><td><span class="cfx-badge">Pagada</span></td></tr>
+            <tr><td>MG-10721</td><td>09 agosto 2026</td><td>S/ 90.00</td><td><span class="cfx-badge">Pagada</span></td></tr>
           </tbody></table></div>
         </article>
 
@@ -579,7 +579,7 @@ interface ExtraConfig {
           <div class="cfx-form">
             <label>Contraseña Actual<input type="password"></label>
             <label>Nueva Contraseña<input type="password"></label>
-            <label>Confirm Nueva Contraseña<input type="password"></label>
+            <label>Confirmar Nueva Contraseña<input type="password"></label>
             <button class="primary">Actualizar Contraseña</button>
           </div>
         </article>
@@ -601,18 +601,18 @@ interface ExtraConfig {
 
       <section class="cfx-grid cfx-grid-2 cf-profile-page" *ngSwitchCase="'my-profile'">
         <article class="cfx-card cfx-profile-card"><img class="cf-profile-cover" src="assets/showcase/hero-showcase.svg" alt="Gimnasio"><div class="cfx-avatar large">A</div><h2>Administrador Mallqui</h2><p>Administrador del Gimnasio</p><div class="cfx-badges"><span>Plan Gold</span><span class="success">Activo</span></div><button class="primary">Editar Perfil</button></article>
-        <article class="cfx-card"><header><div><span>PERFIL</span><h2>Informaciónrmación Personal</h2></div></header><div class="cfx-info"><p><b>Nombre Completo</b><span>Mallqui Administrador del Gimnasio</span></p><p><b>Correo</b><span>admin@mallquigym.com</span></p><p><b>Teléfono</b><span>+51 939 398 148</span></p><p><b>Ubicación</b><span>Pucallpa, Ucayali</span></p><p><b>Rol</b><span>Administrador</span></p></div></article>
+        <article class="cfx-card"><header><div><span>PERFIL</span><h2>Información Personal</h2></div></header><div class="cfx-info"><p><b>Nombre Completo</b><span>Mallqui Administrador del Gimnasio</span></p><p><b>Correo</b><span>admin@mallquigym.com</span></p><p><b>Teléfono</b><span>+51 939 398 148</span></p><p><b>Ubicación</b><span>Pucallpa, Ucayali</span></p><p><b>Rol</b><span>Administrador</span></p></div></article>
         <article class="cfx-card span-2"><header><div><span>ACTIVIDAD</span><h2>Actividad Reciente</h2></div></header><div class="cfx-list"><div><span>✓</span><div><b>Membresía actualizada</b><small>Hoy, 08:20 a. m.</small></div></div><div><span>S/</span><div><b>Pago revisado</b><small>Ayer, 06:10 p. m.</small></div></div><div><span>♚</span><div><b>Nuevo socio registrado</b><small>Ayer, 03:40 p. m.</small></div></div></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-contact-page" *ngSwitchCase="'contact'">
         <article class="cfx-card"><header><div><span>CONTACTO</span><h2>Envíanos un Mensaje</h2></div></header><div class="cfx-form"><label>Nombre<input placeholder="Tu nombre"></label><label>Correo<input type="email" placeholder="tu@correo.com"></label><label>Asunto<input [(ngModel)]="contact.subject" placeholder="Asunto"></label><label>Mensaje<textarea rows="7" [(ngModel)]="contact.message"></textarea></label><button class="primary" (click)="contactSent=true">Enviar Mensaje</button><small class="success-text" *ngIf="contactSent">✓ Mensaje preparado correctamente.</small></div></article>
-        <article class="cfx-card"><header><div><span>MALLQUI GYM</span><h2>Informaciónrmación de Contactoo</h2></div></header><div class="cfx-info"><p><b>Teléfono</b><span>939 398 148</span></p><p><b>Dirección</b><span>Jr. Los Laureles Mz 17 Lt 18</span></p><p><b>Referencia</b><span>Plaza de Laura Bosso</span></p><p><b>Ciudad</b><span>Pucallpa, Ucayali</span></p><p><b>Apertura</b><span>06:00 AM</span></p><p><b>Cierre</b><span>09:30 PM</span></p></div></article>
+        <article class="cfx-card"><header><div><span>MALLQUI GYM</span><h2>Información de Contacto</h2></div></header><div class="cfx-info"><p><b>Teléfono</b><span>939 398 148</span></p><p><b>Dirección</b><span>Jr. Los Laureles Mz 17 Lt 18</span></p><p><b>Referencia</b><span>Plaza de Laura Bosso</span></p><p><b>Ciudad</b><span>Pucallpa, Ucayali</span></p><p><b>Apertura</b><span>06:00 AM</span></p><p><b>Cierre</b><span>09:30 PM</span></p></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'typography'">
         <article class="cfx-card"><h2>Encabezados</h2><div class="cf-type-stack"><h1>h1. Panel del Gimnasio</h1><h2>h2. Panel del Gimnasio</h2><h3>h3. Panel del Gimnasio</h3><h4>h4. Panel del Gimnasio</h4><h5>h5. Panel del Gimnasio</h5><h6>h6. Panel del Gimnasio</h6></div></article>
-        <article class="cfx-card"><h2>Display Encabezados</h2><div class="cf-display-stack"><p class="display-1">Presentación 1</p><p class="display-2">Presentación 2</p><p class="display-3">Presentación 3</p></div></article>
+        <article class="cfx-card"><h2>Encabezados de Presentación</h2><div class="cf-display-stack"><p class="display-1">Presentación 1</p><p class="display-2">Presentación 2</p><p class="display-3">Presentación 3</p></div></article>
         <article class="cfx-card"><h2>Elementos de Texto en Línea</h2><p><mark>Texto resaltado</mark></p><p><del>Texto eliminado</del></p><p><strong>Texto en negrita</strong></p><p><em>Texto en cursiva</em></p><p><small>Texto pequeño</small></p></article>
         <article class="cfx-card"><h2>Texto Destacado y Párrafos</h2><p class="lead">Este es un párrafo destacado usado para contenido introductorio.</p><p>Texto estándar para descripciones, reportes e información del panel.</p><p class="text-muted">El texto atenuado proporciona información secundaria.</p></article>
         <article class="cfx-card"><h2>Cita</h2><blockquote>Entrena con propósito, recupérate con disciplina y mejora cada semana.</blockquote><small>— Mallqui Gym</small></article>
@@ -666,7 +666,7 @@ interface ExtraConfig {
           <span class="cf-error-code">404</span><h2>Página no encontrada</h2><p>La página que buscas puede haber sido eliminada, renombrada o estar temporalmente no disponible.</p>
           <div class="cfx-buttons"><button class="primary" (click)="goAdmin()">Volver al Panel</button><button>Contactar Soporte</button></div>
         </article>
-        <article class="cfx-card"><header><div><span>QUICK ENLACES</span><h2>Páginas Populares</h2></div></header><div class="cf-quick-links"><span>Panel Principal</span><span>Socios</span><span>Pagos</span><span>Reportes</span><span>Configuración de Cuenta</span></div></article>
+        <article class="cfx-card"><header><div><span>ENLACES RÁPIDOS</span><h2>Páginas Populares</h2></div></header><div class="cf-quick-links"><span>Panel Principal</span><span>Socios</span><span>Pagos</span><span>Reportes</span><span>Configuración de Cuenta</span></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-1 cf-special-page" *ngSwitchCase="'maintenance'">
@@ -690,7 +690,7 @@ interface ExtraConfig {
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'external-link'">
         <article class="cfx-card"><header><div><span>ENLACE EXTERNO</span><h2>Recurso de la Plantilla</h2></div></header><p>Abre la referencia original de la plantilla administrativa Crossfit en una nueva pestaña.</p><button class="primary" (click)="openExternal()">Abrir referencia de la plantilla ↗</button></article>
-        <article class="cfx-card"><header><div><span>DOCUMENTOACIÓN</span><h2>Recursos para Desarrollo</h2></div></header><div class="cfx-list"><div><span>BS</span><div><b>Bootstrap 5</b><small>Documentación de diseño y componentes</small></div><em>Externo</em></div><div><span>NG</span><div><b>Angular</b><small>Documentación del framework de la aplicación</small></div><em>Externo</em></div></div></article>
+        <article class="cfx-card"><header><div><span>DOCUMENTACIÓN</span><h2>Recursos para Desarrollo</h2></div></header><div class="cfx-list"><div><span>BS</span><div><b>Bootstrap 5</b><small>Documentación de diseño y componentes</small></div><em>Externo</em></div><div><span>NG</span><div><b>Angular</b><small>Documentación del framework de la aplicación</small></div><em>Externo</em></div></div></article>
         <article class="cfx-card span-2"><header><div><span>ESTADOS DE ENLACE</span><h2>Ejemplos de Enlaces Externos</h2></div></header><div class="cfx-buttons"><button>Enlace Normal ↗</button><button class="primary">Enlace Principal ↗</button><button disabled>Enlace Deshabilitado</button></div></article>
       </section>
 
@@ -712,7 +712,7 @@ interface ExtraConfig {
         <article class="cfx-card"><header><div><span>ENLACE DESHABILITADO</span><h2>Navegación Deshabilitada</h2></div></header><button disabled>Enlace Deshabilitado</button><p>Los elementos de navegación deshabilitados permanecen visibles, pero no se pueden seleccionar.</p></article>
         <article class="cfx-card"><header><div><span>ESTADOS DESHABILITADOS</span><h2>Controles</h2></div></header><div class="cfx-form"><input disabled value="Campo deshabilitado"><select disabled><option>Selección deshabilitada</option></select><button disabled>Botón deshabilitado</button></div></article>
         <article class="cfx-card"><header><div><span>FUNCIÓN BLOQUEADA</span><h2>Función Premium</h2></div></header><p>Esta función estará disponible cuando se habilite el permiso o plan requerido.</p><span class="cfx-badge warning">Bloqueado</span></article>
-        <article class="cfx-card"><header><div><span>SOLO LECTURA</span><h2>Read-only Región</h2></div></header><div class="cfx-form"><input readonly value="Solo Lectura value"><textarea readonly rows="3">Esta información se puede visualizar, pero no modificar.</textarea></div></article>
+        <article class="cfx-card"><header><div><span>SOLO LECTURA</span><h2>Estado de Solo Lectura</h2></div></header><div class="cfx-form"><input readonly value="Valor de solo lectura"><textarea readonly rows="3">Esta información se puede visualizar, pero no modificar.</textarea></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2" *ngSwitchDefault>
@@ -988,7 +988,7 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
     'accordions':{title:'Acordeones',subtitle:'Contenido expandible y organizado.',icon:'☷',group:'Componentes jQuery'},
     'carousel':{title:'Carrusel',subtitle:'Contenido destacado deslizable.',icon:'↔',group:'Componentes jQuery'},
     'modals':{title:'Modales',subtitle:'Ventanas modales para acciones y formularios.',icon:'▣',group:'Componentes jQuery'},
-    'popovers':{title:'Ventanas Emergentes',subtitle:'Informaciónrmación contextual sobre acciones.',icon:'◇',group:'Componentes jQuery'},
+    'popovers':{title:'Ventanas Emergentes',subtitle:'Información contextual sobre acciones.',icon:'◇',group:'Componentes jQuery'},
     'tabs-ui':{title:'Pestañas',subtitle:'Navegación interna por pestañas.',icon:'▥',group:'Componentes jQuery'},
     'tooltips':{title:'Ayudas Emergentes',subtitle:'Ayudas breves sobre controles.',icon:'?',group:'Componentes jQuery'},
     'forms':{title:'Formularios',subtitle:'Bootstrap form examples.',icon:'☷',group:'Formularios'},
@@ -1013,7 +1013,7 @@ export class AdminCrossfitExtrasComponent implements OnChanges {
     'spinners':{title:'Indicadores de Carga',subtitle:'Indicadores animados de carga.',icon:'◌',group:'Componentes'},
     'icons':{title:'Iconos',subtitle:'Biblioteca visual para el dashboard.',icon:'★',group:'Base Visual'},
     'account-settings':{title:'Configuración de Cuenta',subtitle:'Perfil, notificaciones, facturación y seguridad.',icon:'⚙',group:'Cuenta'},
-    'my-profile':{title:'Mi Perfil',subtitle:'Informaciónrmación del perfil del administrador.',icon:'♙',group:'Cuenta'},
+    'my-profile':{title:'Mi Perfil',subtitle:'Información del perfil del administrador.',icon:'♙',group:'Cuenta'},
     'contact':{title:'Contacto',subtitle:'Formulario y datos de contacto.',icon:'☎',group:'Páginas'},
     'typography':{title:'Tipografía',subtitle:'Jerarquía visual de textos.',icon:'T',group:'Base Visual'},
     'login-signup':{title:'Acceso / Registro',subtitle:'Vistas de autenticación.',icon:'↪',group:'Páginas'},
