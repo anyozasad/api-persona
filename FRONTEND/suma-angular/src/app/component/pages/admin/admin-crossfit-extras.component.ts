@@ -21,26 +21,6 @@ interface ExtraConfig {
       <em>{{config.group}}</em>
     </div>
 
-    <section class="cfx-hero">
-      <div>
-        <span class="cfx-kicker">MALLQUI GYM · {{config.group | uppercase}}</span>
-        <h1>{{config.title}}</h1>
-        <p>{{config.subtitle}}</p>
-        <div class="cfx-metrics">
-          <article><i>{{config.icon}}</i><b>{{metric1}}</b><small>Elementos</small></article>
-          <article><i>✓</i><b>Activo</b><small>Estado</small></article>
-          <article><i>▦</i><b>Responsive</b><small>Diseño</small></article>
-          <article><i>⚡</i><b>Bootstrap UI</b><small>Referencia</small></article>
-        </div>
-      </div>
-      <aside>
-        <div class="cfx-art-orb one"></div>
-        <div class="cfx-art-orb two"></div>
-        <div class="cfx-art-card"><span>{{config.icon}}</span><b>{{config.title}}</b><small>Mallqui Gym</small></div>
-        <div class="cfx-art-chart"><i style="height:38%"></i><i style="height:62%"></i><i style="height:48%"></i><i style="height:82%"></i><i style="height:70%"></i></div>
-      </aside>
-    </section>
-
     <ng-container [ngSwitch]="viewSection">
 
       <section class="cfx-grid cfx-grid-3 cf-component-showcase" *ngSwitchCase="'sports-components'">
