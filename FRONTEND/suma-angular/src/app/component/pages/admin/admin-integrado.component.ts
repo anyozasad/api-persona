@@ -488,7 +488,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </section>
 
-      <section class="cf-universal-module" *ngIf="seccion!=='dashboard' && !['reportes','rutinas','nutricion','asistencias','entrenador','planes','pagos'].includes(seccion) && !extraModules.includes(seccion) && !suiteModules.includes(seccion)">
+      <section class="cf-universal-module" *ngIf="!modulosConVistaPropia.includes(seccion) && !extraModules.includes(seccion) && !suiteModules.includes(seccion)">
         <div class="cf-special-crumb">
           <span>⌂</span><small>Inicio</small><b>›</b><strong>{{tituloActual}}</strong>
           <em>{{estadoModuloActual}}</em>
@@ -2373,6 +2373,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     {hora:'18:00',actividad:'Entrenamiento Personal',detalle:'Carlos Ramírez'}
   ];
   suiteModules = ['equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
+  modulosConVistaPropia = [
+    'dashboard','clientes','membresias','pagos','entrenador','clases','asistencias','attendance-tools',
+    'rutinas','reservas','caja','ventas','historial-ventas','gastos','inventario','productos','kardex',
+    'proveedores','compras','categorias','reportes','reportes-admin','reporte-asistencias','usuarios',
+    'auditoria','configuracion','opiniones','nutricion','entrenador-admin','rutinas-admin','pagos-admin','planes-admin'
+  ];
   navGroups:any = {members:false,payments:false,trainers:false,training:false,diet:false,equipment:false,events:false,ui:false,operations:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
   uiElementLinks = [
     {id:'alerts',label:'Alertas'},{id:'avatars',label:'Avatares'},{id:'badges',label:'Insignias'},
@@ -2867,6 +2873,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   private normalizarSegcion(id:string):string{
+    if(id==='reportes') return 'reportes-admin';
     if(id==='socios-hub') return 'clientes';
     if(id==='servicios') return 'clases';
     if(id==='atencion') return 'soporte';
@@ -2948,7 +2955,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         ];
       case 'reportes':
         return [
-          {id:'reportes',nombre:'Resumen'},
+          {id:'reportes-admin',nombre:'Resumen Administrativo'},
           {id:'reporte-asistencias',nombre:'Asistencias'}
         ];
       case 'sistema':
@@ -2971,7 +2978,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       inventario:'inventario',
       'gestion-fitness':'nutricion',
       atencion:'soporte',
-      reportes:'reportes',
+      reportes:'reportes-admin',
       sistema:'configuracion'
     };
     this.cambiarSegcion(destino[modulo]||'dashboard');
