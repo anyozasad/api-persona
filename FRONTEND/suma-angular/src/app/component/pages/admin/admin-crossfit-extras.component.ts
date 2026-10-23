@@ -110,15 +110,6 @@ interface ExtraConfig {
         <article class="cfx-card"><header><div><span>SUMMARY</span><h2>Member Overview</h2></div></header><div class="cf-counter-row"><span><b>{{members.length}}</b><small>Total Members</small></span><span><b>{{filteredMembers.length}}</b><small>Visible</small></span><span><b>1</b><small>Trainer</small></span></div></article>
       </section>
 
-      <section class="cf-member-card-grid">
-          <article class="cf-member-profile-card" *ngFor="let m of filteredMembers">
-            <img src="assets/showcase/coach-showcase.svg" [alt]="m.nombres">
-            <div><h2>{{m.nombres}} {{m.apellidos}}</h2><p>{{m.objetivo || 'Fitness Member'}}</p><small>{{m.antiguedad || 'Mallqui Gym Member'}}</small><button>Contact</button></div>
-          </article>
-          <article class="cfx-card cfx-empty-page" *ngIf="!filteredMembers.length"><span class="cfx-big-icon">♚</span><h2>No members found</h2><p>Try another search.</p></article>
-        </section>
-      </section>
-
       <section class="cfx-grid cfx-grid-1 cf-live-member-form" *ngSwitchCase="'add-member'">
         <article class="cfx-card">
           <header><div><span>MEMBERS</span><h2>Add New Member</h2><p>* Required fields</p></div></header>
