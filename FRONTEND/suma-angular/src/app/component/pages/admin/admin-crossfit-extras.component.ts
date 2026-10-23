@@ -829,6 +829,38 @@ interface ExtraConfig {
     @media(max-width:850px){.cf-icon-action-grid{grid-template-columns:repeat(3,1fr)}.cf-accordion-grid,.cf-module-tree{grid-template-columns:1fr}.cf-auth-page-full{grid-template-columns:1fr!important}.cf-auth-visual{display:none!important}}
 
 
+
+    /* PRESENTACION_LEGIBLE_EXTRAS */
+    :host .cfx-page{font-size:12px!important}
+    :host .cfx-crumb{height:46px!important;min-height:46px!important;padding:0 16px!important}
+    :host .cfx-crumb small,:host .cfx-crumb strong{font-size:11px!important}
+    :host .cfx-crumb span,:host .cfx-crumb b{font-size:12px!important}
+    :host .cfx-crumb em{min-height:28px!important;padding:0 10px!important;font-size:10px!important}
+    :host .cfx-grid{gap:12px!important;margin:12px 16px!important}
+    :host .cfx-card{padding:16px!important}
+    :host .cfx-card h1{font-size:20px!important}
+    :host .cfx-card h2{font-size:15px!important}
+    :host .cfx-card h3{font-size:13px!important}
+    :host .cfx-card p{font-size:11px!important;line-height:1.5!important}
+    :host .cfx-card small{font-size:10px!important}
+    :host .cfx-card button{min-height:34px!important;padding:0 12px!important;font-size:11px!important}
+    :host .cfx-form label,:host .cf-member-form-grid label{font-size:11px!important}
+    :host .cfx-form input,:host .cfx-form select,:host .cfx-form textarea,
+    :host .cf-member-form-grid input,:host .cf-member-form-grid select,:host .cf-member-form-grid textarea,
+    :host .cfx-toolbar input,:host .cfx-toolbar select{min-height:38px!important;padding:8px 10px!important;font-size:11px!important}
+    :host .cfx-table-wrap th{padding:9px 10px!important;font-size:10.5px!important}
+    :host .cfx-table-wrap td{padding:10px!important;font-size:11px!important}
+    :host .cfx-badge,:host .cfx-badges span{min-height:24px!important;padding:0 8px!important;font-size:9.5px!important}
+    :host .cfx-list b{font-size:11px!important}
+    :host .cfx-list small,:host .cfx-list em{font-size:9.5px!important}
+    :host .cf-member-profile-card h2{font-size:15px!important}
+    :host .cf-member-profile-card p{font-size:11px!important}
+    :host .cf-member-profile-card small{font-size:10px!important}
+    :host .cf-plan-row b{font-size:22px!important}
+    :host .cf-plan-row small,:host .cf-app-grid small{font-size:10px!important}
+    :host .cf-app-grid b{font-size:11px!important}
+    @media(max-width:700px){:host .cfx-grid{margin:10px!important}}
+
   `]
 })
 export class AdminCrossfitExtrasComponent implements OnChanges {
