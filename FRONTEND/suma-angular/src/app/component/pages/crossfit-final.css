@@ -7205,3 +7205,20 @@ button.danger,
   .cf-ref-stats{grid-template-columns:repeat(2,1fr)!important}
   .cf-ref-bottom{grid-template-columns:1fr!important}
 }
+
+
+/* DASHBOARD_HOME_FIEL_REFERENCIA_569574 */
+.cf-reference-dashboard>.cf-ref-secondary,
+.cf-reference-dashboard>.cf-ref-tertiary,
+.cf-reference-dashboard>.cf-ref-insights{
+  display:none!important;
+}
+.cf-reference-dashboard{
+  padding-bottom:10px!important;
+}
+.cf-global-footer{
+  margin-top:10px!important;
+  padding:10px 0!important;
+  color:#9a9cab!important;
+  font-size:8px!important;
+}
