@@ -54,7 +54,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <button type="button" [class.active]="seccion==='dashboard'" (click)="cambiarSegcion('dashboard')">
           <span class="admin-main-nav-icon">⌂</span><span>Inicio</span>
         </button>
-        <button type="button" [class.active]="seccion==='reportes'" (click)="cambiarSegcion('reportes')">
+        <button type="button" [class.active]="seccion==='reportes-admin'" (click)="cambiarSegcion('reportes-admin')">
           <span class="admin-main-nav-icon">▥</span><span>Analíticas</span>
         </button>
         <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSegcion('noticias')">
@@ -64,30 +64,106 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <span class="admin-main-nav-icon">◫</span><span>Agenda</span>
         </button>
 
-        <button type="button" class="cf-nav-group-head mg-admin-group" [class.active]="navGroups.menu" (click)="toggleNavGroup('menu')">
-          <span class="admin-main-nav-icon">☷</span><span>Administración</span><i>{{navGroups.menu?'⌃':'⌄'}}</i>
+        <button type="button" class="cf-nav-group-head mg-admin-group" [class.active]="navGroups.members" (click)="toggleNavGroup('members')">
+          <span class="admin-main-nav-icon">♚</span><span>Socios y Servicios</span><i>{{navGroups.members?'⌃':'⌄'}}</i>
         </button>
-        <div class="cf-nav-children" *ngIf="navGroups.menu">
+        <div class="cf-nav-children" *ngIf="navGroups.members">
           <button type="button" [class.active]="seccion==='clientes'" (click)="cambiarSegcion('clientes')"><span>•</span><span>Socios</span></button>
+          <button type="button" [class.active]="seccion==='members-list'" (click)="cambiarSegcion('members-list')"><span>•</span><span>Lista de Socios</span></button>
+          <button type="button" [class.active]="seccion==='members-cards'" (click)="cambiarSegcion('members-cards')"><span>•</span><span>Tarjetas de Socios</span></button>
           <button type="button" [class.active]="seccion==='membresias'" (click)="cambiarSegcion('membresias')"><span>•</span><span>Membresías</span></button>
           <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSegcion('pagos')"><span>•</span><span>Pagos</span></button>
           <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSegcion('entrenador')"><span>•</span><span>Entrenador</span></button>
-          <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSegcion('rutinas')"><span>•</span><span>Rutinas</span></button>
-          <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSegcion('asistencias')"><span>•</span><span>Asistencias</span></button>
+          <button type="button" [class.active]="seccion==='trainer-profile'" (click)="cambiarSegcion('trainer-profile')"><span>•</span><span>Perfil del Entrenador</span></button>
           <button type="button" [class.active]="seccion==='clases'" (click)="cambiarSegcion('clases')"><span>•</span><span>Clases</span></button>
+          <button type="button" [class.active]="seccion==='reservas'" (click)="cambiarSegcion('reservas')"><span>•</span><span>Reservas</span></button>
+        </div>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="navGroups.training" (click)="toggleNavGroup('training')">
+          <span class="admin-main-nav-icon">🏋</span><span>Fitness</span><i>{{navGroups.training?'⌃':'⌄'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.training">
+          <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSegcion('rutinas')"><span>•</span><span>Rutinas</span></button>
+          <button type="button" [class.active]="seccion==='nutricion'" (click)="cambiarSegcion('nutricion')"><span>•</span><span>Nutrición</span></button>
+          <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSegcion('asistencias')"><span>•</span><span>Asistencias</span></button>
+          <button type="button" [class.active]="seccion==='attendance-tools'" (click)="cambiarSegcion('attendance-tools')"><span>•</span><span>Control de Acceso</span></button>
+          <button type="button" [class.active]="seccion==='reporte-asistencias'" (click)="cambiarSegcion('reporte-asistencias')"><span>•</span><span>Reporte de Asistencias</span></button>
+          <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSegcion('planes')"><span>•</span><span>Planes y Tarifas</span></button>
+          <button type="button" [class.active]="seccion==='sports-components'" (click)="cambiarSegcion('sports-components')"><span>•</span><span>Seguimiento Deportivo</span></button>
+        </div>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="navGroups.operations" (click)="toggleNavGroup('operations')">
+          <span class="admin-main-nav-icon">▣</span><span>Operación</span><i>{{navGroups.operations?'⌃':'⌄'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.operations">
+          <button type="button" [class.active]="seccion==='caja'" (click)="cambiarSegcion('caja')"><span>•</span><span>Caja</span></button>
+          <button type="button" [class.active]="seccion==='ventas'" (click)="cambiarSegcion('ventas')"><span>•</span><span>Ventas</span></button>
+          <button type="button" [class.active]="seccion==='historial-ventas'" (click)="cambiarSegcion('historial-ventas')"><span>•</span><span>Historial de Ventas</span></button>
+          <button type="button" [class.active]="seccion==='gastos'" (click)="cambiarSegcion('gastos')"><span>•</span><span>Gastos</span></button>
+          <button type="button" [class.active]="seccion==='compras'" (click)="cambiarSegcion('compras')"><span>•</span><span>Compras</span></button>
+        </div>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="navGroups.equipment" (click)="toggleNavGroup('equipment')">
+          <span class="admin-main-nav-icon">▦</span><span>Inventario y Equipos</span><i>{{navGroups.equipment?'⌃':'⌄'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.equipment">
           <button type="button" [class.active]="seccion==='inventario'" (click)="cambiarSegcion('inventario')"><span>•</span><span>Inventario</span></button>
           <button type="button" [class.active]="seccion==='productos'" (click)="cambiarSegcion('productos')"><span>•</span><span>Productos</span></button>
+          <button type="button" [class.active]="seccion==='categorias'" (click)="cambiarSegcion('categorias')"><span>•</span><span>Categorías</span></button>
           <button type="button" [class.active]="seccion==='proveedores'" (click)="cambiarSegcion('proveedores')"><span>•</span><span>Proveedores</span></button>
-          <button type="button" [class.active]="seccion==='compras'" (click)="cambiarSegcion('compras')"><span>•</span><span>Compras</span></button>
-          <button type="button" [class.active]="seccion==='ventas'" (click)="cambiarSegcion('ventas')"><span>•</span><span>Ventas</span></button>
-          <button type="button" [class.active]="seccion==='caja'" (click)="cambiarSegcion('caja')"><span>•</span><span>Caja</span></button>
-          <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSegcion('equipos')"><span>•</span><span>Equipos</span></button>
+          <button type="button" [class.active]="seccion==='kardex'" (click)="cambiarSegcion('kardex')"><span>•</span><span>Kardex / Stock</span></button>
+          <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSegcion('equipos')"><span>•</span><span>Equipos del Gimnasio</span></button>
+        </div>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="navGroups.events" (click)="toggleNavGroup('events')">
+          <span class="admin-main-nav-icon">◇</span><span>Contenido y Atención</span><i>{{navGroups.events?'⌃':'⌄'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.events">
           <button type="button" [class.active]="seccion==='eventos'" (click)="cambiarSegcion('eventos')"><span>•</span><span>Eventos</span></button>
           <button type="button" [class.active]="seccion==='galeria'" (click)="cambiarSegcion('galeria')"><span>•</span><span>Galería</span></button>
-          <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSegcion('planes')"><span>•</span><span>Planes</span></button>
-          <button type="button" [class.active]="seccion==='salarios'" (click)="cambiarSegcion('salarios')"><span>•</span><span>Salarios</span></button>
+          <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSegcion('noticias')"><span>•</span><span>Noticias y Novedades</span></button>
+          <button type="button" [class.active]="seccion==='soporte'" (click)="cambiarSegcion('soporte')"><span>•</span><span>Soporte</span></button>
+          <button type="button" [class.active]="seccion==='opiniones'" (click)="cambiarSegcion('opiniones')"><span>•</span><span>Opiniones</span></button>
+          <button type="button" [class.active]="seccion==='comunicacion'" (click)="cambiarSegcion('comunicacion')"><span>•</span><span>Notificaciones</span></button>
+        </div>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="navGroups.payments" (click)="toggleNavGroup('payments')">
+          <span class="admin-main-nav-icon">S/</span><span>Finanzas</span><i>{{navGroups.payments?'⌃':'⌄'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.payments">
+          <button type="button" [class.active]="seccion==='ingresos'" (click)="cambiarSegcion('ingresos')"><span>•</span><span>Ingresos</span></button>
           <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSegcion('facturas')"><span>•</span><span>Facturas</span></button>
+          <button type="button" [class.active]="seccion==='invoices-list'" (click)="cambiarSegcion('invoices-list')"><span>•</span><span>Lista de Facturas</span></button>
+          <button type="button" [class.active]="seccion==='create-invoice'" (click)="cambiarSegcion('create-invoice')"><span>•</span><span>Crear Factura</span></button>
+          <button type="button" [class.active]="seccion==='expenses'" (click)="cambiarSegcion('expenses')"><span>•</span><span>Gastos Administrativos</span></button>
+          <button type="button" [class.active]="seccion==='salarios'" (click)="cambiarSegcion('salarios')"><span>•</span><span>Salarios</span></button>
+          <button type="button" [class.active]="seccion==='payslip'" (click)="cambiarSegcion('payslip')"><span>•</span><span>Boleta de Pago</span></button>
+        </div>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="navGroups.menu" (click)="toggleNavGroup('menu')">
+          <span class="admin-main-nav-icon">⚙</span><span>Sistema</span><i>{{navGroups.menu?'⌃':'⌄'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.menu">
+          <button type="button" [class.active]="seccion==='reportes-admin'" (click)="cambiarSegcion('reportes-admin')"><span>•</span><span>Reportes Administrativos</span></button>
           <button type="button" [class.active]="seccion==='usuarios'" (click)="cambiarSegcion('usuarios')"><span>•</span><span>Usuarios</span></button>
+          <button type="button" [class.active]="seccion==='auditoria'" (click)="cambiarSegcion('auditoria')"><span>•</span><span>Auditoría</span></button>
+          <button type="button" [class.active]="seccion==='configuracion'" (click)="cambiarSegcion('configuracion')"><span>•</span><span>Configuración</span></button>
+          <button type="button" [class.active]="seccion==='my-profile'" (click)="cambiarSegcion('my-profile')"><span>•</span><span>Mi Perfil</span></button>
+        </div>
+
+        <button type="button" class="cf-nav-group-head" [class.active]="navGroups.ui" (click)="toggleNavGroup('ui')">
+          <span class="admin-main-nav-icon">✦</span><span>Herramientas</span><i>{{navGroups.ui?'⌃':'⌄'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.ui">
+          <button type="button" [class.active]="seccion==='tables'" (click)="cambiarSegcion('tables')"><span>•</span><span>Tablas</span></button>
+          <button type="button" [class.active]="seccion==='data-tables'" (click)="cambiarSegcion('data-tables')"><span>•</span><span>Tablas de Datos</span></button>
+          <button type="button" [class.active]="seccion==='graphs'" (click)="cambiarSegcion('graphs')"><span>•</span><span>Gráficos</span></button>
+          <button type="button" [class.active]="seccion==='forms'" (click)="cambiarSegcion('forms')"><span>•</span><span>Formularios</span></button>
+          <button type="button" [class.active]="seccion==='alerts'" (click)="cambiarSegcion('alerts')"><span>•</span><span>Alertas</span></button>
+          <button type="button" [class.active]="seccion==='cards-ui'" (click)="cambiarSegcion('cards-ui')"><span>•</span><span>Tarjetas</span></button>
+          <button type="button" [class.active]="seccion==='modals'" (click)="cambiarSegcion('modals')"><span>•</span><span>Modales</span></button>
+          <button type="button" [class.active]="seccion==='tabs-ui'" (click)="cambiarSegcion('tabs-ui')"><span>•</span><span>Pestañas</span></button>
+          <button type="button" [class.active]="seccion==='icons'" (click)="cambiarSegcion('icons')"><span>•</span><span>Iconos</span></button>
         </div>
       </nav>
 
@@ -2807,7 +2883,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(['inventario','productos','kardex','proveedores','compras','categorias'].includes(s)) return 'inventario';
     if(['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'].includes(s)) return 'gestion-fitness';
     if(['soporte','opiniones','comunicacion'].includes(s)) return 'atencion';
-    if(['reportes','reporte-asistencias'].includes(s)) return 'reportes';
+    if(['reportes','reportes-admin','reporte-asistencias'].includes(s)) return 'reportes';
     if(['usuarios','auditoria','configuracion'].includes(s)) return 'sistema';
     return 'dashboard';
   }
@@ -3285,6 +3361,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.cargarCaja();
         break;
       case 'reportes':
+      case 'reportes-admin':
         this.cargarReportes();
         break;
       case 'usuarios':
