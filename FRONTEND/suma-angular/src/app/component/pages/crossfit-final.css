@@ -5643,3 +5643,334 @@ button.danger,
   .cf-live-diet-top{grid-template-columns:1fr!important}
 }
 
+
+/* CROSSFit 569574 · OFFICIAL SCREENSHOT MATCH */
+/* Matched against the official 800x500 TemplateMonster product screenshot. */
+:root{
+  --cf-shell-sidebar:clamp(176px,13.2vw,206px)!important;
+  --cf-shell-header:44px!important;
+}
+.admin-home-redesign .admin-nav{
+  width:var(--cf-shell-sidebar)!important;
+  padding:5px 7px 8px!important;
+}
+.admin-home-redesign .admin-wix-topbar{
+  left:var(--cf-shell-sidebar)!important;
+  height:var(--cf-shell-header)!important;
+  min-height:var(--cf-shell-header)!important;
+  grid-template-columns:185px minmax(0,1fr) 168px auto!important;
+  gap:8px!important;
+  padding:0 10px!important;
+}
+.admin-home-redesign .admin-content{
+  margin-left:var(--cf-shell-sidebar)!important;
+  padding-top:var(--cf-shell-header)!important;
+}
+.admin-home-redesign .crossfit-profile-card{
+  min-height:92px!important;
+  padding:3px 3px 7px!important;
+  margin-bottom:4px!important;
+}
+.admin-home-redesign .crossfit-profile-avatar{
+  width:46px!important;
+  height:46px!important;
+  box-shadow:0 0 0 2px #f0effd!important;
+}
+.admin-home-redesign .crossfit-profile-copy strong{font-size:10px!important}
+.admin-home-redesign .crossfit-profile-copy small{font-size:7.5px!important}
+.admin-home-redesign .crossfit-profile-copy em{
+  min-height:17px!important;
+  margin-top:3px!important;
+  padding:0 7px!important;
+  font-size:7px!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav button{
+  min-height:29px!important;
+  grid-template-columns:20px minmax(0,1fr) auto!important;
+  gap:6px!important;
+  padding:3px 6px!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav .admin-main-nav-icon{
+  width:18px!important;
+  height:18px!important;
+  font-size:8.5px!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav button>span:nth-child(2){
+  font-size:8.7px!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav button>i{font-size:8px!important}
+.admin-home-redesign .cf-nav-children{
+  padding-left:18px!important;
+}
+.admin-home-redesign .cf-nav-children button{
+  min-height:25px!important;
+  padding:2px 4px!important;
+}
+.admin-home-redesign .cf-nav-children button>span:nth-child(2){
+  font-size:8px!important;
+}
+.admin-home-redesign .cf-fitness-center-card{
+  min-height:39px!important;
+  margin:5px 1px 1px!important;
+  padding:5px 6px!important;
+}
+.admin-home-redesign .cf-fitness-center-card>span{
+  width:24px!important;
+  height:24px!important;
+  font-size:9px!important;
+}
+.admin-home-redesign .cf-fitness-center-card small{font-size:7px!important}
+.admin-home-redesign .cf-fitness-center-card b{font-size:7.5px!important}
+
+/* Exact topbar density from the product image. */
+.admin-home-redesign .admin-top-brand-mark{
+  width:23px!important;
+  height:23px!important;
+  border-radius:4px!important;
+  font-size:9px!important;
+}
+.admin-home-redesign .cf-logo-stack{
+  width:21px!important;
+  height:22px!important;
+  transform:scale(.72)!important;
+}
+.admin-home-redesign .crossfit-top-logo strong{
+  font-size:11px!important;
+}
+.admin-home-redesign .admin-wix-search{
+  width:150px!important;
+  height:24px!important;
+  border-radius:13px!important;
+  padding:0 8px!important;
+}
+.admin-home-redesign .admin-wix-search input{
+  font-size:7.5px!important;
+}
+.admin-home-redesign .admin-top-actions>button:not(.admin-top-user),
+.admin-home-redesign .admin-top-user{
+  width:22px!important;
+  height:22px!important;
+  font-size:8px!important;
+}
+
+/* Purple breadcrumb row directly below the header. */
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb,
+.cf-special-crumb,
+.cfx-crumb{
+  min-height:35px!important;
+  height:35px!important;
+  padding:0 10px!important;
+  gap:6px!important;
+}
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb>span,
+.cf-special-crumb>span,
+.cfx-crumb>span{font-size:8.5px!important}
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb small,
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb strong,
+.cf-special-crumb small,.cf-special-crumb strong,
+.cfx-crumb small,.cfx-crumb strong{font-size:7.5px!important}
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb .cf-goal,
+.cf-special-crumb em,.cfx-crumb em{
+  min-height:19px!important;
+  padding:0 6px!important;
+  font-size:6.8px!important;
+}
+
+/* Hero image exactly follows the screenshot proportions. */
+.cf-ref-hero{
+  min-height:276px!important;
+  grid-template-columns:minmax(0,54%) minmax(325px,46%)!important;
+  margin:7px 9px 0!important;
+  border-radius:6px!important;
+}
+.cf-ref-hero-copy{padding:13px 14px 9px!important}
+.cf-ref-hero-copy h1{
+  font-size:15px!important;
+  line-height:1.1!important;
+}
+.cf-ref-hero-copy>p{
+  margin-top:3px!important;
+  font-size:7.5px!important;
+}
+.cf-ref-mini-chart{
+  height:154px!important;
+  gap:10px!important;
+  margin:22px 3px 0!important;
+}
+.cf-ref-mini-track{
+  width:25px!important;
+  height:124px!important;
+}
+.cf-ref-mini-fill{border-radius:5px 5px 1px 1px!important}
+.cf-ref-mini-day small,.cf-ref-mini-legend{font-size:6.8px!important}
+.cf-ref-mini-legend{gap:8px!important;margin-top:2px!important}
+.cf-ref-mini-legend i,.cf-ref-chart-legend i,.cf-ref-split-list i{
+  width:5px!important;height:5px!important;
+}
+
+/* KPI row is deliberately low and compact like the reference. */
+.cf-ref-stats{
+  gap:7px!important;
+  margin:7px 9px 7px!important;
+}
+.cf-ref-stats button{
+  min-height:66px!important;
+  padding:8px 9px!important;
+  grid-template-columns:minmax(0,1fr) 28px!important;
+  border-radius:5px!important;
+}
+.cf-ref-stats small{font-size:7.2px!important}
+.cf-ref-stats strong{
+  margin:3px 0 1px!important;
+  font-size:14px!important;
+}
+.cf-ref-stats span{font-size:6.8px!important}
+.cf-ref-stats i{
+  width:27px!important;
+  height:27px!important;
+  font-size:0!important;
+}
+.cf-ref-stats i::before{
+  display:block;
+  color:#fff;
+  font-size:11px;
+  line-height:1;
+  font-style:normal;
+}
+.cf-ref-stats button:nth-child(1) i::before{content:'◉'}
+.cf-ref-stats button:nth-child(2) i::before{content:'⚡'}
+.cf-ref-stats button:nth-child(3) i::before{content:'↗'}
+.cf-ref-stats button:nth-child(4) i::before{content:'◔'}
+
+/* Main chart row takes most of the lower fold exactly as the preview. */
+.cf-ref-bottom{
+  grid-template-columns:minmax(0,2.55fr) minmax(230px,.95fr)!important;
+  gap:7px!important;
+  margin:0 9px 9px!important;
+}
+.cf-ref-bottom>article{
+  min-height:282px!important;
+  padding:9px 10px!important;
+  border-radius:5px!important;
+}
+.cf-ref-bottom h2{font-size:9.5px!important}
+.cf-ref-bottom header p,
+.cf-ref-bottom header>span,
+.cf-ref-chart-legend{font-size:6.7px!important}
+.cf-ref-line-chart{
+  height:215px!important;
+  margin-top:2px!important;
+}
+.cf-ref-xaxis{font-size:6.5px!important}
+.cf-ref-donut{
+  width:122px!important;
+  height:122px!important;
+  margin:25px auto 13px!important;
+}
+.cf-ref-donut:after{width:79px!important;height:79px!important}
+.cf-ref-donut strong{font-size:12px!important}
+.cf-ref-donut small,
+.cf-ref-split-list p,
+.cf-ref-split-list p b{font-size:7px!important}
+
+/* All secondary pages keep the exact same frame and content width. */
+.cfx-page>.cfx-grid,
+.cf-live-page>:not(.cf-special-crumb),
+.gym-suite.cf-live-suite>.cf-suite-toolbar,
+.gym-suite.cf-live-suite>.cf-suite-equipment-grid,
+.gym-suite.cf-live-suite>.cf-suite-events,
+.gym-suite.cf-live-suite>.cf-suite-gallery,
+.gym-suite.cf-live-suite>.cf-suite-news,
+.gym-suite.cf-live-suite>.cf-suite-salary,
+.gym-suite.cf-live-suite>.cf-suite-income,
+.gym-suite.cf-live-suite>.cf-suite-invoices,
+.gym-suite.cf-live-suite>.gym-suite-panel{
+  margin-left:9px!important;
+  margin-right:9px!important;
+}
+.cfx-page>.cfx-grid{margin-top:9px!important;margin-bottom:9px!important}
+.cf-live-page>:not(.cf-special-crumb){margin-top:8px!important;margin-bottom:8px!important}
+.gym-suite.cf-live-suite>.cf-suite-toolbar{margin-top:8px!important;margin-bottom:7px!important}
+
+/* Cards throughout the app use the same visual weight as dashboard cards. */
+.cfx-card,.cf-live-card,.cf-suite-toolbar,
+.cf-suite-equipment-grid>article,.cf-suite-events>article,
+.cf-suite-gallery>article,.cf-suite-news>article,
+.cf-suite-income-cards>article,.cf-live-summary4 article,
+.cf-live-trainer-card,.cf-live-pricing-grid>article,
+.cf-trainer-profile-stats>article,.cf-live-weekly-diet,
+.cf-weekly-diet-grid article,.clients-v3-hero,.clients-v3-stats article,
+.admin-list-card,.management-card,.routine-editor-card,.config-card,
+.feedback-admin-head,.feedback-admin-kpis article,.feedback-admin-list>article{
+  border-color:#ecebf3!important;
+  border-radius:5px!important;
+  box-shadow:0 1px 5px rgba(61,57,102,.025)!important;
+}
+.cfx-card,.cf-live-card,.admin-list-card,.management-card,.routine-editor-card,.config-card{
+  padding:10px!important;
+}
+
+/* Tables/forms are compact Bootstrap-like, not oversized custom cards. */
+.cfx-table-wrap th,.gym-suite-table th,.management-table th,.clients-v3-table th{
+  height:30px!important;
+  padding:6px 8px!important;
+  font-size:7.5px!important;
+}
+.cfx-table-wrap td,.gym-suite-table td,.management-table td,.clients-v3-table td{
+  padding:7px 8px!important;
+  font-size:8px!important;
+}
+.cfx-form label,.cf-member-form-grid label,.gym-suite-form-grid label,
+.management-grid label,.config-card label{font-size:8px!important}
+.cfx-form input,.cfx-form select,.cfx-form textarea,
+.cf-member-form-grid input,.cf-member-form-grid select,.cf-member-form-grid textarea,
+.gym-suite-form-grid input,.gym-suite-form-grid select,.gym-suite-form-grid textarea,
+.cfx-toolbar input,.cfx-toolbar select,.gym-suite-search input,.gym-suite select,
+.management-grid input,.management-grid select,.management-grid textarea,
+.config-card input,.config-card select,.config-card textarea{
+  min-height:31px!important;
+  padding:6px 8px!important;
+  font-size:8px!important;
+}
+.cfx-card button,.cf-live-page button,.gym-suite button,.admin-primary,
+.clients-v3-new,.config-save-bar button,.feedback-admin-actions button,.admin-secondary{
+  min-height:27px!important;
+  padding:0 8px!important;
+  border-radius:4px!important;
+  font-size:8px!important;
+}
+
+/* Keep non-dashboard headings restrained like the original Bootstrap pages. */
+.cfx-card h1,.cf-live-card h1,.cf-suite-toolbar h1,.clients-v3-hero h2{font-size:15px!important}
+.cfx-card h2,.cf-live-card h2,.cf-suite-salary h2,.cf-suite-events h2,.cf-live-weekly-diet h2{font-size:10px!important}
+.cfx-card h3,.cf-live-card h3,.cf-suite-equipment-grid h3,.cf-suite-event-main h3,.cf-suite-news h3{font-size:9px!important}
+.cfx-card p,.cf-live-card p,.cf-suite-toolbar p,.cf-suite-event-main p,
+.cf-suite-news p,.clients-v3-hero p,.config-card p,.feedback-admin-head p{font-size:8px!important}
+
+/* The first screenshot should not be pushed down by a footer. */
+.cf-global-footer{
+  margin:8px 9px 0!important;
+  padding:8px 0 10px!important;
+  font-size:7px!important;
+}
+
+/* The user's common institute laptop width (1366-ish) should preserve the same proportions. */
+@media(min-width:1181px) and (max-width:1500px){
+  :root{--cf-shell-sidebar:180px!important}
+  .admin-home-redesign .admin-wix-topbar{
+    grid-template-columns:175px minmax(0,1fr) 155px auto!important;
+  }
+}
+@media(max-width:1180px){
+  :root{--cf-shell-sidebar:168px!important}
+  .admin-home-redesign .admin-wix-topbar{
+    grid-template-columns:160px minmax(0,1fr) 150px auto!important;
+  }
+}
+@media(max-width:930px){
+  :root{--cf-shell-sidebar:68px!important}
+}
+@media(max-width:700px){
+  :root{--cf-shell-sidebar:0px!important;--cf-shell-header:52px!important}
+}
+
