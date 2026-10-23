@@ -4066,3 +4066,340 @@
 .admin-shell.admin-home-redesign .admin-mobile-modules{
   display:none!important;
 }
+
+
+/* CROSSFit 569574 · PRESENTATION SCALE FINAL */
+/* The official 800x500 preview is a downscaled desktop capture.
+   These values restore the real browser proportions instead of using screenshot pixels as CSS pixels. */
+:root{
+  --cf-sidebar-real:180px;
+  --cf-topbar-real:60px;
+}
+.admin-shell.admin-home-redesign{font-size:13px!important}
+.admin-home-redesign .admin-nav{
+  width:var(--cf-sidebar-real)!important;
+  padding:8px 8px 10px!important;
+}
+.admin-home-redesign .admin-wix-topbar{
+  left:var(--cf-sidebar-real)!important;
+  height:var(--cf-topbar-real)!important;
+  grid-template-columns:190px minmax(0,1fr) 180px auto!important;
+  padding:0 13px!important;
+}
+.admin-home-redesign .admin-content{
+  margin-left:var(--cf-sidebar-real)!important;
+  padding:var(--cf-topbar-real) 0 34px!important;
+}
+.admin-home-redesign .admin-sidebar-toggle{
+  left:168px!important;
+  width:24px!important;
+  height:44px!important;
+}
+
+/* Sidebar */
+.admin-home-redesign .crossfit-profile-card{
+  min-height:104px!important;
+  margin:0 0 5px!important;
+  padding:3px 4px 8px!important;
+}
+.admin-home-redesign .crossfit-profile-avatar{
+  width:52px!important;
+  height:52px!important;
+  border-width:2px!important;
+  box-shadow:0 0 0 3px #f1f0ff!important;
+}
+.admin-home-redesign .crossfit-profile-copy strong{
+  font-size:12px!important;
+  line-height:1.25!important;
+}
+.admin-home-redesign .crossfit-profile-copy small{
+  font-size:10px!important;
+}
+.admin-home-redesign .crossfit-profile-copy em{
+  min-height:20px!important;
+  padding:0 8px!important;
+  font-size:9px!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav{
+  gap:1px!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav button{
+  min-height:36px!important;
+  grid-template-columns:24px minmax(0,1fr) auto!important;
+  gap:7px!important;
+  padding:4px 7px!important;
+  border-radius:4px!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav .admin-main-nav-icon{
+  width:22px!important;
+  height:22px!important;
+  font-size:12px!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav button>span:nth-child(2){
+  font-size:11.5px!important;
+  font-weight:500!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav button>i{
+  font-size:10px!important;
+}
+.admin-home-redesign .cf-nav-children{
+  padding-left:18px!important;
+}
+.admin-home-redesign .cf-nav-children button{
+  min-height:32px!important;
+  padding-top:3px!important;
+  padding-bottom:3px!important;
+}
+.admin-home-redesign .cf-nav-children button>span:nth-child(2){
+  font-size:10.5px!important;
+}
+.admin-home-redesign .cf-fitness-center-card{
+  min-height:50px!important;
+  margin:7px 1px 3px!important;
+}
+.admin-home-redesign .cf-fitness-center-card>span{
+  width:28px!important;
+  height:28px!important;
+  font-size:13px!important;
+}
+.admin-home-redesign .cf-fitness-center-card small{font-size:9px!important}
+.admin-home-redesign .cf-fitness-center-card b{font-size:10px!important}
+
+/* Header */
+.admin-home-redesign .admin-top-brand-mark{
+  width:28px!important;height:28px!important;font-size:13px!important;
+}
+.admin-home-redesign .crossfit-top-logo strong{
+  font-size:15px!important;
+}
+.admin-home-redesign .admin-wix-search{
+  width:175px!important;
+  height:31px!important;
+  padding:0 10px!important;
+}
+.admin-home-redesign .admin-wix-search input{
+  font-size:10.5px!important;
+}
+.admin-home-redesign .admin-wix-search button{
+  display:none!important;
+}
+.admin-home-redesign .admin-top-actions>button:not(.admin-top-user),
+.admin-home-redesign .admin-top-user{
+  width:28px!important;height:28px!important;font-size:11px!important;
+}
+
+/* Dashboard breadcrumb */
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb{
+  min-height:40px!important;
+  padding:0 14px!important;
+}
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb>span{font-size:13px!important}
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb small,
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb strong{
+  font-size:10.5px!important;
+}
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb>b{font-size:12px!important}
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb .cf-goal{
+  min-width:184px!important;
+  min-height:24px!important;
+  font-size:9px!important;
+}
+
+/* Dashboard exact visual scale */
+.cf-ref-hero{
+  min-height:286px!important;
+  grid-template-columns:minmax(0,56%) minmax(330px,44%)!important;
+  margin:10px 12px 0!important;
+  border-radius:6px!important;
+}
+.cf-ref-hero-copy{padding:16px 18px 11px!important}
+.cf-ref-hero-copy h1{font-size:20px!important}
+.cf-ref-hero-copy>p{font-size:11px!important;margin-top:4px!important}
+.cf-ref-mini-chart{
+  height:158px!important;
+  gap:13px!important;
+  margin:24px 4px 0!important;
+}
+.cf-ref-mini-track{width:30px!important;height:126px!important}
+.cf-ref-mini-day small{font-size:9px!important}
+.cf-ref-mini-legend{font-size:9px!important;margin-top:3px!important}
+.cf-ref-mini-legend i,.cf-ref-chart-legend i,.cf-ref-split-list i{width:7px!important;height:7px!important}
+
+.cf-ref-stats{
+  gap:8px!important;
+  margin:8px 12px 9px!important;
+}
+.cf-ref-stats button{
+  min-height:76px!important;
+  grid-template-columns:minmax(0,1fr) 34px!important;
+  padding:9px 11px!important;
+}
+.cf-ref-stats small{font-size:10px!important}
+.cf-ref-stats strong{font-size:19px!important;margin:4px 0 3px!important}
+.cf-ref-stats span{font-size:9px!important}
+.cf-ref-stats i{width:31px!important;height:31px!important;font-size:12px!important}
+
+.cf-ref-bottom{
+  gap:8px!important;
+  margin:0 12px 12px!important;
+}
+.cf-ref-bottom>article{
+  min-height:300px!important;
+  padding:12px!important;
+}
+.cf-ref-bottom h2{font-size:13px!important}
+.cf-ref-bottom header p{font-size:9px!important}
+.cf-ref-bottom header>span{font-size:9px!important}
+.cf-ref-chart-legend{font-size:9px!important}
+.cf-ref-xaxis{font-size:8.5px!important}
+.cf-ref-donut{width:140px!important;height:140px!important;margin:24px auto 15px!important}
+.cf-ref-donut:after{width:90px!important;height:90px!important}
+.cf-ref-donut strong{font-size:17px!important}
+.cf-ref-donut small{font-size:9px!important}
+.cf-ref-split-list p,.cf-ref-split-list p b{font-size:9.5px!important}
+
+/* Dashboard lower modules */
+.cf-ref-secondary,.cf-ref-tertiary,.cf-ref-insights{
+  margin-left:12px!important;
+  margin-right:12px!important;
+}
+.cf-ref-secondary h2,.cf-ref-tertiary h2,.cf-ref-insights h2{font-size:13px!important}
+.cf-ref-secondary header p,.cf-ref-tertiary header p,.cf-ref-insights header p{font-size:9px!important}
+.cf-ref-secondary header>b,.cf-ref-tertiary header>b,.cf-ref-insights header>b{font-size:9px!important}
+.cf-ref-history-list b,.cf-ref-insight-list b{font-size:10.5px!important}
+.cf-ref-history-list small,.cf-ref-insight-list small{font-size:9px!important}
+.cf-ref-history-list em,.cf-ref-history-list strong,.cf-ref-insight-list em{font-size:9px!important}
+.cf-ref-strength footer span,.cf-ref-tertiary footer span,.cf-ref-weight-labels{font-size:8.5px!important}
+.cf-ref-strength footer b,.cf-ref-tertiary footer b{font-size:10px!important}
+.cf-ref-frequency strong{font-size:17px!important}
+.cf-ref-frequency small,.cf-ref-weight>small{font-size:9px!important}
+
+/* Breadcrumbs used by every internal module. */
+.cf-special-crumb,.cfx-crumb{
+  min-height:40px!important;
+  height:40px!important;
+  padding:0 14px!important;
+}
+.cf-special-crumb span,.cfx-crumb>span{font-size:13px!important}
+.cf-special-crumb small,.cfx-crumb small{font-size:10px!important}
+.cf-special-crumb>b,.cfx-crumb>b{font-size:12px!important}
+.cf-special-crumb strong,.cfx-crumb strong{font-size:10.5px!important}
+.cf-special-crumb em,.cfx-crumb em{font-size:9px!important;min-height:23px!important}
+
+/* Internal cards, forms and tables at real Bootstrap desktop scale. */
+.cf-live-page,.cf-live-suite,.cfx-page{font-size:12px!important}
+.cf-live-card h1,.cf-live-workout-head h1,.cf-live-pricing-head h1{font-size:22px!important}
+.cf-live-card h2,.cf-suite-toolbar h1,.cfx-card h2{font-size:14px!important}
+.cf-live-card h3,.cfx-card h3{font-size:12px!important}
+.cf-live-card p,.cf-live-card header p,.cfx-card p,.cf-suite-toolbar p{font-size:10.5px!important}
+.cf-live-card header>b,.cfx-card>header span{font-size:9.5px!important}
+.cfx-kicker{font-size:9px!important}
+
+.cfx-card{
+  padding:14px!important;
+  border-radius:6px!important;
+}
+.cfx-card button,.cfx-modal button,
+.cf-suite-toolbar button,.cf-live-page button{
+  font-size:10.5px!important;
+}
+.cfx-card button,.cfx-modal button{
+  min-height:32px!important;
+  padding:0 10px!important;
+}
+.cfx-form label,.cf-member-form-grid label,.gym-suite-form-grid label{
+  font-size:10.5px!important;
+}
+.cfx-form input,.cfx-form select,.cfx-form textarea,
+.cf-member-form-grid input,.cf-member-form-grid select,.cf-member-form-grid textarea,
+.gym-suite-form-grid input,.gym-suite-form-grid select,.gym-suite-form-grid textarea,
+.cfx-toolbar input,.cfx-toolbar select,.cfx-input{
+  font-size:10.5px!important;
+}
+.cfx-form input,.cfx-form select,.cf-member-form-grid input,.cf-member-form-grid select,
+.gym-suite-form-grid input,.gym-suite-form-grid select{
+  height:36px!important;
+}
+.cfx-table-wrap th,.cfx-table-wrap td,
+.gym-suite-table th,.gym-suite-table td,
+.management-table th,.management-table td,
+.clients-v3-table th,.clients-v3-table td{
+  font-size:10px!important;
+  padding:9px 10px!important;
+}
+.cfx-table-wrap th,.gym-suite-table th,.management-table th,.clients-v3-table th{
+  font-size:9.5px!important;
+}
+.cfx-badge,.cfx-badges span,.status-select{
+  font-size:9px!important;
+}
+.cfx-info p{font-size:10px!important}
+.cfx-list small{font-size:9px!important}
+.cfx-list em{font-size:9px!important}
+.cfx-list>div{min-height:50px!important}
+
+.cf-live-summary4 article>small{font-size:9px!important}
+.cf-live-summary4 article>b{font-size:18px!important}
+.cf-live-activity4 small,.cf-live-activity4 p,.cf-live-activity4 em{font-size:9px!important}
+.cf-live-activity4 b{font-size:16px!important}
+.cf-live-meals b,.cf-live-list b{font-size:10px!important}
+.cf-live-meals small,.cf-live-list small{font-size:8.5px!important}
+.cf-live-meals em,.cf-live-list em{font-size:8.5px!important}
+.cf-live-goal label{font-size:10px!important}
+.cf-live-goal small{font-size:8.5px!important}
+.cf-live-workout-progress small,.cf-live-workout-progress em,.cf-live-workout-progress span{font-size:9px!important}
+.cf-live-workout-progress b{font-size:15px!important}
+.cf-live-week-tabs button{font-size:10px!important}
+.cf-live-exercise-grid h3{font-size:12px!important}
+.cf-live-exercise-grid p,.cf-live-exercise-grid span{font-size:9px!important}
+.cf-live-dish-grid b{font-size:10px!important}
+.cf-live-dish-grid span,.cf-live-dish-grid small{font-size:9px!important}
+.cf-live-progress-card p,.cf-live-progress-card>small{font-size:9px!important}
+.cf-live-scan input,.cf-live-scan button{font-size:10px!important}
+.cf-live-trainer-card h2{font-size:12px!important}
+.cf-live-trainer-card>p,.cf-live-trainer-card li,.cf-live-trainer-card button{font-size:9px!important}
+.cf-live-pricing-grid h2{font-size:18px!important}
+.cf-live-pricing-grid h3{font-size:24px!important}
+.cf-live-pricing-grid h3 small,.cf-live-pricing-grid>article>b,.cf-live-pricing-grid li,.cf-live-pricing-grid button{font-size:10px!important}
+
+/* Secondary modules */
+.cf-suite-toolbar h1{font-size:16px!important}
+.cf-suite-toolbar p{font-size:10px!important}
+.cf-suite-equipment-grid h3,.cf-suite-news h3{font-size:11px!important}
+.cf-suite-equipment-grid b{font-size:18px!important}
+.cf-suite-equipment-grid p,.cf-suite-news p{font-size:9.5px!important}
+.cf-suite-event-main h3{font-size:11px!important}
+.cf-suite-event-main p,.cf-suite-event-main>span,.cf-suite-event-meta b,.cf-suite-event-meta small{font-size:9px!important}
+.cf-suite-gallery b,.cf-suite-gallery span{font-size:9px!important}
+.cf-suite-news small,.cf-suite-news button{font-size:9px!important}
+.cf-suite-salary h2{font-size:13px!important}
+.cf-suite-salary p,.cf-suite-salary select,.cf-suite-link{font-size:9.5px!important}
+.cf-suite-income-cards small,.cf-suite-income-cards span{font-size:9px!important}
+.cf-suite-income-cards b{font-size:18px!important}
+.cf-suite-invoice-note span,.cf-suite-invoice-note button{font-size:9px!important}
+
+/* Top dropdowns */
+.cf-top-dropdown{width:350px!important}
+.cf-top-dropdown>header h3{font-size:13px!important}
+.cf-top-feed b{font-size:10.5px!important}
+.cf-top-feed p{font-size:9.5px!important}
+.cf-top-feed small,.cf-top-viewall{font-size:9px!important}
+
+/* Keep the actual template shell compact on common presentation laptops. */
+@media(max-width:1180px){
+  :root{--cf-sidebar-real:170px}
+  .admin-home-redesign .admin-sidebar-toggle{left:158px!important}
+  .admin-home-redesign .admin-wix-topbar{grid-template-columns:175px minmax(0,1fr) 160px auto!important}
+}
+@media(max-width:930px){
+  :root{--cf-sidebar-real:72px}
+  .admin-home-redesign .admin-sidebar-toggle{display:none!important}
+  .admin-home-redesign .crossfit-profile-card{min-height:76px!important}
+  .admin-home-redesign .crossfit-profile-avatar{width:44px!important;height:44px!important}
+}
+@media(max-width:700px){
+  :root{--cf-sidebar-real:0px}
+  .admin-home-redesign .admin-wix-topbar{left:0!important}
+  .admin-home-redesign .admin-content{margin-left:0!important}
+}
+
