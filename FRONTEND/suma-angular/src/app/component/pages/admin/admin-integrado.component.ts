@@ -506,7 +506,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <section class="cf-live-card cf-weekly-diet-template">
           <header><div><h2>Mi Plan Semanal de Alimentación</h2></div></header>
           <nav class="cf-diet-day-tabs">
-            <button class="active">Domingo</button><button>Lunes</button><button>Martes</button><button>Miércoles</button><button>Jueves</button><button>Viernes</button><button>Sábado</button>
+            <button *ngFor="let dia of ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado']" [class.active]="diaNutricionActivo===dia" (click)="seleccionarDiaNutricion(dia)">{{dia}}</button>
           </nav>
           <div class="cf-weekly-diet-template-grid">
             <article><span class="dish-large">🥗</span><h3>Ensalada Griega Verde</h3><dl><div><dt>Calorías</dt><dd>330 Kcal</dd></div><div><dt>Proteína</dt><dd>60 g</dd></div><div><dt>Grasa</dt><dd>10 g</dd></div></dl></article>
@@ -562,7 +562,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <ul><li><b>Experiencia</b><span>Mallqui Gym</span></li><li><b>Disponible</b><span>{{configuracionForm.hora_apertura}} - {{configuracionForm.hora_cierre}}</span></li><li><b>Socios Entrenados</b><span>{{clientesActivos}}+</span></li></ul>
             <button (click)="cambiarSegcion('trainer-profile')">Ver Perfil</button>
           </article>
-          <ng-template #trainerEmpty><article class="cf-live-trainer-card"><img src="assets/showcase/coach-showcase.svg" alt="Entrenador del gimnasio"><h2>Entrenador Mallqui</h2><p>Fuerza y Acondicionamiento</p><button (click)="seccion='entrenador-admin'">Registrar Entrenador</button></article></ng-template>
+          <ng-template #trainerEmpty><article class="cf-live-trainer-card"><img src="assets/showcase/coach-showcase.svg" alt="Entrenador del gimnasio"><h2>Entrenador Mallqui</h2><p>Fuerza y Acondicionamiento</p><button (click)="cambiarSegcion('entrenador')">Registrar Entrenador</button></article></ng-template>
         </section>
       </section>
 
@@ -575,12 +575,12 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <h3>S/ {{p.precio || 0}} <small>por {{p.duracion_meses || 1}} mes(es)</small></h3>
             <b>{{i===0?'30':(i===1?'70':'150')}} créditos</b>
             <ul><li>✓ {{i===0?'2':(i===1?'5':'10')}} sesiones de yoga</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} hora(s) de gimnasio</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} hora(s) de baile</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} hora(s) de entrenamiento</li><li [class.disabled]="i===0">{{i===0?'No Entrenador':(i===1?'Entrenador Junior':'Entrenador Dedicado')}}</li><li [class.disabled]="i<2">{{i<2?'Sin analítica':'Panel de análisis'}}</li></ul>
-            <button>{{i===0?'Plan actual':'Elegir plan'}}</button>
+            <button (click)="editarPlan(p)">{{i===0?'Ver plan':'Editar plan'}}</button>
           </article>
           <ng-container *ngIf="!planesMembresia.length">
-            <article><h2>Básico</h2><h3>S/ 60 <small>por mes</small></h3><b>30 créditos</b><ul><li>✓ 2 sesiones de yoga</li><li>✓ 1 hora(s) de gimnasio</li><li>✓ 1 hora(s) de baile</li><li>✓ 1 hora de entrenamiento</li><li class="disabled">No Entrenador</li><li class="disabled">Sin analítica</li></ul><button>Plan actual</button></article>
-            <article class="featured"><h2>Premium</h2><h3>S/ 90 <small>por mes</small></h3><b>70 créditos</b><ul><li>✓ 5 sesiones de yoga</li><li>✓ 2 hora(s) de gimnasio</li><li>✓ 2 hora(s) de baile</li><li>✓ 2 horas de entrenamiento</li><li>✓ Entrenador Junior</li><li class="disabled">Sin analítica</li></ul><button>Elegir plan</button></article>
-            <article><h2>Empresarial</h2><h3>S/ 120 <small>por mes</small></h3><b>150 créditos</b><ul><li>✓ 10 sesiones de yoga</li><li>✓ 5 hora(s) de gimnasio</li><li>✓ 5 hora(s) de baile</li><li>✓ 5 horas de entrenamiento</li><li>✓ Entrenador Dedicado</li><li>✓ Panel de análisis</li></ul><button>Elegir plan</button></article>
+            <article><h2>Básico</h2><h3>S/ 60 <small>por mes</small></h3><b>30 créditos</b><ul><li>✓ 2 sesiones de yoga</li><li>✓ 1 hora(s) de gimnasio</li><li>✓ 1 hora(s) de baile</li><li>✓ 1 hora de entrenamiento</li><li class="disabled">No Entrenador</li><li class="disabled">Sin analítica</li></ul><button (click)="avisoPlanDemo('Básico')">Ver plan</button></article>
+            <article class="featured"><h2>Premium</h2><h3>S/ 90 <small>por mes</small></h3><b>70 créditos</b><ul><li>✓ 5 sesiones de yoga</li><li>✓ 2 hora(s) de gimnasio</li><li>✓ 2 hora(s) de baile</li><li>✓ 2 horas de entrenamiento</li><li>✓ Entrenador Junior</li><li class="disabled">Sin analítica</li></ul><button (click)="avisoPlanDemo('Premium')">Crear plan</button></article>
+            <article><h2>Empresarial</h2><h3>S/ 120 <small>por mes</small></h3><b>150 créditos</b><ul><li>✓ 10 sesiones de yoga</li><li>✓ 5 hora(s) de gimnasio</li><li>✓ 5 hora(s) de baile</li><li>✓ 5 horas de entrenamiento</li><li>✓ Entrenador Dedicado</li><li>✓ Panel de análisis</li></ul><button (click)="avisoPlanDemo('Empresarial')">Crear plan</button></article>
           </ng-container>
         </section>
       </section>
@@ -1388,7 +1388,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               <div class="form-row"><label>Precio compra<input type="number" step="0.01" min="0.01" [(ngModel)]="compraForm.precio_compra" name="coprecio"></label><button class="admin-secondary" type="button" (click)="agregarItemCompra()">+ Agregar producto</button></div>
               <div class="table-wrap" *ngIf="compraItems.length"><table class="management-table"><thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th><th></th></tr></thead><tbody><tr *ngFor="let i of compraItems;let ix=index"><td>{{nombreProducto(i.id_producto)}}</td><td>{{i.cantidad}}</td><td>S/ {{i.precio_compra}}</td><td>S/ {{i.cantidad*i.precio_compra | number:'1.2-2'}}</td><td><button class="table-danger" type="button" (click)="quitarItemCompra(ix)">Quitar</button></td></tr></tbody></table></div>
               <div class="form-row"><label>Comprobante<select [(ngModel)]="compraForm.tipo_comprobante" name="cotipo"><option>Factura</option><option>Boleta</option></select></label><label>Número<input [(ngModel)]="compraForm.numero_comprobante" name="conumero" required></label></div>
-              <button class="admin-primary">Registrar compra ({{compraItems.length}} productos)</button>
+              <button class="admin-primary" type="submit">Registrar compra ({{compraItems.length}} productos)</button>
             </form>
           </article>
           <article class="admin-list-card wide-card"><div class="management-heading"><div><h2>Compras</h2><p>{{compras.length}} registros.</p></div></div><div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Proveedor</th><th>Comprobante</th><th>Fecha</th><th>Total</th><th>Estado</th><th>Acción</th></tr></thead><tbody><tr *ngFor="let c of compras"><td>{{c.id_compra}}</td><td>{{c.proveedor?.razon_social}}</td><td>{{c.tipo_comprobante}} {{c.numero_comprobante}}</td><td>{{fecha(c.fecha_compra)}}</td><td>S/ {{c.total | number:'1.2-2'}}</td><td>{{c.estado}}</td><td><button *ngIf="c.estado!=='Anulado'" class="table-danger" type="button" (click)="anularCompra(c.id_compra)">Anular</button></td></tr></tbody></table></div></article>
@@ -1546,8 +1546,8 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
 
       <ng-container *ngIf="seccion==='caja'">
         <section class="management-grid">
-          <article class="admin-form-card" *ngIf="!caja?.caja_abierta"><div class="management-heading"><div><h2>Abrir caja</h2><p>Necesaria para cobrar en efectivo.</p></div><span>$</span></div><form (ngSubmit)="abrirCaja()"><label>Monto inicial<input type="number" min="0" step="0.01" [(ngModel)]="cajaAbrirForm.monto_inicial" name="camonto"></label><label>Observación<input [(ngModel)]="cajaAbrirForm.observacion" name="caobs"></label><button class="admin-primary">Abrir caja</button></form></article>
-          <article class="admin-form-card" *ngIf="caja?.caja_abierta"><div class="management-heading"><div><h2>Caja abierta</h2><p>Monto esperado: S/ {{caja?.resumen?.monto_esperado ?? 0 | number:'1.2-2'}}</p></div><span>$</span></div><form (ngSubmit)="movimientoCaja()"><div class="form-row"><label>Tipo<select [(ngModel)]="movCajaForm.tipo" name="mctipo"><option>Ingreso</option><option>Egreso</option></select></label><label>Monto<input type="number" min="0.01" step="0.01" [(ngModel)]="movCajaForm.monto" name="mcmonto"></label></div><label>Descripción<input [(ngModel)]="movCajaForm.descripcion" name="mcdesc" required></label><button class="admin-primary">Registrar movimiento</button></form><hr><form (ngSubmit)="cerrarCaja()"><label>Monto real contado<input type="number" min="0" step="0.01" [(ngModel)]="cajaCerrarForm.monto_real" name="ccmonto"></label><button class="admin-secondary">Cerrar caja</button></form></article>
+          <article class="admin-form-card" *ngIf="!caja?.caja_abierta"><div class="management-heading"><div><h2>Abrir caja</h2><p>Necesaria para cobrar en efectivo.</p></div><span>$</span></div><form (ngSubmit)="abrirCaja()"><label>Monto inicial<input type="number" min="0" step="0.01" [(ngModel)]="cajaAbrirForm.monto_inicial" name="camonto"></label><label>Observación<input [(ngModel)]="cajaAbrirForm.observacion" name="caobs"></label><button class="admin-primary" type="submit">Abrir caja</button></form></article>
+          <article class="admin-form-card" *ngIf="caja?.caja_abierta"><div class="management-heading"><div><h2>Caja abierta</h2><p>Monto esperado: S/ {{caja?.resumen?.monto_esperado ?? 0 | number:'1.2-2'}}</p></div><span>$</span></div><form (ngSubmit)="movimientoCaja()"><div class="form-row"><label>Tipo<select [(ngModel)]="movCajaForm.tipo" name="mctipo"><option>Ingreso</option><option>Egreso</option></select></label><label>Monto<input type="number" min="0.01" step="0.01" [(ngModel)]="movCajaForm.monto" name="mcmonto"></label></div><label>Descripción<input [(ngModel)]="movCajaForm.descripcion" name="mcdesc" required></label><button class="admin-primary" type="submit">Registrar movimiento</button></form><hr><form (ngSubmit)="cerrarCaja()"><label>Monto real contado<input type="number" min="0" step="0.01" [(ngModel)]="cajaCerrarForm.monto_real" name="ccmonto"></label><button class="admin-secondary" type="submit">Cerrar caja</button></form></article>
           <article class="admin-list-card wide-card"><div class="management-heading"><div><h2>Historial de cajas</h2><p>{{historialCaja.length}} registros.</p></div></div><div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Apertura</th><th>Cierre</th><th>Inicial</th><th>Esperado</th><th>Real</th><th>Estado</th></tr></thead><tbody><tr *ngFor="let c of historialCaja"><td>{{c.id_caja}}</td><td>{{fecha(c.fecha_apertura)}}</td><td>{{fecha(c.fecha_cierre)}}</td><td>S/ {{c.monto_inicial}}</td><td>S/ {{c.monto_esperado ?? '-'}}</td><td>S/ {{c.monto_real ?? '-'}}</td><td>{{c.estado}}</td></tr></tbody></table></div></article>
         </section>
       </ng-container>
@@ -2456,6 +2456,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   topPanel = '';
   mostrarAnalisisAvanzado = false;
   workoutSemana = 1;
+  diaNutricionActivo = 'Domingo';
   semanaDashboardDemo = [
     {dia:'Lun',total:5},{dia:'Mar',total:7},{dia:'Mié',total:4},{dia:'Jue',total:6},
     {dia:'Vie',total:6},{dia:'Sáb',total:9},{dia:'Dom',total:4}
@@ -2686,6 +2687,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     }
 
     this.error='No encontré esa función. Prueba con socios, reservas, caja, ventas, inventario, reportes o sistema.';
+  }
+
+  seleccionarDiaNutricion(dia:string):void{
+    this.diaNutricionActivo=dia;
+    this.ok('Plan de alimentación: '+dia);
+  }
+
+  avisoPlanDemo(nombre:string):void{
+    this.ok('Plan '+nombre+': usa el formulario de Planes y Precios para registrarlo o editarlo.');
   }
 
   toggleNavGroup(group:string):void{
