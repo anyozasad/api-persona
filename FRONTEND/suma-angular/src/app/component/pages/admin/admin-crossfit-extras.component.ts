@@ -210,26 +210,26 @@ interface ExtraConfig {
 
       <section class="cfx-grid cfx-grid-1 cf-live-expenses" *ngSwitchCase="'expenses'">
         <article class="cfx-card">
-          <header><div><span>GASTOS</span><h2>Gastos por Mes</h2><p>Resumen</p></div><button class="primary" (click)="expenseEditaror=!expenseEditaror">＋ Agregar gasto</button></header>
+          <header><div><span>GASTOS</span><h2>Gastos por Mes</h2><p>Resumen</p></div><button class="primary" (click)="expenseEditor=!expenseEditor">＋ Agregar gasto</button></header>
           <div class="cfx-table-wrap"><table><thead><tr><th>#</th><th>Producto</th><th>Proveedor</th><th>Equipo</th><th>Fecha de Compra</th><th>Método de Pago</th><th>Monto</th><th>Estado</th></tr></thead><tbody>
-            <tr *ngFor="let x of expenses; let i=index"><td>{{i+1}}</td><td><b>{{x.titulo}}</b></td><td>{{x.subtitulo || 'Mallqui Supplier'}}</td><td>{{x.datos?.detalle || 'Gym Equipo'}}</td><td>{{x.fecha || '—'}}</td><td>Bank Transfer</td><td>S/ {{x.monto || 0 | number:'1.2-2'}}</td><td>{{x.estado}}</td></tr>
+            <tr *ngFor="let x of expenses; let i=index"><td>{{i+1}}</td><td><b>{{x.titulo}}</b></td><td>{{x.subtitulo || 'Proveedor Mallqui'}}</td><td>{{x.datos?.detalle || 'Equipo del gimnasio'}}</td><td>{{x.fecha || '—'}}</td><td>Transferencia bancaria</td><td>S/ {{x.monto || 0 | number:'1.2-2'}}</td><td>{{x.estado}}</td></tr>
             <tr *ngIf="!expenses.length"><td colspan="8">No hay gastos registrados.</td></tr>
           </tbody></table></div>
         </article>
-        <article class="cfx-card" *ngIf="expenseEditaror"><header><div><span>NUEVO GASTO</span><h2>Agregar gasto</h2></div></header><div class="cf-member-form-grid"><label>Producto<input [(ngModel)]="expenseForm.titulo"></label><label>Proveedor<input [(ngModel)]="expenseForm.subtitulo"></label><label>Fecha de Compra<input type="date" [(ngModel)]="expenseForm.fecha"></label><label>Monto<input type="number" [(ngModel)]="expenseForm.monto"></label><label>Estado<select [(ngModel)]="expenseForm.estado"><option>Completado</option><option>En proceso</option><option>Pedido</option><option>Retrasado</option></select></label></div><footer class="cf-form-footer"><button (click)="expenseEditaror=false">Cancelar</button><button class="primary" (click)="saveExpense()">Guardar Gasto</button></footer></article>
+        <article class="cfx-card" *ngIf="expenseEditor"><header><div><span>NUEVO GASTO</span><h2>Agregar gasto</h2></div></header><div class="cf-member-form-grid"><label>Producto<input [(ngModel)]="expenseForm.titulo"></label><label>Proveedor<input [(ngModel)]="expenseForm.subtitulo"></label><label>Fecha de Compra<input type="date" [(ngModel)]="expenseForm.fecha"></label><label>Monto<input type="number" [(ngModel)]="expenseForm.monto"></label><label>Estado<select [(ngModel)]="expenseForm.estado"><option>Completado</option><option>En proceso</option><option>Pedido</option><option>Retrasado</option></select></label></div><footer class="cf-form-footer"><button (click)="expenseEditor=false">Cancelar</button><button class="primary" (click)="saveExpense()">Guardar Gasto</button></footer></article>
       </section>
 
       <section class="cfx-grid cfx-grid-1 cf-live-payslip" *ngSwitchCase="'payslip'">
         <article class="cfx-card cf-payslip-paper">
           <div class="cf-invoice-select"><label>Registro Salarial<select [(ngModel)]="selectedPayslipId"><option [ngValue]="0">Último registro</option><option *ngFor="let x of salaries" [ngValue]="x.id">#{{x.id}} · {{x.titulo}}</option></select></label></div>
-          <header class="cf-payslip-head"><img src="assets/mallqui-logo.svg" alt="Mallqui Gym"><div><h2>Payslip No. - #PS-2026-{{selectedPayslip?.id || '052'}}</h2><p>{{selectedPayslip?.fecha || 'October 2026'}}</p><span>{{selectedPayslip?.estado || 'Pagada'}}</span></div></header>
-          <section class="cf-payslip-parties"><div><h3>Datos del Empleado</h3><b>{{selectedPayslip?.titulo || 'Entrenador Mallqui'}}</b><p>{{selectedPayslip?.subtitulo || 'Senior Fitness Consultant'}}</p><p>Empleado ID: EMP-{{selectedPayslip?.id || '1045'}}</p><p>Pucallpa, Ucayali, Perú</p></div><div><h3>Detalles del Gimnasio</h3><b>Mallqui Gym</b><p>Jr. Los Laureles Mz 17 Lt 18</p><p>Pucallpa, Ucayali, Perú</p></div></section>
+          <header class="cf-payslip-head"><img src="assets/mallqui-logo.svg" alt="Mallqui Gym"><div><h2>Boleta N.º - #PS-2026-{{selectedPayslip?.id || '052'}}</h2><p>{{selectedPayslip?.fecha || 'Octubre 2026'}}</p><span>{{selectedPayslip?.estado || 'Pagada'}}</span></div></header>
+          <section class="cf-payslip-parties"><div><h3>Datos del Empleado</h3><b>{{selectedPayslip?.titulo || 'Entrenador Mallqui'}}</b><p>{{selectedPayslip?.subtitulo || 'Entrenador principal'}}</p><p>Empleado ID: EMP-{{selectedPayslip?.id || '1045'}}</p><p>Pucallpa, Ucayali, Perú</p></div><div><h3>Detalles del Gimnasio</h3><b>Mallqui Gym</b><p>Jr. Los Laureles Mz 17 Lt 18</p><p>Pucallpa, Ucayali, Perú</p></div></section>
           <div class="cfx-table-wrap"><table><thead><tr><th>Ingresos</th><th>Días Trabajados</th><th>Monto (PEN)</th><th>Deducciones</th><th>Monto (PEN)</th></tr></thead><tbody>
-            <tr><td>Básico Salario</td><td>26</td><td>S/ {{payslipBásico | number:'1.2-2'}}</td><td>Impuesto</td><td>S/ {{payslipTax | number:'1.2-2'}}</td></tr>
-            <tr><td>Housing / Movilidad</td><td></td><td>S/ {{payslipHousing | number:'1.2-2'}}</td><td>Health Insurance</td><td>S/ {{payslipInsurance | number:'1.2-2'}}</td></tr>
-            <tr><td>Performance Bonus</td><td></td><td>S/ {{payslipBonus | number:'1.2-2'}}</td><td></td><td></td></tr>
+            <tr><td>Sueldo básico</td><td>26</td><td>S/ {{payslipBasic | number:'1.2-2'}}</td><td>Impuesto</td><td>S/ {{payslipTax | number:'1.2-2'}}</td></tr>
+            <tr><td>Movilidad</td><td></td><td>S/ {{payslipHousing | number:'1.2-2'}}</td><td>Seguro de salud</td><td>S/ {{payslipInsurance | number:'1.2-2'}}</td></tr>
+            <tr><td>Bono por rendimiento</td><td></td><td>S/ {{payslipBonus | number:'1.2-2'}}</td><td></td><td></td></tr>
           </tbody></table></div>
-          <div class="cf-payslip-totals"><p><span>Gross Earnings</span><b>S/ {{payslipGross | number:'1.2-2'}}</b></p><p><span>Total Deductions</span><b>S/ {{payslipDeductions | number:'1.2-2'}}</b></p><h3><span>Net Pay</span><b>S/ {{payslipNet | number:'1.2-2'}}</b></h3></div>
+          <div class="cf-payslip-totals"><p><span>Ingresos brutos</span><b>S/ {{payslipGross | number:'1.2-2'}}</b></p><p><span>Deducciones totales</span><b>S/ {{payslipDeductions | number:'1.2-2'}}</b></p><h3><span>Pago neto</span><b>S/ {{payslipNet | number:'1.2-2'}}</b></h3></div>
           <div class="cf-invoice-notes"><h3>Nota</h3><p>Esta boleta fue generada por el sistema. El salario fue registrado en el método de pago del empleado.</p></div>
           <footer class="cf-form-footer"><button (click)="accionBoton($event)">Descargar</button><button class="primary" (click)="printPayslip()">Imprimir</button></footer>
         </article>
@@ -241,8 +241,8 @@ interface ExtraConfig {
         </tbody></table></div></article>
         <article class="cfx-card"><header><div><span>CLIENTES</span><h2>Tabla de Clientes</h2></div></header><div class="cfx-table-wrap"><table><thead><tr><th>ID de Cliente</th><th>Nombres</th><th>Apellidos</th><th>Teléfono</th><th>Correo</th><th>Sesiones</th><th>Dinero Gastado</th><th>Último Acceso</th></tr></thead><tbody>
           <tr><td>#C1001</td><td>Amelia</td><td>Rodriguez</td><td>+51 999 111 222</td><td>amelia@example.com</td><td>32</td><td>S/ 540</td><td>Hoy 6:45 p. m.</td></tr>
-          <tr><td>#C1002</td><td>Liam</td><td>Anderson</td><td>+51 999 222 333</td><td>liam@example.com</td><td>28</td><td>S/ 615</td><td>Yesterday 8:20am</td></tr>
-          <tr><td>#C1003</td><td>Sophie</td><td>Turner</td><td>+51 999 333 444</td><td>sophie@example.com</td><td>19</td><td>S/ 321</td><td>09:15am</td></tr>
+          <tr><td>#C1002</td><td>Liam</td><td>Anderson</td><td>+51 999 222 333</td><td>liam@example.com</td><td>28</td><td>S/ 615</td><td>Ayer 8:20 a. m.</td></tr>
+          <tr><td>#C1003</td><td>Sophie</td><td>Turner</td><td>+51 999 333 444</td><td>sophie@example.com</td><td>19</td><td>S/ 321</td><td>09:15 a. m.</td></tr>
         </tbody></table></div></article>
       </section>
 
@@ -289,13 +289,13 @@ interface ExtraConfig {
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'accordions'">
-        <article class="cfx-card"><header><div><span>ACORDEÓN</span><h2>Preguntas de Socios</h2></div></header><div class="cfx-accordion" *ngFor="let x of accordionItems; let i=index"><button (click)="accordionOpen=accordionOpen===i?-1:i">{{x.title}} <span>{{accordionOpen===i?'−':'+'}}</span></button><p *ngIf="accordionOpen===i">{{x.text}}</p></div></article>
+        <article class="cfx-card"><header><div><span>ACORDEÓN</span><h2>Preguntas de Socios</h2></div></header><div class="cfx-accordion" *ngFor="let x of accordionItems; let i=index"><button (click)="accordionOpen=accordionOpen===i?-1:i">{{x.q}} <span>{{accordionOpen===i?'−':'+'}}</span></button><p *ngIf="accordionOpen===i">{{x.a}}</p></div></article>
         <article class="cfx-card"><header><div><span>ENTRENAMIENTO FAQ</span><h2>Preguntas de Entrenamiento</h2></div></header><div class="cfx-accordion"><button (click)="accionBoton($event)">¿Cómo cambio mi plan de entrenamiento? <span>+</span></button></div><div class="cfx-accordion"><button (click)="accionBoton($event)">¿Cómo se calcula el progreso? <span>+</span></button></div><div class="cfx-accordion"><button (click)="accionBoton($event)">¿El entrenador puede ajustar mi rutina? <span>+</span></button></div></article>
         <article class="cfx-card span-2"><header><div><span>POLÍTICAS</span><h2>Políticas de Membresía</h2></div></header><div class="cf-accordion-grid"><div><b>Pausa de Membresía</b><p>Las membresías pueden pausarse según el plan seleccionado.</p></div><div><b>Reserva de Clases</b><p>Los socios pueden reservar sesiones disponibles mientras su plan esté activo.</p></div><div><b>Cancelación</b><p>Las sesiones canceladas se administran desde el perfil del socio.</p></div></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'carousel'">
-        <article class="cfx-card span-2"><header><div><span>CARRUSEL</span><h2>Destacados del Gimnasio</h2></div><div class="cfx-buttons"><button (click)="prevSlide()">‹</button><button (click)="nextSlide()">›</button></div></header><div class="cfx-carousel"><img [src]="slides[slide].image" alt="Carrusel"><div><small>DESTACADO</small><h2>{{slides[slide].title}}</h2><p>{{slides[slide].text}}</p><div class="cf-carousel-dots"><i *ngFor="let x of slides; let i=index" [class.active]="i===slide"></i></div></div></div></article>
+        <article class="cfx-card span-2"><header><div><span>CARRUSEL</span><h2>Destacados del Gimnasio</h2></div><div class="cfx-buttons"><button (click)="prevSlide()">‹</button><button (click)="nextSlide()">›</button></div></header><div class="cfx-carousel"><div class="cf-carousel-icon" aria-hidden="true">{{slides[slide].icon}}</div><div><small>DESTACADO</small><h2>{{slides[slide].title}}</h2><p>{{slides[slide].text}}</p><div class="cf-carousel-dots"><i *ngFor="let x of slides; let i=index" [class.active]="i===slide"></i></div></div></div></article>
         <article class="cfx-card"><h2>Entrenador Destacado</h2><img class="cf-card-cover" src="assets/showcase/coach-showcase.svg" alt="Entrenador"><p>Conoce al entrenador y revisa su disponibilidad actual.</p><button (click)="accionBoton($event)">Ver Perfil</button></article>
         <article class="cfx-card"><h2>Clase Destacada</h2><img class="cf-card-cover" src="assets/showcase/class-showcase.svg" alt="Clase"><p>Clases destacadas y actividades de socios.</p><button (click)="accionBoton($event)">Ver Clases</button></article>
       </section>
@@ -897,6 +897,16 @@ interface ExtraConfig {
       font-size:12px!important;
       font-weight:700!important;
       box-shadow:0 12px 30px rgba(29,24,70,.22)!important;
+    }
+
+    /* CAROUSEL_ICON_FIX_2026_10_23 */
+    .cf-carousel-icon{
+      min-height:220px;
+      display:grid;
+      place-items:center;
+      border-radius:8px;
+      background:linear-gradient(135deg,#f4f2ff,#eef9f5);
+      font-size:78px;
     }
 
 `]
