@@ -340,8 +340,8 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           </article>
 
           <article class="cf-live-card cf-live-chart-card">
-            <header><div><h2>Estadísticas de Peso</h2><p>Resumen del progreso</p></div><b>-35 lbs</b></header>
-            <div class="cf-live-weight"><span>Inicio <b>190 lbs</b></span><div><i style="width:78%"></i></div><span>Actual <b>155 lbs</b></span></div>
+            <header><div><h2>Estadísticas de Peso</h2><p>Resumen del progreso</p></div><b>-35 lb</b></header>
+            <div class="cf-live-weight"><span>Inicio <b>190 lb</b></span><div><i style="width:78%"></i></div><span>Actual <b>155 lb</b></span></div>
           </article>
         </section>
       </section>
@@ -751,7 +751,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
                   <path d="M0 157 C80 137 110 124 170 132 S275 150 335 119 S445 91 510 78 S625 58 760 68" fill="none" stroke="#5d57d8" stroke-width="3"/>
                   <path d="M0 167 C80 147 120 139 175 143 S278 151 340 130 S448 108 515 95 S625 75 760 82" fill="none" stroke="#9edac4" stroke-width="2" stroke-dasharray="5 5"/>
                 </svg>
-                <div class="cf-ref-xaxis"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+                <div class="cf-ref-xaxis"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span></div>
               </div>
             </article>
 
@@ -772,13 +772,13 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               <div class="cf-ref-history-list">
                 <div><span>↗</span><div><b>Carrera matutina</b><small>Aire libre • Ritmo moderado</small></div><em>35 min<br>320 kcal</em><strong>Hoy</strong></div>
                 <div><span>🏋</span><div><b>Entrenamiento de Fuerza</b><small>Tren superior • Enfoque de empuje</small></div><em>50 min<br>410 kcal</em><strong>Ayer</strong></div>
-                <div><span>◉</span><div><b>Sesión de Ciclismo</b><small>Bicicleta indoor • Resistencia 6</small></div><em>40 min<br>290 kcal</em><strong>Hace 2 días</strong></div>
+                <div><span>◉</span><div><b>Sesión de Ciclismo</b><small>Bicicleta estática • Resistencia 6</small></div><em>40 min<br>290 kcal</em><strong>Hace 2 días</strong></div>
                 <div><span>⚡</span><div><b>Entrenamiento HIIT</b><small>Intervalos de alta intensidad</small></div><em>25 min<br>260 kcal</em><strong>Hace 3 días</strong></div>
               </div>
             </article>
 
             <article class="cf-ref-strength">
-              <header><div><h2>Fuerza Progreso</h2><p>Press de banca • tendencia de 12 semanas</p></div><b>+18% de mejora</b></header>
+              <header><div><h2>Progreso de Fuerza</h2><p>Press de banca • tendencia de 12 semanas</p></div><b>+18% de mejora</b></header>
               <div class="cf-ref-strength-chart">
                 <svg viewBox="0 0 560 180" preserveAspectRatio="none"><path d="M10 150 C80 145 110 128 160 130 S245 112 300 104 S390 80 445 70 S510 48 550 40" fill="none" stroke="#5b55d9" stroke-width="4"/></svg>
               </div>
@@ -788,7 +788,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
 
           <section class="cf-ref-tertiary">
             <article>
-              <header><div><h2>Sueño Recuperación</h2><p>Últimos 7 días • Seguimiento de calidad</p></div><b>7.6 h prom. • Bueno</b></header>
+              <header><div><h2>Recuperación del Sueño</h2><p>Últimos 7 días • Seguimiento de calidad</p></div><b>7.6 h prom. • Bueno</b></header>
               <div class="cf-ref-sleep-bars"><i style="height:66%"></i><i style="height:78%"></i><i style="height:72%"></i><i style="height:88%"></i><i style="height:81%"></i><i style="height:92%"></i><i style="height:85%"></i></div>
               <footer><span>Mejor noche <b>8.4h</b></span><span>Constancia <b>+12%</b></span><span>Sueño profundo <b>2.1h</b></span></footer>
             </article>
@@ -809,10 +809,10 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               </div>
             </article>
             <article class="cf-ref-weight">
-              <header><div><h2>Control de Peso</h2><p>Resumen del progreso • Últimos 12 meses</p></div><b>-35 lbs</b></header>
+              <header><div><h2>Control de Peso</h2><p>Resumen del progreso • Últimos 12 meses</p></div><b>-35 lb</b></header>
               <div class="cf-ref-weight-track"><i style="width:78%"></i></div>
-              <div class="cf-ref-weight-labels"><span>Inicio <b>190 lbs</b></span><span>Pérdida de grasa constante</span><span>Actual <b>155 lbs</b></span></div>
-              <small>Meta: 160 lbs</small>
+              <div class="cf-ref-weight-labels"><span>Inicio <b>190 lb</b></span><span>Pérdida de grasa constante</span><span>Actual <b>155 lb</b></span></div>
+              <small>Meta: 160 lb</small>
             </article>
           </section>
         </section>
