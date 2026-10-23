@@ -39,7 +39,28 @@ interface GymModuleConfig {
       </div>
 
       <ng-container [ngSwitch]="modulo">
-        <section class="cf-suite-page-head" *ngSwitchCase="'equipos'"><div><h1>Equipments</h1><p>Gym equipment categories and availability</p></div></section>
+        <section class="cf-suite-complete" *ngSwitchCase="'equipos'">
+          <header class="cf-suite-page-head"><div><h1>Equipments</h1><p>Gym equipment inventory, availability and maintenance status</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Add Equipment</button></header>
+          <div class="cf-suite-kpis">
+            <article><small>Total Equipment</small><b>{{records.length || equipmentFallback.length}}</b><span>Inventory items</span></article>
+            <article><small>Available</small><b>{{records.length ? records.length : 24}}</b><span>Ready for members</span></article>
+            <article><small>Maintenance</small><b>3</b><span>Needs review</span></article>
+            <article><small>Categories</small><b>6</b><span>Cardio, strength & more</span></article>
+          </div>
+          <section class="cf-suite-equipment-grid">
+            <article *ngFor="let item of (records.length ? records : equipmentFallback)">
+              <div class="cf-suite-equipment-art"><img *ngIf="item.imagen_url" [src]="item.imagen_url" [alt]="item.titulo"><span *ngIf="!item.imagen_url">🏋</span></div>
+              <div><h3>{{item.titulo}}</h3><b>{{item.count || item.monto || 1}}</b><p>{{item.subtitulo || 'Gym equipment'}}</p><span class="status-select">{{item.estado || 'Available'}}</span></div>
+            </article>
+          </section>
+          <section class="cf-suite-card">
+            <header><div><h2>Equipment Maintenance</h2><p>Recent maintenance schedule</p></div><button type="button" (click)="nuevoRegistro()">Schedule Maintenance</button></header>
+            <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>Equipment</th><th>Category</th><th>Last Service</th><th>Next Service</th><th>Status</th><th>Action</th></tr></thead><tbody>
+              <tr *ngFor="let item of (records.length ? records.slice(0,6) : equipmentFallback.slice(0,6))"><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Fitness Equipment'}}</td><td>01/10/2026</td><td>01/11/2026</td><td><span class="status-select">{{item.estado || 'Available'}}</span></td><td><button class="cf-suite-link" (click)="editar(item)">View</button></td></tr>
+            </tbody></table></div>
+          </section>
+        </section>
+
         <section class="cf-suite-equipment-grid" *ngSwitchCase="'equipos'">
           <article *ngFor="let item of (records.length ? records : equipmentFallback)">
             <div class="cf-suite-equipment-art">
@@ -50,16 +71,37 @@ interface GymModuleConfig {
           </article>
         </section>
 
-        <section class="cf-suite-events" *ngSwitchCase="'eventos'">
-          <header class="cf-suite-page-head"><div><h1>Gym Events</h1><p>Upcoming fitness events and activities</p></div></header>
-          <article *ngFor="let item of (records.length ? records : eventFallback); let i=index">
-            <div class="cf-suite-event-date"><b>{{item.day || (15+i)}}</b><small>th</small></div>
-            <div class="cf-suite-event-main"><span>{{item.estado || 'Going fast'}}</span><h3>{{item.titulo}}</h3><p>{{item.fecha || 'Tuesday'}} · {{item.subtitulo || 'Mallqui Gym'}}</p></div>
-            <div class="cf-suite-event-meta"><b>{{item.bookings || (40+i*10)}} Bookings</b><small>{{item.detalle || 'Fitness event'}}</small></div>
-          </article>
+        <section class="cf-suite-complete" *ngSwitchCase="'eventos'">
+          <header class="cf-suite-page-head"><div><h1>Gym Events</h1><p>Upcoming fitness events, workshops and member activities</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Add Event</button></header>
+          <div class="cf-suite-kpis">
+            <article><small>Upcoming Events</small><b>{{records.length || eventFallback.length}}</b><span>This month</span></article>
+            <article><small>Total Bookings</small><b>186</b><span>Across all events</span></article>
+            <article><small>Available Spots</small><b>42</b><span>Open registrations</span></article>
+            <article><small>Completed</small><b>12</b><span>This year</span></article>
+          </div>
+          <section class="cf-suite-events">
+            <article *ngFor="let item of (records.length ? records : eventFallback); let i=index">
+              <div class="cf-suite-event-date"><b>{{item.day || (15+i)}}</b><small>th</small></div>
+              <div class="cf-suite-event-main"><span>{{item.estado || 'Going fast'}}</span><h3>{{item.titulo}}</h3><p>{{item.fecha || 'Tuesday'}} · {{item.subtitulo || 'Mallqui Gym'}}</p></div>
+              <div class="cf-suite-event-meta"><b>{{item.bookings || (40+i*10)}} Bookings</b><small>{{item.detalle || 'Fitness event'}}</small></div>
+              <button class="cf-suite-link" (click)="editar(item)">Details</button>
+            </article>
+          </section>
+          <section class="cf-suite-card">
+            <header><div><h2>Event Schedule</h2><p>Weekly activity calendar</p></div></header>
+            <div class="cf-event-calendar"><div><b>MON</b><span>Strength Workshop</span><small>08:00 AM</small></div><div><b>TUE</b><span>Crossfit Challenge</span><small>06:30 PM</small></div><div><b>WED</b><span>Nutrition Talk</span><small>07:00 PM</small></div><div><b>FRI</b><span>Member Meetup</span><small>05:00 PM</small></div></div>
+          </section>
         </section>
 
-        <section class="cf-suite-page-head" *ngSwitchCase="'galeria'"><div><h1>Gallery</h1><p>Gym gallery and class highlights</p></div></section>
+        <section class="cf-suite-complete" *ngSwitchCase="'galeria'">
+          <header class="cf-suite-page-head"><div><h1>Gallery</h1><p>Gym gallery, classes and event highlights</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Upload Image</button></header>
+          <div class="cf-suite-gallery-filter"><button class="active">All</button><button>Training</button><button>Events</button><button>Members</button><button>Equipment</button></div>
+          <section class="cf-suite-gallery">
+            <article *ngFor="let item of (records.length ? records : galleryFallback)"><img [src]="item.imagen_url || 'assets/showcase/class-showcase.svg'" [alt]="item.titulo"><div><b>{{item.titulo}}</b><span>{{item.count || 52}} photos</span></div></article>
+          </section>
+          <div class="cf-suite-kpis compact"><article><small>Albums</small><b>8</b><span>Organized collections</span></article><article><small>Photos</small><b>248</b><span>Published media</span></article><article><small>This Month</small><b>36</b><span>New uploads</span></article><article><small>Storage</small><b>68%</b><span>Media capacity</span></article></div>
+        </section>
+
         <section class="cf-suite-gallery" *ngSwitchCase="'galeria'">
           <article *ngFor="let item of (records.length ? records : galleryFallback)">
             <img [src]="item.imagen_url || 'assets/showcase/class-showcase.svg'" [alt]="item.titulo">
@@ -67,7 +109,15 @@ interface GymModuleConfig {
           </article>
         </section>
 
-        <section class="cf-suite-page-head" *ngSwitchCase="'noticias'"><div><h1>News & Updates</h1><p>Latest gym news and announcements</p></div></section>
+        <section class="cf-suite-complete" *ngSwitchCase="'noticias'">
+          <header class="cf-suite-page-head"><div><h1>News & Updates</h1><p>Latest gym news, announcements and fitness articles</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Add News</button></header>
+          <section class="cf-news-featured"><img src="assets/showcase/hero-showcase.svg" alt="Featured news"><div><span>FEATURED UPDATE</span><h2>New Training Programs Available</h2><p>Explore new strength, conditioning and member programs at Mallqui Gym.</p><button>Read More</button></div></section>
+          <section class="cf-suite-news">
+            <article *ngFor="let item of (records.length ? records : newsFallback)"><img [src]="item.imagen_url || 'assets/showcase/hero-showcase.svg'" [alt]="item.titulo"><div><h3>{{item.titulo}}</h3><small>Posted on - {{item.fecha || '30/06/2026'}}</small><p>{{item.subtitulo || item.detalle || 'Latest news and updates from Mallqui Gym.'}}</p><div class="cf-news-actions"><button type="button">Read More</button><button type="button" (click)="editar(item)">Edit</button></div></div></article>
+          </section>
+          <section class="cf-suite-card"><header><div><h2>News Categories</h2><p>Content distribution</p></div></header><div class="cf-news-categories"><span><b>12</b>Training</span><span><b>8</b>Nutrition</span><span><b>6</b>Events</span><span><b>4</b>Announcements</span></div></section>
+        </section>
+
         <section class="cf-suite-news" *ngSwitchCase="'noticias'">
           <article *ngFor="let item of (records.length ? records : newsFallback)">
             <img [src]="item.imagen_url || 'assets/showcase/hero-showcase.svg'" [alt]="item.titulo">
@@ -75,39 +125,54 @@ interface GymModuleConfig {
           </article>
         </section>
 
-        <section class="cf-suite-salary" *ngSwitchCase="'salarios'">
-          <header class="cf-suite-page-head"><div><h1>Salary List</h1><p>Staff payroll summary</p></div><select><option>October 2026</option></select></header>
-          <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>Employee ID</th><th>Employee</th><th>Role</th><th>Location</th><th>Days</th><th>Period</th><th>Salary</th><th>Action</th></tr></thead><tbody>
-            <tr *ngFor="let item of filtered"><td>EMP-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Trainer'}}</td><td>Pucallpa</td><td>26</td><td>{{item.fecha || 'Oct 2026'}}</td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><button class="cf-suite-link">Payslip</button></td></tr>
-            <tr *ngIf="!filtered.length"><td colspan="8">No salary records yet.</td></tr>
-          </tbody></table></div>
+        <section class="cf-suite-complete" *ngSwitchCase="'salarios'">
+          <header class="cf-suite-page-head"><div><h1>Salary List</h1><p>Staff payroll summary and salary records</p></div><div><select><option>October 2026</option><option>September 2026</option></select><button type="button" class="primary" (click)="nuevoRegistro()">＋ Add Salary</button></div></header>
+          <div class="cf-suite-kpis">
+            <article><small>Employees</small><b>{{filtered.length || 1}}</b><span>Payroll records</span></article>
+            <article><small>Total Payroll</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>Current period</span></article>
+            <article><small>Paid</small><b>{{filtered.length || 1}}</b><span>Completed payments</span></article>
+            <article><small>Pending</small><b>0</b><span>Awaiting payment</span></article>
+          </div>
+          <section class="cf-suite-card">
+            <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>Employee ID</th><th>Employee</th><th>Role</th><th>Location</th><th>Days</th><th>Period</th><th>Salary</th><th>Status</th><th>Action</th></tr></thead><tbody>
+              <tr *ngFor="let item of filtered"><td>EMP-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Trainer'}}</td><td>Pucallpa</td><td>26</td><td>{{item.fecha || 'Oct 2026'}}</td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><span class="status-select">{{item.estado || 'Paid'}}</span></td><td><button class="cf-suite-link" (click)="editar(item)">Payslip</button></td></tr>
+              <tr *ngIf="!filtered.length"><td colspan="9">No salary records yet.</td></tr>
+            </tbody></table></div>
+          </section>
+          <section class="cf-suite-card"><header><div><h2>Payroll Notes</h2><p>Current month summary</p></div></header><div class="cf-payroll-notes"><div><b>26</b><small>Working Days</small></div><div><b>1</b><small>Active Trainer</small></div><div><b>0</b><small>Pending Adjustments</small></div><div><b>100%</b><small>Payroll Complete</small></div></div></section>
         </section>
 
-        <section class="cf-suite-income" *ngSwitchCase="'ingresos'">
-          <header class="cf-suite-page-head"><div><h1>Income</h1><p>Income overview and annual performance</p></div></header>
+        <section class="cf-suite-complete" *ngSwitchCase="'ingresos'">
+          <header class="cf-suite-page-head"><div><h1>Income</h1><p>Income overview, revenue sources and annual performance</p></div><div><button>Export</button><button class="primary">This Year</button></div></header>
           <div class="cf-suite-income-cards">
             <article><small>Net Profit</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>+18.4%</span></article>
             <article><small>Total Income</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>+12.5%</span></article>
             <article><small>Expenses</small><b>S/ {{(totalMonto*0.36) | number:'1.2-2'}}</b><span>+4.2%</span></article>
             <article><small>Member Revenue</small><b>S/ {{(totalMonto*0.64) | number:'1.2-2'}}</b><span>Top source</span></article>
           </div>
-          <div class="gym-suite-table-wrap">
-            <table class="gym-suite-table cf-income-matrix">
-              <thead><tr><th>Location</th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th><th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th><th>Year</th></tr></thead>
-              <tbody>
-                <tr *ngFor="let row of incomeMatrix"><td><b>{{row.location}}</b></td><td *ngFor="let m of row.months">S/ {{m}}</td><td><b>S/ {{row.year}}</b></td></tr>
-              </tbody>
-            </table>
-          </div>
+          <section class="cf-suite-income-visuals">
+            <article class="cf-suite-card"><header><div><h2>Income Overview</h2><p>Monthly revenue performance</p></div></header><div class="cf-income-bars"><i *ngFor="let h of [45,56,61,52,72,68,79,74,88,82,91,86]" [style.height.%]="h"></i></div><div class="cf-month-axis"><span *ngFor="let m of ['J','F','M','A','M','J','J','A','S','O','N','D']">{{m}}</span></div></article>
+            <article class="cf-suite-card"><header><div><h2>Revenue Sources</h2><p>Distribution by service</p></div></header><div class="cf-revenue-donut"><b>100%</b></div><div class="cf-revenue-list"><span>Memberships <b>64%</b></span><span>Personal Training <b>18%</b></span><span>Products <b>10%</b></span><span>Other <b>8%</b></span></div></article>
+          </section>
+          <section class="cf-suite-card"><header><div><h2>Annual Income Matrix</h2><p>Revenue by location and month</p></div></header><div class="gym-suite-table-wrap"><table class="gym-suite-table cf-income-matrix"><thead><tr><th>Location</th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th><th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th><th>Year</th></tr></thead><tbody><tr *ngFor="let row of incomeMatrix"><td><b>{{row.location}}</b></td><td *ngFor="let m of row.months">S/ {{m}}</td><td><b>S/ {{row.year}}</b></td></tr></tbody></table></div></section>
         </section>
 
-        <section class="cf-suite-invoices" *ngSwitchCase="'facturas'">
-          <header class="cf-suite-page-head"><div><h1>Invoices</h1><p>Manage member invoices and payment status</p></div></header>
-          <div class="cf-suite-invoice-note"><span>Select all checkboxes to send an update.</span><button type="button">Send to everyone</button></div>
-          <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th><input type="checkbox"></th><th>Invoice No.</th><th>Gym Member</th><th>Created Date</th><th>Due Date</th><th>Status</th><th>Amount</th><th>Actions</th></tr></thead><tbody>
-            <tr *ngFor="let item of filtered"><td><input type="checkbox"></td><td>#INV-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.fecha || '—'}}</td><td>{{item.fecha || '—'}}</td><td><span class="status-select">{{item.estado}}</span></td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><button class="cf-suite-link" (click)="editar(item)">View</button></td></tr>
-            <tr *ngIf="!filtered.length"><td colspan="8">No invoices registered.</td></tr>
-          </tbody></table></div>
+        <section class="cf-suite-complete" *ngSwitchCase="'facturas'">
+          <header class="cf-suite-page-head"><div><h1>Invoices</h1><p>Manage member invoices and payment status</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Create Invoice</button></header>
+          <div class="cf-suite-kpis">
+            <article><small>Total Invoices</small><b>{{filtered.length}}</b><span>Current records</span></article>
+            <article><small>Paid</small><b>{{filtered.length}}</b><span>Completed</span></article>
+            <article><small>Pending</small><b>0</b><span>Awaiting payment</span></article>
+            <article><small>Total Amount</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>Invoice value</span></article>
+          </div>
+          <section class="cf-suite-card">
+            <div class="cf-suite-invoice-note"><span>Select invoices to send a payment update.</span><button type="button">Send to everyone</button></div>
+            <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th><input type="checkbox"></th><th>Invoice No.</th><th>Gym Member</th><th>Created Date</th><th>Due Date</th><th>Status</th><th>Amount</th><th>Actions</th></tr></thead><tbody>
+              <tr *ngFor="let item of filtered"><td><input type="checkbox"></td><td>#INV-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.fecha || '—'}}</td><td>{{item.fecha || '—'}}</td><td><span class="status-select">{{item.estado}}</span></td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><div class="cf-invoice-actions"><button class="cf-suite-link" (click)="editar(item)">View</button><button class="cf-suite-link" (click)="editar(item)">Edit</button></div></td></tr>
+              <tr *ngIf="!filtered.length"><td colspan="8">No invoices registered.</td></tr>
+            </tbody></table></div>
+          </section>
+          <section class="cf-suite-card"><header><div><h2>Payment Status</h2><p>Invoice collection progress</p></div></header><div class="cf-payment-status-grid"><div><b>100%</b><small>Collection Rate</small></div><div><b>0</b><small>Overdue</small></div><div><b>{{filtered.length}}</b><small>Processed</small></div><div><b>S/ {{totalMonto | number:'1.2-2'}}</b><small>Collected</small></div></div></section>
         </section>
 
         <section class="gym-suite-panel" *ngSwitchDefault>
