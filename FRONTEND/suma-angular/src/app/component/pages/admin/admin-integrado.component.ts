@@ -337,46 +337,65 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </section>
 
-      <section class="cf-live-page" *ngIf="seccion==='rutinas'">
+      <section class="cf-live-page cf-workout-live-page" *ngIf="seccion==='rutinas'">
         <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>My Workout Plan</strong></div>
+
         <section class="cf-live-workout-head">
-          <div><h1>Great work, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1><p>You've completed {{progresoSemanal()}}% of your weekly fitness goal.</p></div>
-          <div class="cf-live-workout-progress"><small>This Week</small><b>5 of 7 days active</b><em>+12% ↑ vs last week</em><div><i [style.width.%]="progresoSemanal()"></i></div><span>Goal: 100% weekly activity <strong>On Track</strong></span></div>
+          <div>
+            <h1>Great work, {{auth.usuario?.nombre_usuario || 'James'}}</h1>
+            <p>You've completed {{progresoSemanal()}}% of your weekly fitness goal.</p>
+          </div>
+          <div class="cf-live-workout-progress">
+            <small>This Week</small>
+            <b>5 of 7 days active</b>
+            <em>+12% ↑ <span>vs last week</span></em>
+            <div><i [style.width.%]="progresoSemanal()"></i></div>
+            <span>Goal: 100% weekly activity <strong>On Track</strong></span>
+          </div>
         </section>
-        <section class="cf-live-week-tabs">
-          <button *ngFor="let w of [1,2,3,4]" [class.active]="workoutSemana===w" (click)="workoutSemana=w">Week {{w}}</button>
-          <button [class.active]="workoutSemana===0" (click)="workoutSemana=0">Summary</button>
+
+        <section class="cf-workout-block">
+          <div class="cf-live-exercise-grid">
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Lunges"></div><h3>Lunges</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Push Ups"></div><h3>Push Ups</h3><p>3 Sets • 40 Sec</p><span>In Progress</span></article>
+          </div>
         </section>
-        <section class="cf-live-exercise-grid" *ngIf="workoutSemana===1">
-          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
-          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Plank"></div><h3>Plank</h3><p>3 Sets • 45 Sec</p><span>Completed</span></article>
-          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Burpees"></div><h3>Burpees</h3><p>5 Sets • 20 Sec</p><span>In Progress</span></article>
+
+        <section class="cf-workout-block">
+          <div class="cf-live-week-summary"><h2>Week 1</h2><p>6 workouts completed • 1h 20m active</p></div>
+          <div class="cf-live-exercise-grid">
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Plank"></div><h3>Plank</h3><p>3 Sets • 45 Sec</p><span>Completed</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Burpees"></div><h3>Burpees</h3><p>5 Sets • 20 Sec</p><span>In Progress</span></article>
+          </div>
         </section>
-        <section class="cf-live-exercise-grid" *ngIf="workoutSemana===2">
-          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Jump Rope"></div><h3>Jump Rope</h3><p>10 Min</p><span>Completed</span></article>
-          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>In Progress</span></article>
-          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Lunges"></div><h3>Lunges</h3><p>4 Sets • 30 Sec</p><span>Not Started</span></article>
+
+        <section class="cf-workout-block">
+          <div class="cf-live-week-summary"><h2>Week 2</h2><p>7 workouts completed • 1h 30m active</p></div>
+          <div class="cf-live-exercise-grid">
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Jump Rope"></div><h3>Jump Rope</h3><p>10 Min</p><span>Completed</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>In Progress</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Lunges"></div><h3>Lunges</h3><p>4 Sets • 30 Sec</p><span>Not Started</span></article>
+          </div>
         </section>
-        <section class="cf-live-exercise-grid" *ngIf="workoutSemana===3">
-          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
-          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Lunges"></div><h3>Lunges</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
-          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Push Ups"></div><h3>Push Ups</h3><p>3 Sets • 40 Sec</p><span>In Progress</span></article>
+
+        <section class="cf-workout-block">
+          <div class="cf-live-week-summary"><h2>Week 3</h2><p>4 workouts completed • 55m active</p></div>
+          <div class="cf-live-exercise-grid">
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Rest Day"></div><h3>Rest Day</h3><p>Recovery</p><span>Not Started</span></article>
+          </div>
         </section>
-        <section class="cf-live-exercise-grid" *ngIf="workoutSemana===4">
-          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Rest Day"></div><h3>Rest Day</h3><p>Recovery</p><span>Not Started</span></article>
-          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Stretching"></div><h3>Mobility & Stretching</h3><p>20 Min</p><span>Pending</span></article>
-          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Full Body Test"></div><h3>Full Body Test</h3><p>Performance Review</p><span>Pending</span></article>
+
+        <section class="cf-workout-block">
+          <div class="cf-live-week-summary"><h2>Week 4</h2><p>Recovery & stretching focus</p></div>
+          <div class="cf-live-exercise-grid">
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Full Body Test"></div><h3>Full Body Test</h3><p>Performance Review</p><span>Pending</span></article>
+          </div>
         </section>
-        <section class="cf-live-exercise-grid" *ngIf="workoutSemana===0">
-          <article *ngFor="let r of rutinas.slice(0,3); let i=index">
-            <div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Exercise"></div>
-            <h3>{{r.nombre_rutina || 'Mallqui Workout'}}</h3><p>{{r.objetivo || 'Personalized routine'}}</p><span>{{r.estado || 'Active'}}</span>
-          </article>
-          <article *ngIf="!rutinas.length"><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Workout"></div><h3>Weekly Workout</h3><p>Overall weekly progress overview</p><span>Summary</span></article>
-        </section>
-        <section class="cf-live-week-summary">
-          <h2>{{workoutSemana===0?'Summary':('Week '+workoutSemana)}}</h2>
-          <p>{{workoutSemana===1?'6 workouts completed • 1h 20m active':(workoutSemana===2?'7 workouts completed • 1h 30m active':(workoutSemana===3?'4 workouts completed • 55m active':(workoutSemana===4?'Recovery & stretching focus':'Overall weekly progress overview')))}}</p>
+
+        <section class="cf-live-week-summary cf-workout-summary-final">
+          <h2>Summary</h2><p>Overall weekly progress overview</p>
         </section>
       </section>
 
@@ -399,17 +418,23 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <article class="cf-live-card">
             <header><div><h2>Best Dietitians</h2><p>Nutrition experts</p></div></header>
             <div class="cf-live-list">
-              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>{{entrenadores[0] ? nombreEntrenador(entrenadores[0]) : 'Mallqui Coach'}}</b><small>Nutrition Specialist</small></div><em>895 reviews</em></div>
-              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>Sports Nutrition</b><small>Wellness Coach</small></div><em>683 reviews</em></div>
-              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>Weight Management</b><small>Fitness Nutrition</small></div><em>669 reviews</em></div>
+              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>Gilbert Sandoval</b><small>Nutrition Specialist</small></div><em>895 reviews</em></div>
+              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>Eugene Mata</b><small>Clinical Dietitian</small></div><em>832 reviews</em></div>
+              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>George Bailey</b><small>Sports Nutrition</small></div><em>683 reviews</em></div>
+              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>Amelia Bruklin</b><small>Weight Management</small></div><em>669 reviews</em></div>
+              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>Wally Turner</b><small>Fitness Nutrition</small></div><em>436 reviews</em></div>
+              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>Ashton Cozei</b><small>Wellness Coach</small></div><em>362 reviews</em></div>
             </div>
           </article>
           <article class="cf-live-card">
             <header><div><h2>Best Dishes</h2><p>Recommended meals</p></div></header>
             <div class="cf-live-meals">
-              <div><span>🥗</span><div><b>Protein Bowl</b><small>High protein meal</small></div><em>320 kcal</em></div>
-              <div><span>🥣</span><div><b>Lean Chicken Bowl</b><small>Balanced lunch</small></div><em>450 kcal</em></div>
-              <div><span>🍎</span><div><b>Green Detox Salad</b><small>Light dinner</small></div><em>280 kcal</em></div>
+              <div><span>🥗</span><div><b>Thai Crab Bowl</b><small>Rich seafood protein meal</small></div><em>320 kcal</em></div>
+              <div><span>🥣</span><div><b>Mexican Protein Salad</b><small>Fresh & low-carb bowl</small></div><em>280 kcal</em></div>
+              <div><span>🥗</span><div><b>Greek Power Salad</b><small>Mediterranean fresh bowl</small></div><em>330 kcal</em></div>
+              <div><span>🥑</span><div><b>Avocado Toast Deluxe</b><small>Healthy breakfast option</small></div><em>290 kcal</em></div>
+              <div><span>🥧</span><div><b>Pecan Tart Slice</b><small>Sweet dessert treat</small></div><em>360 kcal</em></div>
+              <div><span>🥩</span><div><b>Grilled Beef Steak</b><small>High protein heavy meal</small></div><em>480 kcal</em></div>
             </div>
           </article>
         </section>
