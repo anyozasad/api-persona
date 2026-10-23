@@ -50,13 +50,13 @@ interface GymModuleConfig {
           <section class="cf-suite-equipment-grid">
             <article *ngFor="let item of (records.length ? records : equipmentFallback)">
               <div class="cf-suite-equipment-art"><img *ngIf="item.imagen_url" [src]="item.imagen_url" [alt]="item.titulo"><span *ngIf="!item.imagen_url">🏋</span></div>
-              <div><h3>{{item.titulo}}</h3><b>{{item.count || item.monto || 1}}</b><p>{{item.subtitulo || 'Gym equipment'}}</p><span class="status-select">{{item.estado || 'Disponibles'}}</span></div>
+              <div><h3>{{item.titulo}}</h3><b>{{item.count || item.monto || 1}}</b><p>{{item.subtitulo || 'Equipo de gimnasio'}}</p><span class="status-select">{{item.estado || 'Disponibles'}}</span></div>
             </article>
           </section>
           <section class="cf-suite-card">
-            <header><div><h2>Equipos Mantenimiento</h2><p>Programación reciente de mantenimiento</p></div><button type="button" (click)="nuevoRegistro()">Schedule Mantenimiento</button></header>
+            <header><div><h2>Equipos Mantenimiento</h2><p>Programación reciente de mantenimiento</p></div><button type="button" (click)="nuevoRegistro()">Programar Mantenimiento</button></header>
             <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>Equipos</th><th>Categoría</th><th>Último Servicio</th><th>Próximo Servicio</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
-              <tr *ngFor="let item of (records.length ? records.slice(0,6) : equipmentFallback.slice(0,6))"><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Fitness Equipos'}}</td><td>01/10/2026</td><td>01/11/2026</td><td><span class="status-select">{{item.estado || 'Disponibles'}}</span></td><td><button class="cf-suite-link" (click)="editar(item)">Ver</button></td></tr>
+              <tr *ngFor="let item of (records.length ? records.slice(0,6) : equipmentFallback.slice(0,6))"><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Equipos Fitness'}}</td><td>01/10/2026</td><td>01/11/2026</td><td><span class="status-select">{{item.estado || 'Disponibles'}}</span></td><td><button class="cf-suite-link" (click)="editar(item)">Ver</button></td></tr>
             </tbody></table></div>
           </section>
         </section>
@@ -66,20 +66,20 @@ interface GymModuleConfig {
           <div class="cf-suite-kpis">
             <article><small>Próximos Eventos</small><b>{{records.length || eventFallback.length}}</b><span>Este mes</span></article>
             <article><small>Total de Reservas</small><b>186</b><span>En todos los eventos</span></article>
-            <article><small>Disponibles Spots</small><b>42</b><span>Inscripciones abiertas</span></article>
+            <article><small>Cupos Disponibles</small><b>42</b><span>Inscripciones abiertas</span></article>
             <article><small>Completados</small><b>12</b><span>Este año</span></article>
           </div>
           <section class="cf-suite-events">
             <article *ngFor="let item of (records.length ? records : eventFallback); let i=index">
-              <div class="cf-suite-event-date"><b>{{item.day || (15+i)}}</b><small>th</small></div>
-              <div class="cf-suite-event-main"><span>{{item.estado || 'Going fast'}}</span><h3>{{item.titulo}}</h3><p>{{item.fecha || 'Tuesday'}} · {{item.subtitulo || 'Mallqui Gym'}}</p></div>
-              <div class="cf-suite-event-meta"><b>{{item.bookings || (40+i*10)}} Bookings</b><small>{{item.detalle || 'Evento fitness'}}</small></div>
+              <div class="cf-suite-event-date"><b>{{item.day || (15+i)}}</b><small></small></div>
+              <div class="cf-suite-event-main"><span>{{item.estado || 'Cupos limitados'}}</span><h3>{{item.titulo}}</h3><p>{{item.fecha || 'Martes'}} · {{item.subtitulo || 'Mallqui Gym'}}</p></div>
+              <div class="cf-suite-event-meta"><b>{{item.bookings || (40+i*10)}} Reservas</b><small>{{item.detalle || 'Evento fitness'}}</small></div>
               <button class="cf-suite-link" (click)="editar(item)">Detalles</button>
             </article>
           </section>
           <section class="cf-suite-card">
             <header><div><h2>Calendario de Eventos</h2><p>Calendario semanal de actividades</p></div></header>
-            <div class="cf-event-calendar"><div><b>MON</b><span>Taller de Fuerza</span><small>08:00 AM</small></div><div><b>TUE</b><span>Crossfit Challenge</span><small>06:30 PM</small></div><div><b>WED</b><span>Nutrición Talk</span><small>07:00 PM</small></div><div><b>FRI</b><span>Encuentro de Socios</span><small>05:00 PM</small></div></div>
+            <div class="cf-event-calendar"><div><b>LUN</b><span>Taller de Fuerza</span><small>08:00 AM</small></div><div><b>MAR</b><span>Desafío Crossfit</span><small>06:30 PM</small></div><div><b>MIÉ</b><span>Charla de Nutrición</span><small>07:00 PM</small></div><div><b>VIE</b><span>Encuentro de Socios</span><small>05:00 PM</small></div></div>
           </section>
         </section>
 
@@ -87,14 +87,14 @@ interface GymModuleConfig {
           <header class="cf-suite-page-head"><div><h1>Galería</h1><p>Galería del gimnasio, clases y eventos destacados</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Subir Imagen</button></header>
           <div class="cf-suite-gallery-filter"><button class="active">Todos</button><button>Entrenamiento</button><button>Eventos</button><button>Socios</button><button>Equipos</button></div>
           <section class="cf-suite-gallery">
-            <article *ngFor="let item of (records.length ? records : galleryFallback)"><img [src]="item.imagen_url || 'assets/showcase/class-showcase.svg'" [alt]="item.titulo"><div><b>{{item.titulo}}</b><span>{{item.count || 52}} photos</span></div></article>
+            <article *ngFor="let item of (records.length ? records : galleryFallback)"><img [src]="item.imagen_url || 'assets/showcase/class-showcase.svg'" [alt]="item.titulo"><div><b>{{item.titulo}}</b><span>{{item.count || 52}} fotos</span></div></article>
           </section>
           <div class="cf-suite-kpis compact"><article><small>Álbumes</small><b>8</b><span>Colecciones organizadas</span></article><article><small>Fotos</small><b>248</b><span>Contenido publicado</span></article><article><small>Este Mes</small><b>36</b><span>Nuevas cargas</span></article><article><small>Almacenamiento</small><b>68%</b><span>Capacidad multimedia</span></article></div>
         </section>
 
         <section class="cf-suite-complete" *ngSwitchCase="'noticias'">
           <header class="cf-suite-page-head"><div><h1>Noticias y Novedades</h1><p>Noticias, anuncios y artículos recientes del gimnasio</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Noticia</button></header>
-          <section class="cf-news-featured"><img src="assets/showcase/hero-showcase.svg" alt="Featured news"><div><span>NOVEDAD DESTACADA</span><h2>New Entrenamiento Programs Disponibles</h2><p>Conoce los nuevos programas de fuerza, acondicionamiento y socios de Mallqui Gym.</p><button>Leer Más</button></div></section>
+          <section class="cf-news-featured"><img src="assets/showcase/hero-showcase.svg" alt="Noticia destacada"><div><span>NOVEDAD DESTACADA</span><h2>Nuevos Programas de Entrenamiento Disponibles</h2><p>Conoce los nuevos programas de fuerza, acondicionamiento y socios de Mallqui Gym.</p><button>Leer Más</button></div></section>
           <section class="cf-suite-news">
             <article *ngFor="let item of (records.length ? records : newsFallback)"><img [src]="item.imagen_url || 'assets/showcase/hero-showcase.svg'" [alt]="item.titulo"><div><h3>{{item.titulo}}</h3><small>Publicado el - {{item.fecha || '30/06/2026'}}</small><p>{{item.subtitulo || item.detalle || 'Últimas noticias y novedades de Mallqui Gym.'}}</p><div class="cf-news-actions"><button type="button">Leer Más</button><button type="button" (click)="editar(item)">Editar</button></div></div></article>
           </section>
@@ -102,7 +102,7 @@ interface GymModuleConfig {
         </section>
 
         <section class="cf-suite-complete" *ngSwitchCase="'salarios'">
-          <header class="cf-suite-page-head"><div><h1>Lista de Salarios</h1><p>Resumen de planilla y registros salariales</p></div><div><select><option>October 2026</option><option>September 2026</option></select><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Salario</button></div></header>
+          <header class="cf-suite-page-head"><div><h1>Lista de Salarios</h1><p>Resumen de planilla y registros salariales</p></div><div><select><option>Octubre 2026</option><option>Septiembre 2026</option></select><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Salario</button></div></header>
           <div class="cf-suite-kpis">
             <article><small>Empleados</small><b>{{filtered.length || 1}}</b><span>Registros de planilla</span></article>
             <article><small>Planilla Total</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>Periodo actual</span></article>
@@ -111,7 +111,7 @@ interface GymModuleConfig {
           </div>
           <section class="cf-suite-card">
             <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>ID del Empleado</th><th>Empleado</th><th>Rol</th><th>Ubicación</th><th>Días</th><th>Periodo</th><th>Salario</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
-              <tr *ngFor="let item of filtered"><td>EMP-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Trainer'}}</td><td>Pucallpa</td><td>26</td><td>{{item.fecha || 'Oct 2026'}}</td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><span class="status-select">{{item.estado || 'Pagado'}}</span></td><td><button class="cf-suite-link" (click)="editar(item)">Boleta de Pago</button></td></tr>
+              <tr *ngFor="let item of filtered"><td>EMP-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Entrenador'}}</td><td>Pucallpa</td><td>26</td><td>{{item.fecha || 'Oct 2026'}}</td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><span class="status-select">{{item.estado || 'Pagado'}}</span></td><td><button class="cf-suite-link" (click)="editar(item)">Boleta de Pago</button></td></tr>
               <tr *ngIf="!filtered.length"><td colspan="9">Aún no hay registros de salarios.</td></tr>
             </tbody></table></div>
           </section>
@@ -128,7 +128,7 @@ interface GymModuleConfig {
           </div>
           <section class="cf-suite-income-visuals">
             <article class="cf-suite-card"><header><div><h2>Resumen de Ingresos</h2><p>Rendimiento mensual</p></div></header><div class="cf-income-bars"><i *ngFor="let h of [45,56,61,52,72,68,79,74,88,82,91,86]" [style.height.%]="h"></i></div><div class="cf-month-axis"><span *ngFor="let m of ['J','F','M','A','M','J','J','A','S','O','N','D']">{{m}}</span></div></article>
-            <article class="cf-suite-card"><header><div><h2>Fuentes de Ingreso</h2><p>Distribución por servicio</p></div></header><div class="cf-revenue-donut"><b>100%</b></div><div class="cf-revenue-list"><span>Socioships <b>64%</b></span><span>Personal Entrenamiento <b>18%</b></span><span>Productos <b>10%</b></span><span>Otros <b>8%</b></span></div></article>
+            <article class="cf-suite-card"><header><div><h2>Fuentes de Ingreso</h2><p>Distribución por servicio</p></div></header><div class="cf-revenue-donut"><b>100%</b></div><div class="cf-revenue-list"><span>Membresías <b>64%</b></span><span>Entrenamiento Personal <b>18%</b></span><span>Productos <b>10%</b></span><span>Otros <b>8%</b></span></div></article>
           </section>
           <section class="cf-suite-card"><header><div><h2>Matriz Anual de Ingresos</h2><p>Ingresos por sede y mes</p></div></header><div class="gym-suite-table-wrap"><table class="gym-suite-table cf-income-matrix"><thead><tr><th>Ubicación</th><th>Ene</th><th>Feb</th><th>Mar</th><th>Abr</th><th>May</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dic</th><th>Año</th></tr></thead><tbody><tr *ngFor="let row of incomeMatrix"><td><b>{{row.location}}</b></td><td *ngFor="let m of row.months">S/ {{m}}</td><td><b>S/ {{row.year}}</b></td></tr></tbody></table></div></section>
         </section>
@@ -504,7 +504,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   ];
   eventFallback:any[] = [
     {day:15,titulo:'Sensual dance workout for complete beginners.',subtitulo:'Mallqui Gym · 10:30 - 11:30',estado:'Sales end soon',bookings:120},
-    {day:19,titulo:'Rehab and Return to Sport.',subtitulo:'Mallqui Gym · 12:30 - 03:30',estado:'Going fast',bookings:100},
+    {day:19,titulo:'Rehab and Return to Sport.',subtitulo:'Mallqui Gym · 12:30 - 03:30',estado:'Cupos limitados',bookings:100},
     {day:23,titulo:'Crossfit Entrenamiento Day.',subtitulo:'Mallqui Gym · 08:30 - 10:30',estado:'Almost full',bookings:60}
   ];
   galleryFallback:any[] = Array.from({length:12},(_,i)=>({titulo:'Mallqui Gym',count:[86,94,55,39,68,33,74,88,93,39,66,52][i],imagen_url:i%2?'assets/showcase/class-showcase.svg':'assets/showcase/hero-showcase.svg'}));
