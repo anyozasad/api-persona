@@ -20,12 +20,10 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
   template: `
   <div class="admin-shell admin-home-redesign" [class.admin-sidebar-collapsed]="sidebarCerrado">
     <header class="admin-wix-topbar">
-      <button type="button" class="admin-top-brand" (click)="toggleSidebar()" title="Abrir o cerrar menú">
-        <span class="admin-top-brand-mark">☰</span>
-        <span class="crossfit-top-logo"><span class="cf-logo-stack" aria-hidden="true"><i></i><i></i><i></i></span><strong>Mallqui Gym</strong></span>
-      </button>
-
-      <div class="crossfit-top-spacer"></div>
+      <div class="mg-top-greeting">
+        <h1>Hola, {{auth.usuario?.nombre_usuario || 'Administrador'}}!</h1>
+        <span>{{fechaDashboard}}</span>
+      </div>
 
       <label class="admin-wix-search">
         <span>⌕</span>
@@ -33,209 +31,78 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           type="text"
           [(ngModel)]="busquedaAdmin"
           (keydown.enter)="buscarEnPanel()"
-          placeholder="Buscar"
+          placeholder="Buscar socios, rutinas o noticias..."
           aria-label="Buscar en el panel">
-        <button type="button" (click)="buscarEnPanel()">Buscar</button>
       </label>
 
-      <div class="admin-top-actions">
-        <button type="button" (click)="toggleTopPanel('activity')" title="Actividad" aria-label="Actividad">＋</button>
-        <button type="button" (click)="toggleTopPanel('alerts')" title="Alertas" aria-label="Alertas">⚑</button>
-        <button type="button" (click)="toggleTopPanel('messages')" title="Mensajes" aria-label="Mensajes">✉</button>
-        <button type="button" (click)="cambiarSegcion('account-settings')" title="Configuración" aria-label="Configuración">⚙</button>
-        <button type="button" class="admin-top-user" (click)="cambiarSegcion('my-profile')" title="Mi perfil">
-          {{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}
-        </button>
-      </div>
+      <button type="button" class="mg-notification" (click)="cambiarSegcion('comunicacion')" title="Notificaciones">
+        ♧
+        <i *ngIf="totalAlertasDashboard()>0"></i>
+      </button>
+
+      <button type="button" class="admin-top-user" (click)="cambiarSegcion('my-profile')" title="Mi perfil">
+        {{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}
+      </button>
     </header>
 
-    <section class="cf-top-dropdown activity" *ngIf="topPanel==='activity'">
-      <header><h3>Actividad</h3><button (click)="topPanel=''">×</button></header>
-      <div class="cf-top-feed">
-        <article><span>S/</span><div><b>Pagos de membresías</b><p>18 socios renovaron sus membresías.</p><small>10:20 AM · Hoy</small></div></article>
-        <article><span>◆</span><div><b>Actualización de equipos</b><p>Nuevos equipos de cardio y fuerza registrados.</p><small>01:15 PM · Hoy</small></div></article>
-        <article><span>🏋</span><div><b>Sesiones de entrenamiento</b><p>Sesiones personales completadas hoy.</p><small>05:40 PM · Hoy</small></div></article>
-        <article><span>♚</span><div><b>Nuevos socios</b><p>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos socios este mes.</p><small>06:50 PM · Hoy</small></div></article>
-        <article><span>!</span><div><b>Solicitud de mantenimiento</b><p>Revisión de mantenimiento pendiente.</p><small>08:10 PM · Hoy</small></div></article>
-      </div>
-      <button class="cf-top-viewall" (click)="cambiarSegcion('comunicacion');topPanel=''">Ver todo</button>
-    </section>
-
-    <section class="cf-top-dropdown" *ngIf="topPanel==='alerts'">
-      <header><h3>Alertas</h3><button (click)="topPanel=''">×</button></header>
-      <div class="cf-top-feed">
-        <article><span>NH</span><div><b>Entrenamiento completado</b><p>5 sesiones personales completadas hoy.</p><small>Hoy, 07:30 PM</small></div></article>
-        <article><span>WT</span><div><b>Logro de socio</b><p>Un socio alcanzó un nuevo logro.</p><small>Hoy, 08:00 PM</small></div></article>
-        <article><span>TJ</span><div><b>Actualización de rutina</b><p>Se publicó una nueva rutina HIIT.</p><small>Hoy, 09:30 PM</small></div></article>
-      </div>
-      <button class="cf-top-viewall" (click)="cambiarSegcion('comunicacion');topPanel=''">Ver todo</button>
-    </section>
-
-    <section class="cf-top-dropdown messages" *ngIf="topPanel==='messages'">
-      <header><h3>Mensajes</h3><button (click)="topPanel=''">×</button></header>
-      <div class="cf-top-feed">
-        <article><img src="assets/showcase/coach-showcase.svg" alt="Entrenador"><div><b>Entrenador Mallqui</b><p>Sesiones de entrenamiento completadas hoy.</p><small>Hoy, 07:30 PM</small></div></article>
-        <article><img src="assets/showcase/coach-showcase.svg" alt="Entrenador"><div><b>Actualización Fitness</b><p>Nuevo récord personal registrado.</p><small>Hoy, 08:00 PM</small></div></article>
-        <article><img src="assets/showcase/coach-showcase.svg" alt="Entrenador"><div><b>Mensaje de socio</b><p>Renovación de membresía confirmada.</p><small>Hoy, 10:15 PM</small></div></article>
-      </div>
-      <button class="cf-top-viewall" (click)="cambiarSegcion('comunicacion');topPanel=''">Ver todo</button>
-    </section>
-
     <aside class="admin-nav">
-      <div class="admin-nav-top crossfit-profile-card">
-        <button type="button" class="crossfit-profile-avatar" (click)="cambiarSegcion('my-profile')" aria-label="Abrir perfil">
-          <img src="assets/showcase/coach-showcase.svg" alt="Administrador Mallqui Gym">
-          <span class="crossfit-profile-status"></span>
-        </button>
-        <div class="crossfit-profile-copy">
-          <strong>{{auth.usuario?.nombre_usuario || 'Administrador'}}</strong>
-          <small>Administrador</small>
-          <em>Plan Oro</em>
-        </div>
-      </div>
+      <button type="button" class="mg-brand" (click)="cambiarSegcion('dashboard')" aria-label="Ir al inicio">
+        <span class="mg-brand-icon">↔</span>
+        <span><strong>Mallqui</strong><b>Gym</b></span>
+      </button>
 
-      <nav class="admin-main-nav crossfit-sidebar-nav" aria-label="Módulos principales">
+      <nav class="admin-main-nav crossfit-sidebar-nav" aria-label="Navegación principal">
         <button type="button" [class.active]="seccion==='dashboard'" (click)="cambiarSegcion('dashboard')">
-          <span class="admin-main-nav-icon">▦</span><span>Panel Principal</span>
+          <span class="admin-main-nav-icon">⌂</span><span>Inicio</span>
         </button>
         <button type="button" [class.active]="seccion==='reportes'" (click)="cambiarSegcion('reportes')">
-          <span class="admin-main-nav-icon">⌁</span><span>Mis Reportes</span>
+          <span class="admin-main-nav-icon">▥</span><span>Analíticas</span>
         </button>
-        <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSegcion('rutinas')">
-          <span class="admin-main-nav-icon">▣</span><span>Mi Plan de Entrenamiento</span>
+        <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSegcion('noticias')">
+          <span class="admin-main-nav-icon">▤</span><span>Noticias</span>
         </button>
-        <button type="button" [class.active]="seccion==='nutricion'" (click)="cambiarSegcion('nutricion')">
-          <span class="admin-main-nav-icon">♨</span><span>Mi Plan de Alimentación</span>
-        </button>
-        <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSegcion('asistencias')">
-          <span class="admin-main-nav-icon">▦</span><span>Control de Asistencia</span>
-        </button>
-        <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSegcion('entrenador')">
-          <span class="admin-main-nav-icon">♙</span><span>Entrenadores</span>
-        </button>
-        <button type="button" [class.active]="seccion==='trainer-profile'" (click)="cambiarSegcion('trainer-profile')">
-          <span class="admin-main-nav-icon">◎</span><span>Perfil del Entrenador</span>
+        <button type="button" [class.active]="seccion==='reservas'" (click)="cambiarSegcion('reservas')">
+          <span class="admin-main-nav-icon">◫</span><span>Agenda</span>
         </button>
 
-        <button type="button" class="cf-nav-group-head" [class.active]="['clientes','membresias','members-list','members-cards','add-member','edit-member','edit-member-details'].includes(seccion)" (click)="toggleNavGroup('members')">
-          <span class="admin-main-nav-icon">♚</span><span>Socios del Gimnasio</span><i>{{navGroups.members?'⌄':'›'}}</i>
-        </button>
-        <div class="cf-nav-children" *ngIf="navGroups.members">
-          <button type="button" [class.active]="seccion==='clientes'" (click)="cambiarSegcion('clientes')"><span>•</span><span>Gestión de Socios</span></button>
-          <button type="button" [class.active]="seccion==='membresias'" (click)="cambiarSegcion('membresias')"><span>•</span><span>Membresías</span></button>
-          <button type="button" [class.active]="seccion==='members-list'" (click)="cambiarSegcion('members-list')"><span>•</span><span>Lista de Socios</span></button>
-          <button type="button" [class.active]="seccion==='members-cards'" (click)="cambiarSegcion('members-cards')"><span>•</span><span>Tarjetas de Socios</span></button>
-          <button type="button" [class.active]="seccion==='add-member'" (click)="cambiarSegcion('add-member')"><span>•</span><span>Agregar Socio</span></button>
-          <button type="button" [class.active]="seccion==='edit-member' || seccion==='edit-member-details'" (click)="cambiarSegcion('edit-member')"><span>•</span><span>Editar Socio</span></button>
-        </div>
-
-        <button type="button" class="cf-nav-group-head" [class.active]="['pagos','facturas','invoice-details','create-invoice','add-invoice','edit-invoice','invoices-list','expenses'].includes(seccion)" (click)="toggleNavGroup('payments')">
-          <span class="admin-main-nav-icon">S/</span><span>Pagos</span><i>{{navGroups.payments?'⌄':'›'}}</i>
-        </button>
-        <div class="cf-nav-children" *ngIf="navGroups.payments">
-          <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSegcion('pagos')"><span>•</span><span>Pagos Registrados</span></button>
-          <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSegcion('facturas')"><span>•</span><span>Facturas</span></button>
-          <button type="button" [class.active]="seccion==='invoice-details'" (click)="cambiarSegcion('invoice-details')"><span>•</span><span>Detalle de Factura</span></button>
-          <button type="button" [class.active]="seccion==='create-invoice' || seccion==='add-invoice'" (click)="cambiarSegcion('create-invoice')"><span>•</span><span>Crear Factura</span></button>
-          <button type="button" [class.active]="seccion==='edit-invoice'" (click)="cambiarSegcion('edit-invoice')"><span>•</span><span>Editar Factura</span></button>
-          <button type="button" [class.active]="seccion==='invoices-list'" (click)="cambiarSegcion('invoices-list')"><span>•</span><span>Lista de Facturas</span></button>
-          <button type="button" [class.active]="seccion==='expenses'" (click)="cambiarSegcion('expenses')"><span>•</span><span>Gastos</span></button>
-        </div>
-
-        <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSegcion('equipos')"><span class="admin-main-nav-icon">◆</span><span>Equipos</span></button>
-        <button type="button" [class.active]="seccion==='eventos'" (click)="cambiarSegcion('eventos')"><span class="admin-main-nav-icon">◫</span><span>Eventos del Gimnasio</span></button>
-        <button type="button" [class.active]="seccion==='galeria'" (click)="cambiarSegcion('galeria')"><span class="admin-main-nav-icon">▧</span><span>Galería</span></button>
-        <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSegcion('noticias')"><span class="admin-main-nav-icon">◇</span><span>Noticias y Novedades</span></button>
-        <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSegcion('planes')"><span class="admin-main-nav-icon">★</span><span>Planes y Precios</span></button>
-        <button type="button" [class.active]="seccion==='salarios'" (click)="cambiarSegcion('salarios')"><span class="admin-main-nav-icon">▤</span><span>Salarios</span></button>
-        <button type="button" [class.active]="seccion==='ingresos'" (click)="cambiarSegcion('ingresos')"><span class="admin-main-nav-icon">↗</span><span>Ingresos</span></button>
-        <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSegcion('facturas')"><span class="admin-main-nav-icon">▥</span><span>Facturas</span></button>
-
-        <button type="button" class="cf-nav-group-head" [class.active]="['alerts','avatars','badges','buttons','button-groups','cards-ui','advanced-cards','dropdowns','list-items','progress-bars','placeholders','spinners'].includes(seccion)" (click)="toggleNavGroup('ui')">
-          <span class="admin-main-nav-icon">✦</span><span>Elementos de Interfaz</span><i>{{navGroups.ui?'⌄':'›'}}</i>
-        </button>
-        <div class="cf-nav-children" *ngIf="navGroups.ui">
-          <button *ngFor="let x of uiElementLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSegcion(x.id)"><span>•</span><span>{{x.label}}</span></button>
-        </div>
-
-        <button type="button" class="cf-nav-group-head" [class.active]="['accordions','carousel','modals','popovers','tabs-ui','tooltips'].includes(seccion)" (click)="toggleNavGroup('jquery')">
-          <span class="admin-main-nav-icon">⌘</span><span>Componentes jQuery</span><i>{{navGroups.jquery?'⌄':'›'}}</i>
-        </button>
-        <div class="cf-nav-children" *ngIf="navGroups.jquery">
-          <button *ngFor="let x of jqueryLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSegcion(x.id)"><span>•</span><span>{{x.label}}</span></button>
-        </div>
-
-        <button type="button" [class.active]="seccion==='sports-components'" (click)="cambiarSegcion('sports-components')"><span class="admin-main-nav-icon">🏋</span><span>Componentes Deportivos</span></button>
-
-        <button type="button" class="cf-nav-group-head" [class.active]="['forms','form-inputs','checkbox-radio','file-input','validations','date-time','input-masks','input-tags'].includes(seccion)" (click)="toggleNavGroup('forms')">
-          <span class="admin-main-nav-icon">☷</span><span>Formularios</span><i>{{navGroups.forms?'⌄':'›'}}</i>
-        </button>
-        <div class="cf-nav-children" *ngIf="navGroups.forms">
-          <button type="button" [class.active]="seccion==='forms'" (click)="cambiarSegcion('forms')"><span>•</span><span>Formularios</span></button>
-          <button *ngFor="let x of formLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSegcion(x.id)"><span>•</span><span>{{x.label}}</span></button>
-        </div>
-
-        <button type="button" [class.active]="seccion==='tables'" (click)="cambiarSegcion('tables')"><span class="admin-main-nav-icon">▦</span><span>Tablas</span></button>
-        <button type="button" [class.active]="seccion==='data-tables'" (click)="cambiarSegcion('data-tables')"><span class="admin-main-nav-icon">▦</span><span>Tablas de Datos</span></button>
-
-        <button type="button" class="cf-nav-group-head" [class.active]="['graphs','apex','morris'].includes(seccion)" (click)="toggleNavGroup('graphs')">
-          <span class="admin-main-nav-icon">↗</span><span>Gráficos</span><i>{{navGroups.graphs?'⌄':'›'}}</i>
-        </button>
-        <div class="cf-nav-children" *ngIf="navGroups.graphs">
-          <button type="button" [class.active]="seccion==='graphs'" (click)="cambiarSegcion('graphs')"><span>•</span><span>Gráficos</span></button>
-          <button type="button" [class.active]="seccion==='apex'" (click)="cambiarSegcion('apex')"><span>•</span><span>Apex</span></button>
-          <button type="button" [class.active]="seccion==='morris'" (click)="cambiarSegcion('morris')"><span>•</span><span>Morris</span></button>
-        </div>
-
-        <button type="button" [class.active]="seccion==='vector-maps'" (click)="cambiarSegcion('vector-maps')"><span class="admin-main-nav-icon">◎</span><span>Mapas Vectoriales</span></button>
-        <button type="button" [class.active]="seccion==='icons'" (click)="cambiarSegcion('icons')"><span class="admin-main-nav-icon">★</span><span>Iconos</span></button>
-        <button type="button" [class.active]="seccion==='account-settings'" (click)="cambiarSegcion('account-settings')"><span class="admin-main-nav-icon">⚙</span><span>Configuración de Cuenta</span></button>
-        <button type="button" [class.active]="seccion==='my-profile'" (click)="cambiarSegcion('my-profile')"><span class="admin-main-nav-icon">♙</span><span>Mi Perfil</span></button>
-        <button type="button" [class.active]="seccion==='contact'" (click)="cambiarSegcion('contact')"><span class="admin-main-nav-icon">☎</span><span>Contacto</span></button>
-        <button type="button" [class.active]="seccion==='typography'" (click)="cambiarSegcion('typography')"><span class="admin-main-nav-icon">T</span><span>Tipografía</span></button>
-
-        <button type="button" class="cf-nav-group-head" [class.active]="['login-signup','login-page','signup-page','forgot-password','reset-password-page'].includes(seccion)" (click)="toggleNavGroup('auth')">
-          <span class="admin-main-nav-icon">↪</span><span>Acceso / Registro</span><i>{{navGroups.auth?'⌄':'›'}}</i>
-        </button>
-        <div class="cf-nav-children" *ngIf="navGroups.auth">
-          <button type="button" [class.active]="seccion==='login-signup'" (click)="cambiarSegcion('login-signup')"><span>•</span><span>Acceso / Registro</span></button>
-          <button type="button" [class.active]="seccion==='login-page'" (click)="cambiarSegcion('login-page')"><span>•</span><span>Iniciar Sesión</span></button>
-          <button type="button" [class.active]="seccion==='signup-page'" (click)="cambiarSegcion('signup-page')"><span>•</span><span>Registrarse</span></button>
-          <button type="button" [class.active]="seccion==='forgot-password'" (click)="cambiarSegcion('forgot-password')"><span>•</span><span>Recuperar Contraseña</span></button>
-          <button type="button" [class.active]="seccion==='reset-password-page'" (click)="cambiarSegcion('reset-password-page')"><span>•</span><span>Restablecer Contraseña</span></button>
-        </div>
-
-        <button type="button" [class.active]="seccion==='page-not-found'" (click)="cambiarSegcion('page-not-found')"><span class="admin-main-nav-icon">404</span><span>Página no encontrada</span></button>
-        <button type="button" [class.active]="seccion==='maintenance'" (click)="cambiarSegcion('maintenance')"><span class="admin-main-nav-icon">⚙</span><span>Mantenimiento</span></button>
-
-        <button type="button" class="cf-nav-group-head" [class.active]="['menu-level-1','menu-level-2','menu-level-3'].includes(seccion)" (click)="toggleNavGroup('menu')">
-          <span class="admin-main-nav-icon">☷</span><span>Nivel de Menú</span><i>{{navGroups.menu?'⌄':'›'}}</i>
+        <button type="button" class="cf-nav-group-head mg-admin-group" [class.active]="navGroups.menu" (click)="toggleNavGroup('menu')">
+          <span class="admin-main-nav-icon">☷</span><span>Administración</span><i>{{navGroups.menu?'⌃':'⌄'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.menu">
-          <button type="button" [class.active]="seccion==='menu-level-1'" (click)="cambiarSegcion('menu-level-1')"><span>•</span><span>Enlace de Nivel Uno</span></button>
-          <button type="button" [class.active]="seccion==='menu-level-2'" (click)="cambiarSegcion('menu-level-2')"><span>•</span><span>Menú de Nivel Uno</span></button>
-          <button type="button" [class.active]="seccion==='menu-level-2'" (click)="cambiarSegcion('menu-level-2')" style="padding-left:28px"><span>◦</span><span>Enlace de Nivel Dos</span></button>
-          <button type="button" [class.active]="seccion==='menu-level-3'" (click)="cambiarSegcion('menu-level-3')" style="padding-left:28px"><span>◦</span><span>Menú de Nivel Dos</span></button>
-          <button type="button" [class.active]="seccion==='menu-level-3'" (click)="cambiarSegcion('menu-level-3')" style="padding-left:42px"><span>·</span><span>Enlace de Nivel Tres</span></button>
-          <button type="button" [class.active]="seccion==='menu-level-3'" (click)="cambiarSegcion('menu-level-3')" style="padding-left:42px"><span>·</span><span>Enlace de Nivel Tres</span></button>
-          <button type="button" [class.active]="seccion==='menu-level-1'" (click)="cambiarSegcion('menu-level-1')"><span>•</span><span>Enlace de Nivel Uno</span></button>
+          <button type="button" [class.active]="seccion==='clientes'" (click)="cambiarSegcion('clientes')"><span>•</span><span>Socios</span></button>
+          <button type="button" [class.active]="seccion==='membresias'" (click)="cambiarSegcion('membresias')"><span>•</span><span>Membresías</span></button>
+          <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSegcion('pagos')"><span>•</span><span>Pagos</span></button>
+          <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSegcion('entrenador')"><span>•</span><span>Entrenador</span></button>
+          <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSegcion('rutinas')"><span>•</span><span>Rutinas</span></button>
+          <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSegcion('asistencias')"><span>•</span><span>Asistencias</span></button>
+          <button type="button" [class.active]="seccion==='clases'" (click)="cambiarSegcion('clases')"><span>•</span><span>Clases</span></button>
+          <button type="button" [class.active]="seccion==='inventario'" (click)="cambiarSegcion('inventario')"><span>•</span><span>Inventario</span></button>
+          <button type="button" [class.active]="seccion==='productos'" (click)="cambiarSegcion('productos')"><span>•</span><span>Productos</span></button>
+          <button type="button" [class.active]="seccion==='proveedores'" (click)="cambiarSegcion('proveedores')"><span>•</span><span>Proveedores</span></button>
+          <button type="button" [class.active]="seccion==='compras'" (click)="cambiarSegcion('compras')"><span>•</span><span>Compras</span></button>
+          <button type="button" [class.active]="seccion==='ventas'" (click)="cambiarSegcion('ventas')"><span>•</span><span>Ventas</span></button>
+          <button type="button" [class.active]="seccion==='caja'" (click)="cambiarSegcion('caja')"><span>•</span><span>Caja</span></button>
+          <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSegcion('equipos')"><span>•</span><span>Equipos</span></button>
+          <button type="button" [class.active]="seccion==='eventos'" (click)="cambiarSegcion('eventos')"><span>•</span><span>Eventos</span></button>
+          <button type="button" [class.active]="seccion==='galeria'" (click)="cambiarSegcion('galeria')"><span>•</span><span>Galería</span></button>
+          <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSegcion('planes')"><span>•</span><span>Planes</span></button>
+          <button type="button" [class.active]="seccion==='salarios'" (click)="cambiarSegcion('salarios')"><span>•</span><span>Salarios</span></button>
+          <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSegcion('facturas')"><span>•</span><span>Facturas</span></button>
+          <button type="button" [class.active]="seccion==='usuarios'" (click)="cambiarSegcion('usuarios')"><span>•</span><span>Usuarios</span></button>
         </div>
-
-        <button type="button" [class.active]="seccion==='external-link'" (click)="cambiarSegcion('external-link')"><span class="admin-main-nav-icon">↗</span><span>Enlace Externo</span></button>
-        <button type="button" [class.active]="seccion==='chip'" (click)="cambiarSegcion('chip')"><span class="admin-main-nav-icon">#</span><span>Chip</span></button>
-        <button type="button" [class.active]="seccion==='badge-link'" (click)="cambiarSegcion('badge-link')"><span class="admin-main-nav-icon">●</span><span>Insignia</span></button>
-        <button type="button" disabled><span class="admin-main-nav-icon">⊘</span><span>Enlace Deshabilitado</span></button>
       </nav>
 
-      <button type="button" class="cf-fitness-center-card" (click)="cambiarSegcion('contact')">
-        <span>☎</span>
-        <div><small>Centro Fitness</small><b>{{configuracionForm.telefono || '000000000'}}</b></div>
-      </button>
-      <button type="button" class="admin-system-card" [class.is-offline]="!dashboard?.fuente?.base_datos" (click)="cambiarSegcion('configuracion')" title="Estado del sistema">
-        <div class="system-live-dot"></div>
-        <div><b>{{dashboard?.fuente?.base_datos ? 'Sistema en línea' : 'Verificando sistema'}}</b><small>{{dashboard?.fuente?.base_datos ? ('BD: '+dashboard.fuente.base_datos) : 'Esperando conexión'}}</small></div>
-      </button>
-      <button type="button" class="admin-logout" (click)="cerrarSesion()"><span>↪</span> Cerrar sesión</button>
+      <div class="mg-sidebar-bottom">
+        <button type="button" [class.active]="seccion==='auditoria'" (click)="cambiarSegcion('auditoria')">
+          <span>♢</span><b>Seguridad</b>
+        </button>
+        <button type="button" [class.active]="seccion==='configuracion'" (click)="cambiarSegcion('configuracion')">
+          <span>⚙</span><b>Configuración</b>
+        </button>
+        <button type="button" (click)="cerrarSesion()">
+          <span>↪</span><b>Cerrar sesión</b>
+        </button>
+      </div>
     </aside>
 
     <button
@@ -665,194 +532,161 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
       <div *ngIf="error && seccion!=='dashboard'" class="admin-toast error">⚠ {{error}}</div>
 
       <ng-container *ngIf="seccion==='dashboard'">
-        <section class="cf-reference-dashboard" data-dashboard-ui="crossfit-reference">
-          <section class="crossfit-dashboard-breadcrumb">
-            <span>⌂</span>
-            <small>Inicio</small>
-            <b>›</b>
-            <strong>Panel Principal</strong>
-            <em class="cf-goal">Meta semanal: {{progresoSemanal()}}% alcanzada</em>
-          </section>
+        <section class="mg-dashboard">
+          <div class="mg-dashboard-main">
+            <section class="mg-section-heading">
+              <div>
+                <h2>Rutinas del día</h2>
+                <p>Entrenamientos y actividades destacadas de Mallqui Gym.</p>
+              </div>
+              <button type="button" (click)="cambiarSegcion('rutinas')">Ver todas <span>›</span></button>
+            </section>
 
-          <section class="cf-ref-hero">
-            <div class="cf-ref-hero-copy">
-              <h1>Hola, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1>
-              <p>Aquí tienes tu actividad y tus reportes de hoy.</p>
+            <section class="mg-workout-grid">
+              <article class="mg-workout-card mg-workout-featured">
+                <div class="mg-workout-copy">
+                  <h3>Entrenamiento<br>Base</h3>
+                  <p>8 sesiones <span></span> 45 minutos</p>
+                  <button type="button" (click)="cambiarSegcion('rutinas')">Iniciar</button>
+                </div>
+                <img src="assets/showcase/coach-showcase.svg" alt="Entrenamiento en Mallqui Gym">
+              </article>
 
-              <div class="cf-ref-mini-chart" aria-label="Actividad semanal">
-                <div class="cf-ref-mini-day" *ngFor="let d of diasActividadDashboard()">
-                  <div class="cf-ref-mini-track">
-                    <div class="cf-ref-mini-fill" [style.height.%]="alturaAsistenciaSemana(d.total)">
-                      <span></span><i></i>
+              <article class="mg-workout-card">
+                <i class="mg-workout-icon">↗</i>
+                <h3>Cardio</h3>
+                <p>6 sesiones <span></span> 30 minutos</p>
+                <button type="button" (click)="cambiarSegcion('rutinas')">Iniciar</button>
+              </article>
+
+              <article class="mg-workout-card">
+                <i class="mg-workout-icon">✦</i>
+                <h3>Yoga</h3>
+                <p>5 sesiones <span></span> 40 minutos</p>
+                <button type="button" (click)="cambiarSegcion('rutinas')">Iniciar</button>
+              </article>
+            </section>
+
+            <section class="mg-results">
+              <div class="mg-section-heading compact">
+                <div><h2>Resultados de hoy</h2></div>
+              </div>
+
+              <div class="mg-result-grid">
+                <button type="button" (click)="cambiarSegcion('clientes')">
+                  <i class="lime">♚</i>
+                  <div><strong>{{dashboard?.clientes?.activos ?? clientesActivos ?? 0}}</strong><span>Socios activos</span></div>
+                  <em>•••</em>
+                </button>
+                <button type="button" (click)="cambiarSegcion('asistencias')">
+                  <i class="blue">♟</i>
+                  <div><strong>{{dashboard?.asistencias?.hoy ?? asistencias.length ?? 0}}</strong><span>Asistencias</span></div>
+                  <em>•••</em>
+                </button>
+                <button type="button" (click)="cambiarSegcion('reservas')">
+                  <i class="pink">◫</i>
+                  <div><strong>{{dashboard?.reservas?.hoy ?? reservas.length ?? 0}}</strong><span>Reservas</span></div>
+                  <em>•••</em>
+                </button>
+                <button type="button" (click)="cambiarSegcion('ingresos')">
+                  <i class="lime">▥</i>
+                  <div><strong>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.0-0'}}</strong><span>Ingresos</span></div>
+                  <em>•••</em>
+                </button>
+              </div>
+            </section>
+
+            <section class="mg-activity">
+              <div class="mg-section-heading compact">
+                <div><h2>Actividad</h2></div>
+                <span class="mg-range">Últimos 7 días⌄</span>
+              </div>
+
+              <div class="mg-chart-grid">
+                <article class="mg-chart-card">
+                  <header>
+                    <h3>Asistencias por día</h3>
+                    <div><span class="dot lime"></span>Socios nuevos <span class="dot black"></span>Socios recurrentes</div>
+                  </header>
+                  <div class="mg-bars">
+                    <div *ngFor="let d of diasActividadDashboard()">
+                      <div class="mg-bar-track">
+                        <i class="mg-bar-black" [style.height.%]="alturaAsistenciaSemana(d.total)*0.62"></i>
+                        <i class="mg-bar-lime" [style.height.%]="alturaAsistenciaSemana(d.total)*0.38"></i>
+                      </div>
+                      <span>{{d.dia}}</span>
                     </div>
                   </div>
-                  <small>{{d.dia}}</small>
+                </article>
+
+                <article class="mg-chart-card mg-donut-card">
+                  <header><h3>Distribución de actividades</h3></header>
+                  <div class="mg-donut-layout">
+                    <div class="mg-donut">
+                      <div><strong>{{dashboard?.asistencias?.hoy ?? 0}}</strong><span>asistencias</span></div>
+                    </div>
+                    <div class="mg-donut-legend">
+                      <p><i class="black"></i><span>Musculación</span><b>40%</b></p>
+                      <p><i class="green"></i><span>Cardio</span><b>25%</b></p>
+                      <p><i class="lime"></i><span>Yoga</span><b>20%</b></p>
+                      <p><i class="soft"></i><span>Clases grupales</span><b>15%</b></p>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </section>
+          </div>
+
+          <aside class="mg-dashboard-side">
+            <article class="mg-trainer-card">
+              <div class="mg-trainer-head">
+                <img src="assets/showcase/coach-showcase.svg" alt="Entrenador">
+                <div>
+                  <strong>{{entrenadores[0] ? nombreEntrenador(entrenadores[0]) : 'Entrenador Mallqui'}}</strong>
+                  <span>{{entrenadores[0]?.especialidad || 'Entrenador principal'}}</span>
                 </div>
+                <em>•••</em>
               </div>
-              <div class="cf-ref-mini-legend">
-                <span><i class="mint"></i>Cardio</span>
-                <span><i class="purple"></i>Fuerza</span>
-              </div>
-            </div>
 
-            <div class="cf-ref-hero-art" aria-hidden="true">
-              <svg class="cf-ref-hero-scene" viewBox="0 0 720 330" preserveAspectRatio="xMidYMid slice">
-                <defs>
-                  <linearGradient id="mallquiSky" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#fcfbff"/>
-                    <stop offset="100%" stop-color="#f3f1ff"/>
-                  </linearGradient>
-                </defs>
-                <rect width="720" height="330" fill="url(#mallquiSky)"/>
-                <circle cx="625" cy="72" r="34" fill="#ffae16"/>
-                <path d="M430 64c55-38 124-43 191-10" fill="none" stroke="#e6e3fb" stroke-width="13" stroke-linecap="round"/>
-                <g fill="#e2e0f5">
-                  <rect x="435" y="118" width="42" height="88" rx="2"/>
-                  <rect x="487" y="94" width="52" height="112" rx="2"/>
-                  <rect x="551" y="126" width="38" height="80" rx="2"/>
-                  <rect x="601" y="105" width="56" height="101" rx="2"/>
-                </g>
-                <g stroke="#d1cef0" stroke-width="4">
-                  <path d="M448 137h16M448 153h16M448 169h16M501 115h24M501 132h24M501 149h24M614 125h28M614 143h28M614 161h28"/>
-                </g>
-                <path d="M390 240c74-39 170-43 300-17v74H363z" fill="#d7f1e8"/>
-                <g transform="translate(350 170)">
-                  <circle cx="34" cy="83" r="31" fill="none" stroke="#49506a" stroke-width="5"/>
-                  <circle cx="112" cy="83" r="31" fill="none" stroke="#49506a" stroke-width="5"/>
-                  <path d="M34 83l31-38 47 38H63l-18-45h28" fill="none" stroke="#5a58df" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-                  <circle cx="70" cy="18" r="12" fill="#f3a16d"/>
-                  <path d="M65 31l20 16-18 30-23-9 12-33z" fill="#5a58df"/>
-                  <path d="M79 48l28 6" stroke="#f3a16d" stroke-width="7" stroke-linecap="round"/>
-                  <path d="M61 59l-20 23M70 68l26 25" stroke="#30354d" stroke-width="7" stroke-linecap="round"/>
-                </g>
-                <g transform="translate(470 155)">
-                  <circle cx="34" cy="98" r="31" fill="none" stroke="#49506a" stroke-width="5"/>
-                  <circle cx="112" cy="98" r="31" fill="none" stroke="#49506a" stroke-width="5"/>
-                  <path d="M34 98l31-38 47 38H63l-18-45h28" fill="none" stroke="#7bc8b6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-                  <circle cx="70" cy="28" r="12" fill="#e79963"/>
-                  <path d="M64 42l22 14-17 31-25-8 12-34z" fill="#ff9460"/>
-                  <path d="M80 57l28 7" stroke="#e79963" stroke-width="7" stroke-linecap="round"/>
-                  <path d="M61 70l-20 24M72 78l25 25" stroke="#30354d" stroke-width="7" stroke-linecap="round"/>
-                </g>
-                <g transform="translate(585 177) scale(.86)">
-                  <circle cx="34" cy="83" r="31" fill="none" stroke="#49506a" stroke-width="5"/>
-                  <circle cx="112" cy="83" r="31" fill="none" stroke="#49506a" stroke-width="5"/>
-                  <path d="M34 83l31-38 47 38H63l-18-45h28" fill="none" stroke="#5a58df" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-                  <circle cx="70" cy="18" r="12" fill="#f3a16d"/>
-                  <path d="M65 31l20 16-18 30-23-9 12-33z" fill="#83d5c4"/>
-                  <path d="M79 48l28 6" stroke="#f3a16d" stroke-width="7" stroke-linecap="round"/>
-                  <path d="M61 59l-20 23M70 68l26 25" stroke="#30354d" stroke-width="7" stroke-linecap="round"/>
-                </g>
-              </svg>
-            </div>
-          </section>
+              <button type="button" class="mg-video-card" (click)="cambiarSegcion('rutinas')">
+                <img src="assets/showcase/hero-showcase.svg" alt="Rutina de fuerza">
+                <i>▶</i>
+              </button>
+              <h3>Rutina de Fuerza Total</h3>
+              <small>12:56 min</small>
+            </article>
 
-          <section class="cf-ref-stats">
-            <button type="button" (click)="cambiarSegcion('clientes')">
-              <div><small>Socios Activos</small><strong>{{dashboard?.clientes?.activos ?? 0}}</strong><span>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos este mes</span></div>
-              <i>♚</i>
+            <button type="button" class="mg-mini-routine" (click)="cambiarSegcion('rutinas')">
+              <img src="assets/showcase/class-showcase.svg" alt="Rutina para principiantes">
+              <div><strong>Rutina para Principiantes</strong><span>10:24 min</span></div>
             </button>
-            <button type="button" (click)="cambiarSegcion('asistencias')">
-              <div><small>Asistencias Hoy</small><strong>{{dashboard?.asistencias?.hoy ?? 0}}</strong><span>{{dashboard?.asistencias?.dentro_ahora ?? 0}} dentro del gimnasio</span></div>
-              <i>✓</i>
-            </button>
-            <button type="button" (click)="cambiarSegcion('ingresos')">
-              <div><small>Ingresos del Mes</small><strong>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</strong><span>Control financiero</span></div>
-              <i>S/</i>
-            </button>
-            <button type="button" (click)="cambiarSegcion('reservas')">
-              <div><small>Reservas Hoy</small><strong>{{dashboard?.reservas?.hoy ?? 0}}</strong><span>Agenda del gimnasio</span></div>
-              <i>◫</i>
-            </button>
-          </section>
 
-          <section class="cf-ref-bottom">
-            <article class="cf-ref-activity">
+            <section class="mg-agenda">
               <header>
-                <div><h2>Actividad Semanal</h2><p>Resumen de rendimiento · últimos 7 días</p></div>
-                <span>{{dashboard?.asistencias?.hoy ?? 0}} asistencias hoy</span>
+                <h2>Agenda de hoy</h2>
+                <button type="button" (click)="cambiarSegcion('reservas')">Ver todas ›</button>
               </header>
-              <div class="cf-ref-chart-legend">
-                <span><i class="purple"></i>Asistencia</span>
-                <span><i class="mint"></i>Progreso</span>
-              </div>
-              <div class="cf-ref-line-chart">
-                <div class="cf-ref-grid-lines"><i></i><i></i><i></i><i></i><i></i></div>
-                <svg viewBox="0 0 760 220" preserveAspectRatio="none" aria-hidden="true">
-                  <defs>
-                    <linearGradient id="activityFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#6a63df" stop-opacity=".22"/>
-                      <stop offset="100%" stop-color="#6a63df" stop-opacity=".01"/>
-                    </linearGradient>
-                  </defs>
-                  <path d="M0 157 C80 137 110 124 170 132 S275 150 335 119 S445 91 510 78 S625 58 760 68 L760 220 L0 220Z" fill="url(#activityFill)"/>
-                  <path d="M0 157 C80 137 110 124 170 132 S275 150 335 119 S445 91 510 78 S625 58 760 68" fill="none" stroke="#5d57d8" stroke-width="3"/>
-                  <path d="M0 167 C80 147 120 139 175 143 S278 151 340 130 S448 108 515 95 S625 75 760 82" fill="none" stroke="#9edac4" stroke-width="2" stroke-dasharray="5 5"/>
-                </svg>
-                <div class="cf-ref-xaxis"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span></div>
-              </div>
-            </article>
 
-            <article class="cf-ref-split">
-              <header><div><h2>Distribución Operativa</h2><p>Actividad actual del gimnasio</p></div><span>{{totalActividadOperativa()}} movimientos</span></header>
-              <div class="cf-ref-donut"><div><strong>100%</strong><small>Total</small></div></div>
-              <div class="cf-ref-split-list">
-                <p><span><i class="purple"></i>Asistencias</span><b>{{porcentajeActividadOperativa('asistencias')}}%</b></p>
-                <p><span><i class="mint"></i>Reservas</span><b>{{porcentajeActividadOperativa('reservas')}}%</b></p>
-                <p><span><i class="soft"></i>Ventas</span><b>{{porcentajeActividadOperativa('ventas')}}%</b></p>
-              </div>
-            </article>
-          </section>
+              <div class="mg-agenda-list">
+                <article *ngFor="let r of reservas.slice(0,6); let i=index">
+                  <i [class.dark]="i===4"></i>
+                  <time>{{r.clase?.hora_inicio || horaAgendaFallback(i)}}</time>
+                  <div>
+                    <strong>{{r.clase?.nombre || 'Entrenamiento Personal'}}</strong>
+                    <span>{{nombreCliente(r.cliente) || 'Socio Mallqui'}}</span>
+                  </div>
+                </article>
 
-          <section class="cf-ref-secondary">
-            <article class="cf-ref-history">
-              <header><div><h2>Historial de Entrenamientos</h2><p>Actividad reciente de entrenamiento</p></div></header>
-              <div class="cf-ref-history-list">
-                <div><span>↗</span><div><b>Carrera matutina</b><small>Aire libre • Ritmo moderado</small></div><em>35 min<br>320 kcal</em><strong>Hoy</strong></div>
-                <div><span>🏋</span><div><b>Entrenamiento de Fuerza</b><small>Tren superior • Enfoque de empuje</small></div><em>50 min<br>410 kcal</em><strong>Ayer</strong></div>
-                <div><span>◉</span><div><b>Sesión de Ciclismo</b><small>Bicicleta estática • Resistencia 6</small></div><em>40 min<br>290 kcal</em><strong>Hace 2 días</strong></div>
-                <div><span>⚡</span><div><b>Entrenamiento HIIT</b><small>Intervalos de alta intensidad</small></div><em>25 min<br>260 kcal</em><strong>Hace 3 días</strong></div>
+                <ng-container *ngIf="!reservas.length">
+                  <article *ngFor="let a of agendaFallback; let i=index">
+                    <i [class.dark]="i===4"></i>
+                    <time>{{a.hora}}</time>
+                    <div><strong>{{a.actividad}}</strong><span>{{a.detalle}}</span></div>
+                  </article>
+                </ng-container>
               </div>
-            </article>
-
-            <article class="cf-ref-strength">
-              <header><div><h2>Progreso de Fuerza</h2><p>Press de banca • tendencia de 12 semanas</p></div><b>+18% de mejora</b></header>
-              <div class="cf-ref-strength-chart">
-                <svg viewBox="0 0 560 180" preserveAspectRatio="none"><path d="M10 150 C80 145 110 128 160 130 S245 112 300 104 S390 80 445 70 S510 48 550 40" fill="none" stroke="#5b55d9" stroke-width="4"/></svg>
-              </div>
-              <footer><span>Inicio <b>60 kg</b></span><span>Último <b>85 kg</b></span><span>Mejor serie <b>90 kg</b></span><span>Meta <b>100 kg</b></span></footer>
-            </article>
-          </section>
-
-          <section class="cf-ref-tertiary">
-            <article>
-              <header><div><h2>Recuperación del Sueño</h2><p>Últimos 7 días • Seguimiento de calidad</p></div><b>7.6 h prom. • Bueno</b></header>
-              <div class="cf-ref-sleep-bars"><i style="height:66%"></i><i style="height:78%"></i><i style="height:72%"></i><i style="height:88%"></i><i style="height:81%"></i><i style="height:92%"></i><i style="height:85%"></i></div>
-              <footer><span>Mejor noche <b>8.4h</b></span><span>Constancia <b>+12%</b></span><span>Sueño profundo <b>2.1h</b></span></footer>
-            </article>
-            <article>
-              <header><div><h2>Frecuencia de Entrenamiento</h2><p>Meta 60/90</p></div></header>
-              <div class="cf-ref-frequency"><div><strong>{{progresoSemanal()}}%</strong><small>Semanal</small></div></div>
-            </article>
-          </section>
-
-          <section class="cf-ref-insights">
-            <article class="cf-ref-smart">
-              <header><div><h2>Análisis Inteligente</h2><p>Resumen semanal de rendimiento</p></div><b>Análisis en Vivo</b></header>
-              <div class="cf-ref-insight-list">
-                <div><span>☾</span><div><b>Mejora del Sueño</b><small>Dormiste 12% mejor que la semana anterior y mejoró tu recuperación.</small></div><em>+12%</em></div>
-                <div><span>↘</span><div><b>Baja de Actividad el Fin de Semana</b><small>Tu actividad disminuyó durante el fin de semana frente a los días laborables.</small></div><em>-18%</em></div>
-                <div><span>◎</span><div><b>Progreso de Meta</b><small>Has completado {{progresoSemanal()}}% de tu meta semanal. Mantén el ritmo.</small></div><em>{{progresoSemanal()}}%</em></div>
-                <div><span>🔥</span><div><b>Tendencia de Quema de Calorías</b><small>Tu quema promedio de calorías aumentó en las sesiones de fuerza esta semana.</small></div><em>+9%</em></div>
-              </div>
-            </article>
-            <article class="cf-ref-weight">
-              <header><div><h2>Control de Peso</h2><p>Resumen del progreso • Últimos 12 meses</p></div><b>-35 lb</b></header>
-              <div class="cf-ref-weight-track"><i style="width:78%"></i></div>
-              <div class="cf-ref-weight-labels"><span>Inicio <b>190 lb</b></span><span>Pérdida de grasa constante</span><span>Actual <b>155 lb</b></span></div>
-              <small>Meta: 160 lb</small>
-            </article>
-          </section>
+            </section>
+          </aside>
         </section>
       </ng-container>
 
@@ -2455,6 +2289,14 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     {dia:'Vie',total:6},{dia:'Sáb',total:9},{dia:'Dom',total:4}
   ];
   nutricionPreview: any[] = [];
+  agendaFallback = [
+    {hora:'08:00',actividad:'Entrenamiento Personal',detalle:'Juan Pérez'},
+    {hora:'09:00',actividad:'Clase Grupal – Funcional',detalle:'Sala 1'},
+    {hora:'10:30',actividad:'Entrenamiento Personal',detalle:'María López'},
+    {hora:'12:00',actividad:'Yoga',detalle:'Sala 2'},
+    {hora:'16:00',actividad:'Clase de Spinning',detalle:'Sala 1'},
+    {hora:'18:00',actividad:'Entrenamiento Personal',detalle:'Carlos Ramírez'}
+  ];
   suiteModules = ['equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   navGroups:any = {members:false,payments:false,trainers:false,training:false,diet:false,equipment:false,events:false,ui:false,operations:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
   uiElementLinks = [
@@ -2561,6 +2403,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       this.autoRefreshActivo = true;
     }
     this.cargarDashboard();
+    this.cargarEntrenadores();
+    this.cargarReservas();
+    this.cargarClases();
     if (this.seccion !== 'dashboard') this.cargarSegcion(this.seccion);
 
     // Refresco inteligente: no interrumpe formularios ni trabaja cuando la pestaña está oculta.
@@ -3210,6 +3055,24 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     const pagina=Math.min(Math.max(1,this.clientesPagina),this.clientesPaginasTotal);
     const inicio=(pagina-1)*this.clientesPorPagina;
     return this.clientesFiltrados.slice(inicio,inicio+this.clientesPorPagina);
+  }
+
+  get fechaDashboard(): string {
+    return new Intl.DateTimeFormat('es-PE',{
+      weekday:'long',day:'2-digit',month:'long',year:'numeric'
+    }).format(new Date());
+  }
+
+  horaAgendaFallback(i:number): string {
+    return this.agendaFallback[i % this.agendaFallback.length]?.hora || '08:00';
+  }
+
+  totalAlertasDashboard(): number {
+    const a=this.dashboard?.alertas || {};
+    return Number(a.rutinas_pendientes||0)
+      + Number(a.soporte_pendiente||0)
+      + Number(a.opiniones_pendientes||0)
+      + Number(this.dashboard?.inventario?.productos_stock_bajo||0);
   }
 
   diasActividadDashboard(): any[] {
