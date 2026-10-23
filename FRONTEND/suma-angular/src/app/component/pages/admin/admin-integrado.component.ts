@@ -2437,12 +2437,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     configuracion:['Configuración','Ajustes generales y mantenimiento del sistema'],
     nutricion:['Mi Plan de Alimentación','Planes de nutrición y seguimiento de socios'],
     equipos:['Equipos','Máquinas, mantenimiento y estado operativo'],
-    eventos:['Eventos del Gimnasio','Actividades, campañas and events'],
-    galeria:['Gallery','Gym visual content and photos'],
-    noticias:['News & Updates','Announcements, promotions and updates'],
-    salarios:['Salaries','Staff remuneration and payments'],
-    ingresos:['Income','Additional income and financial concepts'],
-    facturas:['Invoices','Invoices, amounts and payment status']
+    eventos:['Eventos del Gimnasio','Actividades, campañas y eventos internos'],
+    galeria:['Galería','Contenido visual y fotografías del gimnasio'],
+    noticias:['Noticias y Novedades','Anuncios, promociones y novedades del gimnasio'],
+    salarios:['Salarios','Remuneraciones y pagos del personal'],
+    ingresos:['Ingresos','Ingresos adicionales y conceptos financieros'],
+    facturas:['Facturas','Comprobantes, montos y estados de pago']
   };
 
   sidebarCerrado = false;
