@@ -79,7 +79,7 @@ interface GymModuleConfig {
           </section>
           <section class="cf-suite-card">
             <header><div><h2>Calendario de Eventos</h2><p>Calendario semanal de actividades</p></div></header>
-            <div class="cf-event-calendar"><div><b>MON</b><span>Strength Workshop</span><small>08:00 AM</small></div><div><b>TUE</b><span>Crossfit Challenge</span><small>06:30 PM</small></div><div><b>WED</b><span>Nutrición Talk</span><small>07:00 PM</small></div><div><b>FRI</b><span>Encuentro de Socios</span><small>05:00 PM</small></div></div>
+            <div class="cf-event-calendar"><div><b>MON</b><span>Taller de Fuerza</span><small>08:00 AM</small></div><div><b>TUE</b><span>Crossfit Challenge</span><small>06:30 PM</small></div><div><b>WED</b><span>Nutrición Talk</span><small>07:00 PM</small></div><div><b>FRI</b><span>Encuentro de Socios</span><small>05:00 PM</small></div></div>
           </section>
         </section>
 
@@ -106,7 +106,7 @@ interface GymModuleConfig {
           <div class="cf-suite-kpis">
             <article><small>Empleados</small><b>{{filtered.length || 1}}</b><span>Registros de planilla</span></article>
             <article><small>Planilla Total</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>Periodo actual</span></article>
-            <article><small>Pagado</small><b>{{filtered.length || 1}}</b><span>Completados payments</span></article>
+            <article><small>Pagado</small><b>{{filtered.length || 1}}</b><span>Pagos completados</span></article>
             <article><small>Pendiente</small><b>0</b><span>Pendiente de pago</span></article>
           </div>
           <section class="cf-suite-card">
