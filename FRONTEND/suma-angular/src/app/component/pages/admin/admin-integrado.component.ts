@@ -74,7 +74,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
     <section class="cf-top-dropdown messages" *ngIf="topPanel==='messages'">
       <header><h3>Mensajes</h3><button (click)="topPanel=''">×</button></header>
       <div class="cf-top-feed">
-        <article><img src="assets/showcase/coach-showcase.svg" alt="Entrenador"><div><b>Entrenador Mallqui</b><p>Completado training sessions today.</p><small>Hoy, 07:30 PM</small></div></article>
+        <article><img src="assets/showcase/coach-showcase.svg" alt="Entrenador"><div><b>Entrenador Mallqui</b><p>Sesiones de entrenamiento completadas hoy.</p><small>Hoy, 07:30 PM</small></div></article>
         <article><img src="assets/showcase/coach-showcase.svg" alt="Entrenador"><div><b>Actualización Fitness</b><p>Nuevo récord personal registrado.</p><small>Hoy, 08:00 PM</small></div></article>
         <article><img src="assets/showcase/coach-showcase.svg" alt="Entrenador"><div><b>Mensaje de socio</b><p>Renovación de membresía confirmada.</p><small>Hoy, 10:15 PM</small></div></article>
       </div>
@@ -320,10 +320,10 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <header><div><h2>Entrenador Personal</h2><p>Especialista del gimnasio</p></div><b>1 Entrenador</b></header>
             <div class="cf-live-trainer-row" *ngIf="entrenadores[0] as t">
               <img src="assets/showcase/coach-showcase.svg" alt="Entrenador">
-              <div><b>{{nombreEntrenador(t)}}</b><small>{{t.especialidad || 'Fitness Coach'}}</small><em>Available</em></div>
+              <div><b>{{nombreEntrenador(t)}}</b><small>{{t.especialidad || 'Entrenador Fitness'}}</small><em>Disponible</em></div>
             </div>
             <div class="cf-live-trainer-row" *ngIf="!entrenadores.length">
-              <img src="assets/showcase/coach-showcase.svg" alt="Entrenador"><div><b>Entrenador Mallqui</b><small>Fuerza · Conditioning</small><em>Available</em></div>
+              <img src="assets/showcase/coach-showcase.svg" alt="Entrenador"><div><b>Entrenador Mallqui</b><small>Fuerza y Acondicionamiento</small><em>Disponible</em></div>
             </div>
           </article>
 
@@ -514,7 +514,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <article class="cf-live-trainer-card" *ngIf="entrenadores[0] as t; else trainerEmpty">
             <img src="assets/showcase/coach-showcase.svg" alt="Gym trainer">
             <h2>{{nombreEntrenador(t)}}</h2><p>{{t.especialidad || 'Fuerza & Conditioning'}}</p>
-            <ul><li><b>Experience</b><span>Mallqui Gym</span></li><li><b>Available</b><span>{{configuracionForm.hora_apertura}} - {{configuracionForm.hora_cierre}}</span></li><li><b>Clients Trained</b><span>{{clientesActivos}}+</span></li></ul>
+            <ul><li><b>Experiencia</b><span>Mallqui Gym</span></li><li><b>Disponible</b><span>{{configuracionForm.hora_apertura}} - {{configuracionForm.hora_cierre}}</span></li><li><b>Socios Entrenados</b><span>{{clientesActivos}}+</span></li></ul>
             <button (click)="cambiarSeccion('trainer-profile')">Ver Perfil</button>
           </article>
           <ng-template #trainerEmpty><article class="cf-live-trainer-card"><img src="assets/showcase/coach-showcase.svg" alt="Gym trainer"><h2>Entrenador Mallqui</h2><p>Fuerza & Conditioning</p><button (click)="seccion='entrenador-admin'">Register Entrenador</button></article></ng-template>
@@ -675,8 +675,8 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <span>⌂</span>
             <small>Inicio</small>
             <b>›</b>
-            <strong>My Dashboard</strong>
-            <em class="cf-goal">Weekly Goal Progreso: {{progresoSemanal()}}% Achieved</em>
+            <strong>Panel Principal</strong>
+            <em class="cf-goal">Meta semanal: {{progresoSemanal()}}% alcanzada</em>
           </section>
 
           <section class="cf-ref-hero">
@@ -701,59 +701,11 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             </div>
 
             <div class="cf-ref-hero-art" aria-hidden="true">
-              <svg viewBox="0 0 760 430" preserveAspectRatio="xMidYMid slice">
-                <defs>
-                  <linearGradient id="refHill" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stop-color="#b7dda7"/>
-                    <stop offset="100%" stop-color="#8cc67d"/>
-                  </linearGradient>
-                </defs>
-                <rect width="760" height="430" fill="#fbfbff"/>
-                <path d="M55 170c73-98 177-120 280-82 84 31 103 103 188 96 65-6 113-45 182-10v95H55z" fill="#f0effd"/>
-                <circle cx="623" cy="97" r="39" fill="#ffa31a"/>
-                <g fill="#d9d8ef">
-                  <rect x="352" y="188" width="54" height="139" rx="2"/>
-                  <rect x="419" y="165" width="67" height="162" rx="2"/>
-                  <rect x="499" y="208" width="53" height="119" rx="2"/>
-                  <rect x="566" y="177" width="65" height="150" rx="2"/>
-                  <rect x="646" y="216" width="47" height="111" rx="2"/>
-                </g>
-                <g fill="#f3f2fb">
-                  <path d="M352 212h54v10h-54zM352 240h54v10h-54zM352 268h54v10h-54zM352 296h54v10h-54z"/>
-                  <path d="M419 190h67v11h-67zM419 219h67v11h-67zM419 248h67v11h-67zM419 277h67v11h-67z"/>
-                  <path d="M499 232h53v10h-53zM499 258h53v10h-53zM499 284h53v10h-53z"/>
-                  <path d="M566 200h65v11h-65zM566 228h65v11h-65zM566 256h65v11h-65zM566 284h65v11h-65z"/>
-                  <path d="M646 240h47v10h-47zM646 265h47v10h-47zM646 290h47v10h-47z"/>
-                </g>
-                <path d="M0 340c111-69 238-69 365-32 141 41 273 12 395-2v124H0z" fill="url(#refHill)"/>
-
-                <g transform="translate(60 253)">
-                  <circle cx="44" cy="90" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
-                  <circle cx="160" cy="90" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
-                  <path d="M44 90l50-48 34 48H76l38-65 46 65" fill="none" stroke="#f18b3d" stroke-width="6" stroke-linejoin="round"/>
-                  <circle cx="106" cy="7" r="12" fill="#293053"/>
-                  <path d="M100 23c15 15 20 27 18 43" fill="none" stroke="#ff984f" stroke-width="12" stroke-linecap="round"/>
-                  <path d="M116 47l32 12M113 63l-19 40M119 65l29 36" fill="none" stroke="#354d96" stroke-width="8" stroke-linecap="round"/>
-                </g>
-
-                <g transform="translate(275 241) scale(.93)">
-                  <circle cx="44" cy="90" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
-                  <circle cx="160" cy="90" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
-                  <path d="M44 90l50-48 34 48H76l38-65 46 65" fill="none" stroke="#f18b3d" stroke-width="6" stroke-linejoin="round"/>
-                  <circle cx="106" cy="7" r="12" fill="#293053"/>
-                  <path d="M100 23c15 15 20 27 18 43" fill="none" stroke="#6962df" stroke-width="12" stroke-linecap="round"/>
-                  <path d="M116 47l32 12M113 63l-19 40M119 65l29 36" fill="none" stroke="#354d96" stroke-width="8" stroke-linecap="round"/>
-                </g>
-
-                <g transform="translate(484 260) scale(.78)">
-                  <circle cx="44" cy="90" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
-                  <circle cx="160" cy="90" r="34" fill="none" stroke="#2d3157" stroke-width="6"/>
-                  <path d="M44 90l50-48 34 48H76l38-65 46 65" fill="none" stroke="#f18b3d" stroke-width="6" stroke-linejoin="round"/>
-                  <circle cx="106" cy="7" r="12" fill="#293053"/>
-                  <path d="M100 23c15 15 20 27 18 43" fill="none" stroke="#ff9f43" stroke-width="12" stroke-linecap="round"/>
-                  <path d="M116 47l32 12M113 63l-19 40M119 65l29 36" fill="none" stroke="#354d96" stroke-width="8" stroke-linecap="round"/>
-                </g>
-              </svg>
+              <img src="assets/showcase/hero-showcase.svg" alt="Entrenamiento en Mallqui Gym">
+              <div class="cf-ref-hero-photo-caption">
+                <small>MALLQUI GYM</small>
+                <b>ENTRENA · PROGRESA · SUPÉRATE</b>
+              </div>
             </div>
           </section>
 
