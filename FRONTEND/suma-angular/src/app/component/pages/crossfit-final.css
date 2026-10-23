@@ -1,49 +1,59 @@
-/* Mallqui Gym — capa visual final inspirada en la referencia CrossFit 569574.
-   Una sola capa de estilos para evitar conflictos entre parches anteriores. */
+/* =========================================================
+   MALLQUI GYM — LIGHT FITNESS DASHBOARD
+   Interfaz final: sidebar negro + verde lima + panel blanco.
+   ========================================================= */
 
 :root{
-  --cf-purple:#5b56dc;
-  --cf-purple-dark:#514bcf;
-  --cf-purple-soft:#f0efff;
-  --cf-mint:#9fdfcc;
-  --cf-bg:#f6f6fb;
-  --cf-card:#ffffff;
-  --cf-border:#e9e9f2;
-  --cf-text:#2f3040;
-  --cf-muted:#8f92a3;
-  --cf-sidebar:248px;
-  --cf-header:68px;
-  --cf-radius:7px;
+  --mg-black:#090a09;
+  --mg-black-soft:#151814;
+  --mg-lime:#c9f45a;
+  --mg-lime-2:#b9e84d;
+  --mg-lime-soft:#effbd0;
+  --mg-green:#95c83f;
+  --mg-blue:#e9f5ff;
+  --mg-pink:#f8eefd;
+  --mg-bg:#f3f7ed;
+  --mg-card:#ffffff;
+  --mg-line:#eceee8;
+  --mg-text:#17191f;
+  --mg-muted:#8c9098;
+  --mg-sidebar:264px;
+  --mg-topbar:104px;
 }
 
-html,body{margin:0;background:var(--cf-bg);}
+html,body{
+  margin:0;
+  background:var(--mg-bg)!important;
+  color:var(--mg-text);
+}
 
-/* ===== ESTRUCTURA ===== */
+/* ===== SHELL ===== */
 .admin-shell.admin-home-redesign{
   min-height:100vh!important;
   display:grid!important;
-  grid-template-columns:var(--cf-sidebar) minmax(0,1fr)!important;
-  grid-template-rows:var(--cf-header) minmax(0,1fr)!important;
-  background:var(--cf-bg)!important;
-  color:var(--cf-text)!important;
+  grid-template-columns:var(--mg-sidebar) minmax(0,1fr)!important;
+  grid-template-rows:var(--mg-topbar) minmax(0,1fr)!important;
+  background:var(--mg-bg)!important;
 }
+
 .admin-home-redesign>.admin-nav{
   grid-column:1!important;
   grid-row:1/3!important;
   position:sticky!important;
   top:0!important;
-  width:var(--cf-sidebar)!important;
+  width:var(--mg-sidebar)!important;
   height:100vh!important;
   box-sizing:border-box!important;
   display:flex!important;
   flex-direction:column!important;
-  padding:10px 10px 12px!important;
+  padding:24px 18px 22px!important;
   overflow:hidden!important;
-  background:#fff!important;
-  border-right:1px solid var(--cf-border)!important;
+  background:linear-gradient(180deg,#080908 0%,#0b0c0b 100%)!important;
+  border:0!important;
   box-shadow:none!important;
-  z-index:3100!important;
+  z-index:3200!important;
 }
+
 .admin-home-redesign>.admin-wix-topbar{
   grid-column:2!important;
   grid-row:1!important;
@@ -52,877 +62,1117 @@ html,body{margin:0;background:var(--cf-bg);}
   left:auto!important;
   right:auto!important;
   width:auto!important;
-  height:var(--cf-header)!important;
-  min-height:var(--cf-header)!important;
+  min-height:var(--mg-topbar)!important;
+  height:var(--mg-topbar)!important;
   box-sizing:border-box!important;
   display:grid!important;
-  grid-template-columns:220px minmax(0,1fr) 280px auto!important;
+  grid-template-columns:minmax(300px,1fr) minmax(300px,430px) 44px 44px!important;
   align-items:center!important;
-  gap:12px!important;
-  padding:0 16px!important;
-  background:linear-gradient(90deg,var(--cf-purple),#625de1)!important;
+  gap:14px!important;
+  padding:20px 28px 14px!important;
+  background:#fff!important;
   border:0!important;
   box-shadow:none!important;
   z-index:3000!important;
 }
+
 .admin-home-redesign>.admin-content{
   grid-column:2!important;
   grid-row:2!important;
   width:auto!important;
   max-width:none!important;
   min-width:0!important;
-  min-height:calc(100vh - var(--cf-header))!important;
+  min-height:calc(100vh - var(--mg-topbar))!important;
   box-sizing:border-box!important;
   margin:0!important;
-  padding:0 14px 28px!important;
-  background:var(--cf-bg)!important;
+  padding:0 28px 34px!important;
+  background:#fff!important;
+  overflow:visible!important;
 }
 
-/* ===== PERFIL LATERAL ===== */
-.crossfit-profile-card{
+.admin-sidebar-toggle{display:none!important;}
+.admin-mobile-modules{display:none!important;}
+
+/* ===== BRAND ===== */
+.mg-brand{
   flex:0 0 auto!important;
-  min-height:138px!important;
+  width:100%!important;
+  min-height:62px!important;
   display:flex!important;
-  flex-direction:column!important;
   align-items:center!important;
-  justify-content:center!important;
-  gap:6px!important;
-  margin:0 0 8px!important;
-  padding:6px 6px 12px!important;
-  border-bottom:1px solid #eeeef4!important;
-  background:#fff!important;
+  justify-content:flex-start!important;
+  gap:11px!important;
+  padding:0 12px!important;
+  margin:0 0 28px!important;
+  border:0!important;
+  background:transparent!important;
+  color:#fff!important;
+  cursor:pointer!important;
+  text-align:left!important;
 }
-.crossfit-profile-avatar{
-  position:relative!important;
-  width:64px!important;
-  height:64px!important;
-  box-sizing:border-box!important;
+.mg-brand-icon{
+  width:34px!important;
+  height:34px!important;
   display:grid!important;
   place-items:center!important;
-  padding:6px!important;
-  border:2px solid #665fe5!important;
-  border-radius:50%!important;
-  background:#fff!important;
-  box-shadow:0 0 0 4px #f2f1ff!important;
-  cursor:pointer!important;
+  color:var(--mg-lime)!important;
+  font-size:28px!important;
+  font-weight:900!important;
+  transform:rotate(90deg)!important;
 }
-.crossfit-profile-avatar img{width:100%!important;height:100%!important;object-fit:contain!important;}
-.crossfit-profile-status{
-  position:absolute!important;
-  right:0!important;
-  top:2px!important;
-  width:11px!important;
-  height:11px!important;
-  border:2px solid #fff!important;
-  border-radius:50%!important;
-  background:#ff625c!important;
-}
-.crossfit-profile-copy{
+.mg-brand>span:last-child{
   display:flex!important;
-  flex-direction:column!important;
-  align-items:center!important;
-  text-align:center!important;
+  align-items:baseline!important;
+  gap:5px!important;
+  font-size:24px!important;
+  letter-spacing:-.8px!important;
 }
-.crossfit-profile-copy strong{
-  font-size:12.5px!important;
-  line-height:1.25!important;
-  color:#303141!important;
-  font-weight:800!important;
-}
-.crossfit-profile-copy small{
-  margin-top:2px!important;
-  font-size:9px!important;
-  color:#989aaa!important;
-}
-.crossfit-profile-copy em{
-  min-height:21px!important;
-  display:inline-flex!important;
-  align-items:center!important;
-  margin-top:5px!important;
-  padding:0 9px!important;
-  border-radius:999px!important;
-  background:#fff0ef!important;
-  color:#eb5c56!important;
-  font-size:8px!important;
-  font-style:normal!important;
-  font-weight:800!important;
-}
+.mg-brand strong{color:#fff!important;font-weight:800!important;}
+.mg-brand b{color:var(--mg-lime)!important;font-weight:800!important;}
 
-/* ===== MENU ===== */
+/* ===== SIDEBAR ===== */
 .crossfit-sidebar-nav{
   flex:1!important;
   min-height:0!important;
   display:flex!important;
   flex-direction:column!important;
-  gap:2px!important;
-  padding:2px 0 8px!important;
+  gap:8px!important;
+  padding:0!important;
   overflow-y:auto!important;
   overflow-x:hidden!important;
   scrollbar-width:thin!important;
-  scrollbar-color:#d9dae4 transparent!important;
+  scrollbar-color:#323632 transparent!important;
 }
 .crossfit-sidebar-nav::-webkit-scrollbar{width:4px!important;}
-.crossfit-sidebar-nav::-webkit-scrollbar-thumb{background:#d9dae4!important;border-radius:10px!important;}
-.cf-nav-section-label,.admin-menu-caption{display:none!important;}
+.crossfit-sidebar-nav::-webkit-scrollbar-thumb{background:#323632!important;border-radius:10px!important;}
+
 .crossfit-sidebar-nav button{
-  flex:0 0 auto!important;
   width:100%!important;
-  min-height:38px!important;
-  display:grid!important;
-  grid-template-columns:28px minmax(0,1fr) auto!important;
-  align-items:center!important;
-  gap:7px!important;
+  min-height:52px!important;
   box-sizing:border-box!important;
-  padding:4px 8px!important;
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:7px 13px!important;
   border:0!important;
-  border-radius:5px!important;
+  border-radius:10px!important;
   background:transparent!important;
-  color:#5d5f70!important;
+  color:#c8cbc7!important;
   text-align:left!important;
   cursor:pointer!important;
-  transition:background .15s ease,color .15s ease!important;
+  transition:background .16s ease,color .16s ease!important;
 }
 .crossfit-sidebar-nav button:hover{
-  background:#f7f6ff!important;
-  color:var(--cf-purple)!important;
+  background:#141813!important;
+  color:#fff!important;
   transform:none!important;
 }
 .crossfit-sidebar-nav button.active{
-  background:#efefff!important;
-  color:var(--cf-purple)!important;
+  position:relative!important;
+  background:#171c16!important;
+  color:var(--mg-lime)!important;
   box-shadow:none!important;
 }
-.crossfit-sidebar-nav button.active:before{display:none!important;}
+.crossfit-sidebar-nav button.active:before{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  left:-18px!important;
+  top:7px!important;
+  bottom:7px!important;
+  width:6px!important;
+  border-radius:0 8px 8px 0!important;
+  background:var(--mg-lime)!important;
+}
 .crossfit-sidebar-nav .admin-main-nav-icon{
-  width:27px!important;
-  height:27px!important;
+  width:31px!important;
+  height:31px!important;
   display:grid!important;
   place-items:center!important;
-  border-radius:5px!important;
+  border-radius:8px!important;
   background:transparent!important;
-  color:#6f7182!important;
-  font-size:10.5px!important;
+  color:inherit!important;
+  font-size:16px!important;
   font-weight:800!important;
-}
-.crossfit-sidebar-nav button.active .admin-main-nav-icon{
-  background:transparent!important;
-  color:var(--cf-purple)!important;
 }
 .crossfit-sidebar-nav button>span:nth-child(2){
   min-width:0!important;
-  font-size:10.5px!important;
+  font-size:14px!important;
   line-height:1.2!important;
-  font-weight:650!important;
+  font-weight:600!important;
   white-space:nowrap!important;
   overflow:hidden!important;
   text-overflow:ellipsis!important;
 }
 .crossfit-sidebar-nav .cf-nav-group-head>i{
   margin-left:auto!important;
-  color:#9a9cab!important;
-  font-size:11px!important;
+  color:#8d918c!important;
+  font-size:13px!important;
   font-style:normal!important;
 }
+.mg-admin-group{margin-top:10px!important;}
+
 .cf-nav-children{
-  margin:0 0 3px 22px!important;
-  padding:1px 0 1px 8px!important;
-  border-left:1px solid #ecebf6!important;
+  margin:0 0 8px 22px!important;
+  padding:3px 0 3px 13px!important;
+  border-left:1px solid #2a2d29!important;
 }
 .cf-nav-children button{
-  min-height:30px!important;
-  grid-template-columns:11px minmax(0,1fr)!important;
+  min-height:37px!important;
+  grid-template-columns:12px minmax(0,1fr)!important;
   gap:5px!important;
-  padding:3px 7px!important;
-  border-radius:4px!important;
+  padding:4px 8px!important;
+  border-radius:7px!important;
 }
 .cf-nav-children button>span:first-child{
-  font-size:7px!important;
-  color:#aaaabd!important;
+  color:#62675f!important;
+  font-size:8px!important;
 }
 .cf-nav-children button>span:nth-child(2){
-  font-size:9.5px!important;
-  font-weight:600!important;
+  font-size:12px!important;
+  font-weight:500!important;
 }
-.cf-fitness-center-card,.admin-system-card,.admin-logout{flex:0 0 auto!important;}
+.cf-nav-children button.active:before{display:none!important;}
 
-/* ===== TOPBAR ===== */
-.admin-top-brand{
-  min-width:0!important;
-  display:flex!important;
-  align-items:center!important;
-  gap:9px!important;
-  border:0!important;
-  background:transparent!important;
-  color:#fff!important;
-  cursor:pointer!important;
+.mg-sidebar-bottom{
+  flex:0 0 auto!important;
+  display:grid!important;
+  gap:5px!important;
+  padding:20px 4px 0!important;
+  margin-top:14px!important;
+  border-top:1px solid #282b27!important;
 }
-.admin-top-brand-mark{
-  width:31px!important;
-  height:31px!important;
+.mg-sidebar-bottom button{
+  width:100%!important;
+  min-height:44px!important;
+  display:grid!important;
+  grid-template-columns:30px minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:8px!important;
+  padding:5px 11px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:#c8cbc7!important;
+  cursor:pointer!important;
+  text-align:left!important;
+}
+.mg-sidebar-bottom button:hover,
+.mg-sidebar-bottom button.active{
+  background:#151815!important;
+  color:#fff!important;
+}
+.mg-sidebar-bottom button span{
   display:grid!important;
   place-items:center!important;
-  border-radius:6px!important;
-  background:#fff!important;
-  color:var(--cf-purple)!important;
+  font-size:16px!important;
+}
+.mg-sidebar-bottom button b{
   font-size:13px!important;
-  font-weight:900!important;
+  font-weight:500!important;
 }
-.crossfit-top-logo{
-  display:flex!important;
-  align-items:center!important;
-  gap:7px!important;
+
+/* ===== HEADER ===== */
+.mg-top-greeting{
+  min-width:0!important;
 }
-.crossfit-top-logo strong{
-  color:#fff!important;
-  font-size:14px!important;
+.mg-top-greeting h1{
+  margin:0!important;
+  color:#16191f!important;
+  font-size:24px!important;
+  line-height:1.15!important;
   font-weight:800!important;
+  letter-spacing:-.5px!important;
 }
-.crossfit-top-logo .cf-logo-stack{display:none!important;}
-.crossfit-top-spacer{min-width:0!important;}
+.mg-top-greeting span{
+  display:block!important;
+  margin-top:5px!important;
+  color:#92969f!important;
+  font-size:12px!important;
+  text-transform:capitalize!important;
+}
+
 .admin-wix-search{
-  justify-self:end!important;
-  width:280px!important;
-  height:34px!important;
+  width:100%!important;
+  height:42px!important;
   box-sizing:border-box!important;
   display:flex!important;
   align-items:center!important;
-  gap:8px!important;
-  padding:0 11px!important;
-  border:1px solid rgba(255,255,255,.12)!important;
-  border-radius:18px!important;
-  background:rgba(255,255,255,.12)!important;
-  color:#fff!important;
+  gap:9px!important;
+  padding:0 14px!important;
+  border:1px solid #eceeea!important;
+  border-radius:22px!important;
+  background:#f7f8f6!important;
+  color:#767b83!important;
 }
 .admin-wix-search>span{
-  color:#fff!important;
-  font-size:11px!important;
+  color:#42464d!important;
+  font-size:18px!important;
 }
 .admin-wix-search input{
   min-width:0!important;
   flex:1!important;
+  height:100%!important;
   border:0!important;
   outline:0!important;
   background:transparent!important;
-  color:#fff!important;
-  font-size:10px!important;
+  color:#2d3035!important;
+  font-size:12px!important;
   box-shadow:none!important;
 }
-.admin-wix-search input::placeholder{color:rgba(255,255,255,.72)!important;}
+.admin-wix-search input::placeholder{color:#a0a4aa!important;}
 .admin-wix-search button{display:none!important;}
-.admin-top-actions{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:flex-end!important;
-  gap:5px!important;
-}
-.admin-top-actions>button:not(.admin-top-user),.admin-top-user{
-  width:30px!important;
-  height:30px!important;
-  min-height:30px!important;
+
+.mg-notification,
+.admin-top-user{
+  width:42px!important;
+  height:42px!important;
+  min-height:42px!important;
   display:grid!important;
   place-items:center!important;
   padding:0!important;
-  border:0!important;
+  border:1px solid #eceeea!important;
   border-radius:50%!important;
-  background:rgba(255,255,255,.12)!important;
-  color:#fff!important;
-  font-size:10px!important;
+  background:#fff!important;
+  color:#14171b!important;
+  font-size:17px!important;
   cursor:pointer!important;
+  box-shadow:0 3px 10px rgba(22,24,20,.035)!important;
+}
+.mg-notification{position:relative!important;}
+.mg-notification i{
+  position:absolute!important;
+  right:5px!important;
+  top:4px!important;
+  width:8px!important;
+  height:8px!important;
+  border:2px solid #fff!important;
+  border-radius:50%!important;
+  background:#ff3737!important;
 }
 .admin-top-user{
-  background:#fff!important;
-  color:var(--cf-purple)!important;
+  background:#111311!important;
+  color:var(--mg-lime)!important;
+  font-size:13px!important;
   font-weight:900!important;
 }
 
-/* ===== DROPDOWNS TOPBAR ===== */
-.cf-top-dropdown{
-  position:fixed!important;
-  top:58px!important;
-  right:16px!important;
-  z-index:5000!important;
-  width:340px!important;
-  max-height:480px!important;
-  overflow:auto!important;
-  border:1px solid var(--cf-border)!important;
-  border-radius:8px!important;
+/* ===== DASHBOARD LAYOUT ===== */
+.mg-dashboard{
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 330px!important;
+  gap:26px!important;
+  padding-bottom:10px!important;
   background:#fff!important;
-  box-shadow:0 18px 50px rgba(41,38,80,.15)!important;
 }
-.cf-top-dropdown header{
+.mg-dashboard-main{min-width:0!important;}
+.mg-dashboard-side{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:13px!important;
+  padding:0 0 2px 20px!important;
+  border-left:1px solid #f0f1ed!important;
+}
+
+.mg-section-heading{
+  min-height:52px!important;
   display:flex!important;
   align-items:center!important;
   justify-content:space-between!important;
-  padding:12px 14px!important;
-  border-bottom:1px solid var(--cf-border)!important;
-}
-.cf-top-dropdown header h3{
-  margin:0!important;
-  font-size:13px!important;
-}
-.cf-top-feed article{
-  display:flex!important;
-  gap:10px!important;
-  padding:11px 13px!important;
-  border-bottom:1px solid #f0f0f5!important;
-}
-.cf-top-feed b{font-size:10px!important;}
-.cf-top-feed p{
-  margin:2px 0!important;
-  font-size:9px!important;
-  color:var(--cf-muted)!important;
-}
-.cf-top-feed small{
-  font-size:8px!important;
-  color:#a5a7b5!important;
-}
-.cf-top-viewall{
-  width:100%!important;
-  border:0!important;
-  border-radius:0!important;
-  background:#fafafe!important;
-  color:var(--cf-purple)!important;
-  font-size:9px!important;
-}
-
-/* ===== BREADCRUMB ===== */
-.crossfit-dashboard-breadcrumb,.cf-special-crumb,.cfx-crumb{
-  min-height:38px!important;
-  height:38px!important;
-  box-sizing:border-box!important;
-  display:flex!important;
-  align-items:center!important;
-  gap:7px!important;
-  padding:0 4px!important;
-  border:0!important;
-  border-radius:0!important;
-  background:transparent!important;
-  color:#7d7f90!important;
-  box-shadow:none!important;
-}
-.crossfit-dashboard-breadcrumb>span,.cf-special-crumb>span,.cfx-crumb>span{
-  font-size:10px!important;
-}
-.crossfit-dashboard-breadcrumb small,.crossfit-dashboard-breadcrumb strong,
-.cf-special-crumb small,.cf-special-crumb strong,
-.cfx-crumb small,.cfx-crumb strong{
-  font-size:9px!important;
-}
-.crossfit-dashboard-breadcrumb .cf-goal{
-  margin-left:auto!important;
-  min-height:24px!important;
-  display:inline-flex!important;
-  align-items:center!important;
-  padding:0 8px!important;
-  border:1px solid #ececf3!important;
-  border-radius:4px!important;
-  background:#fff!important;
-  color:#7d7f90!important;
-  font-size:8px!important;
-  font-style:normal!important;
-}
-
-/* ===== DASHBOARD 569574 ===== */
-.cf-reference-dashboard{
-  width:100%!important;
-  max-width:none!important;
-  background:transparent!important;
-}
-.cf-ref-hero{
-  min-height:278px!important;
-  display:grid!important;
-  grid-template-columns:minmax(0,55%) minmax(360px,45%)!important;
-  margin:0!important;
-  overflow:hidden!important;
-  border:1px solid var(--cf-border)!important;
-  border-radius:var(--cf-radius)!important;
-  background:#fff!important;
-  box-shadow:0 1px 5px rgba(49,47,87,.025)!important;
-}
-.cf-ref-hero-copy{
-  padding:18px 20px 13px!important;
-}
-.cf-ref-hero-copy h1{
-  margin:0!important;
-  color:#2f3040!important;
-  font-size:22px!important;
-  line-height:1.12!important;
-  font-weight:800!important;
-}
-.cf-ref-hero-copy>p{
-  margin:5px 0 0!important;
-  color:#9598a8!important;
-  font-size:10px!important;
-  line-height:1.4!important;
-}
-.cf-ref-mini-chart{
-  height:142px!important;
-  display:flex!important;
-  align-items:flex-end!important;
-  justify-content:flex-start!important;
   gap:14px!important;
-  margin-top:24px!important;
 }
-.cf-ref-mini-day{
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:center!important;
-  gap:6px!important;
+.mg-section-heading.compact{min-height:48px!important;}
+.mg-section-heading h2{
+  margin:0!important;
+  color:#17191f!important;
+  font-size:20px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  letter-spacing:-.35px!important;
 }
-.cf-ref-mini-track{
-  position:relative!important;
-  width:29px!important;
-  height:112px!important;
-  display:flex!important;
-  align-items:flex-end!important;
-  overflow:hidden!important;
-  border-radius:5px 5px 0 0!important;
-  background:#f2f1fb!important;
+.mg-section-heading p{
+  margin:4px 0 0!important;
+  color:#9a9ea5!important;
+  font-size:11px!important;
 }
-.cf-ref-mini-fill{
-  width:100%!important;
-  min-height:10px!important;
-  border-radius:5px 5px 0 0!important;
-  background:linear-gradient(180deg,var(--cf-mint) 0 52%,#c9c6f5 52% 100%)!important;
-}
-.cf-ref-mini-fill span,.cf-ref-mini-fill i{display:none!important;}
-.cf-ref-mini-day small{
-  font-size:8px!important;
-  color:#9a9cac!important;
-}
-.cf-ref-mini-legend{
-  display:flex!important;
-  align-items:center!important;
-  gap:12px!important;
-  margin-top:4px!important;
-  color:#8e90a1!important;
-  font-size:8px!important;
-}
-.cf-ref-mini-legend span,.cf-ref-chart-legend span{
-  display:inline-flex!important;
-  align-items:center!important;
-  gap:5px!important;
-}
-.cf-ref-mini-legend i,.cf-ref-chart-legend i,.cf-ref-split-list i{
-  width:6px!important;
-  height:6px!important;
-  border-radius:50%!important;
-}
-.cf-ref-mini-legend i.mint,.cf-ref-chart-legend i.mint,.cf-ref-split-list i.mint{
-  background:var(--cf-mint)!important;
-}
-.cf-ref-mini-legend i.purple,.cf-ref-chart-legend i.purple,.cf-ref-split-list i.purple{
-  background:var(--cf-purple)!important;
-}
-.cf-ref-split-list i.soft{background:#c7c4f3!important;}
-.cf-ref-hero-art{
-  position:relative!important;
-  min-height:278px!important;
-  overflow:hidden!important;
-  background:#fbfaff!important;
-}
-.cf-ref-hero-art:after{display:none!important;}
-.cf-ref-hero-art>img,.cf-ref-hero-photo-caption{display:none!important;}
-.cf-ref-hero-scene{
-  width:100%!important;
-  height:100%!important;
-  min-height:278px!important;
-  display:block!important;
-}
-
-.cf-ref-stats{
-  display:grid!important;
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:9px!important;
-  margin:9px 0!important;
-}
-.cf-ref-stats button{
-  min-height:72px!important;
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) 31px!important;
-  align-items:center!important;
-  gap:9px!important;
-  padding:10px 12px!important;
-  border:1px solid var(--cf-border)!important;
-  border-radius:6px!important;
-  background:#fff!important;
-  color:var(--cf-text)!important;
-  text-align:left!important;
-  box-shadow:0 1px 5px rgba(49,47,87,.025)!important;
+.mg-section-heading>button{
+  min-height:auto!important;
+  padding:4px 0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#858990!important;
+  font-size:11px!important;
   cursor:pointer!important;
 }
-.cf-ref-stats button:hover{
-  border-color:#dcdaf5!important;
-  transform:none!important;
-}
-.cf-ref-stats small{
-  display:block!important;
-  color:#9799aa!important;
-  font-size:8px!important;
-}
-.cf-ref-stats strong{
-  display:block!important;
-  margin:3px 0 1px!important;
-  color:#323344!important;
-  font-size:16px!important;
-  line-height:1.15!important;
-}
-.cf-ref-stats span{
-  display:block!important;
-  color:#8d90a0!important;
-  font-size:7.5px!important;
-}
-.cf-ref-stats i{
-  width:31px!important;
-  height:31px!important;
-  display:grid!important;
-  place-items:center!important;
-  border-radius:50%!important;
-  background:#efefff!important;
-  color:var(--cf-purple)!important;
-  font-size:10px!important;
-  font-style:normal!important;
-  font-weight:800!important;
-}
-
-.cf-ref-bottom{
-  display:grid!important;
-  grid-template-columns:minmax(0,2.18fr) minmax(260px,.82fr)!important;
-  gap:9px!important;
-  margin:0!important;
-}
-.cf-ref-bottom>article{
-  min-height:280px!important;
-  box-sizing:border-box!important;
-  padding:11px 12px!important;
-  border:1px solid var(--cf-border)!important;
-  border-radius:6px!important;
-  background:#fff!important;
-  box-shadow:0 1px 5px rgba(49,47,87,.025)!important;
-}
-.cf-ref-bottom header{
-  display:flex!important;
-  align-items:flex-start!important;
-  justify-content:space-between!important;
-  gap:10px!important;
-}
-.cf-ref-bottom h2{
-  margin:0!important;
-  color:#343545!important;
-  font-size:10.5px!important;
-  font-weight:800!important;
-}
-.cf-ref-bottom header p{
-  margin:2px 0 0!important;
-  color:#9a9cac!important;
-  font-size:7.5px!important;
-}
-.cf-ref-bottom header>span{
-  color:#7f8192!important;
-  font-size:7.5px!important;
-}
-.cf-ref-chart-legend{
-  display:flex!important;
-  gap:12px!important;
-  margin:10px 0 4px!important;
-  color:#8d8fa0!important;
-  font-size:7.5px!important;
-}
-.cf-ref-line-chart{
-  position:relative!important;
-  height:208px!important;
-  overflow:hidden!important;
-}
-.cf-ref-line-chart svg{
-  position:absolute!important;
-  inset:13px 0 22px!important;
-  width:100%!important;
-  height:calc(100% - 35px)!important;
-}
-.cf-ref-grid-lines{
-  position:absolute!important;
-  inset:13px 0 22px!important;
-  display:grid!important;
-  grid-template-rows:repeat(5,1fr)!important;
-}
-.cf-ref-grid-lines i{border-top:1px solid #f0f0f5!important;}
-.cf-ref-xaxis{
-  position:absolute!important;
-  left:0!important;
-  right:0!important;
-  bottom:0!important;
-  display:grid!important;
-  grid-template-columns:repeat(7,1fr)!important;
-  color:#a0a2b0!important;
-  font-size:7px!important;
-  text-align:center!important;
-}
-.cf-ref-split{
-  display:flex!important;
-  flex-direction:column!important;
-}
-.cf-ref-donut{
-  position:relative!important;
-  width:126px!important;
-  height:126px!important;
-  display:grid!important;
-  place-items:center!important;
-  margin:24px auto 12px!important;
-  border-radius:50%!important;
-  background:conic-gradient(var(--cf-purple) 0 48%,var(--cf-mint) 48% 82%,#c9c6f5 82% 100%)!important;
-}
-.cf-ref-donut:after{
-  content:""!important;
-  position:absolute!important;
-  width:80px!important;
-  height:80px!important;
-  border-radius:50%!important;
-  background:#fff!important;
-}
-.cf-ref-donut>div{
-  position:relative!important;
-  z-index:2!important;
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:center!important;
-}
-.cf-ref-donut strong{font-size:13px!important;}
-.cf-ref-donut small{
-  font-size:7px!important;
-  color:#9a9cab!important;
-}
-.cf-ref-split-list{
-  display:grid!important;
-  gap:5px!important;
-}
-.cf-ref-split-list p{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  margin:0!important;
-  color:#858797!important;
-  font-size:8px!important;
-}
-.cf-ref-split-list p span{
+.mg-section-heading>button span{font-size:18px!important;}
+.mg-range{
+  min-height:34px!important;
   display:inline-flex!important;
   align-items:center!important;
+  padding:0 12px!important;
+  border:1px solid #e9ece6!important;
+  border-radius:8px!important;
+  color:#646970!important;
+  font-size:10px!important;
+}
+
+/* ===== WORKOUTS ===== */
+.mg-workout-grid{
+  display:grid!important;
+  grid-template-columns:1.45fr .86fr .86fr!important;
+  gap:12px!important;
+}
+.mg-workout-card{
+  min-height:186px!important;
+  box-sizing:border-box!important;
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  padding:19px!important;
+  overflow:hidden!important;
+  border:1px solid #eceeea!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  box-shadow:0 1px 6px rgba(23,25,31,.025)!important;
+}
+.mg-workout-card h3{
+  margin:9px 0 8px!important;
+  color:#14171c!important;
+  font-size:23px!important;
+  line-height:1.06!important;
+  font-weight:800!important;
+}
+.mg-workout-card p{
+  margin:0 0 17px!important;
+  color:#777c82!important;
+  font-size:10px!important;
+}
+.mg-workout-card p span{
+  width:3px!important;
+  height:3px!important;
+  display:inline-block!important;
+  margin:0 7px 2px!important;
+  border-radius:50%!important;
+  background:#9da19d!important;
+}
+.mg-workout-card button{
+  min-width:96px!important;
+  min-height:36px!important;
+  padding:0 16px!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:#0b0c0b!important;
+  color:#fff!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  cursor:pointer!important;
+}
+.mg-workout-icon{
+  width:43px!important;
+  height:43px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:50%!important;
+  background:var(--mg-lime-soft)!important;
+  color:#11150e!important;
+  font-size:18px!important;
+  font-style:normal!important;
+  font-weight:900!important;
+}
+
+.mg-workout-featured{
+  justify-content:center!important;
+  background:linear-gradient(120deg,#cbf45b 0%,#d6fa79 100%)!important;
+  border-color:#c6ef59!important;
+}
+.mg-workout-featured .mg-workout-copy{
+  position:relative!important;
+  z-index:2!important;
+  width:58%!important;
+}
+.mg-workout-featured h3{
+  margin-top:0!important;
+  font-size:25px!important;
+}
+.mg-workout-featured p{color:#515942!important;}
+.mg-workout-featured img{
+  position:absolute!important;
+  right:-6px!important;
+  bottom:0!important;
+  width:49%!important;
+  height:96%!important;
+  object-fit:contain!important;
+  object-position:center bottom!important;
+  filter:saturate(.75) contrast(1.02)!important;
+}
+
+/* ===== RESULTS ===== */
+.mg-results{margin-top:18px!important;}
+.mg-result-grid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+.mg-result-grid>button{
+  min-height:77px!important;
+  display:grid!important;
+  grid-template-columns:44px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:9px!important;
+  padding:10px!important;
+  border:1px solid #eceeea!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#17191f!important;
+  text-align:left!important;
+  cursor:pointer!important;
+  box-shadow:0 1px 5px rgba(23,25,31,.02)!important;
+}
+.mg-result-grid>button:hover{
+  border-color:#dce7c8!important;
+  transform:translateY(-1px)!important;
+}
+.mg-result-grid i{
+  width:43px!important;
+  height:43px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:10px!important;
+  color:#10130f!important;
+  font-size:19px!important;
+  font-style:normal!important;
+}
+.mg-result-grid i.lime{background:#effbd0!important;}
+.mg-result-grid i.blue{background:#edf7ff!important;}
+.mg-result-grid i.pink{background:#faefff!important;}
+.mg-result-grid strong{
+  display:block!important;
+  color:#17191f!important;
+  font-size:18px!important;
+  line-height:1.1!important;
+  font-weight:800!important;
+}
+.mg-result-grid span{
+  display:block!important;
+  margin-top:3px!important;
+  color:#858a91!important;
+  font-size:9.5px!important;
+}
+.mg-result-grid em{
+  align-self:start!important;
+  color:#25282b!important;
+  font-size:12px!important;
+  font-style:normal!important;
+  letter-spacing:1px!important;
+}
+
+/* ===== ACTIVITY ===== */
+.mg-activity{margin-top:19px!important;}
+.mg-chart-grid{
+  display:grid!important;
+  grid-template-columns:1.15fr 1fr!important;
+  gap:13px!important;
+}
+.mg-chart-card{
+  min-height:273px!important;
+  box-sizing:border-box!important;
+  padding:16px 17px!important;
+  border:1px solid #eceeea!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  box-shadow:0 1px 6px rgba(23,25,31,.025)!important;
+}
+.mg-chart-card header{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+}
+.mg-chart-card header h3{
+  margin:0!important;
+  color:#25282e!important;
+  font-size:11.5px!important;
+  font-weight:700!important;
+}
+.mg-chart-card header>div{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  color:#747980!important;
+  font-size:8px!important;
+}
+.dot{
+  width:7px!important;
+  height:7px!important;
+  display:inline-block!important;
+  border-radius:50%!important;
+}
+.dot.lime{background:var(--mg-lime)!important;}
+.dot.black{background:#0d0f0d!important;}
+
+.mg-bars{
+  height:205px!important;
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-around!important;
+  gap:12px!important;
+  padding:21px 7px 0!important;
+  border-bottom:1px solid #eef0eb!important;
+  background:repeating-linear-gradient(to bottom,transparent 0,transparent 39px,#f0f1ee 40px)!important;
+}
+.mg-bars>div{
+  width:38px!important;
+  height:100%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:7px!important;
+}
+.mg-bar-track{
+  width:24px!important;
+  height:164px!important;
+  display:flex!important;
+  flex-direction:column-reverse!important;
+  justify-content:flex-start!important;
+}
+.mg-bar-track i{
+  width:100%!important;
+  display:block!important;
+  min-height:2px!important;
+}
+.mg-bar-black{background:#111311!important;}
+.mg-bar-lime{background:var(--mg-lime)!important;}
+.mg-bars>div>span{
+  color:#888d94!important;
+  font-size:8px!important;
+}
+
+.mg-donut-card header{justify-content:flex-start!important;}
+.mg-donut-layout{
+  min-height:213px!important;
+  display:grid!important;
+  grid-template-columns:1fr 145px!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+.mg-donut{
+  position:relative!important;
+  width:164px!important;
+  height:164px!important;
+  display:grid!important;
+  place-items:center!important;
+  margin:auto!important;
+  border-radius:50%!important;
+  background:conic-gradient(
+    #0e100e 0 40%,
+    #91c83e 40% 65%,
+    #c6ef57 65% 85%,
+    #e8f8bd 85% 100%
+  )!important;
+}
+.mg-donut:after{
+  content:""!important;
+  position:absolute!important;
+  width:90px!important;
+  height:90px!important;
+  border-radius:50%!important;
+  background:#fff!important;
+}
+.mg-donut>div{
+  position:relative!important;
+  z-index:2!important;
+  display:grid!important;
+  place-items:center!important;
+}
+.mg-donut strong{
+  font-size:17px!important;
+  line-height:1!important;
+}
+.mg-donut span{
+  margin-top:3px!important;
+  color:#8c9097!important;
+  font-size:8px!important;
+}
+.mg-donut-legend{
+  display:grid!important;
+  gap:11px!important;
+}
+.mg-donut-legend p{
+  display:grid!important;
+  grid-template-columns:8px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:7px!important;
+  margin:0!important;
+  color:#555a60!important;
+  font-size:8.5px!important;
+}
+.mg-donut-legend i{
+  width:7px!important;
+  height:7px!important;
+  border-radius:50%!important;
+}
+.mg-donut-legend i.black{background:#0e100e!important;}
+.mg-donut-legend i.green{background:#91c83e!important;}
+.mg-donut-legend i.lime{background:#c6ef57!important;}
+.mg-donut-legend i.soft{background:#e8f8bd!important;}
+.mg-donut-legend b{
+  color:#30343a!important;
+  font-size:8px!important;
+}
+
+/* ===== RIGHT COLUMN ===== */
+.mg-trainer-card,
+.mg-mini-routine,
+.mg-agenda{
+  border:1px solid #eceeea!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:0 2px 8px rgba(23,25,31,.025)!important;
+}
+.mg-trainer-card{
+  padding:12px!important;
+}
+.mg-trainer-head{
+  display:grid!important;
+  grid-template-columns:47px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:10px!important;
+  margin-bottom:11px!important;
+}
+.mg-trainer-head>img{
+  width:47px!important;
+  height:47px!important;
+  object-fit:contain!important;
+  border-radius:50%!important;
+  background:#eef0ec!important;
+}
+.mg-trainer-head strong{
+  display:block!important;
+  color:#181b20!important;
+  font-size:11.5px!important;
+  font-weight:800!important;
+}
+.mg-trainer-head span{
+  display:block!important;
+  margin-top:3px!important;
+  color:#92969d!important;
+  font-size:8.5px!important;
+}
+.mg-trainer-head em{
+  align-self:start!important;
+  color:#262a2c!important;
+  font-size:11px!important;
+  font-style:normal!important;
+}
+.mg-video-card{
+  position:relative!important;
+  width:100%!important;
+  min-height:128px!important;
+  display:block!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:#0e100e!important;
+  cursor:pointer!important;
+}
+.mg-video-card img{
+  width:100%!important;
+  height:128px!important;
+  display:block!important;
+  object-fit:cover!important;
+  filter:saturate(.8) brightness(.7)!important;
+}
+.mg-video-card i{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  width:40px!important;
+  height:40px!important;
+  display:grid!important;
+  place-items:center!important;
+  transform:translate(-50%,-50%)!important;
+  border-radius:50%!important;
+  background:#fff!important;
+  color:#111311!important;
+  font-size:14px!important;
+  font-style:normal!important;
+}
+.mg-trainer-card>h3{
+  margin:9px 0 2px!important;
+  font-size:10.5px!important;
+  color:#1e2125!important;
+}
+.mg-trainer-card>small{
+  color:#979ba2!important;
+  font-size:8px!important;
+}
+
+.mg-mini-routine{
+  min-height:70px!important;
+  display:grid!important;
+  grid-template-columns:74px minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:8px!important;
+  color:#1e2125!important;
+  text-align:left!important;
+  cursor:pointer!important;
+}
+.mg-mini-routine img{
+  width:74px!important;
+  height:54px!important;
+  object-fit:cover!important;
+  border-radius:7px!important;
+  background:#eff2eb!important;
+}
+.mg-mini-routine strong{
+  display:block!important;
+  font-size:9.5px!important;
+}
+.mg-mini-routine span{
+  display:block!important;
+  margin-top:4px!important;
+  color:#969aa0!important;
+  font-size:8px!important;
+}
+
+.mg-agenda{
+  padding:13px 12px 10px!important;
+}
+.mg-agenda>header{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  margin-bottom:7px!important;
+}
+.mg-agenda h2{
+  margin:0!important;
+  color:#17191f!important;
+  font-size:17px!important;
+  font-weight:800!important;
+}
+.mg-agenda header button{
+  min-height:auto!important;
+  padding:3px!important;
+  border:0!important;
+  background:transparent!important;
+  color:#92969d!important;
+  font-size:8px!important;
+}
+.mg-agenda-list{
+  display:grid!important;
   gap:5px!important;
 }
-.cf-ref-split-list p b{
-  font-size:8px!important;
-  color:#4b4c5c!important;
+.mg-agenda-list article{
+  min-height:52px!important;
+  display:grid!important;
+  grid-template-columns:4px 51px minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:8px!important;
+  padding:5px 7px 5px 0!important;
+  border:1px solid #eff0ed!important;
+  border-radius:7px!important;
+  background:#fff!important;
+}
+.mg-agenda-list article>i{
+  width:3px!important;
+  height:34px!important;
+  border-radius:0 5px 5px 0!important;
+  background:var(--mg-lime)!important;
+}
+.mg-agenda-list article>i.dark{background:#111311!important;}
+.mg-agenda-list time{
+  color:#34383d!important;
+  font-size:8.5px!important;
+  font-weight:800!important;
+}
+.mg-agenda-list article>div{
+  min-width:0!important;
+  padding-left:8px!important;
+  border-left:1px solid #e5e7e2!important;
+}
+.mg-agenda-list strong{
+  display:block!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  color:#2c3035!important;
+  font-size:8.5px!important;
+}
+.mg-agenda-list span{
+  display:block!important;
+  margin-top:2px!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  color:#969aa0!important;
+  font-size:7.5px!important;
 }
 
-.cf-reference-dashboard>.cf-ref-secondary,
-.cf-reference-dashboard>.cf-ref-tertiary,
-.cf-reference-dashboard>.cf-ref-insights{
-  display:none!important;
-}
-
-/* ===== MODULOS ===== */
+/* ===== OTHER MODULES: SAME VISUAL LANGUAGE ===== */
 .admin-module-tabs{
   display:flex!important;
   align-items:center!important;
   gap:6px!important;
-  margin:8px 0!important;
+  margin:0 0 12px!important;
   padding:7px!important;
-  border:1px solid var(--cf-border)!important;
-  border-radius:6px!important;
+  border:1px solid #eceeea!important;
+  border-radius:8px!important;
   background:#fff!important;
   overflow-x:auto!important;
 }
 .admin-module-tabs button{
-  min-height:30px!important;
-  padding:0 10px!important;
+  min-height:31px!important;
+  padding:0 11px!important;
   border:0!important;
-  border-radius:4px!important;
-  background:transparent!important;
-  color:#737587!important;
+  border-radius:6px!important;
+  background:#f7f8f5!important;
+  color:#686d73!important;
   font-size:9px!important;
   white-space:nowrap!important;
 }
 .admin-module-tabs button.active{
-  background:var(--cf-purple)!important;
-  color:#fff!important;
-}
-.admin-home-redesign .cfx-card,
-.admin-home-redesign .cf-live-card,
-.admin-home-redesign .cf-suite-card,
-.admin-home-redesign .gym-suite-panel,
-.admin-home-redesign .clients-v3-card,
-.admin-home-redesign .admin-form-card,
-.admin-home-redesign .admin-list-card,
-.admin-home-redesign .config-card{
-  border:1px solid var(--cf-border)!important;
-  border-radius:6px!important;
-  background:#fff!important;
-  box-shadow:0 1px 5px rgba(49,47,87,.025)!important;
-}
-.admin-home-redesign .cfx-grid,
-.admin-home-redesign .cf-suite-complete{
-  gap:9px!important;
-}
-.admin-home-redesign .cfx-card,
-.admin-home-redesign .cf-live-card,
-.admin-home-redesign .cf-suite-card{
-  padding:12px!important;
-}
-.admin-home-redesign .cfx-card h1,
-.admin-home-redesign .cf-live-card h1{
-  font-size:18px!important;
-}
-.admin-home-redesign .cfx-card h2,
-.admin-home-redesign .cf-live-card h2,
-.admin-home-redesign .cf-suite-card h2{
-  font-size:12px!important;
-}
-.admin-home-redesign .cfx-card h3,
-.admin-home-redesign .cf-live-card h3{
-  font-size:11px!important;
-}
-.admin-home-redesign .cfx-card p,
-.admin-home-redesign .cf-live-card p,
-.admin-home-redesign .cf-suite-card p{
-  font-size:9px!important;
-  line-height:1.45!important;
-}
-.admin-home-redesign .cfx-card small,
-.admin-home-redesign .cf-live-card small,
-.admin-home-redesign .cf-suite-card small{
-  font-size:8px!important;
-}
-.admin-home-redesign .admin-content button{
-  min-height:31px!important;
-  padding:0 10px!important;
-  font-size:9.5px!important;
-}
-.admin-home-redesign .admin-content input,
-.admin-home-redesign .admin-content select{
-  min-height:33px!important;
-  padding:6px 9px!important;
-  font-size:9.5px!important;
-}
-.admin-home-redesign .admin-content textarea{
-  padding:8px 9px!important;
-  font-size:9.5px!important;
-}
-.admin-home-redesign .admin-content table th{
-  padding:7px 8px!important;
-  background:#fafafe!important;
-  color:#77798a!important;
-  font-size:8.5px!important;
-}
-.admin-home-redesign .admin-content table td{
-  padding:8px!important;
-  color:#565868!important;
-  font-size:9px!important;
+  background:#111311!important;
+  color:var(--mg-lime)!important;
 }
 
-/* ===== MENSAJES ===== */
+.cf-special-crumb,.cfx-crumb,.crossfit-dashboard-breadcrumb{
+  min-height:42px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  margin:0 0 10px!important;
+  padding:0!important;
+  border:0!important;
+  background:#fff!important;
+  color:#8b9097!important;
+  box-shadow:none!important;
+}
+.cf-special-crumb small,.cf-special-crumb strong,
+.cfx-crumb small,.cfx-crumb strong{
+  font-size:10px!important;
+}
+.cf-special-crumb em,.cfx-crumb em{
+  margin-left:auto!important;
+  padding:5px 9px!important;
+  border-radius:999px!important;
+  background:var(--mg-lime-soft)!important;
+  color:#60782a!important;
+  font-size:8px!important;
+  font-style:normal!important;
+}
+
+.admin-home-redesign .admin-form-card,
+.admin-home-redesign .admin-list-card,
+.admin-home-redesign .clients-v3-card,
+.admin-home-redesign .config-card,
+.admin-home-redesign .cf-live-card,
+.admin-home-redesign .cf-suite-card,
+.admin-home-redesign .gym-suite-panel{
+  border:1px solid #eceeea!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:0 2px 8px rgba(23,25,31,.025)!important;
+}
+.admin-home-redesign .admin-primary{
+  background:#111311!important;
+  color:var(--mg-lime)!important;
+  border-color:#111311!important;
+}
+.admin-home-redesign .admin-secondary{
+  background:#f5f7f1!important;
+  color:#34383d!important;
+  border-color:#e5e8df!important;
+}
+.admin-home-redesign .table-action{
+  background:var(--mg-lime-soft)!important;
+  color:#5c7624!important;
+}
+.admin-home-redesign .clients-v3-new{
+  background:#111311!important;
+  color:var(--mg-lime)!important;
+}
+.admin-home-redesign .clients-v3-stat-icon,
+.admin-home-redesign .clients-v3-person>span{
+  background:var(--mg-lime-soft)!important;
+  color:#587020!important;
+}
+
+/* Extra component has local !important rules, so raise specificity here. */
+.admin-home-redesign app-admin-crossfit-extras .cfx-page{
+  font-family:inherit!important;
+}
+.admin-home-redesign app-admin-crossfit-extras .cfx-card.cfx-card{
+  border:1px solid #eceeea!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:0 2px 8px rgba(23,25,31,.025)!important;
+}
+.admin-home-redesign app-admin-crossfit-extras .cfx-card button.primary,
+.admin-home-redesign app-admin-crossfit-extras button.primary{
+  background:#111311!important;
+  color:var(--mg-lime)!important;
+  border-color:#111311!important;
+}
+
+/* ===== TOAST ===== */
 .admin-toast{
   position:fixed!important;
-  right:20px!important;
-  bottom:20px!important;
+  right:22px!important;
+  bottom:22px!important;
   z-index:9000!important;
   max-width:360px!important;
-  padding:10px 13px!important;
-  border-radius:7px!important;
+  padding:11px 14px!important;
+  border-radius:8px!important;
   color:#fff!important;
   font-size:10px!important;
   font-weight:700!important;
-  box-shadow:0 12px 30px rgba(31,29,67,.18)!important;
+  box-shadow:0 14px 32px rgba(19,21,18,.16)!important;
 }
-.admin-toast.success{background:#5b56dc!important;}
-.admin-toast.error{background:#b4233a!important;}
+.admin-toast.success{background:#111311!important;color:var(--mg-lime)!important;}
+.admin-toast.error{background:#bd2638!important;}
+
 .cf-global-footer{
-  margin-top:10px!important;
+  margin-top:14px!important;
   padding:10px 0!important;
-  color:#999baa!important;
+  color:#999da2!important;
   font-size:8px!important;
   text-align:center!important;
 }
 
-/* ===== COLAPSADO ===== */
-.admin-shell.admin-home-redesign.admin-sidebar-collapsed{
-  --cf-sidebar:78px!important;
-}
-.admin-sidebar-collapsed .crossfit-profile-copy,
-.admin-sidebar-collapsed .crossfit-sidebar-nav button>span:nth-child(2),
-.admin-sidebar-collapsed .crossfit-sidebar-nav .cf-nav-group-head i,
-.admin-sidebar-collapsed .cf-nav-children{
-  display:none!important;
-}
-.admin-sidebar-collapsed .crossfit-profile-card{min-height:88px!important;}
-.admin-sidebar-collapsed .crossfit-profile-avatar{
-  width:48px!important;
-  height:48px!important;
-}
-.admin-sidebar-collapsed .crossfit-sidebar-nav button{
-  grid-template-columns:1fr!important;
-  place-items:center!important;
-  padding:4px!important;
+/* ===== DESKTOP WIDTH ===== */
+@media(min-width:1500px){
+  :root{
+    --mg-sidebar:274px;
+  }
+  .mg-dashboard{grid-template-columns:minmax(0,1fr) 350px!important;}
+  .mg-workout-card{min-height:198px!important;}
 }
 
-/* ===== RESPONSIVE ===== */
+/* ===== TABLET ===== */
 @media(max-width:1180px){
-  :root{--cf-sidebar:215px;}
+  :root{
+    --mg-sidebar:225px;
+  }
   .admin-home-redesign>.admin-wix-topbar{
-    grid-template-columns:180px minmax(0,1fr) 230px auto!important;
+    grid-template-columns:minmax(220px,1fr) minmax(220px,340px) 40px 40px!important;
+    padding-left:20px!important;
+    padding-right:20px!important;
   }
-  .admin-wix-search{width:230px!important;}
-  .cf-ref-hero{
-    grid-template-columns:minmax(0,58%) minmax(300px,42%)!important;
+  .admin-home-redesign>.admin-content{
+    padding-left:20px!important;
+    padding-right:20px!important;
   }
+  .mg-dashboard{
+    grid-template-columns:minmax(0,1fr) 285px!important;
+    gap:18px!important;
+  }
+  .mg-workout-grid{grid-template-columns:1.25fr .8fr .8fr!important;}
+  .mg-result-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .mg-chart-grid{grid-template-columns:1fr!important;}
+  .mg-dashboard-side{padding-left:14px!important;}
 }
+
+/* ===== COMPACT SIDEBAR ===== */
 @media(max-width:930px){
-  :root{--cf-sidebar:78px;}
-  .crossfit-profile-copy,
-  .crossfit-sidebar-nav button>span:nth-child(2),
-  .crossfit-sidebar-nav .cf-nav-group-head i,
-  .cf-nav-children{
-    display:none!important;
+  :root{
+    --mg-sidebar:78px;
   }
-  .crossfit-profile-card{min-height:88px!important;}
-  .crossfit-profile-avatar{
-    width:48px!important;
-    height:48px!important;
+  .mg-brand{
+    justify-content:center!important;
+    padding:0!important;
+  }
+  .mg-brand>span:last-child,
+  .crossfit-sidebar-nav button>span:nth-child(2),
+  .crossfit-sidebar-nav .cf-nav-group-head>i,
+  .cf-nav-children,
+  .mg-sidebar-bottom button b{
+    display:none!important;
   }
   .crossfit-sidebar-nav button{
     grid-template-columns:1fr!important;
     place-items:center!important;
-    padding:4px!important;
+    padding:5px!important;
+  }
+  .crossfit-sidebar-nav button.active:before{left:-18px!important;}
+  .mg-sidebar-bottom button{
+    grid-template-columns:1fr!important;
+    place-items:center!important;
   }
   .admin-home-redesign>.admin-wix-topbar{
-    grid-template-columns:42px minmax(0,1fr) 220px auto!important;
+    grid-template-columns:minmax(190px,1fr) minmax(180px,300px) 40px 40px!important;
   }
-  .crossfit-top-logo{display:none!important;}
-  .cf-ref-hero{grid-template-columns:1fr!important;}
-  .cf-ref-hero-art{display:none!important;}
-  .cf-ref-stats{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  .mg-dashboard{
+    grid-template-columns:1fr!important;
   }
-  .cf-ref-bottom{grid-template-columns:1fr!important;}
+  .mg-dashboard-side{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    padding:18px 0 0!important;
+    border-left:0!important;
+    border-top:1px solid #f0f1ed!important;
+  }
+  .mg-agenda{grid-column:1/-1!important;}
 }
+
+/* ===== MOBILE ===== */
 @media(max-width:700px){
-  :root{--cf-header:58px;}
-  .admin-shell.admin-home-redesign{display:block!important;}
+  :root{--mg-topbar:76px;}
+  .admin-shell.admin-home-redesign{
+    display:block!important;
+  }
   .admin-home-redesign>.admin-nav{display:none!important;}
   .admin-home-redesign>.admin-wix-topbar{
     position:sticky!important;
     width:100%!important;
-    height:58px!important;
-    grid-template-columns:40px minmax(0,1fr) auto!important;
-    padding:0 9px!important;
+    height:76px!important;
+    min-height:76px!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 40px!important;
+    padding:11px 13px!important;
   }
-  .admin-wix-search{
-    justify-self:stretch!important;
-    width:100%!important;
-  }
+  .mg-top-greeting h1{font-size:18px!important;}
+  .mg-top-greeting span{font-size:9px!important;}
+  .admin-wix-search{display:none!important;}
+  .admin-top-user{display:none!important;}
   .admin-home-redesign>.admin-content{
-    min-height:calc(100vh - 58px)!important;
-    padding:0 9px 22px!important;
+    min-height:calc(100vh - 76px)!important;
+    padding:0 12px 24px!important;
   }
-  .cf-ref-stats{grid-template-columns:1fr 1fr!important;}
-  .cf-ref-bottom{grid-template-columns:1fr!important;}
-  .crossfit-dashboard-breadcrumb .cf-goal{display:none!important;}
+  .admin-mobile-modules{
+    display:flex!important;
+    gap:6px!important;
+    margin:0 -2px 11px!important;
+    padding:7px 0!important;
+    overflow-x:auto!important;
+  }
+  .admin-mobile-modules button{
+    min-width:72px!important;
+    min-height:48px!important;
+    border:1px solid #eceeea!important;
+    border-radius:8px!important;
+    background:#fff!important;
+    color:#62666c!important;
+    font-size:8px!important;
+  }
+  .admin-mobile-modules button.active{
+    background:#111311!important;
+    color:var(--mg-lime)!important;
+  }
+  .mg-workout-grid{grid-template-columns:1fr!important;}
+  .mg-workout-card{min-height:150px!important;}
+  .mg-workout-featured .mg-workout-copy{width:62%!important;}
+  .mg-result-grid{grid-template-columns:1fr 1fr!important;}
+  .mg-dashboard-side{grid-template-columns:1fr!important;}
+  .mg-agenda{grid-column:auto!important;}
+  .mg-donut-layout{grid-template-columns:1fr!important;}
+  .mg-donut-legend{grid-template-columns:1fr 1fr!important;}
 }
