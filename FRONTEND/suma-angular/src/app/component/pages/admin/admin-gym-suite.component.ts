@@ -38,12 +38,8 @@ interface GymModuleConfig {
         <span>⌂</span><small>Home</small><b>›</b><strong>{{config.title}}</strong>
       </div>
 
-      <div class="cf-suite-toolbar">
-        <div><h1>{{config.title}}</h1><p>{{config.subtitle}}</p></div>
-        <div><button type="button" class="secondary" (click)="exportCsv()">⇩ Export CSV</button><button type="button" class="primary" (click)="nuevoRegistro()">＋ Add New</button></div>
-      </div>
-
       <ng-container [ngSwitch]="modulo">
+        <section class="cf-suite-page-head" *ngSwitchCase="'equipos'"><div><h1>Equipments</h1><p>Gym equipment categories and availability</p></div></section>
         <section class="cf-suite-equipment-grid" *ngSwitchCase="'equipos'">
           <article *ngFor="let item of (records.length ? records : equipmentFallback)">
             <div class="cf-suite-equipment-art">
@@ -55,7 +51,7 @@ interface GymModuleConfig {
         </section>
 
         <section class="cf-suite-events" *ngSwitchCase="'eventos'">
-          <header><h2>Upcoming Events</h2></header>
+          <header class="cf-suite-page-head"><div><h1>Gym Events</h1><p>Upcoming fitness events and activities</p></div></header>
           <article *ngFor="let item of (records.length ? records : eventFallback); let i=index">
             <div class="cf-suite-event-date"><b>{{item.day || (15+i)}}</b><small>th</small></div>
             <div class="cf-suite-event-main"><span>{{item.estado || 'Going fast'}}</span><h3>{{item.titulo}}</h3><p>{{item.fecha || 'Tuesday'}} · {{item.subtitulo || 'Mallqui Gym'}}</p></div>
@@ -63,6 +59,7 @@ interface GymModuleConfig {
           </article>
         </section>
 
+        <section class="cf-suite-page-head" *ngSwitchCase="'galeria'"><div><h1>Gallery</h1><p>Gym gallery and class highlights</p></div></section>
         <section class="cf-suite-gallery" *ngSwitchCase="'galeria'">
           <article *ngFor="let item of (records.length ? records : galleryFallback)">
             <img [src]="item.imagen_url || 'assets/showcase/class-showcase.svg'" [alt]="item.titulo">
@@ -70,6 +67,7 @@ interface GymModuleConfig {
           </article>
         </section>
 
+        <section class="cf-suite-page-head" *ngSwitchCase="'noticias'"><div><h1>News & Updates</h1><p>Latest gym news and announcements</p></div></section>
         <section class="cf-suite-news" *ngSwitchCase="'noticias'">
           <article *ngFor="let item of (records.length ? records : newsFallback)">
             <img [src]="item.imagen_url || 'assets/showcase/hero-showcase.svg'" [alt]="item.titulo">
@@ -78,7 +76,7 @@ interface GymModuleConfig {
         </section>
 
         <section class="cf-suite-salary" *ngSwitchCase="'salarios'">
-          <header><div><h2>Salary Overview</h2><p>Staff payroll summary</p></div><select><option>October 2026</option></select></header>
+          <header class="cf-suite-page-head"><div><h1>Salary List</h1><p>Staff payroll summary</p></div><select><option>October 2026</option></select></header>
           <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>Employee ID</th><th>Employee</th><th>Role</th><th>Location</th><th>Days</th><th>Period</th><th>Salary</th><th>Action</th></tr></thead><tbody>
             <tr *ngFor="let item of filtered"><td>EMP-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Trainer'}}</td><td>Pucallpa</td><td>26</td><td>{{item.fecha || 'Oct 2026'}}</td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><button class="cf-suite-link">Payslip</button></td></tr>
             <tr *ngIf="!filtered.length"><td colspan="8">No salary records yet.</td></tr>
@@ -86,6 +84,7 @@ interface GymModuleConfig {
         </section>
 
         <section class="cf-suite-income" *ngSwitchCase="'ingresos'">
+          <header class="cf-suite-page-head"><div><h1>Income</h1><p>Income overview and annual performance</p></div></header>
           <div class="cf-suite-income-cards">
             <article><small>Net Profit</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>+18.4%</span></article>
             <article><small>Total Income</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>+12.5%</span></article>
@@ -103,6 +102,7 @@ interface GymModuleConfig {
         </section>
 
         <section class="cf-suite-invoices" *ngSwitchCase="'facturas'">
+          <header class="cf-suite-page-head"><div><h1>Invoices</h1><p>Manage member invoices and payment status</p></div></header>
           <div class="cf-suite-invoice-note"><span>Select all checkboxes to send an update.</span><button type="button">Send to everyone</button></div>
           <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th><input type="checkbox"></th><th>Invoice No.</th><th>Gym Member</th><th>Created Date</th><th>Due Date</th><th>Status</th><th>Amount</th><th>Actions</th></tr></thead><tbody>
             <tr *ngFor="let item of filtered"><td><input type="checkbox"></td><td>#INV-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.fecha || '—'}}</td><td>{{item.fecha || '—'}}</td><td><span class="status-select">{{item.estado}}</span></td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><button class="cf-suite-link" (click)="editar(item)">View</button></td></tr>
