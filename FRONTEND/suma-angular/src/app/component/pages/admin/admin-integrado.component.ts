@@ -127,7 +127,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <button type="button" [class.active]="seccion==='edit-member-details'" (click)="cambiarSeccion('edit-member-details')"><span>•</span><span>Edit Member Details</span></button>
         </div>
 
-        <button type="button" class="cf-nav-group-head" [class.active]="['ingresos','pagos','facturas','invoice-details','create-invoice','expenses'].includes(seccion)" (click)="toggleNavGroup('payments')">
+        <button type="button" class="cf-nav-group-head" [class.active]="['ingresos','pagos','facturas','invoice-details','create-invoice','add-invoice','edit-invoice','invoices-list','expenses'].includes(seccion)" (click)="toggleNavGroup('payments')">
           <span class="admin-main-nav-icon">S/</span><span>Payments</span><i>{{navGroups.payments?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.payments">
@@ -135,7 +135,9 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSeccion('pagos')"><span>•</span><span>Payments</span></button>
           <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSeccion('facturas')"><span>•</span><span>Invoices</span></button>
           <button type="button" [class.active]="seccion==='invoice-details'" (click)="cambiarSeccion('invoice-details')"><span>•</span><span>Invoice Details</span></button>
-          <button type="button" [class.active]="seccion==='create-invoice'" (click)="cambiarSeccion('create-invoice')"><span>•</span><span>Create Invoice</span></button>
+          <button type="button" [class.active]="seccion==='create-invoice' || seccion==='add-invoice'" (click)="cambiarSeccion('add-invoice')"><span>•</span><span>Add Invoice</span></button>
+          <button type="button" [class.active]="seccion==='edit-invoice'" (click)="cambiarSeccion('edit-invoice')"><span>•</span><span>Edit Invoice</span></button>
+          <button type="button" [class.active]="seccion==='invoices-list'" (click)="cambiarSeccion('invoices-list')"><span>•</span><span>Invoices List</span></button>
           <button type="button" [class.active]="seccion==='expenses'" (click)="cambiarSeccion('expenses')"><span>•</span><span>Expenses</span></button>
         </div>
 
@@ -167,19 +169,22 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <button *ngFor="let x of jqueryLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSeccion(x.id)"><span>•</span><span>{{x.label}}</span></button>
         </div>
 
-        <button type="button" class="cf-nav-group-head" [class.active]="['form-inputs','checkbox-radio','file-input','validations','date-time','input-masks','input-tags'].includes(seccion)" (click)="toggleNavGroup('forms')">
+        <button type="button" class="cf-nav-group-head" [class.active]="['forms','form-inputs','checkbox-radio','file-input','validations','date-time','input-masks','input-tags'].includes(seccion)" (click)="toggleNavGroup('forms')">
           <span class="admin-main-nav-icon">☷</span><span>Forms</span><i>{{navGroups.forms?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.forms">
+          <button type="button" [class.active]="seccion==='forms'" (click)="cambiarSeccion('forms')"><span>•</span><span>Forms</span></button>
           <button *ngFor="let x of formLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSeccion(x.id)"><span>•</span><span>{{x.label}}</span></button>
         </div>
 
         <button type="button" [class.active]="seccion==='tables'" (click)="cambiarSeccion('tables')"><span class="admin-main-nav-icon">▦</span><span>Tables</span></button>
+        <button type="button" [class.active]="seccion==='data-tables'" (click)="cambiarSeccion('data-tables')"><span class="admin-main-nav-icon">▦</span><span>Data Tables</span></button>
 
-        <button type="button" class="cf-nav-group-head" [class.active]="['apex','morris'].includes(seccion)" (click)="toggleNavGroup('graphs')">
+        <button type="button" class="cf-nav-group-head" [class.active]="['graphs','apex','morris'].includes(seccion)" (click)="toggleNavGroup('graphs')">
           <span class="admin-main-nav-icon">↗</span><span>Graphs</span><i>{{navGroups.graphs?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.graphs">
+          <button type="button" [class.active]="seccion==='graphs'" (click)="cambiarSeccion('graphs')"><span>•</span><span>Graphs</span></button>
           <button type="button" [class.active]="seccion==='apex'" (click)="cambiarSeccion('apex')"><span>•</span><span>Apex Graphs</span></button>
           <button type="button" [class.active]="seccion==='morris'" (click)="cambiarSeccion('morris')"><span>•</span><span>Morris Graphs</span></button>
         </div>
@@ -191,10 +196,11 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <button type="button" [class.active]="seccion==='contact'" (click)="cambiarSeccion('contact')"><span class="admin-main-nav-icon">☎</span><span>Contact</span></button>
         <button type="button" [class.active]="seccion==='typography'" (click)="cambiarSeccion('typography')"><span class="admin-main-nav-icon">T</span><span>Typography</span></button>
 
-        <button type="button" class="cf-nav-group-head" [class.active]="['login-page','signup-page','forgot-password','reset-password-page'].includes(seccion)" (click)="toggleNavGroup('auth')">
+        <button type="button" class="cf-nav-group-head" [class.active]="['login-signup','login-page','signup-page','forgot-password','reset-password-page'].includes(seccion)" (click)="toggleNavGroup('auth')">
           <span class="admin-main-nav-icon">↪</span><span>Login/Signup</span><i>{{navGroups.auth?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.auth">
+          <button type="button" [class.active]="seccion==='login-signup'" (click)="cambiarSeccion('login-signup')"><span>•</span><span>Login/Signup</span></button>
           <button type="button" [class.active]="seccion==='login-page'" (click)="cambiarSeccion('login-page')"><span>•</span><span>Login</span></button>
           <button type="button" [class.active]="seccion==='signup-page'" (click)="cambiarSeccion('signup-page')"><span>•</span><span>Signup</span></button>
           <button type="button" [class.active]="seccion==='forgot-password'" (click)="cambiarSeccion('forgot-password')"><span>•</span><span>Forgot Password</span></button>
