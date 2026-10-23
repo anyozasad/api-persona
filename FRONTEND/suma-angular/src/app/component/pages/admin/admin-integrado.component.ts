@@ -167,6 +167,8 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <button *ngFor="let x of jqueryLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSeccion(x.id)"><span>•</span><span>{{x.label}}</span></button>
         </div>
 
+        <button type="button" [class.active]="seccion==='sports-components'" (click)="cambiarSeccion('sports-components')"><span class="admin-main-nav-icon">🏋</span><span>Sports Components</span></button>
+
         <button type="button" class="cf-nav-group-head" [class.active]="['form-inputs','checkbox-radio','file-input','validations','date-time','input-masks','input-tags'].includes(seccion)" (click)="toggleNavGroup('forms')">
           <span class="admin-main-nav-icon">☷</span><span>Forms</span><i>{{navGroups.forms?'⌄':'›'}}</i>
         </button>
