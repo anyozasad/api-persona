@@ -33,7 +33,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           type="text"
           [(ngModel)]="busquedaAdmin"
           (keydown.enter)="buscarEnPanel()"
-          placeholder="Search modules, members, payments, invoices..."
+          placeholder="Search"
           aria-label="Search dashboard">
         <button type="button" (click)="buscarEnPanel()">Buscar</button>
       </label>
@@ -2259,6 +2259,8 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         [clienteId]="clienteFichaId"
         (cerrar)="clienteFichaId=0">
       </app-admin-cliente-ficha>
+
+      <footer class="cf-global-footer">© Mallqui Gym 2026</footer>
     </main>
   </div>
   `,
