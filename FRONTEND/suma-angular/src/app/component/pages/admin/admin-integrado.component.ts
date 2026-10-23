@@ -349,22 +349,36 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <button *ngFor="let w of [1,2,3,4]" [class.active]="workoutSemana===w" (click)="workoutSemana=w">Week {{w}}</button>
           <button [class.active]="workoutSemana===0" (click)="workoutSemana=0">Summary</button>
         </section>
-        <section class="cf-live-exercise-grid">
+        <section class="cf-live-exercise-grid" *ngIf="workoutSemana===1">
+          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
+          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Plank"></div><h3>Plank</h3><p>3 Sets • 45 Sec</p><span>Completed</span></article>
+          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Burpees"></div><h3>Burpees</h3><p>5 Sets • 20 Sec</p><span>In Progress</span></article>
+        </section>
+        <section class="cf-live-exercise-grid" *ngIf="workoutSemana===2">
+          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Jump Rope"></div><h3>Jump Rope</h3><p>10 Min</p><span>Completed</span></article>
+          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>In Progress</span></article>
+          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Lunges"></div><h3>Lunges</h3><p>4 Sets • 30 Sec</p><span>Not Started</span></article>
+        </section>
+        <section class="cf-live-exercise-grid" *ngIf="workoutSemana===3">
+          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
+          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Lunges"></div><h3>Lunges</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
+          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Push Ups"></div><h3>Push Ups</h3><p>3 Sets • 40 Sec</p><span>In Progress</span></article>
+        </section>
+        <section class="cf-live-exercise-grid" *ngIf="workoutSemana===4">
+          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Rest Day"></div><h3>Rest Day</h3><p>Recovery</p><span>Not Started</span></article>
+          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Stretching"></div><h3>Mobility & Stretching</h3><p>20 Min</p><span>Pending</span></article>
+          <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Full Body Test"></div><h3>Full Body Test</h3><p>Performance Review</p><span>Pending</span></article>
+        </section>
+        <section class="cf-live-exercise-grid" *ngIf="workoutSemana===0">
           <article *ngFor="let r of rutinas.slice(0,3); let i=index">
             <div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Exercise"></div>
-            <h3>{{r.nombre_rutina || (i===0?'Squats':(i===1?'Lunges':'Push Ups'))}}</h3>
-            <p>{{r.objetivo || '4 Sets • 30 Sec'}}</p>
-            <span>{{r.estado || (i===2?'In Progress':'Completed')}}</span>
+            <h3>{{r.nombre_rutina || 'Mallqui Workout'}}</h3><p>{{r.objetivo || 'Personalized routine'}}</p><span>{{r.estado || 'Active'}}</span>
           </article>
-          <ng-container *ngIf="!rutinas.length">
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Lunges"></div><h3>Lunges</h3><p>4 Sets • 30 Sec</p><span>Completed</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Push Ups"></div><h3>Push Ups</h3><p>3 Sets • 40 Sec</p><span>In Progress</span></article>
-          </ng-container>
+          <article *ngIf="!rutinas.length"><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Workout"></div><h3>Weekly Workout</h3><p>Overall weekly progress overview</p><span>Summary</span></article>
         </section>
         <section class="cf-live-week-summary">
           <h2>{{workoutSemana===0?'Summary':('Week '+workoutSemana)}}</h2>
-          <p>{{workoutSemana===4?'Recovery & stretching focus':'6 workouts completed • 1h 20m active'}}</p>
+          <p>{{workoutSemana===1?'6 workouts completed • 1h 20m active':(workoutSemana===2?'7 workouts completed • 1h 30m active':(workoutSemana===3?'4 workouts completed • 55m active':(workoutSemana===4?'Recovery & stretching focus':'Overall weekly progress overview')))}}</p>
         </section>
       </section>
 
@@ -401,6 +415,18 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             </div>
           </article>
         </section>
+
+        <section class="cf-live-weekly-diet">
+          <header><div><h2>My Weekly Diet Plan</h2><p>Nutrition schedule for the week</p></div><span>7 Days</span></header>
+          <div class="cf-weekly-diet-grid">
+            <article><img src="assets/showcase/class-showcase.svg" alt="Greek Green Salad"><h3>Greek Green Salad</h3><ul><li>Calories <b>330 Kcal</b></li><li>Protein <b>60 g</b></li><li>Fat <b>10 g</b></li></ul></article>
+            <article><img src="assets/showcase/class-showcase.svg" alt="Avocado Toast"><h3>Avocado Toast</h3><ul><li>Calories <b>280 Kcal</b></li><li>Protein <b>80 g</b></li><li>Fat <b>30 g</b></li></ul></article>
+            <article><img src="assets/showcase/class-showcase.svg" alt="Beef Stack"><h3>Beef Stack</h3><ul><li>Calories <b>480 Kcal</b></li><li>Protein <b>90 g</b></li><li>Fat <b>20 g</b></li></ul></article>
+            <article><img src="assets/showcase/class-showcase.svg" alt="Greek Green Salad"><h3>Greek Green Salad</h3><ul><li>Calories <b>330 Kcal</b></li><li>Protein <b>60 g</b></li><li>Fat <b>10 g</b></li></ul></article>
+            <article><img src="assets/showcase/class-showcase.svg" alt="Avocado Toast"><h3>Avocado Toast</h3><ul><li>Calories <b>280 Kcal</b></li><li>Protein <b>80 g</b></li><li>Fat <b>30 g</b></li></ul></article>
+            <article><img src="assets/showcase/class-showcase.svg" alt="Protein Bowl"><h3>Protein Bowl</h3><ul><li>Calories <b>420 Kcal</b></li><li>Protein <b>75 g</b></li><li>Fat <b>18 g</b></li></ul></article>
+          </div>
+        </section>
       </section>
 
       <section class="cf-live-page" *ngIf="seccion==='asistencias'">
@@ -418,11 +444,11 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               <button (click)="registrarAccesoPorCodigo()" [disabled]="procesandoAccesoCodigo || !asistenciaCodigo.trim()">Check-In</button>
             </div>
           </header>
-          <div class="table-wrap"><table class="management-table"><thead><tr><th>Member</th><th>ID</th><th>Date</th><th>Check-In</th><th>Check-Out</th><th>Trainer</th><th>Plan</th><th>Method</th><th>Status</th></tr></thead><tbody>
+          <div class="table-wrap"><table class="management-table"><thead><tr><th>Member</th><th>ID</th><th>Date</th><th>Check-In</th><th>Check-Out</th><th>Duration</th><th>Trainer</th><th>Plan</th><th>Method</th><th>Status</th></tr></thead><tbody>
             <tr *ngFor="let a of asistencias.slice(0,12)">
-              <td><b>{{nombreCliente(a.cliente)}}</b></td><td>#M{{a.id_asistencia || a.id || '-'}}</td><td>{{fecha(a.fecha_hora_entrada)}}</td><td>{{fecha(a.fecha_hora_entrada)}}</td><td>{{a.fecha_hora_salida ? fecha(a.fecha_hora_salida) : '-'}}</td><td>{{entrenadores[0] ? nombreEntrenador(entrenadores[0]) : 'Mallqui Trainer'}}</td><td>Mallqui Gym</td><td>Manual</td><td>{{a.estado || 'Completed'}}</td>
+              <td><b>{{nombreCliente(a.cliente)}}</b></td><td>#M{{a.id_asistencia || a.id || '-'}}</td><td>{{fecha(a.fecha_hora_entrada)}}</td><td>{{fecha(a.fecha_hora_entrada)}}</td><td>{{a.fecha_hora_salida ? fecha(a.fecha_hora_salida) : '-'}}</td><td>{{duracionAsistencia(a)}}</td><td>{{entrenadores[0] ? nombreEntrenador(entrenadores[0]) : 'Mallqui Trainer'}}</td><td>Mallqui Gym</td><td>Manual</td><td>{{a.estado || 'Completed'}}</td>
             </tr>
-            <tr *ngIf="!asistencias.length"><td colspan="9">No attendance records yet.</td></tr>
+            <tr *ngIf="!asistencias.length"><td colspan="10">No attendance records yet.</td></tr>
           </tbody></table></div>
         </section>
       </section>
@@ -457,13 +483,13 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <h2>{{p.nombre || (i===0?'Basic':(i===1?'Premium':'Enterprise'))}}</h2>
             <h3>S/ {{p.precio || 0}} <small>Per {{p.duracion_meses || 1}} Month</small></h3>
             <b>{{i===0?'30':(i===1?'70':'150')}} Credits</b>
-            <ul><li>✓ Gym access</li><li>✓ Workout sessions</li><li>✓ Member support</li><li [class.disabled]="i===0">✓ Trainer</li><li [class.disabled]="i<2">✓ Analytics Dashboard</li></ul>
+            <ul><li>✓ {{i===0?'2':(i===1?'5':'10')}} Yoga Sessions</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} Hour Gym</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} Hour Dance</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} Hour Workout</li><li [class.disabled]="i===0">{{i===0?'No Trainer':(i===1?'Junior Trainer':'Dedicated Trainer')}}</li><li [class.disabled]="i<2">{{i<2?'No Analytics':'Analytics Dashboard'}}</li></ul>
             <button>{{i===0?'Current Package':'Select Plan'}}</button>
           </article>
           <ng-container *ngIf="!planesMembresia.length">
-            <article><h2>Basic</h2><h3>S/ 60 <small>Per Month</small></h3><b>30 Credits</b><ul><li>✓ Gym access</li><li>✓ Workout sessions</li><li>✓ Member support</li><li class="disabled">No Trainer</li><li class="disabled">No Analytics</li></ul><button>Current Package</button></article>
-            <article class="featured"><h2>Premium</h2><h3>S/ 90 <small>Per Month</small></h3><b>70 Credits</b><ul><li>✓ Gym access</li><li>✓ Workout sessions</li><li>✓ Junior Trainer</li><li>✓ Member support</li><li class="disabled">No Analytics</li></ul><button>Select Plan</button></article>
-            <article><h2>Enterprise</h2><h3>S/ 120 <small>Per Month</small></h3><b>150 Credits</b><ul><li>✓ Gym access</li><li>✓ Workout sessions</li><li>✓ Dedicated Trainer</li><li>✓ Member support</li><li>✓ Analytics Dashboard</li></ul><button>Select Plan</button></article>
+            <article><h2>Basic</h2><h3>S/ 60 <small>Per Month</small></h3><b>30 Credits</b><ul><li>✓ 2 Yoga Sessions</li><li>✓ 1 Hour Gym</li><li>✓ 1 Hour Dance</li><li>✓ 1 Hour Workout</li><li class="disabled">No Trainer</li><li class="disabled">No Analytics</li></ul><button>Current Package</button></article>
+            <article class="featured"><h2>Premium</h2><h3>S/ 90 <small>Per Month</small></h3><b>70 Credits</b><ul><li>✓ 5 Yoga Sessions</li><li>✓ 2 Hour Gym</li><li>✓ 2 Hour Dance</li><li>✓ 2 Hour Workout</li><li>✓ Junior Trainer</li><li class="disabled">No Analytics</li></ul><button>Select Plan</button></article>
+            <article><h2>Enterprise</h2><h3>S/ 120 <small>Per Month</small></h3><b>150 Credits</b><ul><li>✓ 10 Yoga Sessions</li><li>✓ 5 Hour Gym</li><li>✓ 5 Hour Dance</li><li>✓ 5 Hour Workout</li><li>✓ Dedicated Trainer</li><li>✓ Analytics Dashboard</li></ul><button>Select Plan</button></article>
           </ng-container>
         </section>
       </section>
@@ -4213,6 +4239,16 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   nombreEntrenador(e:any): string { return e ? `${e.nombres ?? ''} ${e.apellidos ?? ''}`.trim() : '-'; }
   clientePago(p:any): string { return this.nombreCliente(p?.cliente_membresia?.cliente ?? p?.clienteMembresia?.cliente); }
   planPago(p:any): string { return p?.cliente_membresia?.membresia?.nombre ?? p?.clienteMembresia?.membresia?.nombre ?? '-'; }
+  duracionAsistencia(a:any):string{
+    if(!a?.fecha_hora_entrada || !a?.fecha_hora_salida) return '-';
+    const ini=new Date(a.fecha_hora_entrada).getTime();
+    const fin=new Date(a.fecha_hora_salida).getTime();
+    if(!Number.isFinite(ini)||!Number.isFinite(fin)||fin<ini) return '-';
+    const mins=Math.round((fin-ini)/60000);
+    const h=Math.floor(mins/60), m=mins%60;
+    return h>0 ? h+'h '+m+'m' : m+'m';
+  }
+
   fecha(v:any): string { if(!v) return '-'; const d=new Date(v); return isNaN(d.getTime())?String(v):d.toLocaleString('es-PE'); }
 
   alturaIngreso(valor:any): number {
