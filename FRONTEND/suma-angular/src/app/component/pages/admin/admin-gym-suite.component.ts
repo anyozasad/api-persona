@@ -61,16 +61,6 @@ interface GymModuleConfig {
           </section>
         </section>
 
-        <section class="cf-suite-equipment-grid" *ngSwitchCase="'equipos'">
-          <article *ngFor="let item of (records.length ? records : equipmentFallback)">
-            <div class="cf-suite-equipment-art">
-              <img *ngIf="item.imagen_url" [src]="item.imagen_url" [alt]="item.titulo">
-              <span *ngIf="!item.imagen_url">🏋</span>
-            </div>
-            <div><h3>{{item.titulo}}</h3><b>{{item.count || item.monto || 1}}</b><p>{{item.subtitulo || 'Gym equipment'}}</p></div>
-          </article>
-        </section>
-
         <section class="cf-suite-complete" *ngSwitchCase="'eventos'">
           <header class="cf-suite-page-head"><div><h1>Gym Events</h1><p>Upcoming fitness events, workshops and member activities</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Add Event</button></header>
           <div class="cf-suite-kpis">
@@ -102,13 +92,6 @@ interface GymModuleConfig {
           <div class="cf-suite-kpis compact"><article><small>Albums</small><b>8</b><span>Organized collections</span></article><article><small>Photos</small><b>248</b><span>Published media</span></article><article><small>This Month</small><b>36</b><span>New uploads</span></article><article><small>Storage</small><b>68%</b><span>Media capacity</span></article></div>
         </section>
 
-        <section class="cf-suite-gallery" *ngSwitchCase="'galeria'">
-          <article *ngFor="let item of (records.length ? records : galleryFallback)">
-            <img [src]="item.imagen_url || 'assets/showcase/class-showcase.svg'" [alt]="item.titulo">
-            <div><b>＋ {{item.titulo}}</b><span>{{item.count || 52}}</span></div>
-          </article>
-        </section>
-
         <section class="cf-suite-complete" *ngSwitchCase="'noticias'">
           <header class="cf-suite-page-head"><div><h1>News & Updates</h1><p>Latest gym news, announcements and fitness articles</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Add News</button></header>
           <section class="cf-news-featured"><img src="assets/showcase/hero-showcase.svg" alt="Featured news"><div><span>FEATURED UPDATE</span><h2>New Training Programs Available</h2><p>Explore new strength, conditioning and member programs at Mallqui Gym.</p><button>Read More</button></div></section>
@@ -116,13 +99,6 @@ interface GymModuleConfig {
             <article *ngFor="let item of (records.length ? records : newsFallback)"><img [src]="item.imagen_url || 'assets/showcase/hero-showcase.svg'" [alt]="item.titulo"><div><h3>{{item.titulo}}</h3><small>Posted on - {{item.fecha || '30/06/2026'}}</small><p>{{item.subtitulo || item.detalle || 'Latest news and updates from Mallqui Gym.'}}</p><div class="cf-news-actions"><button type="button">Read More</button><button type="button" (click)="editar(item)">Edit</button></div></div></article>
           </section>
           <section class="cf-suite-card"><header><div><h2>News Categories</h2><p>Content distribution</p></div></header><div class="cf-news-categories"><span><b>12</b>Training</span><span><b>8</b>Nutrition</span><span><b>6</b>Events</span><span><b>4</b>Announcements</span></div></section>
-        </section>
-
-        <section class="cf-suite-news" *ngSwitchCase="'noticias'">
-          <article *ngFor="let item of (records.length ? records : newsFallback)">
-            <img [src]="item.imagen_url || 'assets/showcase/hero-showcase.svg'" [alt]="item.titulo">
-            <div><h3>{{item.titulo}}</h3><small>Posted on - {{item.fecha || '30/06/2026'}}</small><p>{{item.subtitulo || item.detalle || 'Latest news and updates from Mallqui Gym.'}}</p><button type="button">Read More</button></div>
-          </article>
         </section>
 
         <section class="cf-suite-complete" *ngSwitchCase="'salarios'">
