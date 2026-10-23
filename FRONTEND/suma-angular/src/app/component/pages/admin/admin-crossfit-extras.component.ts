@@ -556,6 +556,31 @@ interface ExtraConfig {
     @media(max-width:1100px){.cfx-hero{grid-template-columns:1fr 300px}.cfx-metrics{grid-template-columns:1fr 1fr}.cfx-grid-4{grid-template-columns:1fr 1fr}.cfx-grid-3{grid-template-columns:1fr 1fr}.cfx-icon-grid{grid-template-columns:repeat(5,1fr)}}
     @media(max-width:800px){.cfx-hero{grid-template-columns:1fr}.cfx-hero>aside{display:none}.cfx-grid-2,.cfx-grid-3,.cfx-grid-4{grid-template-columns:1fr}.cfx-icon-grid{grid-template-columns:repeat(4,1fr)}}
     @media(max-width:700px){.cfx-page{margin-left:-12px;margin-right:-12px}.cfx-hero,.cfx-grid{margin-left:12px;margin-right:12px}.cfx-crumb{padding:0 14px}.cfx-crumb em{display:none}.cfx-metrics{grid-template-columns:1fr 1fr}.cfx-icon-grid{grid-template-columns:repeat(3,1fr)}}
+
+    /* TEMPLATE569574_COMPONENT_LOCK */
+    :host{display:block!important;background:#f6f6fb!important}
+    .cfx-page{margin:0!important;padding:0!important;background:#f6f6fb!important;color:#2d2c3c!important}
+    .cfx-hero{display:none!important}
+    .cfx-crumb{height:35px!important;min-height:35px!important;padding:0 10px!important;border:0!important;border-radius:0!important;background:linear-gradient(90deg,#574fd0,#5f57d9)!important;box-shadow:none!important}
+    .cfx-crumb small,.cfx-crumb strong,.cfx-crumb b,.cfx-crumb span{color:#fff!important}
+    .cfx-crumb small,.cfx-crumb strong{font-size:7.5px!important}.cfx-crumb span,.cfx-crumb b{font-size:8.5px!important}
+    .cfx-crumb em{min-height:19px!important;padding:0 6px!important;border-radius:4px!important;font-size:6.8px!important}
+    .cfx-grid{gap:9px!important;margin:9px!important}
+    .cfx-card{padding:10px!important;border:1px solid #ecebf3!important;border-radius:5px!important;background:#fff!important;box-shadow:0 1px 5px rgba(61,57,102,.025)!important}
+    .cfx-card>header{margin:0 0 9px!important;padding:0!important;border:0!important;background:transparent!important}
+    .cfx-card h1{font-size:15px!important}.cfx-card h2{font-size:10px!important}.cfx-card h3{font-size:9px!important}
+    .cfx-card p{font-size:8px!important;color:#9698a6!important}
+    .cfx-table-wrap{border:1px solid #ecebf3!important;border-radius:5px!important;box-shadow:none!important}
+    .cfx-table-wrap th{padding:6px 8px!important;background:#fafafe!important;color:#777a89!important;font-size:7.5px!important}
+    .cfx-table-wrap td{padding:7px 8px!important;background:#fff!important;color:#545664!important;font-size:8px!important}
+    .cfx-form input,.cfx-form select,.cfx-form textarea,.cf-member-form-grid input,.cf-member-form-grid select,.cf-member-form-grid textarea,.cfx-toolbar input,.cfx-toolbar select{border:1px solid #dedee8!important;border-radius:4px!important;background:#fff!important;box-shadow:none!important;font-size:8px!important}
+    .cfx-form input,.cfx-form select,.cf-member-form-grid input,.cf-member-form-grid select{height:31px!important}
+    .cfx-card button{min-height:27px!important;padding:0 8px!important;border:1px solid #e0dff0!important;border-radius:4px!important;background:#fff!important;color:#656777!important;font-size:8px!important;box-shadow:none!important}
+    .cfx-card button.primary{border-color:#5f57d9!important;background:#5f57d9!important;color:#fff!important}
+    .cfx-modal{border:1px solid #ecebf3!important;border-radius:7px!important;box-shadow:0 18px 50px rgba(42,40,83,.16)!important}
+    .cf-member-profile-card,.cf-invoice-paper,.cf-payslip-paper{border:1px solid #ecebf3!important;border-radius:5px!important;background:#fff!important;box-shadow:0 1px 5px rgba(61,57,102,.025)!important}
+    @media(max-width:700px){.cfx-page{margin:0!important}.cfx-grid{margin:8px!important}}
+
   `]
 })
 export class AdminCrossfitExtrasComponent implements OnChanges {
