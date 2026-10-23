@@ -149,13 +149,21 @@ interface ExtraConfig {
         </article>
       </section>
 
-      <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'invoices-list'">
+      <section class="cfx-grid cfx-grid-1 cf-template-table-page" *ngSwitchCase="'invoices-list'">
         <article class="cfx-card">
-          <header><div><span>INVOICES LIST</span><h2>Lista de facturas</h2></div><button (click)="loadInvoices()">↻ Actualizar</button></header>
-          <div class="cfx-table-wrap"><table><thead><tr><th>ID</th><th>Cliente / comprobante</th><th>Concepto</th><th>Fecha</th><th>Total</th><th>Estado</th></tr></thead><tbody>
-            <tr *ngFor="let x of invoices"><td>#{{x.id}}</td><td><b>{{x.titulo}}</b></td><td>{{x.subtitulo||'—'}}</td><td>{{x.fecha||'—'}}</td><td>S/ {{x.monto||0}}</td><td><span class="cfx-badge">{{x.estado}}</span></td></tr>
-            <tr *ngIf="!invoices.length"><td colspan="6">No hay facturas registradas.</td></tr>
+          <header><div><span>INVOICES</span><h2>Invoices List</h2><p>All generated member invoices</p></div><button class="primary" (click)="loadInvoices()">Refresh</button></header>
+          <div class="cfx-toolbar cf-datatable-toolbar">
+            <label>Show <select><option>10</option><option>25</option><option>50</option></select> entries</label>
+            <input [(ngModel)]="search" placeholder="Search invoices...">
+          </div>
+          <div class="cfx-table-wrap"><table><thead><tr><th>Invoice No.</th><th>Gym Member</th><th>Created Date</th><th>Due Date</th><th>Status</th><th>Amount</th><th>Actions</th></tr></thead><tbody>
+            <tr *ngFor="let x of invoices">
+              <td>#INV-{{x.id}}</td><td><b>{{x.titulo}}</b></td><td>{{x.fecha||'—'}}</td><td>{{x.datos?.dueDate || x.fecha || '—'}}</td><td><span class="cfx-badge">{{x.estado}}</span></td><td>S/ {{x.monto||0 | number:'1.2-2'}}</td>
+              <td><div class="cf-member-actions"><button title="View" (click)="selectedInvoiceId=x.id;selectInvoice(x.id)">⌕</button><button title="Edit" (click)="selectedInvoiceId=x.id;selectInvoice(x.id)">✎</button></div></td>
+            </tr>
+            <tr *ngIf="!invoices.length"><td colspan="7">No invoices registered.</td></tr>
           </tbody></table></div>
+          <footer class="cf-datatable-footer"><span>Showing {{invoices.length ? 1 : 0}} to {{invoices.length}} of {{invoices.length}} entries</span><div><button disabled>Previous</button><button class="primary">1</button><button disabled>Next</button></div></footer>
         </article>
       </section>
 
@@ -184,13 +192,17 @@ interface ExtraConfig {
         </article>
       </section>
 
-      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'edit-invoice'">
-        <article class="cfx-card"><header><div><span>EDIT INVOICE</span><h2>Editar factura</h2></div></header><div class="cfx-form">
-          <label>Seleccionar factura<select [(ngModel)]="selectedInvoiceId" (ngModelChange)="selectInvoice($event)"><option [ngValue]="0">Seleccionar</option><option *ngFor="let x of invoices" [ngValue]="x.id">#{{x.id}} · {{x.titulo}}</option></select></label>
-          <label>Cliente / comprobante<input [(ngModel)]="invoiceForm.titulo"></label><label>Concepto<input [(ngModel)]="invoiceForm.subtitulo"></label><label>Fecha<input type="date" [(ngModel)]="invoiceForm.fecha"></label><label>Total<input type="number" min="0" step="0.01" [(ngModel)]="invoiceForm.monto"></label><label>Estado<select [(ngModel)]="invoiceForm.estado"><option>Emitida</option><option>Pagada</option><option>Pendiente</option><option>Anulada</option></select></label>
-          <button class="primary" (click)="updateInvoice()" [disabled]="!selectedInvoiceId||savingInvoice">Guardar cambios</button><small *ngIf="invoiceMessage">{{invoiceMessage}}</small>
-        </div></article>
-        <article class="cfx-card"><h2>Facturas recientes</h2><div class="cfx-list"><div *ngFor="let x of invoices.slice(0,5)"><span>▤</span><div><b>{{x.titulo}}</b><small>{{x.fecha||'Sin fecha'}}</small></div><em>{{x.estado}}</em></div></div></article>
+      <section class="cfx-grid cfx-grid-1 cf-live-invoice-create" *ngSwitchCase="'edit-invoice'">
+        <article class="cfx-card">
+          <header><div><span>INVOICE</span><h2>Edit Invoice</h2><p>Update an existing member invoice</p></div></header>
+          <div class="cf-invoice-select"><label>Select Invoice<select [(ngModel)]="selectedInvoiceId" (ngModelChange)="selectInvoice($event)"><option [ngValue]="0">Select invoice</option><option *ngFor="let x of invoices" [ngValue]="x.id">#INV-{{x.id}} · {{x.titulo}}</option></select></label></div>
+          <section class="cf-invoice-form-section"><h2>Client Details</h2><div class="cf-member-form-grid"><label>Full Name<input [(ngModel)]="invoiceForm.titulo" placeholder="Member name"></label><label>Email Address<input [(ngModel)]="invoiceUi.email" type="email"></label><label>Phone<input [(ngModel)]="invoiceUi.phone"></label><label>Billing Address<input [(ngModel)]="invoiceUi.address"></label></div></section>
+          <section class="cf-invoice-form-section"><h2>Invoice Details</h2><div class="cf-member-form-grid"><label>Invoice Number<input [(ngModel)]="invoiceUi.invoiceNumber"></label><label>Currency<select [(ngModel)]="invoiceUi.currency"><option>PEN</option><option>USD</option></select></label><label>Issue Date<input [(ngModel)]="invoiceForm.fecha" type="date"></label><label>Due Date<input [(ngModel)]="invoiceUi.dueDate" type="date"></label><label>Status<select [(ngModel)]="invoiceForm.estado"><option>Issued</option><option>Paid</option><option>Pending</option><option>Overdue</option><option>Cancelled</option></select></label><label>Tax ID / RUC<input [(ngModel)]="invoiceUi.taxId"></label></div></section>
+          <section class="cf-invoice-items"><div class="cfx-table-wrap"><table><thead><tr><th>Service</th><th>Description</th><th>Qty</th><th>Unit Price</th><th>Tax (%)</th><th>Total</th></tr></thead><tbody><tr *ngFor="let item of invoiceItems"><td><input [(ngModel)]="item.service"></td><td><input [(ngModel)]="item.description"></td><td><input type="number" [(ngModel)]="item.qty"></td><td><input type="number" [(ngModel)]="item.unitPrice"></td><td><input type="number" [(ngModel)]="item.tax"></td><td>S/ {{item.qty*item.unitPrice | number:'1.2-2'}}</td></tr></tbody></table></div><button (click)="addInvoiceItem()">＋ Add Item</button></section>
+          <div class="cf-invoice-totals"><p><span>Subtotal</span><b>S/ {{invoiceSubtotal | number:'1.2-2'}}</b></p><p><span>Tax</span><b>S/ {{invoiceTax | number:'1.2-2'}}</b></p><h3><span>Total</span><b>S/ {{invoiceTotal | number:'1.2-2'}}</b></h3></div>
+          <footer class="cf-form-footer"><button>Cancel</button><button class="primary" (click)="updateInvoice()" [disabled]="!selectedInvoiceId||savingInvoice">{{savingInvoice?'Saving...':'Update Invoice'}}</button></footer>
+          <small *ngIf="invoiceMessage">{{invoiceMessage}}</small>
+        </article>
       </section>
 
       <section class="cfx-grid cfx-grid-1 cf-live-expenses" *ngSwitchCase="'expenses'">
@@ -231,21 +243,26 @@ interface ExtraConfig {
         </tbody></table></div></article>
       </section>
 
-      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'data-tables'">
-        <article class="cfx-card span-2">
-          <header><div><span>DATA TABLE</span><h2>Buscar y filtrar registros</h2></div></header>
-          <div class="cfx-toolbar"><input [(ngModel)]="search" placeholder="Buscar registro..."><select [(ngModel)]="filter"><option value="">Todos</option><option>Activo</option><option>Pendiente</option></select></div>
+      <section class="cfx-grid cfx-grid-1 cf-template-table-page" *ngSwitchCase="'data-tables'">
+        <article class="cfx-card">
+          <header><div><span>DATA TABLES</span><h2>Data Tables</h2><p>Search, sort and filter records</p></div></header>
+          <div class="cfx-toolbar cf-datatable-toolbar">
+            <label>Show <select><option>10</option><option>25</option><option>50</option></select> entries</label>
+            <input [(ngModel)]="search" placeholder="Search records...">
+          </div>
           <div class="cfx-table-wrap"><table>
-            <thead><tr><th>ID</th><th>Nombre</th><th>Módulo</th><th>Estado</th><th>Fecha</th></tr></thead>
-            <tbody><tr *ngFor="let row of filteredRows"><td>#{{row.id}}</td><td><b>{{row.name}}</b></td><td>{{row.module}}</td><td><span class="cfx-badge">{{row.status}}</span></td><td>{{row.date}}</td></tr></tbody>
+            <thead><tr><th>#</th><th>Name</th><th>Module</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody><tr *ngFor="let row of filteredRows"><td>{{row.id}}</td><td><b>{{row.name}}</b></td><td>{{row.module}}</td><td><span class="cfx-badge">{{row.status}}</span></td><td>{{row.date}}</td><td><button class="tiny">View</button></td></tr></tbody>
           </table></div>
+          <footer class="cf-datatable-footer"><span>Showing 1 to {{filteredRows.length}} of {{filteredRows.length}} entries</span><div><button disabled>Previous</button><button class="primary">1</button><button disabled>Next</button></div></footer>
         </article>
       </section>
 
-      <section class="cfx-grid cfx-grid-3" *ngSwitchCase="'graphs'">
-        <article class="cfx-card"><header><div><span>BAR CHART</span><h2>Rendimiento</h2></div></header><div class="cfx-bars"><i *ngFor="let h of bars" [style.height.%]="h"></i></div></article>
-        <article class="cfx-card"><header><div><span>LINE CHART</span><h2>Tendencia</h2></div></header><svg class="cfx-line" viewBox="0 0 300 130"><polyline points="10,105 55,75 100,90 145,42 190,64 235,28 290,55" fill="none" stroke="#5b56dd" stroke-width="4"/></svg></article>
-        <article class="cfx-card"><header><div><span>DONUT</span><h2>Distribución</h2></div></header><div class="cfx-donut"><b>78%</b></div></article>
+      <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'graphs'">
+        <article class="cfx-card"><header><div><span>GRAPHS</span><h2>Area Chart</h2></div></header><div class="cfx-area"><svg viewBox="0 0 420 170" preserveAspectRatio="none"><path d="M0 145 C60 115,80 145,130 86 S210 40,260 82 S350 30,420 58 L420 170 L0 170Z" fill="#eceaff"/><path d="M0 145 C60 115,80 145,130 86 S210 40,260 82 S350 30,420 58" fill="none" stroke="#5b56dd" stroke-width="4"/></svg></div></article>
+        <article class="cfx-card"><header><div><span>GRAPHS</span><h2>Bar Chart</h2></div></header><div class="cfx-bars"><i *ngFor="let h of bars" [style.height.%]="h"></i></div></article>
+        <article class="cfx-card"><header><div><span>GRAPHS</span><h2>Line Chart</h2></div></header><svg class="cfx-line tall" viewBox="0 0 420 180"><polyline points="5,145 55,115 105,132 155,70 205,92 255,44 305,65 355,24 415,52" fill="none" stroke="#5b56dd" stroke-width="4"/></svg></article>
+        <article class="cfx-card"><header><div><span>GRAPHS</span><h2>Donut Chart</h2></div></header><div class="cfx-donut"><b>78%</b></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'apex'">
@@ -306,9 +323,9 @@ interface ExtraConfig {
         <article class="cfx-card centered"><button class="cfx-tooltip danger">Tooltip Left<span>Tooltip on left</span></button></article>
       </section>
 
-      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'forms'">
-        <article class="cfx-card"><header><div><span>FORM</span><h2>Formulario básico</h2></div></header><div class="cfx-form"><label>Nombre<input [(ngModel)]="form.name" placeholder="Nombre"></label><label>Correo<input [(ngModel)]="form.email" type="email" placeholder="correo@ejemplo.com"></label><label>Estado<select [(ngModel)]="form.status"><option>Activo</option><option>Pendiente</option></select></label><button class="primary" (click)="saved=true">Guardar</button><small *ngIf="saved">✓ Formulario validado.</small></div></article>
-        <article class="cfx-card"><header><div><span>FORM</span><h2>Observaciones</h2></div></header><div class="cfx-form"><label>Fecha<input type="date"></label><label>Tipo<select><option>General</option><option>Administrativo</option></select></label><label>Detalle<textarea rows="5"></textarea></label></div></article>
+      <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'forms'">
+        <article class="cfx-card"><header><div><span>FORMS</span><h2>Basic Form</h2></div></header><div class="cfx-form"><label>Full Name<input [(ngModel)]="form.name" placeholder="Enter full name"></label><label>Email Address<input [(ngModel)]="form.email" type="email" placeholder="name@example.com"></label><label>Status<select [(ngModel)]="form.status"><option>Active</option><option>Pending</option></select></label><label>Message<textarea rows="4" placeholder="Write a message..."></textarea></label><button class="primary" (click)="saved=true">Submit Form</button><small *ngIf="saved" class="success-text">✓ Form submitted successfully.</small></div></article>
+        <article class="cfx-card"><header><div><span>HORIZONTAL FORM</span><h2>Account Information</h2></div></header><div class="cfx-form"><label>Username<input value="mallqui-admin"></label><label>Phone<input placeholder="+51 999 999 999"></label><label>City<select><option>Pucallpa</option><option>Yarinacocha</option></select></label><label class="check"><input type="checkbox" checked> Receive notifications</label><div class="cfx-buttons"><button>Cancel</button><button class="primary">Save Changes</button></div></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'form-inputs'">
@@ -464,9 +481,17 @@ interface ExtraConfig {
         <article class="cfx-card"><h2>Blockquote</h2><blockquote>Train with purpose, recover with discipline, improve every week.</blockquote><small>— Mallqui Gym</small></article>
       </section>
 
-      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'login-signup'">
-        <article class="cfx-card cfx-auth"><h2>Iniciar sesión</h2><div class="cfx-form"><label>Usuario<input placeholder="Usuario"></label><label>Contraseña<input type="password" placeholder="••••••••"></label><button class="primary">Entrar</button></div></article>
-        <article class="cfx-card cfx-auth"><h2>Crear cuenta</h2><div class="cfx-form"><label>Nombre<input></label><label>Correo<input type="email"></label><label>Contraseña<input type="password"></label><button>Registrarse</button></div></article>
+      <section class="cfx-grid cfx-grid-2 cf-auth-overview" *ngSwitchCase="'login-signup'">
+        <article class="cfx-card cfx-auth">
+          <div class="cf-auth-brand"><span class="cf-auth-mark">CF</span><div><b>Mallqui Gym</b><small>Fitness Admin</small></div></div>
+          <h2>Login</h2><p>Sign in to access your fitness dashboard.</p>
+          <div class="cfx-form"><label>Email Address<input type="email" placeholder="name@example.com"></label><label>Password<input type="password" placeholder="••••••••"></label><label class="check"><input type="checkbox"> Remember me</label><button class="primary">Login</button></div>
+        </article>
+        <article class="cfx-card cfx-auth">
+          <div class="cf-auth-brand"><span class="cf-auth-mark">CF</span><div><b>Mallqui Gym</b><small>Fitness Admin</small></div></div>
+          <h2>Signup</h2><p>Create a new dashboard account.</p>
+          <div class="cfx-form"><label>Full Name<input placeholder="Full name"></label><label>Email Address<input type="email" placeholder="name@example.com"></label><label>Password<input type="password" placeholder="••••••••"></label><button class="primary">Create Account</button></div>
+        </article>
       </section>
 
       <section class="cfx-grid cfx-grid-1 cf-auth-live" *ngSwitchCase="'login-page'">
