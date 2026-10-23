@@ -234,7 +234,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
 
       <button type="button" class="cf-fitness-center-card" (click)="cambiarSegcion('contact')">
         <span>☎</span>
-        <div><small>Fitness Center</small><b>{{configuracionForm.telefono || '000000000'}}</b></div>
+        <div><small>Centro Fitness</small><b>{{configuracionForm.telefono || '000000000'}}</b></div>
       </button>
       <button type="button" class="admin-system-card" [class.is-offline]="!dashboard?.fuente?.base_datos" (click)="cambiarSegcion('configuracion')" title="Estado del sistema">
         <div class="system-live-dot"></div>
@@ -356,7 +356,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           </div>
           <div class="cf-live-workout-progress">
             <small>Esta Semana</small>
-            <b>5 of 7 días activos</b>
+            <b>5 de 7 días activos</b>
             <em>+12% ↑ <span>vs. semana anterior</span></em>
             <div><i [style.width.%]="progresoSemanal()"></i></div>
             <span>Meta: 100% de actividad semanal <strong>En camino</strong></span>
@@ -367,7 +367,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <div class="cf-live-exercise-grid">
             <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Sentadillas"></div><h3>Sentadillas</h3><p>4 Series • 30 Seg</p><span>Completado</span></article>
             <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Zancadas"></div><h3>Zancadas</h3><p>4 Series • 30 Seg</p><span>Completado</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Flexiones"></div><h3>Flexiones</h3><p>3 Series • 40 Seg</p><span>In Progreso</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Flexiones"></div><h3>Flexiones</h3><p>3 Series • 40 Seg</p><span>En progreso</span></article>
           </div>
         </section>
 
@@ -376,7 +376,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <div class="cf-live-exercise-grid">
             <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Sentadillas"></div><h3>Sentadillas</h3><p>4 Series • 30 Seg</p><span>Completado</span></article>
             <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Plancha"></div><h3>Plancha</h3><p>3 Series • 45 Seg</p><span>Completado</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Burpees"></div><h3>Burpees</h3><p>5 Series • 20 Seg</p><span>In Progreso</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Burpees"></div><h3>Burpees</h3><p>5 Series • 20 Seg</p><span>En progreso</span></article>
           </div>
         </section>
 
@@ -384,15 +384,15 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <div class="cf-live-week-summary"><h2>Semana 2</h2><p>7 entrenamientos completados • 1 h 30 min activos</p></div>
           <div class="cf-live-exercise-grid">
             <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Saltar Soga"></div><h3>Saltar Soga</h3><p>10 Min</p><span>Completado</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Sentadillas"></div><h3>Sentadillas</h3><p>4 Series • 30 Seg</p><span>In Progreso</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Zancadas"></div><h3>Zancadas</h3><p>4 Series • 30 Seg</p><span>No Iniciado</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Sentadillas"></div><h3>Sentadillas</h3><p>4 Series • 30 Seg</p><span>En progreso</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Zancadas"></div><h3>Zancadas</h3><p>4 Series • 30 Seg</p><span>No iniciado</span></article>
           </div>
         </section>
 
         <section class="cf-workout-block">
           <div class="cf-live-week-summary"><h2>Semana 3</h2><p>4 entrenamientos completados • 55 min activos</p></div>
           <div class="cf-live-exercise-grid">
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Día de Descanso"></div><h3>Día de Descanso</h3><p>Recuperación</p><span>No Iniciado</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Día de Descanso"></div><h3>Día de Descanso</h3><p>Recuperación</p><span>No iniciado</span></article>
           </div>
         </section>
 
@@ -422,7 +422,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
                 <div><span class="meal-thumb">🍎</span><b>Ensalada de Manzana</b><small>Cena</small><em>120 Calorías</em></div>
               </div>
             </div>
-            <div class="cf-diet-today-art"><img src="assets/showcase/hero-showcase.svg" alt="Diet plan illustration"></div>
+            <div class="cf-diet-today-art"><img src="assets/showcase/hero-showcase.svg" alt="Ilustración del plan de alimentación"></div>
           </article>
 
           <article class="cf-live-card cf-diet-progress-card">
@@ -475,7 +475,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <div class="cf-diet-calorie-chart">
             <div class="grid"><i></i><i></i><i></i><i></i></div>
             <svg viewBox="0 0 700 180" preserveAspectRatio="none"><path d="M0 145 C70 132 115 118 170 125 S275 92 335 104 S440 68 510 79 S615 52 700 62" fill="none" stroke="#5f57d9" stroke-width="3"/><path d="M0 156 C80 145 125 139 180 142 S285 120 345 127 S450 95 515 104 S620 82 700 89" fill="none" stroke="#c2bff0" stroke-width="2"/></svg>
-            <div class="x"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+            <div class="x"><span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span></div>
           </div>
         </section>
       </section>
@@ -723,7 +723,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               <i>↗</i>
             </button>
             <button type="button" (click)="cambiarSegcion('reportes')">
-              <div><small>Sueño</small><strong>7h 20m</strong><span>Good Recuperación</span></div>
+              <div><small>Sueño</small><strong>7h 20m</strong><span>Buena recuperación</span></div>
               <i>☾</i>
             </button>
           </section>
@@ -731,7 +731,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <section class="cf-ref-bottom">
             <article class="cf-ref-activity">
               <header>
-                <div><h2>Actividad Semanal</h2><p>Performance breakdown · last 7 days</p></div>
+                <div><h2>Actividad Semanal</h2><p>Resumen de rendimiento · últimos 7 días</p></div>
                 <span>6 Entrenamientos · 5h 40m</span>
               </header>
               <div class="cf-ref-chart-legend">
@@ -756,12 +756,12 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             </article>
 
             <article class="cf-ref-split">
-              <header><div><h2>Distribución de Entrenamiento</h2><p>Actividad de los últimos 7 días</p></div><span>12 Sessions</span></header>
+              <header><div><h2>Distribución de Entrenamiento</h2><p>Actividad de los últimos 7 días</p></div><span>12 sesiones</span></header>
               <div class="cf-ref-donut"><div><strong>100%</strong><small>Total</small></div></div>
               <div class="cf-ref-split-list">
                 <p><span><i class="purple"></i>Cardio</span><b>48%</b></p>
                 <p><span><i class="mint"></i>Fuerza</span><b>34%</b></p>
-                <p><span><i class="soft"></i>Mobility</span><b>26%</b></p>
+                <p><span><i class="soft"></i>Movilidad</span><b>26%</b></p>
               </div>
             </article>
           </section>
@@ -770,49 +770,49 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <article class="cf-ref-history">
               <header><div><h2>Historial de Entrenamientos</h2><p>Actividad reciente de entrenamiento</p></div></header>
               <div class="cf-ref-history-list">
-                <div><span>↗</span><div><b>Morning Run</b><small>Outdoor • Moderate pace</small></div><em>35 min<br>320 kcal</em><strong>Hoy</strong></div>
-                <div><span>🏋</span><div><b>Entrenamiento de Fuerza</b><small>Upper body • Push focus</small></div><em>50 min<br>410 kcal</em><strong>Yesterday</strong></div>
-                <div><span>◉</span><div><b>Sesión de Ciclismo</b><small>Indoor bike • Resistance 6</small></div><em>40 min<br>290 kcal</em><strong>2d ago</strong></div>
-                <div><span>⚡</span><div><b>Entrenamiento HIIT</b><small>High intensity interval</small></div><em>25 min<br>260 kcal</em><strong>3d ago</strong></div>
+                <div><span>↗</span><div><b>Carrera matutina</b><small>Aire libre • Ritmo moderado</small></div><em>35 min<br>320 kcal</em><strong>Hoy</strong></div>
+                <div><span>🏋</span><div><b>Entrenamiento de Fuerza</b><small>Tren superior • Enfoque de empuje</small></div><em>50 min<br>410 kcal</em><strong>Ayer</strong></div>
+                <div><span>◉</span><div><b>Sesión de Ciclismo</b><small>Bicicleta indoor • Resistencia 6</small></div><em>40 min<br>290 kcal</em><strong>Hace 2 días</strong></div>
+                <div><span>⚡</span><div><b>Entrenamiento HIIT</b><small>Intervalos de alta intensidad</small></div><em>25 min<br>260 kcal</em><strong>Hace 3 días</strong></div>
               </div>
             </article>
 
             <article class="cf-ref-strength">
-              <header><div><h2>Fuerza Progreso</h2><p>Press de banca • tendencia de 12 semanas</p></div><b>+18% Improvement</b></header>
+              <header><div><h2>Fuerza Progreso</h2><p>Press de banca • tendencia de 12 semanas</p></div><b>+18% de mejora</b></header>
               <div class="cf-ref-strength-chart">
                 <svg viewBox="0 0 560 180" preserveAspectRatio="none"><path d="M10 150 C80 145 110 128 160 130 S245 112 300 104 S390 80 445 70 S510 48 550 40" fill="none" stroke="#5b55d9" stroke-width="4"/></svg>
               </div>
-              <footer><span>Inicio <b>60 kg</b></span><span>Latest <b>85 kg</b></span><span>Best Set <b>90 kg</b></span><span>Target <b>100 kg</b></span></footer>
+              <footer><span>Inicio <b>60 kg</b></span><span>Último <b>85 kg</b></span><span>Mejor serie <b>90 kg</b></span><span>Meta <b>100 kg</b></span></footer>
             </article>
           </section>
 
           <section class="cf-ref-tertiary">
             <article>
-              <header><div><h2>Sueño Recuperación</h2><p>Last 7 days • Quality tracking</p></div><b>7.6h avg • Good</b></header>
+              <header><div><h2>Sueño Recuperación</h2><p>Últimos 7 días • Seguimiento de calidad</p></div><b>7.6 h prom. • Bueno</b></header>
               <div class="cf-ref-sleep-bars"><i style="height:66%"></i><i style="height:78%"></i><i style="height:72%"></i><i style="height:88%"></i><i style="height:81%"></i><i style="height:92%"></i><i style="height:85%"></i></div>
-              <footer><span>Best Night <b>8.4h</b></span><span>Consistency <b>+12%</b></span><span>Deep Sueño <b>2.1h</b></span></footer>
+              <footer><span>Mejor noche <b>8.4h</b></span><span>Constancia <b>+12%</b></span><span>Sueño profundo <b>2.1h</b></span></footer>
             </article>
             <article>
-              <header><div><h2>Frecuencia de Entrenamiento</h2><p>Target 60/90</p></div></header>
-              <div class="cf-ref-frequency"><div><strong>{{progresoSemanal()}}%</strong><small>Weekly</small></div></div>
+              <header><div><h2>Frecuencia de Entrenamiento</h2><p>Meta 60/90</p></div></header>
+              <div class="cf-ref-frequency"><div><strong>{{progresoSemanal()}}%</strong><small>Semanal</small></div></div>
             </article>
           </section>
 
           <section class="cf-ref-insights">
             <article class="cf-ref-smart">
-              <header><div><h2>Smart Insights</h2><p>Resumen semanal de rendimiento</p></div><b>Live Analysis</b></header>
+              <header><div><h2>Análisis Inteligente</h2><p>Resumen semanal de rendimiento</p></div><b>Análisis en Vivo</b></header>
               <div class="cf-ref-insight-list">
-                <div><span>☾</span><div><b>Sueño Improvement</b><small>Dormiste 12% mejor que la semana anterior y mejoró tu recuperación.</small></div><em>+12%</em></div>
+                <div><span>☾</span><div><b>Mejora del Sueño</b><small>Dormiste 12% mejor que la semana anterior y mejoró tu recuperación.</small></div><em>+12%</em></div>
                 <div><span>↘</span><div><b>Baja de Actividad el Fin de Semana</b><small>Tu actividad disminuyó durante el fin de semana frente a los días laborables.</small></div><em>-18%</em></div>
-                <div><span>◎</span><div><b>Progreso de Meta</b><small>Has completado {{progresoSemanal()}}% de tu meta semanal. Keep the momentum.</small></div><em>{{progresoSemanal()}}%</em></div>
-                <div><span>🔥</span><div><b>Calorie Burn Trend</b><small>Tu quema promedio de calorías aumentó en las sesiones de fuerza esta semana.</small></div><em>+9%</em></div>
+                <div><span>◎</span><div><b>Progreso de Meta</b><small>Has completado {{progresoSemanal()}}% de tu meta semanal. Mantén el ritmo.</small></div><em>{{progresoSemanal()}}%</em></div>
+                <div><span>🔥</span><div><b>Tendencia de Quema de Calorías</b><small>Tu quema promedio de calorías aumentó en las sesiones de fuerza esta semana.</small></div><em>+9%</em></div>
               </div>
             </article>
             <article class="cf-ref-weight">
-              <header><div><h2>Weight Management</h2><p>Resumen del progreso • Last 12 months</p></div><b>-35 lbs</b></header>
+              <header><div><h2>Control de Peso</h2><p>Resumen del progreso • Últimos 12 meses</p></div><b>-35 lbs</b></header>
               <div class="cf-ref-weight-track"><i style="width:78%"></i></div>
-              <div class="cf-ref-weight-labels"><span>Inicio <b>190 lbs</b></span><span>Steady Grasa Loss</span><span>Actual <b>155 lbs</b></span></div>
-              <small>Target: 160 lbs</small>
+              <div class="cf-ref-weight-labels"><span>Inicio <b>190 lbs</b></span><span>Pérdida de grasa constante</span><span>Actual <b>155 lbs</b></span></div>
+              <small>Meta: 160 lbs</small>
             </article>
           </section>
         </section>
@@ -838,7 +838,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             </div>
             <button type="button" class="clients-v3-new" (click)="nuevoCliente()">
               <span>＋</span>
-              Add Socio
+              Agregar Socio
             </button>
           </header>
 
@@ -2332,26 +2332,26 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
   titulos: Record<string,[string,string]> = {
-    dashboard:['Panel Administrador','Datos reales del gimnasio'], clientes:['Members','Member registration and management'],
-    membresias:['Membresías','Asignación, renovación y vigencia de socios'], pagos:['Payments','Membership payments and member purchases'],
+    dashboard:['Panel Administrador','Datos reales del gimnasio'], clientes:['Socios','Registro y administración de socios'],
+    membresias:['Membresías','Asignación, renovación y vigencia de socios'], pagos:['Pagos','Pagos de membresías y compras de socios'],
     planes:['Pricing Plans','Prices, duration and membership benefits'],
     gastos:['Gastos','Registro de egresos de la caja activa'],
     inventario:['Inventario','Productos, stock y control del inventario'],
     kardex:['Kardex y stock','Ajustes manuales y trazabilidad de movimientos de inventario'],
     'historial-ventas':['Historial de Ventas','Consulta de todas las ventas registradas'],
     'reporte-asistencias':['Reporte de Asistencias','Resumen y detalle de asistencias registradas'],
-    entrenador:['Entrenadors','Main trainer management'], clases:['Clases','Programación, horarios y cupos'],
-    asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['My Entrenamiento Plan','Entrenamiento routines and member tracking'],
+    entrenador:['Entrenadores','Administración del entrenador principal'], clases:['Clases','Programación, horarios y cupos'],
+    asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['Mi Plan de Entrenamiento','Rutinas de entrenamiento y seguimiento de socios'],
     reservas:['Reservas','Reservas creadas desde el portal y control de asistencia'], categorias:['Categorías','Clasificación de productos'],
     productos:['Productos','Registro, precios y control de stock'], proveedores:['Proveedores','Proveedores de productos'],
     compras:['Compras','Ingreso de productos e inventario'], ventas:['Ventas','Ventas de productos y stock'],
     caja:['Caja','Apertura, movimientos y cierre'],
-    reportes:['My Reports','Gym performance indicators'], usuarios:['Usuarios','Cuentas internas y permisos'],
+    reportes:['Mis Reportes','Indicadores de rendimiento del gimnasio'], usuarios:['Usuarios','Cuentas internas y permisos'],
     comunicacion:['Notificaciones','Avisos que reciben los clientes en su portal'], soporte:['Soporte','Consultas y solicitudes enviadas desde el portal del cliente'],
     opiniones:['Opiniones','Comentarios y calificaciones enviadas desde el portal del cliente'],
     auditoria:['Auditoría','Historial de acciones, usuarios, rutas y resultados del sistema'],
     configuracion:['Configuración','Ajustes generales y mantenimiento del sistema'],
-    nutricion:['My Diet Plan','Nutrition plans and member tracking'],
+    nutricion:['Mi Plan de Alimentación','Planes de nutrición y seguimiento de socios'],
     equipos:['Equipments','Machines, maintenance and operating status'],
     eventos:['Gym Eventos','Gym activities, campaigns and events'],
     galeria:['Gallery','Gym visual content and photos'],
@@ -2373,8 +2373,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   mostrarAnalisisAvanzado = false;
   workoutSemana = 1;
   semanaDashboardDemo = [
-    {dia:'Mon',total:5},{dia:'Tue',total:7},{dia:'Wed',total:4},{dia:'Thu',total:6},
-    {dia:'Fri',total:6},{dia:'Sat',total:9},{dia:'Sun',total:4}
+    {dia:'Lun',total:5},{dia:'Mar',total:7},{dia:'Mié',total:4},{dia:'Jue',total:6},
+    {dia:'Vie',total:6},{dia:'Sáb',total:9},{dia:'Dom',total:4}
   ];
   nutricionPreview: any[] = [];
   suiteModules = ['equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
@@ -2883,7 +2883,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   get nombreModuloActual():string{
     const nombres:any={
-      dashboard:'Dashboard',socios:'Socios',servicios:'Servicios',
+      dashboard:'Panel Principal',socios:'Socios',servicios:'Servicios',
       operacion:'Caja y ventas',inventario:'Inventario',
       atencion:'Atención al cliente',reportes:'Reportes',sistema:'Sistema','gestion-fitness':'Gestión Fitness'
     };
