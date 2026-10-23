@@ -2426,7 +2426,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ];
   nutricionPreview: any[] = [];
   suiteModules = ['equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
-  navGroups:any = {members:false,payments:false,salaries:false,ui:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
+  navGroups:any = {members:true,payments:true,salaries:true,ui:true,jquery:true,forms:true,graphs:true,auth:true,menu:true};
   uiElementLinks = [
     {id:'alerts',label:'Alerts'},{id:'avatars',label:'Avatars'},{id:'badges',label:'Badges'},
     {id:'buttons',label:'Buttons'},{id:'button-groups',label:'Button Groups'},{id:'cards-ui',label:'Cards'},
