@@ -403,55 +403,74 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </section>
 
-      <section class="cf-live-page" *ngIf="seccion==='nutricion'">
+      <section class="cf-live-page cf-diet-template-page" *ngIf="seccion==='nutricion'">
         <div class="cf-special-crumb"><span>⌂</span><small>Home</small><b>›</b><strong>My Diet Plan</strong></div>
-        <section class="cf-live-diet-top">
-          <article class="cf-live-card cf-live-diet-main">
-            <header><div><h1>Hello {{auth.usuario?.nombre_usuario || 'Administrador'}},</h1><p>Your personalized diet plan for today</p></div><b>3 Meals</b></header>
-            <div class="cf-live-dish-grid">
-              <div><img src="assets/showcase/class-showcase.svg" alt="Meal"><b>Greek Salad</b><span>210 kcal</span><small>Breakfast</small></div>
-              <div><img src="assets/showcase/class-showcase.svg" alt="Meal"><b>Lentil Chili</b><span>180 kcal</span><small>Lunch</small></div>
-              <div><img src="assets/showcase/class-showcase.svg" alt="Meal"><b>Apple Salad</b><span>120 kcal</span><small>Dinner</small></div>
+
+        <section class="cf-diet-template-top">
+          <article class="cf-live-card cf-diet-today-card">
+            <div class="cf-diet-today-copy">
+              <h1>Hello {{auth.usuario?.nombre_usuario || 'Kim'}},</h1>
+              <p>Your today's Diet plan.</p>
+              <div class="cf-diet-today-meals">
+                <div><span class="meal-thumb">🥗</span><b>Greek Salad</b><small>Breakfast</small><em>210 Calories</em></div>
+                <div><span class="meal-thumb">🥣</span><b>Lentil Chili</b><small>Lunch</small><em>180 Calories</em></div>
+                <div><span class="meal-thumb">🍎</span><b>Apple Salad</b><small>Dinner</small><em>120 Calories</em></div>
+              </div>
             </div>
+            <div class="cf-diet-today-art"><img src="assets/showcase/hero-showcase.svg" alt="Diet plan illustration"></div>
           </article>
-          <article class="cf-live-card cf-live-progress-card">
-            <h2>Progress</h2><p>Weekly goal</p><div class="cf-live-progress-ring"><b>{{progresoSemanal()}}%</b></div><small>{{progresoSemanal()}}% of your goal completed.</small>
+
+          <article class="cf-live-card cf-diet-progress-card">
+            <h2>Progress</h2>
+            <div class="cf-diet-progress-bars">
+              <div><i style="height:58%"></i><small>S</small></div>
+              <div><i style="height:76%"></i><small>M</small></div>
+              <div><i style="height:63%"></i><small>T</small></div>
+              <div><i style="height:84%"></i><small>W</small></div>
+              <div><i style="height:69%"></i><small>T</small></div>
+              <div><i style="height:88%"></i><small>F</small></div>
+              <div><i style="height:72%"></i><small>S</small></div>
+            </div>
+            <footer><span><i></i>Reached goal</span><b>{{progresoSemanal()}}%</b></footer>
           </article>
         </section>
-        <section class="cf-live-diet-bottom">
+
+        <section class="cf-diet-template-middle">
           <article class="cf-live-card">
-            <header><div><h2>Best Dietitians</h2><p>Nutrition experts</p></div></header>
-            <div class="cf-live-list">
-              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>Gilbert Sandoval</b><small>Nutrition Specialist</small></div><em>895 reviews</em></div>
-              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>Eugene Mata</b><small>Clinical Dietitian</small></div><em>832 reviews</em></div>
-              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>George Bailey</b><small>Sports Nutrition</small></div><em>683 reviews</em></div>
-              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>Amelia Bruklin</b><small>Weight Management</small></div><em>669 reviews</em></div>
-              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>Wally Turner</b><small>Fitness Nutrition</small></div><em>436 reviews</em></div>
-              <div><img src="assets/showcase/coach-showcase.svg" alt="Coach"><div><b>Ashton Cozei</b><small>Wellness Coach</small></div><em>362 reviews</em></div>
+            <header><div><h2>Best Dietitians</h2></div><span>‹ ›</span></header>
+            <div class="cf-diet-people-grid">
+              <div><img src="assets/showcase/coach-showcase.svg" alt="Dietitian"><div><b>Gilbert Sandoval</b><small>6 yrs experience</small><em>★★★★★ 895</em></div></div>
+              <div><img src="assets/showcase/coach-showcase.svg" alt="Dietitian"><div><b>Eugene Mata</b><small>8 yrs experience</small><em>★★★★★ 832</em></div></div>
             </div>
           </article>
+
           <article class="cf-live-card">
-            <header><div><h2>Best Dishes</h2><p>Recommended meals</p></div></header>
-            <div class="cf-live-meals">
-              <div><span>🥗</span><div><b>Thai Crab Bowl</b><small>Rich seafood protein meal</small></div><em>320 kcal</em></div>
-              <div><span>🥣</span><div><b>Mexican Protein Salad</b><small>Fresh & low-carb bowl</small></div><em>280 kcal</em></div>
-              <div><span>🥗</span><div><b>Greek Power Salad</b><small>Mediterranean fresh bowl</small></div><em>330 kcal</em></div>
-              <div><span>🥑</span><div><b>Avocado Toast Deluxe</b><small>Healthy breakfast option</small></div><em>290 kcal</em></div>
-              <div><span>🥧</span><div><b>Pecan Tart Slice</b><small>Sweet dessert treat</small></div><em>360 kcal</em></div>
-              <div><span>🥩</span><div><b>Grilled Beef Steak</b><small>High protein heavy meal</small></div><em>480 kcal</em></div>
+            <header><div><h2>Best Dishes</h2></div><span>‹ ›</span></header>
+            <div class="cf-diet-dish-grid">
+              <div><span class="dish-round">🥗</span><div><b>Thai Crab</b><small>180 Calories</small><em>★★★★★ 866</em></div></div>
+              <div><span class="dish-round">🥙</span><div><b>Mexican Salad</b><small>210 Calories</small><em>★★★★★ 668</em></div></div>
             </div>
           </article>
         </section>
 
-        <section class="cf-live-weekly-diet">
-          <header><div><h2>My Weekly Diet Plan</h2><p>Nutrition schedule for the week</p></div><span>7 Days</span></header>
-          <div class="cf-weekly-diet-grid">
-            <article><img src="assets/showcase/class-showcase.svg" alt="Greek Green Salad"><h3>Greek Green Salad</h3><ul><li>Calories <b>330 Kcal</b></li><li>Protein <b>60 g</b></li><li>Fat <b>10 g</b></li></ul></article>
-            <article><img src="assets/showcase/class-showcase.svg" alt="Avocado Toast"><h3>Avocado Toast</h3><ul><li>Calories <b>280 Kcal</b></li><li>Protein <b>80 g</b></li><li>Fat <b>30 g</b></li></ul></article>
-            <article><img src="assets/showcase/class-showcase.svg" alt="Beef Stack"><h3>Beef Stack</h3><ul><li>Calories <b>480 Kcal</b></li><li>Protein <b>90 g</b></li><li>Fat <b>20 g</b></li></ul></article>
-            <article><img src="assets/showcase/class-showcase.svg" alt="Greek Green Salad"><h3>Greek Green Salad</h3><ul><li>Calories <b>330 Kcal</b></li><li>Protein <b>60 g</b></li><li>Fat <b>10 g</b></li></ul></article>
-            <article><img src="assets/showcase/class-showcase.svg" alt="Avocado Toast"><h3>Avocado Toast</h3><ul><li>Calories <b>280 Kcal</b></li><li>Protein <b>80 g</b></li><li>Fat <b>30 g</b></li></ul></article>
-            <article><img src="assets/showcase/class-showcase.svg" alt="Protein Bowl"><h3>Protein Bowl</h3><ul><li>Calories <b>420 Kcal</b></li><li>Protein <b>75 g</b></li><li>Fat <b>18 g</b></li></ul></article>
+        <section class="cf-live-card cf-weekly-diet-template">
+          <header><div><h2>My Weekly Diet Plan</h2></div></header>
+          <nav class="cf-diet-day-tabs">
+            <button class="active">Sunday</button><button>Monday</button><button>Tuesday</button><button>Wednesday</button><button>Thursday</button><button>Friday</button><button>Saturday</button>
+          </nav>
+          <div class="cf-weekly-diet-template-grid">
+            <article><span class="dish-large">🥗</span><h3>Greek Green Salad</h3><dl><div><dt>Calories</dt><dd>330 Kcal</dd></div><div><dt>Protein</dt><dd>60 g</dd></div><div><dt>Fat</dt><dd>10 g</dd></div></dl></article>
+            <article><span class="dish-large">🥑</span><h3>Avocado Toast</h3><dl><div><dt>Calories</dt><dd>280 Kcal</dd></div><div><dt>Protein</dt><dd>80 g</dd></div><div><dt>Fat</dt><dd>30 g</dd></div></dl></article>
+            <article><span class="dish-large">🥩</span><h3>Beef Steak</h3><dl><div><dt>Calories</dt><dd>480 Kcal</dd></div><div><dt>Protein</dt><dd>90 g</dd></div><div><dt>Fat</dt><dd>20 g</dd></div></dl></article>
+          </div>
+        </section>
+
+        <section class="cf-live-card cf-diet-calories-card">
+          <header><div><h2>Diet Plan Calories</h2><p>Daily calories overview</p></div></header>
+          <div class="cf-diet-calorie-chart">
+            <div class="grid"><i></i><i></i><i></i><i></i></div>
+            <svg viewBox="0 0 700 180" preserveAspectRatio="none"><path d="M0 145 C70 132 115 118 170 125 S275 92 335 104 S440 68 510 79 S615 52 700 62" fill="none" stroke="#5f57d9" stroke-width="3"/><path d="M0 156 C80 145 125 139 180 142 S285 120 345 127 S450 95 515 104 S620 82 700 89" fill="none" stroke="#c2bff0" stroke-width="2"/></svg>
+            <div class="x"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
           </div>
         </section>
       </section>
