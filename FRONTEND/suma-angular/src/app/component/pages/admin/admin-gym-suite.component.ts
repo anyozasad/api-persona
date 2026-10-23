@@ -318,6 +318,35 @@ interface GymModuleConfig {
     .gym-suite-toast.success{background:#5f57d9!important}
     @media(max-width:700px){.cf-suite-equipment-grid,.cf-suite-events,.cf-suite-gallery,.cf-suite-news,.cf-suite-salary,.cf-suite-income,.cf-suite-invoices,.gym-suite-panel{margin-left:8px!important;margin-right:8px!important}}
 
+
+    /* TEMPLATE569574_SUITE_COMPLETE_EXT */
+    .cf-suite-complete{display:grid;gap:9px;margin:0 9px 9px}
+    .cf-suite-complete>.cf-suite-page-head{margin:8px 0 0!important}
+    .cf-suite-page-head>div:last-child{display:flex;align-items:center;gap:6px}
+    .cf-suite-page-head button,.cf-suite-card button,.cf-suite-gallery-filter button,.cf-news-featured button{min-height:27px;padding:0 8px;border:1px solid #e0dff0;border-radius:4px;background:#fff;color:#656777;font-size:8px;font-weight:600;cursor:pointer}
+    .cf-suite-page-head button.primary,.cf-suite-card button.primary{border-color:#5f57d9;background:#5f57d9;color:#fff}
+    .cf-suite-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .cf-suite-kpis article{min-height:68px;padding:9px 10px;border:1px solid #ecebf3;border-radius:5px;background:#fff;box-shadow:0 1px 5px rgba(61,57,102,.025)}
+    .cf-suite-kpis small{display:block;color:#9497a5;font-size:7px}.cf-suite-kpis b{display:block;margin:3px 0;color:#2d2c3c;font-size:15px}.cf-suite-kpis span{color:#9b9daa;font-size:6.8px}
+    .cf-suite-kpis.compact article{min-height:58px}
+    .cf-suite-card{padding:10px;border:1px solid #ecebf3;border-radius:5px;background:#fff;box-shadow:0 1px 5px rgba(61,57,102,.025)}
+    .cf-suite-card>header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.cf-suite-card h2{margin:0;color:#2d2c3c;font-size:10px}.cf-suite-card p{margin:2px 0 0;color:#9698a6;font-size:7.5px}
+    .cf-suite-equipment-grid{margin:0!important}
+    .cf-suite-equipment-grid>article{padding:8px!important}.cf-suite-equipment-grid>article>div:last-child{display:grid;gap:3px}
+    .cf-suite-equipment-grid .status-select{justify-self:start}
+    .cf-suite-events{margin:0!important}.cf-suite-events>article{grid-template-columns:58px minmax(0,1fr) minmax(120px,.35fr) auto!important;padding:9px!important}
+    .cf-event-calendar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.cf-event-calendar>div{display:grid;gap:3px;padding:9px;border:1px solid #efeff4;border-radius:5px}.cf-event-calendar b{font-size:7px;color:#5f57d9}.cf-event-calendar span{font-size:8px;color:#454654}.cf-event-calendar small{font-size:6.8px;color:#9698a6}
+    .cf-suite-gallery-filter{display:flex;gap:5px;flex-wrap:wrap}.cf-suite-gallery-filter button.active{border-color:#5f57d9;background:#5f57d9;color:#fff}.cf-suite-gallery{margin:0!important}
+    .cf-news-featured{min-height:205px;display:grid;grid-template-columns:minmax(260px,.9fr) minmax(0,1.1fr);overflow:hidden;border:1px solid #ecebf3;border-radius:5px;background:#fff}.cf-news-featured img{width:100%;height:100%;object-fit:cover;background:#f3f2fb}.cf-news-featured>div{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:18px}.cf-news-featured span{font-size:7px;color:#5f57d9;font-weight:700}.cf-news-featured h2{margin:4px 0;color:#2d2c3c;font-size:16px}.cf-news-featured p{max-width:480px;margin:0 0 9px;color:#9698a6;font-size:8px;line-height:1.5}.cf-suite-news{margin:0!important}.cf-news-actions{display:flex;gap:5px}
+    .cf-news-categories{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.cf-news-categories span{padding:9px;border:1px solid #efeff4;border-radius:5px;color:#777a89;font-size:7.5px}.cf-news-categories b{display:block;margin-bottom:2px;color:#2d2c3c;font-size:15px}
+    .cf-payroll-notes,.cf-payment-status-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.cf-payroll-notes>div,.cf-payment-status-grid>div{padding:9px;border:1px solid #efeff4;border-radius:5px;text-align:center}.cf-payroll-notes b,.cf-payment-status-grid b{display:block;color:#2d2c3c;font-size:15px}.cf-payroll-notes small,.cf-payment-status-grid small{color:#9698a6;font-size:6.8px}
+    .cf-suite-income-visuals{display:grid;grid-template-columns:minmax(0,2fr) minmax(230px,.8fr);gap:9px}.cf-income-bars{height:150px;display:flex;align-items:end;gap:8px;padding:12px 4px 5px;border-bottom:1px solid #efeff4}.cf-income-bars i{flex:1;min-width:8px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#5f57d9,#b9b5ee)}.cf-month-axis{display:grid;grid-template-columns:repeat(12,1fr);margin-top:4px;text-align:center}.cf-month-axis span{font-size:6.5px;color:#9a9ca9}
+    .cf-revenue-donut{width:108px;height:108px;display:grid;place-items:center;margin:10px auto;border-radius:50%;background:conic-gradient(#5f57d9 0 64%,#8d86e7 64% 82%,#c4c1f1 82% 92%,#ecebf7 92%)}.cf-revenue-donut:before{content:'';grid-area:1/1;width:68px;height:68px;border-radius:50%;background:#fff}.cf-revenue-donut b{grid-area:1/1;z-index:2;font-size:12px}.cf-revenue-list{display:grid;gap:5px}.cf-revenue-list span{display:flex;justify-content:space-between;color:#7d7f8c;font-size:7px}.cf-revenue-list b{color:#454654}
+    .cf-invoice-actions{display:flex;gap:4px}
+    @media(max-width:950px){.cf-suite-kpis{grid-template-columns:repeat(2,1fr)}.cf-event-calendar,.cf-news-categories,.cf-payroll-notes,.cf-payment-status-grid{grid-template-columns:repeat(2,1fr)}.cf-suite-income-visuals{grid-template-columns:1fr}.cf-news-featured{grid-template-columns:1fr}.cf-news-featured img{height:180px}}
+    @media(max-width:650px){.cf-suite-kpis,.cf-event-calendar,.cf-news-categories,.cf-payroll-notes,.cf-payment-status-grid{grid-template-columns:1fr}.cf-suite-events>article{grid-template-columns:50px 1fr!important}.cf-suite-event-meta,.cf-suite-events>article>button{grid-column:2}.cf-suite-page-head{align-items:flex-start!important;flex-direction:column!important}}
+
+
   `]
 })
 export class AdminGymSuiteComponent implements OnInit, OnChanges {
