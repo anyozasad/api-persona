@@ -457,10 +457,101 @@ interface ExtraConfig {
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-account-page" *ngSwitchCase="'account-settings'">
-        <article class="cfx-card span-2 cf-account-profile"><img src="assets/showcase/coach-showcase.svg" alt="Profile"><div><h2>Account Settings</h2><p>Update your details, linked accounts and notification preferences.</p></div><button class="primary">Upload New</button></article>
-        <article class="cfx-card"><header><div><span>PROFILE</span><h2>Update Your Details</h2></div></header><div class="cfx-form"><label>Display Name<input value="Administrator"></label><label>Email<input value="admin@mallquigym.com"></label><label>Full Name<input value="Mallqui Gym Admin"></label><label>Phone Number<input value="+51 939 398 148"></label><div class="cfx-buttons"><button>Reset</button><button class="primary">Save Changes</button></div></div></article>
-        <article class="cfx-card"><header><div><span>LINK ACCOUNTS</span><h2>Connected Services</h2></div></header><div class="cf-linked-accounts"><div><b>Facebook</b><button>Connect</button></div><div><b>Google</b><button>Connect</button></div><div><b>GitHub</b><button>Connect</button></div><div><b>Instagram</b><button>Connect</button></div></div></article>
-        <article class="cfx-card span-2"><header><div><span>NOTIFICATIONS</span><h2>Notification Preferences</h2></div></header><div class="cf-settings-grid"><label class="switch"><input type="checkbox" checked><span></span> Messages</label><label class="switch"><input type="checkbox" checked><span></span> Updates</label><label class="switch"><input type="checkbox"><span></span> Desktop Notifications</label><label class="switch"><input type="checkbox" checked><span></span> Email</label><label class="switch"><input type="checkbox"><span></span> Chat</label><label class="switch"><input type="checkbox" checked><span></span> Reminders</label></div></article>
+        <article class="cfx-card span-2 cf-account-profile">
+          <img src="assets/showcase/coach-showcase.svg" alt="Profile">
+          <div><h2>Account Settings</h2><p>Manage profile details, notifications, billing, security and connected applications.</p></div>
+          <button class="primary">Upload New</button>
+        </article>
+
+        <article class="cfx-card">
+          <header><div><span>PROFILE</span><h2>Update Your Details</h2></div></header>
+          <div class="cfx-form">
+            <label>Display Name<input value="Administrator"></label>
+            <label>Email<input value="admin@mallquigym.com"></label>
+            <label>Full Name<input value="Mallqui Gym Admin"></label>
+            <label>Phone Number<input value="+51 939 398 148"></label>
+            <div class="cfx-buttons"><button>Reset</button><button class="primary">Save Changes</button></div>
+          </div>
+        </article>
+
+        <article class="cfx-card">
+          <header><div><span>LINK ACCOUNTS</span><h2>Link Accounts</h2></div></header>
+          <div class="cf-linked-accounts">
+            <div><b>Facebook</b><button>Connect</button></div>
+            <div><b>X / Twitter</b><button>Connect</button></div>
+            <div><b>Google</b><button>Connect</button></div>
+            <div><b>GitHub</b><button>Connect</button></div>
+            <div><b>Instagram</b><button>Connect</button></div>
+          </div>
+        </article>
+
+        <article class="cfx-card span-2">
+          <header><div><span>NOTIFICATIONS</span><h2>Notification Preferences</h2><p>Choose which updates you want to receive.</p></div></header>
+          <div class="cf-settings-grid">
+            <label class="switch"><input type="checkbox" checked><span></span> Messages</label>
+            <label class="switch"><input type="checkbox" checked><span></span> Review</label>
+            <label class="switch"><input type="checkbox" checked><span></span> Updates</label>
+            <label class="switch"><input type="checkbox"><span></span> Desktop Notifications</label>
+            <label class="switch"><input type="checkbox" checked><span></span> Email</label>
+            <label class="switch"><input type="checkbox"><span></span> Chat</label>
+            <label class="switch"><input type="checkbox" checked><span></span> Reminder</label>
+            <label class="switch"><input type="checkbox"><span></span> Comment</label>
+          </div>
+        </article>
+
+        <article class="cfx-card span-2 cf-settings-plans">
+          <header><div><span>PLAN</span><h2>Membership Plan</h2><p>You can upgrade and downgrade whenever you want.</p></div></header>
+          <div class="cf-plan-row">
+            <div><small>BASIC</small><b>S/ 60<em>/mo</em></b><p>5 Projects · Basic Support · Email Reports</p><button>Choose Basic</button></div>
+            <div class="featured"><small>MOST POPULAR</small><b>S/ 90<em>/mo</em></b><p>Unlimited Projects · Priority Support · Advanced Analytics</p><button class="primary">Current Plan</button></div>
+            <div><small>BUSINESS</small><b>S/ 120<em>/mo</em></b><p>Everything in Pro · Dedicated Manager · Custom Integrations</p><button>Contact Sales</button></div>
+          </div>
+        </article>
+
+        <article class="cfx-card span-2">
+          <header><div><span>BILLING</span><h2>Billing History</h2></div></header>
+          <div class="cfx-table-wrap"><table><thead><tr><th>Order No.</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead><tbody>
+            <tr><td>MG-10982</td><td>09 October 2026</td><td>S/ 90.00</td><td><span class="cfx-badge">Paid</span></td></tr>
+            <tr><td>MG-10841</td><td>09 September 2026</td><td>S/ 90.00</td><td><span class="cfx-badge">Paid</span></td></tr>
+            <tr><td>MG-10721</td><td>09 August 2026</td><td>S/ 90.00</td><td><span class="cfx-badge">Paid</span></td></tr>
+          </tbody></table></div>
+        </article>
+
+        <article class="cfx-card span-2">
+          <header><div><span>APPLICATIONS</span><h2>Connected Applications</h2></div></header>
+          <div class="cf-app-grid">
+            <div><b>Slack</b><small>Successfully connected</small><button>Disconnect</button></div>
+            <div><b>Facebook</b><small>Successfully connected</small><button>Disconnect</button></div>
+            <div><b>Notion</b><small>Successfully connected</small><button>Disconnect</button></div>
+            <div><b>GitHub</b><small>Connect your GitHub account</small><button>Connect</button></div>
+            <div><b>Google</b><small>Connect your Google account</small><button>Connect</button></div>
+            <div><b>X / Twitter</b><small>Connect your X account</small><button>Connect</button></div>
+          </div>
+        </article>
+
+        <article class="cfx-card">
+          <header><div><span>SECURITY</span><h2>Change Password</h2><p>Your password should be updated periodically.</p></div></header>
+          <div class="cfx-form">
+            <label>Current Password<input type="password"></label>
+            <label>New Password<input type="password"></label>
+            <label>Confirm New Password<input type="password"></label>
+            <button class="primary">Update Password</button>
+          </div>
+        </article>
+
+        <article class="cfx-card">
+          <header><div><span>SESSIONS</span><h2>Active Sessions</h2></div></header>
+          <div class="cfx-list">
+            <div><span>PC</span><div><b>Windows 10 · Chrome</b><small>Pucallpa, Peru · Current device</small></div><em>Active</em></div>
+            <div><span>PH</span><div><b>Android · Chrome</b><small>Pucallpa, Peru</small></div><button>Terminate</button></div>
+            <div><span>LT</span><div><b>Laptop · Edge</b><small>Pucallpa, Peru</small></div><button>Terminate</button></div>
+          </div>
+        </article>
+
+        <article class="cfx-card span-2 cf-danger-zone">
+          <header><div><span>DANGER ZONE</span><h2>Delete Account?</h2><p>This action is permanent and cannot be undone.</p></div></header>
+          <button class="danger">Delete Account</button>
+        </article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-profile-page" *ngSwitchCase="'my-profile'">
