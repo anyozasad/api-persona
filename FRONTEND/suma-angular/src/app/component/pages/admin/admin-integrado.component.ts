@@ -42,8 +42,8 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <button type="button" (click)="toggleTopPanel('activity')" title="Actividad" aria-label="Actividad">＋</button>
         <button type="button" (click)="toggleTopPanel('alerts')" title="Alertas" aria-label="Alertas">⚑</button>
         <button type="button" (click)="toggleTopPanel('messages')" title="Mensajes" aria-label="Mensajes">✉</button>
-        <button type="button" (click)="cambiarSeccion('account-settings')" title="Configuración" aria-label="Configuración">⚙</button>
-        <button type="button" class="admin-top-user" (click)="cambiarSeccion('my-profile')" title="Mi perfil">
+        <button type="button" (click)="cambiarSegcion('account-settings')" title="Configuración" aria-label="Configuración">⚙</button>
+        <button type="button" class="admin-top-user" (click)="cambiarSegcion('my-profile')" title="Mi perfil">
           {{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}
         </button>
       </div>
@@ -52,13 +52,13 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
     <section class="cf-top-dropdown activity" *ngIf="topPanel==='activity'">
       <header><h3>Actividad</h3><button (click)="topPanel=''">×</button></header>
       <div class="cf-top-feed">
-        <article><span>S/</span><div><b>Pagos de membresías</b><p>18 socios renovaron sus membresías.</p><small>10:20 AM · Today</small></div></article>
-        <article><span>◆</span><div><b>Actualización de equipos</b><p>Nuevos equipos de cardio y fuerza registrados.</p><small>01:15 PM · Today</small></div></article>
-        <article><span>🏋</span><div><b>Sesiones de entrenamiento</b><p>Sesiones personales completadas hoy.</p><small>05:40 PM · Today</small></div></article>
-        <article><span>♚</span><div><b>Nuevos socios</b><p>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos socios este mes.</p><small>06:50 PM · Today</small></div></article>
-        <article><span>!</span><div><b>Solicitud de mantenimiento</b><p>Revisión de mantenimiento pendiente.</p><small>08:10 PM · Today</small></div></article>
+        <article><span>S/</span><div><b>Pagos de membresías</b><p>18 socios renovaron sus membresías.</p><small>10:20 AM · Hoy</small></div></article>
+        <article><span>◆</span><div><b>Actualización de equipos</b><p>Nuevos equipos de cardio y fuerza registrados.</p><small>01:15 PM · Hoy</small></div></article>
+        <article><span>🏋</span><div><b>Sesiones de entrenamiento</b><p>Sesiones personales completadas hoy.</p><small>05:40 PM · Hoy</small></div></article>
+        <article><span>♚</span><div><b>Nuevos socios</b><p>{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos socios este mes.</p><small>06:50 PM · Hoy</small></div></article>
+        <article><span>!</span><div><b>Solicitud de mantenimiento</b><p>Revisión de mantenimiento pendiente.</p><small>08:10 PM · Hoy</small></div></article>
       </div>
-      <button class="cf-top-viewall" (click)="cambiarSeccion('comunicacion');topPanel=''">Ver todo</button>
+      <button class="cf-top-viewall" (click)="cambiarSegcion('comunicacion');topPanel=''">Ver todo</button>
     </section>
 
     <section class="cf-top-dropdown" *ngIf="topPanel==='alerts'">
@@ -68,7 +68,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <article><span>WT</span><div><b>Logro de socio</b><p>Un socio alcanzó un nuevo logro.</p><small>Hoy, 08:00 PM</small></div></article>
         <article><span>TJ</span><div><b>Actualización de rutina</b><p>Se publicó una nueva rutina HIIT.</p><small>Hoy, 09:30 PM</small></div></article>
       </div>
-      <button class="cf-top-viewall" (click)="cambiarSeccion('comunicacion');topPanel=''">Ver todo</button>
+      <button class="cf-top-viewall" (click)="cambiarSegcion('comunicacion');topPanel=''">Ver todo</button>
     </section>
 
     <section class="cf-top-dropdown messages" *ngIf="topPanel==='messages'">
@@ -78,12 +78,12 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <article><img src="assets/showcase/coach-showcase.svg" alt="Entrenador"><div><b>Actualización Fitness</b><p>Nuevo récord personal registrado.</p><small>Hoy, 08:00 PM</small></div></article>
         <article><img src="assets/showcase/coach-showcase.svg" alt="Entrenador"><div><b>Mensaje de socio</b><p>Renovación de membresía confirmada.</p><small>Hoy, 10:15 PM</small></div></article>
       </div>
-      <button class="cf-top-viewall" (click)="cambiarSeccion('comunicacion');topPanel=''">Ver todo</button>
+      <button class="cf-top-viewall" (click)="cambiarSegcion('comunicacion');topPanel=''">Ver todo</button>
     </section>
 
     <aside class="admin-nav">
       <div class="admin-nav-top crossfit-profile-card">
-        <button type="button" class="crossfit-profile-avatar" (click)="cambiarSeccion('my-profile')" aria-label="Abrir perfil">
+        <button type="button" class="crossfit-profile-avatar" (click)="cambiarSegcion('my-profile')" aria-label="Abrir perfil">
           <img src="assets/showcase/coach-showcase.svg" alt="Administrador Mallqui Gym">
           <span class="crossfit-profile-status"></span>
         </button>
@@ -95,25 +95,25 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
       </div>
 
       <nav class="admin-main-nav crossfit-sidebar-nav" aria-label="Módulos principales">
-        <button type="button" [class.active]="seccion==='dashboard'" (click)="cambiarSeccion('dashboard')">
+        <button type="button" [class.active]="seccion==='dashboard'" (click)="cambiarSegcion('dashboard')">
           <span class="admin-main-nav-icon">⌂</span><span>Panel Principal</span>
         </button>
-        <button type="button" [class.active]="seccion==='reportes'" (click)="cambiarSeccion('reportes')">
+        <button type="button" [class.active]="seccion==='reportes'" (click)="cambiarSegcion('reportes')">
           <span class="admin-main-nav-icon">⌁</span><span>Mis Reportes</span>
         </button>
-        <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSeccion('rutinas')">
+        <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSegcion('rutinas')">
           <span class="admin-main-nav-icon">▣</span><span>Mi Plan de Entrenamiento</span>
         </button>
-        <button type="button" [class.active]="seccion==='nutricion'" (click)="cambiarSeccion('nutricion')">
+        <button type="button" [class.active]="seccion==='nutricion'" (click)="cambiarSegcion('nutricion')">
           <span class="admin-main-nav-icon">♨</span><span>Mi Plan de Alimentación</span>
         </button>
-        <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSeccion('asistencias')">
+        <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSegcion('asistencias')">
           <span class="admin-main-nav-icon">▦</span><span>Control de Asistencia</span>
         </button>
-        <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSeccion('entrenador')">
+        <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSegcion('entrenador')">
           <span class="admin-main-nav-icon">♙</span><span>Entrenador</span>
         </button>
-        <button type="button" [class.active]="seccion==='trainer-profile'" (click)="cambiarSeccion('trainer-profile')">
+        <button type="button" [class.active]="seccion==='trainer-profile'" (click)="cambiarSegcion('trainer-profile')">
           <span class="admin-main-nav-icon">◎</span><span>Perfil del Entrenador</span>
         </button>
 
@@ -121,122 +121,122 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <span class="admin-main-nav-icon">♚</span><span>Socios del Gimnasio</span><i>{{navGroups.members?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.members">
-          <button type="button" [class.active]="seccion==='members-list'" (click)="cambiarSeccion('members-list')"><span>•</span><span>Lista de Socios</span></button>
-          <button type="button" [class.active]="seccion==='members-cards'" (click)="cambiarSeccion('members-cards')"><span>•</span><span>Tarjetas de Socios</span></button>
-          <button type="button" [class.active]="seccion==='add-member'" (click)="cambiarSeccion('add-member')"><span>•</span><span>Agregar Socio</span></button>
-          <button type="button" [class.active]="seccion==='edit-member' || seccion==='edit-member-details'" (click)="cambiarSeccion('edit-member')"><span>•</span><span>Editar Socio</span></button>
+          <button type="button" [class.active]="seccion==='members-list'" (click)="cambiarSegcion('members-list')"><span>•</span><span>Lista de Socios</span></button>
+          <button type="button" [class.active]="seccion==='members-cards'" (click)="cambiarSegcion('members-cards')"><span>•</span><span>Tarjetas de Socios</span></button>
+          <button type="button" [class.active]="seccion==='add-member'" (click)="cambiarSegcion('add-member')"><span>•</span><span>Agregar Socio</span></button>
+          <button type="button" [class.active]="seccion==='edit-member' || seccion==='edit-member-details'" (click)="cambiarSegcion('edit-member')"><span>•</span><span>Editar Socio</span></button>
         </div>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['ingresos','pagos','facturas','invoice-details','create-invoice','add-invoice','edit-invoice','invoices-list','expenses'].includes(seccion)" (click)="toggleNavGroup('payments')">
           <span class="admin-main-nav-icon">S/</span><span>Pagos</span><i>{{navGroups.payments?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.payments">
-          <button type="button" [class.active]="seccion==='ingresos'" (click)="cambiarSeccion('ingresos')"><span>•</span><span>Ingresos</span></button>
-          <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSeccion('pagos')"><span>•</span><span>Pagos</span></button>
-          <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSeccion('facturas')"><span>•</span><span>Facturas</span></button>
-          <button type="button" [class.active]="seccion==='invoice-details'" (click)="cambiarSeccion('invoice-details')"><span>•</span><span>Detalle de Factura</span></button>
-          <button type="button" [class.active]="seccion==='create-invoice' || seccion==='add-invoice'" (click)="cambiarSeccion('create-invoice')"><span>•</span><span>Crear Factura</span></button>
-          <button type="button" [class.active]="seccion==='add-invoice'" (click)="cambiarSeccion('add-invoice')"><span>•</span><span>Agregar Factura</span></button>
-          <button type="button" [class.active]="seccion==='edit-invoice'" (click)="cambiarSeccion('edit-invoice')"><span>•</span><span>Editar Factura</span></button>
-          <button type="button" [class.active]="seccion==='invoices-list'" (click)="cambiarSeccion('invoices-list')"><span>•</span><span>Lista de Facturas</span></button>
-          <button type="button" [class.active]="seccion==='expenses'" (click)="cambiarSeccion('expenses')"><span>•</span><span>Gastos</span></button>
+          <button type="button" [class.active]="seccion==='ingresos'" (click)="cambiarSegcion('ingresos')"><span>•</span><span>Ingresos</span></button>
+          <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSegcion('pagos')"><span>•</span><span>Pagos</span></button>
+          <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSegcion('facturas')"><span>•</span><span>Facturas</span></button>
+          <button type="button" [class.active]="seccion==='invoice-details'" (click)="cambiarSegcion('invoice-details')"><span>•</span><span>Detalle de Factura</span></button>
+          <button type="button" [class.active]="seccion==='create-invoice' || seccion==='add-invoice'" (click)="cambiarSegcion('create-invoice')"><span>•</span><span>Crear Factura</span></button>
+          <button type="button" [class.active]="seccion==='add-invoice'" (click)="cambiarSegcion('add-invoice')"><span>•</span><span>Agregar Factura</span></button>
+          <button type="button" [class.active]="seccion==='edit-invoice'" (click)="cambiarSegcion('edit-invoice')"><span>•</span><span>Editar Factura</span></button>
+          <button type="button" [class.active]="seccion==='invoices-list'" (click)="cambiarSegcion('invoices-list')"><span>•</span><span>Lista de Facturas</span></button>
+          <button type="button" [class.active]="seccion==='expenses'" (click)="cambiarSegcion('expenses')"><span>•</span><span>Gastos</span></button>
         </div>
 
-        <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSeccion('equipos')"><span class="admin-main-nav-icon">◆</span><span>Equipos</span></button>
-        <button type="button" [class.active]="seccion==='eventos'" (click)="cambiarSeccion('eventos')"><span class="admin-main-nav-icon">◫</span><span>Eventos del Gimnasio</span></button>
-        <button type="button" [class.active]="seccion==='galeria'" (click)="cambiarSeccion('galeria')"><span class="admin-main-nav-icon">▧</span><span>Galería</span></button>
-        <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSeccion('noticias')"><span class="admin-main-nav-icon">◇</span><span>Noticias y Novedades</span></button>
-        <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSeccion('planes')"><span class="admin-main-nav-icon">★</span><span>Planes de Membresía</span></button>
+        <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSegcion('equipos')"><span class="admin-main-nav-icon">◆</span><span>Equipos</span></button>
+        <button type="button" [class.active]="seccion==='eventos'" (click)="cambiarSegcion('eventos')"><span class="admin-main-nav-icon">◫</span><span>Eventos del Gimnasio</span></button>
+        <button type="button" [class.active]="seccion==='galeria'" (click)="cambiarSegcion('galeria')"><span class="admin-main-nav-icon">▧</span><span>Galería</span></button>
+        <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSegcion('noticias')"><span class="admin-main-nav-icon">◇</span><span>Noticias y Novedades</span></button>
+        <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSegcion('planes')"><span class="admin-main-nav-icon">★</span><span>Planes de Membresía</span></button>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['salarios','payslip'].includes(seccion)" (click)="toggleNavGroup('salaries')">
           <span class="admin-main-nav-icon">▤</span><span>Salarios</span><i>{{navGroups.salaries?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.salaries">
-          <button type="button" [class.active]="seccion==='salarios'" (click)="cambiarSeccion('salarios')"><span>•</span><span>Lista de Salarios</span></button>
-          <button type="button" [class.active]="seccion==='payslip'" (click)="cambiarSeccion('payslip')"><span>•</span><span>Boleta de Pago</span></button>
+          <button type="button" [class.active]="seccion==='salarios'" (click)="cambiarSegcion('salarios')"><span>•</span><span>Lista de Salarios</span></button>
+          <button type="button" [class.active]="seccion==='payslip'" (click)="cambiarSegcion('payslip')"><span>•</span><span>Boleta de Pago</span></button>
         </div>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['alerts','avatars','badges','buttons','button-groups','cards-ui','advanced-cards','dropdowns','list-items','progress-bars','placeholders','spinners'].includes(seccion)" (click)="toggleNavGroup('ui')">
           <span class="admin-main-nav-icon">✦</span><span>Elementos de Interfaz</span><i>{{navGroups.ui?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.ui">
-          <button *ngFor="let x of uiElementLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSeccion(x.id)"><span>•</span><span>{{x.label}}</span></button>
+          <button *ngFor="let x of uiElementLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSegcion(x.id)"><span>•</span><span>{{x.label}}</span></button>
         </div>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['accordions','carousel','modals','popovers','tabs-ui','tooltips'].includes(seccion)" (click)="toggleNavGroup('jquery')">
           <span class="admin-main-nav-icon">⌘</span><span>Componentes jQuery</span><i>{{navGroups.jquery?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.jquery">
-          <button *ngFor="let x of jqueryLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSeccion(x.id)"><span>•</span><span>{{x.label}}</span></button>
+          <button *ngFor="let x of jqueryLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSegcion(x.id)"><span>•</span><span>{{x.label}}</span></button>
         </div>
 
-        <button type="button" [class.active]="seccion==='sports-components'" (click)="cambiarSeccion('sports-components')"><span class="admin-main-nav-icon">🏋</span><span>Componentes Deportivos</span></button>
+        <button type="button" [class.active]="seccion==='sports-components'" (click)="cambiarSegcion('sports-components')"><span class="admin-main-nav-icon">🏋</span><span>Componentes Deportivos</span></button>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['forms','form-inputs','checkbox-radio','file-input','validations','date-time','input-masks','input-tags'].includes(seccion)" (click)="toggleNavGroup('forms')">
           <span class="admin-main-nav-icon">☷</span><span>Formularios</span><i>{{navGroups.forms?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.forms">
-          <button type="button" [class.active]="seccion==='forms'" (click)="cambiarSeccion('forms')"><span>•</span><span>Formularios</span></button>
-          <button *ngFor="let x of formLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSeccion(x.id)"><span>•</span><span>{{x.label}}</span></button>
+          <button type="button" [class.active]="seccion==='forms'" (click)="cambiarSegcion('forms')"><span>•</span><span>Formularios</span></button>
+          <button *ngFor="let x of formLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSegcion(x.id)"><span>•</span><span>{{x.label}}</span></button>
         </div>
 
-        <button type="button" [class.active]="seccion==='tables'" (click)="cambiarSeccion('tables')"><span class="admin-main-nav-icon">▦</span><span>Tablas</span></button>
-        <button type="button" [class.active]="seccion==='data-tables'" (click)="cambiarSeccion('data-tables')"><span class="admin-main-nav-icon">▦</span><span>Tablas de Datos</span></button>
+        <button type="button" [class.active]="seccion==='tables'" (click)="cambiarSegcion('tables')"><span class="admin-main-nav-icon">▦</span><span>Tablas</span></button>
+        <button type="button" [class.active]="seccion==='data-tables'" (click)="cambiarSegcion('data-tables')"><span class="admin-main-nav-icon">▦</span><span>Tablas de Datos</span></button>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['graphs','apex','morris'].includes(seccion)" (click)="toggleNavGroup('graphs')">
           <span class="admin-main-nav-icon">↗</span><span>Gráficos</span><i>{{navGroups.graphs?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.graphs">
-          <button type="button" [class.active]="seccion==='graphs'" (click)="cambiarSeccion('graphs')"><span>•</span><span>Gráficos</span></button>
-          <button type="button" [class.active]="seccion==='apex'" (click)="cambiarSeccion('apex')"><span>•</span><span>Apex</span></button>
-          <button type="button" [class.active]="seccion==='morris'" (click)="cambiarSeccion('morris')"><span>•</span><span>Morris</span></button>
+          <button type="button" [class.active]="seccion==='graphs'" (click)="cambiarSegcion('graphs')"><span>•</span><span>Gráficos</span></button>
+          <button type="button" [class.active]="seccion==='apex'" (click)="cambiarSegcion('apex')"><span>•</span><span>Apex</span></button>
+          <button type="button" [class.active]="seccion==='morris'" (click)="cambiarSegcion('morris')"><span>•</span><span>Morris</span></button>
         </div>
 
-        <button type="button" [class.active]="seccion==='vector-maps'" (click)="cambiarSeccion('vector-maps')"><span class="admin-main-nav-icon">◎</span><span>Mapas Vectoriales</span></button>
-        <button type="button" [class.active]="seccion==='icons'" (click)="cambiarSeccion('icons')"><span class="admin-main-nav-icon">★</span><span>Iconos</span></button>
-        <button type="button" [class.active]="seccion==='account-settings'" (click)="cambiarSeccion('account-settings')"><span class="admin-main-nav-icon">⚙</span><span>Configuración de Cuenta</span></button>
-        <button type="button" [class.active]="seccion==='my-profile'" (click)="cambiarSeccion('my-profile')"><span class="admin-main-nav-icon">♙</span><span>Mi Perfil</span></button>
-        <button type="button" [class.active]="seccion==='contact'" (click)="cambiarSeccion('contact')"><span class="admin-main-nav-icon">☎</span><span>Contacto</span></button>
-        <button type="button" [class.active]="seccion==='typography'" (click)="cambiarSeccion('typography')"><span class="admin-main-nav-icon">T</span><span>Tipografía</span></button>
+        <button type="button" [class.active]="seccion==='vector-maps'" (click)="cambiarSegcion('vector-maps')"><span class="admin-main-nav-icon">◎</span><span>Mapas Vectoriales</span></button>
+        <button type="button" [class.active]="seccion==='icons'" (click)="cambiarSegcion('icons')"><span class="admin-main-nav-icon">★</span><span>Iconos</span></button>
+        <button type="button" [class.active]="seccion==='account-settings'" (click)="cambiarSegcion('account-settings')"><span class="admin-main-nav-icon">⚙</span><span>Configuración de Cuenta</span></button>
+        <button type="button" [class.active]="seccion==='my-profile'" (click)="cambiarSegcion('my-profile')"><span class="admin-main-nav-icon">♙</span><span>Mi Perfil</span></button>
+        <button type="button" [class.active]="seccion==='contact'" (click)="cambiarSegcion('contact')"><span class="admin-main-nav-icon">☎</span><span>Contacto</span></button>
+        <button type="button" [class.active]="seccion==='typography'" (click)="cambiarSegcion('typography')"><span class="admin-main-nav-icon">T</span><span>Tipografía</span></button>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['login-signup','login-page','signup-page','forgot-password','reset-password-page'].includes(seccion)" (click)="toggleNavGroup('auth')">
           <span class="admin-main-nav-icon">↪</span><span>Acceso / Registro</span><i>{{navGroups.auth?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.auth">
-          <button type="button" [class.active]="seccion==='login-signup'" (click)="cambiarSeccion('login-signup')"><span>•</span><span>Acceso / Registro</span></button>
-          <button type="button" [class.active]="seccion==='login-page'" (click)="cambiarSeccion('login-page')"><span>•</span><span>Iniciar Sesión</span></button>
-          <button type="button" [class.active]="seccion==='signup-page'" (click)="cambiarSeccion('signup-page')"><span>•</span><span>Registrarse</span></button>
-          <button type="button" [class.active]="seccion==='forgot-password'" (click)="cambiarSeccion('forgot-password')"><span>•</span><span>Recuperar Contraseña</span></button>
-          <button type="button" [class.active]="seccion==='reset-password-page'" (click)="cambiarSeccion('reset-password-page')"><span>•</span><span>Restablecer Contraseña</span></button>
+          <button type="button" [class.active]="seccion==='login-signup'" (click)="cambiarSegcion('login-signup')"><span>•</span><span>Acceso / Registro</span></button>
+          <button type="button" [class.active]="seccion==='login-page'" (click)="cambiarSegcion('login-page')"><span>•</span><span>Iniciar Sesión</span></button>
+          <button type="button" [class.active]="seccion==='signup-page'" (click)="cambiarSegcion('signup-page')"><span>•</span><span>Registrarse</span></button>
+          <button type="button" [class.active]="seccion==='forgot-password'" (click)="cambiarSegcion('forgot-password')"><span>•</span><span>Recuperar Contraseña</span></button>
+          <button type="button" [class.active]="seccion==='reset-password-page'" (click)="cambiarSegcion('reset-password-page')"><span>•</span><span>Restablecer Contraseña</span></button>
         </div>
 
-        <button type="button" [class.active]="seccion==='page-not-found'" (click)="cambiarSeccion('page-not-found')"><span class="admin-main-nav-icon">404</span><span>Página no encontrada</span></button>
-        <button type="button" [class.active]="seccion==='maintenance'" (click)="cambiarSeccion('maintenance')"><span class="admin-main-nav-icon">⚙</span><span>Mantenimiento</span></button>
+        <button type="button" [class.active]="seccion==='page-not-found'" (click)="cambiarSegcion('page-not-found')"><span class="admin-main-nav-icon">404</span><span>Página no encontrada</span></button>
+        <button type="button" [class.active]="seccion==='maintenance'" (click)="cambiarSegcion('maintenance')"><span class="admin-main-nav-icon">⚙</span><span>Mantenimiento</span></button>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['menu-level-1','menu-level-2','menu-level-3'].includes(seccion)" (click)="toggleNavGroup('menu')">
           <span class="admin-main-nav-icon">☷</span><span>Nivel de Menú</span><i>{{navGroups.menu?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.menu">
-          <button type="button" [class.active]="seccion==='menu-level-1'" (click)="cambiarSeccion('menu-level-1')"><span>•</span><span>Level One Link</span></button>
-          <button type="button" [class.active]="seccion==='menu-level-2'" (click)="cambiarSeccion('menu-level-2')"><span>•</span><span>Level One Menu</span></button>
-          <button type="button" [class.active]="seccion==='menu-level-2'" (click)="cambiarSeccion('menu-level-2')" style="padding-left:28px"><span>◦</span><span>Level Two Link</span></button>
-          <button type="button" [class.active]="seccion==='menu-level-3'" (click)="cambiarSeccion('menu-level-3')" style="padding-left:28px"><span>◦</span><span>Level Two Menu</span></button>
-          <button type="button" [class.active]="seccion==='menu-level-3'" (click)="cambiarSeccion('menu-level-3')" style="padding-left:42px"><span>·</span><span>Level Three Link</span></button>
-          <button type="button" [class.active]="seccion==='menu-level-3'" (click)="cambiarSeccion('menu-level-3')" style="padding-left:42px"><span>·</span><span>Level Three Link</span></button>
-          <button type="button" [class.active]="seccion==='menu-level-1'" (click)="cambiarSeccion('menu-level-1')"><span>•</span><span>Level One Link</span></button>
+          <button type="button" [class.active]="seccion==='menu-level-1'" (click)="cambiarSegcion('menu-level-1')"><span>•</span><span>Level One Link</span></button>
+          <button type="button" [class.active]="seccion==='menu-level-2'" (click)="cambiarSegcion('menu-level-2')"><span>•</span><span>Level One Menu</span></button>
+          <button type="button" [class.active]="seccion==='menu-level-2'" (click)="cambiarSegcion('menu-level-2')" style="padding-left:28px"><span>◦</span><span>Level Two Link</span></button>
+          <button type="button" [class.active]="seccion==='menu-level-3'" (click)="cambiarSegcion('menu-level-3')" style="padding-left:28px"><span>◦</span><span>Level Two Menu</span></button>
+          <button type="button" [class.active]="seccion==='menu-level-3'" (click)="cambiarSegcion('menu-level-3')" style="padding-left:42px"><span>·</span><span>Level Three Link</span></button>
+          <button type="button" [class.active]="seccion==='menu-level-3'" (click)="cambiarSegcion('menu-level-3')" style="padding-left:42px"><span>·</span><span>Level Three Link</span></button>
+          <button type="button" [class.active]="seccion==='menu-level-1'" (click)="cambiarSegcion('menu-level-1')"><span>•</span><span>Level One Link</span></button>
         </div>
 
-        <button type="button" [class.active]="seccion==='external-link'" (click)="cambiarSeccion('external-link')"><span class="admin-main-nav-icon">↗</span><span>Enlace Externo</span></button>
-        <button type="button" [class.active]="seccion==='chip'" (click)="cambiarSeccion('chip')"><span class="admin-main-nav-icon">#</span><span>Chip</span></button>
-        <button type="button" [class.active]="seccion==='badge-link'" (click)="cambiarSeccion('badge-link')"><span class="admin-main-nav-icon">●</span><span>Insignia</span></button>
+        <button type="button" [class.active]="seccion==='external-link'" (click)="cambiarSegcion('external-link')"><span class="admin-main-nav-icon">↗</span><span>Enlace Externo</span></button>
+        <button type="button" [class.active]="seccion==='chip'" (click)="cambiarSegcion('chip')"><span class="admin-main-nav-icon">#</span><span>Chip</span></button>
+        <button type="button" [class.active]="seccion==='badge-link'" (click)="cambiarSegcion('badge-link')"><span class="admin-main-nav-icon">●</span><span>Insignia</span></button>
         <button type="button" disabled><span class="admin-main-nav-icon">⊘</span><span>Enlace Deshabilitado</span></button>
       </nav>
 
-      <button type="button" class="cf-fitness-center-card" (click)="cambiarSeccion('contact')">
+      <button type="button" class="cf-fitness-center-card" (click)="cambiarSegcion('contact')">
         <span>☎</span>
         <div><small>Fitness Center</small><b>{{configuracionForm.telefono || '000000000'}}</b></div>
       </button>
-      <button type="button" class="admin-system-card" [class.is-offline]="!dashboard?.fuente?.base_datos" (click)="cambiarSeccion('configuracion')" title="Estado del sistema">
+      <button type="button" class="admin-system-card" [class.is-offline]="!dashboard?.fuente?.base_datos" (click)="cambiarSegcion('configuracion')" title="Estado del sistema">
         <div class="system-live-dot"></div>
         <div><b>{{dashboard?.fuente?.base_datos ? 'Sistema en línea' : 'Verificando sistema'}}</b><small>{{dashboard?.fuente?.base_datos ? ('BD: '+dashboard.fuente.base_datos) : 'Esperando conexión'}}</small></div>
       </button>
@@ -278,7 +278,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <p>Este es tu resumen de actividad de hoy</p>
           </div>
           <div class="cf-live-summary4">
-            <article><span>👟</span><b>{{dashboard?.asistencias?.hoy ?? 0}}</b><small>Pasos Today</small></article>
+            <article><span>👟</span><b>{{dashboard?.asistencias?.hoy ?? 0}}</b><small>Pasos Hoy</small></article>
             <article><span>🔥</span><b>{{dashboard?.ventas?.hoy_cantidad ?? 0}}</b><small>Calorías Quemadas</small></article>
             <article><span>⚡</span><b>{{totalAsistenciasSemana}}</b><small>Minutos Activos</small></article>
             <article><span>♥</span><b>{{progresoSemanal()}}</b><small>Puntaje Fitness</small></article>
@@ -286,9 +286,9 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
 
         <section class="cf-live-activity4">
-          <article><div class="cf-live-ring">☾</div><div><small>Sueño</small><b>8.3h</b><p>Duración del sueño de anoche</p><em>8.5hrs avg last week.</em></div></article>
-          <article><div class="cf-live-ring">◉</div><div><small>Cycling</small><b>3.5 km</b><p>Distancia recorrida hoy</p><em>2.3hrs avg last week.</em></div></article>
-          <article><div class="cf-live-ring">↗</div><div><small>Running</small><b>2.8 km</b><p>Distancia recorrida hoy</p><em>2.6hrs avg last week.</em></div></article>
+          <article><div class="cf-live-ring">☾</div><div><small>Sueño</small><b>8.3h</b><p>Duración del sueño de anoche</p><em>Promedio anterior: 8.5 h.</em></div></article>
+          <article><div class="cf-live-ring">◉</div><div><small>Cycling</small><b>3.5 km</b><p>Distancia recorrida hoy</p><em>Promedio anterior: 2.3 h.</em></div></article>
+          <article><div class="cf-live-ring">↗</div><div><small>Running</small><b>2.8 km</b><p>Distancia recorrida hoy</p><em>Promedio anterior: 2.6 h.</em></div></article>
           <article><div class="cf-live-ring">🏋</div><div><small>Gym</small><b>{{dashboard?.asistencias?.hoy ?? 0}}h</b><p>Duración de entrenamiento de hoy</p><em>{{dashboard?.operacion?.rutinas_activas ?? 0}} active routines</em></div></article>
         </section>
 
@@ -308,11 +308,11 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           </article>
 
           <article class="cf-live-card">
-            <header><div><h2>Próximos Eventos</h2><p>Tus actividades programadas</p></div><b>{{reservas.length || 0}} Events</b></header>
+            <header><div><h2>Próximos Eventos</h2><p>Tus actividades programadas</p></div><b>{{reservas.length || 0}} Eventos</b></header>
             <div class="cf-live-list">
               <div *ngFor="let r of reservas.slice(0,4)"><span>◫</span><div><b>{{r.clase?.nombre || 'Fitness Session'}}</b><small>{{r.fecha_clase || 'Scheduled'}} · {{nombreEntrenador(r.clase?.entrenador)}}</small></div></div>
               <div *ngIf="!reservas.length"><span>◫</span><div><b>Fitness Retreat Weekend</b><small>Wellness · Outdoor</small></div></div>
-              <div *ngIf="!reservas.length"><span>◫</span><div><b>Zumba Dance Session</b><small>Cardio · Group Class</small></div></div>
+              <div *ngIf="!reservas.length"><span>◫</span><div><b>Zumba Dance Session</b><small>Cardio · Clase grupal</small></div></div>
             </div>
           </article>
 
@@ -328,10 +328,10 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           </article>
 
           <article class="cf-live-card">
-            <header><div><h2>Objetivos de Entrenamiento</h2><p>Metas semanales y avance</p></div><b>3 Active Goals</b></header>
-            <div class="cf-live-goal"><label><span>Cardio Training</span><b>80%</b></label><div><i style="width:80%"></i></div><small>Running + Cycling</small></div>
-            <div class="cf-live-goal"><label><span>Fuerza Training</span><b>65%</b></label><div><i style="width:65%"></i></div><small>Weights & Resistance</small></div>
-            <div class="cf-live-goal"><label><span>Mobility & Recovery</span><b>45%</b></label><div><i style="width:45%"></i></div><small>Stretching & Yoga</small></div>
+            <header><div><h2>Objetivos de Entrenamiento</h2><p>Metas semanales y avance</p></div><b>3 Metas Activas</b></header>
+            <div class="cf-live-goal"><label><span>Entrenamiento Cardio</span><b>80%</b></label><div><i style="width:80%"></i></div><small>Correr + Ciclismo</small></div>
+            <div class="cf-live-goal"><label><span>Fuerza Training</span><b>65%</b></label><div><i style="width:65%"></i></div><small>Pesas y Resistencia</small></div>
+            <div class="cf-live-goal"><label><span>Mobility & Recuperación</span><b>45%</b></label><div><i style="width:45%"></i></div><small>Estiramiento y Yoga</small></div>
           </article>
 
           <article class="cf-live-card cf-live-chart-card">
@@ -341,7 +341,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
 
           <article class="cf-live-card cf-live-chart-card">
             <header><div><h2>Estadísticas de Peso</h2><p>Progreso overview</p></div><b>-35 lbs</b></header>
-            <div class="cf-live-weight"><span>Start <b>190 lbs</b></span><div><i style="width:78%"></i></div><span>Current <b>155 lbs</b></span></div>
+            <div class="cf-live-weight"><span>Inicio <b>190 lbs</b></span><div><i style="width:78%"></i></div><span>Actual <b>155 lbs</b></span></div>
           </article>
         </section>
       </section>
@@ -365,41 +365,41 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
 
         <section class="cf-workout-block">
           <div class="cf-live-exercise-grid">
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>Completado</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Lunges"></div><h3>Lunges</h3><p>4 Sets • 30 Sec</p><span>Completado</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Push Ups"></div><h3>Push Ups</h3><p>3 Sets • 40 Sec</p><span>In Progreso</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Sentadillas"></div><h3>Sentadillas</h3><p>4 Series • 30 Seg</p><span>Completado</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Zancadas"></div><h3>Zancadas</h3><p>4 Series • 30 Seg</p><span>Completado</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Flexiones"></div><h3>Flexiones</h3><p>3 Series • 40 Seg</p><span>In Progreso</span></article>
           </div>
         </section>
 
         <section class="cf-workout-block">
-          <div class="cf-live-week-summary"><h2>Semana 1</h2><p>6 workouts completed • 1h 20m active</p></div>
+          <div class="cf-live-week-summary"><h2>Semana 1</h2><p>6 entrenamientos completados • 1 h 20 min activos</p></div>
           <div class="cf-live-exercise-grid">
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>Completado</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Plank"></div><h3>Plank</h3><p>3 Sets • 45 Sec</p><span>Completado</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Burpees"></div><h3>Burpees</h3><p>5 Sets • 20 Sec</p><span>In Progreso</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Sentadillas"></div><h3>Sentadillas</h3><p>4 Series • 30 Seg</p><span>Completado</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Plancha"></div><h3>Plancha</h3><p>3 Series • 45 Seg</p><span>Completado</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Burpees"></div><h3>Burpees</h3><p>5 Series • 20 Seg</p><span>In Progreso</span></article>
           </div>
         </section>
 
         <section class="cf-workout-block">
-          <div class="cf-live-week-summary"><h2>Semana 2</h2><p>7 workouts completed • 1h 30m active</p></div>
+          <div class="cf-live-week-summary"><h2>Semana 2</h2><p>7 entrenamientos completados • 1 h 30 min activos</p></div>
           <div class="cf-live-exercise-grid">
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Jump Rope"></div><h3>Jump Rope</h3><p>10 Min</p><span>Completado</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Squats"></div><h3>Squats</h3><p>4 Sets • 30 Sec</p><span>In Progreso</span></article>
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Lunges"></div><h3>Lunges</h3><p>4 Sets • 30 Sec</p><span>No Iniciado</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Saltar Soga"></div><h3>Saltar Soga</h3><p>10 Min</p><span>Completado</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Sentadillas"></div><h3>Sentadillas</h3><p>4 Series • 30 Seg</p><span>In Progreso</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Zancadas"></div><h3>Zancadas</h3><p>4 Series • 30 Seg</p><span>No Iniciado</span></article>
           </div>
         </section>
 
         <section class="cf-workout-block">
-          <div class="cf-live-week-summary"><h2>Semana 3</h2><p>4 workouts completed • 55m active</p></div>
+          <div class="cf-live-week-summary"><h2>Semana 3</h2><p>4 entrenamientos completados • 55 min activos</p></div>
           <div class="cf-live-exercise-grid">
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Rest Day"></div><h3>Rest Day</h3><p>Recovery</p><span>No Iniciado</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Día de Descanso"></div><h3>Día de Descanso</h3><p>Recuperación</p><span>No Iniciado</span></article>
           </div>
         </section>
 
         <section class="cf-workout-block">
-          <div class="cf-live-week-summary"><h2>Semana 4</h2><p>Recovery & stretching focus</p></div>
+          <div class="cf-live-week-summary"><h2>Semana 4</h2><p>Recuperación & stretching focus</p></div>
           <div class="cf-live-exercise-grid">
-            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Full Body Test"></div><h3>Full Body Test</h3><p>Performance Review</p><span>Pendiente</span></article>
+            <article><div class="cf-live-exercise-img"><img src="assets/exercises/deadbug_human.webp" alt="Prueba de Cuerpo Completo"></div><h3>Prueba de Cuerpo Completo</h3><p>Evaluación de Rendimiento</p><span>Pendiente</span></article>
           </div>
         </section>
 
@@ -417,9 +417,9 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               <h1>Hola {{auth.usuario?.nombre_usuario || 'Usuario'}}, </h1>
               <p>Este es tu plan de alimentación de hoy.</p>
               <div class="cf-diet-today-meals">
-                <div><span class="meal-thumb">🥗</span><b>Greek Salad</b><small>Desayuno</small><em>210 Calorías</em></div>
-                <div><span class="meal-thumb">🥣</span><b>Lentil Chili</b><small>Almuerzo</small><em>180 Calorías</em></div>
-                <div><span class="meal-thumb">🍎</span><b>Apple Salad</b><small>Cena</small><em>120 Calorías</em></div>
+                <div><span class="meal-thumb">🥗</span><b>Ensalada Griega</b><small>Desayuno</small><em>210 Calorías</em></div>
+                <div><span class="meal-thumb">🥣</span><b>Guiso de Lentejas</b><small>Almuerzo</small><em>180 Calorías</em></div>
+                <div><span class="meal-thumb">🍎</span><b>Ensalada de Manzana</b><small>Cena</small><em>120 Calorías</em></div>
               </div>
             </div>
             <div class="cf-diet-today-art"><img src="assets/showcase/hero-showcase.svg" alt="Diet plan illustration"></div>
@@ -436,7 +436,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               <div><i style="height:88%"></i><small>F</small></div>
               <div><i style="height:72%"></i><small>S</small></div>
             </div>
-            <footer><span><i></i>Reached goal</span><b>{{progresoSemanal()}}%</b></footer>
+            <footer><span><i></i>Meta alcanzada</span><b>{{progresoSemanal()}}%</b></footer>
           </article>
         </section>
 
@@ -444,16 +444,16 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <article class="cf-live-card">
             <header><div><h2>Nutricionistas Destacados</h2></div><span>‹ ›</span></header>
             <div class="cf-diet-people-grid">
-              <div><img src="assets/showcase/coach-showcase.svg" alt="Dietitian"><div><b>Gilbert Sandoval</b><small>6 yrs experience</small><em>★★★★★ 895</em></div></div>
-              <div><img src="assets/showcase/coach-showcase.svg" alt="Dietitian"><div><b>Eugene Mata</b><small>8 yrs experience</small><em>★★★★★ 832</em></div></div>
+              <div><img src="assets/showcase/coach-showcase.svg" alt="Nutricionista"><div><b>Gilbert Sandoval</b><small>6 años de experiencia</small><em>★★★★★ 895</em></div></div>
+              <div><img src="assets/showcase/coach-showcase.svg" alt="Nutricionista"><div><b>Eugene Mata</b><small>8 años de experiencia</small><em>★★★★★ 832</em></div></div>
             </div>
           </article>
 
           <article class="cf-live-card">
             <header><div><h2>Platos Destacados</h2></div><span>‹ ›</span></header>
             <div class="cf-diet-dish-grid">
-              <div><span class="dish-round">🥗</span><div><b>Thai Crab</b><small>180 Calorías</small><em>★★★★★ 866</em></div></div>
-              <div><span class="dish-round">🥙</span><div><b>Mexican Salad</b><small>210 Calorías</small><em>★★★★★ 668</em></div></div>
+              <div><span class="dish-round">🥗</span><div><b>Ensalada Thai</b><small>180 Calorías</small><em>★★★★★ 866</em></div></div>
+              <div><span class="dish-round">🥙</span><div><b>Ensalada Mexicana</b><small>210 Calorías</small><em>★★★★★ 668</em></div></div>
             </div>
           </article>
         </section>
@@ -464,14 +464,14 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <button class="active">Domingo</button><button>Lunes</button><button>Martes</button><button>Miércoles</button><button>Jueves</button><button>Viernes</button><button>Sábado</button>
           </nav>
           <div class="cf-weekly-diet-template-grid">
-            <article><span class="dish-large">🥗</span><h3>Greek Green Salad</h3><dl><div><dt>Calorías</dt><dd>330 Kcal</dd></div><div><dt>Proteína</dt><dd>60 g</dd></div><div><dt>Grasa</dt><dd>10 g</dd></div></dl></article>
-            <article><span class="dish-large">🥑</span><h3>Avocado Toast</h3><dl><div><dt>Calorías</dt><dd>280 Kcal</dd></div><div><dt>Proteína</dt><dd>80 g</dd></div><div><dt>Grasa</dt><dd>30 g</dd></div></dl></article>
-            <article><span class="dish-large">🥩</span><h3>Beef Steak</h3><dl><div><dt>Calorías</dt><dd>480 Kcal</dd></div><div><dt>Proteína</dt><dd>90 g</dd></div><div><dt>Grasa</dt><dd>20 g</dd></div></dl></article>
+            <article><span class="dish-large">🥗</span><h3>Ensalada Griega Verde</h3><dl><div><dt>Calorías</dt><dd>330 Kcal</dd></div><div><dt>Proteína</dt><dd>60 g</dd></div><div><dt>Grasa</dt><dd>10 g</dd></div></dl></article>
+            <article><span class="dish-large">🥑</span><h3>Tostada con Palta</h3><dl><div><dt>Calorías</dt><dd>280 Kcal</dd></div><div><dt>Proteína</dt><dd>80 g</dd></div><div><dt>Grasa</dt><dd>30 g</dd></div></dl></article>
+            <article><span class="dish-large">🥩</span><h3>Bistec de Res</h3><dl><div><dt>Calorías</dt><dd>480 Kcal</dd></div><div><dt>Proteína</dt><dd>90 g</dd></div><div><dt>Grasa</dt><dd>20 g</dd></div></dl></article>
           </div>
         </section>
 
         <section class="cf-live-card cf-diet-calories-card">
-          <header><div><h2>Diet Plan Calorías</h2><p>Resumen diario de calorías</p></div></header>
+          <header><div><h2>Calorías del Plan de Alimentación</h2><p>Resumen diario de calorías</p></div></header>
           <div class="cf-diet-calorie-chart">
             <div class="grid"><i></i><i></i><i></i><i></i></div>
             <svg viewBox="0 0 700 180" preserveAspectRatio="none"><path d="M0 145 C70 132 115 118 170 125 S275 92 335 104 S440 68 510 79 S615 52 700 62" fill="none" stroke="#5f57d9" stroke-width="3"/><path d="M0 156 C80 145 125 139 180 142 S285 120 345 127 S450 95 515 104 S620 82 700 89" fill="none" stroke="#c2bff0" stroke-width="2"/></svg>
@@ -515,7 +515,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <img src="assets/showcase/coach-showcase.svg" alt="Gym trainer">
             <h2>{{nombreEntrenador(t)}}</h2><p>{{t.especialidad || 'Fuerza & Conditioning'}}</p>
             <ul><li><b>Experiencia</b><span>Mallqui Gym</span></li><li><b>Disponible</b><span>{{configuracionForm.hora_apertura}} - {{configuracionForm.hora_cierre}}</span></li><li><b>Socios Entrenados</b><span>{{clientesActivos}}+</span></li></ul>
-            <button (click)="cambiarSeccion('trainer-profile')">Ver Perfil</button>
+            <button (click)="cambiarSegcion('trainer-profile')">Ver Perfil</button>
           </article>
           <ng-template #trainerEmpty><article class="cf-live-trainer-card"><img src="assets/showcase/coach-showcase.svg" alt="Gym trainer"><h2>Entrenador Mallqui</h2><p>Fuerza & Conditioning</p><button (click)="seccion='entrenador-admin'">Register Entrenador</button></article></ng-template>
         </section>
@@ -529,13 +529,13 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <h2>{{p.nombre || (i===0?'Basic':(i===1?'Premium':'Enterprise'))}}</h2>
             <h3>S/ {{p.precio || 0}} <small>Per {{p.duracion_meses || 1}} Month</small></h3>
             <b>{{i===0?'30':(i===1?'70':'150')}} Credits</b>
-            <ul><li>✓ {{i===0?'2':(i===1?'5':'10')}} Yoga Sessions</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} Hour Gym</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} Hour Dance</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} Hour Workout</li><li [class.disabled]="i===0">{{i===0?'No Entrenador':(i===1?'Junior Entrenador':'Dedicated Entrenador')}}</li><li [class.disabled]="i<2">{{i<2?'No Analytics':'Analytics Dashboard'}}</li></ul>
-            <button>{{i===0?'Current Package':'Select Plan'}}</button>
+            <ul><li>✓ {{i===0?'2':(i===1?'5':'10')}} Yoga Sessions</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} Hour Gym</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} Hour Dance</li><li>✓ {{i===0?'1':(i===1?'2':'5')}} Hour Entrenamiento</li><li [class.disabled]="i===0">{{i===0?'No Entrenador':(i===1?'Junior Entrenador':'Dedicated Entrenador')}}</li><li [class.disabled]="i<2">{{i<2?'No Analytics':'Analytics Dashboard'}}</li></ul>
+            <button>{{i===0?'Actual Package':'Select Plan'}}</button>
           </article>
           <ng-container *ngIf="!planesMembresia.length">
-            <article><h2>Basic</h2><h3>S/ 60 <small>Per Month</small></h3><b>30 Credits</b><ul><li>✓ 2 Yoga Sessions</li><li>✓ 1 Hour Gym</li><li>✓ 1 Hour Dance</li><li>✓ 1 Hour Workout</li><li class="disabled">No Entrenador</li><li class="disabled">No Analytics</li></ul><button>Current Package</button></article>
-            <article class="featured"><h2>Premium</h2><h3>S/ 90 <small>Per Month</small></h3><b>70 Credits</b><ul><li>✓ 5 Yoga Sessions</li><li>✓ 2 Hour Gym</li><li>✓ 2 Hour Dance</li><li>✓ 2 Hour Workout</li><li>✓ Junior Entrenador</li><li class="disabled">No Analytics</li></ul><button>Select Plan</button></article>
-            <article><h2>Enterprise</h2><h3>S/ 120 <small>Per Month</small></h3><b>150 Credits</b><ul><li>✓ 10 Yoga Sessions</li><li>✓ 5 Hour Gym</li><li>✓ 5 Hour Dance</li><li>✓ 5 Hour Workout</li><li>✓ Dedicated Entrenador</li><li>✓ Analytics Dashboard</li></ul><button>Select Plan</button></article>
+            <article><h2>Basic</h2><h3>S/ 60 <small>Per Month</small></h3><b>30 Credits</b><ul><li>✓ 2 Yoga Sessions</li><li>✓ 1 Hour Gym</li><li>✓ 1 Hour Dance</li><li>✓ 1 hora de entrenamiento</li><li class="disabled">No Entrenador</li><li class="disabled">No Analytics</li></ul><button>Actual Package</button></article>
+            <article class="featured"><h2>Premium</h2><h3>S/ 90 <small>Per Month</small></h3><b>70 Credits</b><ul><li>✓ 5 Yoga Sessions</li><li>✓ 2 Hour Gym</li><li>✓ 2 Hour Dance</li><li>✓ 2 horas de entrenamiento</li><li>✓ Junior Entrenador</li><li class="disabled">No Analytics</li></ul><button>Select Plan</button></article>
+            <article><h2>Enterprise</h2><h3>S/ 120 <small>Per Month</small></h3><b>150 Credits</b><ul><li>✓ 10 Yoga Sessions</li><li>✓ 5 Hour Gym</li><li>✓ 5 Hour Dance</li><li>✓ 5 horas de entrenamiento</li><li>✓ Dedicated Entrenador</li><li>✓ Panel de análisis</li></ul><button>Select Plan</button></article>
           </ng-container>
         </section>
       </section>
@@ -543,10 +543,10 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
       <section class="cf-live-page" *ngIf="seccion==='pagos'">
         <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Pagos</strong></div>
         <section class="cf-live-card cf-live-payments">
-          <header><div><h2>Payments by Month</h2><p>Resumen</p></div><b>{{pagos.length}} records</b></header>
-          <div class="table-wrap"><table class="management-table"><thead><tr><th>#</th><th>Invoice No.</th><th>Socio Name</th><th>Payment Método</th><th>Paid Fecha</th><th>Amount</th><th>Estado</th></tr></thead><tbody>
+          <header><div><h2>Pagos por Mes</h2><p>Resumen</p></div><b>{{pagos.length}} records</b></header>
+          <div class="table-wrap"><table class="management-table"><thead><tr><th>#</th><th>N.º de Factura</th><th>Socio Name</th><th>Payment Método</th><th>Paid Fecha</th><th>Amount</th><th>Estado</th></tr></thead><tbody>
             <tr *ngFor="let p of pagos; let i=index"><td>{{i+1}}</td><td>#INV-{{p.id_pago}}</td><td>{{clientePago(p)}}</td><td>{{p.metodo_pago}}</td><td>{{fecha(p.fecha_pago)}}</td><td>S/ {{p.monto | number:'1.2-2'}}</td><td>{{p.estado_pago}}</td></tr>
-            <tr *ngIf="!pagos.length"><td colspan="7">No payments registered.</td></tr>
+            <tr *ngIf="!pagos.length"><td colspan="7">No hay pagos registrados.</td></tr>
           </tbody></table></div>
         </section>
       </section>
@@ -660,7 +660,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <button type="button"
                 *ngFor="let tab of tabsModuloActual"
                 [class.active]="seccion===tab.id"
-                (click)="cambiarSeccion(tab.id)">
+                (click)="cambiarSegcion(tab.id)">
           <span>{{tab.nombre}}</span>
           <b *ngIf="badgeTab(tab.id)>0">{{badgeTab(tab.id)}}</b>
         </button>
@@ -710,20 +710,20 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           </section>
 
           <section class="cf-ref-stats">
-            <button type="button" (click)="cambiarSeccion('reportes')">
-              <div><small>Calorías Quemadas</small><strong>1,240 kcal</strong><span>+12% this week</span></div>
+            <button type="button" (click)="cambiarSegcion('reportes')">
+              <div><small>Calorías Quemadas</small><strong>1,240 kcal</strong><span>+12% esta semana</span></div>
               <i>🔥</i>
             </button>
-            <button type="button" (click)="cambiarSeccion('rutinas')">
-              <div><small>Minutos Activos</small><strong>92 mins</strong><span>Goal Achieved</span></div>
+            <button type="button" (click)="cambiarSegcion('rutinas')">
+              <div><small>Minutos Activos</small><strong>92 mins</strong><span>Meta Alcanzada</span></div>
               <i>⚡</i>
             </button>
-            <button type="button" (click)="cambiarSeccion('asistencias')">
-              <div><small>Pasos</small><strong>8,420</strong><span>Goal: 10,000</span></div>
+            <button type="button" (click)="cambiarSegcion('asistencias')">
+              <div><small>Pasos</small><strong>8,420</strong><span>Meta: 10,000</span></div>
               <i>↗</i>
             </button>
-            <button type="button" (click)="cambiarSeccion('reportes')">
-              <div><small>Sueño</small><strong>7h 20m</strong><span>Good Recovery</span></div>
+            <button type="button" (click)="cambiarSegcion('reportes')">
+              <div><small>Sueño</small><strong>7h 20m</strong><span>Good Recuperación</span></div>
               <i>☾</i>
             </button>
           </section>
@@ -732,7 +732,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <article class="cf-ref-activity">
               <header>
                 <div><h2>Actividad Semanal</h2><p>Performance breakdown · last 7 days</p></div>
-                <span>6 Workouts · 5h 40m</span>
+                <span>6 Entrenamientos · 5h 40m</span>
               </header>
               <div class="cf-ref-chart-legend">
                 <span><i class="purple"></i>Asistencia</span>
@@ -756,7 +756,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             </article>
 
             <article class="cf-ref-split">
-              <header><div><h2>Distribución de Entrenamiento</h2><p>Last 7 days activity</p></div><span>12 Sessions</span></header>
+              <header><div><h2>Distribución de Entrenamiento</h2><p>Actividad de los últimos 7 días</p></div><span>12 Sessions</span></header>
               <div class="cf-ref-donut"><div><strong>100%</strong><small>Total</small></div></div>
               <div class="cf-ref-split-list">
                 <p><span><i class="purple"></i>Cardio</span><b>48%</b></p>
@@ -768,50 +768,50 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
 
           <section class="cf-ref-secondary">
             <article class="cf-ref-history">
-              <header><div><h2>Workout History</h2><p>Recent training activity</p></div></header>
+              <header><div><h2>Historial de Entrenamientos</h2><p>Actividad reciente de entrenamiento</p></div></header>
               <div class="cf-ref-history-list">
-                <div><span>↗</span><div><b>Morning Run</b><small>Outdoor • Moderate pace</small></div><em>35 min<br>320 kcal</em><strong>Today</strong></div>
+                <div><span>↗</span><div><b>Morning Run</b><small>Outdoor • Moderate pace</small></div><em>35 min<br>320 kcal</em><strong>Hoy</strong></div>
                 <div><span>🏋</span><div><b>Fuerza Training</b><small>Upper body • Push focus</small></div><em>50 min<br>410 kcal</em><strong>Yesterday</strong></div>
                 <div><span>◉</span><div><b>Cycling Session</b><small>Indoor bike • Resistance 6</small></div><em>40 min<br>290 kcal</em><strong>2d ago</strong></div>
-                <div><span>⚡</span><div><b>HIIT Workout</b><small>High intensity interval</small></div><em>25 min<br>260 kcal</em><strong>3d ago</strong></div>
+                <div><span>⚡</span><div><b>Entrenamiento HIIT</b><small>High intensity interval</small></div><em>25 min<br>260 kcal</em><strong>3d ago</strong></div>
               </div>
             </article>
 
             <article class="cf-ref-strength">
-              <header><div><h2>Fuerza Progreso</h2><p>Bench Press • 12-week performance trend</p></div><b>+18% Improvement</b></header>
+              <header><div><h2>Fuerza Progreso</h2><p>Press de banca • tendencia de 12 semanas</p></div><b>+18% Improvement</b></header>
               <div class="cf-ref-strength-chart">
                 <svg viewBox="0 0 560 180" preserveAspectRatio="none"><path d="M10 150 C80 145 110 128 160 130 S245 112 300 104 S390 80 445 70 S510 48 550 40" fill="none" stroke="#5b55d9" stroke-width="4"/></svg>
               </div>
-              <footer><span>Start <b>60 kg</b></span><span>Latest <b>85 kg</b></span><span>Best Set <b>90 kg</b></span><span>Target <b>100 kg</b></span></footer>
+              <footer><span>Inicio <b>60 kg</b></span><span>Latest <b>85 kg</b></span><span>Best Set <b>90 kg</b></span><span>Target <b>100 kg</b></span></footer>
             </article>
           </section>
 
           <section class="cf-ref-tertiary">
             <article>
-              <header><div><h2>Sueño Recovery</h2><p>Last 7 days • Quality tracking</p></div><b>7.6h avg • Good</b></header>
+              <header><div><h2>Sueño Recuperación</h2><p>Last 7 days • Quality tracking</p></div><b>7.6h avg • Good</b></header>
               <div class="cf-ref-sleep-bars"><i style="height:66%"></i><i style="height:78%"></i><i style="height:72%"></i><i style="height:88%"></i><i style="height:81%"></i><i style="height:92%"></i><i style="height:85%"></i></div>
               <footer><span>Best Night <b>8.4h</b></span><span>Consistency <b>+12%</b></span><span>Deep Sueño <b>2.1h</b></span></footer>
             </article>
             <article>
-              <header><div><h2>Workout Frequency</h2><p>Target 60/90</p></div></header>
+              <header><div><h2>Frecuencia de Entrenamiento</h2><p>Target 60/90</p></div></header>
               <div class="cf-ref-frequency"><div><strong>{{progresoSemanal()}}%</strong><small>Weekly</small></div></div>
             </article>
           </section>
 
           <section class="cf-ref-insights">
             <article class="cf-ref-smart">
-              <header><div><h2>Smart Insights</h2><p>AI-based weekly performance summary</p></div><b>Live Analysis</b></header>
+              <header><div><h2>Smart Insights</h2><p>Resumen semanal de rendimiento</p></div><b>Live Analysis</b></header>
               <div class="cf-ref-insight-list">
-                <div><span>☾</span><div><b>Sueño Improvement</b><small>You slept 12% better than last week with improved recovery cycles.</small></div><em>+12%</em></div>
-                <div><span>↘</span><div><b>Weekend Drop in Activity</b><small>Your workout activity dropped significantly on weekends compared to weekdays.</small></div><em>-18%</em></div>
-                <div><span>◎</span><div><b>Goal Progreso</b><small>Has completado {{progresoSemanal()}}% de tu meta semanal. Keep the momentum.</small></div><em>{{progresoSemanal()}}%</em></div>
-                <div><span>🔥</span><div><b>Calorie Burn Trend</b><small>Your average calorie burn increased during strength sessions this week.</small></div><em>+9%</em></div>
+                <div><span>☾</span><div><b>Sueño Improvement</b><small>Dormiste 12% mejor que la semana anterior y mejoró tu recuperación.</small></div><em>+12%</em></div>
+                <div><span>↘</span><div><b>Baja de Actividad el Fin de Semana</b><small>Tu actividad disminuyó durante el fin de semana frente a los días laborables.</small></div><em>-18%</em></div>
+                <div><span>◎</span><div><b>Progreso de Meta</b><small>Has completado {{progresoSemanal()}}% de tu meta semanal. Keep the momentum.</small></div><em>{{progresoSemanal()}}%</em></div>
+                <div><span>🔥</span><div><b>Calorie Burn Trend</b><small>Tu quema promedio de calorías aumentó en las sesiones de fuerza esta semana.</small></div><em>+9%</em></div>
               </div>
             </article>
             <article class="cf-ref-weight">
               <header><div><h2>Weight Management</h2><p>Progreso overview • Last 12 months</p></div><b>-35 lbs</b></header>
               <div class="cf-ref-weight-track"><i style="width:78%"></i></div>
-              <div class="cf-ref-weight-labels"><span>Start <b>190 lbs</b></span><span>Steady Grasa Loss</span><span>Current <b>155 lbs</b></span></div>
+              <div class="cf-ref-weight-labels"><span>Inicio <b>190 lbs</b></span><span>Steady Grasa Loss</span><span>Actual <b>155 lbs</b></span></div>
               <small>Target: 160 lbs</small>
             </article>
           </section>
@@ -832,7 +832,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <section class="clients-v3-shell">
           <header class="clients-v3-hero">
             <div class="clients-v3-hero-copy">
-              <span>MEMBERS MANAGEMENT</span>
+              <span>GESTIÓN DE SOCIOS</span>
               <h2>Socios</h2>
               <p>Administra los datos, accesos y estado de tus miembros desde un solo lugar.</p>
             </div>
@@ -845,15 +845,15 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <section class="clients-v3-stats">
             <article>
               <span class="clients-v3-stat-icon">♙</span>
-              <div><small>TOTAL MEMBERS</small><b>{{clientes.length}}</b><p>registros en el sistema</p></div>
+              <div><small>TOTAL DE SOCIOS</small><b>{{clientes.length}}</b><p>registros en el sistema</p></div>
             </article>
             <article>
               <span class="clients-v3-stat-icon success">✓</span>
-              <div><small>ACTIVE MEMBERS</small><b>{{clientesActivos}}</b><p>pueden usar el servicio</p></div>
+              <div><small>SOCIOS ACTIVOS</small><b>{{clientesActivos}}</b><p>pueden usar el servicio</p></div>
             </article>
             <article>
               <span class="clients-v3-stat-icon muted">–</span>
-              <div><small>INACTIVE MEMBERS</small><b>{{clientesInactivos}}</b><p>historial conservado</p></div>
+              <div><small>INSOCIOS ACTIVOS</small><b>{{clientesInactivos}}</b><p>historial conservado</p></div>
             </article>
           </section>
 
@@ -1082,7 +1082,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
                 </label>
               </div>
               <button class="admin-primary" type="submit">Asignar membresía</button>
-              <button class="admin-secondary" type="button" (click)="cambiarSeccion('planes')">Administrar tarifas</button>
+              <button class="admin-secondary" type="button" (click)="cambiarSegcion('planes')">Administrar tarifas</button>
             </form>
           </article>
 
@@ -1582,7 +1582,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <small>CAJA REQUERIDA</small>
             <h2>Abre la caja antes de registrar un gasto</h2>
             <p>Todo egreso debe quedar asociado a una caja abierta para que el cierre, los reportes y la auditoría cuadren correctamente.</p>
-            <button type="button" class="admin-primary" (click)="cambiarSeccion('caja')">Ir a abrir caja</button>
+            <button type="button" class="admin-primary" (click)="cambiarSegcion('caja')">Ir a abrir caja</button>
           </div>
           <article class="operation-locked-side">
             <span>Última operación</span>
@@ -1927,7 +1927,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           </div>
         </article>
         <article class="report-panel">
-          <div class="management-heading"><div><h2>Próximos vencimientos</h2><p>Socios que requieren seguimiento para renovar su membresía.</p></div><button type="button" class="admin-secondary" (click)="cambiarSeccion('membresias')">Gestionar membresías</button></div>
+          <div class="management-heading"><div><h2>Próximos vencimientos</h2><p>Socios que requieren seguimiento para renovar su membresía.</p></div><button type="button" class="admin-secondary" (click)="cambiarSegcion('membresias')">Gestionar membresías</button></div>
           <div class="table-wrap">
             <table class="management-table">
               <thead><tr><th>Socio</th><th>Plan</th><th>Fecha fin</th><th>Días restantes</th></tr></thead>
@@ -2340,8 +2340,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     kardex:['Kardex y stock','Ajustes manuales y trazabilidad de movimientos de inventario'],
     'historial-ventas':['Historial de Ventas','Consulta de todas las ventas registradas'],
     'reporte-asistencias':['Reporte de Asistencias','Resumen y detalle de asistencias registradas'],
-    entrenador:['Trainers','Main trainer management'], clases:['Clases','Programación, horarios y cupos'],
-    asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['My Workout Plan','Workout routines and member tracking'],
+    entrenador:['Entrenadors','Main trainer management'], clases:['Clases','Programación, horarios y cupos'],
+    asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['My Entrenamiento Plan','Entrenamiento routines and member tracking'],
     reservas:['Reservas','Reservas creadas desde el portal y control de asistencia'], categorias:['Categorías','Clasificación de productos'],
     productos:['Productos','Registro, precios y control de stock'], proveedores:['Proveedores','Proveedores de productos'],
     compras:['Compras','Ingreso de productos e inventario'], ventas:['Ventas','Ventas de productos y stock'],
@@ -2353,7 +2353,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     configuracion:['Configuración','Ajustes generales y mantenimiento del sistema'],
     nutricion:['My Diet Plan','Nutrition plans and member tracking'],
     equipos:['Equipments','Machines, maintenance and operating status'],
-    eventos:['Gym Events','Gym activities, campaigns and events'],
+    eventos:['Gym Eventos','Gym activities, campaigns and events'],
     galeria:['Gallery','Gym visual content and photos'],
     noticias:['News & Updates','Announcements, promotions and updates'],
     salarios:['Salaries','Staff remuneration and payments'],
@@ -2474,7 +2474,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   constructor(public auth: AuthService, private api: AdminApiService, private router: Router) {}
 
   ngOnInit(): void {
-    this.seccion = this.normalizarSeccion(this.seccionInicial || 'dashboard');
+    this.seccion = this.normalizarSegcion(this.seccionInicial || 'dashboard');
     try{
       this.sidebarCerrado = localStorage.getItem('mallqui_admin_sidebar_closed') === '1';
       this.autoRefreshActivo = localStorage.getItem('mallqui_admin_auto_refresh') !== '0';
@@ -2483,12 +2483,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       this.autoRefreshActivo = true;
     }
     this.cargarDashboard();
-    if (this.seccion !== 'dashboard') this.cargarSeccion(this.seccion);
+    if (this.seccion !== 'dashboard') this.cargarSegcion(this.seccion);
 
     // Refresco inteligente: no interrumpe formularios ni trabaja cuando la pestaña está oculta.
     this.autoRefreshId = setInterval(() => {
       if (this.autoRefreshActivo && !document.hidden && !this.actualizandoDatos && this.puedeAutoActualizar) {
-        this.actualizarSeccionActual(true);
+        this.actualizarSegcionActual(true);
       }
     }, 15000);
   }
@@ -2596,7 +2596,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
     const encontrado=destinos.find(x=>x.claves.some(k=>q.includes(k)));
     if(encontrado){
-      this.cambiarSeccion(encontrado.seccion);
+      this.cambiarSegcion(encontrado.seccion);
       this.busquedaAdmin='';
       return;
     }
@@ -2838,16 +2838,16 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   get tituloActual(): string { return this.titulos[this.seccion]?.[0] ?? 'Administrador'; }
   get subtituloActual(): string { return this.titulos[this.seccion]?.[1] ?? ''; }
-  get esSeccionSociosSecundaria(): boolean {
+  get esSegcionSociosSegundaria(): boolean {
     return ['clientes','membresias','asistencias','pagos'].includes(this.seccion);
   }
-  get esSeccionServiciosSecundaria(): boolean {
+  get esSegcionServiciosSegundaria(): boolean {
     return ['reservas','rutinas','clases'].includes(this.seccion);
   }
-  get esSeccionAtencionSecundaria(): boolean {
+  get esSegcionAtencionSegundaria(): boolean {
     return ['soporte','opiniones','comunicacion'].includes(this.seccion);
   }
-  get esSeccionGestionSecundaria(): boolean {
+  get esSegcionGestionSegundaria(): boolean {
     return ['entrenador','planes','gastos','reportes','reporte-asistencias','usuarios','auditoria','configuracion','caja','ventas','historial-ventas','inventario','kardex','proveedores','compras','categorias','productos','nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'].includes(this.seccion);
   }
 
@@ -2859,7 +2859,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     return Boolean(this.ultimaActualizacionTs) && (Date.now()-this.ultimaActualizacionTs)>60000;
   }
 
-  private normalizarSeccion(id:string):string{
+  private normalizarSegcion(id:string):string{
     if(id==='socios-hub') return 'clientes';
     if(id==='servicios') return 'clases';
     if(id==='atencion') return 'soporte';
@@ -2967,7 +2967,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       reportes:'reportes',
       sistema:'configuracion'
     };
-    this.cambiarSeccion(destino[modulo]||'dashboard');
+    this.cambiarSegcion(destino[modulo]||'dashboard');
   }
 
   badgeModulo(modulo:string):number{
@@ -2995,13 +2995,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   abrirPrioridad(p:any):void{
     const tipo=String(p?.tipo||'').toLowerCase();
-    if(tipo==='rutinas'){ this.cambiarSeccion('rutinas'); return; }
-    if(tipo==='soporte'){ this.cambiarSeccion('soporte'); return; }
-    if(tipo==='opiniones'){ this.cambiarSeccion('opiniones'); return; }
-    if(tipo==='inventario'){ this.cambiarSeccion('inventario'); return; }
-    if(tipo==='membresias'){ this.cambiarSeccion('membresias'); return; }
-    if(tipo==='pagos'){ this.cambiarSeccion('pagos'); return; }
-    this.cambiarSeccion('dashboard');
+    if(tipo==='rutinas'){ this.cambiarSegcion('rutinas'); return; }
+    if(tipo==='soporte'){ this.cambiarSegcion('soporte'); return; }
+    if(tipo==='opiniones'){ this.cambiarSegcion('opiniones'); return; }
+    if(tipo==='inventario'){ this.cambiarSegcion('inventario'); return; }
+    if(tipo==='membresias'){ this.cambiarSegcion('membresias'); return; }
+    if(tipo==='pagos'){ this.cambiarSegcion('pagos'); return; }
+    this.cambiarSegcion('dashboard');
   }
 
   iconoPrioridad(tipo:any):string{
@@ -3117,20 +3117,20 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     return this.diasActividadDashboard().reduce((total:number, d:any) => total + Number(d?.total || 0), 0);
   }
 
-  cambiarSeccion(id: string): void {
-    const destino=this.normalizarSeccion(id);
+  cambiarSegcion(id: string): void {
+    const destino=this.normalizarSegcion(id);
     this.seccion = destino;
     this.error = '';
-    this.cargarSeccion(destino);
+    this.cargarSegcion(destino);
     window.scrollTo({top:0, behavior:'smooth'});
   }
 
   abrirNuevoSocioDesdeDashboard(): void {
-    this.cambiarSeccion('clientes');
+    this.cambiarSegcion('clientes');
     setTimeout(() => this.nuevoCliente(), 0);
   }
 
-  actualizarSeccionActual(silencioso = false): void {
+  actualizarSegcionActual(silencioso = false): void {
     if (this.actualizandoDatos && !silencioso) return;
 
     if (!silencioso) {
@@ -3140,7 +3140,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
     this.cargarDashboard();
     if (this.seccion !== 'dashboard') {
-      this.cargarSeccion(this.seccion);
+      this.cargarSegcion(this.seccion);
     }
 
     if (!silencioso) {
@@ -3151,7 +3151,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     }
   }
 
-  private cargarSeccion(id: string): void {
+  private cargarSegcion(id: string): void {
     switch (id) {
       case 'dashboard':
         this.cargarDashboard();
@@ -3227,16 +3227,16 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         break;
 
       case 'socios-hub':
-        this.cargarSeccion('clientes');
+        this.cargarSegcion('clientes');
         break;
       case 'servicios':
-        this.cargarSeccion('clases');
+        this.cargarSegcion('clases');
         break;
       case 'atencion':
-        this.cargarSeccion('soporte');
+        this.cargarSegcion('soporte');
         break;
       case 'gestion':
-        this.cargarSeccion('caja');
+        this.cargarSegcion('caja');
         break;
       case 'clientes':
         this.cargarClientes();
@@ -3370,7 +3370,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   recargarTodo(): void {
     this.cargarDashboard();
-    if (this.seccion !== 'dashboard') this.cargarSeccion(this.seccion);
+    if (this.seccion !== 'dashboard') this.cargarSegcion(this.seccion);
   }
 
   cargarDashboard(){
@@ -4142,30 +4142,30 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   abrirActividadPortal(a:any):void{
     const t=String(a?.tipo||'').toLowerCase();
     if(t==='rutina'){ this.atenderSolicitudRutina(a); return; }
-    if(t==='soporte'){ this.cambiarSeccion('soporte'); return; }
-    if(t==='reserva'){ this.cambiarSeccion('reservas'); return; }
-    if(t==='pago'){ this.cambiarSeccion('pagos'); return; }
-    if(t==='opinion'){ this.cambiarSeccion('opiniones'); return; }
+    if(t==='soporte'){ this.cambiarSegcion('soporte'); return; }
+    if(t==='reserva'){ this.cambiarSegcion('reservas'); return; }
+    if(t==='pago'){ this.cambiarSegcion('pagos'); return; }
+    if(t==='opinion'){ this.cambiarSegcion('opiniones'); return; }
   }
 
   irAlertasPendientes():void{
     if((this.dashboard?.alertas?.rutinas_pendientes ?? 0)>0 || (this.dashboard?.alertas?.soporte_pendiente ?? 0)>0){
-      this.cambiarSeccion('soporte');
+      this.cambiarSegcion('soporte');
       return;
     }
     if((this.dashboard?.alertas?.opiniones_pendientes ?? 0)>0){
-      this.cambiarSeccion('opiniones');
+      this.cambiarSegcion('opiniones');
       return;
     }
     if((this.dashboard?.inventario?.productos_stock_bajo ?? 0)>0){
-      this.cambiarSeccion('inventario');
+      this.cambiarSegcion('inventario');
       return;
     }
     if((this.dashboard?.membresias?.por_vencer_7_dias ?? 0)>0){
-      this.cambiarSeccion('membresias');
+      this.cambiarSegcion('membresias');
       return;
     }
-    this.cambiarSeccion('dashboard');
+    this.cambiarSegcion('dashboard');
   }
 
   atenderSolicitudRutina(s:any):void{
@@ -4189,7 +4189,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       estado:'Activo'
     };
     this.rutinaDetallesForm=[{ejercicio:'',series:3,repeticiones:12,peso_recomendado:null,descanso_segundos:60,observaciones:''}];
-    this.cambiarSeccion('rutinas');
+    this.cambiarSegcion('rutinas');
     this.ok('Solicitud cargada: completa la rutina y guárdala para notificar al cliente');
   }
 
