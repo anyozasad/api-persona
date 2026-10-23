@@ -312,7 +312,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             <div class="cf-live-list">
               <div *ngFor="let r of reservas.slice(0,4)"><span>◫</span><div><b>{{r.clase?.nombre || 'Fitness Session'}}</b><small>{{r.fecha_clase || 'Scheduled'}} · {{nombreEntrenador(r.clase?.entrenador)}}</small></div></div>
               <div *ngIf="!reservas.length"><span>◫</span><div><b>Fitness Retreat Weekend</b><small>Wellness · Outdoor</small></div></div>
-              <div *ngIf="!reservas.length"><span>◫</span><div><b>Zumba Dance Session</b><small>Cardio · Clase grupal</small></div></div>
+              <div *ngIf="!reservas.length"><span>◫</span><div><b>Sesión de Zumba</b><small>Cardio · Clase grupal</small></div></div>
             </div>
           </article>
 
@@ -772,7 +772,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               <div class="cf-ref-history-list">
                 <div><span>↗</span><div><b>Morning Run</b><small>Outdoor • Moderate pace</small></div><em>35 min<br>320 kcal</em><strong>Hoy</strong></div>
                 <div><span>🏋</span><div><b>Fuerza Training</b><small>Upper body • Push focus</small></div><em>50 min<br>410 kcal</em><strong>Yesterday</strong></div>
-                <div><span>◉</span><div><b>Cycling Session</b><small>Indoor bike • Resistance 6</small></div><em>40 min<br>290 kcal</em><strong>2d ago</strong></div>
+                <div><span>◉</span><div><b>Sesión de Ciclismo</b><small>Indoor bike • Resistance 6</small></div><em>40 min<br>290 kcal</em><strong>2d ago</strong></div>
                 <div><span>⚡</span><div><b>Entrenamiento HIIT</b><small>High intensity interval</small></div><em>25 min<br>260 kcal</em><strong>3d ago</strong></div>
               </div>
             </article>
