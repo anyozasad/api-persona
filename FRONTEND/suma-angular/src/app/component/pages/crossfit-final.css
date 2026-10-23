@@ -6452,3 +6452,55 @@ button.danger,
   .admin-home-redesign .admin-content{margin-left:0!important;padding-top:58px!important}
 }
 
+
+/* HERO FOTO MALLQUI · PRESENTACION */
+.cf-ref-hero-art{
+  position:relative!important;
+  overflow:hidden!important;
+  background:#17182b!important;
+}
+.cf-ref-hero-art>img{
+  width:100%!important;
+  height:100%!important;
+  display:block!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  filter:saturate(.92) contrast(1.03)!important;
+}
+.cf-ref-hero-art:after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  background:linear-gradient(90deg,rgba(31,30,58,.04),rgba(31,30,58,.2))!important;
+  pointer-events:none!important;
+}
+.cf-ref-hero-photo-caption{
+  position:absolute!important;
+  left:18px!important;
+  right:18px!important;
+  bottom:16px!important;
+  z-index:2!important;
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  padding:10px 12px!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  border-radius:6px!important;
+  background:rgba(30,29,59,.58)!important;
+  backdrop-filter:blur(5px)!important;
+  color:#fff!important;
+}
+.cf-ref-hero-photo-caption small{
+  color:rgba(255,255,255,.78)!important;
+  font-size:10px!important;
+  font-weight:700!important;
+  letter-spacing:.7px!important;
+}
+.cf-ref-hero-photo-caption b{
+  color:#fff!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  letter-spacing:.3px!important;
+}
+
