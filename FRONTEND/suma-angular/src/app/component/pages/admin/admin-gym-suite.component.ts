@@ -85,18 +85,18 @@ interface GymModuleConfig {
 
         <section class="cf-suite-complete" *ngSwitchCase="'galeria'">
           <header class="cf-suite-page-head"><div><h1>Galería</h1><p>Galería del gimnasio, clases y eventos destacados</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Subir Imagen</button></header>
-          <div class="cf-suite-gallery-filter"><button class="active">Todos</button><button>Entrenamiento</button><button>Eventos</button><button>Socios</button><button>Equipos</button></div>
+          <div class="cf-suite-gallery-filter"><button [class.active]="filtroGaleria==='Todos'" (click)="filtrarGaleria('Todos')">Todos</button><button [class.active]="filtroGaleria==='Entrenamiento'" (click)="filtrarGaleria('Entrenamiento')">Entrenamiento</button><button [class.active]="filtroGaleria==='Eventos'" (click)="filtrarGaleria('Eventos')">Eventos</button><button [class.active]="filtroGaleria==='Socios'" (click)="filtrarGaleria('Socios')">Socios</button><button [class.active]="filtroGaleria==='Equipos'" (click)="filtrarGaleria('Equipos')">Equipos</button></div>
           <section class="cf-suite-gallery">
-            <article *ngFor="let item of (records.length ? records : galleryFallback)"><img [src]="item.imagen_url || 'assets/showcase/class-showcase.svg'" [alt]="item.titulo"><div><b>{{item.titulo}}</b><span>{{item.count || 52}} fotos</span></div></article>
+            <article *ngFor="let item of galeriaVisible"><img [src]="item.imagen_url || 'assets/showcase/class-showcase.svg'" [alt]="item.titulo"><div><b>{{item.titulo}}</b><span>{{item.count || 52}} fotos</span></div></article>
           </section>
           <div class="cf-suite-kpis compact"><article><small>Álbumes</small><b>8</b><span>Colecciones organizadas</span></article><article><small>Fotos</small><b>248</b><span>Contenido publicado</span></article><article><small>Este Mes</small><b>36</b><span>Nuevas cargas</span></article><article><small>Almacenamiento</small><b>68%</b><span>Capacidad multimedia</span></article></div>
         </section>
 
         <section class="cf-suite-complete" *ngSwitchCase="'noticias'">
           <header class="cf-suite-page-head"><div><h1>Noticias y Novedades</h1><p>Noticias, anuncios y artículos recientes del gimnasio</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Noticia</button></header>
-          <section class="cf-news-featured"><img src="assets/showcase/hero-showcase.svg" alt="Noticia destacada"><div><span>NOVEDAD DESTACADA</span><h2>Nuevos Programas de Entrenamiento Disponibles</h2><p>Conoce los nuevos programas de fuerza, acondicionamiento y socios de Mallqui Gym.</p><button>Leer Más</button></div></section>
+          <section class="cf-news-featured"><img src="assets/showcase/hero-showcase.svg" alt="Noticia destacada"><div><span>NOVEDAD DESTACADA</span><h2>Nuevos Programas de Entrenamiento Disponibles</h2><p>Conoce los nuevos programas de fuerza, acondicionamiento y socios de Mallqui Gym.</p><button (click)="mostrarAviso('Consulta las novedades completas en la lista inferior.')">Leer Más</button></div></section>
           <section class="cf-suite-news">
-            <article *ngFor="let item of (records.length ? records : newsFallback)"><img [src]="item.imagen_url || 'assets/showcase/hero-showcase.svg'" [alt]="item.titulo"><div><h3>{{item.titulo}}</h3><small>Publicado el - {{item.fecha || '30/06/2026'}}</small><p>{{item.subtitulo || item.detalle || 'Últimas noticias y novedades de Mallqui Gym.'}}</p><div class="cf-news-actions"><button type="button">Leer Más</button><button type="button" (click)="editar(item)">Editar</button></div></div></article>
+            <article *ngFor="let item of (records.length ? records : newsFallback)"><img [src]="item.imagen_url || 'assets/showcase/hero-showcase.svg'" [alt]="item.titulo"><div><h3>{{item.titulo}}</h3><small>Publicado el - {{item.fecha || '30/06/2026'}}</small><p>{{item.subtitulo || item.detalle || 'Últimas noticias y novedades de Mallqui Gym.'}}</p><div class="cf-news-actions"><button type="button" (click)="editar(item)">Ver Detalle</button><button type="button" (click)="editar(item)">Editar</button></div></div></article>
           </section>
           <section class="cf-suite-card"><header><div><h2>Categorías de Noticias</h2><p>Distribución de contenido</p></div></header><div class="cf-news-categories"><span><b>12</b>Entrenamiento</span><span><b>8</b>Nutrición</span><span><b>6</b>Eventos</span><span><b>4</b>Anuncios</span></div></section>
         </section>
@@ -119,7 +119,7 @@ interface GymModuleConfig {
         </section>
 
         <section class="cf-suite-complete" *ngSwitchCase="'ingresos'">
-          <header class="cf-suite-page-head"><div><h1>Ingresos</h1><p>Resumen de ingresos, fuentes y rendimiento anual</p></div><div><button>Exportar</button><button class="primary">Este Año</button></div></header>
+          <header class="cf-suite-page-head"><div><h1>Ingresos</h1><p>Resumen de ingresos, fuentes y rendimiento anual</p></div><div><button (click)="exportCsv()">Exportar</button><button class="primary" (click)="mostrarAviso('Mostrando el periodo anual actual.')">Este Año</button></div></header>
           <div class="cf-suite-income-cards">
             <article><small>Ganancia Neta</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>+18.4%</span></article>
             <article><small>Ingresos Totales</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>+12.5%</span></article>
@@ -142,7 +142,7 @@ interface GymModuleConfig {
             <article><small>Monto Total</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>Valor facturado</span></article>
           </div>
           <section class="cf-suite-card">
-            <div class="cf-suite-invoice-note"><span>Selecciona facturas para enviar una actualización de pago.</span><button type="button">Enviar a todos</button></div>
+            <div class="cf-suite-invoice-note"><span>Selecciona facturas para enviar una actualización de pago.</span><button type="button" (click)="mostrarAviso('Actualización de pago preparada para los registros visibles.')">Enviar a todos</button></div>
             <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th><input type="checkbox"></th><th>N.º de Factura</th><th>Socio del Gimnasio</th><th>Fecha de Creación</th><th>Fecha de Vencimiento</th><th>Estado</th><th>Monto</th><th>Acciones</th></tr></thead><tbody>
               <tr *ngFor="let item of filtered"><td><input type="checkbox"></td><td>#INV-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.fecha || '—'}}</td><td>{{item.fecha || '—'}}</td><td><span class="status-select">{{item.estado}}</span></td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><div class="cf-invoice-actions"><button class="cf-suite-link" (click)="editar(item)">Ver</button><button class="cf-suite-link" (click)="editar(item)">Editar</button></div></td></tr>
               <tr *ngIf="!filtered.length"><td colspan="8">No hay facturas registradas.</td></tr>
@@ -367,6 +367,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   editandoId: number | null = null;
   toast = '';
   error = '';
+  filtroGaleria = 'Todos';
 
   form: any = this.formVacio();
 
@@ -495,22 +496,22 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   ];
 
   equipmentFallback:any[] = [
-    {titulo:'Dumbbells',count:48,subtitulo:'2-40 kg range'},{titulo:'Strength Machines',count:26,subtitulo:'Chest, leg & cable'},
-    {titulo:'Workout Stations',count:18,subtitulo:'Multi-functional rigs'},{titulo:'Air Bikes',count:14,subtitulo:'HIIT cardio'},
+    {titulo:'Mancuernas',count:48,subtitulo:'Rango de 2 a 40 kg'},{titulo:'Máquinas de Fuerza',count:26,subtitulo:'Pecho, piernas y poleas'},
+    {titulo:'Estaciones de Entrenamiento',count:18,subtitulo:'Estructuras multifuncionales'},{titulo:'Bicicletas de Aire',count:14,subtitulo:'Cardio HIIT'},
     {titulo:'Bicicletas de Spinning',count:20,subtitulo:'Ciclismo indoor'},{titulo:'Pesas Rusas',count:60,subtitulo:'Rango de 4 a 32 kg'},
-    {titulo:'Workout Benches',count:22,subtitulo:'Flat & adjustable'},{titulo:'Barbells',count:35,subtitulo:'Olympic bars'},
-    {titulo:'Bumper Plates',count:90,subtitulo:'Rubber coated'},{titulo:'Foam Rollers',count:30,subtitulo:'Recovery tools'},
-    {titulo:'Squat Racks',count:10,subtitulo:'Heavy-duty racks'},{titulo:'Treadmills',count:24,subtitulo:'Commercial grade'}
+    {titulo:'Bancos de Entrenamiento',count:22,subtitulo:'Planos y ajustables'},{titulo:'Barras',count:35,subtitulo:'Barras olímpicas'},
+    {titulo:'Discos Olímpicos',count:90,subtitulo:'Recubiertos de goma'},{titulo:'Rodillos de Espuma',count:30,subtitulo:'Herramientas de recuperación'},
+    {titulo:'Racks para Sentadillas',count:10,subtitulo:'Estructura reforzada'},{titulo:'Caminadoras',count:24,subtitulo:'Uso comercial'}
   ];
   eventFallback:any[] = [
-    {day:15,titulo:'Sensual dance workout for complete beginners.',subtitulo:'Mallqui Gym · 10:30 - 11:30',estado:'Sales end soon',bookings:120},
-    {day:19,titulo:'Rehab and Return to Sport.',subtitulo:'Mallqui Gym · 12:30 - 03:30',estado:'Cupos limitados',bookings:100},
-    {day:23,titulo:'Crossfit Entrenamiento Day.',subtitulo:'Mallqui Gym · 08:30 - 10:30',estado:'Almost full',bookings:60}
+    {day:15,titulo:'Clase de baile para principiantes.',subtitulo:'Mallqui Gym · 10:30 - 11:30',estado:'Cupos por cerrar',bookings:120},
+    {day:19,titulo:'Rehabilitación y retorno al deporte.',subtitulo:'Mallqui Gym · 12:30 - 03:30',estado:'Cupos limitados',bookings:100},
+    {day:23,titulo:'Día de Entrenamiento Crossfit.',subtitulo:'Mallqui Gym · 08:30 - 10:30',estado:'Casi lleno',bookings:60}
   ];
   galleryFallback:any[] = Array.from({length:12},(_,i)=>({titulo:'Mallqui Gym',count:[86,94,55,39,68,33,74,88,93,39,66,52][i],imagen_url:i%2?'assets/showcase/class-showcase.svg':'assets/showcase/hero-showcase.svg'}));
   newsFallback:any[] = [
-    {titulo:'Mallqui Gym Update',fecha:'20/10/2026',subtitulo:'News and updates from the gym.',imagen_url:'assets/showcase/hero-showcase.svg'},
-    {titulo:'Entrenamiento Program',fecha:'18/10/2026',subtitulo:'New fitness activities available.',imagen_url:'assets/showcase/class-showcase.svg'},
+    {titulo:'Novedades de Mallqui Gym',fecha:'20/10/2026',subtitulo:'Noticias y novedades del gimnasio.',imagen_url:'assets/showcase/hero-showcase.svg'},
+    {titulo:'Programa de Entrenamiento',fecha:'18/10/2026',subtitulo:'Nuevas actividades fitness disponibles.',imagen_url:'assets/showcase/class-showcase.svg'},
     {titulo:'Progreso de Socios',fecha:'15/10/2026',subtitulo:'Logros y novedades destacadas de la comunidad.',imagen_url:'assets/showcase/coach-showcase.svg'}
   ];
 
@@ -708,6 +709,26 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
     a.download = `mallqui-${this.modulo}-${new Date().toISOString().slice(0,10)}.csv`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 0);
+  }
+
+
+  get galeriaVisible(): any[] {
+    const base = this.records.length ? this.records : this.galleryFallback;
+    if (this.filtroGaleria === 'Todos') return base;
+    return base.filter((item:any) => {
+      const texto = [item?.titulo,item?.subtitulo,item?.datos?.detalle,item?.categoria].filter(Boolean).join(' ').toLowerCase();
+      return texto.includes(this.filtroGaleria.toLowerCase());
+    });
+  }
+
+  filtrarGaleria(filtro:string): void {
+    this.filtroGaleria = filtro;
+    this.mostrarAviso(filtro === 'Todos' ? 'Mostrando toda la galería.' : 'Filtro de galería: ' + filtro);
+  }
+
+  mostrarAviso(mensaje:string): void {
+    this.toast = mensaje;
+    this.limpiarMensaje('toast');
   }
 
   private formVacio(): any {
