@@ -90,7 +90,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <div class="crossfit-profile-copy">
           <strong>{{auth.usuario?.nombre_usuario || 'Administrador'}}</strong>
           <small>Administrador</small>
-          <em>Plan Gold</em>
+          <em>Plan Oro</em>
         </div>
       </div>
 
