@@ -228,6 +228,31 @@ interface GymModuleConfig {
       .gym-suite-head-actions{width:100%}
       .gym-suite-head-actions button{flex:1}
     }
+
+    /* TEMPLATE569574_SUITE_LOCK */
+    :host{display:block!important;background:#f6f6fb!important}
+    .gym-suite{display:block!important;gap:0!important;margin:0!important;padding:0!important;background:#f6f6fb!important;color:#2d2c3c!important}
+    .cfx-crumb{height:35px!important;min-height:35px!important;padding:0 10px!important;border:0!important;border-radius:0!important;background:linear-gradient(90deg,#574fd0,#5f57d9)!important;color:#fff!important;box-shadow:none!important}
+    .cfx-crumb small,.cfx-crumb strong,.cfx-crumb b,.cfx-crumb span{color:#fff!important}
+    .cf-suite-page-head{min-height:48px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;margin:8px 9px 7px!important;padding:9px 10px!important;border:1px solid #ecebf3!important;border-radius:5px!important;background:#fff!important;box-shadow:0 1px 5px rgba(61,57,102,.025)!important}
+    .cf-suite-page-head h1{margin:0!important;color:#2d2c3c!important;font-size:12px!important}.cf-suite-page-head p{margin:2px 0 0!important;color:#9698a6!important;font-size:8px!important}
+    .cf-suite-page-head select{height:28px!important;border:1px solid #dedee8!important;border-radius:4px!important;background:#fff!important;color:#656777!important;font-size:8px!important}
+    .cf-suite-equipment-grid,.cf-suite-events,.cf-suite-gallery,.cf-suite-news,.cf-suite-salary,.cf-suite-income,.cf-suite-invoices,.gym-suite-panel{margin:0 9px 9px!important}
+    .cf-suite-equipment-grid,.cf-suite-gallery,.cf-suite-news{gap:9px!important}
+    .cf-suite-equipment-grid>article,.cf-suite-events>article,.cf-suite-gallery>article,.cf-suite-news>article,.cf-suite-income-cards>article,.gym-suite-panel{border:1px solid #ecebf3!important;border-radius:5px!important;background:#fff!important;box-shadow:0 1px 5px rgba(61,57,102,.025)!important}
+    .cf-suite-equipment-grid h3,.cf-suite-event-main h3,.cf-suite-news h3{font-size:9px!important;color:#373746!important}
+    .cf-suite-equipment-grid p,.cf-suite-event-main p,.cf-suite-news p,.cf-suite-event-meta small{font-size:8px!important;color:#9698a6!important}
+    .gym-suite-table-wrap{border:1px solid #ecebf3!important;border-radius:5px!important;background:#fff!important;box-shadow:none!important}
+    .gym-suite-table th{padding:6px 8px!important;background:#fafafe!important;color:#777a89!important;font-size:7.5px!important}.gym-suite-table td{padding:7px 8px!important;background:#fff!important;color:#545664!important;font-size:8px!important}
+    button.primary{border-color:#5f57d9!important;background:#5f57d9!important;color:#fff!important}.cf-suite-link{color:#5f57d9!important}
+    .gym-suite-modal{border:1px solid #ecebf3!important;border-radius:7px!important;background:#fff!important;box-shadow:0 18px 50px rgba(42,40,83,.16)!important}
+    .gym-suite-modal>header{padding:13px 14px 10px!important;border-bottom:1px solid #ecebf3!important}.gym-suite-modal>header small{color:#5f57d9!important}.gym-suite-modal>header h3{font-size:13px!important}
+    .gym-suite-modal form{padding:12px 14px 14px!important}.gym-suite-form-grid{gap:9px!important}.gym-suite-form-grid label{font-size:8px!important}
+    .gym-suite-form-grid input,.gym-suite-form-grid select,.gym-suite-form-grid textarea{border:1px solid #dedee8!important;border-radius:4px!important;background:#fff!important;font-size:8px!important;box-shadow:none!important}.gym-suite-form-grid input,.gym-suite-form-grid select{height:31px!important}
+    .gym-suite-modal footer button{height:28px!important;border-radius:4px!important;font-size:8px!important}
+    .gym-suite-toast.success{background:#5f57d9!important}
+    @media(max-width:700px){.cf-suite-equipment-grid,.cf-suite-events,.cf-suite-gallery,.cf-suite-news,.cf-suite-salary,.cf-suite-income,.cf-suite-invoices,.gym-suite-panel{margin-left:8px!important;margin-right:8px!important}}
+
   `]
 })
 export class AdminGymSuiteComponent implements OnInit, OnChanges {
