@@ -7,14 +7,13 @@ import { AuthService } from './auth.service';
 import { ProductosComponent } from './pages/productos/productos';
 import { AdminComunicacionComponent } from './admin-comunicacion.component';
 import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
-import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component';
 import { AdminGymSuiteComponent } from './admin-gym-suite.component';
 import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component';
 
 @Component({
   selector: 'app-admin-integrado',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminDashboardToolsComponent, AdminGymSuiteComponent, AdminCrossfitExtrasComponent],
+  imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminGymSuiteComponent, AdminCrossfitExtrasComponent],
   styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css', '../crossfit-final.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
