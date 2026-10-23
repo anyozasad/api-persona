@@ -52,20 +52,50 @@ interface ExtraConfig {
         <article class="cfx-card"><header><div><span>RECOVERY</span><h2>Recovery Score</h2></div><b>Good</b></header><div class="cfx-progress-row"><label><span>Sleep</span><b>82%</b></label><div class="cfx-progress"><i style="width:82%"></i></div></div><div class="cfx-progress-row"><label><span>Mobility</span><b>64%</b></label><div class="cfx-progress"><i style="width:64%"></i></div></div></article>
       </section>
 
-      <section class="cfx-grid cfx-grid-2" *ngSwitchCase="'trainer-profile'">
-        <article class="cfx-card cfx-profile-card" *ngIf="trainers[0] as t; else noTrainer">
-          <div class="cfx-avatar large">{{(t.nombres||'E').charAt(0)}}{{(t.apellidos||'').charAt(0)}}</div>
-          <h2>{{t.nombres}} {{t.apellidos}}</h2>
-          <p>{{t.especialidad || 'Entrenador principal'}}</p>
-          <div class="cfx-badges"><span>{{t.estado||'Activo'}}</span><span class="success">Mallqui Gym</span></div>
-        </article>
-        <ng-template #noTrainer><article class="cfx-card cfx-empty-page"><span class="cfx-big-icon">♙</span><h2>Sin entrenador registrado</h2><p>Registra el entrenador principal desde el módulo Trainers.</p></article></ng-template>
-        <article class="cfx-card">
-          <header><div><span>TRAINER PROFILE</span><h2>Información profesional</h2></div></header>
-          <div class="cfx-info" *ngIf="trainers[0] as t">
-            <p><b>DNI</b><span>{{t.dni||'—'}}</span></p><p><b>Correo</b><span>{{t.correo||'—'}}</span></p><p><b>Teléfono</b><span>{{t.telefono||'—'}}</span></p><p><b>Especialidad</b><span>{{t.especialidad||'—'}}</span></p><p><b>Clases</b><span>{{t.clases_count||0}}</span></p><p><b>Rutinas</b><span>{{t.rutinas_count||0}}</span></p>
-          </div>
-        </article>
+      <section class="cfx-grid cfx-grid-1 cf-live-trainer-profile" *ngSwitchCase="'trainer-profile'">
+        <ng-container *ngIf="trainers[0] as t; else trainerProfileFallback">
+          <article class="cfx-card cf-trainer-profile-hero">
+            <img src="assets/showcase/coach-showcase.svg" alt="Trainer">
+            <div class="cf-trainer-profile-copy">
+              <small>PERSONAL TRAINER</small>
+              <h1>{{t.nombres}} {{t.apellidos}}</h1>
+              <p>{{t.especialidad || 'Strength • Fat Loss • Functional Training'}}</p>
+              <div class="cf-trainer-badges"><span>16+ Years Experience</span><span>Certified Coach</span><span>★ 4.9 (2,896 reviews)</span></div>
+            </div>
+          </article>
+
+          <section class="cf-trainer-profile-stats">
+            <article><small>Active Clients</small><b>{{t.clientes_count || 920}}</b><span>+12 this week</span></article>
+            <article><small>Monthly Revenue</small><b>S/ {{t.ingresos_mes || '9.6K'}}</b><span>+18% growth</span></article>
+            <article><small>Total Reviews</small><b>3.6K</b><span>+42 this week</span></article>
+          </section>
+
+          <article class="cfx-card cf-trainer-about">
+            <header><div><span>ABOUT</span><h2>About</h2></div></header>
+            <p>{{t.nombres}} is the main Mallqui Gym trainer, focused on sustainable habits, strength development, fat loss, muscle gain and functional fitness. Training plans are adapted to each member's goals and level.</p>
+            <div class="cf-trainer-about-stats"><span><b>16+ Years</b><small>Experience</small></span><span><b>{{t.clientes_count || '900+'}}</b><small>Clients Trained</small></span><span><b>4.9 Rating</b><small>Client Satisfaction</small></span></div>
+          </article>
+
+          <article class="cfx-card">
+            <header><div><span>SPECIALIZATIONS</span><h2>Specializations</h2></div></header>
+            <div class="cfx-chips"><span>Strength Training</span><span>Fat Loss</span><span>Muscle Building</span><span>Functional Fitness</span><span>Lifestyle Coaching</span></div>
+          </article>
+
+          <article class="cfx-card cf-trainer-reviews">
+            <header><div><span>REVIEWS</span><h2>Reviews</h2></div><button>Load More Reviews</button></header>
+            <div class="cf-review-list">
+              <div><div class="cfx-avatar">WM</div><div><b>Gym Member</b><small>2 weeks ago</small><strong>★★★★★ Excellent</strong><p>The training program helped improve consistency, strength and overall fitness.</p><em>Recommends • Fat Loss Program</em></div></div>
+              <div><div class="cfx-avatar">NM</div><div><b>Gym Member</b><small>1 month ago</small><strong>★★★★★ Excellent</strong><p>Workouts are simple, effective and easy to follow. Progress has been steady.</p><em>Recommends • Strength Training</em></div></div>
+              <div><div class="cfx-avatar">CD</div><div><b>Gym Member</b><small>3 weeks ago</small><strong>★★★★☆ Good</strong><p>Good program and follow-up. Sessions are focused on each member's objectives.</p><em>General Fitness</em></div></div>
+            </div>
+          </article>
+        </ng-container>
+        <ng-template #trainerProfileFallback>
+          <article class="cfx-card cf-trainer-profile-hero">
+            <img src="assets/showcase/coach-showcase.svg" alt="Trainer">
+            <div class="cf-trainer-profile-copy"><small>PERSONAL TRAINER</small><h1>Mallqui Trainer</h1><p>Strength • Fat Loss • Functional Training</p><div class="cf-trainer-badges"><span>Certified Coach</span><span>★ 4.9</span></div></div>
+          </article>
+        </ng-template>
       </section>
 
       <section class="cfx-grid cfx-grid-1 cf-live-members-list" *ngSwitchCase="'members-list'">
