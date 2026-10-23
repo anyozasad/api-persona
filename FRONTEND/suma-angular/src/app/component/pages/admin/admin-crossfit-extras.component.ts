@@ -97,9 +97,20 @@ interface ExtraConfig {
 
       <section class="cfx-grid cfx-grid-1 cf-live-member-cards" *ngSwitchCase="'members-cards'">
         <article class="cfx-card cf-member-search-card">
-          <div class="cfx-toolbar"><input [(ngModel)]="memberSearch" placeholder="Search trainers, members, or ID..."><button class="primary">Search</button><button (click)="memberSearch=''">Reset</button></div>
+          <header><div><span>MEMBERS</span><h2>Members</h2><p>Browse gym members in card view.</p></div></header>
+          <div class="cfx-toolbar"><input [(ngModel)]="memberSearch" placeholder="Search members or ID..."><button class="primary">Search</button><button (click)="memberSearch=''">Reset</button></div>
         </article>
         <section class="cf-member-card-grid">
+          <article class="cf-member-profile-card" *ngFor="let m of filteredMembers">
+            <img src="assets/showcase/coach-showcase.svg" [alt]="m.nombres">
+            <div><h2>{{m.nombres}} {{m.apellidos}}</h2><p>{{m.objetivo || 'Fitness Member'}}</p><small>{{m.antiguedad || 'Mallqui Gym Member'}}</small><div class="cfx-badges"><span>{{m.estado || 'Active'}}</span><span>Member #{{m.id_cliente}}</span></div><button>View Profile</button><button>Contact</button></div>
+          </article>
+          <article class="cfx-card cfx-empty-page" *ngIf="!filteredMembers.length"><span class="cfx-big-icon">♚</span><h2>No members found</h2><p>Try another search.</p></article>
+        </section>
+        <article class="cfx-card"><header><div><span>SUMMARY</span><h2>Member Overview</h2></div></header><div class="cf-counter-row"><span><b>{{members.length}}</b><small>Total Members</small></span><span><b>{{filteredMembers.length}}</b><small>Visible</small></span><span><b>1</b><small>Trainer</small></span></div></article>
+      </section>
+
+      <section class="cf-member-card-grid">
           <article class="cf-member-profile-card" *ngFor="let m of filteredMembers">
             <img src="assets/showcase/coach-showcase.svg" [alt]="m.nombres">
             <div><h2>{{m.nombres}} {{m.apellidos}}</h2><p>{{m.objetivo || 'Fitness Member'}}</p><small>{{m.antiguedad || 'Mallqui Gym Member'}}</small><button>Contact</button></div>
@@ -630,48 +641,88 @@ interface ExtraConfig {
         </article>
       </section>
 
-      <section class="cfx-grid cfx-grid-1 cf-auth-live" *ngSwitchCase="'login-page'">
-        <article class="cfx-card cfx-auth"><div class="cf-auth-brand"><span class="cf-auth-mark">MG</span><div><b>Mallqui Gym</b><small>Fitness Admin</small></div></div><h2>Welcome back</h2><p>Please sign in to your account.</p><div class="cfx-form"><label>Email Address<input type="email" placeholder="name@example.com"></label><label>Password<input type="password" placeholder="••••••••"></label><div class="cf-auth-row"><label class="check"><input type="checkbox"> Remember me</label><button class="link-btn">Forgot password?</button></div><button class="primary">Login</button></div><div class="cf-auth-divider"><span>or continue with</span></div><div class="cfx-buttons"><button>Google</button><button>Facebook</button></div><small>Don't have an account? <b>Sign Up</b></small></article>
+      <section class="cfx-grid cfx-grid-2 cf-auth-page-full" *ngSwitchCase="'login-page'">
+        <article class="cfx-card cf-auth-visual"><img src="assets/showcase/hero-showcase.svg" alt="Fitness"><div><small>MALLQUI GYM</small><h2>Train smarter. Manage better.</h2><p>Access members, payments, workouts and reports from one dashboard.</p></div></article>
+        <article class="cfx-card cfx-auth">
+          <div class="cf-auth-brand"><span class="cf-auth-mark">MG</span><div><b>Mallqui Gym</b><small>Fitness Admin</small></div></div>
+          <h2>Welcome back</h2><p>Please sign in to your account.</p>
+          <div class="cfx-form"><label>Email Address<input type="email" placeholder="name@example.com"></label><label>Password<input type="password" placeholder="••••••••"></label><div class="cf-auth-row"><label class="check"><input type="checkbox"> Remember me</label><button class="link-btn">Forgot password?</button></div><button class="primary">Login</button></div>
+          <div class="cf-auth-divider"><span>or continue with</span></div><div class="cfx-buttons"><button>Google</button><button>Facebook</button></div><small>Don't have an account? <b>Sign Up</b></small>
+        </article>
       </section>
 
-      <section class="cfx-grid cfx-grid-1 cf-auth-live" *ngSwitchCase="'signup-page'">
-        <article class="cfx-card cfx-auth"><div class="cf-auth-brand"><span class="cf-auth-mark">MG</span><div><b>Mallqui Gym</b><small>Fitness Admin</small></div></div><h2>Create account</h2><p>Enter your details to get started.</p><div class="cfx-form"><label>Full Name<input placeholder="Full name"></label><label>Email Address<input type="email" placeholder="name@example.com"></label><label>Password<input type="password"></label><label>Confirm Password<input type="password"></label><label class="check"><input type="checkbox"> I agree to Terms & Conditions</label><button class="primary">Create Account</button></div><small>Already have an account? <b>Login</b></small></article>
+      <section class="cfx-grid cfx-grid-2 cf-auth-page-full" *ngSwitchCase="'signup-page'">
+        <article class="cfx-card cf-auth-visual"><img src="assets/showcase/class-showcase.svg" alt="Gym class"><div><small>JOIN THE TEAM</small><h2>Create your fitness account.</h2><p>Manage workouts, diet plans, progress and membership from one place.</p></div></article>
+        <article class="cfx-card cfx-auth">
+          <div class="cf-auth-brand"><span class="cf-auth-mark">MG</span><div><b>Mallqui Gym</b><small>Fitness Admin</small></div></div>
+          <h2>Create account</h2><p>Enter your details to get started.</p>
+          <div class="cfx-form"><label>Full Name<input placeholder="Full name"></label><label>Email Address<input type="email" placeholder="name@example.com"></label><label>Password<input type="password"></label><label>Confirm Password<input type="password"></label><label class="check"><input type="checkbox"> I agree to Terms & Conditions</label><button class="primary">Create Account</button></div><small>Already have an account? <b>Login</b></small>
+        </article>
       </section>
 
-      <section class="cfx-grid cfx-grid-1 cf-auth-live" *ngSwitchCase="'forgot-password'">
-        <article class="cfx-card cfx-auth"><div class="cf-auth-brand"><span class="cf-auth-mark">MG</span><div><b>Mallqui Gym</b><small>Fitness Admin</small></div></div><h2>Forgot Password?</h2><p>Enter your email and we'll send you a reset link.</p><div class="cfx-form"><label>Email Address<input type="email" [(ngModel)]="forgotEmail" placeholder="name@example.com"></label><button class="primary" (click)="authMessage=forgotEmail?'Reset link prepared.':'Enter your email first.'">Send Reset Link</button></div><small *ngIf="authMessage">{{authMessage}}</small><button class="link-btn">← Back to Login</button></article>
+      <section class="cfx-grid cfx-grid-2 cf-auth-page-full" *ngSwitchCase="'forgot-password'">
+        <article class="cfx-card cf-auth-visual"><img src="assets/showcase/hero-showcase.svg" alt="Gym"><div><small>ACCOUNT RECOVERY</small><h2>Recover access securely.</h2><p>We will send recovery instructions to the email linked to your account.</p></div></article>
+        <article class="cfx-card cfx-auth"><div class="cf-auth-brand"><span class="cf-auth-mark">MG</span><div><b>Mallqui Gym</b><small>Fitness Admin</small></div></div><h2>Forgot Password?</h2><p>Enter your email to receive a reset link.</p><div class="cfx-form"><label>Email Address<input type="email" placeholder="name@example.com"></label><button class="primary">Send Reset Link</button><button>Back to Login</button></div><div class="cf-auth-help"><b>Need help?</b><small>Contact the administrator if you no longer have access to your email.</small></div></article>
       </section>
 
-      <section class="cfx-grid cfx-grid-1 cf-auth-live" *ngSwitchCase="'reset-password-page'">
-        <article class="cfx-card cfx-auth"><div class="cf-auth-brand"><span class="cf-auth-mark">MG</span><div><b>Mallqui Gym</b><small>Fitness Admin</small></div></div><h2>Reset Password</h2><p>Create a new secure password.</p><div class="cfx-form"><label>New Password<input type="password" [(ngModel)]="resetForm.password"></label><label>Confirm Password<input type="password" [(ngModel)]="resetForm.confirm"></label><button class="primary" (click)="previewResetPassword()">Reset Password</button></div><small *ngIf="authMessage">{{authMessage}}</small></article>
+      <section class="cfx-grid cfx-grid-2 cf-auth-page-full" *ngSwitchCase="'reset-password-page'">
+        <article class="cfx-card cf-auth-visual"><img src="assets/showcase/class-showcase.svg" alt="Gym"><div><small>NEW PASSWORD</small><h2>Secure your account.</h2><p>Choose a strong password and keep your account protected.</p></div></article>
+        <article class="cfx-card cfx-auth"><div class="cf-auth-brand"><span class="cf-auth-mark">MG</span><div><b>Mallqui Gym</b><small>Fitness Admin</small></div></div><h2>Reset Password</h2><p>Create a new password for your account.</p><div class="cfx-form"><label>New Password<input type="password" [(ngModel)]="resetForm.password"></label><label>Confirm Password<input type="password" [(ngModel)]="resetForm.confirm"></label><button class="primary" (click)="previewResetPassword()">Update Password</button><small *ngIf="authMessage">{{authMessage}}</small></div><div class="cf-password-rules"><span>• At least 6 characters</span><span>• Use letters and numbers</span><span>• Avoid easy-to-guess passwords</span></div></article>
       </section>
 
-      <section class="cfx-grid cfx-grid-1 cf-error-live" *ngSwitchCase="'page-not-found'">
-        <article class="cfx-card cfx-empty-page"><strong>404</strong><h2>Page Not Found</h2><p>The page you are looking for does not exist or has been moved.</p><div class="cfx-buttons"><button class="primary" (click)="goAdmin()">Back to Dashboard</button><button>Contact Support</button></div></article>
+      <section class="cfx-grid cfx-grid-1 cf-special-page" *ngSwitchCase="'page-not-found'">
+        <article class="cfx-card cfx-empty-page">
+          <span class="cf-error-code">404</span><h2>Page Not Found</h2><p>The page you are looking for might have been removed, renamed or is temporarily unavailable.</p>
+          <div class="cfx-buttons"><button class="primary" (click)="goAdmin()">Back to Dashboard</button><button>Contact Support</button></div>
+        </article>
+        <article class="cfx-card"><header><div><span>QUICK LINKS</span><h2>Popular Pages</h2></div></header><div class="cf-quick-links"><span>Dashboard</span><span>Members</span><span>Payments</span><span>Reports</span><span>Account Settings</span></div></article>
       </section>
 
-      <section class="cfx-grid cfx-grid-1 cf-error-live" *ngSwitchCase="'maintenance'">
-        <article class="cfx-card cfx-empty-page"><span class="cfx-big-icon">⚙</span><h2>Under Maintenance</h2><p>We are improving the Mallqui Gym dashboard. Please check back shortly.</p><div class="cf-maintenance-progress"><div><i style="width:72%"></i></div><span>72% complete</span></div><button class="primary" (click)="goAdmin()">Back to Dashboard</button></article>
+      <section class="cfx-grid cfx-grid-1 cf-special-page" *ngSwitchCase="'maintenance'">
+        <article class="cfx-card cfx-empty-page">
+          <span class="cfx-big-icon">⚙</span><h2>Under Maintenance</h2><p>We are improving the dashboard experience. Please check back shortly.</p>
+          <div class="cf-maintenance-meter"><i style="width:78%"></i></div><small>System update 78% complete</small>
+          <button class="primary" (click)="goAdmin()">Return to Dashboard</button>
+        </article>
+        <section class="cfx-grid cfx-grid-3">
+          <article class="cfx-card centered"><b>Database</b><span class="cfx-badge success">Online</span></article>
+          <article class="cfx-card centered"><b>API Services</b><span class="cfx-badge warning">Updating</span></article>
+          <article class="cfx-card centered"><b>Dashboard UI</b><span class="cfx-badge">Available</span></article>
+        </section>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'menu-level'">
-        <article class="cfx-card"><header><div><span>MENU LEVEL</span><h2>Nested Navigation</h2></div></header><div class="cfx-tree"><button (click)="treeOpen=!treeOpen">▾ Level One Menu</button><div *ngIf="treeOpen"><button>Level Two Link</button><button>▾ Level Two Menu</button><div><button>Level Three Link</button><button>Level Three Link</button></div></div><button>Level One Link</button></div></article>
-        <article class="cfx-card"><h2>Current Level</h2><div class="cfx-info"><p><b>Selected</b><span>{{config.title}}</span></p><p><b>Group</b><span>Menu Level</span></p><p><b>Status</b><span>Active</span></p></div></article>
+        <article class="cfx-card"><header><div><span>MENU LEVEL</span><h2>Nested Navigation</h2></div></header><div class="cfx-tree"><button>Level One Link</button><div><button>Level Two Link</button><div><button>Level Three Link</button><button>Level Three Link</button></div></div><button>Level One Link</button></div></article>
+        <article class="cfx-card"><header><div><span>ACTIVE PATH</span><h2>Current Navigation Path</h2></div></header><div class="cf-path-tree"><span>Dashboard</span><b>›</b><span>Menu Level</span><b>›</b><strong>Level Three</strong></div><p>Nested menus keep related modules organized without changing the main dashboard shell.</p></article>
+        <article class="cfx-card span-2"><header><div><span>EXAMPLE</span><h2>Module Tree</h2></div></header><div class="cf-module-tree"><div><b>Members</b><small>Members List · Add Member · Edit Member</small></div><div><b>Payments</b><small>Income · Payments · Invoices</small></div><div><b>Forms</b><small>Inputs · Validation · Date Time · Masks</small></div></div></article>
       </section>
 
-      <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'external-link'"><article class="cfx-card cfx-empty-page"><span class="cfx-big-icon">↗</span><h2>Enlace externo</h2><p>Ejemplo de acceso a un recurso externo desde el panel.</p><button class="primary" (click)="openExternal()">Abrir recurso</button></article></section>
+      <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'external-link'">
+        <article class="cfx-card"><header><div><span>EXTERNAL LINK</span><h2>Template Resource</h2></div></header><p>Open the original Crossfit admin template reference in a new tab.</p><button class="primary" (click)="openExternal()">Open Template Reference ↗</button></article>
+        <article class="cfx-card"><header><div><span>DOCUMENTATION</span><h2>Developer Resources</h2></div></header><div class="cfx-list"><div><span>BS</span><div><b>Bootstrap 5</b><small>Layout and component documentation</small></div><em>External</em></div><div><span>NG</span><div><b>Angular</b><small>Application framework documentation</small></div><em>External</em></div></div></article>
+        <article class="cfx-card span-2"><header><div><span>LINK STATES</span><h2>External Link Examples</h2></div></header><div class="cfx-buttons"><button>Normal Link ↗</button><button class="primary">Primary Link ↗</button><button disabled>Disabled Link</button></div></article>
+      </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'chip'">
-        <article class="cfx-card"><h2>Chip 6</h2><div class="cfx-chips"><span>Fitness</span><span>Workout</span><span>Member</span><span>Trainer</span><span>Nutrition</span><span>Active</span></div></article>
-        <article class="cfx-card"><h2>Filter Chips</h2><div class="cfx-chips"><span>All</span><span>Today</span><span>This Week</span><span>Paid</span><span>Pending</span><span>Overdue</span></div></article>
+        <article class="cfx-card"><header><div><span>CHIPS</span><h2>Basic Chips</h2></div></header><div class="cfx-chips"><span>Fitness</span><span>Nutrition</span><span>Crossfit</span><span>Strength</span><span>Cardio</span><span>Mobility</span></div></article>
+        <article class="cfx-card"><header><div><span>MEMBERSHIP</span><h2>Plan Chips</h2></div></header><div class="cfx-chips"><span>Basic</span><span>Premium</span><span>Enterprise</span><span>Trial</span></div></article>
+        <article class="cfx-card"><header><div><span>REMOVABLE</span><h2>Removable Chips</h2></div></header><div class="cf-removable-chips"><span>Active ×</span><span>Trainer ×</span><span>Morning ×</span><span>Beginner ×</span></div></article>
+        <article class="cfx-card"><header><div><span>AVATAR</span><h2>Avatar Chips</h2></div></header><div class="cf-avatar-chips"><span><i>JA</i> James</span><span><i>SM</i> Sofia</span><span><i>TC</i> Tom</span></div></article>
       </section>
 
       <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'badge-link'">
-        <article class="cfx-card"><h2>Badge Chip</h2><div class="cfx-badges"><span>New 6</span><span class="success">Active 24</span><span class="warning">Pending 8</span><span class="danger">Overdue 3</span></div></article>
-        <article class="cfx-card"><h2>Navigation Badges</h2><div class="cfx-list"><div><span>✉</span><div><b>Messages</b></div><em>6</em></div><div><span>⚑</span><div><b>Alerts</b></div><em>3</em></div><div><span>♚</span><div><b>Members</b></div><em>24</em></div></div></article>
+        <article class="cfx-card"><header><div><span>BADGE</span><h2>Notification Badges</h2></div></header><div class="cf-badge-buttons"><button>Messages <span>4</span></button><button>Alerts <span>7</span></button><button>Members <span>12</span></button></div></article>
+        <article class="cfx-card"><header><div><span>NAVIGATION</span><h2>Menu Badges</h2></div></header><div class="cfx-list"><div><span>●</span><div><b>Payments</b><small>Pending transactions</small></div><em>5</em></div><div><span>●</span><div><b>Support</b><small>Open requests</small></div><em>3</em></div></div></article>
+        <article class="cfx-card"><header><div><span>STATUS</span><h2>Status Badge Links</h2></div></header><div class="cfx-buttons"><button class="primary">Active <span class="cf-button-badge">24</span></button><button>Pending <span class="cf-button-badge">8</span></button><button class="danger">Expired <span class="cf-button-badge">2</span></button></div></article>
+        <article class="cfx-card"><header><div><span>COUNTERS</span><h2>Dashboard Counters</h2></div></header><div class="cf-counter-row"><span><b>18</b><small>New Members</small></span><span><b>6</b><small>Invoices</small></span><span><b>3</b><small>Alerts</small></span></div></article>
       </section>
 
-      <section class="cfx-grid cfx-grid-1" *ngSwitchCase="'disabled-link'"><article class="cfx-card cfx-empty-page"><span class="cfx-big-icon">⊘</span><h2>Enlace deshabilitado</h2><p>Este elemento se muestra desactivado como en la plantilla.</p><button disabled>No disponible</button></article></section>
+      <section class="cfx-grid cfx-grid-2 cf-component-showcase" *ngSwitchCase="'disabled-link'">
+        <article class="cfx-card"><header><div><span>DISABLED LINK</span><h2>Disabled Navigation</h2></div></header><button disabled>Disabled Link</button><p>Disabled navigation items remain visible but cannot be selected.</p></article>
+        <article class="cfx-card"><header><div><span>DISABLED STATES</span><h2>Controls</h2></div></header><div class="cfx-form"><input disabled value="Disabled input"><select disabled><option>Disabled select</option></select><button disabled>Disabled Button</button></div></article>
+        <article class="cfx-card"><header><div><span>LOCKED FEATURE</span><h2>Premium Feature</h2></div></header><p>This feature becomes available when the required permission or plan is enabled.</p><span class="cfx-badge warning">Locked</span></article>
+        <article class="cfx-card"><header><div><span>READ ONLY</span><h2>Read-only State</h2></div></header><div class="cfx-form"><input readonly value="Readonly value"><textarea readonly rows="3">This information can be viewed but not changed.</textarea></div></article>
+      </section>
 
       <section class="cfx-grid cfx-grid-2" *ngSwitchDefault>
         <article class="cfx-card"><header><div><span>{{config.group}}</span><h2>{{config.title}}</h2></div></header><p>Este módulo ya forma parte del kit visual Crossfit de Mallqui Gym.</p></article>
