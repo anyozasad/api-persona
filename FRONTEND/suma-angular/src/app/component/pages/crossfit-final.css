@@ -6757,3 +6757,451 @@ button.danger,
     font-size:11px!important;
   }
 }
+
+
+/* REF_569574_EXACTA_V3_2026_10_23 */
+:root{
+  --cf-purple:#5b56dd!important;
+  --cf-purple-2:#625de2!important;
+  --cf-page:#f6f6fb!important;
+  --cf-border:#e9e9f1!important;
+  --cf-text:#2e2d3d!important;
+  --cf-muted:#9698a8!important;
+  --cf-shell-sidebar:238px!important;
+  --cf-shell-header:68px!important;
+}
+
+/* Estructura general como la referencia 569574 */
+.admin-shell.admin-home-redesign{
+  display:grid!important;
+  grid-template-columns:238px minmax(0,1fr)!important;
+  grid-template-rows:68px minmax(0,1fr)!important;
+  min-height:100vh!important;
+  background:#f6f6fb!important;
+}
+.admin-home-redesign .admin-nav{
+  position:sticky!important;
+  inset:auto!important;
+  top:0!important;
+  grid-column:1!important;
+  grid-row:1/3!important;
+  width:238px!important;
+  height:100vh!important;
+  padding:12px 10px 14px!important;
+  background:#fff!important;
+  border-right:1px solid #ebebf2!important;
+  box-shadow:none!important;
+}
+.admin-home-redesign .admin-wix-topbar{
+  position:sticky!important;
+  top:0!important;
+  left:auto!important;
+  right:auto!important;
+  grid-column:2!important;
+  grid-row:1!important;
+  width:auto!important;
+  height:68px!important;
+  margin:0!important;
+  padding:0 16px!important;
+  display:grid!important;
+  grid-template-columns:210px minmax(0,1fr) 285px auto!important;
+  gap:12px!important;
+  background:linear-gradient(90deg,#5954d8 0%,#5f59de 100%)!important;
+  box-shadow:none!important;
+  border:0!important;
+}
+.admin-home-redesign .admin-content{
+  position:relative!important;
+  grid-column:2!important;
+  grid-row:2!important;
+  width:auto!important;
+  max-width:none!important;
+  min-height:calc(100vh - 68px)!important;
+  margin:0!important;
+  padding:0 14px 30px!important;
+  background:#f6f6fb!important;
+}
+
+/* Perfil compacto y elegante */
+.admin-home-redesign .crossfit-profile-card{
+  min-height:138px!important;
+  margin:0 0 7px!important;
+  padding:5px 6px 12px!important;
+  gap:6px!important;
+  border-bottom:1px solid #eeeeF4!important;
+}
+.admin-home-redesign .crossfit-profile-avatar{
+  width:62px!important;
+  height:62px!important;
+  padding:6px!important;
+  border:2px solid #615cdf!important;
+  box-shadow:0 0 0 4px #f1f0ff!important;
+}
+.admin-home-redesign .crossfit-profile-copy strong{
+  font-size:12px!important;
+  font-weight:800!important;
+}
+.admin-home-redesign .crossfit-profile-copy small{font-size:8.5px!important}
+.admin-home-redesign .crossfit-profile-copy em{
+  min-height:20px!important;
+  margin-top:5px!important;
+  padding:0 9px!important;
+  font-size:7.5px!important;
+}
+
+/* Sidebar como la captura: blanco, filas compactas, activo lila */
+.admin-home-redesign .cf-nav-section-label{display:none!important}
+.admin-home-redesign .crossfit-sidebar-nav{
+  gap:2px!important;
+  padding:3px 0 9px!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav>button,
+.admin-home-redesign .crossfit-sidebar-nav .cf-nav-children button{
+  border-radius:5px!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav>button{
+  min-height:38px!important;
+  grid-template-columns:27px minmax(0,1fr) auto!important;
+  gap:7px!important;
+  padding:4px 8px!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav .admin-main-nav-icon{
+  width:25px!important;
+  height:25px!important;
+  border-radius:5px!important;
+  background:transparent!important;
+  color:#68697b!important;
+  font-size:10px!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav>button>span:nth-child(2){
+  font-size:10.5px!important;
+  font-weight:650!important;
+  color:inherit!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav button:hover{
+  background:#f7f6ff!important;
+  color:#5b56dd!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav button.active{
+  background:#efefff!important;
+  color:#5b56dd!important;
+}
+.admin-home-redesign .crossfit-sidebar-nav button.active .admin-main-nav-icon{
+  background:transparent!important;
+  color:#5b56dd!important;
+}
+.admin-home-redesign .cf-nav-children{
+  margin:1px 0 3px 22px!important;
+  padding:0 0 0 8px!important;
+  border-left:1px solid #ecebf7!important;
+}
+.admin-home-redesign .cf-nav-children button{
+  min-height:31px!important;
+  padding:3px 7px!important;
+  grid-template-columns:12px minmax(0,1fr)!important;
+}
+.admin-home-redesign .cf-nav-children button>span:nth-child(2){
+  font-size:9.5px!important;
+}
+
+/* Topbar */
+.admin-home-redesign .admin-top-brand{
+  gap:9px!important;
+}
+.admin-home-redesign .admin-top-brand-mark{
+  width:31px!important;
+  height:31px!important;
+  border-radius:6px!important;
+  font-size:13px!important;
+}
+.admin-home-redesign .crossfit-top-logo strong{
+  color:#fff!important;
+  font-size:14px!important;
+  font-weight:800!important;
+}
+.admin-home-redesign .admin-wix-search{
+  justify-self:end!important;
+  width:285px!important;
+  height:34px!important;
+  padding:0 10px!important;
+  border:1px solid rgba(255,255,255,.1)!important;
+  border-radius:18px!important;
+  background:rgba(255,255,255,.12)!important;
+}
+.admin-home-redesign .admin-wix-search input{
+  color:#fff!important;
+  font-size:10px!important;
+}
+.admin-home-redesign .admin-wix-search input::placeholder{color:rgba(255,255,255,.72)!important}
+.admin-home-redesign .admin-wix-search>span{color:#fff!important}
+.admin-home-redesign .admin-wix-search button{display:none!important}
+.admin-home-redesign .admin-top-actions{
+  gap:5px!important;
+}
+.admin-home-redesign .admin-top-actions>button:not(.admin-top-user),
+.admin-home-redesign .admin-top-user{
+  width:29px!important;
+  height:29px!important;
+  min-height:29px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:rgba(255,255,255,.12)!important;
+  color:#fff!important;
+  font-size:10px!important;
+}
+
+/* Migas */
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb,
+.cf-special-crumb,.cfx-crumb{
+  min-height:36px!important;
+  height:36px!important;
+  padding:0 4px!important;
+  gap:7px!important;
+  border:0!important;
+  background:transparent!important;
+  color:#76788a!important;
+  box-shadow:none!important;
+}
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb>span,
+.cf-special-crumb>span,.cfx-crumb>span{font-size:10px!important}
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb small,
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb strong,
+.cf-special-crumb small,.cf-special-crumb strong,
+.cfx-crumb small,.cfx-crumb strong{font-size:9px!important}
+.cf-reference-dashboard .crossfit-dashboard-breadcrumb .cf-goal{
+  margin-left:auto!important;
+  min-height:24px!important;
+  padding:0 8px!important;
+  border-radius:4px!important;
+  background:#fff!important;
+  border:1px solid #ececf3!important;
+  color:#7d7f90!important;
+  font-size:8px!important;
+}
+
+/* Dashboard principal, proporciones de la referencia */
+.cf-reference-dashboard{background:#f6f6fb!important}
+.cf-ref-hero{
+  min-height:270px!important;
+  margin:0!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,54%) minmax(360px,46%)!important;
+  overflow:hidden!important;
+  border:1px solid #ececf3!important;
+  border-radius:7px!important;
+  background:#fff!important;
+  box-shadow:0 1px 4px rgba(44,42,77,.025)!important;
+}
+.cf-ref-hero-copy{
+  padding:18px 18px 12px!important;
+}
+.cf-ref-hero-copy h1{
+  margin:0!important;
+  color:#2e2d3d!important;
+  font-size:20px!important;
+  line-height:1.15!important;
+  font-weight:800!important;
+}
+.cf-ref-hero-copy>p{
+  margin:4px 0 0!important;
+  color:#9698a8!important;
+  font-size:9.5px!important;
+}
+.cf-ref-mini-chart{
+  height:140px!important;
+  gap:12px!important;
+  margin-top:24px!important;
+}
+.cf-ref-mini-track{
+  width:27px!important;
+  height:112px!important;
+  border-radius:5px 5px 0 0!important;
+  background:#f1f0fb!important;
+}
+.cf-ref-mini-fill{
+  border-radius:5px 5px 0 0!important;
+  background:linear-gradient(180deg,#a6e2d1 0 54%,#cbc8f6 54% 100%)!important;
+}
+.cf-ref-mini-day small,.cf-ref-mini-legend{font-size:8px!important}
+.cf-ref-hero-art{
+  min-height:270px!important;
+  background:#fbfaff!important;
+}
+.cf-ref-hero-art:after{display:none!important}
+.cf-ref-hero-art>img,.cf-ref-hero-photo-caption{display:none!important}
+.cf-ref-hero-scene{
+  width:100%!important;
+  height:100%!important;
+  min-height:270px!important;
+  display:block!important;
+}
+
+/* 4 tarjetas */
+.cf-ref-stats{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:9px!important;
+  margin:9px 0!important;
+}
+.cf-ref-stats button{
+  min-height:70px!important;
+  padding:10px 12px!important;
+  grid-template-columns:minmax(0,1fr) 31px!important;
+  border:1px solid #ececf3!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  box-shadow:0 1px 4px rgba(44,42,77,.025)!important;
+}
+.cf-ref-stats small{font-size:8px!important}
+.cf-ref-stats strong{
+  margin:3px 0 1px!important;
+  color:#2e2d3d!important;
+  font-size:15px!important;
+}
+.cf-ref-stats span{font-size:7.5px!important}
+.cf-ref-stats i{
+  width:29px!important;
+  height:29px!important;
+  border-radius:50%!important;
+  background:#eeedff!important;
+  color:#5b56dd!important;
+  font-size:10px!important;
+}
+
+/* Gráficos principales */
+.cf-ref-bottom{
+  display:grid!important;
+  grid-template-columns:minmax(0,2.15fr) minmax(260px,.85fr)!important;
+  gap:9px!important;
+  margin:0!important;
+}
+.cf-ref-bottom>article,
+.cf-ref-secondary>article,
+.cf-ref-tertiary>article,
+.cf-ref-insights>article{
+  border:1px solid #ececf3!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  box-shadow:0 1px 4px rgba(44,42,77,.025)!important;
+}
+.cf-ref-bottom>article{
+  min-height:275px!important;
+  padding:11px 12px!important;
+}
+.cf-ref-bottom h2,
+.cf-ref-secondary h2,.cf-ref-tertiary h2,.cf-ref-insights h2{
+  margin:0!important;
+  color:#343344!important;
+  font-size:10.5px!important;
+}
+.cf-ref-bottom header p,
+.cf-ref-bottom header>span,
+.cf-ref-chart-legend,
+.cf-ref-secondary header p,.cf-ref-tertiary header p,.cf-ref-insights header p{
+  font-size:7.5px!important;
+}
+.cf-ref-line-chart{height:206px!important}
+.cf-ref-donut{
+  width:122px!important;
+  height:122px!important;
+}
+.cf-ref-donut:after{
+  width:78px!important;
+  height:78px!important;
+}
+.cf-ref-donut strong{font-size:13px!important}
+.cf-ref-donut small,.cf-ref-split-list p,.cf-ref-split-list p b{font-size:8px!important}
+
+/* Secciones inferiores: mismo sistema visual, sin bloques gigantes */
+.cf-ref-secondary,.cf-ref-tertiary,.cf-ref-insights{
+  gap:9px!important;
+  margin:9px 0 0!important;
+}
+.cf-ref-secondary>article,.cf-ref-tertiary>article,.cf-ref-insights>article{
+  padding:12px!important;
+}
+
+/* Suite y extras deben parecer de la misma plantilla */
+.admin-home-redesign .cfx-page,
+.admin-home-redesign .gym-suite,
+.admin-home-redesign .cf-live-page,
+.admin-home-redesign .cf-special-page{
+  font-size:10px!important;
+}
+.admin-home-redesign .cfx-card,
+.admin-home-redesign .cf-live-card,
+.admin-home-redesign .cf-suite-card,
+.admin-home-redesign .gym-suite-panel,
+.admin-home-redesign .clients-v3-card,
+.admin-home-redesign .admin-form-card,
+.admin-home-redesign .admin-list-card{
+  border:1px solid #ececf3!important;
+  border-radius:6px!important;
+  background:#fff!important;
+  box-shadow:0 1px 4px rgba(44,42,77,.025)!important;
+}
+.admin-home-redesign .cfx-card h2,
+.admin-home-redesign .cf-live-card h2,
+.admin-home-redesign .cf-suite-card h2{
+  font-size:12px!important;
+}
+.admin-home-redesign .cfx-card p,
+.admin-home-redesign .cf-live-card p,
+.admin-home-redesign .cf-suite-card p{
+  font-size:9px!important;
+}
+.admin-home-redesign .admin-content button,
+.admin-home-redesign .admin-content input,
+.admin-home-redesign .admin-content select,
+.admin-home-redesign .admin-content textarea{
+  font-size:9.5px!important;
+}
+.admin-home-redesign .admin-content button{min-height:30px!important}
+.admin-home-redesign .admin-content input,
+.admin-home-redesign .admin-content select{min-height:32px!important}
+.admin-home-redesign .admin-content table th{
+  padding:7px 8px!important;
+  font-size:8.5px!important;
+}
+.admin-home-redesign .admin-content table td{
+  padding:8px!important;
+  font-size:9px!important;
+}
+
+/* Responsive */
+@media(max-width:1180px){
+  .admin-shell.admin-home-redesign{
+    grid-template-columns:210px minmax(0,1fr)!important;
+  }
+  .admin-home-redesign .admin-nav{width:210px!important}
+}
+@media(max-width:930px){
+  .admin-shell.admin-home-redesign{
+    grid-template-columns:76px minmax(0,1fr)!important;
+  }
+  .admin-home-redesign .admin-nav{width:76px!important}
+  .admin-home-redesign .crossfit-profile-copy,
+  .admin-home-redesign .crossfit-sidebar-nav button>span:nth-child(2),
+  .admin-home-redesign .crossfit-sidebar-nav .cf-nav-group-head i,
+  .admin-home-redesign .cf-nav-children{display:none!important}
+  .admin-home-redesign .crossfit-profile-card{min-height:86px!important}
+  .admin-home-redesign .crossfit-profile-avatar{width:48px!important;height:48px!important}
+  .cf-ref-hero{grid-template-columns:1fr!important}
+  .cf-ref-hero-art{display:none!important}
+}
+@media(max-width:700px){
+  .admin-shell.admin-home-redesign{
+    display:block!important;
+  }
+  .admin-home-redesign .admin-nav{display:none!important}
+  .admin-home-redesign .admin-wix-topbar{
+    width:100%!important;
+    grid-template-columns:auto minmax(0,1fr) auto!important;
+  }
+  .admin-home-redesign .crossfit-top-logo{display:none!important}
+  .admin-home-redesign .admin-wix-search{width:100%!important}
+  .admin-home-redesign .admin-content{padding:0 9px 24px!important}
+  .cf-ref-stats{grid-template-columns:repeat(2,1fr)!important}
+  .cf-ref-bottom{grid-template-columns:1fr!important}
+}
