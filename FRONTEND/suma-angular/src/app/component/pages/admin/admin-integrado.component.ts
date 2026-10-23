@@ -121,22 +121,25 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <span class="admin-main-nav-icon">♚</span><span>Gym Members</span><i>{{navGroups.members?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.members">
-          <button type="button" [class.active]="seccion==='members-cards'" (click)="cambiarSeccion('members-cards')"><span>•</span><span>Members</span></button>
+          <button type="button" [class.active]="seccion==='members-list'" (click)="cambiarSeccion('members-list')"><span>•</span><span>Members List</span></button>
+          <button type="button" [class.active]="seccion==='members-cards'" (click)="cambiarSeccion('members-cards')"><span>•</span><span>Members Cards</span></button>
           <button type="button" [class.active]="seccion==='add-member'" (click)="cambiarSeccion('add-member')"><span>•</span><span>Add Member</span></button>
           <button type="button" [class.active]="seccion==='edit-member' || seccion==='edit-member-details'" (click)="cambiarSeccion('edit-member')"><span>•</span><span>Edit Member</span></button>
-          <button type="button" [class.active]="seccion==='members-list'" (click)="cambiarSeccion('members-list')"><span>•</span><span>Members List</span></button>
         </div>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['ingresos','pagos','facturas','invoice-details','create-invoice','add-invoice','edit-invoice','invoices-list','expenses'].includes(seccion)" (click)="toggleNavGroup('payments')">
           <span class="admin-main-nav-icon">S/</span><span>Payments</span><i>{{navGroups.payments?'⌄':'›'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.payments">
-          <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSeccion('pagos')"><span>•</span><span>Payments</span></button>
           <button type="button" [class.active]="seccion==='ingresos'" (click)="cambiarSeccion('ingresos')"><span>•</span><span>Income</span></button>
+          <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSeccion('pagos')"><span>•</span><span>Payments</span></button>
           <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSeccion('facturas')"><span>•</span><span>Invoices</span></button>
+          <button type="button" [class.active]="seccion==='invoice-details'" (click)="cambiarSeccion('invoice-details')"><span>•</span><span>Invoice Details</span></button>
+          <button type="button" [class.active]="seccion==='create-invoice' || seccion==='add-invoice'" (click)="cambiarSeccion('create-invoice')"><span>•</span><span>Create Invoice</span></button>
           <button type="button" [class.active]="seccion==='add-invoice'" (click)="cambiarSeccion('add-invoice')"><span>•</span><span>Add Invoice</span></button>
           <button type="button" [class.active]="seccion==='edit-invoice'" (click)="cambiarSeccion('edit-invoice')"><span>•</span><span>Edit Invoice</span></button>
           <button type="button" [class.active]="seccion==='invoices-list'" (click)="cambiarSeccion('invoices-list')"><span>•</span><span>Invoices List</span></button>
+          <button type="button" [class.active]="seccion==='expenses'" (click)="cambiarSeccion('expenses')"><span>•</span><span>Expenses</span></button>
         </div>
 
         <button type="button" [class.active]="seccion==='equipos'" (click)="cambiarSeccion('equipos')"><span class="admin-main-nav-icon">◆</span><span>Equipments</span></button>
@@ -166,6 +169,8 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <div class="cf-nav-children" *ngIf="navGroups.jquery">
           <button *ngFor="let x of jqueryLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSeccion(x.id)"><span>•</span><span>{{x.label}}</span></button>
         </div>
+
+        <button type="button" [class.active]="seccion==='sports-components'" (click)="cambiarSeccion('sports-components')"><span class="admin-main-nav-icon">🏋</span><span>Sports Components</span></button>
 
         <button type="button" class="cf-nav-group-head" [class.active]="['forms','form-inputs','checkbox-radio','file-input','validations','date-time','input-masks','input-tags'].includes(seccion)" (click)="toggleNavGroup('forms')">
           <span class="admin-main-nav-icon">☷</span><span>Forms</span><i>{{navGroups.forms?'⌄':'›'}}</i>
