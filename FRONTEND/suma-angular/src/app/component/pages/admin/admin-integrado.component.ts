@@ -167,8 +167,6 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <button *ngFor="let x of jqueryLinks" type="button" [class.active]="seccion===x.id" (click)="cambiarSeccion(x.id)"><span>•</span><span>{{x.label}}</span></button>
         </div>
 
-        <button type="button" [class.active]="seccion==='sports-components'" (click)="cambiarSeccion('sports-components')"><span class="admin-main-nav-icon">🏋</span><span>Sports Components</span></button>
-
         <button type="button" class="cf-nav-group-head" [class.active]="['form-inputs','checkbox-radio','file-input','validations','date-time','input-masks','input-tags'].includes(seccion)" (click)="toggleNavGroup('forms')">
           <span class="admin-main-nav-icon">☷</span><span>Forms</span><i>{{navGroups.forms?'⌄':'›'}}</i>
         </button>
@@ -438,12 +436,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <article><span>♙</span><b>{{entrenadores.length || 1}}</b><small>Trainers</small></article>
         </section>
         <section class="cf-live-card cf-live-attendance-card">
-          <header><div><h2>Attendance Tracker</h2><p>Member check-in and check-out activity</p></div>
-            <div class="cf-live-scan">
-              <input [(ngModel)]="asistenciaCodigo" placeholder="MG-000001 or DNI">
-              <button (click)="registrarAccesoPorCodigo()" [disabled]="procesandoAccesoCodigo || !asistenciaCodigo.trim()">Check-In</button>
-            </div>
-          </header>
+          <header><div><h2>Attendance Tracker</h2><p>Member check-in and check-out activity</p></div></header>
           <div class="table-wrap"><table class="management-table"><thead><tr><th>Member</th><th>ID</th><th>Date</th><th>Check-In</th><th>Check-Out</th><th>Duration</th><th>Trainer</th><th>Plan</th><th>Method</th><th>Status</th></tr></thead><tbody>
             <tr *ngFor="let a of asistencias.slice(0,12)">
               <td><b>{{nombreCliente(a.cliente)}}</b></td><td>#M{{a.id_asistencia || a.id || '-'}}</td><td>{{fecha(a.fecha_hora_entrada)}}</td><td>{{fecha(a.fecha_hora_entrada)}}</td><td>{{a.fecha_hora_salida ? fecha(a.fecha_hora_salida) : '-'}}</td><td>{{duracionAsistencia(a)}}</td><td>{{entrenadores[0] ? nombreEntrenador(entrenadores[0]) : 'Mallqui Trainer'}}</td><td>Mallqui Gym</td><td>Manual</td><td>{{a.estado || 'Completed'}}</td>
