@@ -1306,3 +1306,331 @@ html,body{
 
 /* El antiguo botón lateral morado ya no pertenece a esta plantilla. */
 .admin-shell.admin-home-redesign>.admin-sidebar-toggle{display:none!important;}
+
+
+/* PROFESOR_PUNTOS_FUNCIONALES_2026_10_23 */
+.admin-shell.admin-home-redesign .mg-professor-actions{
+  margin:0 0 14px!important;
+  padding:16px!important;
+  border:1px solid #eceeea!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-shadow:0 2px 8px rgba(23,25,31,.025)!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-actions header{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  margin-bottom:13px!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-actions header span{
+  display:block!important;
+  color:#7d8f4a!important;
+  font-size:9px!important;
+  font-weight:800!important;
+  letter-spacing:.8px!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-actions header h2{
+  margin:3px 0 0!important;
+  color:#17191f!important;
+  font-size:20px!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-actions header p{
+  margin:4px 0 0!important;
+  color:#92969d!important;
+  font-size:10px!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid>button{
+  min-height:86px!important;
+  display:grid!important;
+  grid-template-columns:42px minmax(0,1fr) 18px!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:12px!important;
+  border:1px solid #e9ece6!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:#17191f!important;
+  text-align:left!important;
+  cursor:pointer!important;
+  transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid>button:hover{
+  transform:translateY(-2px)!important;
+  border-color:#cce78b!important;
+  box-shadow:0 8px 22px rgba(95,116,46,.08)!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid i{
+  width:42px!important;
+  height:42px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:10px!important;
+  background:#effbd0!important;
+  color:#151913!important;
+  font-size:17px!important;
+  font-style:normal!important;
+  font-weight:900!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid strong{
+  display:block!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  color:#17191f!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid span{
+  display:block!important;
+  margin-top:3px!important;
+  color:#8f9399!important;
+  font-size:8.5px!important;
+  line-height:1.25!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid b{
+  color:#8d928b!important;
+  font-size:18px!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid .asistencia i{background:#edf7ff!important;}
+.admin-shell.admin-home-redesign .mg-professor-action-grid .rutinas i{background:#f5efff!important;}
+.admin-shell.admin-home-redesign .mg-professor-action-grid .seguimiento i{background:#fff5d9!important;}
+
+.admin-shell.admin-home-redesign .mg-expiry-alert{
+  min-height:92px!important;
+  display:grid!important;
+  grid-template-columns:48px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:13px!important;
+  margin:0 0 16px!important;
+  padding:13px 15px!important;
+  border:1px solid #dfe9c8!important;
+  border-radius:11px!important;
+  background:#f8fced!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-alert.has-warning{
+  border-color:#ffd48c!important;
+  background:#fff9ed!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-icon{
+  width:46px!important;
+  height:46px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:50%!important;
+  background:#dff4a6!important;
+  color:#4e6c12!important;
+  font-size:18px!important;
+  font-weight:900!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-alert.has-warning .mg-expiry-icon{
+  background:#ffdf9c!important;
+  color:#8a5600!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-copy small{
+  display:block!important;
+  color:#7d824f!important;
+  font-size:8px!important;
+  font-weight:800!important;
+  letter-spacing:.6px!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-copy h3{
+  margin:2px 0 3px!important;
+  color:#24271f!important;
+  font-size:13px!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-copy p{
+  margin:0!important;
+  color:#7f847b!important;
+  font-size:9px!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-members{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+  margin-top:7px!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-members>span{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  padding:4px 7px!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  border:1px solid #f0ddb8!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-members b{
+  font-size:8px!important;
+  color:#34372f!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-members em{
+  font-size:7.5px!important;
+  color:#8a8d87!important;
+  font-style:normal!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-alert>button{
+  min-height:34px!important;
+  padding:0 12px!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:#111311!important;
+  color:#c9f45a!important;
+  font-size:9px!important;
+  font-weight:800!important;
+}
+
+/* Seguimiento real */
+.admin-shell.admin-home-redesign .mg-follow-page{
+  display:grid!important;
+  gap:13px!important;
+  padding-top:8px!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  padding:16px 18px!important;
+  border:1px solid #eceeea!important;
+  border-radius:11px!important;
+  background:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-head span{
+  color:#82914c!important;
+  font-size:8px!important;
+  font-weight:800!important;
+  letter-spacing:.7px!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-head h2{
+  margin:3px 0!important;
+  font-size:20px!important;
+  color:#17191f!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-head p{
+  margin:0!important;
+  color:#92969d!important;
+  font-size:9px!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-head button,
+.admin-shell.admin-home-redesign .mg-follow-table-head button{
+  min-height:34px!important;
+  padding:0 12px!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:#111311!important;
+  color:#c9f45a!important;
+  font-size:9px!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-kpis{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-kpis article{
+  min-height:72px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:11px 12px!important;
+  border:1px solid #eceeea!important;
+  border-radius:9px!important;
+  background:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-kpis i{
+  width:38px!important;
+  height:38px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:9px!important;
+  background:#effbd0!important;
+  color:#17191f!important;
+  font-style:normal!important;
+  font-weight:900!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-kpis .warning i{background:#fff0cf!important;color:#8c5700!important;}
+.admin-shell.admin-home-redesign .mg-follow-kpis small{
+  display:block!important;
+  color:#90949a!important;
+  font-size:8px!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-kpis b{
+  display:block!important;
+  margin-top:2px!important;
+  color:#17191f!important;
+  font-size:18px!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-table-card{
+  padding:14px!important;
+  border:1px solid #eceeea!important;
+  border-radius:11px!important;
+  background:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-table-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  margin-bottom:10px!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-table-head h3{
+  margin:0!important;
+  color:#1f2226!important;
+  font-size:13px!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-table-head p{
+  margin:3px 0 0!important;
+  color:#95999f!important;
+  font-size:8.5px!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-table td>small{
+  display:block!important;
+  margin-top:2px!important;
+  color:#999da3!important;
+  font-size:7.5px!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-status{
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:22px!important;
+  padding:0 8px!important;
+  border-radius:999px!important;
+  background:#eaf7d0!important;
+  color:#57711d!important;
+  font-size:8px!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-status.warning,
+.admin-shell.admin-home-redesign .mg-expiring{
+  background:#fff2d6!important;
+  color:#9b5d00!important;
+}
+.admin-shell.admin-home-redesign .mg-follow-status.danger{
+  background:#ffe5e7!important;
+  color:#a72b35!important;
+}
+
+@media(max-width:1180px){
+  .admin-shell.admin-home-redesign .mg-professor-action-grid,
+  .admin-shell.admin-home-redesign .mg-follow-kpis{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:700px){
+  .admin-shell.admin-home-redesign .mg-professor-action-grid,
+  .admin-shell.admin-home-redesign .mg-follow-kpis{
+    grid-template-columns:1fr!important;
+  }
+  .admin-shell.admin-home-redesign .mg-expiry-alert{
+    grid-template-columns:42px minmax(0,1fr)!important;
+  }
+  .admin-shell.admin-home-redesign .mg-expiry-alert>button{
+    grid-column:1/-1!important;
+    width:100%!important;
+  }
+}
