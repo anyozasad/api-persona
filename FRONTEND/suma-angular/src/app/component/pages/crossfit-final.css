@@ -1977,3 +1977,36 @@ html,body{
 .admin-shell.admin-home-redesign>.admin-content{
   grid-column:2!important;
 }
+
+
+/* REAL_EMPTY_STATES_2026_10_24 */
+.admin-shell.admin-home-redesign .mg-dashboard-empty{
+  min-height:170px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:18px!important;padding:20px!important;border:1px dashed #dce6c8!important;border-radius:10px!important;
+  background:#fbfdf7!important;
+}
+.admin-shell.admin-home-redesign .mg-dashboard-empty>div{display:grid!important;gap:4px!important}
+.admin-shell.admin-home-redesign .mg-dashboard-empty i{
+  width:42px!important;height:42px!important;display:grid!important;place-items:center!important;border-radius:10px!important;
+  background:#effbd0!important;color:#17191f!important;font-size:18px!important;font-style:normal!important
+}
+.admin-shell.admin-home-redesign .mg-dashboard-empty h3{margin:5px 0 0!important;color:#20231f!important;font-size:14px!important}
+.admin-shell.admin-home-redesign .mg-dashboard-empty p{margin:0!important;color:#8e938b!important;font-size:9px!important}
+.admin-shell.admin-home-redesign .mg-dashboard-empty button{
+  min-height:36px!important;padding:0 13px!important;border:0!important;border-radius:7px!important;background:#111311!important;
+  color:#c9f45a!important;font-size:9px!important;font-weight:800!important
+}
+.admin-shell.admin-home-redesign .mg-agenda-empty{
+  min-height:180px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+  gap:6px!important;padding:16px!important;border:1px dashed #dfe6d2!important;border-radius:8px!important;background:#fbfdf8!important;text-align:center!important
+}
+.admin-shell.admin-home-redesign .mg-agenda-empty i{
+  width:38px!important;height:38px!important;display:grid!important;place-items:center!important;border-radius:50%!important;
+  background:#effbd0!important;color:#5e7822!important;font-size:16px!important;font-style:normal!important
+}
+.admin-shell.admin-home-redesign .mg-agenda-empty strong{color:#2c302a!important;font-size:10px!important}
+.admin-shell.admin-home-redesign .mg-agenda-empty span{max-width:230px!important;color:#929790!important;font-size:8px!important;line-height:1.4!important}
+.admin-shell.admin-home-redesign .mg-agenda-empty button{
+  min-height:30px!important;padding:0 10px!important;border:0!important;border-radius:6px!important;background:#111311!important;color:#c9f45a!important;
+  font-size:8px!important;font-weight:800!important
+}
