@@ -1057,14 +1057,14 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
                     <td><b>{{nombreCliente(c)}}</b><small>{{c.dni || 'Sin DNI'}}</small></td>
                     <td>{{membresiaSeguimiento(c)?.membresia?.nombre || 'Sin membresía'}}</td>
                     <td>
-                      <span [class.mg-expiring]="diasMembresiaSeguimiento(c) !== null && diasMembresiaSeguimiento(c) <= 7">
+                      <span [class.mg-expiring]="esMembresiaPorVencer(c)">
                         {{membresiaSeguimiento(c)?.fecha_fin || '-'}}
                       </span>
                     </td>
                     <td><b>{{asistenciasClienteSeguimiento(c)}}</b></td>
                     <td><b>{{rutinasClienteSeguimiento(c)}}</b></td>
                     <td>
-                      <span class="mg-follow-status" [class.warning]="diasMembresiaSeguimiento(c) !== null && diasMembresiaSeguimiento(c) <= 7" [class.danger]="!membresiaSeguimiento(c)">
+                      <span class="mg-follow-status" [class.warning]="esMembresiaPorVencer(c)" [class.danger]="!membresiaSeguimiento(c)">
                         {{estadoSeguimiento(c)}}
                       </span>
                     </td>
@@ -3537,6 +3537,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     return this.rutinas.filter((r:any)=>this.idClienteSeguimiento(r)===id && String(r?.estado||'Activo').toLowerCase()!=='inactivo').length;
   }
 
+  esMembresiaPorVencer(cliente:any): boolean {
+    const dias=this.diasMembresiaSeguimiento(cliente);
+    return dias !== null && dias >= 0 && dias <= 7;
+  }
+
   estadoSeguimiento(cliente:any): string {
     const m=this.membresiaSeguimiento(cliente);
     if(!m) return 'Sin membresía';
@@ -4024,7 +4029,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   cargarAsistencias(){ this.api.asistencias().subscribe({next:r=>this.asistencias=r,error:e=>this.mostrarError(e)}); }
   cargarCategorias(){ this.api.categorias().subscribe({next:r=>this.categorias=r,error:e=>this.mostrarError(e)}); }
   cargarRutinas(){ this.api.rutinas().subscribe({next:r=>this.rutinas=r,error:e=>this.mostrarError(e)}); }
-  cargarReservas(){ this.api.reservas().subscribe({next:r=>this.reservas=r,error:e=>this.mostrarError(e)}); }
+  cargarReservas(){
+    this.api.reservas().subscribe({
+      next:r=>this.reservas=Array.isArray(r)?r:[],
+      error:e=>{
+        this.reservas=[];
+        console.warn('No se pudieron cargar las reservas:',e);
+      }
+    });
+  }
   cargarUsuarios(){ this.api.usuarios().subscribe({next:r=>this.usuarios=r,error:e=>this.mostrarError(e)}); }
   cargarOpiniones(){ this.api.opinionesClientes().subscribe({next:r=>this.opiniones=r||[],error:e=>this.mostrarError(e)}); }
   cargarAuditoria(){
