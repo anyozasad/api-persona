@@ -1959,3 +1959,21 @@ html,body{
     flex-direction:column!important;
   }
 }
+
+
+/* SIDEBAR_FULL_HEIGHT_FIX_2026_10_24 */
+.admin-shell.admin-home-redesign>.admin-nav{
+  position:fixed!important;
+  left:0!important;
+  top:0!important;
+  bottom:0!important;
+  height:100vh!important;
+  min-height:100vh!important;
+  background:#090a09!important;
+}
+.admin-shell.admin-home-redesign>.admin-wix-topbar{
+  grid-column:2!important;
+}
+.admin-shell.admin-home-redesign>.admin-content{
+  grid-column:2!important;
+}
