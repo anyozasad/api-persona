@@ -847,14 +847,14 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
                     <td><b>{{nombreCliente(c)}}</b><small>{{c.dni || 'Sin DNI'}}</small></td>
                     <td>{{membresiaSeguimiento(c)?.membresia?.nombre || 'Sin membresía'}}</td>
                     <td>
-                      <span [class.mg-expiring]="diasMembresiaSeguimiento(c)!==null && diasMembresiaSeguimiento(c)!<=7">
+                      <span [class.mg-expiring]="diasMembresiaSeguimiento(c) !== null && diasMembresiaSeguimiento(c) <= 7">
                         {{membresiaSeguimiento(c)?.fecha_fin || '-'}}
                       </span>
                     </td>
                     <td><b>{{asistenciasClienteSeguimiento(c)}}</b></td>
                     <td><b>{{rutinasClienteSeguimiento(c)}}</b></td>
                     <td>
-                      <span class="mg-follow-status" [class.warning]="diasMembresiaSeguimiento(c)!==null && diasMembresiaSeguimiento(c)!<=7" [class.danger]="!membresiaSeguimiento(c)">
+                      <span class="mg-follow-status" [class.warning]="diasMembresiaSeguimiento(c) !== null && diasMembresiaSeguimiento(c) <= 7" [class.danger]="!membresiaSeguimiento(c)">
                         {{estadoSeguimiento(c)}}
                       </span>
                     </td>
