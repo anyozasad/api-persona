@@ -52,6 +52,7 @@ interface GymModuleConfig {
               <div class="cf-suite-equipment-art"><img *ngIf="item.imagen_url" [src]="item.imagen_url" [alt]="item.titulo"><span *ngIf="!item.imagen_url">🏋</span></div>
               <div><h3>{{item.titulo}}</h3><b>{{item.count || item.monto || 1}}</b><p>{{item.subtitulo || 'Equipo de gimnasio'}}</p><span class="status-select">{{item.estado || 'Disponibles'}}</span></div>
             </article>
+            <div class="cf-suite-empty" *ngIf="!records.length"><b>Sin equipos registrados</b><span>Agrega el primer equipo para comenzar el control.</span><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Equipo</button></div>
           </section>
           <section class="cf-suite-card">
             <header><div><h2>Equipos Mantenimiento</h2><p>Programación reciente de mantenimiento</p></div><button type="button" (click)="nuevoRegistro()">Programar Mantenimiento</button></header>
@@ -76,6 +77,7 @@ interface GymModuleConfig {
               <div class="cf-suite-event-meta"><b>{{item.bookings || (40+i*10)}} Reservas</b><small>{{item.detalle || 'Evento fitness'}}</small></div>
               <button class="cf-suite-link" (click)="editar(item)">Detalles</button>
             </article>
+            <div class="cf-suite-empty" *ngIf="!records.length"><b>Sin eventos registrados</b><span>Crea el primer evento, taller o campaña.</span><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Evento</button></div>
           </section>
           <section class="cf-suite-card">
             <header><div><h2>Calendario de Eventos</h2><p>Calendario semanal de actividades</p></div></header>
@@ -87,7 +89,8 @@ interface GymModuleConfig {
           <header class="cf-suite-page-head"><div><h1>Galería</h1><p>Galería del gimnasio, clases y eventos destacados</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Subir Imagen</button></header>
           <div class="cf-suite-gallery-filter"><button [class.active]="filtroGaleria==='Todos'" (click)="filtrarGaleria('Todos')">Todos</button><button [class.active]="filtroGaleria==='Entrenamiento'" (click)="filtrarGaleria('Entrenamiento')">Entrenamiento</button><button [class.active]="filtroGaleria==='Eventos'" (click)="filtrarGaleria('Eventos')">Eventos</button><button [class.active]="filtroGaleria==='Socios'" (click)="filtrarGaleria('Socios')">Socios</button><button [class.active]="filtroGaleria==='Equipos'" (click)="filtrarGaleria('Equipos')">Equipos</button></div>
           <section class="cf-suite-gallery">
-            <article *ngFor="let item of galeriaVisible"><img [src]="item.imagen_url || 'assets/showcase/class-showcase.svg'" [alt]="item.titulo"><div><b>{{item.titulo}}</b><span>{{item.count || 52}} fotos</span></div></article>
+            <article *ngFor="let item of galeriaVisible"><img [src]="item.imagen_url || 'assets/showcase/hero-showcase.svg'" [alt]="item.titulo"><div><b>{{item.titulo}}</b><span>{{item.estado || 'Publicado'}}</span></div></article>
+            <div class="cf-suite-empty" *ngIf="!galeriaVisible.length"><b>Sin imágenes registradas</b><span>Sube contenido real del gimnasio para completar la galería.</span><button type="button" class="primary" (click)="nuevoRegistro()">＋ Subir Imagen</button></div>
           </section>
           <div class="cf-suite-kpis compact"><article><small>Registros</small><b>{{records.length}}</b><span>Elementos de galería</span></article><article><small>Publicados</small><b>{{contarEstados(['Publicado'])}}</b><span>Contenido visible</span></article><article><small>Este Mes</small><b>{{esteMes}}</b><span>Nuevas cargas</span></article><article><small>Borradores</small><b>{{contarEstados(['Borrador'])}}</b><span>Pendientes de publicar</span></article></div>
         </section>
@@ -378,6 +381,95 @@ interface GymModuleConfig {
     :host .cf-news-featured h2{font-size:20px!important}
     :host .cf-news-featured p{font-size:11px!important}
     @media(max-width:700px){:host .cf-suite-complete{margin-left:10px!important;margin-right:10px!important}}
+
+
+    /* MALLQUI_SUITE_FINAL_THEME_2026_10_24 */
+    :host .gym-suite{gap:12px!important;color:#17191f!important;background:#fff!important}
+    :host .cfx-crumb{
+      height:42px!important;min-height:42px!important;padding:0 4px!important;
+      background:#fff!important;color:#777c82!important;border:0!important;border-bottom:1px solid #eff1ec!important;
+    }
+    :host .cfx-crumb small,:host .cfx-crumb strong,:host .cfx-crumb b,:host .cfx-crumb span{color:#777c82!important}
+    :host .cfx-crumb strong{color:#17191f!important}
+    :host .cf-suite-complete{margin:0 0 14px!important;gap:12px!important}
+    :host .cf-suite-page-head{
+      min-height:72px!important;margin:0!important;padding:14px 16px!important;
+      border:1px solid #eceeea!important;border-radius:10px!important;background:#fff!important;
+      box-shadow:0 2px 8px rgba(23,25,31,.025)!important;
+    }
+    :host .cf-suite-page-head h1{color:#17191f!important;font-size:20px!important}
+    :host .cf-suite-page-head p{color:#92969d!important;font-size:10px!important}
+    :host .cf-suite-page-head button,:host .cf-suite-card button,:host .cf-suite-gallery-filter button,:host .cf-news-featured button{
+      min-height:34px!important;padding:0 12px!important;border:1px solid #e3e7dc!important;border-radius:7px!important;
+      background:#fff!important;color:#4a4f53!important;font-size:10px!important;font-weight:700!important;
+    }
+    :host .cf-suite-page-head button.primary,:host .cf-suite-card button.primary,:host button.primary{
+      border-color:#111311!important;background:#111311!important;color:#c9f45a!important;
+    }
+    :host .cf-suite-page-head button:hover,:host .cf-suite-card button:hover,:host .cf-suite-gallery-filter button:hover{
+      border-color:#c9f45a!important;
+    }
+    :host .cf-suite-kpis,:host .cf-suite-income-cards{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important}
+    :host .cf-suite-kpis article,:host .cf-suite-income-cards>article{
+      min-height:88px!important;padding:13px 14px!important;border:1px solid #eceeea!important;border-radius:9px!important;
+      background:#fff!important;box-shadow:0 2px 8px rgba(23,25,31,.02)!important;
+    }
+    :host .cf-suite-kpis small,:host .cf-suite-income-cards small{color:#90949a!important;font-size:9px!important}
+    :host .cf-suite-kpis b,:host .cf-suite-income-cards b{display:block!important;margin:5px 0 2px!important;color:#17191f!important;font-size:19px!important}
+    :host .cf-suite-kpis span,:host .cf-suite-income-cards span{color:#969aa0!important;font-size:8.5px!important}
+    :host .cf-suite-card,:host .gym-suite-panel,:host .gym-suite-table-wrap,
+    :host .cf-suite-equipment-grid>article,:host .cf-suite-events>article,:host .cf-suite-gallery>article,:host .cf-suite-news>article{
+      border:1px solid #eceeea!important;border-radius:9px!important;background:#fff!important;
+      box-shadow:0 2px 8px rgba(23,25,31,.02)!important;
+    }
+    :host .cf-suite-card{padding:14px!important}
+    :host .cf-suite-card h2{color:#1d2025!important;font-size:14px!important}
+    :host .cf-suite-card p{color:#93979d!important;font-size:9.5px!important}
+    :host .gym-suite-table th{background:#f8faf5!important;color:#6f756d!important;border-bottom-color:#e8ece3!important}
+    :host .gym-suite-table td{color:#4f5458!important;border-bottom-color:#eef0ec!important}
+    :host .gym-suite-table tbody tr:hover{background:#fbfdf7!important}
+    :host .cf-suite-link,:host .table-action{color:#607d1f!important;background:#effbd0!important;border-color:#dcefa8!important}
+    :host .status-select{background:#f2f8e5!important;color:#5d7725!important;border-color:#dfeabf!important}
+    :host .cf-suite-gallery-filter button.active{
+      border-color:#111311!important;background:#111311!important;color:#c9f45a!important;
+    }
+    :host .cf-event-calendar b{color:#71952a!important}
+    :host .cf-news-featured{border-color:#eceeea!important;border-radius:10px!important}
+    :host .cf-news-featured>div{background:#fff!important}
+    :host .cf-news-featured>div>span{color:#759229!important}
+    :host .cf-news-featured h2{color:#17191f!important}
+    :host .cf-news-featured p{color:#83888d!important}
+    :host .cf-income-bars i{background:linear-gradient(180deg,#c9f45a,#8fbf32)!important}
+    :host .cf-revenue-donut.real:before{background:#fff!important}
+    :host .cf-revenue-list span{color:#6f746f!important;font-size:9px!important}
+    :host .cf-revenue-list b{color:#17191f!important}
+    :host .cf-suite-invoice-note{background:#f7fbe9!important;border-color:#e2ecc8!important;color:#62685d!important}
+    :host .cf-payment-status-grid>div,:host .cf-news-categories>span,:host .cf-payroll-notes>div{
+      border-color:#eceeea!important;background:#fbfcf8!important
+    }
+    :host .cf-suite-empty{
+      grid-column:1/-1!important;min-height:150px!important;display:flex!important;flex-direction:column!important;
+      align-items:center!important;justify-content:center!important;gap:7px!important;padding:18px!important;
+      border:1px dashed #dfe6d1!important;border-radius:9px!important;background:#fbfdf7!important;text-align:center!important;
+    }
+    :host .cf-suite-empty b{color:#2d312a!important;font-size:13px!important}
+    :host .cf-suite-empty span{max-width:430px!important;color:#91968f!important;font-size:9px!important}
+    :host .cf-suite-empty-inline{
+      grid-column:1/-1!important;padding:16px!important;border:1px dashed #e1e5db!important;border-radius:8px!important;
+      background:#fbfdf8!important;color:#8d9289!important;font-size:9px!important;text-align:center!important;
+    }
+    :host .gym-suite-modal{border-radius:12px!important;border-color:#e7eae2!important}
+    :host .gym-suite-modal header{background:#f8faf5!important;border-bottom-color:#e8ebe4!important}
+    :host .gym-suite-modal header small{color:#76902f!important}
+    :host .gym-suite-form-grid input,:host .gym-suite-form-grid select,:host .gym-suite-form-grid textarea{
+      border-color:#e2e6dd!important;background:#fff!important;color:#25282c!important
+    }
+    @media(max-width:950px){
+      :host .cf-suite-kpis,:host .cf-suite-income-cards{grid-template-columns:repeat(2,1fr)!important}
+    }
+    @media(max-width:650px){
+      :host .cf-suite-kpis,:host .cf-suite-income-cards{grid-template-columns:1fr!important}
+    }
 
   `]
 })
@@ -794,7 +886,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
 
 
   get galeriaVisible(): any[] {
-    const base = this.records.length ? this.records : this.galleryFallback;
+    const base = this.records;
     if (this.filtroGaleria === 'Todos') return base;
     return base.filter((item:any) => {
       const texto = [item?.titulo,item?.subtitulo,item?.datos?.detalle,item?.categoria].filter(Boolean).join(' ').toLowerCase();
