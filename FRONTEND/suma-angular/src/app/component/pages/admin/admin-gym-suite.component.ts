@@ -610,34 +610,6 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   };
 
 
-  incomeMatrix:any[] = [
-    {location:'Pucallpa Centro',months:[1339,2220,5755,1318,3320,3983,9229,5546,5660,1789,2329,7097],year:43300},
-    {location:'Yarinacocha',months:[1032,2084,3364,7130,2182,6961,1890,8422,4465,7634,5190,4532],year:58200},
-    {location:'Manantay',months:[2230,3036,4221,7656,2226,1166,6120,1709,9932,8776,6593,9991],year:83700},
-    {location:'Callería',months:[4339,8739,5529,6138,2239,2933,3389,8739,7663,9236,9125,6631],year:74100},
-    {location:'Campo Verde',months:[2980,3480,1980,2080,2480,7680,8480,6680,1080,3280,2080,1680],year:95900}
-  ];
-
-  equipmentFallback:any[] = [
-    {titulo:'Mancuernas',count:48,subtitulo:'Rango de 2 a 40 kg'},{titulo:'Máquinas de Fuerza',count:26,subtitulo:'Pecho, piernas y poleas'},
-    {titulo:'Estaciones de Entrenamiento',count:18,subtitulo:'Estructuras multifuncionales'},{titulo:'Bicicletas de Aire',count:14,subtitulo:'Cardio HIIT'},
-    {titulo:'Bicicletas de Spinning',count:20,subtitulo:'Ciclismo indoor'},{titulo:'Pesas Rusas',count:60,subtitulo:'Rango de 4 a 32 kg'},
-    {titulo:'Bancos de Entrenamiento',count:22,subtitulo:'Planos y ajustables'},{titulo:'Barras',count:35,subtitulo:'Barras olímpicas'},
-    {titulo:'Discos Olímpicos',count:90,subtitulo:'Recubiertos de goma'},{titulo:'Rodillos de Espuma',count:30,subtitulo:'Herramientas de recuperación'},
-    {titulo:'Racks para Sentadillas',count:10,subtitulo:'Estructura reforzada'},{titulo:'Caminadoras',count:24,subtitulo:'Uso comercial'}
-  ];
-  eventFallback:any[] = [
-    {day:15,titulo:'Clase de baile para principiantes.',subtitulo:'Mallqui Gym · 10:30 - 11:30',estado:'Cupos por cerrar',bookings:120},
-    {day:19,titulo:'Rehabilitación y retorno al deporte.',subtitulo:'Mallqui Gym · 12:30 - 03:30',estado:'Cupos limitados',bookings:100},
-    {day:23,titulo:'Día de Entrenamiento Crossfit.',subtitulo:'Mallqui Gym · 08:30 - 10:30',estado:'Casi lleno',bookings:60}
-  ];
-  galleryFallback:any[] = Array.from({length:12},(_,i)=>({titulo:'Mallqui Gym',count:[86,94,55,39,68,33,74,88,93,39,66,52][i],imagen_url:i%2?'assets/showcase/class-showcase.svg':'assets/showcase/hero-showcase.svg'}));
-  newsFallback:any[] = [
-    {titulo:'Novedades de Mallqui Gym',fecha:'20/10/2026',subtitulo:'Noticias y novedades del gimnasio.',imagen_url:'assets/showcase/hero-showcase.svg'},
-    {titulo:'Programa de Entrenamiento',fecha:'18/10/2026',subtitulo:'Nuevas actividades fitness disponibles.',imagen_url:'assets/showcase/class-showcase.svg'},
-    {titulo:'Progreso de Socios',fecha:'15/10/2026',subtitulo:'Logros y novedades destacadas de la comunidad.',imagen_url:'assets/showcase/coach-showcase.svg'}
-  ];
-
   constructor(private api: AdminApiService) {}
 
   ngOnInit(): void {
