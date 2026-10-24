@@ -1634,3 +1634,328 @@ html,body{
     width:100%!important;
   }
 }
+
+
+/* BUSINESS_MODULES_COMPLETE_2026_10_24 */
+.admin-shell.admin-home-redesign .mg-business-page{
+  display:grid!important;
+  gap:13px!important;
+  padding-top:8px!important;
+}
+.admin-shell.admin-home-redesign .mg-business-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  padding:16px 18px!important;
+  border:1px solid #eceeea!important;
+  border-radius:11px!important;
+  background:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-business-head span{
+  display:block!important;
+  color:#7d8f4a!important;
+  font-size:8px!important;
+  font-weight:800!important;
+  letter-spacing:.8px!important;
+}
+.admin-shell.admin-home-redesign .mg-business-head h2{
+  margin:3px 0!important;
+  color:#17191f!important;
+  font-size:20px!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .mg-business-head p{
+  margin:0!important;
+  color:#92969d!important;
+  font-size:9px!important;
+}
+.admin-shell.admin-home-redesign .mg-business-actions{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+.admin-shell.admin-home-redesign .mg-business-actions select{
+  min-height:34px!important;
+  border:1px solid #e5e8df!important;
+  border-radius:7px!important;
+  background:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-business-selector{
+  padding:12px 14px!important;
+  border:1px solid #eceeea!important;
+  border-radius:9px!important;
+  background:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-business-selector label,
+.admin-shell.admin-home-redesign .mg-business-card label{
+  display:grid!important;
+  gap:5px!important;
+  color:#686d72!important;
+  font-size:9px!important;
+  font-weight:700!important;
+}
+.admin-shell.admin-home-redesign .mg-business-selector select,
+.admin-shell.admin-home-redesign .mg-business-card select{
+  min-height:36px!important;
+  padding:0 10px!important;
+  border:1px solid #e5e8df!important;
+  border-radius:7px!important;
+  background:#fff!important;
+  color:#25282c!important;
+}
+.admin-shell.admin-home-redesign .mg-business-grid.two{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:12px!important;
+}
+.admin-shell.admin-home-redesign .mg-business-card{
+  padding:15px!important;
+  border:1px solid #eceeea!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:0 2px 8px rgba(23,25,31,.025)!important;
+}
+.admin-shell.admin-home-redesign .mg-business-card h3{
+  margin:0 0 12px!important;
+  color:#1c1f23!important;
+  font-size:13px!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .mg-business-card-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  margin-bottom:8px!important;
+}
+.admin-shell.admin-home-redesign .mg-business-card-head h3{margin:0!important;}
+.admin-shell.admin-home-redesign .mg-business-card-head p{
+  margin:2px 0 0!important;
+  color:#979ba1!important;
+  font-size:8px!important;
+}
+.admin-shell.admin-home-redesign .mg-progress-kpis,
+.admin-shell.admin-home-redesign .mg-renewal-summary{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+.admin-shell.admin-home-redesign .mg-renewal-summary{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+.admin-shell.admin-home-redesign .mg-progress-kpis article,
+.admin-shell.admin-home-redesign .mg-renewal-summary article{
+  min-height:76px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  padding:11px 13px!important;
+  border:1px solid #eceeea!important;
+  border-radius:9px!important;
+  background:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-progress-kpis small,
+.admin-shell.admin-home-redesign .mg-renewal-summary small{
+  color:#91959b!important;
+  font-size:8px!important;
+}
+.admin-shell.admin-home-redesign .mg-progress-kpis b,
+.admin-shell.admin-home-redesign .mg-renewal-summary b{
+  margin-top:4px!important;
+  color:#17191f!important;
+  font-size:20px!important;
+}
+.admin-shell.admin-home-redesign .mg-progress-kpis em{
+  color:#94989e!important;
+  font-size:8px!important;
+  font-style:normal!important;
+}
+.admin-shell.admin-home-redesign .mg-renewal-summary span{
+  margin-top:2px!important;
+  color:#969aa0!important;
+  font-size:8px!important;
+}
+.admin-shell.admin-home-redesign .mg-measure-form{
+  display:grid!important;
+  gap:9px!important;
+}
+.admin-shell.admin-home-redesign .mg-measure-form>div{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+}
+.admin-shell.admin-home-redesign .mg-measure-form input{
+  min-height:34px!important;
+  border:1px solid #e5e8df!important;
+  border-radius:7px!important;
+}
+.admin-shell.admin-home-redesign .mg-routine-summary{
+  min-height:150px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:flex-start!important;
+  padding:14px!important;
+  border-radius:9px!important;
+  background:#f7fbe9!important;
+}
+.admin-shell.admin-home-redesign .mg-routine-summary b{
+  color:#1b2016!important;
+  font-size:12px!important;
+}
+.admin-shell.admin-home-redesign .mg-routine-summary p,
+.admin-shell.admin-home-redesign .mg-empty-copy{
+  color:#777d73!important;
+  font-size:9px!important;
+}
+.admin-shell.admin-home-redesign .mg-member-card{
+  margin-top:12px!important;
+  padding:16px!important;
+  border-radius:12px!important;
+  background:linear-gradient(135deg,#0b0d0a 0%,#171b14 100%)!important;
+  color:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-member-card-brand{
+  font-size:13px!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .mg-member-card-brand b{color:#c9f45a!important;}
+.admin-shell.admin-home-redesign .mg-member-card-person{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  margin:18px 0!important;
+}
+.admin-shell.admin-home-redesign .mg-member-card-person>span{
+  width:46px!important;
+  height:46px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:50%!important;
+  background:#c9f45a!important;
+  color:#111311!important;
+  font-size:14px!important;
+  font-weight:900!important;
+}
+.admin-shell.admin-home-redesign .mg-member-card-person strong{
+  display:block!important;
+  font-size:13px!important;
+}
+.admin-shell.admin-home-redesign .mg-member-card-person small{
+  display:block!important;
+  margin-top:3px!important;
+  color:#c7cbc2!important;
+  font-size:8px!important;
+}
+.admin-shell.admin-home-redesign .mg-member-card-info{
+  display:grid!important;
+  grid-template-columns:repeat(3,1fr)!important;
+  gap:8px!important;
+}
+.admin-shell.admin-home-redesign .mg-member-card-info p{
+  margin:0!important;
+  padding:8px!important;
+  border-radius:7px!important;
+  background:rgba(255,255,255,.06)!important;
+}
+.admin-shell.admin-home-redesign .mg-member-card-info span{
+  display:block!important;
+  color:#aeb3aa!important;
+  font-size:7px!important;
+}
+.admin-shell.admin-home-redesign .mg-member-card-info b{
+  display:block!important;
+  margin-top:3px!important;
+  color:#fff!important;
+  font-size:8.5px!important;
+}
+.admin-shell.admin-home-redesign .mg-receipt-preview{
+  margin-top:12px!important;
+  padding:14px!important;
+  border:1px dashed #ced8b7!important;
+  border-radius:9px!important;
+  background:#fbfdf6!important;
+}
+.admin-shell.admin-home-redesign .mg-receipt-preview>strong{
+  display:block!important;
+  margin-bottom:8px!important;
+  color:#191c16!important;
+  font-size:13px!important;
+}
+.admin-shell.admin-home-redesign .mg-receipt-preview p{
+  margin:4px 0!important;
+  color:#646961!important;
+  font-size:9px!important;
+}
+.admin-shell.admin-home-redesign .mg-maintenance-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+.admin-shell.admin-home-redesign .mg-maintenance-card{
+  min-height:190px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  padding:16px!important;
+  border:1px solid #eceeea!important;
+  border-radius:10px!important;
+  background:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-maintenance-card>i{
+  width:42px!important;
+  height:42px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:10px!important;
+  background:#effbd0!important;
+  color:#17191f!important;
+  font-size:18px!important;
+  font-style:normal!important;
+  font-weight:900!important;
+}
+.admin-shell.admin-home-redesign .mg-maintenance-card h3{
+  margin:0!important;
+  color:#1d201d!important;
+  font-size:13px!important;
+}
+.admin-shell.admin-home-redesign .mg-maintenance-card p{
+  margin:4px 0 0!important;
+  color:#8a8f88!important;
+  font-size:9px!important;
+}
+.admin-shell.admin-home-redesign .mg-maintenance-card input[type=file]{
+  width:100%!important;
+  min-height:34px!important;
+  font-size:8px!important;
+}
+.admin-shell.admin-home-redesign .mg-maintenance-card button{
+  margin-top:auto!important;
+}
+@media(max-width:1000px){
+  .admin-shell.admin-home-redesign .mg-business-grid.two,
+  .admin-shell.admin-home-redesign .mg-maintenance-grid{
+    grid-template-columns:1fr!important;
+  }
+  .admin-shell.admin-home-redesign .mg-progress-kpis{
+    grid-template-columns:repeat(2,1fr)!important;
+  }
+}
+@media(max-width:700px){
+  .admin-shell.admin-home-redesign .mg-progress-kpis,
+  .admin-shell.admin-home-redesign .mg-renewal-summary{
+    grid-template-columns:1fr!important;
+  }
+  .admin-shell.admin-home-redesign .mg-business-head{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+  .admin-shell.admin-home-redesign .mg-business-actions{
+    width:100%!important;
+    align-items:stretch!important;
+    flex-direction:column!important;
+  }
+}
