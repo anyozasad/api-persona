@@ -909,6 +909,66 @@ interface ExtraConfig {
       font-size:78px;
     }
 
+
+/* MALLQUI_EXTRAS_FINAL_THEME_2026_10_24 */
+:host{color:#17191f!important}
+:host .cfx-page{background:#fff!important;color:#17191f!important}
+:host .cfx-crumb{
+  min-height:42px!important;height:42px!important;padding:0 4px!important;
+  border:0!important;border-bottom:1px solid #eff1ec!important;border-radius:0!important;
+  background:#fff!important;color:#777c82!important;box-shadow:none!important
+}
+:host .cfx-crumb span,:host .cfx-crumb small,:host .cfx-crumb b{color:#777c82!important}
+:host .cfx-crumb strong{color:#17191f!important}
+:host .cfx-card,:host .cfx-panel,:host .cfx-stat,:host .cfx-table-wrap,
+:host .cf-special-card,:host .cf-special-panel{
+  border-color:#eceeea!important;border-radius:10px!important;background:#fff!important;
+  box-shadow:0 2px 8px rgba(23,25,31,.025)!important
+}
+:host .cfx-card h1,:host .cfx-card h2,:host .cfx-card h3,
+:host .cf-special-card h1,:host .cf-special-card h2,:host .cf-special-card h3{color:#17191f!important}
+:host .cfx-card p,:host .cfx-card small,:host .cf-special-card p,:host .cf-special-card small{color:#8d9298!important}
+:host button.primary,:host .primary,:host .cfx-primary{
+  border-color:#111311!important;background:#111311!important;color:#c9f45a!important
+}
+:host button.secondary,:host .secondary{
+  border-color:#e4e8df!important;background:#fff!important;color:#4d5257!important
+}
+:host button:not(.primary):not(.secondary):hover{border-color:#c9f45a!important}
+:host input,:host select,:host textarea{
+  border-color:#e2e6dd!important;background:#fff!important;color:#25282c!important
+}
+:host input:focus,:host select:focus,:host textarea:focus{
+  border-color:#a9cf55!important;box-shadow:0 0 0 3px rgba(201,244,90,.16)!important
+}
+:host table th{background:#f8faf5!important;color:#70766e!important;border-bottom-color:#e8ece3!important}
+:host table td{color:#505559!important;border-bottom-color:#eef0ec!important}
+:host table tbody tr:hover{background:#fbfdf7!important}
+:host .badge,:host .cfx-badge,:host .status,:host .status-select{
+  background:#effbd0!important;color:#607d1f!important;border-color:#dcefa8!important
+}
+:host .cfx-tabs button.active,:host .cfx-filter button.active,:host .active-tab{
+  border-color:#111311!important;background:#111311!important;color:#c9f45a!important
+}
+:host .cfx-progress>i,:host .progress-bar>i{background:#c9f45a!important}
+:host .cfx-avatar,:host .avatar{border-color:#c9f45a!important}
+:host .cfx-icon,:host .cf-special-icon{
+  background:#effbd0!important;color:#5d7725!important
+}
+:host .cfx-action-toast{
+  background:#111311!important;color:#c9f45a!important;box-shadow:0 12px 30px rgba(18,20,17,.2)!important
+}
+:host .cf-carousel-icon{
+  background:linear-gradient(135deg,#f7fbe9,#eef5df)!important;color:#5f7a21!important
+}
+:host .cfx-modal-backdrop{background:rgba(8,10,8,.42)!important}
+:host .cfx-modal,:host .modal-content{
+  border-color:#e7eae2!important;border-radius:12px!important;background:#fff!important
+}
+:host .cfx-modal header,:host .modal-content header{background:#f8faf5!important;border-bottom-color:#e8ebe4!important}
+:host a,:host .link{color:#648321!important}
+:host .danger,:host .error{color:#b4233a!important}
+
 `]
 })
 export class AdminCrossfitExtrasComponent implements OnChanges {
