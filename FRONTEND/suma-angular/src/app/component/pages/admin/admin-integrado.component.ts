@@ -34,7 +34,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           aria-label="Buscar en el panel">
       </label>
 
-      <button type="button" class="mg-notification" (click)="cambiarSegcion('comunicacion')" title="Notificaciones">
+      <button type="button" class="mg-notification" (click)="abrirAlertasDashboard()" title="Notificaciones">
         ♧
         <i *ngIf="totalAlertasDashboard()>0"></i>
       </button>
@@ -84,6 +84,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.training">
           <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSegcion('rutinas')"><span>•</span><span>Rutinas</span></button>
+          <button type="button" [class.active]="seccion==='seguimiento'" (click)="cambiarSegcion('seguimiento')"><span>•</span><span>Seguimiento de Socios</span></button>
           <button type="button" [class.active]="seccion==='nutricion'" (click)="cambiarSegcion('nutricion')"><span>•</span><span>Nutrición</span></button>
           <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSegcion('asistencias')"><span>•</span><span>Asistencias</span></button>
           <button type="button" [class.active]="seccion==='attendance-tools'" (click)="cambiarSegcion('attendance-tools')"><span>•</span><span>Control de Acceso</span></button>
@@ -609,6 +610,54 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
       <ng-container *ngIf="seccion==='dashboard'">
         <section class="mg-dashboard">
           <div class="mg-dashboard-main">
+            <section class="mg-professor-actions">
+              <header>
+                <div>
+                  <span>FUNCIONES PRINCIPALES</span>
+                  <h2>Gestión rápida del gimnasio</h2>
+                  <p>Accesos solicitados para la operación diaria de Mallqui Gym.</p>
+                </div>
+              </header>
+              <div class="mg-professor-action-grid">
+                <button type="button" class="matricula" (click)="abrirNuevoSocioDesdeDashboard()">
+                  <i>＋</i><div><strong>Matricular</strong><span>Registrar un nuevo socio</span></div><b>›</b>
+                </button>
+                <button type="button" class="seguimiento" (click)="cambiarSegcion('seguimiento')">
+                  <i>◎</i><div><strong>Seguimiento</strong><span>Membresía, asistencia y rutina</span></div><b>›</b>
+                </button>
+                <button type="button" class="asistencia" (click)="cambiarSegcion('attendance-tools')">
+                  <i>✓</i><div><strong>Asistencia</strong><span>Registrar entrada o salida</span></div><b>›</b>
+                </button>
+                <button type="button" class="rutinas" (click)="cambiarSegcion('rutinas')">
+                  <i>🏋</i><div><strong>Rutinas</strong><span>Asignar y controlar rutinas</span></div><b>›</b>
+                </button>
+              </div>
+            </section>
+
+            <section class="mg-expiry-alert" [class.has-warning]="membresiasPorVencerDashboard.length>0">
+              <div class="mg-expiry-icon">{{membresiasPorVencerDashboard.length>0 ? '!' : '✓'}}</div>
+              <div class="mg-expiry-copy">
+                <small>ALERTA DE MEMBRESÍAS</small>
+                <ng-container *ngIf="membresiasPorVencerDashboard.length; else sinVencimientosDashboard">
+                  <h3>{{membresiasPorVencerDashboard.length}} membresía(s) por vencer</h3>
+                  <p>El administrador debe realizar seguimiento y renovación dentro de los próximos 7 días.</p>
+                  <div class="mg-expiry-members">
+                    <span *ngFor="let v of membresiasPorVencerDashboard.slice(0,3)">
+                      <b>{{nombreCliente(v.cliente)}}</b>
+                      <em>{{v.membresia?.nombre || 'Plan'}} · vence {{v.fecha_fin}}<ng-container *ngIf="v.dias_restantes!==undefined"> · {{v.dias_restantes}} día(s)</ng-container></em>
+                    </span>
+                  </div>
+                </ng-container>
+                <ng-template #sinVencimientosDashboard>
+                  <h3>Membresías al día</h3>
+                  <p>No hay membresías que venzan durante los próximos 7 días.</p>
+                </ng-template>
+              </div>
+              <button type="button" (click)="cambiarSegcion('membresias')">
+                {{membresiasPorVencerDashboard.length ? 'Revisar y renovar' : 'Ver membresías'}}
+              </button>
+            </section>
+
             <section class="mg-section-heading">
               <div>
                 <h2>Rutinas del día</h2>
@@ -762,6 +811,63 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               </div>
             </section>
           </aside>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='seguimiento'">
+        <section class="mg-follow-page">
+          <header class="mg-follow-head">
+            <div>
+              <span>SEGUIMIENTO DE SOCIOS</span>
+              <h2>Estado general de cada socio</h2>
+              <p>Consulta membresía, asistencias y rutinas usando los datos reales registrados en el sistema.</p>
+            </div>
+            <button type="button" (click)="cargarSeguimiento()">↻ Actualizar</button>
+          </header>
+
+          <section class="mg-follow-kpis">
+            <article><i>♚</i><div><small>Socios activos</small><b>{{clientesActivos}}</b></div></article>
+            <article><i>✦</i><div><small>Membresías activas</small><b>{{dashboard?.membresias?.activas ?? 0}}</b></div></article>
+            <article class="warning"><i>!</i><div><small>Por vencer</small><b>{{membresiasPorVencerDashboard.length}}</b></div></article>
+            <article><i>🏋</i><div><small>Rutinas activas</small><b>{{dashboard?.operacion?.rutinas_activas ?? rutinas.length}}</b></div></article>
+          </section>
+
+          <article class="mg-follow-table-card">
+            <div class="mg-follow-table-head">
+              <div><h3>Seguimiento individual</h3><p>{{clientes.length}} socios registrados</p></div>
+              <button type="button" (click)="abrirNuevoSocioDesdeDashboard()">＋ Matricular socio</button>
+            </div>
+            <div class="table-wrap">
+              <table class="management-table mg-follow-table">
+                <thead>
+                  <tr><th>Socio</th><th>Membresía</th><th>Vencimiento</th><th>Asistencias</th><th>Rutinas</th><th>Estado</th><th>Acción</th></tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let c of clientes">
+                    <td><b>{{nombreCliente(c)}}</b><small>{{c.dni || 'Sin DNI'}}</small></td>
+                    <td>{{membresiaSeguimiento(c)?.membresia?.nombre || 'Sin membresía'}}</td>
+                    <td>
+                      <span [class.mg-expiring]="diasMembresiaSeguimiento(c)!==null && diasMembresiaSeguimiento(c)!<=7">
+                        {{membresiaSeguimiento(c)?.fecha_fin || '-'}}
+                      </span>
+                    </td>
+                    <td><b>{{asistenciasClienteSeguimiento(c)}}</b></td>
+                    <td><b>{{rutinasClienteSeguimiento(c)}}</b></td>
+                    <td>
+                      <span class="mg-follow-status" [class.warning]="diasMembresiaSeguimiento(c)!==null && diasMembresiaSeguimiento(c)!<=7" [class.danger]="!membresiaSeguimiento(c)">
+                        {{estadoSeguimiento(c)}}
+                      </span>
+                    </td>
+                    <td>
+                      <button type="button" class="table-action" (click)="abrirFichaCliente(c.id_cliente)">Ver ficha</button>
+                      <button type="button" class="admin-secondary" (click)="renovarDesdeSeguimiento(c)">Renovar</button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="!clientes.length"><td colspan="7">No hay socios registrados para seguimiento.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
         </section>
       </ng-container>
 
@@ -2327,7 +2433,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     'historial-ventas':['Historial de Ventas','Consulta de todas las ventas registradas'],
     'reporte-asistencias':['Reporte de Asistencias','Resumen y detalle de asistencias registradas'],
     entrenador:['Entrenadores','Administración del entrenador principal'], clases:['Clases','Programación, horarios y cupos'],
-    asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['Mi Plan de Entrenamiento','Rutinas de entrenamiento y seguimiento de socios'],
+    asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['Mi Plan de Entrenamiento','Rutinas de entrenamiento y seguimiento de socios'], seguimiento:['Seguimiento de Socios','Membresía, asistencia y rutinas por socio'],
     reservas:['Reservas','Reservas creadas desde el portal y control de asistencia'], categorias:['Categorías','Clasificación de productos'],
     productos:['Productos','Registro, precios y control de stock'], proveedores:['Proveedores','Proveedores de productos'],
     compras:['Compras','Ingreso de productos e inventario'], ventas:['Ventas','Ventas de productos y stock'],
@@ -2374,7 +2480,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ];
   suiteModules = ['equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   modulosConVistaPropia = [
-    'dashboard','clientes','membresias','pagos','entrenador','clases','asistencias','attendance-tools',
+    'dashboard','clientes','membresias','pagos','entrenador','clases','asistencias','attendance-tools','seguimiento',
     'rutinas','reservas','caja','ventas','historial-ventas','gastos','inventario','productos','kardex',
     'proveedores','compras','categorias','reportes','reportes-admin','reporte-asistencias','usuarios',
     'auditoria','configuracion','opiniones','nutricion','entrenador-admin','rutinas-admin','pagos-admin','planes-admin'
@@ -2885,7 +2991,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     const s=this.seccion;
     if(s==='dashboard') return 'dashboard';
     if(['clientes','membresias','asistencias','pagos','planes'].includes(s)) return 'socios';
-    if(['clases','reservas','rutinas','entrenador'].includes(s)) return 'servicios';
+    if(['clases','reservas','rutinas','entrenador','seguimiento'].includes(s)) return 'servicios';
     if(['caja','ventas','historial-ventas','gastos'].includes(s)) return 'operacion';
     if(['inventario','productos','kardex','proveedores','compras','categorias'].includes(s)) return 'inventario';
     if(['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'].includes(s)) return 'gestion-fitness';
@@ -3154,7 +3260,75 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     return Number(a.rutinas_pendientes||0)
       + Number(a.soporte_pendiente||0)
       + Number(a.opiniones_pendientes||0)
-      + Number(this.dashboard?.inventario?.productos_stock_bajo||0);
+      + Number(this.dashboard?.inventario?.productos_stock_bajo||0)
+      + Number(this.dashboard?.membresias?.por_vencer_7_dias||0);
+  }
+
+  get membresiasPorVencerDashboard(): any[] {
+    const datos=this.dashboard?.membresias?.detalle_por_vencer;
+    return Array.isArray(datos) ? datos : [];
+  }
+
+  abrirAlertasDashboard(): void {
+    if(this.membresiasPorVencerDashboard.length){
+      this.cambiarSegcion('membresias');
+      return;
+    }
+    this.cambiarSegcion('comunicacion');
+  }
+
+  cargarSeguimiento(): void {
+    this.cargarClientes();
+    this.cargarMembresias();
+    this.cargarAsistencias();
+    this.cargarRutinas();
+    this.cargarDashboard();
+  }
+
+  private idClienteSeguimiento(valor:any): number {
+    return Number(valor?.id_cliente ?? valor?.cliente?.id_cliente ?? valor?.cliente_id ?? 0);
+  }
+
+  membresiaSeguimiento(cliente:any): any {
+    const id=Number(cliente?.id_cliente||0);
+    const candidatas=this.membresiasCliente
+      .filter((m:any)=>this.idClienteSeguimiento(m)===id)
+      .sort((a:any,b:any)=>String(b?.fecha_fin||'').localeCompare(String(a?.fecha_fin||'')));
+    return candidatas.find((m:any)=>String(m?.estado||'Activo').toLowerCase()==='activo') || candidatas[0] || null;
+  }
+
+  diasMembresiaSeguimiento(cliente:any): number|null {
+    const fechaFin=this.membresiaSeguimiento(cliente)?.fecha_fin;
+    if(!fechaFin) return null;
+    const fin=new Date(String(fechaFin)+'T23:59:59');
+    if(Number.isNaN(fin.getTime())) return null;
+    const hoy=new Date();
+    hoy.setHours(0,0,0,0);
+    return Math.ceil((fin.getTime()-hoy.getTime())/86400000);
+  }
+
+  asistenciasClienteSeguimiento(cliente:any): number {
+    const id=Number(cliente?.id_cliente||0);
+    return this.asistencias.filter((a:any)=>this.idClienteSeguimiento(a)===id).length;
+  }
+
+  rutinasClienteSeguimiento(cliente:any): number {
+    const id=Number(cliente?.id_cliente||0);
+    return this.rutinas.filter((r:any)=>this.idClienteSeguimiento(r)===id && String(r?.estado||'Activo').toLowerCase()!=='inactivo').length;
+  }
+
+  estadoSeguimiento(cliente:any): string {
+    const m=this.membresiaSeguimiento(cliente);
+    if(!m) return 'Sin membresía';
+    const dias=this.diasMembresiaSeguimiento(cliente);
+    if(dias!==null && dias<0) return 'Vencida';
+    if(dias!==null && dias<=7) return 'Por vencer';
+    return 'Al día';
+  }
+
+  renovarDesdeSeguimiento(cliente:any): void {
+    this.cambiarSegcion('membresias');
+    setTimeout(()=>{ this.membresiaForm.id_cliente=Number(cliente?.id_cliente||0); },0);
   }
 
   diasActividadDashboard(): any[] {
@@ -3316,6 +3490,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.cargarRutinas();
         this.cargarClientes();
         this.cargarEntrenadores();
+        break;
+      case 'seguimiento':
+        this.cargarSeguimiento();
         break;
       case 'reservas':
         this.cargarReservas();
