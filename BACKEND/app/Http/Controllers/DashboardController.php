@@ -468,8 +468,19 @@ class DashboardController extends Controller
                         ->first();
                 }
 
+                $fechaFinValor = $this->valor($fila, [$fin]);
+                $diasRestantes = null;
+                try {
+                    $diasRestantes = $fechaFinValor
+                        ? max(0, $hoy->copy()->startOfDay()->diffInDays(Carbon::parse($fechaFinValor)->startOfDay(), false))
+                        : null;
+                } catch (Throwable $e) {
+                    $diasRestantes = null;
+                }
+
                 $resultado['detalle_por_vencer'][] = [
-                    'fecha_fin' => $this->valor($fila, [$fin]),
+                    'fecha_fin' => $fechaFinValor,
+                    'dias_restantes' => $diasRestantes,
                     'cliente' => $this->normalizarPersona($socio),
                     'membresia' => [
                         'nombre' => $this->valor($plan, ['nombre', 'nombre_plan', 'plan'], 'Plan'),
