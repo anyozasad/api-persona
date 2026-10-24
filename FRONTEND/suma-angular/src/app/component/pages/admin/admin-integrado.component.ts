@@ -3210,22 +3210,31 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   get moduloActivo():string{
     const s=this.seccion;
     if(s==='dashboard') return 'dashboard';
-    if(['clientes','membresias','asistencias','pagos','planes'].includes(s)) return 'socios';
-    if(['clases','reservas','rutinas','entrenador','seguimiento'].includes(s)) return 'servicios';
-    if(['caja','ventas','historial-ventas','gastos'].includes(s)) return 'operacion';
-    if(['inventario','productos','kardex','proveedores','compras','categorias'].includes(s)) return 'inventario';
-    if(['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'].includes(s)) return 'gestion-fitness';
-    if(['soporte','opiniones','comunicacion'].includes(s)) return 'atencion';
-    if(['reportes','reportes-admin','reporte-asistencias'].includes(s)) return 'reportes';
-    if(['usuarios','auditoria','configuracion'].includes(s)) return 'sistema';
-    return 'dashboard';
+    if(['clientes','membresias','pagos','planes','renovaciones','documentos-socio','members-list','members-cards','add-member','edit-member','edit-member-details'].includes(s)) return 'socios';
+    if(['clases','reservas','rutinas','entrenador','trainer-profile','seguimiento','progreso-fisico','nutricion','asistencias','attendance-tools','reporte-asistencias','sports-components'].includes(s)) return 'servicios';
+    if(['caja','ventas','historial-ventas','gastos','compras'].includes(s)) return 'operacion';
+    if(['inventario','productos','kardex','proveedores','categorias','equipos'].includes(s)) return 'inventario';
+    if(['eventos','galeria','noticias'].includes(s)) return 'contenido';
+    if(['salarios','ingresos','facturas','invoices-list','create-invoice','add-invoice','edit-invoice','invoice-details','expenses','payslip'].includes(s)) return 'finanzas';
+    if(['soporte','opiniones','comunicacion','contact'].includes(s)) return 'atencion';
+    if(['reportes','reportes-admin'].includes(s)) return 'reportes';
+    if(['usuarios','auditoria','configuracion','mantenimiento-sistema','my-profile','account-settings'].includes(s)) return 'sistema';
+    return 'herramientas';
   }
 
   get nombreModuloActual():string{
     const nombres:any={
-      dashboard:'Panel Principal',socios:'Socios',servicios:'Servicios',
-      operacion:'Caja y ventas',inventario:'Inventario',
-      atencion:'Atención al cliente',reportes:'Reportes',sistema:'Sistema','gestion-fitness':'Gestión Fitness'
+      dashboard:'Panel Principal',
+      socios:'Socios y membresías',
+      servicios:'Fitness y servicios',
+      operacion:'Operación',
+      inventario:'Inventario y equipos',
+      contenido:'Contenido',
+      finanzas:'Finanzas',
+      atencion:'Atención al cliente',
+      reportes:'Reportes',
+      sistema:'Sistema',
+      herramientas:'Herramientas'
     };
     return nombres[this.moduloActivo]||'Administración';
   }
@@ -3234,44 +3243,55 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     switch(this.moduloActivo){
       case 'socios':
         return [
-          {id:'clientes',nombre:'Clientes'},
+          {id:'clientes',nombre:'Socios'},
           {id:'membresias',nombre:'Membresías'},
+          {id:'renovaciones',nombre:'Renovaciones'},
           {id:'pagos',nombre:'Pagos'},
-          {id:'asistencias',nombre:'Asistencia'},
-          {id:'planes',nombre:'Tarifas'}
+          {id:'planes',nombre:'Planes'},
+          {id:'documentos-socio',nombre:'Documentos'}
         ];
       case 'servicios':
         return [
           {id:'clases',nombre:'Clases'},
-          {id:'reservas',nombre:'Reservas'},
+          {id:'reservas',nombre:'Agenda'},
           {id:'rutinas',nombre:'Rutinas'},
+          {id:'seguimiento',nombre:'Seguimiento'},
+          {id:'progreso-fisico',nombre:'Progreso'},
+          {id:'asistencias',nombre:'Asistencia'},
+          {id:'nutricion',nombre:'Nutrición'},
           {id:'entrenador',nombre:'Entrenador'}
         ];
       case 'operacion':
         return [
           {id:'caja',nombre:'Caja'},
-          {id:'ventas',nombre:'Punto de venta'},
+          {id:'ventas',nombre:'Ventas'},
           {id:'historial-ventas',nombre:'Historial'},
-          {id:'gastos',nombre:'Gastos'}
+          {id:'gastos',nombre:'Gastos'},
+          {id:'compras',nombre:'Compras'}
         ];
       case 'inventario':
         return [
-          {id:'inventario',nombre:'Productos'},
-          {id:'compras',nombre:'Compras'},
+          {id:'inventario',nombre:'Inventario'},
+          {id:'productos',nombre:'Productos'},
+          {id:'categorias',nombre:'Categorías'},
           {id:'proveedores',nombre:'Proveedores'},
           {id:'kardex',nombre:'Kardex'},
-          {id:'categorias',nombre:'Categorías'}
+          {id:'equipos',nombre:'Equipos'}
         ];
-      case 'gestion-fitness':
+      case 'contenido':
         return [
-          {id:'nutricion',nombre:'Nutrición'},
-          {id:'equipos',nombre:'Equipos'},
           {id:'eventos',nombre:'Eventos'},
           {id:'galeria',nombre:'Galería'},
-          {id:'noticias',nombre:'Noticias'},
-          {id:'salarios',nombre:'Salarios'},
+          {id:'noticias',nombre:'Noticias'}
+        ];
+      case 'finanzas':
+        return [
           {id:'ingresos',nombre:'Ingresos'},
-          {id:'facturas',nombre:'Facturas'}
+          {id:'facturas',nombre:'Facturas'},
+          {id:'invoices-list',nombre:'Lista de Facturas'},
+          {id:'expenses',nombre:'Gastos Administrativos'},
+          {id:'salarios',nombre:'Salarios'},
+          {id:'payslip',nombre:'Boleta de Pago'}
         ];
       case 'atencion':
         return [
@@ -3288,7 +3308,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         return [
           {id:'usuarios',nombre:'Usuarios'},
           {id:'auditoria',nombre:'Auditoría'},
-          {id:'configuracion',nombre:'Configuración'}
+          {id:'configuracion',nombre:'Configuración'},
+          {id:'mantenimiento-sistema',nombre:'Mantenimiento'}
         ];
       default:
         return [];
@@ -3302,10 +3323,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       servicios:'clases',
       operacion:'caja',
       inventario:'inventario',
-      'gestion-fitness':'nutricion',
+      contenido:'eventos',
+      finanzas:'ingresos',
       atencion:'soporte',
       reportes:'reportes-admin',
-      sistema:'configuracion'
+      sistema:'configuracion',
+      herramientas:'tables'
     };
     this.cambiarSegcion(destino[modulo]||'dashboard');
   }
