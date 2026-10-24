@@ -697,30 +697,36 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               <button type="button" (click)="cambiarSegcion('rutinas')">Ver todas <span>›</span></button>
             </section>
 
-            <section class="mg-workout-grid">
-              <article class="mg-workout-card mg-workout-featured">
+            <section class="mg-workout-grid" *ngIf="rutinasActivasDashboard.length; else sinRutinasDashboard">
+              <article class="mg-workout-card mg-workout-featured" *ngIf="rutinasActivasDashboard[0] as r">
                 <div class="mg-workout-copy">
-                  <h3>Entrenamiento<br>Base</h3>
-                  <p>8 sesiones <span></span> 45 minutos</p>
-                  <button type="button" (click)="cambiarSegcion('rutinas')">Iniciar</button>
+                  <h3>{{r.nombre_rutina || 'Rutina activa'}}</h3>
+                  <p>{{r.detalles?.length || 0}} ejercicios <span></span> {{r.objetivo || 'Entrenamiento'}}</p>
+                  <button type="button" (click)="cambiarSegcion('rutinas')">Ver rutina</button>
                 </div>
-                <img src="assets/showcase/hero-showcase.svg" alt="Entrenamiento en Mallqui Gym">
+                <img src="assets/showcase/hero-showcase.svg" alt="Rutina activa de Mallqui Gym">
               </article>
 
-              <article class="mg-workout-card">
+              <article class="mg-workout-card" *ngIf="rutinasActivasDashboard[1] as r">
                 <i class="mg-workout-icon">↗</i>
-                <h3>Cardio</h3>
-                <p>6 sesiones <span></span> 30 minutos</p>
-                <button type="button" (click)="cambiarSegcion('rutinas')">Iniciar</button>
+                <h3>{{r.nombre_rutina || 'Rutina'}}</h3>
+                <p>{{r.detalles?.length || 0}} ejercicios <span></span> {{r.objetivo || 'Entrenamiento'}}</p>
+                <button type="button" (click)="cambiarSegcion('rutinas')">Ver rutina</button>
               </article>
 
-              <article class="mg-workout-card">
+              <article class="mg-workout-card" *ngIf="rutinasActivasDashboard[2] as r">
                 <i class="mg-workout-icon">✦</i>
-                <h3>Yoga</h3>
-                <p>5 sesiones <span></span> 40 minutos</p>
-                <button type="button" (click)="cambiarSegcion('rutinas')">Iniciar</button>
+                <h3>{{r.nombre_rutina || 'Rutina'}}</h3>
+                <p>{{r.detalles?.length || 0}} ejercicios <span></span> {{r.objetivo || 'Entrenamiento'}}</p>
+                <button type="button" (click)="cambiarSegcion('rutinas')">Ver rutina</button>
               </article>
             </section>
+            <ng-template #sinRutinasDashboard>
+              <section class="mg-dashboard-empty">
+                <div><i>🏋</i><h3>No hay rutinas activas</h3><p>Registra o asigna una rutina para que aparezca en el inicio del administrador.</p></div>
+                <button type="button" (click)="cambiarSegcion('rutinas')">Gestionar rutinas</button>
+              </section>
+            </ng-template>
 
             <section class="mg-results">
               <div class="mg-section-heading compact">
@@ -804,16 +810,16 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               </div>
 
               <button type="button" class="mg-video-card" (click)="cambiarSegcion('rutinas')">
-                <img src="assets/showcase/hero-showcase.svg" alt="Rutina de fuerza">
+                <img src="assets/showcase/hero-showcase.svg" alt="Rutina de Mallqui Gym">
                 <i>▶</i>
               </button>
-              <h3>Rutina de Fuerza Total</h3>
-              <small>12:56 min</small>
+              <h3>{{rutinasActivasDashboard[0]?.nombre_rutina || 'Sin rutina activa'}}</h3>
+              <small>{{rutinasActivasDashboard[0]?.detalles?.length || 0}} ejercicios</small>
             </article>
 
             <button type="button" class="mg-mini-routine" (click)="cambiarSegcion('rutinas')">
-              <img src="assets/showcase/hero-showcase.svg" alt="Rutina para principiantes">
-              <div><strong>Rutina para Principiantes</strong><span>10:24 min</span></div>
+              <img src="assets/showcase/hero-showcase.svg" alt="Rutina secundaria">
+              <div><strong>{{rutinasActivasDashboard[1]?.nombre_rutina || 'Gestionar rutinas'}}</strong><span>{{rutinasActivasDashboard[1]?.objetivo || 'Ver módulo de rutinas'}}</span></div>
             </button>
 
             <section class="mg-agenda">
@@ -825,20 +831,17 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               <div class="mg-agenda-list">
                 <article *ngFor="let r of reservas.slice(0,6); let i=index">
                   <i [class.dark]="i===4"></i>
-                  <time>{{r.clase?.hora_inicio || horaAgendaFallback(i)}}</time>
+                  <time>{{r.clase?.hora_inicio || '—'}}</time>
                   <div>
                     <strong>{{r.clase?.nombre || 'Entrenamiento Personal'}}</strong>
                     <span>{{nombreCliente(r.cliente) || 'Socio Mallqui'}}</span>
                   </div>
                 </article>
 
-                <ng-container *ngIf="!reservas.length">
-                  <article *ngFor="let a of agendaFallback; let i=index">
-                    <i [class.dark]="i===4"></i>
-                    <time>{{a.hora}}</time>
-                    <div><strong>{{a.actividad}}</strong><span>{{a.detalle}}</span></div>
-                  </article>
-                </ng-container>
+                <div class="mg-agenda-empty" *ngIf="!reservas.length">
+                  <i>◫</i><strong>Sin reservas registradas</strong><span>Las reservas reales aparecerán aquí cuando los socios agenden clases.</span>
+                  <button type="button" (click)="cambiarSegcion('reservas')">Abrir agenda</button>
+                </div>
               </div>
             </section>
           </aside>
@@ -2685,19 +2688,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   mostrarAnalisisAvanzado = false;
   workoutSemana = 1;
   diaNutricionActivo = 'Domingo';
-  semanaDashboardDemo = [
-    {dia:'Lun',total:5},{dia:'Mar',total:7},{dia:'Mié',total:4},{dia:'Jue',total:6},
-    {dia:'Vie',total:6},{dia:'Sáb',total:9},{dia:'Dom',total:4}
-  ];
   nutricionPreview: any[] = [];
-  agendaFallback = [
-    {hora:'08:00',actividad:'Entrenamiento Personal',detalle:'Juan Pérez'},
-    {hora:'09:00',actividad:'Clase Grupal – Funcional',detalle:'Sala 1'},
-    {hora:'10:30',actividad:'Entrenamiento Personal',detalle:'María López'},
-    {hora:'12:00',actividad:'Yoga',detalle:'Sala 2'},
-    {hora:'16:00',actividad:'Clase de Spinning',detalle:'Sala 1'},
-    {hora:'18:00',actividad:'Entrenamiento Personal',detalle:'Carlos Ramírez'}
-  ];
   suiteModules = ['equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   modulosConVistaPropia = [
     'dashboard','clientes','membresias','pagos','entrenador','clases','asistencias','attendance-tools','seguimiento','progreso-fisico','renovaciones','documentos-socio','mantenimiento-sistema',
@@ -2813,6 +2804,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.cargarEntrenadores();
     this.cargarReservas();
     this.cargarClases();
+    this.cargarRutinas();
+    this.cargarAsistencias();
     if (this.seccion !== 'dashboard') this.cargarSegcion(this.seccion);
 
     // Refresco inteligente: no interrumpe formularios ni trabaja cuando la pestaña está oculta.
@@ -3488,14 +3481,14 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     return this.clientesFiltrados.slice(inicio,inicio+this.clientesPorPagina);
   }
 
+  get rutinasActivasDashboard(): any[] {
+    return this.rutinas.filter((r:any)=>String(r?.estado||'Activo').toLowerCase()==='activo').slice(0,3);
+  }
+
   get fechaDashboard(): string {
     return new Intl.DateTimeFormat('es-PE',{
       weekday:'long',day:'2-digit',month:'long',year:'numeric'
     }).format(new Date());
-  }
-
-  horaAgendaFallback(i:number): string {
-    return this.agendaFallback[i % this.agendaFallback.length]?.hora || '08:00';
   }
 
   totalAlertasDashboard(): number {
@@ -3710,7 +3703,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   diasActividadDashboard(): any[] {
     const dias = this.dashboard?.tendencias?.asistencias_7_dias;
-    return Array.isArray(dias) && dias.length ? dias.slice(-7) : this.semanaDashboardDemo;
+    if (Array.isArray(dias) && dias.length) return dias.slice(-7);
+    return ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].map(dia=>({dia,total:0}));
   }
 
   totalActividadSemanal(): number {
