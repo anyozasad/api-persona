@@ -72,6 +72,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <button type="button" [class.active]="seccion==='members-list'" (click)="cambiarSegcion('members-list')"><span>•</span><span>Lista de Socios</span></button>
           <button type="button" [class.active]="seccion==='members-cards'" (click)="cambiarSegcion('members-cards')"><span>•</span><span>Tarjetas de Socios</span></button>
           <button type="button" [class.active]="seccion==='membresias'" (click)="cambiarSegcion('membresias')"><span>•</span><span>Membresías</span></button>
+          <button type="button" [class.active]="seccion==='renovaciones'" (click)="cambiarSegcion('renovaciones')"><span>•</span><span>Renovaciones y Avisos</span></button>
           <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSegcion('pagos')"><span>•</span><span>Pagos</span></button>
           <button type="button" [class.active]="seccion==='entrenador'" (click)="cambiarSegcion('entrenador')"><span>•</span><span>Entrenador</span></button>
           <button type="button" [class.active]="seccion==='trainer-profile'" (click)="cambiarSegcion('trainer-profile')"><span>•</span><span>Perfil del Entrenador</span></button>
@@ -85,6 +86,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         <div class="cf-nav-children" *ngIf="navGroups.training">
           <button type="button" [class.active]="seccion==='rutinas'" (click)="cambiarSegcion('rutinas')"><span>•</span><span>Rutinas</span></button>
           <button type="button" [class.active]="seccion==='seguimiento'" (click)="cambiarSegcion('seguimiento')"><span>•</span><span>Seguimiento de Socios</span></button>
+          <button type="button" [class.active]="seccion==='progreso-fisico'" (click)="cambiarSegcion('progreso-fisico')"><span>•</span><span>Progreso Físico</span></button>
           <button type="button" [class.active]="seccion==='nutricion'" (click)="cambiarSegcion('nutricion')"><span>•</span><span>Nutrición</span></button>
           <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSegcion('asistencias')"><span>•</span><span>Asistencias</span></button>
           <button type="button" [class.active]="seccion==='attendance-tools'" (click)="cambiarSegcion('attendance-tools')"><span>•</span><span>Control de Acceso</span></button>
@@ -150,6 +152,8 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <button type="button" [class.active]="seccion==='auditoria'" (click)="cambiarSegcion('auditoria')"><span>•</span><span>Auditoría</span></button>
           <button type="button" [class.active]="seccion==='configuracion'" (click)="cambiarSegcion('configuracion')"><span>•</span><span>Configuración</span></button>
           <button type="button" [class.active]="seccion==='my-profile'" (click)="cambiarSegcion('my-profile')"><span>•</span><span>Mi Perfil</span></button>
+          <button type="button" [class.active]="seccion==='documentos-socio'" (click)="cambiarSegcion('documentos-socio')"><span>•</span><span>Documentos del Socio</span></button>
+          <button type="button" [class.active]="seccion==='mantenimiento-sistema'" (click)="cambiarSegcion('mantenimiento-sistema')"><span>•</span><span>Mantenimiento del Sistema</span></button>
         </div>
 
         <button type="button" class="cf-nav-group-head" [class.active]="navGroups.ui" (click)="toggleNavGroup('ui')">
@@ -159,12 +163,39 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <button type="button" [class.active]="seccion==='tables'" (click)="cambiarSegcion('tables')"><span>•</span><span>Tablas</span></button>
           <button type="button" [class.active]="seccion==='data-tables'" (click)="cambiarSegcion('data-tables')"><span>•</span><span>Tablas de Datos</span></button>
           <button type="button" [class.active]="seccion==='graphs'" (click)="cambiarSegcion('graphs')"><span>•</span><span>Gráficos</span></button>
-          <button type="button" [class.active]="seccion==='forms'" (click)="cambiarSegcion('forms')"><span>•</span><span>Formularios</span></button>
-          <button type="button" [class.active]="seccion==='alerts'" (click)="cambiarSegcion('alerts')"><span>•</span><span>Alertas</span></button>
-          <button type="button" [class.active]="seccion==='cards-ui'" (click)="cambiarSegcion('cards-ui')"><span>•</span><span>Tarjetas</span></button>
+          <button type="button" [class.active]="seccion==='apex'" (click)="cambiarSegcion('apex')"><span>•</span><span>Apex Charts</span></button>
+          <button type="button" [class.active]="seccion==='morris'" (click)="cambiarSegcion('morris')"><span>•</span><span>Morris Charts</span></button>
+          <button type="button" [class.active]="seccion==='vector-maps'" (click)="cambiarSegcion('vector-maps')"><span>•</span><span>Mapas Vectoriales</span></button>
+          <button type="button" [class.active]="seccion==='accordions'" (click)="cambiarSegcion('accordions')"><span>•</span><span>Acordeones</span></button>
+          <button type="button" [class.active]="seccion==='carousel'" (click)="cambiarSegcion('carousel')"><span>•</span><span>Carrusel</span></button>
           <button type="button" [class.active]="seccion==='modals'" (click)="cambiarSegcion('modals')"><span>•</span><span>Modales</span></button>
+          <button type="button" [class.active]="seccion==='popovers'" (click)="cambiarSegcion('popovers')"><span>•</span><span>Popovers</span></button>
           <button type="button" [class.active]="seccion==='tabs-ui'" (click)="cambiarSegcion('tabs-ui')"><span>•</span><span>Pestañas</span></button>
+          <button type="button" [class.active]="seccion==='tooltips'" (click)="cambiarSegcion('tooltips')"><span>•</span><span>Tooltips</span></button>
+          <button type="button" [class.active]="seccion==='forms'" (click)="cambiarSegcion('forms')"><span>•</span><span>Formularios</span></button>
+          <button type="button" [class.active]="seccion==='form-inputs'" (click)="cambiarSegcion('form-inputs')"><span>•</span><span>Campos de Formulario</span></button>
+          <button type="button" [class.active]="seccion==='checkbox-radio'" (click)="cambiarSegcion('checkbox-radio')"><span>•</span><span>Checkbox y Radio</span></button>
+          <button type="button" [class.active]="seccion==='file-input'" (click)="cambiarSegcion('file-input')"><span>•</span><span>Archivos</span></button>
+          <button type="button" [class.active]="seccion==='validations'" (click)="cambiarSegcion('validations')"><span>•</span><span>Validaciones</span></button>
+          <button type="button" [class.active]="seccion==='date-time'" (click)="cambiarSegcion('date-time')"><span>•</span><span>Fecha y Hora</span></button>
+          <button type="button" [class.active]="seccion==='input-masks'" (click)="cambiarSegcion('input-masks')"><span>•</span><span>Máscaras de Entrada</span></button>
+          <button type="button" [class.active]="seccion==='input-tags'" (click)="cambiarSegcion('input-tags')"><span>•</span><span>Etiquetas</span></button>
+          <button type="button" [class.active]="seccion==='alerts'" (click)="cambiarSegcion('alerts')"><span>•</span><span>Alertas</span></button>
+          <button type="button" [class.active]="seccion==='avatars'" (click)="cambiarSegcion('avatars')"><span>•</span><span>Avatares</span></button>
+          <button type="button" [class.active]="seccion==='badges'" (click)="cambiarSegcion('badges')"><span>•</span><span>Insignias</span></button>
+          <button type="button" [class.active]="seccion==='buttons'" (click)="cambiarSegcion('buttons')"><span>•</span><span>Botones</span></button>
+          <button type="button" [class.active]="seccion==='button-groups'" (click)="cambiarSegcion('button-groups')"><span>•</span><span>Grupos de Botones</span></button>
+          <button type="button" [class.active]="seccion==='cards-ui'" (click)="cambiarSegcion('cards-ui')"><span>•</span><span>Tarjetas</span></button>
+          <button type="button" [class.active]="seccion==='advanced-cards'" (click)="cambiarSegcion('advanced-cards')"><span>•</span><span>Tarjetas Avanzadas</span></button>
+          <button type="button" [class.active]="seccion==='dropdowns'" (click)="cambiarSegcion('dropdowns')"><span>•</span><span>Menús Desplegables</span></button>
+          <button type="button" [class.active]="seccion==='list-items'" (click)="cambiarSegcion('list-items')"><span>•</span><span>Listas</span></button>
+          <button type="button" [class.active]="seccion==='progress-bars'" (click)="cambiarSegcion('progress-bars')"><span>•</span><span>Barras de Progreso</span></button>
+          <button type="button" [class.active]="seccion==='placeholders'" (click)="cambiarSegcion('placeholders')"><span>•</span><span>Placeholders</span></button>
+          <button type="button" [class.active]="seccion==='spinners'" (click)="cambiarSegcion('spinners')"><span>•</span><span>Spinners</span></button>
           <button type="button" [class.active]="seccion==='icons'" (click)="cambiarSegcion('icons')"><span>•</span><span>Iconos</span></button>
+          <button type="button" [class.active]="seccion==='account-settings'" (click)="cambiarSegcion('account-settings')"><span>•</span><span>Ajustes de Cuenta</span></button>
+          <button type="button" [class.active]="seccion==='contact'" (click)="cambiarSegcion('contact')"><span>•</span><span>Contacto</span></button>
+          <button type="button" [class.active]="seccion==='typography'" (click)="cambiarSegcion('typography')"><span>•</span><span>Tipografía</span></button>
         </div>
       </nav>
 
@@ -811,6 +842,185 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               </div>
             </section>
           </aside>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='progreso-fisico'">
+        <section class="mg-business-page">
+          <header class="mg-business-head">
+            <div><span>PROGRESO FÍSICO</span><h2>Medidas y evolución del socio</h2><p>Registra peso, grasa corporal, cintura y brazo para controlar el avance real.</p></div>
+          </header>
+          <section class="mg-business-selector">
+            <label>Socio
+              <select [(ngModel)]="progresoClienteId" (ngModelChange)="cargarProgresoFisico()">
+                <option [ngValue]="0">Seleccionar socio</option>
+                <option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}} · {{c.dni}}</option>
+              </select>
+            </label>
+          </section>
+
+          <ng-container *ngIf="progresoClienteId">
+            <section class="mg-progress-kpis">
+              <article><small>Peso actual</small><b>{{progresoDatos?.medidas?.[0]?.peso ?? '-'}} <em>kg</em></b></article>
+              <article><small>Grasa corporal</small><b>{{progresoDatos?.medidas?.[0]?.grasa ?? '-'}} <em>%</em></b></article>
+              <article><small>Cintura</small><b>{{progresoDatos?.medidas?.[0]?.cintura ?? '-'}} <em>cm</em></b></article>
+              <article><small>Brazo</small><b>{{progresoDatos?.medidas?.[0]?.brazo ?? '-'}} <em>cm</em></b></article>
+            </section>
+
+            <section class="mg-business-grid two">
+              <article class="mg-business-card">
+                <h3>Registrar nueva medición</h3>
+                <form class="mg-measure-form" (ngSubmit)="guardarMedidaProgreso()">
+                  <div><label>Peso (kg)<input type="number" step="0.1" min="0" [(ngModel)]="medidaForm.peso" name="mpeso"></label>
+                  <label>Grasa (%)<input type="number" step="0.1" min="0" [(ngModel)]="medidaForm.grasa" name="mgrasa"></label></div>
+                  <div><label>Cintura (cm)<input type="number" step="0.1" min="0" [(ngModel)]="medidaForm.cintura" name="mcintura"></label>
+                  <label>Brazo (cm)<input type="number" step="0.1" min="0" [(ngModel)]="medidaForm.brazo" name="mbrazo"></label></div>
+                  <label>Fecha<input type="date" [(ngModel)]="medidaForm.fecha" name="mfecha"></label>
+                  <button type="submit" class="admin-primary">Guardar medición</button>
+                </form>
+              </article>
+
+              <article class="mg-business-card">
+                <h3>Rutina actual</h3>
+                <div class="mg-routine-summary" *ngIf="progresoDatos?.rutina; else sinRutinaProgreso">
+                  <b>Rutina asignada</b>
+                  <p>{{progresoDatos?.rutina?.observaciones || 'Plan de entrenamiento activo.'}}</p>
+                  <button type="button" class="admin-secondary" (click)="cambiarSegcion('rutinas')">Gestionar rutina</button>
+                </div>
+                <ng-template #sinRutinaProgreso><p class="mg-empty-copy">El socio todavía no tiene una rutina asignada.</p></ng-template>
+              </article>
+            </section>
+
+            <article class="mg-business-card">
+              <div class="mg-business-card-head"><div><h3>Historial de mediciones</h3><p>Evolución ordenada desde la medición más reciente.</p></div></div>
+              <div class="table-wrap">
+                <table class="management-table">
+                  <thead><tr><th>Fecha</th><th>Peso</th><th>Grasa</th><th>Cintura</th><th>Brazo</th><th>Acción</th></tr></thead>
+                  <tbody>
+                    <tr *ngFor="let m of progresoDatos?.medidas || []">
+                      <td>{{m.fecha}}</td><td>{{m.peso ?? '-'}} kg</td><td>{{m.grasa ?? '-'}}%</td><td>{{m.cintura ?? '-'}} cm</td><td>{{m.brazo ?? '-'}} cm</td>
+                      <td><button type="button" class="table-danger" (click)="eliminarMedidaProgreso(m.id)">Eliminar</button></td>
+                    </tr>
+                    <tr *ngIf="!(progresoDatos?.medidas || []).length"><td colspan="6">No hay mediciones registradas.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </ng-container>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='renovaciones'">
+        <section class="mg-business-page">
+          <header class="mg-business-head">
+            <div><span>RENOVACIONES Y AVISOS</span><h2>Membresías próximas a vencer</h2><p>Controla renovaciones y comunica al socio antes de que pierda acceso al gimnasio.</p></div>
+            <div class="mg-business-actions">
+              <select [(ngModel)]="renovacionesDias" (ngModelChange)="cargarRenovaciones()"><option [ngValue]="7">7 días</option><option [ngValue]="15">15 días</option><option [ngValue]="30">30 días</option></select>
+              <button type="button" class="admin-primary" (click)="enviarAvisosTodos()">Enviar avisos disponibles</button>
+            </div>
+          </header>
+
+          <section class="mg-renewal-summary">
+            <article><small>Por vencer</small><b>{{renovacionesLista.length}}</b><span>socios requieren seguimiento</span></article>
+            <article><small>Con teléfono</small><b>{{renovacionesConTelefono}}</b><span>contactos disponibles</span></article>
+            <article><small>Con WhatsApp configurado</small><b>{{renovacionesConWhatsapp}}</b><span>avisos automáticos listos</span></article>
+          </section>
+
+          <article class="mg-business-card">
+            <div class="table-wrap">
+              <table class="management-table">
+                <thead><tr><th>Socio</th><th>Plan</th><th>Vence</th><th>Teléfono</th><th>WhatsApp</th><th>Acciones</th></tr></thead>
+                <tbody>
+                  <tr *ngFor="let v of renovacionesLista">
+                    <td><b>{{v.nombre}}</b></td><td>{{v.nombre_plan}}</td><td>{{v.fecha_fin}}</td><td>{{v.telefono || 'Sin teléfono'}}</td>
+                    <td><span class="mg-follow-status" [class.warning]="!v.whatsapp_api_key">{{v.whatsapp_api_key ? 'Configurado' : 'Sin API Key'}}</span></td>
+                    <td>
+                      <button type="button" class="admin-secondary" (click)="configurarWhatsapp(v)">Configurar</button>
+                      <button type="button" class="admin-primary" [disabled]="!v.telefono || !v.whatsapp_api_key" (click)="enviarAvisoWhatsapp(v)">Enviar aviso</button>
+                      <button type="button" class="table-action" (click)="abrirRenovacionSocio(v)">Renovar</button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="!renovacionesLista.length"><td colspan="6">No hay membresías próximas a vencer en este rango.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='documentos-socio'">
+        <section class="mg-business-page">
+          <header class="mg-business-head">
+            <div><span>DOCUMENTOS DEL SOCIO</span><h2>Carnet y comprobantes</h2><p>Genera información de identificación y comprobantes desde los registros reales del socio.</p></div>
+          </header>
+          <section class="mg-business-grid two">
+            <article class="mg-business-card">
+              <h3>Carnet de socio</h3>
+              <label>Seleccionar socio
+                <select [(ngModel)]="documentoClienteId">
+                  <option [ngValue]="0">Seleccionar</option>
+                  <option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}} · {{c.dni}}</option>
+                </select>
+              </label>
+              <button type="button" class="admin-primary" [disabled]="!documentoClienteId" (click)="generarCarnetSocio()">Generar carnet</button>
+
+              <div class="mg-member-card" *ngIf="carnetDatos">
+                <div class="mg-member-card-brand">MALLQUI <b>GYM</b></div>
+                <div class="mg-member-card-person">
+                  <span>{{inicialesCliente(carnetDatos.socio)}}</span>
+                  <div><strong>{{nombreCliente(carnetDatos.socio)}}</strong><small>DNI {{carnetDatos.socio?.dni}}</small></div>
+                </div>
+                <div class="mg-member-card-info">
+                  <p><span>Plan</span><b>{{carnetDatos.suscripcion?.plan || 'Sin plan'}}</b></p>
+                  <p><span>Vencimiento</span><b>{{carnetDatos.suscripcion?.fecha_fin || '-'}}</b></p>
+                  <p><span>Código</span><b>{{carnetDatos.qr_texto || carnetDatos.socio?.dni}}</b></p>
+                </div>
+              </div>
+            </article>
+
+            <article class="mg-business-card">
+              <h3>Comprobante de membresía</h3>
+              <label>Suscripción
+                <select [(ngModel)]="documentoSuscripcionId">
+                  <option [ngValue]="0">Seleccionar</option>
+                  <option *ngFor="let m of membresiasCliente" [ngValue]="m.id_cliente_membresia">{{nombreCliente(m.cliente)}} · {{m.membresia?.nombre}} · {{m.fecha_fin}}</option>
+                </select>
+              </label>
+              <button type="button" class="admin-primary" [disabled]="!documentoSuscripcionId" (click)="generarComprobanteMembresia()">Generar comprobante</button>
+              <div class="mg-receipt-preview" *ngIf="comprobanteDatos">
+                <strong>{{comprobanteDatos.configuracion?.nombre_sistema || 'Mallqui Gym'}}</strong>
+                <p>Socio: {{comprobanteDatos.datos?.socio}}</p>
+                <p>DNI: {{comprobanteDatos.datos?.dni}}</p>
+                <p>Plan: {{comprobanteDatos.datos?.plan}}</p>
+                <p>Inicio: {{comprobanteDatos.datos?.fecha_inicio}}</p>
+                <p>Fin: {{comprobanteDatos.datos?.fecha_fin}}</p>
+                <p>Total: S/ {{comprobanteDatos.datos?.precio | number:'1.2-2'}}</p>
+              </div>
+            </article>
+          </section>
+        </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='mantenimiento-sistema'">
+        <section class="mg-business-page">
+          <header class="mg-business-head">
+            <div><span>MANTENIMIENTO DEL SISTEMA</span><h2>Respaldo y mantenimiento técnico</h2><p>Herramientas para proteger la información y mantener el sistema estable.</p></div>
+          </header>
+          <section class="mg-maintenance-grid">
+            <article class="mg-maintenance-card">
+              <i>⇩</i><div><h3>Crear backup</h3><p>Descarga una copia SQL de la base de datos principal.</p></div>
+              <button type="button" class="admin-primary" (click)="descargarBackupSistema()">Descargar backup</button>
+            </article>
+            <article class="mg-maintenance-card">
+              <i>↻</i><div><h3>Limpiar caché</h3><p>Actualiza cachés internas sin eliminar información del gimnasio.</p></div>
+              <button type="button" class="admin-secondary" (click)="limpiarCacheSistema()">Limpiar caché</button>
+            </article>
+            <article class="mg-maintenance-card">
+              <i>⇧</i><div><h3>Restaurar backup</h3><p>Selecciona un archivo SQL generado previamente por Mallqui Gym.</p></div>
+              <input type="file" accept=".sql" (change)="seleccionarBackupRestaurar($event)">
+              <button type="button" class="admin-secondary" [disabled]="!backupRestaurarArchivo" (click)="restaurarBackupSistema()">Restaurar</button>
+            </article>
+          </section>
         </section>
       </ng-container>
 
@@ -2421,6 +2631,16 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   kardex: any[] = [];
   caja: any = null;
   historialCaja: any[] = [];
+  progresoClienteId = 0;
+  progresoDatos: any = null;
+  medidaForm:any = {peso:null,grasa:null,cintura:null,brazo:null,fecha:new Date().toISOString().slice(0,10)};
+  renovacionesDias = 7;
+  renovacionesLista:any[] = [];
+  documentoClienteId = 0;
+  documentoSuscripcionId = 0;
+  carnetDatos:any = null;
+  comprobanteDatos:any = null;
+  backupRestaurarArchivo:File|null = null;
 
   dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
   titulos: Record<string,[string,string]> = {
@@ -2433,7 +2653,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     'historial-ventas':['Historial de Ventas','Consulta de todas las ventas registradas'],
     'reporte-asistencias':['Reporte de Asistencias','Resumen y detalle de asistencias registradas'],
     entrenador:['Entrenadores','Administración del entrenador principal'], clases:['Clases','Programación, horarios y cupos'],
-    asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['Mi Plan de Entrenamiento','Rutinas de entrenamiento y seguimiento de socios'], seguimiento:['Seguimiento de Socios','Membresía, asistencia y rutinas por socio'],
+    asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['Mi Plan de Entrenamiento','Rutinas de entrenamiento y seguimiento de socios'], seguimiento:['Seguimiento de Socios','Membresía, asistencia y rutinas por socio'], 'progreso-fisico':['Progreso Físico','Medidas y evolución del socio'], renovaciones:['Renovaciones y Avisos','Vencimientos y comunicación con socios'], 'documentos-socio':['Documentos del Socio','Carnet y comprobantes'], 'mantenimiento-sistema':['Mantenimiento del Sistema','Backups y tareas técnicas'],
     reservas:['Reservas','Reservas creadas desde el portal y control de asistencia'], categorias:['Categorías','Clasificación de productos'],
     productos:['Productos','Registro, precios y control de stock'], proveedores:['Proveedores','Proveedores de productos'],
     compras:['Compras','Ingreso de productos e inventario'], ventas:['Ventas','Ventas de productos y stock'],
@@ -2480,7 +2700,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ];
   suiteModules = ['equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   modulosConVistaPropia = [
-    'dashboard','clientes','membresias','pagos','entrenador','clases','asistencias','attendance-tools','seguimiento',
+    'dashboard','clientes','membresias','pagos','entrenador','clases','asistencias','attendance-tools','seguimiento','progreso-fisico','renovaciones','documentos-socio','mantenimiento-sistema',
     'rutinas','reservas','caja','ventas','historial-ventas','gastos','inventario','productos','kardex',
     'proveedores','compras','categorias','reportes','reportes-admin','reporte-asistencias','usuarios',
     'auditoria','configuracion','opiniones','nutricion','entrenador-admin','rutinas-admin','pagos-admin','planes-admin'
@@ -3331,6 +3551,135 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     setTimeout(()=>{ this.membresiaForm.id_cliente=Number(cliente?.id_cliente||0); },0);
   }
 
+  cargarProgresoFisico(): void {
+    if(!this.progresoClienteId){ this.progresoDatos=null; return; }
+    this.api.progresoGym(Number(this.progresoClienteId)).subscribe({
+      next:(r:any)=>this.progresoDatos=r,
+      error:e=>this.mostrarError(e)
+    });
+  }
+
+  guardarMedidaProgreso(): void {
+    if(!this.progresoClienteId){ this.error='Selecciona un socio.'; return; }
+    const payload={...this.medidaForm,socio_id:Number(this.progresoClienteId)};
+    this.api.guardarMedidaGym(payload).subscribe({
+      next:(r:any)=>{
+        this.ok(r?.mensaje||'Medición registrada.');
+        this.medidaForm={peso:null,grasa:null,cintura:null,brazo:null,fecha:new Date().toISOString().slice(0,10)};
+        this.cargarProgresoFisico();
+      },
+      error:e=>this.mostrarError(e)
+    });
+  }
+
+  eliminarMedidaProgreso(id:number): void {
+    if(!id || !confirm('¿Eliminar esta medición?')) return;
+    this.api.eliminarMedidaGym(id).subscribe({
+      next:()=>{this.ok('Medición eliminada.');this.cargarProgresoFisico();},
+      error:e=>this.mostrarError(e)
+    });
+  }
+
+  cargarRenovaciones(): void {
+    this.api.vencimientosWhatsappGym(Number(this.renovacionesDias||7)).subscribe({
+      next:(r:any[])=>this.renovacionesLista=Array.isArray(r)?r:[],
+      error:e=>{this.renovacionesLista=[];this.mostrarError(e);}
+    });
+  }
+
+  get renovacionesConTelefono(): number {
+    return this.renovacionesLista.filter((v:any)=>!!String(v?.telefono||'').trim()).length;
+  }
+
+  get renovacionesConWhatsapp(): number {
+    return this.renovacionesLista.filter((v:any)=>!!String(v?.whatsapp_api_key||'').trim()).length;
+  }
+
+  configurarWhatsapp(v:any): void {
+    const key=prompt('Ingresa la API Key de WhatsApp para '+String(v?.nombre||'este socio')+':',String(v?.whatsapp_api_key||''));
+    if(key===null) return;
+    const limpia=key.trim();
+    if(!limpia){this.error='La API Key no puede estar vacía.';return;}
+    this.api.guardarWhatsappKeyGym(Number(v.id),limpia).subscribe({
+      next:()=>{this.ok('WhatsApp configurado.');this.cargarRenovaciones();},
+      error:e=>this.mostrarError(e)
+    });
+  }
+
+  enviarAvisoWhatsapp(v:any): void {
+    this.api.enviarWhatsappGym(Number(v.id)).subscribe({
+      next:(r:any)=>this.ok(r?.mensaje||'Aviso enviado.'),
+      error:e=>this.mostrarError(e)
+    });
+  }
+
+  enviarAvisosTodos(): void {
+    if(!this.renovacionesLista.length){this.ok('No hay vencimientos para avisar.');return;}
+    if(!confirm('¿Enviar avisos a todos los socios configurados?')) return;
+    this.api.enviarWhatsappTodosGym(Number(this.renovacionesDias||7)).subscribe({
+      next:(r:any)=>this.ok((r?.mensaje||'Proceso terminado.')+' Enviados: '+Number(r?.enviados||0)+'.'),
+      error:e=>this.mostrarError(e)
+    });
+  }
+
+  abrirRenovacionSocio(v:any): void {
+    this.cambiarSegcion('membresias');
+    const socio=this.clientes.find((c:any)=>Number(c?.id_cliente)===Number(v?.id));
+    setTimeout(()=>{this.membresiaForm.id_cliente=Number(socio?.id_cliente||v?.id||0);},0);
+  }
+
+  generarCarnetSocio(): void {
+    if(!this.documentoClienteId) return;
+    this.api.carnetGym(Number(this.documentoClienteId)).subscribe({
+      next:(r:any)=>this.carnetDatos=r,
+      error:e=>this.mostrarError(e)
+    });
+  }
+
+  generarComprobanteMembresia(): void {
+    if(!this.documentoSuscripcionId) return;
+    this.api.comprobanteGym(Number(this.documentoSuscripcionId)).subscribe({
+      next:(r:any)=>this.comprobanteDatos=r,
+      error:e=>this.mostrarError(e)
+    });
+  }
+
+  descargarBackupSistema(): void {
+    this.api.backupGym().subscribe({
+      next:(blob:Blob)=>{
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=url;
+        a.download='backup-mallqui-gym-'+new Date().toISOString().slice(0,10)+'.sql';
+        a.style.display='none';
+        document.body.appendChild(a);a.click();document.body.removeChild(a);
+        setTimeout(()=>URL.revokeObjectURL(url),0);
+        this.ok('Backup descargado correctamente.');
+      },
+      error:e=>this.mostrarError(e)
+    });
+  }
+
+  limpiarCacheSistema(): void {
+    this.api.limpiarCacheGym().subscribe({
+      next:(r:any)=>this.ok(r?.mensaje||'Caché limpiada correctamente.'),
+      error:e=>this.mostrarError(e)
+    });
+  }
+
+  seleccionarBackupRestaurar(event:any): void {
+    this.backupRestaurarArchivo=event?.target?.files?.[0]||null;
+  }
+
+  restaurarBackupSistema(): void {
+    if(!this.backupRestaurarArchivo) return;
+    if(!confirm('Esta acción restaurará la base de datos usando el archivo seleccionado. ¿Continuar?')) return;
+    this.api.restaurarGym(this.backupRestaurarArchivo).subscribe({
+      next:(r:any)=>{this.ok(r?.mensaje||'Backup restaurado.');this.backupRestaurarArchivo=null;this.cargarDashboard();},
+      error:e=>this.mostrarError(e)
+    });
+  }
+
   diasActividadDashboard(): any[] {
     const dias = this.dashboard?.tendencias?.asistencias_7_dias;
     return Array.isArray(dias) && dias.length ? dias.slice(-7) : this.semanaDashboardDemo;
@@ -3493,6 +3842,20 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         break;
       case 'seguimiento':
         this.cargarSeguimiento();
+        break;
+      case 'progreso-fisico':
+        this.cargarClientes();
+        break;
+      case 'renovaciones':
+        this.cargarClientes();
+        this.cargarMembresias();
+        this.cargarRenovaciones();
+        break;
+      case 'documentos-socio':
+        this.cargarClientes();
+        this.cargarMembresias();
+        break;
+      case 'mantenimiento-sistema':
         break;
       case 'reservas':
         this.cargarReservas();
