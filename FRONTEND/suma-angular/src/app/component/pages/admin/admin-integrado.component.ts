@@ -1119,7 +1119,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             </article>
             <article>
               <span class="clients-v3-stat-icon muted">–</span>
-              <div><small>INSOCIOS ACTIVOS</small><b>{{clientesInactivos}}</b><p>historial conservado</p></div>
+              <div><small>SOCIOS INACTIVOS</small><b>{{clientesInactivos}}</b><p>historial conservado</p></div>
             </article>
           </section>
 
