@@ -57,7 +57,7 @@ interface GymModuleConfig {
           <section class="cf-suite-card">
             <header><div><h2>Equipos Mantenimiento</h2><p>Programación reciente de mantenimiento</p></div><button type="button" (click)="nuevoRegistro()">Programar Mantenimiento</button></header>
             <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>Equipos</th><th>Categoría</th><th>Último Servicio</th><th>Próximo Servicio</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
-              <tr *ngFor="let item of records.slice(0,6)"><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Equipos Fitness'}}</td><td>01/10/2026</td><td>01/11/2026</td><td><span class="status-select">{{item.estado || 'Disponibles'}}</span></td><td><button class="cf-suite-link" (click)="editar(item)">Ver</button></td></tr>
+              <tr *ngFor="let item of records.slice(0,6)"><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Sin categoría'}}</td><td>{{item.datos?.ultimo_servicio || 'No registrado'}}</td><td>{{item.fecha || 'No programado'}}</td><td><span class="status-select">{{item.estado || 'Operativo'}}</span></td><td><button class="cf-suite-link" (click)="editar(item)">Ver</button></td></tr>
             </tbody></table></div>
           </section>
         </section>
@@ -74,7 +74,7 @@ interface GymModuleConfig {
             <article *ngFor="let item of records; let i=index">
               <div class="cf-suite-event-date"><b>{{item.day || (15+i)}}</b><small></small></div>
               <div class="cf-suite-event-main"><span>{{item.estado || 'Cupos limitados'}}</span><h3>{{item.titulo}}</h3><p>{{item.fecha || 'Martes'}} · {{item.subtitulo || 'Mallqui Gym'}}</p></div>
-              <div class="cf-suite-event-meta"><b>{{item.bookings || (40+i*10)}} Reservas</b><small>{{item.detalle || 'Evento fitness'}}</small></div>
+              <div class="cf-suite-event-meta"><b>{{item.estado || 'Programado'}}</b><small>{{item.datos?.detalle || item.subtitulo || 'Sin detalle adicional'}}</small></div>
               <button class="cf-suite-link" (click)="editar(item)">Detalles</button>
             </article>
             <div class="cf-suite-empty" *ngIf="!records.length"><b>Sin eventos registrados</b><span>Crea el primer evento, taller o campaña.</span><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Evento</button></div>
@@ -97,7 +97,7 @@ interface GymModuleConfig {
 
         <section class="cf-suite-complete" *ngSwitchCase="'noticias'">
           <header class="cf-suite-page-head"><div><h1>Noticias y Novedades</h1><p>Noticias, anuncios y artículos recientes del gimnasio</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Noticia</button></header>
-          <section class="cf-news-featured"><img src="assets/showcase/hero-showcase.svg" alt="Noticia destacada"><div><span>NOVEDAD DESTACADA</span><h2>Nuevos Programas de Entrenamiento Disponibles</h2><p>Conoce los nuevos programas de fuerza, acondicionamiento y socios de Mallqui Gym.</p><button (click)="mostrarAviso('Consulta las novedades completas en la lista inferior.')">Leer Más</button></div></section>
+          <section class="cf-news-featured" *ngIf="records[0] as destacada"><img [src]="destacada.imagen_url || 'assets/showcase/hero-showcase.svg'" alt="Noticia destacada"><div><span>NOVEDAD DESTACADA</span><h2>{{destacada.titulo}}</h2><p>{{destacada.subtitulo || destacada.datos?.detalle || 'Noticia de Mallqui Gym'}}</p><button type="button" (click)="editar(destacada)">Ver detalle</button></div></section>
           <section class="cf-suite-news">
             <article *ngFor="let item of records"><img [src]="item.imagen_url || 'assets/showcase/hero-showcase.svg'" [alt]="item.titulo"><div><h3>{{item.titulo}}</h3><small>Publicado el - {{item.fecha || '30/06/2026'}}</small><p>{{item.subtitulo || item.detalle || 'Últimas noticias y novedades de Mallqui Gym.'}}</p><div class="cf-news-actions"><button type="button" (click)="editar(item)">Ver Detalle</button><button type="button" (click)="editar(item)">Editar</button></div></div></article>
           </section>
@@ -113,9 +113,9 @@ interface GymModuleConfig {
             <article><small>Pendiente</small><b>{{contarEstados(['Pendiente'])}}</b><span>Pendiente de pago</span></article>
           </div>
           <section class="cf-suite-card">
-            <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>ID del Empleado</th><th>Empleado</th><th>Rol</th><th>Ubicación</th><th>Días</th><th>Periodo</th><th>Salario</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
-              <tr *ngFor="let item of filtered"><td>EMP-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Entrenador'}}</td><td>Pucallpa</td><td>26</td><td>{{item.fecha || 'Oct 2026'}}</td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><span class="status-select">{{item.estado || 'Pagado'}}</span></td><td><button class="cf-suite-link" (click)="editar(item)">Boleta de Pago</button></td></tr>
-              <tr *ngIf="!filtered.length"><td colspan="9">Aún no hay registros de salarios.</td></tr>
+            <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>ID</th><th>Colaborador</th><th>Cargo / periodo</th><th>Fecha de pago</th><th>Salario</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
+              <tr *ngFor="let item of filtered"><td>#{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Sin detalle'}}</td><td>{{item.fecha || 'No registrada'}}</td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><span class="status-select">{{item.estado || 'Pendiente'}}</span></td><td><button class="cf-suite-link" (click)="editar(item)">Editar</button></td></tr>
+              <tr *ngIf="!filtered.length"><td colspan="7">Aún no hay registros de salarios.</td></tr>
             </tbody></table></div>
           </section>
           <section class="cf-suite-card"><header><div><h2>Resumen de Planilla</h2><p>Resumen del mes actual</p></div></header><div class="cf-payroll-notes"><div><b>{{filtered.length}}</b><small>Registros de planilla</small></div><div><b>{{contarEstados(['Pagado'])}}</b><small>Pagos completados</small></div><div><b>{{contarEstados(['Pendiente','Observado'])}}</b><small>Pendientes / observados</small></div><div><b>S/ {{totalMonto | number:'1.2-2'}}</b><small>Total registrado</small></div></div></section>
