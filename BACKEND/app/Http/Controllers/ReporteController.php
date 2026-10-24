@@ -47,12 +47,48 @@ class ReporteController extends Controller
             ->where(fn ($q) => $q->whereNull('estado')->orWhere('estado', '!=', 'Anulado'))
             ->sum('total');
 
+        $anio = (int) $hasta->year;
+        $membresiasPorMes = PagoMembresia::query()
+            ->selectRaw('MONTH(fecha_pago) as mes, SUM(monto) as total')
+            ->where('estado_pago', 'Completado')
+            ->whereYear('fecha_pago', $anio)
+            ->groupByRaw('MONTH(fecha_pago)')
+            ->pluck('total', 'mes');
+
+        $ventasPorMes = Venta::query()
+            ->selectRaw('MONTH(fecha_venta) as mes, SUM(total) as total')
+            ->whereYear('fecha_venta', $anio)
+            ->where(fn ($q) => $q->whereNull('estado')->orWhere('estado', '!=', 'Anulado'))
+            ->groupByRaw('MONTH(fecha_venta)')
+            ->pluck('total', 'mes');
+
+        $porMes = collect(range(1, 12))->map(function ($mes) use ($membresiasPorMes, $ventasPorMes) {
+            $membresias = (float) ($membresiasPorMes[$mes] ?? 0);
+            $ventas = (float) ($ventasPorMes[$mes] ?? 0);
+
+            return [
+                'mes' => $mes,
+                'membresias' => round($membresias, 2),
+                'ventas_productos' => round($ventas, 2),
+                'total' => round($membresias + $ventas, 2),
+            ];
+        })->values();
+
+        $totalAnual = (float) $porMes->sum('total');
+        $membresiasAnual = (float) $porMes->sum('membresias');
+        $ventasAnual = (float) $porMes->sum('ventas_productos');
+
         return response()->json([
             'desde' => $desde->toDateString(),
             'hasta' => $hasta->toDateString(),
+            'anio' => $anio,
             'membresias' => round((float) $pagosMembresia, 2),
             'ventas_productos' => round((float) $ventas, 2),
             'total_ingresos' => round((float) $pagosMembresia + (float) $ventas, 2),
+            'membresias_anual' => round($membresiasAnual, 2),
+            'ventas_productos_anual' => round($ventasAnual, 2),
+            'total_anual' => round($totalAnual, 2),
+            'por_mes' => $porMes,
         ]);
     }
 
