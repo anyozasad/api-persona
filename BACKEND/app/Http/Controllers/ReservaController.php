@@ -10,6 +10,7 @@ use App\Models\Reserva;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -18,20 +19,31 @@ class ReservaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Reserva::with(['cliente', 'clase.entrenador'])
-            ->orderByDesc('fecha_clase')
-            ->orderByDesc('fecha_reserva');
+        if (!Schema::hasTable('reservas')) {
+            return response()->json([]);
+        }
+
+        $query = Reserva::with(['cliente', 'clase.entrenador']);
+
+        if (Schema::hasColumn('reservas', 'fecha_clase')) {
+            $query->orderByDesc('fecha_clase');
+        }
+        if (Schema::hasColumn('reservas', 'fecha_reserva')) {
+            $query->orderByDesc('fecha_reserva');
+        } elseif (Schema::hasColumn('reservas', 'id_reserva')) {
+            $query->orderByDesc('id_reserva');
+        }
 
         if (mb_strtolower((string) $request->user()?->rol) === 'entrenador') {
             $entrenador = $this->entrenadorDelUsuario($request);
             $query->whereHas('clase', fn ($q) => $q->where('id_entrenador', $entrenador->id_entrenador));
         }
 
-        if ($request->filled('fecha')) {
+        if ($request->filled('fecha') && Schema::hasColumn('reservas', 'fecha_clase')) {
             $query->whereDate('fecha_clase', $request->input('fecha'));
         }
 
-        if ($request->filled('id_clase')) {
+        if ($request->filled('id_clase') && Schema::hasColumn('reservas', 'id_clase')) {
             $query->where('id_clase', $request->integer('id_clase'));
         }
 
