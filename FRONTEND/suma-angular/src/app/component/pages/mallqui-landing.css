@@ -323,8 +323,8 @@ html{scroll-behavior:smooth}
   height:100%;
   display:block;
   object-fit:cover;
-  object-position:center 38%;
-  filter:saturate(.72) contrast(1.03);
+  object-position:72% 42%;
+  filter:saturate(.88) contrast(1.04) brightness(.92);
 }
 .mq-coach-overlay{
   position:absolute;
@@ -381,7 +381,7 @@ html{scroll-behavior:smooth}
 @media(max-width:920px){
   .mq-coach{min-height:620px}
   .mq-coach-content{min-height:620px}
-  .mq-coach-bg{object-position:60% center}
+  .mq-coach-bg{object-position:70% 42%}
   .mq-coach-overlay{
     background:linear-gradient(90deg,
       rgba(28,25,31,.95) 0%,
@@ -393,7 +393,7 @@ html{scroll-behavior:smooth}
 @media(max-width:620px){
   .mq-coach{min-height:610px}
   .mq-coach-content{min-height:610px;align-items:flex-end}
-  .mq-coach-bg{object-position:64% center}
+  .mq-coach-bg{object-position:68% 38%}
   .mq-coach-overlay{
     background:linear-gradient(180deg,
       rgba(28,25,31,.20) 0%,
