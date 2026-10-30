@@ -2010,3 +2010,30 @@ html,body{
   min-height:30px!important;padding:0 10px!important;border:0!important;border-radius:6px!important;background:#111311!important;color:#c9f45a!important;
   font-size:8px!important;font-weight:800!important
 }
+
+
+/* MALLQUI_ADMIN_REAL_PHOTO_GRADE_2026_10_30 */
+.admin-shell.admin-home-redesign img[src*="mallqui-cover.webp"]{
+  filter:saturate(1.06) contrast(1.07) brightness(.95)!important;
+}
+.admin-shell.admin-home-redesign .mg-workout-featured img{
+  object-position:52% 39%!important;
+  filter:saturate(1.08) contrast(1.08) brightness(.92)!important;
+}
+.admin-shell.admin-home-redesign .mg-trainer-avatar-img,
+.admin-shell.admin-home-redesign .mg-trainer-head>img{
+  object-position:52% 34%!important;
+  filter:saturate(1.04) contrast(1.08) brightness(.98)!important;
+}
+.admin-shell.admin-home-redesign .mg-video-card img{
+  object-position:86% 43%!important;
+  filter:saturate(1.05) contrast(1.08) brightness(.72)!important;
+}
+.admin-shell.admin-home-redesign .mg-mini-routine img{
+  object-position:80% 45%!important;
+  filter:saturate(1.05) contrast(1.06) brightness(.92)!important;
+}
+.admin-shell.admin-home-redesign .cf-diet-today-art img{
+  object-position:55% 76%!important;
+  filter:saturate(1.08) contrast(1.07) brightness(.95)!important;
+}
