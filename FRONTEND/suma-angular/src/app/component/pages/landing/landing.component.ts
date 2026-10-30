@@ -308,7 +308,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   };
 
   heroImages = [
-    '/assets/mallqui/mallqui-hero.jpg'
+    '/assets/mallqui/mallqui-hero-4k.webp'
   ];
 
   galeria = [
