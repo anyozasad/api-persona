@@ -35,7 +35,8 @@ import { GymApiService } from '../../../core/services/gym-api.service';
       </header>
 
       <main>
-        <section id="inicio" class="mq-hero" [style.backgroundImage]="'url(' + heroActual + ')'">
+        <section id="inicio" class="mq-hero">
+          <img class="mq-hero-photo" [src]="heroActual" alt="Interior real de Mallqui Gym">
           <div class="mq-hero-overlay"></div>
           <div class="mq-shell mq-hero-content">
             <p class="mq-overline">ENTRENA CON MALLQUI GYM</p>
@@ -308,7 +309,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   };
 
   heroImages = [
-    'assets/mallqui/mallqui-cover.webp'
+    '/assets/mallqui/mallqui-hero.jpg'
   ];
 
   galeria = [
