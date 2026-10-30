@@ -2652,3 +2652,68 @@ html{scroll-behavior:smooth}
   background-position:center 48%!important;
   background-size:cover!important;
 }
+
+
+/* HERO_REAL_MALLQUI_VISIBLE_2026_10_30 */
+.mq-hero{
+  position:relative!important;
+  min-height:650px!important;
+  overflow:hidden!important;
+  background:#080a08!important;
+  background-image:none!important;
+}
+.mq-hero-photo{
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  width:100%!important;
+  height:100%!important;
+  display:block!important;
+  object-fit:cover!important;
+  object-position:center 47%!important;
+  filter:saturate(1.08) contrast(1.08) brightness(.92)!important;
+}
+.mq-hero-overlay{
+  position:absolute!important;
+  inset:0!important;
+  z-index:1!important;
+  background:
+    linear-gradient(90deg,rgba(5,7,5,.58) 0%,rgba(5,7,5,.34) 42%,rgba(5,7,5,.20) 72%,rgba(5,7,5,.30) 100%),
+    linear-gradient(180deg,rgba(4,6,4,.08) 0%,rgba(4,6,4,.26) 100%)!important;
+}
+.mq-hero-content{
+  position:relative!important;
+  z-index:2!important;
+  text-shadow:0 4px 24px rgba(0,0,0,.48)!important;
+}
+.mq-hero h1{
+  color:#fff!important;
+  text-shadow:0 7px 30px rgba(0,0,0,.55)!important;
+}
+.mq-overline{
+  color:#d5ff5f!important;
+}
+.mq-hero-sub{
+  color:#fff!important;
+  text-shadow:0 3px 18px rgba(0,0,0,.65)!important;
+}
+.mq-btn-reserva{
+  background:#c9f45a!important;
+  color:#111311!important;
+  font-weight:800!important;
+  border-radius:8px!important;
+}
+.mq-btn-reserva:hover{
+  background:#d8ff72!important;
+  color:#111311!important;
+}
+.mq-hero-dots{
+  z-index:3!important;
+}
+@media(max-width:700px){
+  .mq-hero{min-height:560px!important}
+  .mq-hero-photo{object-position:55% 50%!important}
+  .mq-hero-overlay{
+    background:linear-gradient(180deg,rgba(5,7,5,.28),rgba(5,7,5,.55))!important;
+  }
+}
