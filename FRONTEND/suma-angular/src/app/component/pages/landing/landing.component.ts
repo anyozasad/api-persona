@@ -35,8 +35,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
       </header>
 
       <main>
-        <section id="inicio" class="mq-hero">
-          <img class="mq-hero-photo" [src]="heroActual" alt="Interior real de Mallqui Gym">
+        <section id="inicio" class="mq-hero" [style.backgroundImage]="'url(' + heroActual + ')'">
           <div class="mq-hero-overlay"></div>
           <div class="mq-shell mq-hero-content">
             <p class="mq-overline">ENTRENA CON MALLQUI GYM</p>
