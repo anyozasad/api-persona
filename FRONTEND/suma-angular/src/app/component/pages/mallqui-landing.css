@@ -2659,7 +2659,7 @@ html{scroll-behavior:smooth}
   position:relative!important;
   min-height:650px!important;
   overflow:hidden!important;
-  background:#080a08!important;
+  background:#211f26!important;
   background-image:none!important;
 }
 .mq-hero-photo{
@@ -2670,50 +2670,60 @@ html{scroll-behavior:smooth}
   height:100%!important;
   display:block!important;
   object-fit:cover!important;
-  object-position:center 47%!important;
-  filter:saturate(1.08) contrast(1.08) brightness(.92)!important;
+  object-position:center 50%!important;
+  filter:saturate(.92) contrast(1.04) brightness(.88)!important;
 }
 .mq-hero-overlay{
   position:absolute!important;
   inset:0!important;
   z-index:1!important;
   background:
-    linear-gradient(90deg,rgba(5,7,5,.58) 0%,rgba(5,7,5,.34) 42%,rgba(5,7,5,.20) 72%,rgba(5,7,5,.30) 100%),
-    linear-gradient(180deg,rgba(4,6,4,.08) 0%,rgba(4,6,4,.26) 100%)!important;
+    linear-gradient(90deg,rgba(21,19,24,.70) 0%,rgba(28,25,31,.42) 46%,rgba(21,19,24,.30) 100%),
+    linear-gradient(180deg,rgba(21,19,24,.12),rgba(21,19,24,.38))!important;
 }
 .mq-hero-content{
   position:relative!important;
   z-index:2!important;
-  text-shadow:0 4px 24px rgba(0,0,0,.48)!important;
+  text-align:center!important;
+  padding:92px 0 80px!important;
+}
+.mq-overline{
+  color:var(--mq-accent)!important;
 }
 .mq-hero h1{
   color:#fff!important;
-  text-shadow:0 7px 30px rgba(0,0,0,.55)!important;
-}
-.mq-overline{
-  color:#d5ff5f!important;
+  text-shadow:0 6px 34px rgba(0,0,0,.32)!important;
 }
 .mq-hero-sub{
   color:#fff!important;
-  text-shadow:0 3px 18px rgba(0,0,0,.65)!important;
+  text-shadow:none!important;
 }
 .mq-btn-reserva{
-  background:#c9f45a!important;
-  color:#111311!important;
-  font-weight:800!important;
-  border-radius:8px!important;
+  min-width:190px!important;
+  min-height:58px!important;
+  padding:0 28px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#211f26!important;
+  color:var(--mq-accent)!important;
+  font-size:16px!important;
+  font-weight:500!important;
+  letter-spacing:.2px!important;
+  box-shadow:none!important;
 }
 .mq-btn-reserva:hover{
-  background:#d8ff72!important;
-  color:#111311!important;
+  background:#2a272e!important;
+  color:#ff765f!important;
+  transform:translateY(-2px)!important;
 }
 .mq-hero-dots{
   z-index:3!important;
 }
 @media(max-width:700px){
   .mq-hero{min-height:560px!important}
-  .mq-hero-photo{object-position:55% 50%!important}
+  .mq-hero-photo{object-position:center 50%!important}
   .mq-hero-overlay{
-    background:linear-gradient(180deg,rgba(5,7,5,.28),rgba(5,7,5,.55))!important;
+    background:
+      linear-gradient(180deg,rgba(21,19,24,.34),rgba(21,19,24,.52))!important;
   }
 }
