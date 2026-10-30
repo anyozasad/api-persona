@@ -74,7 +74,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         <section id="entrenador" class="mq-coach">
           <img
             class="mq-coach-bg"
-            src="https://images.unsplash.com/photo-1639504031468-081c8219bb8a?auto=format&fit=crop&w=2000&q=90"
+            src="assets/mallqui/mallqui-cover.webp"
             alt="Entrenador realizando ejercicio en barra">
           <div class="mq-coach-overlay"></div>
 
@@ -308,18 +308,16 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   };
 
   heroImages = [
-    'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2000&q=90',
-    'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=2000&q=90',
-    'https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=2000&q=90'
+    'assets/mallqui/mallqui-cover.webp'
   ];
 
   galeria = [
-    { img: 'https://images.unsplash.com/photo-1534258936925-c58bed479fcb?auto=format&fit=crop&w=900&q=85', alt: 'Entrenamiento de fuerza', texto: 'FUERZA', descripcion: 'Entrena fuerza con técnica, constancia y una progresión adecuada a tu nivel.' },
-    { img: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1200&q=85', alt: 'Entrenamiento funcional', texto: 'DISCIPLINA', descripcion: 'La disciplina convierte cada sesión en un paso más hacia tu objetivo.' },
-    { img: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=900&q=85', alt: 'Trabajo con pesas', texto: 'PROGRESO', descripcion: 'Registra tu avance y mejora poco a poco con un entrenamiento organizado.' },
-    { img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=900&q=85', alt: 'Entrenamiento intenso', texto: 'CONSTANCIA', descripcion: 'Mantener la constancia es la base para conseguir cambios sostenibles.' },
-    { img: 'https://images.unsplash.com/photo-1532384748853-8f54a8f476e2?auto=format&fit=crop&w=1200&q=85', alt: 'Gimnasio y pesas', texto: 'SUPERACIÓN', descripcion: 'Cada entrenamiento es una oportunidad para superar tu propio rendimiento.' },
-    { img: 'https://images.unsplash.com/photo-1605296867304-46d5465a13f1?auto=format&fit=crop&w=900&q=85', alt: 'Entrenamiento profesional', texto: 'RESULTADOS', descripcion: 'Los resultados llegan con un plan claro, buena técnica y continuidad.' }
+    { img: 'assets/mallqui/mallqui-cover.webp', alt: 'Local de Mallqui Gym', texto: 'NUESTRO LOCAL', descripcion: 'Conoce el espacio real de Mallqui Gym y entrena en un ambiente preparado para fuerza y acondicionamiento.' },
+    { img: 'assets/mallqui/mallqui-cover.webp', alt: 'Entrenador de Mallqui Gym', texto: 'ENTRENADOR', descripcion: 'Entrenamiento acompañado y seguimiento para avanzar con técnica y constancia.' },
+    { img: 'assets/mallqui/mallqui-cover.webp', alt: 'Equipos de Mallqui Gym', texto: 'EQUIPOS', descripcion: 'Máquinas y equipos disponibles para desarrollar fuerza, resistencia y condición física.' },
+    { img: 'assets/mallqui/mallqui-cover.webp', alt: 'Productos de Mallqui Gym', texto: 'SUPLEMENTOS', descripcion: 'Productos y suplementos disponibles en Mallqui Gym, registrados en el sistema.' },
+    { img: 'assets/mallqui/mallqui-cover.webp', alt: 'Interior de Mallqui Gym', texto: 'GIMNASIO', descripcion: 'Un espacio real para entrenar y progresar de acuerdo con tus objetivos.' },
+    { img: 'assets/mallqui/mallqui-cover.webp', alt: 'Mallqui Gym', texto: 'MALLQUI GYM', descripcion: 'Entrenamiento, productos, equipos y seguimiento en un solo lugar.' }
   ];
 
   clases = [
@@ -330,7 +328,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
       descripcion: 'Aprende técnica, postura y una rutina segura para comenzar.',
       nivel: 'Principiante',
       horario: 'Según agenda',
-      img: 'https://images.unsplash.com/photo-1534258936925-c58bed479fcb?auto=format&fit=crop&w=900&q=85'
+      img: 'assets/mallqui/mallqui-cover.webp'
     },
     {
       id_clase: 0,
@@ -339,7 +337,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
       descripcion: 'Trabajo progresivo con cargas para mejorar fuerza e hipertrofia.',
       nivel: 'Intermedio',
       horario: 'Según agenda',
-      img: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=900&q=85'
+      img: 'assets/mallqui/mallqui-cover.webp'
     },
     {
       id_clase: 0,
@@ -348,7 +346,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
       descripcion: 'Sesiones intensas orientadas a rendimiento y resistencia.',
       nivel: 'Avanzado',
       horario: 'Según agenda',
-      img: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=900&q=85'
+      img: 'assets/mallqui/mallqui-cover.webp'
     }
   ];
 
@@ -371,9 +369,9 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
         const clasesApi = Array.isArray(r?.clases) ? r.clases : [];
         if (clasesApi.length) {
           const fotos = [
-            'https://images.unsplash.com/photo-1534258936925-c58bed479fcb?auto=format&fit=crop&w=900&q=85',
-            'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=900&q=85',
-            'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=900&q=85'
+            'assets/mallqui/mallqui-cover.webp',
+            'assets/mallqui/mallqui-cover.webp',
+            'assets/mallqui/mallqui-cover.webp'
           ];
 
           this.clases = clasesApi.slice(0, 3).map((clase: any, index: number) => ({
