@@ -2606,15 +2606,6 @@ html{scroll-behavior:smooth}
 
 
 /* MALLQUI_REAL_PHOTO_GRADE_2026_10_30 */
-.mq-hero{
-  background-position:center 45%!important;
-  background-size:cover!important;
-  background-color:#090b09!important;
-}
-.mq-hero-overlay{
-  background:
-    linear-gradient(90deg,rgba(5,7,5,.84) 0%,rgba(5,7,5,.52) 40%,rgba(5,7,5,.14) 72%,rgba(5,7,5,.28) 100%)!important;
-}
 .mq-level-card{
   background-image:url('/assets/mallqui/mallqui-cover.webp')!important;
   background-size:cover!important;
