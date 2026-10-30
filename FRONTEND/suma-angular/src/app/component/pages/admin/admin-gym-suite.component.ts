@@ -49,7 +49,7 @@ interface GymModuleConfig {
           </div>
           <section class="cf-suite-equipment-grid">
             <article *ngFor="let item of records">
-              <div class="cf-suite-equipment-art"><img *ngIf="item.imagen_url" [src]="item.imagen_url" [alt]="item.titulo"><span *ngIf="!item.imagen_url">🏋</span></div>
+              <div class="cf-suite-equipment-art"><img [src]="item.imagen_url || 'assets/mallqui/mallqui-cover.webp'" [alt]="item.titulo || 'Equipo Mallqui Gym'"></div>
               <div><h3>{{item.titulo}}</h3><b>{{item.count || item.monto || 1}}</b><p>{{item.subtitulo || 'Equipo de gimnasio'}}</p><span class="status-select">{{item.estado || 'Disponibles'}}</span></div>
             </article>
             <div class="cf-suite-empty" *ngIf="!records.length"><b>Sin equipos registrados</b><span>Agrega el primer equipo para comenzar el control.</span><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Equipo</button></div>
@@ -89,7 +89,7 @@ interface GymModuleConfig {
           <header class="cf-suite-page-head"><div><h1>Galería</h1><p>Galería del gimnasio, clases y eventos destacados</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Subir Imagen</button></header>
           <div class="cf-suite-gallery-filter"><button [class.active]="filtroGaleria==='Todos'" (click)="filtrarGaleria('Todos')">Todos</button><button [class.active]="filtroGaleria==='Entrenamiento'" (click)="filtrarGaleria('Entrenamiento')">Entrenamiento</button><button [class.active]="filtroGaleria==='Eventos'" (click)="filtrarGaleria('Eventos')">Eventos</button><button [class.active]="filtroGaleria==='Socios'" (click)="filtrarGaleria('Socios')">Socios</button><button [class.active]="filtroGaleria==='Equipos'" (click)="filtrarGaleria('Equipos')">Equipos</button></div>
           <section class="cf-suite-gallery">
-            <article *ngFor="let item of galeriaVisible"><img [src]="item.imagen_url || 'assets/showcase/hero-showcase.svg'" [alt]="item.titulo"><div><b>{{item.titulo}}</b><span>{{item.estado || 'Publicado'}}</span></div></article>
+            <article *ngFor="let item of galeriaVisible"><img [src]="item.imagen_url || 'assets/mallqui/mallqui-cover.webp'" [alt]="item.titulo"><div><b>{{item.titulo}}</b><span>{{item.estado || 'Publicado'}}</span></div></article>
             <div class="cf-suite-empty" *ngIf="!galeriaVisible.length"><b>Sin imágenes registradas</b><span>Sube contenido real del gimnasio para completar la galería.</span><button type="button" class="primary" (click)="nuevoRegistro()">＋ Subir Imagen</button></div>
           </section>
           <div class="cf-suite-kpis compact"><article><small>Registros</small><b>{{records.length}}</b><span>Elementos de galería</span></article><article><small>Publicados</small><b>{{contarEstados(['Publicado'])}}</b><span>Contenido visible</span></article><article><small>Este Mes</small><b>{{esteMes}}</b><span>Nuevas cargas</span></article><article><small>Borradores</small><b>{{contarEstados(['Borrador'])}}</b><span>Pendientes de publicar</span></article></div>
@@ -97,9 +97,9 @@ interface GymModuleConfig {
 
         <section class="cf-suite-complete" *ngSwitchCase="'noticias'">
           <header class="cf-suite-page-head"><div><h1>Noticias y Novedades</h1><p>Noticias, anuncios y artículos recientes del gimnasio</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Noticia</button></header>
-          <section class="cf-news-featured" *ngIf="records[0] as destacada"><img [src]="destacada.imagen_url || 'assets/showcase/hero-showcase.svg'" alt="Noticia destacada"><div><span>NOVEDAD DESTACADA</span><h2>{{destacada.titulo}}</h2><p>{{destacada.subtitulo || destacada.datos?.detalle || 'Noticia de Mallqui Gym'}}</p><button type="button" (click)="editar(destacada)">Ver detalle</button></div></section>
+          <section class="cf-news-featured" *ngIf="records[0] as destacada"><img [src]="destacada.imagen_url || 'assets/mallqui/mallqui-cover.webp'" alt="Noticia destacada"><div><span>NOVEDAD DESTACADA</span><h2>{{destacada.titulo}}</h2><p>{{destacada.subtitulo || destacada.datos?.detalle || 'Noticia de Mallqui Gym'}}</p><button type="button" (click)="editar(destacada)">Ver detalle</button></div></section>
           <section class="cf-suite-news">
-            <article *ngFor="let item of records"><img [src]="item.imagen_url || 'assets/showcase/hero-showcase.svg'" [alt]="item.titulo"><div><h3>{{item.titulo}}</h3><small>Publicado el - {{item.fecha || '30/06/2026'}}</small><p>{{item.subtitulo || item.detalle || 'Últimas noticias y novedades de Mallqui Gym.'}}</p><div class="cf-news-actions"><button type="button" (click)="editar(item)">Ver Detalle</button><button type="button" (click)="editar(item)">Editar</button></div></div></article>
+            <article *ngFor="let item of records"><img [src]="item.imagen_url || 'assets/mallqui/mallqui-cover.webp'" [alt]="item.titulo"><div><h3>{{item.titulo}}</h3><small>Publicado el - {{item.fecha || '30/06/2026'}}</small><p>{{item.subtitulo || item.detalle || 'Últimas noticias y novedades de Mallqui Gym.'}}</p><div class="cf-news-actions"><button type="button" (click)="editar(item)">Ver Detalle</button><button type="button" (click)="editar(item)">Editar</button></div></div></article>
           </section>
           <section class="cf-suite-card"><header><div><h2>Categorías de Noticias</h2><p>Distribución de contenido</p></div></header><div class="cf-news-categories"><span><b>{{records.length}}</b>Total</span><span><b>{{contarEstados(['Publicado'])}}</b>Publicadas</span><span><b>{{contarEstados(['Programado'])}}</b>Programadas</span><span><b>{{contarEstados(['Borrador'])}}</b>Borradores</span></div></section>
         </section>
