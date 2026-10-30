@@ -250,10 +250,10 @@ html{scroll-behavior:smooth}
   background-position:center;
 }
 .mq-level-beginner{
-  background-image:url('https://images.unsplash.com/photo-1534258936925-c58bed479fcb?auto=format&fit=crop&w=1200&q=88');
+  background-image:url('assets/mallqui/mallqui-cover.webp');
 }
 .mq-level-pro{
-  background-image:url('https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1200&q=88');
+  background-image:url('assets/mallqui/mallqui-cover.webp');
 }
 .mq-level-shade{
   position:absolute;
@@ -590,7 +590,7 @@ html{scroll-behavior:smooth}
   min-height:610px;
   display:grid;
   align-items:center;
-  background:url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2000&q=90') center/cover;
+  background:url('assets/mallqui/mallqui-cover.webp') center/cover;
 }
 .mq-gym-overlay{
   position:absolute;inset:0;
@@ -2603,3 +2603,52 @@ html{scroll-behavior:smooth}
   Así, al terminar, transform/opacity vuelven al control normal del hover.
   Evita el bug donde el menú quedaba visualmente "pegado" tras entrar o regresar.
 */
+
+
+/* MALLQUI_REAL_PHOTO_GRADE_2026_10_30 */
+.mq-hero{
+  background-position:center 45%!important;
+  background-size:cover!important;
+  background-color:#090b09!important;
+}
+.mq-hero-overlay{
+  background:
+    linear-gradient(90deg,rgba(5,7,5,.84) 0%,rgba(5,7,5,.52) 40%,rgba(5,7,5,.14) 72%,rgba(5,7,5,.28) 100%)!important;
+}
+.mq-level-card{
+  background-image:url('assets/mallqui/mallqui-cover.webp')!important;
+  background-size:cover!important;
+  filter:saturate(1.08) contrast(1.05)!important;
+}
+.mq-level-beginner{background-position:10% 48%!important}
+.mq-level-pro{background-position:86% 44%!important}
+.mq-coach-bg{
+  object-position:52% 38%!important;
+  filter:saturate(1.06) contrast(1.08) brightness(.84)!important;
+}
+.mq-gallery-item img{
+  filter:saturate(1.06) contrast(1.06) brightness(.94)!important;
+  transition:transform .35s ease,filter .35s ease!important;
+}
+.mq-gallery-item:hover img{
+  filter:saturate(1.12) contrast(1.08) brightness(1.02)!important;
+  transform:scale(1.035)!important;
+}
+.mq-gallery-item:nth-child(1) img{object-position:10% 45%!important}
+.mq-gallery-item:nth-child(2) img{object-position:51% 35%!important}
+.mq-gallery-item:nth-child(3) img{object-position:88% 43%!important}
+.mq-gallery-item:nth-child(4) img{object-position:54% 78%!important}
+.mq-gallery-item:nth-child(5) img{object-position:24% 52%!important}
+.mq-gallery-item:nth-child(6) img{object-position:73% 74%!important}
+.mq-lightbox-photo img{
+  object-fit:cover!important;
+  object-position:center 46%!important;
+  filter:saturate(1.05) contrast(1.05)!important;
+}
+.mq-gym{
+  background-image:
+    linear-gradient(90deg,rgba(5,7,5,.76),rgba(5,7,5,.28)),
+    url('assets/mallqui/mallqui-cover.webp')!important;
+  background-position:center 48%!important;
+  background-size:cover!important;
+}
