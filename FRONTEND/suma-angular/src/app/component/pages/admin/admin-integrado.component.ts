@@ -288,11 +288,11 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <article class="cf-live-card">
             <header><div><h2>Entrenador Personal</h2><p>Especialista del gimnasio</p></div><b>1 Entrenador</b></header>
             <div class="cf-live-trainer-row" *ngIf="entrenadores[0] as t">
-              <img src="assets/showcase/hero-showcase.svg" alt="Entrenador">
+              <img src="assets/mallqui/mallqui-cover.webp" alt="Entrenador">
               <div><b>{{nombreEntrenador(t)}}</b><small>{{t.especialidad || 'Entrenador Fitness'}}</small><em>Disponible</em></div>
             </div>
             <div class="cf-live-trainer-row" *ngIf="!entrenadores.length">
-              <img src="assets/showcase/hero-showcase.svg" alt="Entrenador"><div><b>Entrenador Mallqui</b><small>Fuerza y Acondicionamiento</small><em>Disponible</em></div>
+              <img src="assets/mallqui/mallqui-cover.webp" alt="Entrenador"><div><b>Entrenador Mallqui</b><small>Fuerza y Acondicionamiento</small><em>Disponible</em></div>
             </div>
           </article>
 
@@ -391,7 +391,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
                 <div><span class="meal-thumb">🍎</span><b>Ensalada de Manzana</b><small>Cena</small><em>120 Calorías</em></div>
               </div>
             </div>
-            <div class="cf-diet-today-art"><img src="assets/showcase/hero-showcase.svg" alt="Ilustración del plan de alimentación"></div>
+            <div class="cf-diet-today-art"><img src="assets/mallqui/mallqui-cover.webp" alt="Ilustración del plan de alimentación"></div>
           </article>
 
           <article class="cf-live-card cf-diet-progress-card">
@@ -413,8 +413,8 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <article class="cf-live-card">
             <header><div><h2>Nutricionistas Destacados</h2></div><span>‹ ›</span></header>
             <div class="cf-diet-people-grid">
-              <div><img src="assets/showcase/hero-showcase.svg" alt="Nutricionista"><div><b>Gilbert Sandoval</b><small>6 años de experiencia</small><em>★★★★★ 895</em></div></div>
-              <div><img src="assets/showcase/hero-showcase.svg" alt="Nutricionista"><div><b>Eugene Mata</b><small>8 años de experiencia</small><em>★★★★★ 832</em></div></div>
+              <div><img src="assets/mallqui/mallqui-cover.webp" alt="Nutricionista"><div><b>Gilbert Sandoval</b><small>6 años de experiencia</small><em>★★★★★ 895</em></div></div>
+              <div><img src="assets/mallqui/mallqui-cover.webp" alt="Nutricionista"><div><b>Eugene Mata</b><small>8 años de experiencia</small><em>★★★★★ 832</em></div></div>
             </div>
           </article>
 
@@ -481,12 +481,12 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
         <section class="cf-live-trainer-grid">
           <article class="cf-live-trainer-card" *ngIf="entrenadores[0] as t; else trainerEmpty">
-            <img src="assets/showcase/hero-showcase.svg" alt="Entrenador del gimnasio">
+            <img src="assets/mallqui/mallqui-cover.webp" alt="Entrenador del gimnasio">
             <h2>{{nombreEntrenador(t)}}</h2><p>{{t.especialidad || 'Fuerza y Acondicionamiento'}}</p>
             <ul><li><b>Experiencia</b><span>Mallqui Gym</span></li><li><b>Disponible</b><span>{{configuracionForm.hora_apertura}} - {{configuracionForm.hora_cierre}}</span></li><li><b>Socios Entrenados</b><span>{{clientesActivos}}+</span></li></ul>
             <button (click)="cambiarSegcion('trainer-profile')">Ver Perfil</button>
           </article>
-          <ng-template #trainerEmpty><article class="cf-live-trainer-card"><img src="assets/showcase/hero-showcase.svg" alt="Entrenador del gimnasio"><h2>Entrenador Mallqui</h2><p>Fuerza y Acondicionamiento</p><button (click)="cambiarSegcion('entrenador')">Registrar Entrenador</button></article></ng-template>
+          <ng-template #trainerEmpty><article class="cf-live-trainer-card"><img src="assets/mallqui/mallqui-cover.webp" alt="Entrenador del gimnasio"><h2>Entrenador Mallqui</h2><p>Fuerza y Acondicionamiento</p><button (click)="cambiarSegcion('entrenador')">Registrar Entrenador</button></article></ng-template>
         </section>
       </section>
 
@@ -704,7 +704,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
                   <p>{{r.detalles?.length || 0}} ejercicios <span></span> {{r.objetivo || 'Entrenamiento'}}</p>
                   <button type="button" (click)="cambiarSegcion('rutinas')">Ver rutina</button>
                 </div>
-                <img src="assets/showcase/hero-showcase.svg" alt="Rutina activa de Mallqui Gym">
+                <img src="assets/mallqui/mallqui-cover.webp" alt="Rutina activa de Mallqui Gym">
               </article>
 
               <article class="mg-workout-card" *ngIf="rutinasActivasDashboard[1] as r">
@@ -801,7 +801,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <aside class="mg-dashboard-side">
             <article class="mg-trainer-card">
               <div class="mg-trainer-head">
-                <img class="mg-trainer-avatar-img" src="assets/showcase/hero-showcase.svg" alt="Entrenador Mallqui Gym">
+                <img class="mg-trainer-avatar-img" src="assets/mallqui/mallqui-cover.webp" alt="Entrenador Mallqui Gym">
                 <div>
                   <strong>{{entrenadores[0] ? nombreEntrenador(entrenadores[0]) : 'Entrenador Mallqui'}}</strong>
                   <span>{{entrenadores[0]?.especialidad || 'Entrenador principal'}}</span>
@@ -810,7 +810,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               </div>
 
               <button type="button" class="mg-video-card" (click)="cambiarSegcion('rutinas')">
-                <img src="assets/showcase/hero-showcase.svg" alt="Rutina de Mallqui Gym">
+                <img src="assets/mallqui/mallqui-cover.webp" alt="Rutina de Mallqui Gym">
                 <i>▶</i>
               </button>
               <h3>{{rutinasActivasDashboard[0]?.nombre_rutina || 'Sin rutina activa'}}</h3>
@@ -818,7 +818,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
             </article>
 
             <button type="button" class="mg-mini-routine" (click)="cambiarSegcion('rutinas')">
-              <img src="assets/showcase/hero-showcase.svg" alt="Rutina secundaria">
+              <img src="assets/mallqui/mallqui-cover.webp" alt="Rutina secundaria">
               <div><strong>{{rutinasActivasDashboard[1]?.nombre_rutina || 'Gestionar rutinas'}}</strong><span>{{rutinasActivasDashboard[1]?.objetivo || 'Ver módulo de rutinas'}}</span></div>
             </button>
 
