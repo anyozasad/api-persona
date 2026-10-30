@@ -471,6 +471,36 @@ interface GymModuleConfig {
       :host .cf-suite-kpis,:host .cf-suite-income-cards{grid-template-columns:1fr!important}
     }
 
+
+    /* MALLQUI_SUITE_REAL_PHOTO_GRADE_2026_10_30 */
+    :host .cf-suite-equipment-art{
+      overflow:hidden!important;background:#0d0f0d!important;
+    }
+    :host .cf-suite-equipment-art img{
+      width:100%!important;height:100%!important;object-fit:cover!important;
+      object-position:88% 43%!important;
+      filter:saturate(1.06) contrast(1.09) brightness(.92)!important;
+    }
+    :host .cf-suite-gallery article{
+      overflow:hidden!important;background:#0d0f0d!important;
+    }
+    :host .cf-suite-gallery article img{
+      width:100%!important;height:190px!important;object-fit:cover!important;
+      filter:saturate(1.06) contrast(1.07) brightness(.94)!important;
+    }
+    :host .cf-suite-gallery article:nth-child(4n+1) img{object-position:10% 47%!important}
+    :host .cf-suite-gallery article:nth-child(4n+2) img{object-position:52% 35%!important}
+    :host .cf-suite-gallery article:nth-child(4n+3) img{object-position:87% 43%!important}
+    :host .cf-suite-gallery article:nth-child(4n+4) img{object-position:54% 77%!important}
+    :host .cf-news-featured img{
+      object-fit:cover!important;object-position:18% 48%!important;
+      filter:saturate(1.08) contrast(1.08) brightness(.9)!important;
+    }
+    :host .cf-suite-news article>img{
+      object-fit:cover!important;object-position:55% 43%!important;
+      filter:saturate(1.06) contrast(1.07) brightness(.94)!important;
+    }
+
   `]
 })
 export class AdminGymSuiteComponent implements OnInit, OnChanges {
