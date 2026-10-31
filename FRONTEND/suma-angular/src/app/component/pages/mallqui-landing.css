@@ -3133,3 +3133,58 @@ html{scroll-behavior:smooth}
     background-position:center center !important;
   }
 }
+
+
+/* NIVELES_DOS_IMAGENES_DISTINTAS_FINAL_2026_10_31
+   Mantener exactamente la interfaz dividida original; solo cambiar las fotos. */
+.mq-levels{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  background:none !important;
+}
+
+.mq-level-card{
+  position:relative !important;
+  min-height:570px !important;
+  display:grid !important;
+  place-items:center !important;
+  overflow:hidden !important;
+  background-size:cover !important;
+  background-repeat:no-repeat !important;
+  background-position:center center !important;
+}
+
+/* Foto distinta para PRINCIPIANTES */
+.mq-level-beginner{
+  background-image:url('/assets/mallqui/mallqui-gallery-1.webp') !important;
+  background-position:center 48% !important;
+}
+
+/* Foto distinta para PROFESIONALES */
+.mq-level-pro{
+  background-image:url('/assets/mallqui/mallqui-gallery-3.webp') !important;
+  background-position:center 42% !important;
+}
+
+.mq-level-shade{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:1 !important;
+  background:rgba(26,24,29,.62) !important;
+}
+
+.mq-level-card:hover .mq-level-shade{
+  background:rgba(26,24,29,.54) !important;
+}
+
+.mq-level-content{
+  position:relative !important;
+  z-index:2 !important;
+  text-align:center !important;
+}
+
+@media(max-width:760px){
+  .mq-levels{
+    grid-template-columns:1fr !important;
+  }
+}
