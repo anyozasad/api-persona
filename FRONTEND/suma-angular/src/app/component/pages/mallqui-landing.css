@@ -2784,3 +2784,85 @@ html{scroll-behavior:smooth}
 @media(max-width:620px){
   .mq-coach-bg{object-position:68% 38% !important}
 }
+
+
+/* IMAGENES_NITIDAS_FINAL_2026_10_31
+   Corrección de calidad sin cambiar textos, botones ni estructura. */
+
+/* Principiantes / Profesionales: usar el asset 4K real, no el cover de 960 px. */
+.mq-level-beginner,
+.mq-level-pro{
+  background-image:url('/assets/mallqui/mallqui-hero-4k.webp') !important;
+  background-size:cover !important;
+  background-repeat:no-repeat !important;
+}
+.mq-level-beginner{background-position:28% 50% !important}
+.mq-level-pro{background-position:72% 50% !important}
+.mq-level-shade{
+  background:linear-gradient(180deg,rgba(18,17,20,.48),rgba(18,17,20,.64)) !important;
+}
+
+/* Sobre mí: fondo 4K + foto real del entrenador sin estirarla a pantalla completa. */
+.mq-coach{
+  background-image:
+    linear-gradient(90deg,rgba(28,25,31,.98) 0%,rgba(28,25,31,.90) 34%,rgba(28,25,31,.50) 65%,rgba(28,25,31,.34) 100%),
+    url('/assets/mallqui/mallqui-hero-4k.webp') !important;
+  background-size:cover !important;
+  background-position:center 50% !important;
+}
+.mq-coach-bg{
+  inset:auto !important;
+  left:auto !important;
+  right:5.5vw !important;
+  top:50% !important;
+  width:min(43vw,680px) !important;
+  height:auto !important;
+  max-height:78% !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  transform:translateY(-50%) !important;
+  filter:contrast(1.08) saturate(1.08) brightness(1.03) !important;
+  box-shadow:0 28px 75px rgba(0,0,0,.38);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.78) 10%,#000 24%,#000 100%);
+  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.78) 10%,#000 24%,#000 100%);
+}
+.mq-coach-overlay{
+  background:
+    linear-gradient(90deg,
+      rgba(28,25,31,.98) 0%,
+      rgba(28,25,31,.94) 28%,
+      rgba(28,25,31,.76) 46%,
+      rgba(28,25,31,.22) 72%,
+      rgba(28,25,31,.10) 100%) !important;
+}
+
+/* Galería: evitar ampliación extra al pasar el mouse, que acentúa el desenfoque. */
+.mq-gallery-item:hover img{
+  transform:none !important;
+}
+.mq-gallery-item img{
+  image-rendering:auto !important;
+  filter:contrast(1.08) saturate(1.06) brightness(1.02) !important;
+}
+
+/* En pantallas más pequeñas el entrenador se integra al fondo sin forzar zoom excesivo. */
+@media(max-width:920px){
+  .mq-coach-bg{
+    right:2vw !important;
+    width:min(52vw,620px) !important;
+    max-height:70% !important;
+    opacity:.92;
+  }
+}
+@media(max-width:620px){
+  .mq-coach{
+    background-position:58% center !important;
+  }
+  .mq-coach-bg{
+    right:-8% !important;
+    top:30% !important;
+    width:82vw !important;
+    max-height:48% !important;
+    opacity:.48;
+  }
+}
