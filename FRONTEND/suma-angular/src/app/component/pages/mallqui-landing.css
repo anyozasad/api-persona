@@ -3213,3 +3213,114 @@ html{scroll-behavior:smooth}
   background-position:center center !important;
   background-repeat:no-repeat !important;
 }
+
+
+/* NIVELES_BONITO_FINAL_2026_10_31
+   Solo mejora visualmente Principiantes / Profesionales. No mueve la interfaz. */
+.mq-levels{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  background:none !important;
+}
+
+.mq-level-card{
+  position:relative !important;
+  min-height:620px !important;
+  display:grid !important;
+  place-items:center !important;
+  overflow:hidden !important;
+  background-size:cover !important;
+  background-repeat:no-repeat !important;
+  filter:none !important;
+}
+
+.mq-level-beginner{
+  background-image:url('/assets/mallqui/mallqui-beginner-ai-4k.webp?v=final-bonito-20261031') !important;
+  background-position:38% 42% !important;
+}
+
+.mq-level-pro{
+  background-image:url('/assets/mallqui/mallqui-pro-ai-4k.webp?v=final-bonito-20261031') !important;
+  background-position:56% 34% !important;
+}
+
+.mq-level-shade{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:1 !important;
+  background:linear-gradient(
+    180deg,
+    rgba(15,15,20,.14) 0%,
+    rgba(15,15,20,.26) 48%,
+    rgba(15,15,20,.38) 100%
+  ) !important;
+}
+
+.mq-level-card:hover .mq-level-shade{
+  background:linear-gradient(
+    180deg,
+    rgba(15,15,20,.08) 0%,
+    rgba(15,15,20,.18) 48%,
+    rgba(15,15,20,.30) 100%
+  ) !important;
+}
+
+.mq-level-content{
+  position:relative !important;
+  z-index:2 !important;
+  text-align:center !important;
+}
+
+.mq-level-content h2{
+  margin:0 0 34px !important;
+  color:#fff !important;
+  font-size:clamp(36px,4vw,62px) !important;
+  font-weight:300 !important;
+  letter-spacing:9px !important;
+  text-transform:uppercase !important;
+  text-shadow:0 4px 18px rgba(0,0,0,.28) !important;
+}
+
+.mq-circle-arrow{
+  width:84px !important;
+  height:84px !important;
+  display:grid !important;
+  place-items:center !important;
+  border-radius:50% !important;
+  border:3px solid #ff6047 !important;
+  color:#ff6047 !important;
+  font-size:54px !important;
+  line-height:1 !important;
+  text-decoration:none !important;
+  background:rgba(18,18,22,.18) !important;
+  backdrop-filter:none !important;
+  box-shadow:0 10px 24px rgba(0,0,0,.18) !important;
+  transition:all .25s ease !important;
+}
+
+.mq-circle-arrow:hover{
+  transform:scale(1.06) !important;
+  background:rgba(255,96,71,.12) !important;
+  box-shadow:0 12px 28px rgba(0,0,0,.24) !important;
+}
+
+@media(max-width:760px){
+  .mq-levels{
+    grid-template-columns:1fr !important;
+  }
+
+  .mq-level-card{
+    min-height:420px !important;
+  }
+
+  .mq-level-content h2{
+    font-size:clamp(28px,7vw,42px) !important;
+    letter-spacing:6px !important;
+  }
+
+  .mq-circle-arrow{
+    width:72px !important;
+    height:72px !important;
+    font-size:46px !important;
+  }
+}
