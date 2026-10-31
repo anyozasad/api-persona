@@ -72,78 +72,26 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         </section>
 
         <section id="entrenador" class="mq-coach">
-          <div class="mq-shell mq-coach-grid">
+          <img
+            class="mq-coach-bg"
+            src="/assets/mallqui/mallqui-trainer-real.webp"
+            alt="Entrenador de Mallqui Gym">
+          <div class="mq-coach-overlay"></div>
+
+          <div class="mq-shell mq-coach-content">
             <div class="mq-coach-copy">
               <p class="mq-section-label">SOBRE MÍ</p>
               <h2>CONOCE AL<br>ENTRENADOR</h2>
 
-              <p class="mq-coach-intro">
-                En Mallqui Gym el entrenamiento no consiste solo en usar máquinas.
-                Recibes orientación, seguimiento y una rutina de acuerdo con tu nivel y tu objetivo.
+              <p>
+                En Mallqui Gym te acompañamos para que entrenes de forma segura,
+                ordenada y de acuerdo con tu nivel.
               </p>
 
-              <div class="mq-coach-specialties" aria-label="Especialidades del entrenador">
-                <span>Fuerza</span>
-                <span>Tonificación</span>
-                <span>Cardio</span>
-                <span>Pérdida de peso</span>
-                <span>Masa muscular</span>
-                <span>Principiantes</span>
-              </div>
-
-              <div class="mq-coach-benefits">
-                <article>
-                  <span class="mq-coach-number">01</span>
-                  <div>
-                    <b>Evaluación inicial</b>
-                    <small>Se revisa tu nivel, objetivo y condición antes de comenzar.</small>
-                  </div>
-                </article>
-                <article>
-                  <span class="mq-coach-number">02</span>
-                  <div>
-                    <b>Rutina por nivel</b>
-                    <small>Entrenamiento organizado para principiante, intermedio o avanzado.</small>
-                  </div>
-                </article>
-                <article>
-                  <span class="mq-coach-number">03</span>
-                  <div>
-                    <b>Corrección técnica</b>
-                    <small>Orientación en postura, ejecución y uso correcto de los equipos.</small>
-                  </div>
-                </article>
-                <article>
-                  <span class="mq-coach-number">04</span>
-                  <div>
-                    <b>Seguimiento</b>
-                    <small>Control del progreso para ajustar la rutina cuando sea necesario.</small>
-                  </div>
-                </article>
-              </div>
-
-              <div class="mq-coach-actions">
-                <a class="mq-coach-primary" routerLink="/clases-gym">Reservar sesión</a>
-                <a class="mq-coach-secondary" routerLink="/planes">Ver planes</a>
-              </div>
-            </div>
-
-            <div class="mq-coach-visual">
-              <img
-                src="/assets/mallqui/mallqui-trainer-real.webp"
-                alt="Entrenador principal de Mallqui Gym">
-              <div class="mq-coach-photo-overlay"></div>
-
-              <div class="mq-coach-role">
-                <span>ENTRENADOR PRINCIPAL</span>
-                <strong>Mallqui Gym</strong>
-                <small>Entrenamiento personalizado y acompañamiento durante tu progreso.</small>
-              </div>
-
-              <div class="mq-coach-status">
-                <i></i>
-                <span>Disponible según agenda</span>
-              </div>
+              <p>
+                Cada rutina se adapta a tus objetivos y a tu progreso para que
+                avances con técnica, constancia y disciplina.
+              </p>
             </div>
           </div>
         </section>
