@@ -97,12 +97,6 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         </section>
 
         <section id="victorias" class="mq-victories">
-          <div class="mq-gallery-intro mq-shell">
-            <p class="mq-section-label light">FOTOS REALES</p>
-            <h2>CONOCE MALLQUI GYM</h2>
-            <span>Equipos, productos, instalaciones y entrenador. Todas son fotografías reales del gimnasio.</span>
-          </div>
-
           <div class="mq-gallery-cta">
             <p>COMIENZA HOY A ENTRENAR</p>
             <a routerLink="/clases-gym">Reservar sesión</a>
