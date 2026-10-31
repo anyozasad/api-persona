@@ -3054,3 +3054,13 @@ html{scroll-behavior:smooth}
 .mq-coach .mq-coach-bg-svg{
   filter:saturate(1.035) contrast(1.025) brightness(1.01) !important;
 }
+
+
+/* ENTRENADOR_4K_ESTATICO_FINAL_2026_10_31
+   La foto ya viene procesada a 4K: evitar sobreenfoque del navegador. */
+.mq-coach img.mq-coach-bg{
+  image-rendering:auto !important;
+  filter:contrast(1.035) saturate(1.035) brightness(1.01) !important;
+  backface-visibility:hidden;
+  transform:translateZ(0) !important;
+}
