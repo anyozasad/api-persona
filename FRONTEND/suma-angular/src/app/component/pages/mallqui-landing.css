@@ -3074,3 +3074,62 @@ html{scroll-behavior:smooth}
   backface-visibility:hidden !important;
   transform:none !important;
 }
+
+
+/* NIVELES_FONDO_CONTINUO_4K_2026_10_31
+   Una sola foto 4K para ambas opciones; evita duplicados y cortes visuales. */
+.mq-levels{
+  position:relative !important;
+  background:
+    linear-gradient(rgba(20,18,22,.18),rgba(20,18,22,.18)),
+    url('/assets/mallqui/mallqui-hero-4k.webp') center 52%/cover no-repeat !important;
+  overflow:hidden !important;
+}
+
+.mq-level-card{
+  background-image:none !important;
+  background-color:transparent !important;
+  position:relative !important;
+}
+
+.mq-level-beginner::before,
+.mq-level-pro::before{
+  content:'' !important;
+  position:absolute !important;
+  inset:0 !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+}
+
+.mq-level-beginner::before{
+  background:linear-gradient(90deg,
+    rgba(18,17,21,.58) 0%,
+    rgba(18,17,21,.46) 72%,
+    rgba(18,17,21,.30) 100%) !important;
+}
+
+.mq-level-pro::before{
+  background:linear-gradient(90deg,
+    rgba(18,17,21,.30) 0%,
+    rgba(18,17,21,.46) 28%,
+    rgba(18,17,21,.58) 100%) !important;
+}
+
+.mq-level-shade{
+  z-index:1 !important;
+  background:rgba(20,18,22,.22) !important;
+}
+
+.mq-level-content{
+  z-index:2 !important;
+}
+
+.mq-level-card:hover .mq-level-shade{
+  background:rgba(20,18,22,.12) !important;
+}
+
+@media(max-width:760px){
+  .mq-levels{
+    background-position:center center !important;
+  }
+}
