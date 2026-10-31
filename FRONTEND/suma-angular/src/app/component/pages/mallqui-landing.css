@@ -2914,7 +2914,7 @@ html{scroll-behavior:smooth}
 }
 .mq-gallery{
   display:grid !important;
-  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
   grid-auto-rows:auto !important;
   gap:16px !important;
   padding:0 28px 70px !important;
@@ -2930,7 +2930,8 @@ html{scroll-behavior:smooth}
 .mq-gallery-item img,
 .mq-gallery-item:nth-child(1) img,
 .mq-gallery-item:nth-child(2) img,
-.mq-gallery-item:nth-child(3) img{
+.mq-gallery-item:nth-child(3) img,
+.mq-gallery-item:nth-child(4) img{
   width:100% !important;
   height:100% !important;
   object-fit:cover !important;
