@@ -2929,3 +2929,106 @@ html{scroll-behavior:smooth}
     opacity:.58 !important;
   }
 }
+
+
+/* ENTRENADOR_INTEGRADO_FINAL_2026_10_31
+   La foto deja de comportarse como tarjeta y pasa a ser parte visual del fondo. */
+.mq-coach{
+  position:relative !important;
+  overflow:hidden !important;
+  background:
+    linear-gradient(90deg,
+      rgba(28,25,31,.98) 0%,
+      rgba(28,25,31,.96) 28%,
+      rgba(28,25,31,.76) 48%,
+      rgba(28,25,31,.34) 66%,
+      rgba(28,25,31,.10) 100%),
+    url('/assets/mallqui/mallqui-hero-4k.webp') center/cover no-repeat !important;
+}
+
+.mq-coach-bg{
+  position:absolute !important;
+  z-index:1 !important;
+  top:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  left:auto !important;
+  width:62% !important;
+  height:100% !important;
+  max-height:none !important;
+  transform:none !important;
+  object-fit:cover !important;
+  object-position:center 48% !important;
+  opacity:1 !important;
+  border:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  border-radius:0 !important;
+  filter:contrast(1.10) saturate(1.08) brightness(.98) !important;
+  -webkit-mask-image:linear-gradient(90deg,
+    transparent 0%,
+    rgba(0,0,0,.18) 6%,
+    rgba(0,0,0,.72) 18%,
+    #000 34%,
+    #000 100%) !important;
+  mask-image:linear-gradient(90deg,
+    transparent 0%,
+    rgba(0,0,0,.18) 6%,
+    rgba(0,0,0,.72) 18%,
+    #000 34%,
+    #000 100%) !important;
+}
+
+.mq-coach-overlay{
+  position:absolute !important;
+  z-index:2 !important;
+  inset:0 !important;
+  pointer-events:none !important;
+  background:linear-gradient(90deg,
+    rgba(28,25,31,.99) 0%,
+    rgba(28,25,31,.96) 27%,
+    rgba(28,25,31,.80) 43%,
+    rgba(28,25,31,.28) 62%,
+    rgba(28,25,31,.06) 82%,
+    rgba(28,25,31,.02) 100%) !important;
+}
+
+.mq-coach-content{
+  position:relative !important;
+  z-index:3 !important;
+}
+
+/* Mantiene el mismo diseño en resoluciones menores. */
+@media(max-width:920px){
+  .mq-coach-bg{
+    width:68% !important;
+    object-position:52% center !important;
+  }
+  .mq-coach-overlay{
+    background:linear-gradient(90deg,
+      rgba(28,25,31,.98) 0%,
+      rgba(28,25,31,.93) 40%,
+      rgba(28,25,31,.54) 64%,
+      rgba(28,25,31,.10) 100%) !important;
+  }
+}
+
+@media(max-width:620px){
+  .mq-coach-bg{
+    width:100% !important;
+    height:58% !important;
+    top:0 !important;
+    right:0 !important;
+    object-position:center 35% !important;
+    opacity:.68 !important;
+    -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 62%,transparent 100%) !important;
+    mask-image:linear-gradient(180deg,#000 0%,#000 62%,transparent 100%) !important;
+  }
+  .mq-coach-overlay{
+    background:linear-gradient(180deg,
+      rgba(28,25,31,.18) 0%,
+      rgba(28,25,31,.48) 42%,
+      rgba(28,25,31,.92) 66%,
+      rgba(28,25,31,.99) 100%) !important;
+  }
+}
