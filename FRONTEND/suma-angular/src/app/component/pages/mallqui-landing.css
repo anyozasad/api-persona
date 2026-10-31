@@ -3128,3 +3128,71 @@ html{scroll-behavior:smooth}
     grid-template-columns:1fr !important;
   }
 }
+
+
+/* NIVELES_UI_PROFESIONAL_FINAL_2026_10_31
+   Dos paneles, una foto limpia por nivel. Sin collages ni cambios de estructura. */
+.mq-levels{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  background:none !important;
+}
+
+.mq-level-card{
+  position:relative !important;
+  min-height:570px !important;
+  display:grid !important;
+  place-items:center !important;
+  overflow:hidden !important;
+  background-size:cover !important;
+  background-repeat:no-repeat !important;
+}
+
+/* Principiantes: vista general del gimnasio */
+.mq-level-beginner{
+  background-image:url('/assets/mallqui/mallqui-hero-4k.webp') !important;
+  background-position:32% 52% !important;
+}
+
+/* Profesionales: entrenador como referencia de nivel avanzado */
+.mq-level-pro{
+  background-image:url('/assets/mallqui/mallqui-trainer-ai-4k.webp') !important;
+  background-position:58% 45% !important;
+}
+
+.mq-level-shade{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:1 !important;
+  background:linear-gradient(
+    180deg,
+    rgba(18,17,21,.34) 0%,
+    rgba(18,17,21,.48) 56%,
+    rgba(18,17,21,.58) 100%
+  ) !important;
+}
+
+.mq-level-card:hover .mq-level-shade{
+  background:linear-gradient(
+    180deg,
+    rgba(18,17,21,.24) 0%,
+    rgba(18,17,21,.40) 56%,
+    rgba(18,17,21,.50) 100%
+  ) !important;
+}
+
+.mq-level-content{
+  position:relative !important;
+  z-index:2 !important;
+  text-align:center !important;
+}
+
+@media(max-width:760px){
+  .mq-levels{
+    grid-template-columns:1fr !important;
+  }
+  .mq-level-beginner,
+  .mq-level-pro{
+    min-height:420px !important;
+  }
+}
