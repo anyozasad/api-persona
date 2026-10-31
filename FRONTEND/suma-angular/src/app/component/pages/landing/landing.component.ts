@@ -72,10 +72,45 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         </section>
 
         <section id="entrenador" class="mq-coach">
-          <img
-            class="mq-coach-bg"
-            src="/assets/mallqui/mallqui-trainer-real.webp"
-            alt="Entrenador de Mallqui Gym">
+          <svg
+            class="mq-coach-bg mq-coach-bg-svg"
+            viewBox="0 0 3840 2562"
+            preserveAspectRatio="xMidYMid slice"
+            role="img"
+            aria-label="Entrenador de Mallqui Gym">
+            <defs>
+              <filter id="mqTrainerUltraHD" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB">
+                <feGaussianBlur stdDeviation="0.32" result="suave"></feGaussianBlur>
+                <feConvolveMatrix
+                  in="suave"
+                  order="3"
+                  kernelMatrix="0 -0.10 0 -0.10 1.40 -0.10 0 -0.10 0"
+                  divisor="1"
+                  bias="0"
+                  edgeMode="duplicate"
+                  preserveAlpha="true"
+                  result="enfocada">
+                </feConvolveMatrix>
+                <feColorMatrix
+                  in="enfocada"
+                  type="matrix"
+                  values="1.035 0 0 0 -0.012
+                          0 1.035 0 0 -0.012
+                          0 0 1.035 0 -0.012
+                          0 0 0 1 0">
+                </feColorMatrix>
+              </filter>
+            </defs>
+            <image
+              href="/assets/mallqui/mallqui-trainer-real.webp"
+              x="0"
+              y="0"
+              width="3840"
+              height="2562"
+              preserveAspectRatio="xMidYMid slice"
+              filter="url(#mqTrainerUltraHD)">
+            </image>
+          </svg>
           <div class="mq-coach-overlay"></div>
 
           <div class="mq-shell mq-coach-content">
