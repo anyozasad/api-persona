@@ -55,14 +55,14 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         </section>
 
         <section id="entrenamiento" class="mq-levels">
-          <article class="mq-level-card mq-level-beginner" [style.backgroundImage]="'url(' + cover4k + ')'">
+          <article class="mq-level-card mq-level-beginner">
             <div class="mq-level-shade"></div>
             <div class="mq-level-content">
               <h2>PRINCIPIANTES</h2>
               <a class="mq-circle-arrow" routerLink="/clases-gym">›</a>
             </div>
           </article>
-          <article class="mq-level-card mq-level-pro" [style.backgroundImage]="'url(' + cover4k + ')'">
+          <article class="mq-level-card mq-level-pro">
             <div class="mq-level-shade"></div>
             <div class="mq-level-content">
               <h2>PROFESIONALES</h2>
@@ -74,7 +74,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         <section id="entrenador" class="mq-coach">
           <img
             class="mq-coach-bg"
-            [src]="trainer4k"
+            src="/assets/mallqui/mallqui-trainer-real.webp"
             alt="Entrenador de Mallqui Gym">
           <div class="mq-coach-overlay"></div>
 
@@ -283,9 +283,6 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   mensajesChat: Array<{tipo:'usuario'|'gym'; texto:string}> = [];
   private heroTimer?: ReturnType<typeof setInterval>;
   private toastTimer?: ReturnType<typeof setTimeout>;
-  cover4k = '/assets/mallqui/mallqui-cover.webp';
-  trainer4k = '/assets/mallqui/mallqui-trainer-real.webp';
-  private readonly imagenes4KUrls: string[] = [];
   private readonly hashChangeHandler = (): void => {
     const id = window.location.hash.replace('#', '').trim();
     if (id) {
@@ -440,8 +437,6 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
     window.addEventListener('scroll', this.parallaxHandler, { passive: true });
     this.parallaxHandler();
 
-    void this.prepararFotos4K();
-
     const id = window.location.hash.replace('#', '').trim();
     if (id) {
       setTimeout(() => this.scrollToSection(id, 'auto', true), 60);
@@ -456,119 +451,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
     window.removeEventListener('scroll', this.parallaxHandler);
     if (this.heroTimer) clearInterval(this.heroTimer);
     if (this.toastTimer) clearTimeout(this.toastTimer);
-    this.imagenes4KUrls.forEach(url => URL.revokeObjectURL(url));
     document.body.style.overflow = '';
-  }
-
-  private async prepararFotos4K(): Promise<void> {
-    this.cover4k = await this.mejorarFoto4K('/assets/mallqui/mallqui-cover.webp');
-    this.trainer4k = await this.mejorarFoto4K('/assets/mallqui/mallqui-trainer-real.webp');
-
-    const galeriaMejorada = [] as string[];
-    for (const foto of this.galeria) {
-      const src = foto.img.startsWith('/') ? foto.img : '/' + foto.img;
-      galeriaMejorada.push(await this.mejorarFoto4K(src));
-    }
-
-    this.galeria = this.galeria.map((foto, index) => ({
-      ...foto,
-      img: galeriaMejorada[index] || foto.img
-    }));
-  }
-
-  private mejorarFoto4K(src: string): Promise<string> {
-    return new Promise(resolve => {
-      const imagen = new Image();
-      imagen.decoding = 'async';
-
-      imagen.onload = () => {
-        try {
-          if (imagen.naturalWidth >= 3840) {
-            resolve(src);
-            return;
-          }
-
-          const base = document.createElement('canvas');
-          base.width = imagen.naturalWidth;
-          base.height = imagen.naturalHeight;
-          const baseCtx = base.getContext('2d', { willReadFrequently: true });
-          if (!baseCtx || !base.width || !base.height) {
-            resolve(src);
-            return;
-          }
-
-          baseCtx.drawImage(imagen, 0, 0);
-          this.aplicarNitidez(baseCtx, base.width, base.height);
-
-          let actual = base;
-          const relacion = imagen.naturalHeight / imagen.naturalWidth;
-          const anchoFinal = 3840;
-          const altoFinal = Math.max(1, Math.round(anchoFinal * relacion));
-
-          while (actual.width < anchoFinal) {
-            const siguiente = document.createElement('canvas');
-            siguiente.width = Math.min(anchoFinal, actual.width * 2);
-            siguiente.height = siguiente.width === anchoFinal
-              ? altoFinal
-              : Math.max(1, Math.round(siguiente.width * relacion));
-
-            const ctx = siguiente.getContext('2d');
-            if (!ctx) break;
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = 'high';
-            ctx.filter = 'contrast(1.04) saturate(1.05) brightness(1.01)';
-            ctx.drawImage(actual, 0, 0, siguiente.width, siguiente.height);
-            actual = siguiente;
-          }
-
-          actual.toBlob(blob => {
-            if (!blob) {
-              resolve(src);
-              return;
-            }
-            const url = URL.createObjectURL(blob);
-            this.imagenes4KUrls.push(url);
-            resolve(url);
-          }, 'image/webp', 0.94);
-        } catch {
-          resolve(src);
-        }
-      };
-
-      imagen.onerror = () => resolve(src);
-      imagen.src = src;
-    });
-  }
-
-  private aplicarNitidez(ctx: CanvasRenderingContext2D, width: number, height: number): void {
-    const original = ctx.getImageData(0, 0, width, height);
-    const salida = ctx.createImageData(width, height);
-    salida.data.set(original.data);
-    const src = original.data;
-    const dst = salida.data;
-    const intensidad = 0.22;
-
-    for (let y = 1; y < height - 1; y++) {
-      for (let x = 1; x < width - 1; x++) {
-        const i = (y * width + x) * 4;
-        const arriba = i - width * 4;
-        const abajo = i + width * 4;
-        const izquierda = i - 4;
-        const derecha = i + 4;
-
-        for (let canal = 0; canal < 3; canal++) {
-          const enfocado = (src[i + canal] * 5)
-            - src[arriba + canal]
-            - src[abajo + canal]
-            - src[izquierda + canal]
-            - src[derecha + canal];
-          const mezclado = src[i + canal] + (enfocado - src[i + canal]) * intensidad;
-          dst[i + canal] = Math.max(0, Math.min(255, mezclado));
-        }
-      }
-    }
-
-    ctx.putImageData(salida, 0, 0);
   }
 
   cambiarHero(index: number): void {
