@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="3840" height="2562" viewBox="0 0 3840 2562">
+  <defs>
+    <filter id="ultraHD" x="-2%" y="-2%" width="104%" height="104%"
+            color-interpolation-filters="sRGB">
+      <!-- Enfoque suave sobre la misma fotografía, sin inventar contenido -->
+      <feConvolveMatrix order="3"
+        kernelMatrix="0 -0.22 0 -0.22 1.88 -0.22 0 -0.22 0"
+        divisor="1" bias="0" preserveAlpha="true"
+        edgeMode="duplicate" result="sharp"/>
+      <!-- Contraste y luminosidad muy leves para recuperar definición visual -->
+      <feComponentTransfer in="sharp" result="contrast">
+        <feFuncR type="linear" slope="1.055" intercept="-0.026"/>
+        <feFuncG type="linear" slope="1.055" intercept="-0.026"/>
+        <feFuncB type="linear" slope="1.055" intercept="-0.026"/>
+        <feFuncA type="identity"/>
+      </feComponentTransfer>
+      <feColorMatrix in="contrast" type="saturate" values="1.055"/>
+    </filter>
+  </defs>
+
+  <image href="mallqui-trainer-real.webp"
+         xlink:href="mallqui-trainer-real.webp"
+         x="0" y="0"
+         width="3840" height="2562"
+         preserveAspectRatio="none"
+         filter="url(#ultraHD)"
+         style="image-rendering:auto"/>
+</svg>
