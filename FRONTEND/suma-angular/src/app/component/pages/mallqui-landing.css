@@ -2866,3 +2866,66 @@ html{scroll-behavior:smooth}
     opacity:.48;
   }
 }
+
+
+/* ENTRENADOR_VISIBLE_FINAL_2026_10_31
+   Mantener la interfaz y mostrar la foto real del entrenador a la derecha. */
+.mq-coach{
+  position:relative !important;
+  overflow:hidden !important;
+}
+
+.mq-coach-bg{
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  position:absolute !important;
+  z-index:2 !important;
+  left:auto !important;
+  right:5.5vw !important;
+  top:50% !important;
+  width:min(43vw,680px) !important;
+  height:auto !important;
+  max-height:78% !important;
+  transform:translateY(-50%) !important;
+  object-fit:contain !important;
+  object-position:center center !important;
+  filter:contrast(1.16) saturate(1.10) brightness(1.04) !important;
+  -webkit-mask-image:none !important;
+  mask-image:none !important;
+  border:0 !important;
+  box-shadow:0 22px 60px rgba(0,0,0,.34) !important;
+}
+
+.mq-coach-overlay{
+  z-index:1 !important;
+  pointer-events:none !important;
+  background:linear-gradient(90deg,
+    rgba(28,25,31,.98) 0%,
+    rgba(28,25,31,.94) 28%,
+    rgba(28,25,31,.78) 45%,
+    rgba(28,25,31,.24) 68%,
+    rgba(28,25,31,.08) 100%) !important;
+}
+
+.mq-coach-content{
+  position:relative !important;
+  z-index:3 !important;
+}
+
+@media(max-width:920px){
+  .mq-coach-bg{
+    right:2.5vw !important;
+    width:min(50vw,620px) !important;
+    max-height:72% !important;
+  }
+}
+@media(max-width:620px){
+  .mq-coach-bg{
+    right:-5vw !important;
+    top:31% !important;
+    width:78vw !important;
+    max-height:46% !important;
+    opacity:.58 !important;
+  }
+}
