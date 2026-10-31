@@ -130,7 +130,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
 
             <div class="mq-coach-visual">
               <img
-                src="/assets/mallqui/mallqui-trainer.webp"
+                src="/assets/mallqui/mallqui-trainer-real.webp"
                 alt="Entrenador principal de Mallqui Gym">
               <div class="mq-coach-photo-overlay"></div>
 
@@ -149,6 +149,12 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         </section>
 
         <section id="victorias" class="mq-victories">
+          <div class="mq-gallery-intro mq-shell">
+            <p class="mq-section-label light">FOTOS REALES</p>
+            <h2>CONOCE MALLQUI GYM</h2>
+            <span>Equipos, productos, instalaciones y entrenador. Todas son fotografías reales del gimnasio.</span>
+          </div>
+
           <div class="mq-gallery-cta">
             <p>COMIENZA HOY A ENTRENAR</p>
             <a routerLink="/clases-gym">Reservar sesión</a>
@@ -364,12 +370,24 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
 
   galeria = [
-    { img: 'assets/mallqui/mallqui-cover.webp', alt: 'Local de Mallqui Gym', texto: 'NUESTRO LOCAL', descripcion: 'Conoce el espacio real de Mallqui Gym y entrena en un ambiente preparado para fuerza y acondicionamiento.' },
-    { img: 'assets/mallqui/mallqui-cover.webp', alt: 'Entrenador de Mallqui Gym', texto: 'ENTRENADOR', descripcion: 'Entrenamiento acompañado y seguimiento para avanzar con técnica y constancia.' },
-    { img: 'assets/mallqui/mallqui-cover.webp', alt: 'Equipos de Mallqui Gym', texto: 'EQUIPOS', descripcion: 'Máquinas y equipos disponibles para desarrollar fuerza, resistencia y condición física.' },
-    { img: 'assets/mallqui/mallqui-cover.webp', alt: 'Productos de Mallqui Gym', texto: 'SUPLEMENTOS', descripcion: 'Productos y suplementos disponibles en Mallqui Gym, registrados en el sistema.' },
-    { img: 'assets/mallqui/mallqui-cover.webp', alt: 'Interior de Mallqui Gym', texto: 'GIMNASIO', descripcion: 'Un espacio real para entrenar y progresar de acuerdo con tus objetivos.' },
-    { img: 'assets/mallqui/mallqui-cover.webp', alt: 'Mallqui Gym', texto: 'MALLQUI GYM', descripcion: 'Entrenamiento, productos, equipos y seguimiento en un solo lugar.' }
+    {
+      img: 'assets/mallqui/mallqui-gallery-1.webp',
+      alt: 'Máquinas, equipos y productos reales de Mallqui Gym',
+      texto: 'EQUIPOS Y PRODUCTOS',
+      descripcion: 'Fotografías reales de las máquinas, equipos y primeros productos de Mallqui Gym.'
+    },
+    {
+      img: 'assets/mallqui/mallqui-gallery-2.webp',
+      alt: 'Productos, suplementos y local real de Mallqui Gym',
+      texto: 'SUPLEMENTOS Y LOCAL',
+      descripcion: 'Fotografías reales de suplementos, productos y distintas vistas del local de Mallqui Gym.'
+    },
+    {
+      img: 'assets/mallqui/mallqui-gallery-3.webp',
+      alt: 'Local, entrenador, productos e instalaciones reales de Mallqui Gym',
+      texto: 'LOCAL Y ENTRENADOR',
+      descripcion: 'Fotografías reales del interior, exterior, entrenador, suplementos y más espacios de Mallqui Gym.'
+    }
   ];
 
   clases = [
