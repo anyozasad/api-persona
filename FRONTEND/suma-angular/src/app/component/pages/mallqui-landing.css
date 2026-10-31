@@ -3032,3 +3032,25 @@ html{scroll-behavior:smooth}
       rgba(28,25,31,.99) 100%) !important;
   }
 }
+
+
+/* ENTRENADOR_RENDER_HD_2026_10_31
+   Misma foto real: reescalado vectorial + suavizado + enfoque controlado. */
+.mq-coach-bg-svg{
+  display:block !important;
+  image-rendering:auto !important;
+  shape-rendering:geometricPrecision;
+  text-rendering:geometricPrecision;
+  backface-visibility:hidden;
+  -webkit-font-smoothing:antialiased;
+  transform:translateZ(0) !important;
+}
+
+.mq-coach-bg-svg image{
+  image-rendering:auto;
+}
+
+/* Evita acentuar bloques de compresión con filtros CSS fuertes. */
+.mq-coach .mq-coach-bg-svg{
+  filter:saturate(1.035) contrast(1.025) brightness(1.01) !important;
+}
