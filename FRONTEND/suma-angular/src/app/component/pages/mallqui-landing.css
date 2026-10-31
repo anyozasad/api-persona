@@ -3064,3 +3064,13 @@ html{scroll-behavior:smooth}
   backface-visibility:hidden;
   transform:translateZ(0) !important;
 }
+
+
+/* ENTRENADOR_AI_4K_CLARO_FINAL_2026_10_31
+   Asset 4K ya procesado: mostrarlo limpio, sin filtros que vuelvan a suavizarlo. */
+.mq-coach img.mq-coach-bg{
+  image-rendering:auto !important;
+  filter:contrast(1.02) saturate(1.02) brightness(1.01) !important;
+  backface-visibility:hidden !important;
+  transform:none !important;
+}
