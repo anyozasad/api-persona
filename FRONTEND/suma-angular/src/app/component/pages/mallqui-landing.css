@@ -3196,3 +3196,20 @@ html{scroll-behavior:smooth}
     min-height:420px !important;
   }
 }
+
+
+/* NIVELES_IMAGENES_IA_4K_FINAL_2026_10_31
+   Mantener la interfaz dividida original; solo reemplazar los dos fondos. */
+.mq-level-beginner{
+  background-image:url('/assets/mallqui/mallqui-beginner-ai-4k.webp') !important;
+  background-size:cover !important;
+  background-position:center center !important;
+  background-repeat:no-repeat !important;
+}
+
+.mq-level-pro{
+  background-image:url('/assets/mallqui/mallqui-pro-ai-4k.webp') !important;
+  background-size:cover !important;
+  background-position:center center !important;
+  background-repeat:no-repeat !important;
+}
