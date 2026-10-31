@@ -74,7 +74,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         <section id="entrenador" class="mq-coach">
           <img
             class="mq-coach-bg"
-            src="/assets/mallqui/mallqui-trainer-4k.svg"
+            src="/assets/mallqui/mallqui-trainer-real.webp"
             alt="Entrenador de Mallqui Gym">
           <div class="mq-coach-overlay"></div>
 
