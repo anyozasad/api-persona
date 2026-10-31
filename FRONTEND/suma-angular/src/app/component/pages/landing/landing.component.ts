@@ -372,21 +372,27 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   galeria = [
     {
       img: 'assets/mallqui/mallqui-gallery-1.webp',
-      alt: 'Máquinas, equipos y productos reales de Mallqui Gym',
-      texto: 'EQUIPOS Y PRODUCTOS',
-      descripcion: 'Fotografías reales de las máquinas, equipos y primeros productos de Mallqui Gym.'
+      alt: 'Máquinas, equipos y primeros productos reales de Mallqui Gym',
+      texto: 'EQUIPOS Y MÁQUINAS',
+      descripcion: 'Fotografías reales de las máquinas, equipos y productos disponibles en Mallqui Gym.'
     },
     {
       img: 'assets/mallqui/mallqui-gallery-2.webp',
-      alt: 'Productos, suplementos y local real de Mallqui Gym',
-      texto: 'SUPLEMENTOS Y LOCAL',
-      descripcion: 'Fotografías reales de suplementos, productos y distintas vistas del local de Mallqui Gym.'
+      alt: 'Suplementos, productos y vistas reales del local de Mallqui Gym',
+      texto: 'PRODUCTOS Y LOCAL',
+      descripcion: 'Fotografías reales de suplementos, productos y distintas vistas del local.'
     },
     {
       img: 'assets/mallqui/mallqui-gallery-3.webp',
-      alt: 'Local, entrenador, productos e instalaciones reales de Mallqui Gym',
+      alt: 'Local e imágenes reales del entrenador de Mallqui Gym',
       texto: 'LOCAL Y ENTRENADOR',
-      descripcion: 'Fotografías reales del interior, exterior, entrenador, suplementos y más espacios de Mallqui Gym.'
+      descripcion: 'Fotografías reales del local y del entrenador principal dentro de Mallqui Gym.'
+    },
+    {
+      img: 'assets/mallqui/mallqui-gallery-4.webp',
+      alt: 'Entrenador, suplementos e interior real de Mallqui Gym',
+      texto: 'MÁS DE MALLQUI GYM',
+      descripcion: 'Más fotografías reales del entrenador, suplementos, productos e interior del gimnasio.'
     }
   ];
 
