@@ -3371,3 +3371,51 @@ html{scroll-behavior:smooth}
   border-top:0 !important;
 }
 
+/* GIMNASIO_MISMO_FONDO_4K_NITIDO_FINAL_2026_10_31
+   Mantiene exactamente el fondo interior actual (3840x2160), pero lo muestra
+   como imagen real para ganar definición y conservar la interfaz intacta. */
+.mq-gym{
+  position:relative !important;
+  overflow:hidden !important;
+  background:none !important;
+}
+
+.mq-gym-bg{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  display:block !important;
+  object-fit:cover !important;
+  object-position:center 58% !important;
+  z-index:0 !important;
+  image-rendering:auto !important;
+  filter:url(#mq-photo-sharpen) contrast(1.09) saturate(1.06) brightness(1.045) !important;
+  transform:translateZ(0) !important;
+  backface-visibility:hidden !important;
+}
+
+.mq-gym-overlay{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:1 !important;
+  background:linear-gradient(
+    90deg,
+    rgba(20,18,24,.84) 0%,
+    rgba(20,18,24,.60) 38%,
+    rgba(20,18,24,.30) 68%,
+    rgba(20,18,24,.18) 100%
+  ) !important;
+}
+
+.mq-gym-content{
+  position:relative !important;
+  z-index:2 !important;
+}
+
+@media(max-width:820px){
+  .mq-gym-bg{
+    object-position:center 54% !important;
+  }
+}
+
