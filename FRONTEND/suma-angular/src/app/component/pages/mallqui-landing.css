@@ -3313,3 +3313,43 @@ html{scroll-behavior:smooth}
     rgba(18,17,21,.46) 100%
   ) !important;
 }
+
+/* GIMNASIO_FONDO_COMPLETO_FINAL_2026_10_31
+   Rellena visualmente toda la sección desde debajo del navbar.
+   Solo reencuadra y aclara la foto local; no cambia estructura ni contenido. */
+.mq-gym{
+  min-height:calc(100vh - 92px) !important;
+  background-image:url('/assets/mallqui/mallqui-hero-4k.webp') !important;
+  background-size:cover !important;
+  background-repeat:no-repeat !important;
+  background-position:center 72% !important;
+  background-color:#211f26 !important;
+}
+
+.mq-gym-overlay{
+  inset:0 !important;
+  background:linear-gradient(
+    90deg,
+    rgba(25,23,29,.88) 0%,
+    rgba(25,23,29,.68) 43%,
+    rgba(25,23,29,.42) 72%,
+    rgba(25,23,29,.30) 100%
+  ) !important;
+}
+
+.mq-gym-content{
+  padding-top:54px !important;
+  padding-bottom:54px !important;
+}
+
+@media(max-width:820px){
+  .mq-gym{
+    min-height:auto !important;
+    background-position:center 68% !important;
+  }
+  .mq-gym-content{
+    padding-top:52px !important;
+    padding-bottom:52px !important;
+  }
+}
+
