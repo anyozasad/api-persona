@@ -1,4 +1,4 @@
-name: Sharpen Mallqui local 4K images
+name: Replace Mallqui level images with real local 4K photos
 
 on:
   push:
@@ -10,8 +10,8 @@ permissions:
   contents: write
 
 jobs:
-  sharpen:
-    if: "!contains(github.event.head_commit.message, '[sharpened]')"
+  replace:
+    if: "!contains(github.event.head_commit.message, '[levels-hd]')"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -23,35 +23,36 @@ jobs:
         shell: bash
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg
+          sudo apt-get install -y -qq ffmpeg curl
 
-      - name: Sharpen existing local WebP files
+      - name: Download real HD gym photos and store locally
         shell: bash
         run: |
           set -euo pipefail
           DIR='FRONTEND/suma-angular/public/assets/mallqui'
-          ffmpeg -hide_banner -loglevel error -y -i "$DIR/mallqui-beginner-ai-4k.webp" -vf "unsharp=7:7:1.65:5:5:0.35,eq=contrast=1.07:saturation=1.035:brightness=0.012" -frames:v 1 -c:v libwebp -quality 96 -compression_level 6 "$DIR/mallqui-beginner-ai-4k.tmp.webp"
-          mv "$DIR/mallqui-beginner-ai-4k.tmp.webp" "$DIR/mallqui-beginner-ai-4k.webp"
-          ffmpeg -hide_banner -loglevel error -y -i "$DIR/mallqui-pro-ai-4k.webp" -vf "unsharp=7:7:1.65:5:5:0.35,eq=contrast=1.07:saturation=1.035:brightness=0.012" -frames:v 1 -c:v libwebp -quality 96 -compression_level 6 "$DIR/mallqui-pro-ai-4k.tmp.webp"
-          mv "$DIR/mallqui-pro-ai-4k.tmp.webp" "$DIR/mallqui-pro-ai-4k.webp"
+          curl -L --fail --retry 3 'https://images.unsplash.com/photo-1704223523321-7b0b44a1a0b9?auto=format&fit=crop&q=95&w=4000' -o /tmp/beginner.jpg
+          curl -L --fail --retry 3 'https://images.unsplash.com/photo-1770664612843-b44e26070024?auto=format&fit=crop&q=95&w=4000' -o /tmp/pro.jpg
 
-      - name: Verify dimensions
+          ffmpeg -hide_banner -loglevel error -y -i /tmp/beginner.jpg -vf "scale=3840:2160:force_original_aspect_ratio=increase,crop=3840:2160,unsharp=5:5:0.55:3:3:0.15" -frames:v 1 -c:v libwebp -quality 96 -compression_level 6 "$DIR/mallqui-beginner-ai-4k.webp"
+          ffmpeg -hide_banner -loglevel error -y -i /tmp/pro.jpg -vf "scale=3840:2160:force_original_aspect_ratio=increase,crop=3840:2160,unsharp=5:5:0.55:3:3:0.15" -frames:v 1 -c:v libwebp -quality 96 -compression_level 6 "$DIR/mallqui-pro-ai-4k.webp"
+
+      - name: Verify real 4K output
         shell: bash
         run: |
           set -euo pipefail
           ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-beginner-ai-4k.webp
           ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-pro-ai-4k.webp
 
-      - name: Commit sharpened originals
+      - name: Commit only the two local photos
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet -- FRONTEND/suma-angular/public/assets/mallqui/mallqui-beginner-ai-4k.webp FRONTEND/suma-angular/public/assets/mallqui/mallqui-pro-ai-4k.webp; then
-            echo 'No image changes detected.'
-            exit 0
-          fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add FRONTEND/suma-angular/public/assets/mallqui/mallqui-beginner-ai-4k.webp FRONTEND/suma-angular/public/assets/mallqui/mallqui-pro-ai-4k.webp
-          git commit -m 'Procesar nitidez real de imagenes Mallqui 4K [sharpened]'
+          if git diff --cached --quiet; then
+            echo 'No image changes detected.'
+            exit 0
+          fi
+          git commit -m 'Reemplazar niveles por fotos reales 4K locales [levels-hd]'
           git push origin HEAD:main
