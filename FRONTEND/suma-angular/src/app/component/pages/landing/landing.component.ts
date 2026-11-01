@@ -11,6 +11,22 @@ import { GymApiService } from '../../../core/services/gym-api.service';
   styleUrls: ['../mallqui-landing.css'],
   template: `
     <div class="mq-public-home">
+      <svg class="mq-photo-filters" aria-hidden="true" focusable="false">
+        <defs>
+          <filter id="mq-photo-sharpen" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+            <feConvolveMatrix
+              order="3"
+              kernelMatrix="0 -0.32 0 -0.32 2.28 -0.32 0 -0.32 0"
+              divisor="1"
+              bias="0"
+              targetX="1"
+              targetY="1"
+              edgeMode="duplicate"
+              preserveAlpha="true">
+            </feConvolveMatrix>
+          </filter>
+        </defs>
+      </svg>
       <header class="mq-topbar">
         <div class="mq-shell mq-nav">
           <nav class="mq-menu" aria-label="Navegación principal">
