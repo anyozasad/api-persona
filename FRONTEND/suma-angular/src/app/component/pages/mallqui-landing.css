@@ -3213,3 +3213,33 @@ html{scroll-behavior:smooth}
   background-position:center center !important;
   background-repeat:no-repeat !important;
 }
+
+/* NIVELES_NITIDEZ_HD_OFFLINE_FINAL_2026_10_31
+   Mantiene la interfaz intacta y evita re-muestreo/filtros que suavizan
+   las dos imágenes locales de PRINCIPIANTES y PROFESIONALES. */
+.mq-level-card{
+  filter:none !important;
+  transform:none !important;
+  will-change:auto !important;
+  image-rendering:auto !important;
+  backface-visibility:visible !important;
+  background-repeat:no-repeat !important;
+  background-size:cover !important;
+}
+
+.mq-level-beginner{
+  background-image:url('/assets/mallqui/mallqui-beginner-ai-4k.webp') !important;
+  background-position:center center !important;
+}
+
+.mq-level-pro{
+  background-image:url('/assets/mallqui/mallqui-pro-ai-4k.webp') !important;
+  background-position:center center !important;
+}
+
+/* Mantener la sombra visual sin aplicar desenfoque a la fotografía. */
+.mq-level-shade{
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
