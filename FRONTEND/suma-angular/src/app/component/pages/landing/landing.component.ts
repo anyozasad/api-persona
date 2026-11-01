@@ -56,6 +56,12 @@ import { GymApiService } from '../../../core/services/gym-api.service';
 
         <section id="entrenamiento" class="mq-levels">
           <article class="mq-level-card mq-level-beginner">
+            <img
+              class="mq-level-photo"
+              src="/assets/mallqui/mallqui-beginner-ai-4k.webp"
+              alt="Entrenamiento para principiantes en Mallqui Gym"
+              decoding="sync"
+              fetchpriority="high">
             <div class="mq-level-shade"></div>
             <div class="mq-level-content">
               <h2>PRINCIPIANTES</h2>
@@ -63,6 +69,12 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             </div>
           </article>
           <article class="mq-level-card mq-level-pro">
+            <img
+              class="mq-level-photo"
+              src="/assets/mallqui/mallqui-pro-ai-4k.webp"
+              alt="Entrenamiento profesional en Mallqui Gym"
+              decoding="sync"
+              fetchpriority="high">
             <div class="mq-level-shade"></div>
             <div class="mq-level-content">
               <h2>PROFESIONALES</h2>
