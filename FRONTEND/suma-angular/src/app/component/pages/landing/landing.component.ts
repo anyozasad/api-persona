@@ -145,6 +145,13 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         </section>
 
         <section id="gimnasio" class="mq-gym">
+          <img
+            class="mq-gym-bg"
+            src="/assets/mallqui/mallqui-hero-4k.webp"
+            alt=""
+            aria-hidden="true"
+            decoding="sync"
+            fetchpriority="high">
           <div class="mq-gym-overlay"></div>
           <div class="mq-shell mq-gym-content">
             <p class="mq-section-label light">MALLQUI GYM</p>
