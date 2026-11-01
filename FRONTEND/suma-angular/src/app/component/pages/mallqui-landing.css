@@ -3353,3 +3353,21 @@ html{scroll-behavior:smooth}
   }
 }
 
+/* PEGAR_VICTORIAS_CON_GIMNASIO_FINAL_2026_10_31
+   Elimina la franja oscura entre ambas secciones. */
+#victorias .mq-gallery{
+  padding-bottom:0 !important;
+  margin-bottom:0 !important;
+}
+
+#victorias{
+  margin-bottom:0 !important;
+  padding-bottom:0 !important;
+}
+
+#gimnasio,
+.mq-gym{
+  margin-top:0 !important;
+  border-top:0 !important;
+}
+
