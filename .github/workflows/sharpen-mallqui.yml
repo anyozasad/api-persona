@@ -1,0 +1,51 @@
+name: Sharpen Mallqui local 4K images
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sharpen-mallqui.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sharpen:
+    if: "!contains(github.event.head_commit.message, '[sharpened]')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Sharpen existing local WebP files
+        shell: bash
+        run: |
+          set -euo pipefail
+          DIR='FRONTEND/suma-angular/public/assets/mallqui'
+          ffmpeg -hide_banner -loglevel error -y -i "$DIR/mallqui-beginner-ai-4k.webp" -vf "unsharp=7:7:1.65:5:5:0.35,eq=contrast=1.07:saturation=1.035:brightness=0.012" -frames:v 1 -c:v libwebp -quality 96 -compression_level 6 "$DIR/mallqui-beginner-ai-4k.tmp.webp"
+          mv "$DIR/mallqui-beginner-ai-4k.tmp.webp" "$DIR/mallqui-beginner-ai-4k.webp"
+          ffmpeg -hide_banner -loglevel error -y -i "$DIR/mallqui-pro-ai-4k.webp" -vf "unsharp=7:7:1.65:5:5:0.35,eq=contrast=1.07:saturation=1.035:brightness=0.012" -frames:v 1 -c:v libwebp -quality 96 -compression_level 6 "$DIR/mallqui-pro-ai-4k.tmp.webp"
+          mv "$DIR/mallqui-pro-ai-4k.tmp.webp" "$DIR/mallqui-pro-ai-4k.webp"
+
+      - name: Verify dimensions
+        shell: bash
+        run: |
+          set -euo pipefail
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-beginner-ai-4k.webp
+          ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-pro-ai-4k.webp
+
+      - name: Commit sharpened originals
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- FRONTEND/suma-angular/public/assets/mallqui/mallqui-beginner-ai-4k.webp FRONTEND/suma-angular/public/assets/mallqui/mallqui-pro-ai-4k.webp; then
+            echo 'No image changes detected.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add FRONTEND/suma-angular/public/assets/mallqui/mallqui-beginner-ai-4k.webp FRONTEND/suma-angular/public/assets/mallqui/mallqui-pro-ai-4k.webp
+          git commit -m 'Procesar nitidez real de imagenes Mallqui 4K [sharpened]'
+          git push origin HEAD:main
