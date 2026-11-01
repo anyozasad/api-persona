@@ -3285,3 +3285,31 @@ html{scroll-behavior:smooth}
 .mq-level-content{
   z-index:2 !important;
 }
+
+/* NIVELES_ENFOQUE_REAL_OFFLINE_2026_10_31
+   Los assets ya son 3840x3955. Este filtro aumenta microcontraste y bordes
+   usando los mismos archivos locales; no genera ni descarga nuevas fotos. */
+.mq-photo-filters{
+  position:absolute !important;
+  width:0 !important;
+  height:0 !important;
+  overflow:hidden !important;
+  pointer-events:none !important;
+}
+
+.mq-level-photo{
+  filter:url(#mq-photo-sharpen) contrast(1.075) saturate(1.035) brightness(1.025) !important;
+  image-rendering:auto !important;
+  object-fit:cover !important;
+  transform:translateZ(0) !important;
+  backface-visibility:hidden !important;
+}
+
+.mq-level-shade{
+  background:linear-gradient(
+    180deg,
+    rgba(18,17,21,.22) 0%,
+    rgba(18,17,21,.38) 56%,
+    rgba(18,17,21,.46) 100%
+  ) !important;
+}
