@@ -3243,3 +3243,45 @@ html{scroll-behavior:smooth}
   -webkit-backdrop-filter:none !important;
 }
 
+/* NIVELES_IMG_REAL_HD_FINAL_2026_10_31
+   Usa los mismos assets locales 4K como <img> para que Chromium los
+   rasterice con mayor nitidez. No cambia estructura visual ni botones. */
+.mq-level-card{
+  background-image:none !important;
+  position:relative !important;
+  overflow:hidden !important;
+}
+
+.mq-level-photo{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  object-position:center center !important;
+  display:block !important;
+  z-index:0 !important;
+  image-rendering:auto !important;
+  transform:none !important;
+  filter:none !important;
+  backface-visibility:visible !important;
+  -webkit-font-smoothing:antialiased;
+}
+
+.mq-level-beginner .mq-level-photo{
+  object-position:center center !important;
+}
+
+.mq-level-pro .mq-level-photo{
+  object-position:center center !important;
+}
+
+.mq-level-shade{
+  z-index:1 !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
+.mq-level-content{
+  z-index:2 !important;
+}
