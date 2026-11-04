@@ -1,0 +1,67 @@
+name: Install Mallqui entrance photo
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/install-mallqui-photo.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    if: "!contains(github.event.head_commit.message, '[mallqui-photo-installed]')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install image processor
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
+      - name: Reconstruct uploaded photo and create local 4K WebP
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat \
+            .tmp/mallqui-photo.part0.b64 \
+            .tmp/mallqui-photo.part1.b64 \
+            .tmp/mallqui-photo.part2.b64 \
+            .tmp/mallqui-photo.part3.b64 \
+            | base64 -d > /tmp/mallqui-photo.avif
+
+          SIZE=$(stat -c%s /tmp/mallqui-photo.avif)
+          test "$SIZE" -eq 26392
+
+          ffprobe -v error -select_streams v:0 \
+            -show_entries stream=width,height \
+            -of csv=s=x:p=0 /tmp/mallqui-photo.avif
+
+          ffmpeg -hide_banner -loglevel error -y \
+            -i /tmp/mallqui-photo.avif \
+            -vf "scale=3840:2160:flags=lanczos,unsharp=5:5:0.55:3:3:0.12,eq=contrast=1.035:saturation=1.02:brightness=0.006" \
+            -frames:v 1 -c:v libwebp -quality 94 -compression_level 6 \
+            FRONTEND/suma-angular/public/assets/mallqui/mallqui-hero-4k.webp
+
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-hero-4k.webp)" -eq 3840
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-hero-4k.webp)" -eq 2160
+
+      - name: Commit 4K local photo
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add FRONTEND/suma-angular/public/assets/mallqui/mallqui-hero-4k.webp
+          if git diff --cached --quiet; then
+            echo 'No image change detected.'
+            exit 0
+          fi
+          git commit -m 'Usar foto exterior real de Mallqui Gym en 4K [mallqui-photo-installed]'
+          git push origin HEAD:main
