@@ -35,8 +35,8 @@ jobs:
 
           ffmpeg -hide_banner -loglevel error -y             -i /tmp/mallqui-original.jpeg             -vf "unsharp=5:5:0.32:3:3:0.08"             -frames:v 1 -c:v libwebp -quality 98 -compression_level 6             FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp
 
-          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp)" -eq 3840
-          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp)" -eq 2160
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp)" -eq 1600
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp)" -eq 900
 
       - name: Commit final image
         shell: bash
@@ -49,4 +49,5 @@ jobs:
             exit 0
           fi
           git commit -m 'Reconstruir fachada Mallqui desde foto original sin escalado [mallqui-exterior-hq-ok]'
+          git pull --rebase origin main
           git push origin HEAD:main
