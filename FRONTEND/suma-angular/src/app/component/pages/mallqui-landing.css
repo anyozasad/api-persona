@@ -3391,7 +3391,7 @@ html{scroll-behavior:smooth}
   transform:none !important;
   backface-visibility:visible !important;
   image-rendering:auto !important;
-  filter:contrast(1.08) saturate(1.04) brightness(1.025) !important;
+  filter:none !important;
 }
 
 .mq-gym-overlay{
