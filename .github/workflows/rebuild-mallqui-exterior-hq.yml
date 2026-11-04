@@ -23,7 +23,7 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg
 
-      - name: Reconstruct exact original and create 4K local WebP
+      - name: Reconstruct exact original without artificial upscale
         shell: bash
         run: |
           set -euo pipefail
@@ -33,7 +33,7 @@ jobs:
           test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 /tmp/mallqui-original.jpeg)" -eq 1600
           test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 /tmp/mallqui-original.jpeg)" -eq 900
 
-          ffmpeg -hide_banner -loglevel error -y             -i /tmp/mallqui-original.jpeg             -vf "scale=3840:2160:flags=lanczos,unsharp=5:5:0.45:3:3:0.10"             -frames:v 1 -c:v libwebp -quality 97 -compression_level 6             FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp
+          ffmpeg -hide_banner -loglevel error -y             -i /tmp/mallqui-original.jpeg             -vf "unsharp=5:5:0.32:3:3:0.08"             -frames:v 1 -c:v libwebp -quality 98 -compression_level 6             FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp
 
           test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp)" -eq 1600
           test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp)" -eq 900
@@ -48,5 +48,5 @@ jobs:
           if git diff --cached --quiet; then
             exit 0
           fi
-          git commit -m 'Reconstruir fachada Mallqui desde foto original en 4K [mallqui-exterior-hq-ok]'
+          git commit -m 'Reconstruir fachada Mallqui desde foto original sin escalado [mallqui-exterior-hq-ok]'
           git push origin HEAD:main
