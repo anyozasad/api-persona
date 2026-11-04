@@ -3371,9 +3371,8 @@ html{scroll-behavior:smooth}
   border-top:0 !important;
 }
 
-/* GIMNASIO_MISMO_FONDO_4K_NITIDO_FINAL_2026_10_31
-   Mantiene exactamente el fondo interior actual (3840x2160), pero lo muestra
-   como imagen real para ganar definición y conservar la interfaz intacta. */
+/* GIMNASIO_FACHADA_REAL_SEPARADA_2026_11_04
+   INICIO conserva su imagen propia. GIMNASIO usa la fachada real aparte. */
 .mq-gym{
   position:relative !important;
   overflow:hidden !important;
@@ -3387,12 +3386,12 @@ html{scroll-behavior:smooth}
   height:100% !important;
   display:block !important;
   object-fit:cover !important;
-  object-position:center 58% !important;
+  object-position:center center !important;
   z-index:0 !important;
+  transform:none !important;
+  backface-visibility:visible !important;
   image-rendering:auto !important;
-  filter:url(#mq-photo-sharpen) contrast(1.09) saturate(1.06) brightness(1.045) !important;
-  transform:translateZ(0) !important;
-  backface-visibility:hidden !important;
+  filter:contrast(1.08) saturate(1.04) brightness(1.025) !important;
 }
 
 .mq-gym-overlay{
@@ -3401,10 +3400,10 @@ html{scroll-behavior:smooth}
   z-index:1 !important;
   background:linear-gradient(
     90deg,
-    rgba(20,18,24,.84) 0%,
-    rgba(20,18,24,.60) 38%,
-    rgba(20,18,24,.30) 68%,
-    rgba(20,18,24,.18) 100%
+    rgba(20,18,24,.74) 0%,
+    rgba(20,18,24,.50) 38%,
+    rgba(20,18,24,.24) 68%,
+    rgba(20,18,24,.12) 100%
   ) !important;
 }
 
@@ -3415,32 +3414,6 @@ html{scroll-behavior:smooth}
 
 @media(max-width:820px){
   .mq-gym-bg{
-    object-position:center 54% !important;
+    object-position:center center !important;
   }
 }
-
-/* GIMNASIO_FACHADA_REAL_4K_FINAL_2026_11_04
-   Foto exterior real subida por el usuario. Mantener interfaz intacta. */
-.mq-gym-bg{
-  object-position:center 42% !important;
-  image-rendering:auto !important;
-  filter:contrast(1.045) saturate(1.035) brightness(1.025) !important;
-  transform:none !important;
-}
-
-.mq-gym-overlay{
-  background:linear-gradient(
-    90deg,
-    rgba(20,18,24,.78) 0%,
-    rgba(20,18,24,.54) 38%,
-    rgba(20,18,24,.26) 68%,
-    rgba(20,18,24,.14) 100%
-  ) !important;
-}
-
-@media(max-width:820px){
-  .mq-gym-bg{
-    object-position:center 40% !important;
-  }
-}
-
