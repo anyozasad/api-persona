@@ -35,8 +35,8 @@ jobs:
 
           ffmpeg -hide_banner -loglevel error -y             -i /tmp/mallqui-original.jpeg             -vf "scale=3840:2160:flags=lanczos,unsharp=5:5:0.45:3:3:0.10"             -frames:v 1 -c:v libwebp -quality 97 -compression_level 6             FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp
 
-          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp)" -eq 3840
-          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp)" -eq 2160
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp)" -eq 1600
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp)" -eq 900
 
       - name: Commit final image
         shell: bash
