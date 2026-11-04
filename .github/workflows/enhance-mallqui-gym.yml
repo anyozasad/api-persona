@@ -1,0 +1,59 @@
+name: Enhance Mallqui Gym background
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/enhance-mallqui-gym.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  enhance:
+    if: "!contains(github.event.head_commit.message, '[gym-enhanced]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
+      - name: Enhance existing local gym photo
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC='FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp'
+          TMP='FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.tmp.webp'
+
+          ffmpeg -hide_banner -loglevel error -y \
+            -i "$SRC" \
+            -vf "hqdn3d=0.7:0.7:2:2,eq=contrast=1.10:saturation=1.04:brightness=0.012,cas=0.65,unsharp=5:5:0.40:3:3:0.08,scale=3840:2160:flags=lanczos,cas=0.30" \
+            -frames:v 1 \
+            -c:v libwebp \
+            -quality 98 \
+            -compression_level 6 \
+            "$TMP"
+
+          mv "$TMP" "$SRC"
+
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$SRC")" -eq 3840
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$SRC")" -eq 2160
+
+      - name: Commit enhanced image
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m 'Mejorar nitidez real del fondo Gimnasio [gym-enhanced]'
+          git pull --rebase origin main
+          git push origin HEAD:main
