@@ -1,0 +1,55 @@
+name: Replace only Mallqui Gym image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/image-only-mallqui.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  image_only:
+    if: "!contains(github.event.head_commit.message, '[image-only-done]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
+      - name: Rebuild exact original and sharpen only the image
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .tmp/mallqui-original.part*.b64 | base64 -d > /tmp/mallqui-original.jpg
+
+          test "$(stat -c%s /tmp/mallqui-original.jpg)" -eq 179345
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 /tmp/mallqui-original.jpg)" -eq 1600
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 /tmp/mallqui-original.jpg)" -eq 900
+
+          OUT='FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp'
+
+          ffmpeg -hide_banner -loglevel error -y             -i /tmp/mallqui-original.jpg             -vf "eq=contrast=1.09:saturation=1.035:brightness=0.008,scale=3200:1800:flags=lanczos,unsharp=7:7:1.05:5:5:0.18"             -frames:v 1             -c:v libwebp             -lossless 1             -compression_level 6             "$OUT"
+
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$OUT")" -eq 3200
+          test "$(ffprobe -v error -select_streams v:0 -show_entries stream=height -of csv=p=0 "$OUT")" -eq 1800
+
+      - name: Commit only image file
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add FRONTEND/suma-angular/public/assets/mallqui/mallqui-gym-exterior-4k.webp
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m 'Mejorar solo imagen de Gimnasio sin tocar interfaz [image-only-done]'
+          git pull --rebase origin main
+          git push origin HEAD:main
