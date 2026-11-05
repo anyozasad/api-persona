@@ -3484,3 +3484,61 @@ html{scroll-behavior:smooth}
     object-position:center 50% !important;
   }
 }
+
+
+/* INICIO_ESTILO_FONDO_APROBADO_2026_11_05 */
+/* Acabado visual del fondo aprobado: más nítido, luminoso y cálido.
+   No modifica posiciones, tamaños, navegación, textos ni botones. */
+.mq-hero{
+  isolation:isolate !important;
+}
+
+.mq-hero-bg{
+  object-position:center 50% !important;
+  filter:url(#mq-photo-sharpen) contrast(1.16) saturate(1.12) brightness(1.16) !important;
+}
+
+.mq-hero::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  z-index:1 !important;
+  pointer-events:none !important;
+  background:
+    linear-gradient(90deg,
+      rgba(255,155,35,.15) 0%,
+      rgba(255,155,35,.025) 16%,
+      transparent 30%,
+      transparent 72%,
+      rgba(255,155,35,.025) 88%,
+      rgba(255,155,35,.11) 100%
+    ),
+    linear-gradient(180deg,
+      rgba(255,155,35,.08) 0%,
+      transparent 24%
+    ) !important;
+  mix-blend-mode:screen !important;
+}
+
+.mq-hero-overlay{
+  z-index:2 !important;
+  background:
+    linear-gradient(90deg,
+      rgba(18,17,21,.29) 0%,
+      rgba(18,17,21,.12) 38%,
+      rgba(18,17,21,.08) 68%,
+      rgba(18,17,21,.12) 100%
+    ),
+    linear-gradient(180deg,
+      rgba(18,17,21,.02) 0%,
+      rgba(18,17,21,.13) 100%
+    ) !important;
+}
+
+.mq-hero-content{
+  z-index:3 !important;
+}
+
+.mq-hero-dots{
+  z-index:4 !important;
+}
