@@ -3464,3 +3464,23 @@ html{scroll-behavior:smooth}
     object-position:center calc(34% + var(--mq-hero-parallax, 0px)) !important;
   }
 }
+
+
+/* INICIO_FONDO_IA_LINDO_FINAL_2026_11_05 */
+/* Portada: fondo IA local, más luminoso y nítido, sin mover la interfaz. */
+.mq-hero-bg{
+  object-position:center 50% !important;
+  filter:url(#mq-photo-sharpen) contrast(1.09) saturate(1.08) brightness(1.08) !important;
+}
+
+.mq-hero-overlay{
+  background:
+    linear-gradient(90deg,rgba(21,19,24,.56) 0%,rgba(28,25,31,.28) 46%,rgba(21,19,24,.15) 100%),
+    linear-gradient(180deg,rgba(21,19,24,.08),rgba(21,19,24,.24)) !important;
+}
+
+@media(max-width:620px){
+  .mq-hero-bg{
+    object-position:center 50% !important;
+  }
+}
