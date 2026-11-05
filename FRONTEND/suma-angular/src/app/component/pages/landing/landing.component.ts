@@ -147,7 +147,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
         <section id="gimnasio" class="mq-gym">
           <img
             class="mq-gym-bg"
-            src="/assets/mallqui/mallqui-gym-exterior-natural.webp?v=edge-selective-20261105"
+            src="/assets/mallqui/mallqui-gym-ai.png?v=ai-final-20261105"
             alt=""
             aria-hidden="true"
             decoding="sync"
