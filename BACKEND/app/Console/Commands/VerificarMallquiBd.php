@@ -71,7 +71,7 @@ class VerificarMallquiBd extends Command
             'clientes' => [
                 'id_cliente', 'dni', 'nombres', 'apellidos', 'sexo', 'telefono',
                 'correo', 'direccion', 'fecha_nacimiento', 'fecha_registro', 'estado',
-                'foto_perfil', 'enfoque_entrenamiento', 'nivel_entrenamiento',
+                'foto_perfil', 'enfoque_entrenamiento', 'nivel_entrenamiento', 'whatsapp_api_key',
             ],
             'cliente_membresia' => [
                 'id_cliente_membresia', 'id_cliente', 'id_membresia',
@@ -157,6 +157,20 @@ class VerificarMallquiBd extends Command
             ],
             'auditorias' => [
                 'id_auditoria', 'id_usuario', 'usuario', 'rol', 'metodo', 'ruta', 'ip', 'status', 'fecha',
+            ],
+            'progreso_medidas' => [
+                'id', 'id_cliente', 'peso', 'grasa', 'cintura', 'brazo', 'fecha',
+            ],
+            'admin_gym_records' => [
+                'id', 'modulo', 'titulo', 'subtitulo', 'estado', 'fecha', 'monto', 'imagen_url', 'datos',
+            ],
+            'configuracion_sistema' => [
+                'id', 'nombre_gimnasio', 'ruc', 'telefono', 'correo', 'direccion',
+                'referencia', 'frase_publicitaria', 'horario_detalle', 'tarifa_diaria',
+                'mensaje_productos', 'hora_apertura', 'hora_cierre', 'dias_atencion',
+                'dias_aviso_vencimiento', 'minutos_cancelacion_reserva',
+                'dias_anticipacion_reserva', 'stock_minimo_default',
+                'notificar_vencimientos', 'notificar_stock_bajo', 'notificar_pagos_pendientes',
             ],
             'sesiones_entrenamiento_casa' => [
                 'id_sesion_casa', 'id_cliente', 'id_rutina', 'zona', 'fecha',
