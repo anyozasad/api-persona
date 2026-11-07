@@ -223,7 +223,92 @@ class DashboardResumenTest extends TestCase
         $this->getJson('/api/dashboard/resumen')
             ->assertOk()
             ->assertJsonPath('membresias.pagos_pendientes', 1)
+            ->assertJsonCount(1, 'membresias.detalle_pagos_pendientes')
+            ->assertJsonPath('membresias.detalle_pagos_pendientes.0.id_pago', 1)
+            ->assertJsonPath('membresias.detalle_pagos_pendientes.0.estado_pago', 'Pendiente')
             ->assertJsonPath('alertas.total', 1);
+    }
+
+    public function test_alerta_de_vencimientos_cuenta_todos_los_socios_aunque_muestre_solo_ocho(): void
+    {
+        Schema::create('membresias', function (Blueprint $table) {
+            $table->id('id_membresia');
+            $table->string('nombre');
+            $table->string('estado')->default('Activo');
+        });
+        Schema::create('cliente_membresia', function (Blueprint $table) {
+            $table->id('id_cliente_membresia');
+            $table->unsignedBigInteger('id_cliente');
+            $table->unsignedBigInteger('id_membresia');
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
+            $table->string('estado');
+        });
+
+        DB::table('membresias')->insert([
+            'id_membresia' => 1, 'nombre' => 'Mensual', 'estado' => 'Activo',
+        ]);
+
+        for ($id = 1; $id <= 10; $id++) {
+            if ($id > 1) {
+                DB::table('clientes')->insert([
+                    'id_cliente' => $id,
+                    'dni' => '70'.str_pad((string) $id, 6, '0', STR_PAD_LEFT),
+                    'nombres' => 'Socio',
+                    'apellidos' => 'Numero '.$id,
+                    'estado' => 'Activo',
+                    'fecha_registro' => now(),
+                ]);
+            }
+            DB::table('cliente_membresia')->insert([
+                'id_cliente_membresia' => $id,
+                'id_cliente' => $id,
+                'id_membresia' => 1,
+                'fecha_inicio' => today()->subWeek()->toDateString(),
+                'fecha_fin' => today()->addDays(3)->toDateString(),
+                'estado' => 'Activo',
+            ]);
+        }
+
+        $this->getJson('/api/dashboard/resumen')
+            ->assertOk()
+            ->assertJsonPath('membresias.por_vencer_7_dias', 10)
+            ->assertJsonCount(8, 'membresias.detalle_por_vencer')
+            ->assertJsonPath('alertas.total', 10);
+    }
+
+    public function test_reservas_del_dia_cuentan_todas_las_no_canceladas(): void
+    {
+        Schema::create('clases', function (Blueprint $table) {
+            $table->id('id_clase');
+            $table->string('nombre');
+            $table->time('hora_inicio');
+        });
+        Schema::create('reservas', function (Blueprint $table) {
+            $table->id('id_reserva');
+            $table->unsignedBigInteger('id_cliente');
+            $table->unsignedBigInteger('id_clase');
+            $table->date('fecha_clase');
+            $table->string('estado');
+        });
+
+        DB::table('clases')->insert([
+            'id_clase' => 1, 'nombre' => 'Entrenamiento', 'hora_inicio' => '09:00:00',
+        ]);
+        for ($id = 1; $id <= 11; $id++) {
+            DB::table('reservas')->insert([
+                'id_reserva' => $id,
+                'id_cliente' => 1,
+                'id_clase' => 1,
+                'fecha_clase' => today()->toDateString(),
+                'estado' => $id === 11 ? 'Cancelada' : 'Confirmada',
+            ]);
+        }
+
+        $this->getJson('/api/dashboard/resumen')
+            ->assertOk()
+            ->assertJsonPath('reservas.hoy', 10)
+            ->assertJsonCount(8, 'reservas.detalle_hoy');
     }
 
     public function test_dashboard_entrega_resumen_operativo_completo(): void
