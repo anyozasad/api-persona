@@ -835,6 +835,46 @@ class DashboardController extends Controller
             return [];
         }
 
+        // Esquema actual: mostrar los mismos nombres de socio y clase que se
+        // registran desde el portal del cliente.
+        if (
+            $tabla === 'reservas'
+            && $this->schema->hasTable('clientes')
+            && $this->schema->hasTable('clases')
+            && $this->schema->hasColumn('reservas', 'id_cliente')
+            && $this->schema->hasColumn('reservas', 'id_clase')
+        ) {
+            return $this->db->table('reservas as r')
+                ->leftJoin('clientes as c', 'c.id_cliente', '=', 'r.id_cliente')
+                ->leftJoin('clases as cl', 'cl.id_clase', '=', 'r.id_clase')
+                ->whereDate('r.'.$fecha, $hoy)
+                ->whereNotIn('r.estado', ['Cancelada', 'CANCELADA', 'cancelada'])
+                ->orderBy('cl.hora_inicio')
+                ->limit(8)
+                ->get([
+                    'r.id_reserva',
+                    'r.fecha_clase',
+                    'r.estado',
+                    'c.nombres',
+                    'c.apellidos',
+                    'cl.nombre as nombre_clase',
+                    'cl.hora_inicio',
+                ])
+                ->map(fn ($fila) => [
+                    'id_reserva' => $fila->id_reserva,
+                    'estado' => $fila->estado,
+                    'clase' => [
+                        'nombre' => $fila->nombre_clase ?: 'Reserva',
+                        'hora_inicio' => $fila->hora_inicio ?: '',
+                    ],
+                    'cliente' => [
+                        'nombres' => $fila->nombres ?: 'Socio',
+                        'apellidos' => $fila->apellidos ?: '',
+                    ],
+                ])
+                ->all();
+        }
+
         return $this->db->table($tabla)
             ->whereDate($fecha, $hoy)
             ->limit(8)
