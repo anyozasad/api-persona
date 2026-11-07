@@ -199,7 +199,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
       </nav>
 
       <!-- CORE PAGES · Estructura tomada de la demo viva Crossfit -->
-      <section class="cf-live-page" *ngIf="seccion==='reportes'">
+      <section class="cf-live-page" *ngIf="seccion==='reportes-legacy'">
         <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Mis Reportes</strong></div>
         <section class="cf-live-welcome">
           <div>
@@ -3368,7 +3368,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   private normalizarSegcion(id:string):string{
-    if(id==='reportes') return 'reportes-admin';
+    if(id==='reportes' || id==='reportes-legacy') return 'reportes-admin';
     if(id==='pagos-admin' || id==='pagos-legacy') return 'pagos';
     if(id==='entrenador-admin' || id==='entrenador-legacy') return 'entrenador';
     if(id==='planes-admin' || id==='planes-legacy') return 'planes';
