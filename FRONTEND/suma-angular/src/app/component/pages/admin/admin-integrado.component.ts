@@ -8,6 +8,7 @@ import { ProductosComponent } from './pages/productos/productos';
 import { AdminComunicacionComponent } from './admin-comunicacion.component';
 import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
 import { AdminGymSuiteComponent } from './admin-gym-suite.component';
+import { catchError, forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'app-admin-integrado',
@@ -278,7 +279,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
               <div class="mg-sync-grid">
                 <article [class.ok]="sistemaSincronizado">
                   <i>{{sistemaSincronizado ? '✓' : '!'}}</i>
-                  <div><strong>Conexión del sistema</strong><span>{{sistemaSincronizado ? 'API conectada y respondiendo' : 'Revisar conexión con la API'}}</span></div>
+                  <div><strong>Conexión del sistema</strong><span>{{mensajeSincronizacion}}</span></div>
                   <b>{{sistemaSincronizado ? 'ACTIVO' : 'REVISAR'}}</b>
                 </article>
                 <article>
@@ -2670,6 +2671,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ultimaActualizacionTs = 0;
   dashboardCargando = false;
   dashboardError = '';
+  estadoOperativoDashboard: any = null;
+  erroresSincronizacion: string[] = [];
   autoRefreshActivo = true;
   busquedaAdmin = '';
   nutricionPreview: any[] = [];
@@ -2755,16 +2758,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       this.sidebarCerrado = false;
       this.autoRefreshActivo = true;
     }
-    this.cargarDashboard();
-    this.cargarEntrenadores();
-    this.cargarReservas();
-    this.cargarClases();
-    this.cargarRutinas();
-    this.cargarAsistencias();
-    this.cargarClientes();
-    this.cargarMembresias();
-    this.cargarPagos();
-    this.cargarProductos();
+    this.actualizarDashboardCompleto();
     if (this.seccion !== 'dashboard') this.cargarSegcion(this.seccion);
 
     // Refresco inteligente: no interrumpe formularios ni trabaja cuando la pestaña está oculta.
@@ -3264,34 +3258,111 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   totalAlertasDashboard(): number {
+    const totalBackend=Number(this.dashboard?.alertas?.total);
+    if(Number.isFinite(totalBackend)) return totalBackend;
+
     const a=this.dashboard?.alertas || {};
     return Number(a.rutinas_pendientes||0)
       + Number(a.soporte_pendiente||0)
       + Number(a.opiniones_pendientes||0)
       + Number(this.dashboard?.inventario?.productos_stock_bajo||0)
-      + Number(this.dashboard?.membresias?.por_vencer_7_dias||0);
+      + Number(this.dashboard?.membresias?.por_vencer_7_dias||0)
+      + Number(this.dashboard?.membresias?.pagos_pendientes||0);
   }
 
   get sistemaSincronizado(): boolean {
-    return !this.dashboardError && !!this.dashboard && this.ultimaActualizacionTs>0;
+    return Boolean(this.estadoOperativoDashboard?.api)
+      && Boolean(this.estadoOperativoDashboard?.database)
+      && Boolean(this.estadoOperativoDashboard?.operativo)
+      && !this.dashboardError
+      && !!this.dashboard
+      && this.erroresSincronizacion.length===0
+      && this.ultimaActualizacionTs>0;
+  }
+
+  get mensajeSincronizacion(): string {
+    const faltantes=Array.isArray(this.estadoOperativoDashboard?.faltantes)
+      ? this.estadoOperativoDashboard.faltantes
+      : [];
+    if(faltantes.length) return 'Faltan '+faltantes.length+' objeto(s) de base de datos';
+    if(this.erroresSincronizacion.length) return 'Falló: '+this.erroresSincronizacion.join(', ');
+    if(this.sistemaSincronizado) return 'API, dashboard y base de datos sincronizados';
+    return 'Revisar conexión y esquema funcional';
   }
 
   actualizarDashboardCompleto(): void {
     if(this.actualizandoDatos) return;
+
     this.actualizandoDatos=true;
+    this.dashboardCargando=!this.dashboard;
     this.error='';
-    this.cargarDashboard();
-    this.cargarClientes();
-    this.cargarMembresias();
-    this.cargarPagos();
-    this.cargarProductos();
-    this.cargarReservas();
-    this.cargarRutinas();
-    this.cargarAsistencias();
-    setTimeout(()=>{
-      this.actualizandoDatos=false;
-      this.ultimaActualizacion=new Date().toLocaleTimeString('es-PE');
-    },900);
+    this.dashboardError='';
+    const errores:string[]=[];
+
+    const seguro=(nombre:string, observable:any, fallback:any)=>
+      observable.pipe(catchError((e:any)=>{
+        errores.push(nombre);
+        if(nombre==='dashboard'){
+          this.dashboardError=e?.error?.mensaje ?? e?.error?.message ?? 'No se pudo cargar el resumen administrativo.';
+        }
+        return of(fallback);
+      }));
+
+    forkJoin({
+      estado: seguro('estado del sistema',this.api.estadoOperativo(),{api:false,database:false,operativo:false,faltantes:[]}),
+      dashboard: seguro('dashboard',this.api.dashboard(),null),
+      clientes: seguro('socios',this.api.clientes(),[]),
+      planes: seguro('planes',this.api.membresiasDisponibles(),[]),
+      membresias: seguro('membresías',this.api.clienteMembresias(),[]),
+      pagos: seguro('pagos',this.api.pagos(),[]),
+      productos: seguro('productos',this.api.productos(),[]),
+      reservas: seguro('reservas',this.api.reservas(),[]),
+      rutinas: seguro('rutinas',this.api.rutinas(),[]),
+      asistencias: seguro('asistencias',this.api.asistencias(),[]),
+      entrenadores: seguro('entrenador',this.api.entrenadores(),[]),
+      clases: seguro('clases',this.api.clases(),[]),
+      caja: seguro('caja',this.api.cajaActual(),{caja_abierta:false,caja:null})
+    }).subscribe({
+      next:(r:any)=>{
+        this.estadoOperativoDashboard=r.estado;
+        if(r.dashboard) this.dashboard=r.dashboard;
+        this.clientes=Array.isArray(r.clientes)?r.clientes:[];
+        this.planesMembresia=Array.isArray(r.planes)?r.planes:[];
+        this.membresiasDisponibles=this.planesMembresia.filter((x:any)=>String(x?.estado||'').toLowerCase()==='activo');
+        this.membresiasCliente=Array.isArray(r.membresias)?r.membresias:[];
+        this.pagos=Array.isArray(r.pagos)?r.pagos:[];
+        this.productos=Array.isArray(r.productos)?r.productos:[];
+        this.reservas=Array.isArray(r.reservas)?r.reservas:[];
+        this.rutinas=Array.isArray(r.rutinas)?r.rutinas:[];
+        this.asistencias=Array.isArray(r.asistencias)?r.asistencias:[];
+        this.entrenadores=Array.isArray(r.entrenadores)?r.entrenadores:[];
+        this.clases=Array.isArray(r.clases)?r.clases:[];
+        this.caja=r.caja;
+
+        const principal=this.entrenadores.find((e:any)=>String(e?.estado||'').toLowerCase()==='activo') ?? this.entrenadores[0];
+        if(principal){
+          if(!this.claseForm.id_entrenador) this.claseForm.id_entrenador=principal.id_entrenador;
+          if(!this.rutinaForm.id_entrenador) this.rutinaForm.id_entrenador=principal.id_entrenador;
+        }
+
+        this.erroresSincronizacion=errores;
+        this.dashboardCargando=false;
+        this.actualizandoDatos=false;
+        this.ultimaActualizacionTs=Date.now();
+        this.ultimaActualizacion=new Date(this.ultimaActualizacionTs).toLocaleTimeString('es-PE');
+
+        if(errores.length){
+          this.error='No se pudieron sincronizar: '+errores.join(', ')+'.';
+        }
+      },
+      error:(e:any)=>{
+        this.dashboardCargando=false;
+        this.actualizandoDatos=false;
+        this.erroresSincronizacion=['sincronización general'];
+        this.dashboardError=e?.error?.mensaje ?? e?.error?.message ?? 'No se pudo sincronizar el dashboard.';
+        this.mostrarError(e);
+      }
+    });
   }
 
   get membresiasPorVencerDashboard(): any[] {
@@ -3318,6 +3389,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     }
     if(Number(this.dashboard?.alertas?.opiniones_pendientes||0)>0){
       this.cambiarSegcion('opiniones');
+      return;
+    }
+    if(Number(this.dashboard?.membresias?.pagos_pendientes||0)>0){
+      this.cambiarSegcion('pagos');
       return;
     }
     this.cambiarSegcion('comunicacion');
