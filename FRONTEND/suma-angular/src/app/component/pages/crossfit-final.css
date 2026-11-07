@@ -2669,3 +2669,142 @@ html,body{
   color:#5e7429!important;
   font-weight:800!important;
 }
+
+
+/* FINAL_MODULE_SHELL_2026_11_07 */
+.admin-shell.admin-home-redesign .mg-module-shell-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:18px!important;
+  margin:0 0 10px!important;
+  padding:15px 17px!important;
+  border:1px solid #e5e9df!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:0 4px 16px rgba(24,29,20,.035)!important;
+}
+.admin-shell.admin-home-redesign .mg-module-shell-copy{
+  min-width:0!important;
+}
+.admin-shell.admin-home-redesign .mg-module-shell-copy>span{
+  display:block!important;
+  margin-bottom:4px!important;
+  color:#647a2d!important;
+  font-size:7px!important;
+  font-weight:900!important;
+  letter-spacing:1px!important;
+}
+.admin-shell.admin-home-redesign .mg-module-shell-copy h2{
+  margin:0!important;
+  color:#1d211c!important;
+  font-size:17px!important;
+  line-height:1.15!important;
+}
+.admin-shell.admin-home-redesign .mg-module-shell-copy p{
+  margin:5px 0 0!important;
+  color:#8a9087!important;
+  font-size:8.5px!important;
+}
+.admin-shell.admin-home-redesign .mg-module-shell-actions{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+.admin-shell.admin-home-redesign .mg-module-state{
+  min-height:30px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  padding:0 10px!important;
+  border:1px solid #dfe8c2!important;
+  border-radius:999px!important;
+  background:#f5fbe7!important;
+  color:#587221!important;
+  font-size:7.5px!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+}
+.admin-shell.admin-home-redesign .mg-module-shell-actions button{
+  min-height:32px!important;
+  padding:0 11px!important;
+  border:1px solid #dde2d8!important;
+  border-radius:7px!important;
+  background:#fff!important;
+  color:#41473f!important;
+  font-size:8px!important;
+  font-weight:800!important;
+  cursor:pointer!important;
+}
+.admin-shell.admin-home-redesign .mg-module-shell-actions button:hover{
+  border-color:#c9f45a!important;
+  background:#f8fce9!important;
+}
+.admin-shell.admin-home-redesign .mg-module-shell-actions button:disabled{
+  opacity:.55!important;
+  cursor:default!important;
+}
+.admin-shell.admin-home-redesign .mg-module-tabs{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  margin:0 0 12px!important;
+  padding:7px!important;
+  overflow:auto!important;
+  border:1px solid #e5e9df!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  scrollbar-width:thin!important;
+}
+.admin-shell.admin-home-redesign .mg-module-tabs button{
+  position:relative!important;
+  min-height:31px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  padding:0 10px!important;
+  border:1px solid transparent!important;
+  border-radius:7px!important;
+  background:#f7f8f5!important;
+  color:#687066!important;
+  font-size:8px!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+  cursor:pointer!important;
+}
+.admin-shell.admin-home-redesign .mg-module-tabs button:hover{
+  border-color:#dce4cc!important;
+  background:#f9fceF!important;
+  color:#41473f!important;
+}
+.admin-shell.admin-home-redesign .mg-module-tabs button.active{
+  border-color:#111311!important;
+  background:#111311!important;
+  color:#c9f45a!important;
+}
+.admin-shell.admin-home-redesign .mg-module-tabs button i{
+  min-width:16px!important;
+  height:16px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0 4px!important;
+  border-radius:999px!important;
+  background:#c9f45a!important;
+  color:#111311!important;
+  font-size:6.5px!important;
+  font-style:normal!important;
+  font-weight:900!important;
+}
+.admin-shell.admin-home-redesign .mg-module-tabs button.active i{
+  background:#c9f45a!important;
+  color:#111311!important;
+}
+@media(max-width:760px){
+  .admin-shell.admin-home-redesign .mg-module-shell-head{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+  .admin-shell.admin-home-redesign .mg-module-shell-actions{
+    width:100%!important;
+    justify-content:space-between!important;
+  }
+}
