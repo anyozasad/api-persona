@@ -1246,7 +1246,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
 
               <label>
                 Cliente
-                <select [(ngModel)]="ventaForm.id_cliente" name="vcliente">
+                <select [(ngModel)]="ventaForm.id_cliente" name="vcliente" required>
                   <option [ngValue]="0">Público general</option>
                   <option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option>
                 </select>
@@ -4149,6 +4149,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   get subtotalVentaPreview():number{const f=1+(Number(this.ventaForm.igv_porcentaje||0)/100);return f>0?this.totalVentaPreview/f:this.totalVentaPreview;}
   get igvVentaPreview():number{return this.totalVentaPreview-this.subtotalVentaPreview;}
   registrarVenta(){
+    if(!this.ventaForm.id_cliente){this.error='Selecciona el socio que realiza la compra.';return;}
     if(!this.ventaItems.length){this.error='Agrega al menos un producto al carrito.';return;}
     if(this.ventaForm.metodo_pago!=='Efectivo' && !String(this.ventaForm.numero_operacion||'').trim()){
       this.error='Ingresa el número de operación para el método de pago seleccionado.';
