@@ -2710,7 +2710,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   clientesEstadoFiltro = '';
   clientesPagina = 1;
   clientesPorPagina = 8;
-  clienteForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:false,nombre_usuario:'',contrasena:''};
+  clienteForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:true,nombre_usuario:'',contrasena:''};
   membresiaForm: any = {id_cliente:0,id_membresia:0,metodo_pago:'Efectivo',numero_operacion:''};
   entrenadorEditandoId = 0;
   entrenadorForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',especialidad:'',fecha_contratacion:new Date().toISOString().slice(0,10),salario:0,estado:'Activo',crear_acceso:true,nombre_usuario:'',contrasena:''};
@@ -3863,7 +3863,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   nuevoCliente(){
     this.clienteEditandoId=0;
-    this.clienteForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:false,nombre_usuario:'',contrasena:''};
+    this.clienteForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:true,nombre_usuario:'',contrasena:''};
     this.error='';
     this.clienteFormularioAbierto=true;
   }
@@ -3889,10 +3889,21 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     req.subscribe({
       next:(r:any)=>{
         this.guardandoCliente=false;
-        this.ok(r?.mensaje || (eraEdicion?'Cliente actualizado correctamente':'Cliente registrado correctamente'));
+        const nuevoId=Number(r?.cliente?.id_cliente||0);
         this.cancelarEdicionCliente();
         this.cargarClientes();
         this.cargarDashboard();
+
+        if(!eraEdicion && nuevoId){
+          this.cambiarSegcion('membresias');
+          setTimeout(()=>{
+            this.membresiaForm={...this.membresiaForm,id_cliente:nuevoId};
+            this.ok('Socio matriculado y acceso creado. Ahora asigna su plan o membresía.');
+          },0);
+          return;
+        }
+
+        this.ok(r?.mensaje || 'Cliente actualizado correctamente');
       },
       error:e=>{
         this.guardandoCliente=false;
