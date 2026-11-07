@@ -253,7 +253,7 @@ class DashboardResumenTest extends TestCase
             if ($id > 1) {
                 DB::table('clientes')->insert([
                     'id_cliente' => $id,
-                    'dni' => '70'.str_pad((string) $id, 6, '0', STR_PAD_LEFT),
+                    'dni' => '71'.str_pad((string) $id, 6, '0', STR_PAD_LEFT),
                     'nombres' => 'Socio',
                     'apellidos' => 'Numero '.$id,
                     'estado' => 'Activo',
