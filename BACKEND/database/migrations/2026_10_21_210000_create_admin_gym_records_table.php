@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('admin_gym_records')) {
+            return;
+        }
+
         Schema::create('admin_gym_records', function (Blueprint $table) {
             $table->id();
             $table->string('modulo', 40)->index();
