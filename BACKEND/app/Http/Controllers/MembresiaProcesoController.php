@@ -29,9 +29,9 @@ class MembresiaProcesoController extends Controller
             'observacion' => 'nullable|string|max:500',
         ]);
 
-        if (!$cajaService->cajaAbierta()) {
+        if ($datos['metodo_pago'] === 'Efectivo' && !$cajaService->cajaAbierta()) {
             throw ValidationException::withMessages([
-                'caja' => ['Debes abrir caja antes de cobrar una membresía en recepción.'],
+                'caja' => ['Debes abrir caja antes de cobrar una membresía en efectivo.'],
             ]);
         }
 
@@ -125,9 +125,9 @@ class MembresiaProcesoController extends Controller
             'observacion' => 'nullable|string|max:500',
         ]);
 
-        if (!$cajaService->cajaAbierta()) {
+        if ($datos['metodo_pago'] === 'Efectivo' && !$cajaService->cajaAbierta()) {
             throw ValidationException::withMessages([
-                'caja' => ['Debes abrir caja antes de cobrar una renovación en recepción.'],
+                'caja' => ['Debes abrir caja antes de cobrar una renovación en efectivo.'],
             ]);
         }
 
