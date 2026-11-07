@@ -2388,24 +2388,24 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   imagenEjercicioReferencia(nombre:string):string{
     const n=String(nombre||'').toLowerCase();
 
-    // Fotografías reales relacionadas con cada máquina o movimiento.
+    // Todas las referencias visuales son locales para que el sistema funcione sin Internet.
     if(n.includes('bicicleta')){
-      return 'https://tommasocycling.com/cdn/shop/articles/Indoor_Cycling_Season_2025_Stay_Strong_All_Winter_Tommaso_Cycling_1_fa978be4-c5f9-4d3c-9b3d-c49b4db5da24.jpg?v=1764927390';
+      return 'assets/mallqui/mallqui-gallery-1.webp';
     }
     if(n.includes('elíptica') || n.includes('eliptica')){
-      return 'https://truefitness.com.sg/club/djitsun-mall-amk/img_8729/';
+      return 'assets/mallqui/mallqui-gallery-2.webp';
     }
     if(n.includes('remo')){
-      return 'https://pulsefit.bg/uploads/tinymce/57762.jpg';
+      return 'assets/mallqui/mallqui-gallery-3.webp';
     }
     if(n.includes('movilidad') || n.includes('plancha') || n.includes('core') || n.includes('pallof')){
-      return 'https://pliability.com/__cdn/framerusercontent.com/images/CZjvBl0MKtIWOaUdXWm7KiyU0.jpeg';
+      return 'assets/mallqui/mallqui-gallery-4.webp';
     }
     if(n.includes('prensa') || n.includes('piernas') || n.includes('sentadilla') || n.includes('step-up') || n.includes('step up')){
-      return 'https://www.beattypark.com.au/Profiles/beattypark/assets/moduledata/image-gallery/30fa39ae-c4b7-4956-8c21-6aa21bf0763a/1.3/Beatty-Park-Gym-Relaunch-DZuks-Oct-2022-%2842%29.jpg';
+      return 'assets/mallqui/mallqui-beginner-ai-4k.webp';
     }
     if(n.includes('press de pecho') || n.includes('empuje')){
-      return 'https://www.villagegym.co.uk/media/hs1pupgn/cardiff-gym-floor-technogym-pure-strength-chest-press.jpg';
+      return 'assets/mallqui/mallqui-pro-ai-4k.webp';
     }
     if(n.includes('jalón') || n.includes('jalon') || n.includes('tracción') || n.includes('traccion') || n.includes('espalda')){
       return 'assets/mallqui/mallqui-cover.webp';
@@ -2414,7 +2414,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       return 'assets/mallqui/mallqui-cover.webp';
     }
     if(n.includes('caminata') || n.includes('trote') || n.includes('cinta') || n.includes('intervalo') || n.includes('cardio')){
-      return 'https://images.squarespace-cdn.com/content/v1/5c0ae596e17ba37883d59594/4b062ba6-0343-43be-a85a-e69b2d4b5d45/pexels-william-choquette-1954524.jpg';
+      return 'assets/mallqui/mallqui-hero-4k.webp';
     }
 
     return 'assets/mallqui/mallqui-cover.webp';
@@ -4119,6 +4119,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       'OPERACION '+String(c?.numero_operacion||'')
     ].join('|');
     const qrUrl='https://quickchart.io/qr?size=280&margin=1&text='+encodeURIComponent(qrContenido);
+    const codigoLocal=code128DataUri(qrContenido,{height:72,module:2,quiet:12,text:false});
 
     const html=`<!doctype html>
 <html>
@@ -4366,8 +4367,9 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     Representación impresa de la ${safe(documentoTitulo)}.<br>
     Conserva este comprobante como constancia de tu pago.
     <div class="qr">
-      <img src="${safe(qrUrl)}" alt="Código QR del comprobante">
-      <div class="qr-fallback">${safe(numero)}</div>
+      <img src="${safe(qrUrl)}" alt="Código QR del comprobante"
+           onerror="this.onerror=null;this.src='${safe(codigoLocal)}';this.style.width='82mm';this.style.height='24mm';">
+      <div class="qr-fallback">Verificación local: ${safe(numero)}</div>
     </div>
     <div class="nota-legal">
       ${rucValido
