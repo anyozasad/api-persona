@@ -76,6 +76,12 @@ class SincronizarBaseDatos extends Command
 
             $objeto = $this->objetoExistentePara($migracion);
 
+            // Si el esquema base versionado está presente, las migraciones antiguas
+            // create_* generadas localmente quedan absorbidas por ese esquema.
+            if ($esquemaBaseIncluido && $this->esMigracionCoreGenerada($migracion)) {
+                $objeto = true;
+            }
+
             if ($objeto === true) {
                 DB::table('migrations')->insert([
                     'migration' => $migracion,
@@ -123,6 +129,42 @@ class SincronizarBaseDatos extends Command
         $this->comment('Ahora ejecuta: php artisan db:verificar');
 
         return self::SUCCESS;
+    }
+
+    private function esMigracionCoreGenerada(string $migracion): bool
+    {
+        foreach ([
+            'create_clientes_table',
+            'create_membresias_table',
+            'create_cliente_membresia_table',
+            'create_pagos_membresia_table',
+            'create_asistencias_table',
+            'create_entrenadores_table',
+            'create_rutinas_table',
+            'create_detalle_rutina_table',
+            'create_categorias_table',
+            'create_productos_table',
+            'create_usuarios_table',
+            'create_proveedores_table',
+            'create_compras_table',
+            'create_detalle_compra_table',
+            'create_ventas_table',
+            'create_detalle_venta_table',
+            'create_clases_table',
+            'create_reservas_table',
+            'create_cajas_table',
+            'create_movimientos_caja_table',
+            'create_movimientos_inventario_table',
+            'create_auditorias_table',
+            'create_mallqui_views',
+            'create_project_views',
+        ] as $sufijo) {
+            if (str_ends_with($migracion, $sufijo)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function objetoExistentePara(string $migracion): ?bool
