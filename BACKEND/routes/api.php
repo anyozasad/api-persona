@@ -66,7 +66,21 @@ Route::get('/estado-sistema', function () {
             'cajas' => ['id_caja','id_usuario_apertura','fecha_apertura','estado'],
             'movimientos_caja' => ['id_movimiento','id_caja','tipo','monto','fecha_movimiento'],
             'movimientos_inventario' => ['id_movimiento_inventario','id_producto','tipo','cantidad','stock_anterior','stock_nuevo'],
+            'proveedores' => ['id_proveedor','ruc','razon_social','estado'],
+            'compras' => ['id_compra','id_proveedor','id_usuario','total','estado'],
+            'detalle_compra' => ['id_detalle_compra','id_compra','id_producto','cantidad','subtotal'],
+            'auditorias' => ['id_auditoria','ruta','fecha'],
+            'configuracion_sistema' => ['id','nombre_gimnasio','hora_apertura','hora_cierre'],
+            'admin_gym_records' => ['id','modulo','titulo','estado','datos'],
+            'notificaciones_cliente' => ['id_notificacion','id_cliente','titulo','mensaje','leida'],
+            'solicitudes_soporte' => ['id_soporte','id_cliente','asunto','mensaje','estado'],
+            'opiniones_cliente' => ['id_opinion','id_cliente','calificacion','comentario','estado'],
+            'metas_cliente' => ['id_meta_cliente','id_cliente','sesiones_semanales'],
+            'clases_favoritas' => ['id_favorito','id_cliente','id_clase'],
+            'planes_entrenamiento_casa' => ['id_plan_casa','id_cliente','dias','zonas','activo'],
+            'sesiones_entrenamiento_casa' => ['id_sesion_casa','id_cliente','zona','fecha','estado'],
             'progreso_medidas' => ['id','id_cliente','fecha'],
+            'personal_access_tokens' => ['id','tokenable_type','tokenable_id','name','token'],
         ];
 
         $tablasDetectadas = [];
