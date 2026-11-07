@@ -89,6 +89,7 @@ class DashboardController extends Controller
         $stock = $this->resumenInventario($tablas['productos']);
         $caja = $this->cajaActual($tablas['cajas']);
         $reservas = $this->reservasHoy($tablas['reservas'], $hoy);
+        $totalReservasHoy = $this->contarReservasHoy($tablas['reservas'], $hoy);
         $ventasRecientes = $this->ventasRecientes($tablas['ventas'], $tablas['socios']);
         $topProductos = $this->topProductos(
             $tablas['detalle_ventas'],
@@ -145,6 +146,7 @@ class DashboardController extends Controller
         // Contarlos desde la tabla de suscripciones podía dejar alertas en cero aunque
         // existiera un pago en efectivo pendiente de confirmar.
         $pagosPendientes = 0;
+        $detallesPagosPendientes = [];
         if ($tablas['pagos']) {
             $estadoPago = $this->columna($tablas['pagos'], ['estado_pago', 'estado', 'status']);
             $metodoPago = $this->columna($tablas['pagos'], ['metodo_pago', 'metodo', 'forma_pago']);
@@ -158,9 +160,22 @@ class DashboardController extends Controller
                 }
 
                 $pagosPendientes = (int) $qPagosPendientes->count();
+                $consultaDetalle = clone $qPagosPendientes;
+                $ordenPago = $this->columna($tablas['pagos'], ['fecha_pago', 'created_at', 'id_pago', 'id']);
+                if ($ordenPago) {
+                    $consultaDetalle->orderByDesc($ordenPago);
+                }
+                $detallesPagosPendientes = $consultaDetalle->limit(8)->get()->map(fn ($pago) => [
+                    'id_pago' => $this->valor($pago, ['id_pago', 'id']),
+                    'id_cliente_membresia' => $this->valor($pago, ['id_cliente_membresia', 'id_suscripcion']),
+                    'fecha_pago' => $this->valor($pago, ['fecha_pago', 'created_at']),
+                    'monto' => (float) $this->valor($pago, ['monto', 'importe'], 0),
+                    'metodo_pago' => $this->valor($pago, ['metodo_pago', 'metodo']),
+                    'estado_pago' => $this->valor($pago, ['estado_pago', 'estado', 'status']),
+                ])->values()->all();
             }
         }
-        $alertasTotal = count($suscripciones['detalle_por_vencer'])
+        $alertasTotal = $suscripciones['por_vencer_7_dias']
             + $stock['productos_stock_bajo']
             + $soportePendiente
             + $rutinasPendientes
@@ -198,10 +213,10 @@ class DashboardController extends Controller
             ],
             [
                 'tipo' => 'membresias',
-                'cantidad' => count($suscripciones['detalle_por_vencer']),
+                'cantidad' => $suscripciones['por_vencer_7_dias'],
                 'titulo' => 'Membresías por vencer',
                 'descripcion' => 'Socios cuya membresía vence durante los próximos 7 días.',
-                'nivel' => count($suscripciones['detalle_por_vencer']) > 0 ? 'media' : 'ok',
+                'nivel' => $suscripciones['por_vencer_7_dias'] > 0 ? 'media' : 'ok',
             ],
             [
                 'tipo' => 'pagos',
@@ -229,18 +244,18 @@ class DashboardController extends Controller
             ],
             'membresias' => [
                 'activas' => $suscripciones['activas'],
-                'por_vencer_7_dias' => count($suscripciones['detalle_por_vencer']),
+                'por_vencer_7_dias' => $suscripciones['por_vencer_7_dias'],
                 'detalle_por_vencer' => $suscripciones['detalle_por_vencer'],
                 'pagos_pendientes' => $pagosPendientes,
                 'pagos_registrados' => $pagosRegistrados,
-                'detalle_pagos_pendientes' => [],
+                'detalle_pagos_pendientes' => $detallesPagosPendientes,
             ],
             'asistencias' => [
                 'hoy' => $asistenciaHoy,
                 'dentro_ahora' => $dentroAhora,
             ],
             'reservas' => [
-                'hoy' => count($reservas),
+                'hoy' => $totalReservasHoy,
                 'detalle_hoy' => $reservas,
             ],
             'operacion' => [
@@ -427,6 +442,7 @@ class DashboardController extends Controller
     {
         $resultado = [
             'activas' => 0,
+            'por_vencer_7_dias' => 0,
             'detalle_por_vencer' => [],
             'pagos_pendientes' => 0,
             'por_plan' => [],
@@ -458,10 +474,11 @@ class DashboardController extends Controller
 
         if ($fin) {
             $vence = $this->db->table($tabla)
-                ->whereBetween($fin, [$hoy->toDateString(), $hoy->copy()->addDays(7)->toDateString()])
-                ->orderBy($fin)
-                ->limit(8);
+                ->whereBetween($fin, [$hoy->toDateString(), $hoy->copy()->addDays(7)->toDateString()]);
             $this->aplicarActivo($vence, $tabla);
+            // El límite aplica solo al listado, no al indicador ni a las alertas.
+            $resultado['por_vencer_7_dias'] = (int) (clone $vence)->count();
+            $vence->orderBy($fin)->limit(8);
 
             $idSocioCol = $this->columna($tabla, ['id_socio', 'id_cliente']);
             $idPlanCol = $this->columna($tabla, ['id_plan', 'id_membresia']);
@@ -838,6 +855,32 @@ class DashboardController extends Controller
         }
 
         return $q->first();
+    }
+
+    private function contarReservasHoy(?string $tabla, Carbon $hoy): int
+    {
+        if (!$tabla) {
+            return 0;
+        }
+
+        $fecha = $this->columna($tabla, ['fecha_clase', 'fecha_reserva', 'fecha', 'created_at']);
+        if (!$fecha) {
+            return 0;
+        }
+
+        $consulta = $this->db->table($tabla)->whereDate($fecha, $hoy);
+        // Reutilizar el mismo criterio de reservas válidas que el detalle actual.
+        if (
+            $tabla === 'reservas'
+            && $this->schema->hasTable('clientes')
+            && $this->schema->hasTable('clases')
+            && $this->schema->hasColumn('reservas', 'id_cliente')
+            && $this->schema->hasColumn('reservas', 'id_clase')
+        ) {
+            $consulta->whereNotIn('estado', ['Cancelada', 'CANCELADA', 'cancelada']);
+        }
+
+        return (int) $consulta->count();
     }
 
     private function reservasHoy(?string $tabla, Carbon $hoy): array
