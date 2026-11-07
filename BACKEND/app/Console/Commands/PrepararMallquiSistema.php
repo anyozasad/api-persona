@@ -21,6 +21,14 @@ class PrepararMallquiSistema extends Command
     {
         $this->info('Preparando Mallqui Gym...');
 
+        // Evita que una configuración cacheada antigua vuelva a aplicar "app_"
+        // a las tablas durante esta misma ejecución.
+        config([
+            'database.connections.mysql.prefix' => '',
+            'database.connections.mariadb.prefix' => '',
+        ]);
+        DB::purge(config('database.default'));
+
         foreach (['optimize:clear', 'db:sincronizar'] as $comando) {
             $codigo = Artisan::call($comando);
             $salida = trim(Artisan::output());
