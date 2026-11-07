@@ -3872,6 +3872,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(this.guardandoCliente)return;
 
     const datos={...this.clienteForm};
+    const crearAccesoSolicitado=!this.clienteEditandoId && Boolean(datos.crear_acceso);
     if(this.clienteEditandoId){
       delete datos.crear_acceso;
       delete datos.nombre_usuario;
@@ -3898,7 +3899,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
           this.cambiarSegcion('membresias');
           setTimeout(()=>{
             this.membresiaForm={...this.membresiaForm,id_cliente:nuevoId};
-            this.ok('Socio matriculado y acceso creado. Ahora asigna su plan o membresía.');
+            this.ok(crearAccesoSolicitado
+              ? 'Socio matriculado y acceso creado. Ahora asigna su plan o membresía.'
+              : 'Socio matriculado. Ahora asigna su plan o membresía.');
           },0);
           return;
         }
