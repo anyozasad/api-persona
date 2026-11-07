@@ -47,33 +47,64 @@ Route::get('/estado-sistema', function () {
         $db->getPdo();
         $schema = $db->getSchemaBuilder();
 
-        $tablas = [];
-        foreach ([
-            'clientes','membresias','cliente_membresia','pagos_membresia',
-            'entrenadores','rutinas','detalle_rutina','clases','reservas',
-            'asistencias','categorias','productos','proveedores','compras',
-            'detalle_compra','ventas','detalle_venta','cajas','movimientos_caja',
-            'movimientos_inventario','usuarios','auditorias'
-        ] as $tabla) {
-            if ($schema->hasTable($tabla)) {
-                $tablas[] = $tabla;
+        $requeridas = [
+            'clientes' => ['id_cliente','dni','nombres','apellidos','estado'],
+            'usuarios' => ['id_usuario','nombre_usuario','contrasena','rol','estado','id_cliente','id_entrenador'],
+            'membresias' => ['id_membresia','nombre','duracion_meses','precio','estado'],
+            'cliente_membresia' => ['id_cliente_membresia','id_cliente','id_membresia','fecha_inicio','fecha_fin','estado'],
+            'pagos_membresia' => ['id_pago','id_cliente_membresia','monto','metodo_pago','estado_pago'],
+            'entrenadores' => ['id_entrenador','nombres','apellidos','estado'],
+            'clases' => ['id_clase','nombre','hora_inicio','hora_fin','cupo_maximo','estado'],
+            'reservas' => ['id_reserva','id_cliente','id_clase','fecha_clase','estado'],
+            'rutinas' => ['id_rutina','id_cliente','id_entrenador','nombre_rutina','estado'],
+            'detalle_rutina' => ['id_detalle_rutina','id_rutina','ejercicio','series','repeticiones'],
+            'asistencias' => ['id_asistencia','id_cliente','fecha_hora_entrada','fecha_hora_salida','estado'],
+            'categorias' => ['id_categoria','nombre_categoria','estado'],
+            'productos' => ['id_producto','id_categoria','nombre_producto','foto','precio_venta','stock','estado'],
+            'ventas' => ['id_venta','id_cliente','numero_comprobante','metodo_pago','subtotal','igv','total','estado'],
+            'detalle_venta' => ['id_detalle_venta','id_venta','id_producto','cantidad','precio_unitario','subtotal'],
+            'cajas' => ['id_caja','id_usuario_apertura','fecha_apertura','estado'],
+            'movimientos_caja' => ['id_movimiento','id_caja','tipo','monto','fecha_movimiento'],
+            'movimientos_inventario' => ['id_movimiento_inventario','id_producto','tipo','cantidad','stock_anterior','stock_nuevo'],
+            'progreso_medidas' => ['id','id_cliente','fecha'],
+        ];
+
+        $tablasDetectadas = [];
+        $faltantes = [];
+        foreach ($requeridas as $tabla => $columnas) {
+            if (!$schema->hasTable($tabla)) {
+                $faltantes[] = 'tabla:'.$tabla;
+                continue;
+            }
+
+            $tablasDetectadas[] = $tabla;
+            foreach ($columnas as $columna) {
+                if (!$schema->hasColumn($tabla, $columna)) {
+                    $faltantes[] = $tabla.'.'.$columna;
+                }
             }
         }
 
         return response()->json([
             'api' => true,
             'database' => true,
+            'operativo' => count($faltantes) === 0,
             'motor' => $db->getDriverName(),
             'base_datos' => $db->getDatabaseName(),
-            'tablas_detectadas' => $tablas,
-            'mensaje' => 'La aplicación está conectada a su base principal y mantiene sincronización de compatibilidad con gym_system cuando está configurada.',
+            'tablas_detectadas' => $tablasDetectadas,
+            'faltantes' => $faltantes,
+            'mensaje' => count($faltantes) === 0
+                ? 'API, base principal y esquema funcional disponibles.'
+                : 'La API y la base responden, pero faltan objetos del esquema. Ejecuta php artisan sistema:preparar.',
         ]);
     } catch (\Throwable $e) {
         return response()->json([
             'api' => true,
             'database' => false,
+            'operativo' => false,
             'motor' => config('database.default'),
             'base_datos' => config('database.connections.'.config('database.default').'.database'),
+            'faltantes' => [],
             'mensaje' => 'La API responde, pero la base de datos no está disponible.',
         ], 503);
     }
