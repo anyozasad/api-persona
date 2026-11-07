@@ -42,7 +42,9 @@ class ClaseController extends Controller
         ]);
 
         $datos['estado'] = $datos['estado'] ?? 'Activo';
-        $this->validarEntrenadorActivo($datos['id_entrenador'] ?? null);
+        if ($datos['estado'] === 'Activo') {
+            $this->validarEntrenadorActivo($datos['id_entrenador'] ?? null);
+        }
         $this->validarChoqueHorario($datos);
 
         return response()->json(Clase::create($datos)->load('entrenador'), 201);
@@ -78,7 +80,9 @@ class ClaseController extends Controller
             'hora_inicio', 'hora_fin', 'cupo_maximo', 'estado',
         ]), $datos);
 
-        $this->validarEntrenadorActivo($final['id_entrenador'] ?? null);
+        if ($final['estado'] === 'Activo') {
+            $this->validarEntrenadorActivo($final['id_entrenador'] ?? null);
+        }
 
         if ($final['hora_fin'] <= $final['hora_inicio']) {
             throw ValidationException::withMessages([
