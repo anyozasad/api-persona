@@ -2215,7 +2215,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.api.estadoSistema().subscribe({
       next:r=>{
         this.apiConectada=Boolean(r?.api);
-        this.dbConectada=Boolean(r?.database);
+        this.dbConectada=Boolean(r?.database) && Boolean(r?.operativo);
         this.dbMotor=String(r?.motor || 'MySQL').toUpperCase();
       },
       error:e=>{
