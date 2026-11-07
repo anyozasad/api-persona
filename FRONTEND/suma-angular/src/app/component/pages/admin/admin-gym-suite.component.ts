@@ -33,11 +33,7 @@ interface GymModuleConfig {
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <section class="gym-suite cf-live-suite" *ngIf="config">
-      <div class="cfx-crumb">
-        <span>⌂</span><small>Inicio</small><b>›</b><strong>{{config.title}}</strong>
-      </div>
-
+    <section class="gym-suite mg-suite-current" *ngIf="config">
       <ng-container [ngSwitch]="modulo">
         <section class="cf-suite-complete" *ngSwitchCase="'equipos'">
           <header class="cf-suite-page-head"><div><h1>Equipos</h1><p>Inventario, disponibilidad y mantenimiento de equipos</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Equipo</button></header>
@@ -205,10 +201,15 @@ interface GymModuleConfig {
             <label *ngIf="config.showDate">{{config.dateLabel}}<input name="fecha" type="date" [(ngModel)]="form.fecha"></label>
             <label *ngIf="config.showAmount">{{config.amountLabel}}<input name="monto" type="number" min="0" step="0.01" [(ngModel)]="form.monto"></label>
             <label>Estado *<select name="estado" [(ngModel)]="form.estado" required><option *ngFor="let estado of config.states" [value]="estado">{{estado}}</option></select></label>
-            <label *ngIf="config.showImage" class="span-2">URL de imagen<input name="imagen_url" [(ngModel)]="form.imagen_url" maxlength="500" placeholder="https://..."></label>
+            <label *ngIf="config.showImage" class="span-2 gym-local-image-field">
+              Imagen local
+              <input type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" (change)="seleccionarImagenLocal($event)">
+              <small>{{subiendoImagen ? 'Guardando imagen...' : 'JPG, PNG o WEBP · máximo 5 MB · se guarda dentro del proyecto'}}</small>
+              <img *ngIf="form.imagen_url" [src]="form.imagen_url" alt="Vista previa de imagen local">
+            </label>
             <label class="span-2">Detalle / observación<textarea name="detalle" [(ngModel)]="form.detalle" rows="4"></textarea></label>
           </div>
-          <footer><button type="button" class="secondary" (click)="cerrarModal()">Cancelar</button><button type="submit" class="primary" [disabled]="saving || gymForm.invalid">{{saving ? 'Guardando...' : (editandoId ? 'Guardar Cambios' : 'Crear')}}</button></footer>
+          <footer><button type="button" class="secondary" (click)="cerrarModal()">Cancelar</button><button type="submit" class="primary" [disabled]="saving || subiendoImagen || gymForm.invalid">{{saving ? 'Guardando...' : (editandoId ? 'Guardar Cambios' : 'Crear')}}</button></footer>
         </form>
       </section>
     </section>
@@ -299,89 +300,6 @@ interface GymModuleConfig {
       .gym-suite-head-actions{width:100%}
       .gym-suite-head-actions button{flex:1}
     }
-
-    /* TEMPLATE569574_SUITE_LOCK */
-    :host{display:block!important;background:#f6f6fb!important}
-    .gym-suite{display:block!important;gap:0!important;margin:0!important;padding:0!important;background:#f6f6fb!important;color:#2d2c3c!important}
-    .cfx-crumb{height:35px!important;min-height:35px!important;padding:0 10px!important;border:0!important;border-radius:0!important;background:linear-gradient(90deg,#574fd0,#5f57d9)!important;color:#fff!important;box-shadow:none!important}
-    .cfx-crumb small,.cfx-crumb strong,.cfx-crumb b,.cfx-crumb span{color:#fff!important}
-    .cf-suite-page-head{min-height:48px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;margin:8px 9px 7px!important;padding:9px 10px!important;border:1px solid #ecebf3!important;border-radius:5px!important;background:#fff!important;box-shadow:0 1px 5px rgba(61,57,102,.025)!important}
-    .cf-suite-page-head h1{margin:0!important;color:#2d2c3c!important;font-size:12px!important}.cf-suite-page-head p{margin:2px 0 0!important;color:#9698a6!important;font-size:8px!important}
-    .cf-suite-page-head select{height:28px!important;border:1px solid #dedee8!important;border-radius:4px!important;background:#fff!important;color:#656777!important;font-size:8px!important}
-    .cf-suite-equipment-grid,.cf-suite-events,.cf-suite-gallery,.cf-suite-news,.cf-suite-salary,.cf-suite-income,.cf-suite-invoices,.gym-suite-panel{margin:0 9px 9px!important}
-    .cf-suite-equipment-grid,.cf-suite-gallery,.cf-suite-news{gap:9px!important}
-    .cf-suite-equipment-grid>article,.cf-suite-events>article,.cf-suite-gallery>article,.cf-suite-news>article,.cf-suite-income-cards>article,.gym-suite-panel{border:1px solid #ecebf3!important;border-radius:5px!important;background:#fff!important;box-shadow:0 1px 5px rgba(61,57,102,.025)!important}
-    .cf-suite-equipment-grid h3,.cf-suite-event-main h3,.cf-suite-news h3{font-size:9px!important;color:#373746!important}
-    .cf-suite-equipment-grid p,.cf-suite-event-main p,.cf-suite-news p,.cf-suite-event-meta small{font-size:8px!important;color:#9698a6!important}
-    .gym-suite-table-wrap{border:1px solid #ecebf3!important;border-radius:5px!important;background:#fff!important;box-shadow:none!important}
-    .gym-suite-table th{padding:6px 8px!important;background:#fafafe!important;color:#777a89!important;font-size:7.5px!important}.gym-suite-table td{padding:7px 8px!important;background:#fff!important;color:#545664!important;font-size:8px!important}
-    button.primary{border-color:#5f57d9!important;background:#5f57d9!important;color:#fff!important}.cf-suite-link{color:#5f57d9!important}
-    .gym-suite-modal{border:1px solid #ecebf3!important;border-radius:7px!important;background:#fff!important;box-shadow:0 18px 50px rgba(42,40,83,.16)!important}
-    .gym-suite-modal>header{padding:13px 14px 10px!important;border-bottom:1px solid #ecebf3!important}.gym-suite-modal>header small{color:#5f57d9!important}.gym-suite-modal>header h3{font-size:13px!important}
-    .gym-suite-modal form{padding:12px 14px 14px!important}.gym-suite-form-grid{gap:9px!important}.gym-suite-form-grid label{font-size:8px!important}
-    .gym-suite-form-grid input,.gym-suite-form-grid select,.gym-suite-form-grid textarea{border:1px solid #dedee8!important;border-radius:4px!important;background:#fff!important;font-size:8px!important;box-shadow:none!important}.gym-suite-form-grid input,.gym-suite-form-grid select{height:31px!important}
-    .gym-suite-modal footer button{height:28px!important;border-radius:4px!important;font-size:8px!important}
-    .gym-suite-toast.success{background:#5f57d9!important}
-    @media(max-width:700px){.cf-suite-equipment-grid,.cf-suite-events,.cf-suite-gallery,.cf-suite-news,.cf-suite-salary,.cf-suite-income,.cf-suite-invoices,.gym-suite-panel{margin-left:8px!important;margin-right:8px!important}}
-
-
-    /* TEMPLATE569574_SUITE_COMPLETE_EXT */
-    .cf-suite-complete{display:grid;gap:9px;margin:0 9px 9px}
-    .cf-suite-complete>.cf-suite-page-head{margin:8px 0 0!important}
-    .cf-suite-page-head>div:last-child{display:flex;align-items:center;gap:6px}
-    .cf-suite-page-head button,.cf-suite-card button,.cf-suite-gallery-filter button,.cf-news-featured button{min-height:27px;padding:0 8px;border:1px solid #e0dff0;border-radius:4px;background:#fff;color:#656777;font-size:8px;font-weight:600;cursor:pointer}
-    .cf-suite-page-head button.primary,.cf-suite-card button.primary{border-color:#5f57d9;background:#5f57d9;color:#fff}
-    .cf-suite-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-    .cf-suite-kpis article{min-height:68px;padding:9px 10px;border:1px solid #ecebf3;border-radius:5px;background:#fff;box-shadow:0 1px 5px rgba(61,57,102,.025)}
-    .cf-suite-kpis small{display:block;color:#9497a5;font-size:7px}.cf-suite-kpis b{display:block;margin:3px 0;color:#2d2c3c;font-size:15px}.cf-suite-kpis span{color:#9b9daa;font-size:6.8px}
-    .cf-suite-kpis.compact article{min-height:58px}
-    .cf-suite-card{padding:10px;border:1px solid #ecebf3;border-radius:5px;background:#fff;box-shadow:0 1px 5px rgba(61,57,102,.025)}
-    .cf-suite-card>header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.cf-suite-card h2{margin:0;color:#2d2c3c;font-size:10px}.cf-suite-card p{margin:2px 0 0;color:#9698a6;font-size:7.5px}
-    .cf-suite-equipment-grid{margin:0!important}
-    .cf-suite-equipment-grid>article{padding:8px!important}.cf-suite-equipment-grid>article>div:last-child{display:grid;gap:3px}
-    .cf-suite-equipment-grid .status-select{justify-self:start}
-    .cf-suite-events{margin:0!important}.cf-suite-events>article{grid-template-columns:58px minmax(0,1fr) minmax(120px,.35fr) auto!important;padding:9px!important}
-    .cf-event-calendar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.cf-event-calendar>div{display:grid;gap:3px;padding:9px;border:1px solid #efeff4;border-radius:5px}.cf-event-calendar b{font-size:7px;color:#5f57d9}.cf-event-calendar span{font-size:8px;color:#454654}.cf-event-calendar small{font-size:6.8px;color:#9698a6}
-    .cf-suite-gallery-filter{display:flex;gap:5px;flex-wrap:wrap}.cf-suite-gallery-filter button.active{border-color:#5f57d9;background:#5f57d9;color:#fff}.cf-suite-gallery{margin:0!important}
-    .cf-news-featured{min-height:205px;display:grid;grid-template-columns:minmax(260px,.9fr) minmax(0,1.1fr);overflow:hidden;border:1px solid #ecebf3;border-radius:5px;background:#fff}.cf-news-featured img{width:100%;height:100%;object-fit:cover;background:#f3f2fb}.cf-news-featured>div{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:18px}.cf-news-featured span{font-size:7px;color:#5f57d9;font-weight:700}.cf-news-featured h2{margin:4px 0;color:#2d2c3c;font-size:16px}.cf-news-featured p{max-width:480px;margin:0 0 9px;color:#9698a6;font-size:8px;line-height:1.5}.cf-suite-news{margin:0!important}.cf-news-actions{display:flex;gap:5px}
-    .cf-news-categories{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.cf-news-categories span{padding:9px;border:1px solid #efeff4;border-radius:5px;color:#777a89;font-size:7.5px}.cf-news-categories b{display:block;margin-bottom:2px;color:#2d2c3c;font-size:15px}
-    .cf-payroll-notes,.cf-payment-status-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.cf-payroll-notes>div,.cf-payment-status-grid>div{padding:9px;border:1px solid #efeff4;border-radius:5px;text-align:center}.cf-payroll-notes b,.cf-payment-status-grid b{display:block;color:#2d2c3c;font-size:15px}.cf-payroll-notes small,.cf-payment-status-grid small{color:#9698a6;font-size:6.8px}
-    .cf-suite-income-visuals{display:grid;grid-template-columns:minmax(0,2fr) minmax(230px,.8fr);gap:9px}.cf-income-bars{height:150px;display:flex;align-items:end;gap:8px;padding:12px 4px 5px;border-bottom:1px solid #efeff4}.cf-income-bars i{flex:1;min-width:8px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#5f57d9,#b9b5ee)}.cf-month-axis{display:grid;grid-template-columns:repeat(12,1fr);margin-top:4px;text-align:center}.cf-month-axis span{font-size:6.5px;color:#9a9ca9}
-    .cf-revenue-donut{width:108px;height:108px;display:grid;place-items:center;margin:10px auto;border-radius:50%;background:conic-gradient(#5f57d9 0 64%,#8d86e7 64% 82%,#c4c1f1 82% 92%,#ecebf7 92%)}.cf-revenue-donut:before{content:'';grid-area:1/1;width:68px;height:68px;border-radius:50%;background:#fff}.cf-revenue-donut b{grid-area:1/1;z-index:2;font-size:12px}.cf-revenue-list{display:grid;gap:5px}.cf-revenue-list span{display:flex;justify-content:space-between;color:#7d7f8c;font-size:7px}.cf-revenue-list b{color:#454654}
-    .cf-invoice-actions{display:flex;gap:4px}
-    @media(max-width:950px){.cf-suite-kpis{grid-template-columns:repeat(2,1fr)}.cf-event-calendar,.cf-news-categories,.cf-payroll-notes,.cf-payment-status-grid{grid-template-columns:repeat(2,1fr)}.cf-suite-income-visuals{grid-template-columns:1fr}.cf-news-featured{grid-template-columns:1fr}.cf-news-featured img{height:180px}}
-    @media(max-width:650px){.cf-suite-kpis,.cf-event-calendar,.cf-news-categories,.cf-payroll-notes,.cf-payment-status-grid{grid-template-columns:1fr}.cf-suite-events>article{grid-template-columns:50px 1fr!important}.cf-suite-event-meta,.cf-suite-events>article>button{grid-column:2}.cf-suite-page-head{align-items:flex-start!important;flex-direction:column!important}}
-
-
-
-    /* PRESENTACION_LEGIBLE_SUITE */
-    :host .gym-suite{font-size:12px!important}
-    :host .cfx-crumb{height:46px!important;min-height:46px!important;padding:0 16px!important}
-    :host .cfx-crumb small,:host .cfx-crumb strong{font-size:11px!important}
-    :host .cf-suite-complete{gap:12px!important;margin:0 16px 14px!important}
-    :host .cf-suite-page-head{min-height:64px!important;padding:13px 14px!important}
-    :host .cf-suite-page-head h1{font-size:18px!important}
-    :host .cf-suite-page-head p{font-size:11px!important}
-    :host .cf-suite-page-head button,:host .cf-suite-card button,:host .cf-suite-gallery-filter button,:host .cf-news-featured button{min-height:34px!important;padding:0 12px!important;font-size:11px!important}
-    :host .cf-suite-kpis{gap:10px!important}
-    :host .cf-suite-kpis article{min-height:86px!important;padding:12px 13px!important}
-    :host .cf-suite-kpis small{font-size:10px!important}
-    :host .cf-suite-kpis b{font-size:20px!important}
-    :host .cf-suite-kpis span{font-size:9.5px!important}
-    :host .cf-suite-card{padding:14px!important}
-    :host .cf-suite-card h2{font-size:14px!important}
-    :host .cf-suite-card p{font-size:10px!important}
-    :host .cf-suite-equipment-grid h3,:host .cf-suite-event-main h3,:host .cf-suite-news h3{font-size:13px!important}
-    :host .cf-suite-equipment-grid p,:host .cf-suite-event-main p,:host .cf-suite-news p{font-size:10px!important}
-    :host .gym-suite-table th{padding:9px 10px!important;font-size:10.5px!important}
-    :host .gym-suite-table td{padding:10px!important;font-size:11px!important}
-    :host .gym-suite-form-grid label{font-size:11px!important}
-    :host .gym-suite-form-grid input,:host .gym-suite-form-grid select,:host .gym-suite-form-grid textarea{min-height:38px!important;padding:8px 10px!important;font-size:11px!important}
-    :host .status-select{min-height:26px!important;font-size:10px!important}
-    :host .cf-news-featured h2{font-size:20px!important}
-    :host .cf-news-featured p{font-size:11px!important}
-    @media(max-width:700px){:host .cf-suite-complete{margin-left:10px!important;margin-right:10px!important}}
-
 
     /* MALLQUI_SUITE_FINAL_THEME_2026_10_24 */
     :host .gym-suite{gap:12px!important;color:#17191f!important;background:#fff!important}
@@ -503,6 +421,12 @@ interface GymModuleConfig {
 
 
     /* NEW_SUITE_UI_FINAL_PRIORITY_2026_11_07 */
+    .gym-local-image-field small{color:#8a9087!important;font-size:8px!important;font-weight:500!important}
+    .gym-local-image-field img{
+      width:180px!important;height:110px!important;object-fit:cover!important;margin-top:4px!important;
+      border:1px solid #e5e9df!important;border-radius:8px!important;background:#f8faf5!important;
+    }
+
     :host{display:block!important;background:transparent!important;color:#1d211c!important}
     :host .gym-suite,:host .cf-suite-complete{background:transparent!important;color:#1d211c!important}
     :host .cfx-crumb{
@@ -575,6 +499,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   estadoFiltro = '';
   loading = false;
   saving = false;
+  subiendoImagen = false;
   modalAbierto = false;
   editandoId: number | null = null;
   toast = '';
@@ -845,6 +770,41 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
     if (this.saving) return;
     this.modalAbierto = false;
     this.editandoId = null;
+  }
+
+  seleccionarImagenLocal(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const archivo = input.files?.[0];
+    if (!archivo) return;
+
+    const permitidos = ['image/jpeg','image/png','image/webp'];
+    if (!permitidos.includes(archivo.type)) {
+      this.error = 'La imagen debe ser JPG, PNG o WEBP.';
+      input.value = '';
+      this.limpiarMensaje('error');
+      return;
+    }
+    if (archivo.size > 5 * 1024 * 1024) {
+      this.error = 'La imagen no debe superar los 5 MB.';
+      input.value = '';
+      this.limpiarMensaje('error');
+      return;
+    }
+
+    this.subiendoImagen = true;
+    this.api.subirImagenGymRegistro(this.modulo, archivo).subscribe({
+      next: (r:any) => {
+        this.form.imagen_url = String(r?.imagen_url || '');
+        this.subiendoImagen = false;
+        this.toast = 'Imagen local guardada correctamente.';
+        this.limpiarMensaje('toast');
+      },
+      error: (e:any) => {
+        this.subiendoImagen = false;
+        this.error = e?.error?.message || 'No se pudo guardar la imagen local.';
+        this.limpiarMensaje('error');
+      }
+    });
   }
 
   guardar(): void {
