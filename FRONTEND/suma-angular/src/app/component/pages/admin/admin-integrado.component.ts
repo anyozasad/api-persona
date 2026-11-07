@@ -2362,6 +2362,236 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
       .admin-shell.admin-home-redesign .management-grid,
       .admin-shell.admin-home-redesign .trainer-single-layout{grid-template-columns:1fr!important}
     }
+
+    /* CURRENT_WORKSPACE_HARD_RESET_2026_11_07 */
+    .admin-shell.admin-home-redesign .mg-current-workspace{
+      min-width:0!important;
+      display:block!important;
+      color:#1d211c!important;
+      background:transparent!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace>*{
+      max-width:100%!important;
+      box-sizing:border-box!important;
+    }
+
+    /* Socios: reemplaza por completo el hero azul/rojo antiguo. */
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-shell{gap:12px!important;padding-bottom:20px!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-hero{
+      min-height:auto!important;padding:16px 18px!important;border:1px solid #e5e9df!important;border-radius:10px!important;
+      background:#fff!important;color:#1d211c!important;box-shadow:0 4px 16px rgba(24,29,20,.035)!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-hero:after{display:none!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-hero-copy>span{
+      color:#647a2d!important;font-size:7px!important;letter-spacing:1px!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-hero-copy h2{
+      margin:4px 0!important;color:#1d211c!important;font-size:18px!important;letter-spacing:0!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-hero-copy p{
+      color:#898f86!important;font-size:8.5px!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-new{
+      min-height:36px!important;padding:0 12px!important;border:1px solid #111311!important;border-radius:7px!important;
+      background:#111311!important;color:#c9f45a!important;font-size:8.5px!important;box-shadow:none!important;transform:none!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-stats{gap:9px!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-stats article{
+      min-height:74px!important;padding:12px!important;border:1px solid #e5e9df!important;border-radius:9px!important;background:#fff!important;box-shadow:none!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-stat-icon,
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-stat-icon.success,
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-stat-icon.muted{
+      width:36px!important;height:36px!important;flex:0 0 36px!important;border-radius:8px!important;background:#effbd0!important;color:#5d7624!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-stats small{color:#898f86!important;font-size:7px!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-stats b{color:#1d211c!important;font-size:17px!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-stats p{color:#92988f!important;font-size:7.5px!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-card{
+      border:1px solid #e5e9df!important;border-radius:10px!important;background:#fff!important;box-shadow:0 4px 16px rgba(24,29,20,.035)!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-toolbar{
+      padding:11px 12px!important;border-bottom:1px solid #eef1ea!important;background:#fff!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-search,
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-filter,
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-refresh{
+      min-height:36px!important;border:1px solid #dfe4da!important;border-radius:7px!important;background:#fbfcfa!important;color:#50564e!important;box-shadow:none!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-search:focus-within{
+      border-color:#a7c94b!important;box-shadow:0 0 0 3px rgba(201,244,90,.16)!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-table th{
+      background:#f7f8f5!important;color:#7b8178!important;border-color:#e4e8df!important;font-size:7.5px!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-table td{
+      color:#444a42!important;border-color:#eef0eb!important;font-size:8.5px!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-table tbody tr:hover{background:#fbfdf7!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-person>span{
+      border-radius:8px!important;background:#111311!important;color:#c9f45a!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-person b,
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-contact b,
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-dni{color:#282d27!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-status{
+      background:#effbd0!important;color:#587221!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-status i{background:#98b936!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-actions .view,
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-actions .edit{
+      border-color:#dde2d8!important;background:#fff!important;color:#41473f!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-actions .danger{
+      border-color:#efd8d3!important;background:#fff8f7!important;color:#a84a3b!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-footer{
+      background:#fafbf8!important;border-top:1px solid #eef1ea!important;
+    }
+
+    /* Editor de socio: mismo panel nuevo, sin cabecera azul. */
+    .admin-shell.admin-home-redesign .mg-current-workspace .client-editor-backdrop,
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-backdrop,
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-detail-overlay{
+      background:rgba(10,12,9,.42)!important;backdrop-filter:blur(3px)!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .client-editor-panel,
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-panel,
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-detail-panel{
+      background:#f5f6f2!important;box-shadow:-18px 0 48px rgba(20,24,18,.18)!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .client-editor-head,
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-head{
+      padding:17px 18px!important;border:1px solid #e5e9df!important;border-radius:10px!important;
+      background:#fff!important;color:#1d211c!important;box-shadow:none!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .client-editor-head>div>span,
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-head span{
+      color:#647a2d!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .client-editor-head h2,
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-head h2{
+      color:#1d211c!important;font-size:18px!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .client-editor-head p,
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-head p{
+      color:#898f86!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .client-editor-head>button,
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-head>button{
+      background:#f1f3ee!important;color:#5c6359!important;border:1px solid #e2e6dd!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .client-editor-section,
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-kpis article,
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-profile>article,
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-history{
+      border:1px solid #e5e9df!important;border-radius:9px!important;background:#fff!important;box-shadow:none!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-kpis article>span{
+      background:#effbd0!important;color:#5d7624!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-kpis b,
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-profile b,
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-history b{color:#2a2f28!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-tabs button{
+      border:1px solid #dde2d8!important;border-radius:7px!important;background:#fff!important;color:#555c52!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-tabs button.active{
+      border-color:#111311!important;background:#111311!important;color:#c9f45a!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .client360-history em{
+      background:#effbd0!important;color:#587221!important;
+    }
+
+    /* Auditoría: elimina por completo la cabecera azul y botones rojos. */
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-page{gap:12px!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-hero{
+      min-height:auto!important;padding:16px 18px!important;border:1px solid #e5e9df!important;border-radius:10px!important;
+      background:#fff!important;color:#1d211c!important;box-shadow:0 4px 16px rgba(24,29,20,.035)!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-hero:after{display:none!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-eyebrow{color:#647a2d!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-hero h2{color:#1d211c!important;font-size:18px!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-hero p{color:#898f86!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-export,
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-apply{
+      border:1px solid #111311!important;border-radius:7px!important;background:#111311!important;color:#c9f45a!important;box-shadow:none!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-kpis article,
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-filter-card,
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-table-card{
+      border:1px solid #e5e9df!important;border-radius:9px!important;background:#fff!important;box-shadow:none!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-kpi-icon.blue,
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-kpi-icon.violet,
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-kpi-icon.amber,
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-kpi-icon.red{
+      background:#effbd0!important;color:#5d7624!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-kpis b,
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-filter-head h3,
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-table-head h3{color:#252a24!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-filters input,
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-filters select{
+      border-color:#dfe4da!important;border-radius:7px!important;background:#fbfcfa!important;color:#2c312b!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-filters input:focus,
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-filters select:focus{
+      border-color:#a7c94b!important;box-shadow:0 0 0 3px rgba(201,244,90,.16)!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-table th{background:#f7f8f5!important;color:#7b8178!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-table td{color:#444a42!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-user>span{
+      background:#111311!important;color:#c9f45a!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-detail-btn{
+      background:#f1f3ee!important;color:#50574d!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .audit-pagination div button.active{
+      background:#111311!important;border-color:#111311!important;color:#c9f45a!important;
+    }
+
+    /* Caja/gastos bloqueados y ventas: mismo lenguaje visual actual. */
+    .admin-shell.admin-home-redesign .mg-current-workspace .operation-locked-main,
+    .admin-shell.admin-home-redesign .mg-current-workspace .operation-locked-side,
+    .admin-shell.admin-home-redesign .mg-current-workspace .sales-entry-help,
+    .admin-shell.admin-home-redesign .mg-current-workspace .sales-cart-empty,
+    .admin-shell.admin-home-redesign .mg-current-workspace .sales-totals>article{
+      border:1px solid #e5e9df!important;border-radius:9px!important;background:#fff!important;box-shadow:none!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .operation-locked-icon,
+    .admin-shell.admin-home-redesign .mg-current-workspace .sales-entry-help>span{
+      background:#effbd0!important;color:#5d7624!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .operation-locked-main>small{color:#647a2d!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .operation-locked-main h2,
+    .admin-shell.admin-home-redesign .mg-current-workspace .operation-locked-side h3,
+    .admin-shell.admin-home-redesign .mg-current-workspace .sales-cart-empty b,
+    .admin-shell.admin-home-redesign .mg-current-workspace .sales-totals>article h2{color:#252a24!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .operation-locked-main p,
+    .admin-shell.admin-home-redesign .mg-current-workspace .operation-locked-side>p,
+    .admin-shell.admin-home-redesign .mg-current-workspace .sales-cart-empty p{color:#888e85!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .sales-totals>article.sales-total-main{
+      border-color:#dfe8c2!important;background:#f8fce9!important;
+    }
+    .admin-shell.admin-home-redesign .mg-current-workspace .sales-totals>article.sales-total-main p,
+    .admin-shell.admin-home-redesign .mg-current-workspace .sales-totals>article.sales-total-main h2{color:#587221!important}
+
+    /* Navegación móvil también deja el azul/rojo viejo. */
+    @media(max-width:850px){
+      .admin-shell.admin-home-redesign .admin-mobile-modules{
+        border-color:#e5e9df!important;border-radius:10px!important;background:#fff!important;box-shadow:none!important;
+      }
+      .admin-shell.admin-home-redesign .admin-mobile-modules button{
+        border-radius:7px!important;background:#f7f8f5!important;color:#687066!important;
+      }
+      .admin-shell.admin-home-redesign .admin-mobile-modules button.active{
+        border-color:#111311!important;background:#111311!important;color:#c9f45a!important;
+      }
+      .admin-shell.admin-home-redesign .admin-mobile-modules button>i{
+        background:#c9f45a!important;color:#111311!important;
+      }
+    }
   `]
 })
 export class AdminIntegradoComponent implements OnInit, OnDestroy {
