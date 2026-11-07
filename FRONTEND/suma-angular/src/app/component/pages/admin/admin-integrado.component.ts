@@ -187,6 +187,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
         <button type="button" [class.active]="moduloActivo==='sistema'" (click)="abrirModuloAdmin('sistema')"><span>⚙</span><b>Sistema</b></button>
       </nav>
 
+      <div class="mg-current-workspace">
       <!-- Las pantallas antiguas de la plantilla fueron retiradas.
            Todos los módulos administrativos usan la interfaz actual de Mallqui Gym. -->
 
@@ -219,7 +220,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
                 <button type="button" class="seguimiento" (click)="cambiarSegcion('seguimiento')">
                   <i>◎</i><div><strong>Seguimiento</strong><span>Membresía, asistencia y rutina</span></div><b>›</b>
                 </button>
-                <button type="button" class="asistencia" (click)="cambiarSegcion('attendance-tools')">
+                <button type="button" class="asistencia" (click)="cambiarSegcion('asistencias')">
                   <i>✓</i><div><strong>Asistencia</strong><span>Registrar entrada o salida</span></div><b>›</b>
                 </button>
                 <button type="button" class="rutinas" (click)="cambiarSegcion('rutinas')">
@@ -2110,6 +2111,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
         (cerrar)="clienteFichaId=0">
       </app-admin-cliente-ficha>
 
+      </div>
       <footer class="cf-global-footer">© Mallqui Gym 2026</footer>
     </main>
   </div>
@@ -2610,8 +2612,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       {claves:['rutina','rutinas'],seccion:'rutinas'},
       {claves:['nutricion','alimentacion','alimentación'],seccion:'nutricion'},
       {claves:['entrenador','entrenadores'],seccion:'entrenador'},
-      {claves:['trainer profile','perfil entrenador'],seccion:'trainer-profile'},
-      {claves:['sports components','componentes deportivos','fitness widgets'],seccion:'sports-components'},
+      {claves:['trainer profile','perfil entrenador'],seccion:'entrenador'},
+      {claves:['sports components','componentes deportivos','fitness widgets'],seccion:'seguimiento'},
       {claves:['caja','apertura','cierre'],seccion:'caja'},
       {claves:['venta','ventas','punto de venta'],seccion:'ventas'},
       {claves:['gasto','gastos','egreso','egresos'],seccion:'gastos'},
@@ -2634,47 +2636,47 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       {claves:['salario','salarios','sueldo','sueldos'],seccion:'salarios'},
       {claves:['ingreso','ingresos'],seccion:'ingresos'},
       {claves:['factura','facturas','comprobante'],seccion:'facturas'},
-      {claves:['members list','lista socios','lista miembros'],seccion:'members-list'},
-      {claves:['add member','agregar socio','nuevo socio'],seccion:'add-member'},
-      {claves:['edit member','editar socio','editar miembro'],seccion:'edit-member'},
-      {claves:['invoices list','lista facturas'],seccion:'invoices-list'},
-      {claves:['add invoice','agregar factura','nueva factura'],seccion:'add-invoice'},
-      {claves:['edit invoice','editar factura'],seccion:'edit-invoice'},
-      {claves:['tables','tabla','tablas'],seccion:'tables'},
-      {claves:['data table','datatable','filtros tabla'],seccion:'data-tables'},
-      {claves:['graph','graphs','graficos','gráficos'],seccion:'graphs'},
-      {claves:['apex','apex charts'],seccion:'apex'},
-      {claves:['morris','morris charts'],seccion:'morris'},
-      {claves:['mapa','maps','vector maps'],seccion:'vector-maps'},
-      {claves:['accordion','accordions'],seccion:'accordions'},
-      {claves:['carousel','carrusel'],seccion:'carousel'},
-      {claves:['modal','modals'],seccion:'modals'},
-      {claves:['popover','popovers'],seccion:'popovers'},
-      {claves:['tabs','pestañas'],seccion:'tabs-ui'},
-      {claves:['tooltip','tooltips'],seccion:'tooltips'},
-      {claves:['forms','formularios'],seccion:'forms'},
-      {claves:['inputs','form inputs'],seccion:'form-inputs'},
-      {claves:['checkbox','radio'],seccion:'checkbox-radio'},
-      {claves:['archivo','file input','upload'],seccion:'file-input'},
-      {claves:['validacion','validaciones'],seccion:'validations'},
-      {claves:['fecha hora','date time'],seccion:'date-time'},
-      {claves:['input mask','mascaras'],seccion:'input-masks'},
-      {claves:['tags','etiquetas'],seccion:'input-tags'},
-      {claves:['alerts','alertas'],seccion:'alerts'},
-      {claves:['avatars','avatares'],seccion:'avatars'},
-      {claves:['badges','insignias'],seccion:'badges'},
-      {claves:['buttons','botones'],seccion:'buttons'},
-      {claves:['cards','tarjetas'],seccion:'cards-ui'},
-      {claves:['dropdown','desplegable'],seccion:'dropdowns'},
-      {claves:['progress','progreso'],seccion:'progress-bars'},
-      {claves:['icons','iconos'],seccion:'icons'},
-      {claves:['account settings','cuenta'],seccion:'account-settings'},
-      {claves:['my profile','perfil'],seccion:'my-profile'},
-      {claves:['contact','contacto'],seccion:'contact'},
-      {claves:['typography','tipografia'],seccion:'typography'},
-      {claves:['login signup','autenticacion'],seccion:'login-signup'},
-      {claves:['404','page not found'],seccion:'page-not-found'},
-      {claves:['maintenance','mantenimiento'],seccion:'maintenance'},
+      {claves:['members list','lista socios','lista miembros'],seccion:'clientes'},
+      {claves:['add member','agregar socio','nuevo socio'],seccion:'clientes'},
+      {claves:['edit member','editar socio','editar miembro'],seccion:'clientes'},
+      {claves:['invoices list','lista facturas'],seccion:'facturas'},
+      {claves:['add invoice','agregar factura','nueva factura'],seccion:'facturas'},
+      {claves:['edit invoice','editar factura'],seccion:'facturas'},
+      {claves:['tables','tabla','tablas'],seccion:'dashboard'},
+      {claves:['data table','datatable','filtros tabla'],seccion:'dashboard'},
+      {claves:['graph','graphs','graficos','gráficos'],seccion:'reportes-admin'},
+      {claves:['apex','apex charts'],seccion:'reportes-admin'},
+      {claves:['morris','morris charts'],seccion:'reportes-admin'},
+      {claves:['mapa','maps','vector maps'],seccion:'dashboard'},
+      {claves:['accordion','accordions'],seccion:'dashboard'},
+      {claves:['carousel','carrusel'],seccion:'dashboard'},
+      {claves:['modal','modals'],seccion:'dashboard'},
+      {claves:['popover','popovers'],seccion:'dashboard'},
+      {claves:['tabs','pestañas'],seccion:'dashboard'},
+      {claves:['tooltip','tooltips'],seccion:'dashboard'},
+      {claves:['forms','formularios'],seccion:'configuracion'},
+      {claves:['inputs','form inputs'],seccion:'configuracion'},
+      {claves:['checkbox','radio'],seccion:'configuracion'},
+      {claves:['archivo','file input','upload'],seccion:'mantenimiento-sistema'},
+      {claves:['validacion','validaciones'],seccion:'configuracion'},
+      {claves:['fecha hora','date time'],seccion:'configuracion'},
+      {claves:['input mask','mascaras'],seccion:'configuracion'},
+      {claves:['tags','etiquetas'],seccion:'configuracion'},
+      {claves:['alerts','alertas'],seccion:'comunicacion'},
+      {claves:['avatars','avatares'],seccion:'usuarios'},
+      {claves:['badges','insignias'],seccion:'usuarios'},
+      {claves:['buttons','botones'],seccion:'configuracion'},
+      {claves:['cards','tarjetas'],seccion:'dashboard'},
+      {claves:['dropdown','desplegable'],seccion:'configuracion'},
+      {claves:['progress','progreso'],seccion:'seguimiento'},
+      {claves:['icons','iconos'],seccion:'configuracion'},
+      {claves:['account settings','cuenta'],seccion:'configuracion'},
+      {claves:['my profile','perfil'],seccion:'configuracion'},
+      {claves:['contact','contacto'],seccion:'soporte'},
+      {claves:['typography','tipografia'],seccion:'configuracion'},
+      {claves:['login signup','autenticacion'],seccion:'configuracion'},
+      {claves:['404','page not found'],seccion:'dashboard'},
+      {claves:['maintenance','mantenimiento'],seccion:'mantenimiento-sistema'},
       {claves:['configuracion','sistema','ajustes'],seccion:'configuracion'},
       {claves:['dashboard','inicio','panel'],seccion:'dashboard'}
     ];
@@ -3056,10 +3058,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         return [
           {id:'ingresos',nombre:'Ingresos'},
           {id:'facturas',nombre:'Facturas'},
-          {id:'invoices-list',nombre:'Lista de Facturas'},
-          {id:'expenses',nombre:'Gastos Administrativos'},
-          {id:'salarios',nombre:'Salarios'},
-          {id:'payslip',nombre:'Boleta de Pago'}
+          {id:'gastos',nombre:'Gastos'},
+          {id:'salarios',nombre:'Salarios'}
         ];
       case 'atencion':
         return [
