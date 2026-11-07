@@ -3677,11 +3677,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.cargarClientes();
         this.cargarMembresias();
         this.cargarPagos();
+        this.cargarCaja();
         break;
       case 'pagos':
         this.cargarClientes();
         this.cargarMembresias();
         this.cargarPagos();
+        this.cargarCaja();
         break;
       case 'entrenador':
         this.cargarEntrenadores();
@@ -3855,9 +3857,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   confirmarPagoEfectivo(p:any){
     if(!p?.id_pago || p?.estado_pago!=='Pendiente' || p?.metodo_pago!=='Efectivo')return;
+    if(!this.caja?.caja_abierta){
+      this.error='Abre Caja antes de confirmar un pago en efectivo.';
+      return;
+    }
     if(!confirm('¿Confirmar que recepción recibió el pago en efectivo?'))return;
     this.api.confirmarPagoPendiente(Number(p.id_pago)).subscribe({
-      next:r=>{this.ok(r?.mensaje||'Pago confirmado');this.cargarPagos();this.cargarMembresias();this.cargarDashboard();},
+      next:r=>{this.ok(r?.mensaje||'Pago confirmado');this.cargarPagos();this.cargarMembresias();this.cargarCaja();this.cargarDashboard();},
       error:e=>this.mostrarError(e)
     });
   }
@@ -4026,6 +4032,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   contratarMembresia(){
     if(!this.membresiaForm.id_cliente || !this.membresiaForm.id_membresia){this.error='Selecciona cliente y membresía.';return;}
+    if(this.membresiaForm.metodo_pago==='Efectivo' && !this.caja?.caja_abierta){
+      this.error='Abre Caja antes de cobrar una membresía en efectivo. Los pagos digitales no requieren Caja abierta.';
+      return;
+    }
     const datos={...this.membresiaForm};
     if(datos.metodo_pago==='Efectivo') datos.numero_operacion=null;
     this.api.contratarMembresia(datos).subscribe({next:()=>{this.ok('Membresía contratada y pago registrado');this.cargarMembresias();this.cargarPagos();this.cargarDashboard();this.cargarCaja();},error:e=>this.mostrarError(e)});
@@ -4233,6 +4243,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   get subtotalVentaPreview():number{const f=1+(Number(this.ventaForm.igv_porcentaje||0)/100);return f>0?this.totalVentaPreview/f:this.totalVentaPreview;}
   get igvVentaPreview():number{return this.totalVentaPreview-this.subtotalVentaPreview;}
   registrarVenta(){
+    if(!this.caja?.caja_abierta){this.error='Abre Caja antes de registrar una venta.';return;}
     if(!this.ventaForm.id_cliente){this.error='Selecciona el socio que realiza la compra.';return;}
     if(!this.ventaItems.length){this.error='Agrega al menos un producto al carrito.';return;}
     if(this.ventaForm.metodo_pago!=='Efectivo' && !String(this.ventaForm.numero_operacion||'').trim()){
