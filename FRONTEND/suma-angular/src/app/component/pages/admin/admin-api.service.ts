@@ -334,6 +334,12 @@ export class AdminApiService {
     return this.http.post(`/api/admin-gym-registros/${modulo}`, datos);
   }
 
+  subirImagenGymRegistro(modulo: string, archivo: File): Observable<any> {
+    const form = new FormData();
+    form.append('imagen', archivo);
+    return this.http.post(`/api/admin-gym-registros/${modulo}/imagen`, form);
+  }
+
   actualizarGymRegistro(modulo: string, id: number, datos: any): Observable<any> {
     return this.http.put(`/api/admin-gym-registros/${modulo}/${id}`, datos);
   }
