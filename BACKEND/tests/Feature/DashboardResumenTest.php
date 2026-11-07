@@ -165,6 +165,67 @@ class DashboardResumenTest extends TestCase
             ->assertJsonPath('fuente.modo', 'base_principal');
     }
 
+
+    public function test_dashboard_cuenta_pago_efectivo_pendiente_desde_pagos_membresia(): void
+    {
+        Schema::create('membresias', function (Blueprint $table) {
+            $table->id('id_membresia');
+            $table->string('nombre');
+            $table->decimal('precio', 10, 2)->default(80);
+            $table->unsignedInteger('duracion_meses')->default(1);
+            $table->string('estado')->default('Activo');
+        });
+
+        Schema::create('cliente_membresia', function (Blueprint $table) {
+            $table->id('id_cliente_membresia');
+            $table->unsignedBigInteger('id_cliente');
+            $table->unsignedBigInteger('id_membresia');
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
+            $table->string('estado');
+        });
+
+        Schema::create('pagos_membresia', function (Blueprint $table) {
+            $table->id('id_pago');
+            $table->unsignedBigInteger('id_cliente_membresia');
+            $table->dateTime('fecha_pago');
+            $table->decimal('monto', 10, 2);
+            $table->string('metodo_pago');
+            $table->string('estado_pago');
+        });
+
+        DB::table('membresias')->insert([
+            'id_membresia' => 1,
+            'nombre' => 'Mensual',
+            'precio' => 80,
+            'duracion_meses' => 1,
+            'estado' => 'Activo',
+        ]);
+
+        DB::table('cliente_membresia')->insert([
+            'id_cliente_membresia' => 1,
+            'id_cliente' => 1,
+            'id_membresia' => 1,
+            'fecha_inicio' => today()->toDateString(),
+            'fecha_fin' => today()->addMonth()->toDateString(),
+            'estado' => 'PendientePago',
+        ]);
+
+        DB::table('pagos_membresia')->insert([
+            'id_pago' => 1,
+            'id_cliente_membresia' => 1,
+            'fecha_pago' => now(),
+            'monto' => 80,
+            'metodo_pago' => 'Efectivo',
+            'estado_pago' => 'Pendiente',
+        ]);
+
+        $this->getJson('/api/dashboard/resumen')
+            ->assertOk()
+            ->assertJsonPath('membresias.pagos_pendientes', 1)
+            ->assertJsonPath('alertas.total', 1);
+    }
+
     public function test_dashboard_entrega_resumen_operativo_completo(): void
     {
         $this->getJson('/api/dashboard/resumen')
