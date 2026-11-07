@@ -156,47 +156,8 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <button type="button" [class.active]="seccion==='mantenimiento-sistema'" (click)="cambiarSegcion('mantenimiento-sistema')"><span>•</span><span>Mantenimiento del Sistema</span></button>
         </div>
 
-        <button type="button" class="cf-nav-group-head" [class.active]="navGroups.ui" (click)="toggleNavGroup('ui')">
-          <span class="admin-main-nav-icon">✦</span><span>Herramientas</span><i>{{navGroups.ui?'⌃':'⌄'}}</i>
-        </button>
-        <div class="cf-nav-children" *ngIf="navGroups.ui">
-          <button type="button" [class.active]="seccion==='tables'" (click)="cambiarSegcion('tables')"><span>•</span><span>Tablas</span></button>
-          <button type="button" [class.active]="seccion==='data-tables'" (click)="cambiarSegcion('data-tables')"><span>•</span><span>Tablas de Datos</span></button>
-          <button type="button" [class.active]="seccion==='graphs'" (click)="cambiarSegcion('graphs')"><span>•</span><span>Gráficos</span></button>
-          <button type="button" [class.active]="seccion==='apex'" (click)="cambiarSegcion('apex')"><span>•</span><span>Apex Charts</span></button>
-          <button type="button" [class.active]="seccion==='morris'" (click)="cambiarSegcion('morris')"><span>•</span><span>Morris Charts</span></button>
-          <button type="button" [class.active]="seccion==='vector-maps'" (click)="cambiarSegcion('vector-maps')"><span>•</span><span>Mapas Vectoriales</span></button>
-          <button type="button" [class.active]="seccion==='accordions'" (click)="cambiarSegcion('accordions')"><span>•</span><span>Acordeones</span></button>
-          <button type="button" [class.active]="seccion==='carousel'" (click)="cambiarSegcion('carousel')"><span>•</span><span>Carrusel</span></button>
-          <button type="button" [class.active]="seccion==='modals'" (click)="cambiarSegcion('modals')"><span>•</span><span>Modales</span></button>
-          <button type="button" [class.active]="seccion==='popovers'" (click)="cambiarSegcion('popovers')"><span>•</span><span>Popovers</span></button>
-          <button type="button" [class.active]="seccion==='tabs-ui'" (click)="cambiarSegcion('tabs-ui')"><span>•</span><span>Pestañas</span></button>
-          <button type="button" [class.active]="seccion==='tooltips'" (click)="cambiarSegcion('tooltips')"><span>•</span><span>Tooltips</span></button>
-          <button type="button" [class.active]="seccion==='forms'" (click)="cambiarSegcion('forms')"><span>•</span><span>Formularios</span></button>
-          <button type="button" [class.active]="seccion==='form-inputs'" (click)="cambiarSegcion('form-inputs')"><span>•</span><span>Campos de Formulario</span></button>
-          <button type="button" [class.active]="seccion==='checkbox-radio'" (click)="cambiarSegcion('checkbox-radio')"><span>•</span><span>Checkbox y Radio</span></button>
-          <button type="button" [class.active]="seccion==='file-input'" (click)="cambiarSegcion('file-input')"><span>•</span><span>Archivos</span></button>
-          <button type="button" [class.active]="seccion==='validations'" (click)="cambiarSegcion('validations')"><span>•</span><span>Validaciones</span></button>
-          <button type="button" [class.active]="seccion==='date-time'" (click)="cambiarSegcion('date-time')"><span>•</span><span>Fecha y Hora</span></button>
-          <button type="button" [class.active]="seccion==='input-masks'" (click)="cambiarSegcion('input-masks')"><span>•</span><span>Máscaras de Entrada</span></button>
-          <button type="button" [class.active]="seccion==='input-tags'" (click)="cambiarSegcion('input-tags')"><span>•</span><span>Etiquetas</span></button>
-          <button type="button" [class.active]="seccion==='alerts'" (click)="cambiarSegcion('alerts')"><span>•</span><span>Alertas</span></button>
-          <button type="button" [class.active]="seccion==='avatars'" (click)="cambiarSegcion('avatars')"><span>•</span><span>Avatares</span></button>
-          <button type="button" [class.active]="seccion==='badges'" (click)="cambiarSegcion('badges')"><span>•</span><span>Insignias</span></button>
-          <button type="button" [class.active]="seccion==='buttons'" (click)="cambiarSegcion('buttons')"><span>•</span><span>Botones</span></button>
-          <button type="button" [class.active]="seccion==='button-groups'" (click)="cambiarSegcion('button-groups')"><span>•</span><span>Grupos de Botones</span></button>
-          <button type="button" [class.active]="seccion==='cards-ui'" (click)="cambiarSegcion('cards-ui')"><span>•</span><span>Tarjetas</span></button>
-          <button type="button" [class.active]="seccion==='advanced-cards'" (click)="cambiarSegcion('advanced-cards')"><span>•</span><span>Tarjetas Avanzadas</span></button>
-          <button type="button" [class.active]="seccion==='dropdowns'" (click)="cambiarSegcion('dropdowns')"><span>•</span><span>Menús Desplegables</span></button>
-          <button type="button" [class.active]="seccion==='list-items'" (click)="cambiarSegcion('list-items')"><span>•</span><span>Listas</span></button>
-          <button type="button" [class.active]="seccion==='progress-bars'" (click)="cambiarSegcion('progress-bars')"><span>•</span><span>Barras de Progreso</span></button>
-          <button type="button" [class.active]="seccion==='placeholders'" (click)="cambiarSegcion('placeholders')"><span>•</span><span>Placeholders</span></button>
-          <button type="button" [class.active]="seccion==='spinners'" (click)="cambiarSegcion('spinners')"><span>•</span><span>Spinners</span></button>
-          <button type="button" [class.active]="seccion==='icons'" (click)="cambiarSegcion('icons')"><span>•</span><span>Iconos</span></button>
-          <button type="button" [class.active]="seccion==='account-settings'" (click)="cambiarSegcion('account-settings')"><span>•</span><span>Ajustes de Cuenta</span></button>
-          <button type="button" [class.active]="seccion==='contact'" (click)="cambiarSegcion('contact')"><span>•</span><span>Contacto</span></button>
-          <button type="button" [class.active]="seccion==='typography'" (click)="cambiarSegcion('typography')"><span>•</span><span>Tipografía</span></button>
-        </div>
+        <!-- Se ocultaron del menú principal los componentes de demostración de la plantilla
+             (acordeones, spinners, avatares, etc.) para mantener solo funciones reales del gimnasio. -->
       </nav>
 
       <div class="mg-sidebar-bottom">
