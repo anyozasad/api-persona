@@ -1282,25 +1282,15 @@ export class ClienteExperienciaComponent implements OnInit, OnChanges, OnDestroy
   imagenEventoCalendario(e:any): string {
     const tipo=String(e?.tipo||'').toLowerCase();
     const detalle=String(e?.detalle||'').toLowerCase();
-    if(tipo==='membresia'){
-      return 'https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=240&q=82';
-    }
-    if(tipo==='recomendada'){
-      return 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=240&q=82';
-    }
-    if(tipo==='clase'){
-      return 'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=240&q=82';
-    }
-    if(detalle.includes('pierna')){
-      return 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=240&q=82';
-    }
-    if(detalle.includes('brazo')){
-      return 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=240&q=82';
-    }
-    if(detalle.includes('core') || detalle.includes('abdomen')){
-      return 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=240&q=82';
-    }
-    return 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=240&q=82';
+
+    // Recursos locales: calendario funcional incluso sin Internet.
+    if(tipo==='membresia') return 'assets/mallqui/mallqui-cover.webp';
+    if(tipo==='recomendada') return 'assets/mallqui/mallqui-trainer-ai-4k.webp';
+    if(tipo==='clase') return 'assets/mallqui/mallqui-gallery-1.webp';
+    if(detalle.includes('pierna')) return 'assets/mallqui/mallqui-beginner-ai-4k.webp';
+    if(detalle.includes('brazo')) return 'assets/mallqui/mallqui-pro-ai-4k.webp';
+    if(detalle.includes('core') || detalle.includes('abdomen')) return 'assets/mallqui/mallqui-gallery-4.webp';
+    return 'assets/mallqui/mallqui-hero-4k.webp';
   }
 
   private eventosEnFecha(fecha:Date): any[] {
