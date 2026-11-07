@@ -68,6 +68,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.members">
           <button type="button" [class.active]="seccion==='clientes'" (click)="cambiarSegcion('clientes')"><span>•</span><span>Socios</span></button>
+          <button type="button" (click)="abrirNuevoSocioDesdeDashboard()"><span>＋</span><span>Matricular socio</span></button>
           <button type="button" [class.active]="seccion==='membresias'" (click)="cambiarSegcion('membresias')"><span>•</span><span>Membresías</span></button>
           <button type="button" [class.active]="seccion==='renovaciones'" (click)="cambiarSegcion('renovaciones')"><span>•</span><span>Renovaciones y Avisos</span></button>
           <button type="button" [class.active]="seccion==='pagos'" (click)="cambiarSegcion('pagos')"><span>•</span><span>Pagos</span></button>
@@ -191,16 +192,30 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
       <!-- Las pantallas antiguas de la plantilla fueron retiradas.
            Todos los módulos administrativos usan la interfaz actual de Mallqui Gym. -->
 
-      <section class="mg-business-page" *ngIf="!modulosConVistaPropia.includes(seccion) && !suiteModules.includes(seccion)">
-        <header class="mg-business-head">
-          <div>
-            <span>MALLQUI GYM</span>
-            <h2>Módulo en integración</h2>
-            <p>Esta opción se ha unificado con la interfaz administrativa actual.</p>
-          </div>
-          <button type="button" class="admin-primary" (click)="cambiarSegcion('dashboard')">Volver al inicio</button>
-        </header>
+      <section class="mg-module-shell-head" *ngIf="seccion!=='dashboard'">
+        <div class="mg-module-shell-copy">
+          <span>{{etiquetaModuloActual}}</span>
+          <h2>{{tituloActual}}</h2>
+          <p>{{subtituloActual}}</p>
+        </div>
+        <div class="mg-module-shell-actions">
+          <span class="mg-module-state">{{estadoModuloActual}}</span>
+          <button type="button" (click)="actualizarSegcionActual()" [disabled]="actualizandoDatos">
+            {{actualizandoDatos ? 'Actualizando...' : '↻ Actualizar'}}
+          </button>
+        </div>
       </section>
+
+      <nav class="mg-module-tabs" *ngIf="seccion!=='dashboard' && tabsModuloActual.length">
+        <button
+          type="button"
+          *ngFor="let tab of tabsModuloActual"
+          [class.active]="seccion===tab.id"
+          (click)="cambiarSegcion(tab.id)">
+          {{tab.nombre}}
+          <i *ngIf="badgeTab(tab.id)>0">{{badgeTab(tab.id)}}</i>
+        </button>
+      </nav>
 
       <ng-container *ngIf="seccion==='dashboard'">
         <section class="mg-dashboard">
@@ -2654,17 +2669,17 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     'historial-ventas':['Historial de Ventas','Consulta de todas las ventas registradas'],
     'reporte-asistencias':['Reporte de Asistencias','Resumen y detalle de asistencias registradas'],
     entrenador:['Entrenadores','Administración del entrenador principal'], clases:['Clases','Programación, horarios y cupos'],
-    asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['Mi Plan de Entrenamiento','Rutinas de entrenamiento y seguimiento de socios'], seguimiento:['Seguimiento de Socios','Membresía, asistencia y rutinas por socio'], 'progreso-fisico':['Progreso Físico','Medidas y evolución del socio'], renovaciones:['Renovaciones y Avisos','Vencimientos y comunicación con socios'], 'documentos-socio':['Documentos del Socio','Carnet y comprobantes'], 'mantenimiento-sistema':['Mantenimiento del Sistema','Backups y tareas técnicas'],
+    asistencias:['Asistencias','Control de entradas y salidas'], rutinas:['Rutinas de Entrenamiento','Asignación, ejercicios y seguimiento de rutinas de los socios'], seguimiento:['Seguimiento de Socios','Membresía, asistencia y rutinas por socio'], 'progreso-fisico':['Progreso Físico','Medidas y evolución del socio'], renovaciones:['Renovaciones y Avisos','Vencimientos y comunicación con socios'], 'documentos-socio':['Documentos del Socio','Carnet y comprobantes'], 'mantenimiento-sistema':['Mantenimiento del Sistema','Backups y tareas técnicas'],
     reservas:['Reservas','Reservas creadas desde el portal y control de asistencia'], categorias:['Categorías','Clasificación de productos'],
     productos:['Productos','Registro, precios y control de stock'], proveedores:['Proveedores','Proveedores de productos'],
     compras:['Compras','Ingreso de productos e inventario'], ventas:['Ventas','Ventas de productos y stock'],
     caja:['Caja','Apertura, movimientos y cierre'],
-    reportes:['Mis Reportes','Indicadores de rendimiento del gimnasio'], usuarios:['Usuarios','Cuentas internas y permisos'],
+    reportes:['Reportes','Indicadores de rendimiento del gimnasio'], 'reportes-admin':['Reportes Administrativos','Indicadores generales de operación, ventas, socios y asistencia'], usuarios:['Usuarios','Cuentas internas y permisos'],
     comunicacion:['Notificaciones','Avisos que reciben los clientes en su portal'], soporte:['Soporte','Consultas y solicitudes enviadas desde el portal del cliente'],
     opiniones:['Opiniones','Comentarios y calificaciones enviadas desde el portal del cliente'],
     auditoria:['Auditoría','Historial de acciones, usuarios, rutas y resultados del sistema'],
     configuracion:['Configuración','Ajustes generales y mantenimiento del sistema'],
-    nutricion:['Mi Plan de Alimentación','Planes de nutrición y seguimiento de socios'],
+    nutricion:['Nutrición','Planes de alimentación y seguimiento nutricional de los socios'],
     equipos:['Equipos','Máquinas, mantenimiento y estado operativo'],
     eventos:['Eventos del Gimnasio','Actividades, campañas y eventos internos'],
     galeria:['Galería','Contenido visual y fotografías del gimnasio'],
@@ -2689,10 +2704,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   nutricionPreview: any[] = [];
   suiteModules = ['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   modulosConVistaPropia = [
-    'dashboard','clientes','membresias','pagos','entrenador','clases','asistencias','attendance-tools','seguimiento','progreso-fisico','renovaciones','documentos-socio','mantenimiento-sistema',
+    'dashboard','clientes','membresias','pagos','entrenador','clases','asistencias','seguimiento','progreso-fisico','renovaciones','documentos-socio','mantenimiento-sistema',
     'rutinas','reservas','caja','ventas','historial-ventas','gastos','inventario','productos','kardex',
-    'proveedores','compras','categorias','reportes','reportes-admin','reporte-asistencias','usuarios',
-    'auditoria','configuracion','opiniones','nutricion'
+    'proveedores','compras','categorias','reportes-admin','reporte-asistencias','usuarios',
+    'auditoria','configuracion','opiniones'
   ];
   navGroups:any = {members:false,payments:false,trainers:false,training:false,diet:false,equipment:false,events:false,ui:false,operations:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
   uiElementLinks = [
@@ -2924,10 +2939,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   seleccionarDiaNutricion(dia:string):void{
     this.diaNutricionActivo=dia;
     this.ok('Plan de alimentación: '+dia);
-  }
-
-  avisoPlanDemo(nombre:string):void{
-    this.ok('Plan '+nombre+': usa el formulario de Planes y Precios para registrarlo o editarlo.');
   }
 
   toggleNavGroup(group:string):void{
@@ -3204,7 +3215,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(id==='servicios') return 'clases';
     if(id==='atencion') return 'soporte';
     if(id==='gestion') return 'caja';
-    return id;
+    const validas=[
+      'dashboard','clientes','membresias','renovaciones','pagos','planes','documentos-socio',
+      'clases','reservas','rutinas','seguimiento','progreso-fisico','nutricion','asistencias','reporte-asistencias','entrenador',
+      'caja','ventas','historial-ventas','gastos','compras',
+      'inventario','productos','categorias','proveedores','kardex','equipos',
+      'eventos','galeria','noticias','soporte','opiniones','comunicacion',
+      'ingresos','facturas','salarios','reportes-admin','usuarios','auditoria','configuracion','mantenimiento-sistema'
+    ];
+    return validas.includes(id) ? id : 'dashboard';
   }
 
   get moduloActivo():string{
@@ -3807,62 +3826,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       case 'ingresos':
       case 'facturas':
         break;
-      case 'sports-components':
-      case 'trainer-profile':
-      case 'members-list':
-      case 'add-member':
-      case 'edit-member':
-      case 'invoices-list':
-      case 'add-invoice':
-      case 'edit-invoice':
-        break;
-      case 'tables':
-      case 'data-tables':
-      case 'graphs':
-      case 'apex':
-      case 'morris':
-      case 'vector-maps':
-      case 'accordions':
-      case 'carousel':
-      case 'modals':
-      case 'popovers':
-      case 'tabs-ui':
-      case 'tooltips':
-      case 'forms':
-      case 'form-inputs':
-      case 'checkbox-radio':
-      case 'file-input':
-      case 'validations':
-      case 'date-time':
-      case 'input-masks':
-      case 'input-tags':
-      case 'alerts':
-      case 'avatars':
-      case 'badges':
-      case 'buttons':
-      case 'button-groups':
-      case 'cards-ui':
-      case 'advanced-cards':
-      case 'dropdowns':
-      case 'list-items':
-      case 'progress-bars':
-      case 'placeholders':
-      case 'spinners':
-      case 'icons':
-      case 'account-settings':
-      case 'my-profile':
-      case 'contact':
-      case 'typography':
-      case 'login-signup':
-      case 'page-not-found':
-      case 'maintenance':
-      case 'menu-level':
-      case 'external-link':
-      case 'chip':
-      case 'badge-link':
-      case 'disabled-link':
-        break;
-
       case 'socios-hub':
         this.cargarSegcion('clientes');
         break;
