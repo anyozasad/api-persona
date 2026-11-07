@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AdminGymRecord;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class AdminGymRecordController extends Controller
 {
@@ -74,6 +75,31 @@ class AdminGymRecordController extends Controller
         $record->delete();
 
         return response()->json(['ok' => true]);
+    }
+
+
+    public function subirImagen(Request $request, string $modulo): JsonResponse
+    {
+        $this->validarModulo($modulo);
+
+        $data = $request->validate([
+            'imagen' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+        ]);
+
+        $archivo = $data['imagen'];
+        $directorio = public_path('uploads/admin-gym');
+        if (!is_dir($directorio)) {
+            mkdir($directorio, 0775, true);
+        }
+
+        $extension = strtolower($archivo->getClientOriginalExtension() ?: 'webp');
+        $nombre = $modulo.'-'.Str::uuid().'.'.$extension;
+        $archivo->move($directorio, $nombre);
+
+        return response()->json([
+            'imagen_url' => '/uploads/admin-gym/'.$nombre,
+            'mensaje' => 'Imagen guardada localmente.',
+        ], 201);
     }
 
     public function cambiarEstado(Request $request, string $modulo, int $id): JsonResponse
