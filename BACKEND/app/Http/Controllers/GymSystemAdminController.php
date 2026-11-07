@@ -18,21 +18,13 @@ class GymSystemAdminController extends Controller
 
     public function __construct()
     {
-        // El dashboard administrativo trabaja directamente con la base existente gym_system.
-        // En pruebas se puede reemplazar con GYM_DB_DATABASE para no tocar datos reales.
-        $mysql = (array) config('database.connections.mysql', []);
-        config([
-            'database.connections.gym_system_actions' => array_merge($mysql, [
-                'database' => env('GYM_DB_DATABASE', 'gym_system'),
-                'prefix' => '',
-            ]),
-        ]);
-
-        $this->db = DB::connection('gym_system_actions');
+        // Una sola fuente de verdad: todos los módulos administrativos usan
+        // exactamente la misma conexión DB_DATABASE que Laravel y el portal.
+        $this->db = DB::connection();
         $this->schema = $this->db->getSchemaBuilder();
 
-        // El sistema actual usa clientes/id_cliente, ventas/id_venta, cajas/id_caja, etc.
-        // La reparación legacy solo se ejecuta si realmente se detecta el esquema antiguo.
+        // La reparación legacy se conserva únicamente para una instalación
+        // realmente antigua que todavía no tenga clientes.id_cliente.
         $esquemaActual = $this->schema->hasTable('clientes')
             && $this->schema->hasColumn('clientes', 'id_cliente');
 
