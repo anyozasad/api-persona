@@ -3610,7 +3610,14 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   actualizarSegcionActual(silencioso = false): void {
-    if (this.actualizandoDatos && !silencioso) return;
+    if (this.actualizandoDatos) return;
+
+    // Inicio necesita validar dashboard + API + esquema + módulos relacionados.
+    // Así el auto-refresco no conserva un estado ACTIVO obsoleto.
+    if (this.seccion === 'dashboard') {
+      this.actualizarDashboardCompleto();
+      return;
+    }
 
     if (!silencioso) {
       this.actualizandoDatos = true;
@@ -3618,9 +3625,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     }
 
     this.cargarDashboard();
-    if (this.seccion !== 'dashboard') {
-      this.cargarSegcion(this.seccion);
-    }
+    this.cargarSegcion(this.seccion);
 
     if (!silencioso) {
       setTimeout(() => {
