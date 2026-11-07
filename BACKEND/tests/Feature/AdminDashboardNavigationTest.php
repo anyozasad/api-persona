@@ -32,7 +32,7 @@ class AdminDashboardNavigationTest extends TestCase
 
         foreach ($secciones as $seccion) {
             $this->assertStringContainsString(
-                "cambiarSeccion('".$seccion."')",
+                "cambiarSegcion('".$seccion."')",
                 $source,
                 'Falta acceso funcional a: '.$seccion
             );
@@ -45,15 +45,15 @@ class AdminDashboardNavigationTest extends TestCase
         $source = (string) file_get_contents($path);
 
         $this->assertStringContainsString(
-            "if(tipo==='rutinas'){ this.cambiarSeccion('rutinas'); return; }",
+            "if(tipo==='rutinas'){ this.cambiarSegcion('rutinas'); return; }",
             $source
         );
         $this->assertStringContainsString(
-            "if(tipo==='soporte'){ this.cambiarSeccion('soporte'); return; }",
+            "if(tipo==='soporte'){ this.cambiarSegcion('soporte'); return; }",
             $source
         );
         $this->assertStringContainsString(
-            "if(tipo==='pagos'){ this.cambiarSeccion('pagos'); return; }",
+            "if(tipo==='pagos'){ this.cambiarSegcion('pagos'); return; }",
             $source
         );
     }
