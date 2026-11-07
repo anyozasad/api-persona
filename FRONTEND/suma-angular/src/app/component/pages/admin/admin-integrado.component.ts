@@ -338,7 +338,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </section>
 
-      <section class="cf-live-page cf-diet-template-page" *ngIf="seccion==='nutricion'">
+      <section class="cf-live-page cf-diet-template-page" *ngIf="seccion==='nutricion-legacy'">
         <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Mi Plan de Alimentación</strong></div>
 
         <section class="cf-diet-template-top">
@@ -2858,7 +2858,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   workoutSemana = 1;
   diaNutricionActivo = 'Domingo';
   nutricionPreview: any[] = [];
-  suiteModules = ['equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
+  suiteModules = ['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   modulosConVistaPropia = [
     'dashboard','clientes','membresias','pagos','entrenador','clases','asistencias','attendance-tools','seguimiento','progreso-fisico','renovaciones','documentos-socio','mantenimiento-sistema',
     'rutinas','reservas','caja','ventas','historial-ventas','gastos','inventario','productos','kardex',
@@ -3022,6 +3022,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       {claves:['clase','clases'],seccion:'clases'},
       {claves:['reserva','reservas','agenda'],seccion:'reservas'},
       {claves:['rutina','rutinas'],seccion:'rutinas'},
+      {claves:['nutricion','alimentacion','alimentación'],seccion:'nutricion'},
       {claves:['entrenador','entrenadores'],seccion:'entrenador'},
       {claves:['trainer profile','perfil entrenador'],seccion:'trainer-profile'},
       {claves:['sports components','componentes deportivos','fitness widgets'],seccion:'sports-components'},
@@ -3373,6 +3374,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(id==='planes-admin' || id==='planes-legacy') return 'planes';
     if(id==='rutinas-admin' || id==='rutinas-legacy') return 'rutinas';
     if(id==='asistencias-legacy') return 'asistencias';
+    if(id==='nutricion-legacy') return 'nutricion';
     if(id==='socios-hub') return 'clientes';
     if(id==='servicios') return 'clases';
     if(id==='atencion') return 'soporte';
