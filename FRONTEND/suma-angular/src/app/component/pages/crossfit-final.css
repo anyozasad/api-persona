@@ -2178,3 +2178,445 @@ html,body{
     grid-template-columns:1fr!important;
   }
 }
+
+
+/* MALLQUI_ADMIN_UNIFIED_NEW_UI_2026_11_07 */
+/* Unifica las vistas administrativas antiguas con la interfaz nueva del dashboard.
+   Solo cambia presentación: mantiene formularios, tablas, eventos y datos existentes. */
+.admin-shell.admin-home-redesign{
+  --mg-admin-bg:#f5f6f2!important;
+  --mg-admin-surface:#ffffff!important;
+  --mg-admin-ink:#171a16!important;
+  --mg-admin-muted:#878d84!important;
+  --mg-admin-line:#e5e9df!important;
+  --mg-admin-lime:#c9f45a!important;
+  --mg-admin-soft:#f7f9f3!important;
+}
+.admin-shell.admin-home-redesign>.admin-content{
+  background:var(--mg-admin-bg)!important;
+}
+.admin-shell.admin-home-redesign .management-grid,
+.admin-shell.admin-home-redesign .report-grid,
+.admin-shell.admin-home-redesign .settings-grid{
+  gap:12px!important;
+}
+.admin-shell.admin-home-redesign .admin-form-card,
+.admin-shell.admin-home-redesign .admin-list-card,
+.admin-shell.admin-home-redesign .report-panel,
+.admin-shell.admin-home-redesign .trainer-main-card,
+.admin-shell.admin-home-redesign .feedback-admin-head,
+.admin-shell.admin-home-redesign .feedback-admin-kpis article,
+.admin-shell.admin-home-redesign .feedback-admin-list>article,
+.admin-shell.admin-home-redesign .config-card,
+.admin-shell.admin-home-redesign .mg-business-card{
+  border:1px solid var(--mg-admin-line)!important;
+  border-radius:10px!important;
+  background:var(--mg-admin-surface)!important;
+  box-shadow:0 4px 16px rgba(24,29,20,.035)!important;
+}
+.admin-shell.admin-home-redesign .admin-form-card,
+.admin-shell.admin-home-redesign .admin-list-card,
+.admin-shell.admin-home-redesign .report-panel,
+.admin-shell.admin-home-redesign .mg-business-card{
+  padding:16px!important;
+}
+.admin-shell.admin-home-redesign .management-heading,
+.admin-shell.admin-home-redesign .mg-business-card-head,
+.admin-shell.admin-home-redesign .feedback-admin-head,
+.admin-shell.admin-home-redesign .config-card-head{
+  min-height:42px!important;
+  margin-bottom:12px!important;
+  padding-bottom:10px!important;
+  border-bottom:1px solid #eff1eb!important;
+}
+.admin-shell.admin-home-redesign .management-heading h2,
+.admin-shell.admin-home-redesign .mg-business-card h3,
+.admin-shell.admin-home-redesign .feedback-admin-head h2,
+.admin-shell.admin-home-redesign .config-card-head h3,
+.admin-shell.admin-home-redesign .trainer-main-card h2{
+  color:var(--mg-admin-ink)!important;
+  font-size:13px!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .management-heading p,
+.admin-shell.admin-home-redesign .mg-business-card p,
+.admin-shell.admin-home-redesign .feedback-admin-head p,
+.admin-shell.admin-home-redesign .config-card-head p{
+  color:var(--mg-admin-muted)!important;
+  font-size:8.5px!important;
+}
+.admin-shell.admin-home-redesign .management-heading>span,
+.admin-shell.admin-home-redesign .management-heading .big-number{
+  min-width:32px!important;
+  height:32px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:8px!important;
+  background:#effbd0!important;
+  color:#536d1b!important;
+  font-size:10px!important;
+  font-weight:900!important;
+}
+.admin-shell.admin-home-redesign .admin-form-card form,
+.admin-shell.admin-home-redesign .mg-business-card form{
+  display:grid!important;
+  gap:10px!important;
+}
+.admin-shell.admin-home-redesign .admin-form-card label,
+.admin-shell.admin-home-redesign .mg-business-card label,
+.admin-shell.admin-home-redesign .config-card label{
+  color:#565d54!important;
+  font-size:8.5px!important;
+  font-weight:700!important;
+}
+.admin-shell.admin-home-redesign .admin-form-card input,
+.admin-shell.admin-home-redesign .admin-form-card select,
+.admin-shell.admin-home-redesign .admin-form-card textarea,
+.admin-shell.admin-home-redesign .mg-business-card input,
+.admin-shell.admin-home-redesign .mg-business-card select,
+.admin-shell.admin-home-redesign .mg-business-card textarea,
+.admin-shell.admin-home-redesign .config-card input,
+.admin-shell.admin-home-redesign .config-card select,
+.admin-shell.admin-home-redesign .config-card textarea{
+  width:100%!important;
+  box-sizing:border-box!important;
+  border:1px solid #dfe4da!important;
+  border-radius:7px!important;
+  background:#fbfcfa!important;
+  color:#252924!important;
+  box-shadow:none!important;
+  outline:0!important;
+}
+.admin-shell.admin-home-redesign .admin-form-card input,
+.admin-shell.admin-home-redesign .admin-form-card select,
+.admin-shell.admin-home-redesign .mg-business-card input,
+.admin-shell.admin-home-redesign .mg-business-card select,
+.admin-shell.admin-home-redesign .config-card input,
+.admin-shell.admin-home-redesign .config-card select{
+  min-height:36px!important;
+  padding:0 10px!important;
+}
+.admin-shell.admin-home-redesign .admin-form-card textarea,
+.admin-shell.admin-home-redesign .mg-business-card textarea,
+.admin-shell.admin-home-redesign .config-card textarea{
+  min-height:78px!important;
+  padding:10px!important;
+}
+.admin-shell.admin-home-redesign .admin-form-card input:focus,
+.admin-shell.admin-home-redesign .admin-form-card select:focus,
+.admin-shell.admin-home-redesign .admin-form-card textarea:focus,
+.admin-shell.admin-home-redesign .mg-business-card input:focus,
+.admin-shell.admin-home-redesign .mg-business-card select:focus,
+.admin-shell.admin-home-redesign .mg-business-card textarea:focus,
+.admin-shell.admin-home-redesign .config-card input:focus,
+.admin-shell.admin-home-redesign .config-card select:focus,
+.admin-shell.admin-home-redesign .config-card textarea:focus{
+  border-color:#a7c94b!important;
+  box-shadow:0 0 0 3px rgba(201,244,90,.16)!important;
+}
+.admin-shell.admin-home-redesign .admin-primary,
+.admin-shell.admin-home-redesign .mg-business-card .admin-primary,
+.admin-shell.admin-home-redesign .feedback-admin-actions .admin-primary,
+.admin-shell.admin-home-redesign .config-save-bar button{
+  min-height:34px!important;
+  padding:0 13px!important;
+  border:1px solid #111311!important;
+  border-radius:7px!important;
+  background:#111311!important;
+  color:var(--mg-admin-lime)!important;
+  font-size:8.5px!important;
+  font-weight:800!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign .admin-primary:hover,
+.admin-shell.admin-home-redesign .config-save-bar button:hover{
+  background:#252925!important;
+}
+.admin-shell.admin-home-redesign .admin-secondary,
+.admin-shell.admin-home-redesign .table-action,
+.admin-shell.admin-home-redesign .config-secondary-button{
+  min-height:32px!important;
+  padding:0 11px!important;
+  border:1px solid #dde2d8!important;
+  border-radius:7px!important;
+  background:#fff!important;
+  color:#3e453b!important;
+  font-size:8px!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .admin-secondary:hover,
+.admin-shell.admin-home-redesign .table-action:hover{
+  border-color:#c9f45a!important;
+  background:#f8fce9!important;
+}
+.admin-shell.admin-home-redesign .table-danger{
+  min-height:30px!important;
+  padding:0 9px!important;
+  border:1px solid #f1d9d5!important;
+  border-radius:7px!important;
+  background:#fff8f7!important;
+  color:#ae4937!important;
+  font-size:8px!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .table-wrap{
+  overflow:auto!important;
+  border:1px solid #e9ece5!important;
+  border-radius:8px!important;
+}
+.admin-shell.admin-home-redesign .management-table{
+  width:100%!important;
+  min-width:720px!important;
+  border-collapse:collapse!important;
+  background:#fff!important;
+}
+.admin-shell.admin-home-redesign .management-table th{
+  height:38px!important;
+  padding:9px 11px!important;
+  border-bottom:1px solid #e4e8df!important;
+  background:#f7f8f5!important;
+  color:#7b8178!important;
+  font-size:7.5px!important;
+  font-weight:900!important;
+  letter-spacing:.35px!important;
+  text-transform:uppercase!important;
+}
+.admin-shell.admin-home-redesign .management-table td{
+  padding:10px 11px!important;
+  border-bottom:1px solid #eef0eb!important;
+  color:#444a42!important;
+  font-size:8.5px!important;
+}
+.admin-shell.admin-home-redesign .management-table tbody tr:hover{
+  background:#fbfdf7!important;
+}
+.admin-shell.admin-home-redesign .management-table td b{
+  color:#20241f!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .management-table td small{
+  color:#92978f!important;
+}
+.admin-shell.admin-home-redesign .status-active,
+.admin-shell.admin-home-redesign .status-paid,
+.admin-shell.admin-home-redesign .plan-pill{
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:24px!important;
+  padding:0 8px!important;
+  border-radius:999px!important;
+  background:#effbd0!important;
+  color:#59731f!important;
+  font-size:7.5px!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .status-paused{
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:24px!important;
+  padding:0 8px!important;
+  border-radius:999px!important;
+  background:#f2f3f0!important;
+  color:#777d74!important;
+  font-size:7.5px!important;
+  font-weight:800!important;
+}
+
+/* Cabeceras de páginas internas: misma jerarquía visual del Inicio. */
+.admin-shell.admin-home-redesign .mg-business-head,
+.admin-shell.admin-home-redesign .feedback-admin-head,
+.admin-shell.admin-home-redesign .config-hero{
+  border:1px solid var(--mg-admin-line)!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign .mg-business-head{
+  padding:15px 17px!important;
+}
+.admin-shell.admin-home-redesign .mg-business-head>div>span,
+.admin-shell.admin-home-redesign .feedback-admin-head>div>span,
+.admin-shell.admin-home-redesign .config-eyebrow{
+  color:#6c742f!important;
+  font-size:7px!important;
+  font-weight:900!important;
+  letter-spacing:1px!important;
+}
+.admin-shell.admin-home-redesign .mg-business-head h2,
+.admin-shell.admin-home-redesign .config-hero h1{
+  color:#171a16!important;
+}
+.admin-shell.admin-home-redesign .mg-progress-kpis article,
+.admin-shell.admin-home-redesign .mg-renewal-summary article,
+.admin-shell.admin-home-redesign .report-grid article{
+  border:1px solid var(--mg-admin-line)!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign .mg-progress-kpis article b,
+.admin-shell.admin-home-redesign .mg-renewal-summary article b,
+.admin-shell.admin-home-redesign .report-grid article h2{
+  color:#191d18!important;
+}
+.admin-shell.admin-home-redesign .mg-progress-kpis article small,
+.admin-shell.admin-home-redesign .mg-renewal-summary article small,
+.admin-shell.admin-home-redesign .report-grid article p{
+  color:#8c9189!important;
+}
+
+/* Entrenador y rutinas: elimina el aspecto anterior azul/rojo. */
+.admin-shell.admin-home-redesign .trainer-main-card,
+.admin-shell.admin-home-redesign .routine-editor-card{
+  border-radius:10px!important;
+}
+.admin-shell.admin-home-redesign .trainer-main-avatar,
+.admin-shell.admin-home-redesign .routine-exercise-number{
+  background:#111311!important;
+  color:#c9f45a!important;
+}
+.admin-shell.admin-home-redesign .trainer-main-top>div:nth-child(2)>span,
+.admin-shell.admin-home-redesign .routine-exercises-editor>header span,
+.admin-shell.admin-home-redesign .admin-request-context span{
+  color:#6b7d30!important;
+}
+.admin-shell.admin-home-redesign .trainer-main-status{
+  background:#effbd0!important;
+  color:#5b7421!important;
+}
+.admin-shell.admin-home-redesign .trainer-main-data article,
+.admin-shell.admin-home-redesign .routine-exercise-row{
+  border:1px solid #e6eae1!important;
+  border-radius:8px!important;
+  background:#fafbf8!important;
+}
+.admin-shell.admin-home-redesign .trainer-main-note{
+  background:#f5fae8!important;
+}
+.admin-shell.admin-home-redesign .admin-request-context{
+  border:1px solid #dfe7c8!important;
+  border-left:4px solid #c9f45a!important;
+  border-radius:9px!important;
+  background:#fbfdf6!important;
+  box-shadow:none!important;
+}
+
+/* Opiniones y configuración también se integran al nuevo lenguaje visual. */
+.admin-shell.admin-home-redesign .feedback-admin-shell,
+.admin-shell.admin-home-redesign .config-page{
+  gap:12px!important;
+}
+.admin-shell.admin-home-redesign .feedback-admin-list>article{
+  border-left:4px solid #c9f45a!important;
+  border-radius:9px!important;
+}
+.admin-shell.admin-home-redesign .feedback-admin-list>article.reviewed{
+  border-left-color:#9ab83f!important;
+}
+.admin-shell.admin-home-redesign .feedback-admin-actions>span{
+  background:#f1f5e8!important;
+  color:#667a2f!important;
+}
+.admin-shell.admin-home-redesign .config-save-bar{
+  border:1px solid #e1e6dc!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+
+/* Las vistas live restantes se neutralizan para que no parezcan otro template. */
+.admin-shell.admin-home-redesign .cf-live-page{
+  background:transparent!important;
+  color:#252924!important;
+}
+.admin-shell.admin-home-redesign .cf-live-page .cf-special-crumb{
+  border:1px solid #e4e8df!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#747a71!important;
+}
+.admin-shell.admin-home-redesign .cf-live-page .cf-live-card,
+.admin-shell.admin-home-redesign .cf-live-page .cf-workout-block,
+.admin-shell.admin-home-redesign .cf-live-page .cf-live-welcome,
+.admin-shell.admin-home-redesign .cf-live-page .cf-live-summary4 article,
+.admin-shell.admin-home-redesign .cf-live-page .cf-diet-template-top>article{
+  border:1px solid #e4e8df!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:0 4px 15px rgba(24,29,20,.03)!important;
+}
+.admin-shell.admin-home-redesign .cf-live-page h1,
+.admin-shell.admin-home-redesign .cf-live-page h2,
+.admin-shell.admin-home-redesign .cf-live-page h3,
+.admin-shell.admin-home-redesign .cf-live-page b{
+  color:#1d211c!important;
+}
+.admin-shell.admin-home-redesign .cf-live-page p,
+.admin-shell.admin-home-redesign .cf-live-page small{
+  color:#858b82!important;
+}
+.admin-shell.admin-home-redesign .cf-live-page em{
+  color:#637a2b!important;
+}
+.admin-shell.admin-home-redesign .cf-live-page button{
+  border-radius:7px!important;
+}
+.admin-shell.admin-home-redesign .cf-live-page .cf-live-goal div>i,
+.admin-shell.admin-home-redesign .cf-live-page .cf-live-workout-progress div>i{
+  background:#c9f45a!important;
+}
+
+/* Módulos tipo suite (eventos, noticias, ingresos, facturas...) con el mismo tema. */
+.admin-shell.admin-home-redesign .gym-suite,
+.admin-shell.admin-home-redesign .cf-suite-complete{
+  background:transparent!important;
+  color:#2a2e28!important;
+}
+.admin-shell.admin-home-redesign .cf-suite-page-head,
+.admin-shell.admin-home-redesign .cf-suite-card,
+.admin-shell.admin-home-redesign .gym-suite-panel,
+.admin-shell.admin-home-redesign .gym-suite-hero{
+  border:1px solid #e4e8df!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  box-shadow:0 4px 15px rgba(24,29,20,.03)!important;
+}
+.admin-shell.admin-home-redesign .cf-suite-page-head h1,
+.admin-shell.admin-home-redesign .cf-suite-card h2,
+.admin-shell.admin-home-redesign .gym-suite-heading h2{
+  color:#1d211c!important;
+}
+.admin-shell.admin-home-redesign .cf-suite-page-head p,
+.admin-shell.admin-home-redesign .cf-suite-card p,
+.admin-shell.admin-home-redesign .gym-suite-heading p{
+  color:#8a9087!important;
+}
+.admin-shell.admin-home-redesign .cf-suite-page-head button.primary,
+.admin-shell.admin-home-redesign .gym-suite button.primary{
+  border-color:#111311!important;
+  background:#111311!important;
+  color:#c9f45a!important;
+}
+.admin-shell.admin-home-redesign .gym-suite-icon{
+  background:#effbd0!important;
+  color:#5f7825!important;
+}
+.admin-shell.admin-home-redesign .gym-suite-table th{
+  background:#f7f8f5!important;
+  color:#7d837a!important;
+}
+.admin-shell.admin-home-redesign .gym-suite-table td{
+  border-color:#edf0e9!important;
+  color:#464c44!important;
+}
+
+@media(max-width:800px){
+  .admin-shell.admin-home-redesign .management-grid,
+  .admin-shell.admin-home-redesign .trainer-single-layout{
+    grid-template-columns:1fr!important;
+  }
+  .admin-shell.admin-home-redesign .admin-form-card,
+  .admin-shell.admin-home-redesign .admin-list-card{
+    padding:13px!important;
+  }
+}
