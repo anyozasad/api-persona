@@ -75,6 +75,96 @@ class DashboardResumenTest extends TestCase
         $this->actingAs(Usuario::findOrFail(1), 'sanctum');
     }
 
+
+    public function test_dashboard_prefiere_tablas_actuales_a_legacy(): void
+    {
+        Schema::create('socios', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre');
+            $table->string('estado')->default('activo');
+        });
+
+        DB::table('socios')->insert([
+            ['nombre' => 'Legacy Uno', 'estado' => 'activo'],
+            ['nombre' => 'Legacy Dos', 'estado' => 'activo'],
+            ['nombre' => 'Legacy Tres', 'estado' => 'activo'],
+        ]);
+
+        Schema::create('membresias', function (Blueprint $table) {
+            $table->id('id_membresia');
+            $table->string('nombre');
+            $table->decimal('precio', 10, 2)->default(80);
+            $table->unsignedInteger('duracion_meses')->default(1);
+            $table->string('estado')->default('Activo');
+        });
+
+        Schema::create('cliente_membresia', function (Blueprint $table) {
+            $table->id('id_cliente_membresia');
+            $table->unsignedBigInteger('id_cliente');
+            $table->unsignedBigInteger('id_membresia');
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
+            $table->string('estado');
+        });
+
+        Schema::create('planes', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre');
+            $table->decimal('precio', 10, 2)->default(999);
+            $table->string('estado')->default('activo');
+        });
+
+        Schema::create('suscripciones', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('socio_id');
+            $table->unsignedBigInteger('plan_id');
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
+            $table->string('estado');
+        });
+
+        DB::table('membresias')->insert([
+            'id_membresia' => 1,
+            'nombre' => 'Actual',
+            'precio' => 80,
+            'duracion_meses' => 1,
+            'estado' => 'Activo',
+        ]);
+
+        DB::table('cliente_membresia')->insert([
+            'id_cliente_membresia' => 1,
+            'id_cliente' => 1,
+            'id_membresia' => 1,
+            'fecha_inicio' => today()->subDay()->toDateString(),
+            'fecha_fin' => today()->addDays(20)->toDateString(),
+            'estado' => 'Activo',
+        ]);
+
+        DB::table('planes')->insert([
+            'id' => 1,
+            'nombre' => 'Legacy',
+            'precio' => 999,
+            'estado' => 'activo',
+        ]);
+
+        foreach ([1,2,3] as $id) {
+            DB::table('suscripciones')->insert([
+                'id' => $id,
+                'socio_id' => $id,
+                'plan_id' => 1,
+                'fecha_inicio' => today()->subDay()->toDateString(),
+                'fecha_fin' => today()->addDays(20)->toDateString(),
+                'estado' => 'activa',
+            ]);
+        }
+
+        $this->getJson('/api/dashboard/resumen')
+            ->assertOk()
+            ->assertJsonPath('clientes.total', 1)
+            ->assertJsonPath('membresias.activas', 1)
+            ->assertJsonPath('fuente.modo', 'base_principal');
+    }
+
     public function test_dashboard_entrega_resumen_operativo_completo(): void
     {
         $this->getJson('/api/dashboard/resumen')
