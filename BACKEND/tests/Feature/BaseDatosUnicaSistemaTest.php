@@ -13,10 +13,10 @@ class BaseDatosUnicaSistemaTest extends TestCase
         $mirror = (string) file_get_contents(app_path('Services/GymSystemDataMirror.php'));
         $switch = (string) file_get_contents(app_path('Console/Commands/UsarGymSystemComoPrincipal.php'));
 
-        $this->assertStringContainsString("env('DB_TABLE_PREFIX', '')", $database);
+        $this->assertStringContainsString("'prefix' => ''", $database);
         $this->assertStringContainsString('DB_DATABASE=gym_system', $env);
-        $this->assertStringContainsString('DB_TABLE_PREFIX=app_', $env);
-        $this->assertStringContainsString('GYM_DB_DATABASE=gym_system', $env);
+        $this->assertStringContainsString('DB_TABLE_PREFIX=', $env);
+        $this->assertStringNotContainsString('DB_TABLE_PREFIX=app_', $env);
 
         $this->assertStringContainsString("'prefix' => ''", $mirror);
         $this->assertStringContainsString("'modo' => 'gym_system_principal'", $mirror);
