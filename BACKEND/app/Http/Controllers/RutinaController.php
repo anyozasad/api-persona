@@ -46,6 +46,7 @@ class RutinaController extends Controller
         if (empty($datos['id_entrenador'])) {
             throw ValidationException::withMessages(['id_entrenador' => ['Selecciona un entrenador.']]);
         }
+        $this->validarEntrenadorActivo((int) $datos['id_entrenador']);
 
         $datos['estado'] = $datos['estado'] ?? 'Activo';
 
@@ -98,6 +99,9 @@ class RutinaController extends Controller
         ]);
 
         if ($idEntrenador = $this->idEntrenadorActual($request)) $datos['id_entrenador'] = $idEntrenador;
+        $entrenadorFinal = (int) ($datos['id_entrenador'] ?? $rutina->id_entrenador);
+        $this->validarEntrenadorActivo($entrenadorFinal);
+
         $fechaInicio = $datos['fecha_inicio'] ?? optional($rutina->fecha_inicio)->toDateString();
         $fechaFin = array_key_exists('fecha_fin', $datos) ? $datos['fecha_fin'] : optional($rutina->fecha_fin)->toDateString();
         if ($fechaFin && $fechaInicio && $fechaFin < $fechaInicio) {
@@ -143,6 +147,20 @@ class RutinaController extends Controller
         $query = Rutina::where('id_rutina', $id);
         if ($idEntrenador = $this->idEntrenadorActual($request)) $query->where('id_entrenador', $idEntrenador);
         return $query->firstOrFail();
+    }
+
+    private function validarEntrenadorActivo(int $idEntrenador): void
+    {
+        $activo = Entrenador::query()
+            ->where('id_entrenador', $idEntrenador)
+            ->whereRaw('LOWER(estado) = ?', ['activo'])
+            ->exists();
+
+        if (!$activo) {
+            throw ValidationException::withMessages([
+                'id_entrenador' => ['Selecciona un entrenador activo.'],
+            ]);
+        }
     }
 
     private function idEntrenadorActual(Request $request): ?int
