@@ -30,7 +30,15 @@ class GymSystemAdminController extends Controller
 
         $this->db = DB::connection('gym_system_actions');
         $this->schema = $this->db->getSchemaBuilder();
-        $this->asegurarCompatibilidad();
+
+        // El sistema actual usa clientes/id_cliente, ventas/id_venta, cajas/id_caja, etc.
+        // La reparación legacy solo se ejecuta si realmente se detecta el esquema antiguo.
+        $esquemaActual = $this->schema->hasTable('clientes')
+            && $this->schema->hasColumn('clientes', 'id_cliente');
+
+        if (!$esquemaActual) {
+            $this->asegurarCompatibilidad();
+        }
     }
 
     private function asegurarCompatibilidad(): void
@@ -676,22 +684,76 @@ class GymSystemAdminController extends Controller
 
     public function progreso(string $socioId)
     {
-        $s=$this->db->table('socios')->where('id',$socioId)->first();abort_if(!$s,404,'Socio no encontrado.');
-        return response()->json(['socio'=>$this->mapSocio($s),'medidas'=>$this->db->table('medidas')->where('socio_id',$socioId)->orderByDesc('fecha')->orderByDesc('id')->get(),'rutina'=>$this->db->table('rutinas')->where('socio_id',$socioId)->orderByDesc('id')->first()]);
+        $cliente = $this->db->table('clientes')->where('id_cliente', $socioId)->first();
+        abort_if(!$cliente, 404, 'Socio no encontrado.');
+
+        $medidas = $this->schema->hasTable('progreso_medidas')
+            ? $this->db->table('progreso_medidas')
+                ->where('id_cliente', $socioId)
+                ->orderByDesc('fecha')
+                ->orderByDesc('id')
+                ->get()
+            : collect();
+
+        $rutina = $this->db->table('rutinas')
+            ->where('id_cliente', $socioId)
+            ->orderByRaw("CASE WHEN estado = 'Activo' THEN 0 ELSE 1 END")
+            ->orderByDesc('fecha_inicio')
+            ->orderByDesc('id_rutina')
+            ->first();
+
+        if ($rutina) {
+            $rutina->observaciones = $rutina->descripcion ?: $rutina->objetivo;
+        }
+
+        return response()->json([
+            'socio' => [
+                'id_cliente' => (int) $cliente->id_cliente,
+                'id' => (int) $cliente->id_cliente,
+                'nombres' => $cliente->nombres,
+                'apellidos' => $cliente->apellidos,
+                'nombre' => trim($cliente->nombres.' '.$cliente->apellidos),
+                'dni' => $cliente->dni,
+                'correo' => $cliente->correo,
+                'telefono' => $cliente->telefono,
+                'estado' => $cliente->estado,
+            ],
+            'medidas' => $medidas,
+            'rutina' => $rutina,
+        ]);
     }
 
     public function guardarMedida(Request $request)
     {
-        $d=$request->validate(['socio_id'=>'required|integer','peso'=>'nullable|numeric|min:0','grasa'=>'nullable|numeric|min:0','cintura'=>'nullable|numeric|min:0','brazo'=>'nullable|numeric|min:0','fecha'=>'nullable|date']);
-        $d['fecha']=$d['fecha']??today()->toDateString();
-        $id=$this->db->table('medidas')->insertGetId($d);
-        return response()->json(['mensaje'=>'Medida registrada.','id_medida'=>$id],201);
+        $d = $request->validate([
+            'socio_id' => 'required|integer|exists:clientes,id_cliente',
+            'peso' => 'nullable|numeric|min:0|max:999.99',
+            'grasa' => 'nullable|numeric|min:0|max:100',
+            'cintura' => 'nullable|numeric|min:0|max:999.99',
+            'brazo' => 'nullable|numeric|min:0|max:999.99',
+            'fecha' => 'nullable|date',
+        ]);
+
+        abort_unless($this->schema->hasTable('progreso_medidas'), 500, 'Ejecuta las migraciones para habilitar progreso físico.');
+
+        $id = $this->db->table('progreso_medidas')->insertGetId([
+            'id_cliente' => (int) $d['socio_id'],
+            'peso' => $d['peso'] ?? null,
+            'grasa' => $d['grasa'] ?? null,
+            'cintura' => $d['cintura'] ?? null,
+            'brazo' => $d['brazo'] ?? null,
+            'fecha' => $d['fecha'] ?? today()->toDateString(),
+            'created_at' => now(),
+        ]);
+
+        return response()->json(['mensaje' => 'Medición registrada.', 'id_medida' => $id], 201);
     }
 
     public function eliminarMedida(string $id)
     {
-        $this->db->table('medidas')->where('id',$id)->delete();
-        return response()->json(['mensaje'=>'Medida eliminada.']);
+        abort_unless($this->schema->hasTable('progreso_medidas'), 404, 'Módulo de progreso no disponible.');
+        $this->db->table('progreso_medidas')->where('id', $id)->delete();
+        return response()->json(['mensaje' => 'Medida eliminada.']);
     }
 
     public function guardarRutinaReferencia(Request $request)
@@ -705,35 +767,115 @@ class GymSystemAdminController extends Controller
 
     public function vencimientosNotificacion(Request $request)
     {
-        $dias=max(1,min(30,(int)$request->input('dias',7)));
-        return response()->json($this->db->table('suscripciones as s')->join('socios as so','so.id','=','s.socio_id')->join('planes as p','p.id','=','s.plan_id')->where('s.estado','activa')->whereBetween('s.fecha_fin',[today()->toDateString(),today()->addDays($dias)->toDateString()])->select('so.id','so.nombre','so.telefono','so.whatsapp_api_key','p.nombre as nombre_plan','s.fecha_fin')->orderBy('s.fecha_fin')->get());
+        $dias = max(1, min(30, (int) $request->input('dias', 7)));
+
+        return response()->json(
+            $this->db->table('cliente_membresia as cm')
+                ->join('clientes as c', 'c.id_cliente', '=', 'cm.id_cliente')
+                ->join('membresias as m', 'm.id_membresia', '=', 'cm.id_membresia')
+                ->where('cm.estado', 'Activo')
+                ->whereBetween('cm.fecha_fin', [today()->toDateString(), today()->addDays($dias)->toDateString()])
+                ->select(
+                    'c.id_cliente as id',
+                    DB::raw("CONCAT(c.nombres, ' ', c.apellidos) as nombre"),
+                    'c.telefono',
+                    'c.whatsapp_api_key',
+                    'm.nombre as nombre_plan',
+                    'cm.fecha_fin'
+                )
+                ->orderBy('cm.fecha_fin')
+                ->get()
+        );
     }
 
-    public function guardarWhatsappKey(Request $request,string $socioId)
+    public function guardarWhatsappKey(Request $request, string $socioId)
     {
-        $d=$request->validate(['whatsapp_api_key'=>'required|string|max:100']);
-        $this->db->table('socios')->where('id',$socioId)->update(['whatsapp_api_key'=>$d['whatsapp_api_key']]);
-        return response()->json(['mensaje'=>'API Key guardada.']);
+        $d = $request->validate(['whatsapp_api_key' => 'required|string|max:120']);
+        $actualizados = $this->db->table('clientes')
+            ->where('id_cliente', $socioId)
+            ->update(['whatsapp_api_key' => $d['whatsapp_api_key']]);
+
+        abort_if(!$actualizados && !$this->db->table('clientes')->where('id_cliente', $socioId)->exists(), 404, 'Socio no encontrado.');
+        return response()->json(['mensaje' => 'API Key guardada.']);
     }
 
     public function enviarWhatsapp(string $socioId)
     {
-        $f=$this->db->table('suscripciones as s')->join('socios as so','so.id','=','s.socio_id')->join('planes as p','p.id','=','s.plan_id')->where('so.id',$socioId)->where('s.estado','activa')->whereDate('s.fecha_fin','>=',today())->select('so.*','p.nombre as nombre_plan','s.fecha_fin')->orderBy('s.fecha_fin')->first();
-        abort_if(!$f,404,'Socio sin suscripción próxima.');
-        abort_if(!$f->telefono||!$f->whatsapp_api_key,422,'El socio necesita teléfono y API Key de WhatsApp.');
-        $cfg=$this->db->table('configuracion')->first();
-        $msg=$this->mensajeVencimiento($f->nombre,$f->nombre_plan,$f->fecha_fin,$cfg->nombre_sistema??'Mallqui Gym');
-        $resp=Http::timeout(15)->get('https://api.callmebot.com/whatsapp.php',['phone'=>preg_replace('/\s+/','',$f->telefono),'text'=>$msg,'apikey'=>$f->whatsapp_api_key]);
-        return response()->json(['enviado'=>$resp->successful(),'mensaje'=>$resp->successful()?'Mensaje enviado.':'El proveedor rechazó el mensaje.','respuesta'=>Str::limit($resp->body(),300)],$resp->successful()?200:502);
+        $f = $this->db->table('cliente_membresia as cm')
+            ->join('clientes as c', 'c.id_cliente', '=', 'cm.id_cliente')
+            ->join('membresias as m', 'm.id_membresia', '=', 'cm.id_membresia')
+            ->where('c.id_cliente', $socioId)
+            ->where('cm.estado', 'Activo')
+            ->whereDate('cm.fecha_fin', '>=', today())
+            ->select(
+                'c.id_cliente as id',
+                'c.nombres',
+                'c.apellidos',
+                'c.telefono',
+                'c.whatsapp_api_key',
+                'm.nombre as nombre_plan',
+                'cm.fecha_fin'
+            )
+            ->orderBy('cm.fecha_fin')
+            ->first();
+
+        abort_if(!$f, 404, 'Socio sin membresía activa.');
+        abort_if(!$f->telefono || !$f->whatsapp_api_key, 422, 'El socio necesita teléfono y API Key de WhatsApp.');
+
+        $cfg = $this->schema->hasTable('configuracion_sistema')
+            ? $this->db->table('configuracion_sistema')->first()
+            : null;
+
+        $nombre = trim($f->nombres.' '.$f->apellidos);
+        $msg = $this->mensajeVencimiento($nombre, $f->nombre_plan, $f->fecha_fin, $cfg->nombre_gimnasio ?? 'Mallqui Gym');
+
+        $resp = Http::timeout(15)->get('https://api.callmebot.com/whatsapp.php', [
+            'phone' => preg_replace('/\s+/', '', $f->telefono),
+            'text' => $msg,
+            'apikey' => $f->whatsapp_api_key,
+        ]);
+
+        return response()->json([
+            'enviado' => $resp->successful(),
+            'mensaje' => $resp->successful() ? 'Mensaje enviado.' : 'El proveedor rechazó el mensaje.',
+            'respuesta' => Str::limit($resp->body(), 300),
+        ], $resp->successful() ? 200 : 502);
     }
 
     public function enviarWhatsappTodos(Request $request)
     {
-        $dias=max(1,min(30,(int)$request->input('dias',7)));
-        $rows=$this->db->table('suscripciones as s')->join('socios as so','so.id','=','s.socio_id')->where('s.estado','activa')->whereBetween('s.fecha_fin',[today()->toDateString(),today()->addDays($dias)->toDateString()])->select('so.id','so.telefono','so.whatsapp_api_key')->get();
-        $ok=0;$skip=0;
-        foreach($rows as $r){if(!$r->telefono||!$r->whatsapp_api_key){$skip++;continue;}try{$resp=$this->enviarWhatsapp((string)$r->id);$resp->getStatusCode()===200?$ok++:$skip++;}catch(\Throwable $e){$skip++;}}
-        return response()->json(['mensaje'=>'Proceso terminado.','enviados'=>$ok,'omitidos'=>$skip]);
+        $dias = max(1, min(30, (int) $request->input('dias', 7)));
+
+        $rows = $this->db->table('cliente_membresia as cm')
+            ->join('clientes as c', 'c.id_cliente', '=', 'cm.id_cliente')
+            ->where('cm.estado', 'Activo')
+            ->whereBetween('cm.fecha_fin', [today()->toDateString(), today()->addDays($dias)->toDateString()])
+            ->select('c.id_cliente as id', 'c.telefono', 'c.whatsapp_api_key')
+            ->distinct()
+            ->get();
+
+        $ok = 0;
+        $skip = 0;
+
+        foreach ($rows as $r) {
+            if (!$r->telefono || !$r->whatsapp_api_key) {
+                $skip++;
+                continue;
+            }
+
+            try {
+                $resp = $this->enviarWhatsapp((string) $r->id);
+                $resp->getStatusCode() === 200 ? $ok++ : $skip++;
+            } catch (\Throwable $e) {
+                $skip++;
+            }
+        }
+
+        return response()->json([
+            'mensaje' => 'Proceso terminado.',
+            'enviados' => $ok,
+            'omitidos' => $skip,
+        ]);
     }
 
     public function reporteIngresos(Request $request)
@@ -766,15 +908,42 @@ class GymSystemAdminController extends Controller
 
     public function backup()
     {
-        $nombre=preg_replace('/[^A-Za-z0-9\-]/','_',optional($this->db->table('configuracion')->first())->nombre_sistema??'Mallqui_Gym');
-        $out="-- Backup base principal\n-- Fecha: ".now()->format('Y-m-d H:i:s')."\n\nSET FOREIGN_KEY_CHECKS=0;\n";
-        $tables=collect($this->db->select('SHOW TABLES'))->map(fn($r)=>array_values((array)$r)[0]);
-        foreach($tables as $t){
-            $cr=$this->db->select("SHOW CREATE TABLE `{$t}`")[0]??null;if($cr){$vals=array_values((array)$cr);$out.="\nDROP TABLE IF EXISTS `{$t}`;\n".($vals[1]??'').";\n";}
-            foreach($this->db->table($t)->get() as $row){$vals=array_map(fn($v)=>$v===null?'NULL':$this->db->getPdo()->quote((string)$v),array_values((array)$row));$out.="INSERT INTO `{$t}` VALUES (".implode(',',$vals).");\n";}
+        $cfg = $this->schema->hasTable('configuracion_sistema')
+            ? $this->db->table('configuracion_sistema')->first()
+            : null;
+
+        $nombreBase = $cfg->nombre_gimnasio ?? 'Mallqui_Gym';
+        $nombre = preg_replace('/[^A-Za-z0-9\-]/', '_', (string) $nombreBase);
+        $out = "-- Backup base principal\n-- Fecha: ".now()->format('Y-m-d H:i:s')."\n\nSET FOREIGN_KEY_CHECKS=0;\n";
+
+        $base = $this->db->getDatabaseName();
+        $tables = collect($this->db->select(
+            "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_TYPE = 'BASE TABLE' ORDER BY TABLE_NAME",
+            [$base]
+        ))->map(fn ($r) => $r->TABLE_NAME);
+
+        foreach ($tables as $t) {
+            $cr = $this->db->select("SHOW CREATE TABLE `{$t}`")[0] ?? null;
+            if ($cr) {
+                $vals = array_values((array) $cr);
+                $out .= "\nDROP TABLE IF EXISTS `{$t}`;\n".($vals[1] ?? '').";\n";
+            }
+
+            foreach ($this->db->table($t)->get() as $row) {
+                $vals = array_map(
+                    fn ($v) => $v === null ? 'NULL' : $this->db->getPdo()->quote((string) $v),
+                    array_values((array) $row)
+                );
+                $out .= "INSERT INTO `{$t}` VALUES (".implode(',', $vals).");\n";
+            }
         }
-        $out.="\nSET FOREIGN_KEY_CHECKS=1;\n";
-        return response($out,200,['Content-Type'=>'application/sql; charset=UTF-8','Content-Disposition'=>'attachment; filename="backup_'.$nombre.'_'.now()->format('Y-m-d_H-i-s').'.sql"']);
+
+        $out .= "\nSET FOREIGN_KEY_CHECKS=1;\n";
+
+        return response($out, 200, [
+            'Content-Type' => 'application/sql; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="backup_'.$nombre.'_'.now()->format('Y-m-d_H-i-s').'.sql"',
+        ]);
     }
 
     public function restaurar(Request $request)
@@ -801,16 +970,69 @@ class GymSystemAdminController extends Controller
 
     public function carnet(string $socioId)
     {
-        $s=$this->db->table('socios')->where('id',$socioId)->first();abort_if(!$s,404,'Socio no encontrado.');
-        $sub=$this->db->table('suscripciones as su')->join('planes as p','p.id','=','su.plan_id')->where('su.socio_id',$socioId)->orderByDesc('su.fecha_fin')->select('su.*','p.nombre as plan')->first();
-        return response()->json(['tipo'=>'carnet','socio'=>$this->mapSocio($s),'suscripcion'=>$sub,'configuracion'=>$this->db->table('configuracion')->first(),'qr_texto'=>$s->dni]);
+        $c = $this->db->table('clientes')->where('id_cliente', $socioId)->first();
+        abort_if(!$c, 404, 'Socio no encontrado.');
+
+        $sub = $this->db->table('cliente_membresia as cm')
+            ->join('membresias as m', 'm.id_membresia', '=', 'cm.id_membresia')
+            ->where('cm.id_cliente', $socioId)
+            ->select('cm.id_cliente_membresia', 'cm.fecha_inicio', 'cm.fecha_fin', 'cm.estado', 'm.nombre as plan', 'm.precio')
+            ->orderByDesc('cm.fecha_fin')
+            ->first();
+
+        $cfg = $this->schema->hasTable('configuracion_sistema')
+            ? $this->db->table('configuracion_sistema')->first()
+            : null;
+
+        return response()->json([
+            'tipo' => 'carnet',
+            'socio' => [
+                'id_cliente' => (int) $c->id_cliente,
+                'id' => (int) $c->id_cliente,
+                'nombres' => $c->nombres,
+                'apellidos' => $c->apellidos,
+                'nombre' => trim($c->nombres.' '.$c->apellidos),
+                'dni' => $c->dni,
+                'correo' => $c->correo,
+                'telefono' => $c->telefono,
+                'estado' => $c->estado,
+            ],
+            'suscripcion' => $sub,
+            'configuracion' => $cfg,
+            'qr_texto' => 'MG-'.str_pad((string) $c->id_cliente, 6, '0', STR_PAD_LEFT),
+        ]);
     }
 
     public function comprobante(string $suscripcionId)
     {
-        $d=$this->db->table('suscripciones as s')->join('socios as so','so.id','=','s.socio_id')->join('planes as p','p.id','=','s.plan_id')->where('s.id',$suscripcionId)->select('s.*','so.nombre as socio','so.dni','so.email','p.nombre as plan','p.precio')->first();
-        abort_if(!$d,404,'Comprobante no encontrado.');
-        return response()->json(['tipo'=>'comprobante_suscripcion','datos'=>$d,'configuracion'=>$this->db->table('configuracion')->first()]);
+        $d = $this->db->table('cliente_membresia as cm')
+            ->join('clientes as c', 'c.id_cliente', '=', 'cm.id_cliente')
+            ->join('membresias as m', 'm.id_membresia', '=', 'cm.id_membresia')
+            ->where('cm.id_cliente_membresia', $suscripcionId)
+            ->select(
+                'cm.id_cliente_membresia as id',
+                DB::raw("CONCAT(c.nombres, ' ', c.apellidos) as socio"),
+                'c.dni',
+                'c.correo as email',
+                'm.nombre as plan',
+                'm.precio',
+                'cm.fecha_inicio',
+                'cm.fecha_fin',
+                'cm.estado'
+            )
+            ->first();
+
+        abort_if(!$d, 404, 'Comprobante no encontrado.');
+
+        $cfg = $this->schema->hasTable('configuracion_sistema')
+            ? $this->db->table('configuracion_sistema')->first()
+            : null;
+
+        return response()->json([
+            'tipo' => 'comprobante_suscripcion',
+            'datos' => $d,
+            'configuracion' => $cfg,
+        ]);
     }
 
     public function ticket(string $ventaId){ return $this->venta($ventaId); }
