@@ -141,9 +141,25 @@ class DashboardController extends Controller
         $entrenadoresActivos = $this->conteoActivos($tablas['entrenadores']);
         $usuariosActivos = $this->conteoActivos($tablas['usuarios']);
 
-        // Las compras del portal del cliente se completan automáticamente.
-        // El dato heredado se conserva solo por compatibilidad, pero ya no requiere acción del administrador.
-        $pagosPendientes = $suscripciones['pagos_pendientes'];
+        // Los pagos que requieren acción de recepción viven en pagos_membresia.
+        // Contarlos desde la tabla de suscripciones podía dejar alertas en cero aunque
+        // existiera un pago en efectivo pendiente de confirmar.
+        $pagosPendientes = 0;
+        if ($tablas['pagos']) {
+            $estadoPago = $this->columna($tablas['pagos'], ['estado_pago', 'estado', 'status']);
+            $metodoPago = $this->columna($tablas['pagos'], ['metodo_pago', 'metodo', 'forma_pago']);
+
+            if ($estadoPago) {
+                $qPagosPendientes = $this->db->table($tablas['pagos'])
+                    ->whereIn($estadoPago, ['Pendiente', 'PENDIENTE', 'pendiente']);
+
+                if ($metodoPago) {
+                    $qPagosPendientes->whereIn($metodoPago, ['Efectivo', 'EFECTIVO', 'efectivo']);
+                }
+
+                $pagosPendientes = (int) $qPagosPendientes->count();
+            }
+        }
         $alertasTotal = count($suscripciones['detalle_por_vencer'])
             + $stock['productos_stock_bajo']
             + $soportePendiente
