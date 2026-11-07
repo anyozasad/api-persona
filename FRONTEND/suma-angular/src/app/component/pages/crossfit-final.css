@@ -2808,3 +2808,181 @@ html,body{
     justify-content:space-between!important;
   }
 }
+
+
+/* ISOLATED_CURRENT_ADMIN_SHELL_2026_11_07 */
+.admin-shell.admin-home-redesign{
+  --mg-sidebar:236px;
+  --mg-topbar:86px;
+  --mg-lime:#c9f45a;
+  --mg-current-bg:#ffffff;
+  min-height:100vh!important;
+  display:grid!important;
+  grid-template-columns:var(--mg-sidebar) minmax(0,1fr)!important;
+  grid-template-rows:var(--mg-topbar) minmax(0,1fr)!important;
+  background:#fff!important;
+}
+
+.admin-shell.admin-home-redesign>.mg-current-sidebar{
+  grid-column:1!important;
+  grid-row:1/3!important;
+  position:sticky!important;
+  top:0!important;
+  width:var(--mg-sidebar)!important;
+  height:100vh!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:column!important;
+  padding:24px 18px 22px!important;
+  overflow:hidden!important;
+  background:linear-gradient(180deg,#080908 0%,#0b0c0b 100%)!important;
+  border:0!important;
+  box-shadow:none!important;
+  color:#fff!important;
+  z-index:3200!important;
+}
+
+.admin-shell.admin-home-redesign>.mg-current-topbar{
+  grid-column:2!important;
+  grid-row:1!important;
+  position:sticky!important;
+  top:0!important;
+  width:auto!important;
+  min-width:0!important;
+  height:var(--mg-topbar)!important;
+  min-height:var(--mg-topbar)!important;
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:minmax(260px,1fr) minmax(280px,430px) 44px 44px!important;
+  align-items:center!important;
+  gap:14px!important;
+  padding:20px 28px 14px!important;
+  background:#fff!important;
+  border:0!important;
+  border-bottom:1px solid #f0f1ed!important;
+  box-shadow:none!important;
+  color:#17191f!important;
+  z-index:3000!important;
+}
+
+.admin-shell.admin-home-redesign>.mg-current-content{
+  grid-column:2!important;
+  grid-row:2!important;
+  display:block!important;
+  width:auto!important;
+  max-width:none!important;
+  min-width:0!important;
+  min-height:calc(100vh - var(--mg-topbar))!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+  padding:0 28px 34px!important;
+  background:#fff!important;
+  overflow:visible!important;
+}
+
+/* El sidebar actual ya no hereda reglas de .admin-nav de la interfaz antigua. */
+.admin-shell.admin-home-redesign>.mg-current-sidebar .mg-brand{
+  color:#fff!important;
+  background:transparent!important;
+}
+.admin-shell.admin-home-redesign>.mg-current-sidebar .mg-brand strong{color:#fff!important}
+.admin-shell.admin-home-redesign>.mg-current-sidebar .mg-brand b,
+.admin-shell.admin-home-redesign>.mg-current-sidebar .mg-brand-icon{color:#c9f45a!important}
+
+.admin-shell.admin-home-redesign>.mg-current-sidebar .crossfit-sidebar-nav{
+  flex:1!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+}
+.admin-shell.admin-home-redesign>.mg-current-sidebar .crossfit-sidebar-nav button{
+  background:transparent!important;
+  color:#c8cbc7!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign>.mg-current-sidebar .crossfit-sidebar-nav button:hover{
+  background:#141813!important;
+  color:#fff!important;
+}
+.admin-shell.admin-home-redesign>.mg-current-sidebar .crossfit-sidebar-nav button.active{
+  background:#171c16!important;
+  color:#c9f45a!important;
+}
+.admin-shell.admin-home-redesign>.mg-current-sidebar .crossfit-sidebar-nav button.active:before{
+  background:#c9f45a!important;
+}
+.admin-shell.admin-home-redesign>.mg-current-sidebar .mg-sidebar-bottom{
+  margin-top:auto!important;
+  border-top:1px solid #282b27!important;
+}
+.admin-shell.admin-home-redesign>.mg-current-sidebar .mg-sidebar-bottom button{
+  background:transparent!important;
+  color:#c8cbc7!important;
+}
+.admin-shell.admin-home-redesign>.mg-current-sidebar .mg-sidebar-bottom button:hover,
+.admin-shell.admin-home-redesign>.mg-current-sidebar .mg-sidebar-bottom button.active{
+  background:#151815!important;
+  color:#fff!important;
+}
+
+@media(max-width:1180px){
+  .admin-shell.admin-home-redesign{
+    --mg-sidebar:218px;
+  }
+  .admin-shell.admin-home-redesign>.mg-current-topbar{
+    grid-template-columns:minmax(220px,1fr) minmax(220px,340px) 40px 40px!important;
+    padding-left:20px!important;
+    padding-right:20px!important;
+  }
+  .admin-shell.admin-home-redesign>.mg-current-content{
+    padding-left:20px!important;
+    padding-right:20px!important;
+  }
+}
+
+@media(max-width:930px){
+  .admin-shell.admin-home-redesign{
+    --mg-sidebar:78px;
+  }
+  .admin-shell.admin-home-redesign>.mg-current-sidebar .mg-brand{
+    justify-content:center!important;
+    padding:0!important;
+  }
+  .admin-shell.admin-home-redesign>.mg-current-sidebar .mg-brand>span:last-child,
+  .admin-shell.admin-home-redesign>.mg-current-sidebar .crossfit-sidebar-nav button>span:nth-child(2),
+  .admin-shell.admin-home-redesign>.mg-current-sidebar .crossfit-sidebar-nav .cf-nav-group-head>i,
+  .admin-shell.admin-home-redesign>.mg-current-sidebar .cf-nav-children,
+  .admin-shell.admin-home-redesign>.mg-current-sidebar .mg-sidebar-bottom button b{
+    display:none!important;
+  }
+  .admin-shell.admin-home-redesign>.mg-current-sidebar .crossfit-sidebar-nav button{
+    grid-template-columns:1fr!important;
+    place-items:center!important;
+    padding:5px!important;
+  }
+  .admin-shell.admin-home-redesign>.mg-current-topbar{
+    grid-template-columns:minmax(190px,1fr) minmax(180px,300px) 40px 40px!important;
+  }
+}
+
+@media(max-width:700px){
+  .admin-shell.admin-home-redesign{
+    display:block!important;
+    --mg-topbar:76px;
+  }
+  .admin-shell.admin-home-redesign>.mg-current-sidebar{display:none!important}
+  .admin-shell.admin-home-redesign>.mg-current-topbar{
+    position:sticky!important;
+    width:100%!important;
+    height:76px!important;
+    min-height:76px!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 40px!important;
+    padding:11px 13px!important;
+  }
+  .admin-shell.admin-home-redesign>.mg-current-content{
+    min-height:calc(100vh - 76px)!important;
+    padding:0 12px 24px!important;
+  }
+}
