@@ -163,9 +163,53 @@ import { AdminApiService } from './admin-api.service';
     </section>
   `,
   styles: [`
-    .admin-routine-request{display:grid;gap:12px;margin:14px 0;padding:16px;border:1px solid #f0c8cc;border-left:4px solid #d7192d;border-radius:14px;background:#fff8f8}
-    .admin-routine-request div{display:grid;gap:5px}.admin-routine-request small{font-size:10px;font-weight:900;letter-spacing:.8px;color:#d7192d}.admin-routine-request b{color:#202833}.admin-routine-request p{margin:0;color:#5e6973;line-height:1.5}
-    .admin-routine-request button{justify-self:start;border:0;border-radius:10px;background:#d7192d;color:white;padding:10px 14px;font-weight:800;cursor:pointer}
+    /* NEW_COMM_UI_FINAL_PRIORITY_2026_11_07 */
+    :host{display:block!important;color:#1d211c!important}
+    .admin-comm-shell{display:grid!important;gap:12px!important;background:transparent!important}
+    .admin-comm-hero,.admin-comm-card,.admin-support-kpis article{
+      border:1px solid #e5e9df!important;border-radius:10px!important;background:#fff!important;
+      box-shadow:0 4px 16px rgba(24,29,20,.035)!important;
+    }
+    .admin-comm-hero{padding:16px 18px!important}
+    .admin-comm-hero span,.admin-comm-card-head span{color:#647a2d!important}
+    .admin-comm-hero h2,.admin-comm-card h3,.admin-support-kpis strong{color:#1d211c!important}
+    .admin-comm-hero p,.admin-comm-card p,.admin-comm-card small{color:#898f86!important}
+    .admin-comm-hero>button,.admin-comm-form button:not(.secondary),.admin-routine-request button{
+      border:1px solid #111311!important;border-radius:7px!important;background:#111311!important;color:#c9f45a!important;
+      box-shadow:none!important;font-weight:800!important;
+    }
+    .admin-comm-form input,.admin-comm-form select,.admin-comm-form textarea{
+      border:1px solid #dfe4da!important;border-radius:7px!important;background:#fbfcfa!important;color:#272b26!important;
+      box-shadow:none!important;
+    }
+    .admin-comm-form input:focus,.admin-comm-form select:focus,.admin-comm-form textarea:focus{
+      border-color:#a7c94b!important;box-shadow:0 0 0 3px rgba(201,244,90,.16)!important;outline:0!important;
+    }
+    .admin-comm-form button.secondary{
+      border:1px solid #dde2d8!important;border-radius:7px!important;background:#fff!important;color:#41473f!important;
+    }
+    .admin-comm-table-wrap{
+      overflow:auto!important;border:1px solid #e8ece4!important;border-radius:8px!important;background:#fff!important;
+    }
+    .admin-comm-table th{background:#f7f8f5!important;color:#7b8178!important;border-color:#e4e8df!important}
+    .admin-comm-table td{background:#fff!important;color:#444a42!important;border-color:#eef0eb!important}
+    .admin-comm-type,.admin-comm-state.read{
+      background:#effbd0!important;color:#587221!important;border-color:#dfe8c2!important;
+    }
+    .admin-support-list button.active{
+      border-color:#c9f45a!important;background:#f8fce9!important;
+    }
+    .admin-ticket-state{background:#effbd0!important;color:#587221!important}
+    .admin-routine-request{
+      display:grid;gap:12px;margin:14px 0;padding:14px;border:1px solid #dfe7c8!important;border-left:4px solid #c9f45a!important;
+      border-radius:9px!important;background:#fbfdf6!important
+    }
+    .admin-routine-request div{display:grid;gap:5px}
+    .admin-routine-request small{font-size:9px;font-weight:900;letter-spacing:.8px;color:#647a2d!important}
+    .admin-routine-request b{color:#20241f!important}
+    .admin-routine-request p{margin:0;color:#7f867c!important;line-height:1.5}
+    .admin-comm-alert.ok{background:#111311!important;color:#c9f45a!important;border-color:#111311!important}
+    .admin-comm-alert.error{background:#fff8f7!important;color:#a84a3b!important;border-color:#efd8d3!important}
   `]
 })
 export class AdminComunicacionComponent implements OnInit, OnChanges, OnDestroy {
