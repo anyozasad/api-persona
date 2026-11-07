@@ -6,6 +6,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Membresia;
+use App\Models\Categoria;
+use App\Models\ConfiguracionSistema;
 use Throwable;
 
 class PrepararMallquiSistema extends Command
@@ -31,16 +34,7 @@ class PrepararMallquiSistema extends Command
             }
         }
 
-        $this->info('Cargando datos base sin eliminar registros existentes...');
-        $codigoSeed = Artisan::call('db:seed', ['--force' => true]);
-        $salidaSeed = trim(Artisan::output());
-        if ($salidaSeed !== '') {
-            $this->line($salidaSeed);
-        }
-        if ($codigoSeed !== 0) {
-            $this->error('No se pudieron cargar los datos base.');
-            return self::FAILURE;
-        }
+        $this->prepararDatosMinimos();
 
         $codigoVerificar = Artisan::call('db:verificar');
         $salidaVerificar = trim(Artisan::output());
@@ -88,6 +82,54 @@ class PrepararMallquiSistema extends Command
         }
 
         return self::SUCCESS;
+    }
+
+    private function prepararDatosMinimos(): void
+    {
+        try {
+            if (Schema::hasTable('membresias') && DB::table('membresias')->count() === 0) {
+                Membresia::create([
+                    'nombre' => 'Mensualidad 1 mes',
+                    'duracion_meses' => 1,
+                    'precio' => 80.00,
+                    'descripcion' => 'Mensualidad individual de Mallqui Gym.',
+                    'beneficios' => ['Acceso al gimnasio', 'Rutina y control de asistencias'],
+                    'permite_reservas' => true,
+                    'estado' => 'Activo',
+                ]);
+                $this->info('OK: se creó una membresía inicial porque no existía ninguna.');
+            }
+
+            if (Schema::hasTable('categorias') && DB::table('categorias')->count() === 0) {
+                Categoria::create([
+                    'nombre_categoria' => 'Bebidas',
+                    'descripcion' => 'Productos disponibles en recepción.',
+                    'estado' => 'Activo',
+                ]);
+                $this->info('OK: se creó una categoría inicial porque no existía ninguna.');
+            }
+
+            if (Schema::hasTable('configuracion_sistema') && DB::table('configuracion_sistema')->count() === 0) {
+                ConfiguracionSistema::create([
+                    'nombre_gimnasio' => 'Mallqui Gym',
+                    'telefono' => '939398148',
+                    'direccion' => 'Jr. Los Laureles Mz 17 Lt 18',
+                    'hora_apertura' => '06:00:00',
+                    'hora_cierre' => '21:30:00',
+                    'dias_atencion' => ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+                    'dias_aviso_vencimiento' => 7,
+                    'minutos_cancelacion_reserva' => 120,
+                    'dias_anticipacion_reserva' => 7,
+                    'stock_minimo_default' => 5,
+                    'notificar_vencimientos' => true,
+                    'notificar_stock_bajo' => true,
+                    'notificar_pagos_pendientes' => true,
+                ]);
+                $this->info('OK: se creó configuración inicial porque no existía ninguna.');
+            }
+        } catch (Throwable $e) {
+            $this->warn('No se pudieron preparar algunos datos mínimos: '.$e->getMessage());
+        }
     }
 
     private function dato(string $nombre, string $tabla, ?string $columna = null, ?string $valor = null): void
