@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 class VerificarFuncionesPortalCliente extends Command
 {
     protected $signature = 'mallqui:cliente-funciones {--fallos : Mostrar solamente las funciones que fallan}';
-    protected $description = 'Comprueba las 150 capacidades funcionales del portal del cliente';
+    protected $description = 'Comprueba la cobertura estructural de 150 capacidades declaradas del portal del cliente';
 
     public function handle(PortalClienteFunctionVerifier $verifier): int
     {
@@ -38,7 +38,7 @@ class VerificarFuncionesPortalCliente extends Command
             return self::FAILURE;
         }
 
-        $this->info('150/150 FUNCIONES DEL PORTAL DEL CLIENTE VERIFICADAS CORRECTAMENTE.');
+        $this->info('150/150 CAPACIDADES ESTRUCTURALES ENCONTRADAS. Esta revisión no sustituye pruebas CRUD y de base de datos.');
         return self::SUCCESS;
     }
 }
