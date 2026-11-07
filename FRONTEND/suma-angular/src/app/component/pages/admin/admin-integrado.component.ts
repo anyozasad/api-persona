@@ -3093,7 +3093,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   badgeModulo(modulo:string):number{
-    if(modulo==='socios') return Number(this.dashboard?.membresias?.por_vencer_7_dias||0);
+    if(modulo==='socios') {
+      return Number(this.dashboard?.membresias?.por_vencer_7_dias||0)
+        + Number(this.dashboard?.membresias?.pagos_pendientes||0);
+    }
     if(modulo==='servicios') return Number(this.dashboard?.alertas?.rutinas_pendientes||0);
     if(modulo==='inventario') return Number(this.dashboard?.inventario?.productos_stock_bajo||0);
     if(modulo==='atencion') return Number(this.dashboard?.alertas?.soporte_pendiente||0)+Number(this.dashboard?.alertas?.opiniones_pendientes||0);
@@ -3101,7 +3104,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   badgeTab(id:string):number{
-    if(id==='membresias') return Number(this.dashboard?.membresias?.por_vencer_7_dias||0);
+    if(id==='membresias' || id==='renovaciones') return Number(this.dashboard?.membresias?.por_vencer_7_dias||0);
+    if(id==='pagos') return Number(this.dashboard?.membresias?.pagos_pendientes||0);
     if(id==='rutinas') return Number(this.dashboard?.alertas?.rutinas_pendientes||0);
     if(id==='inventario') return Number(this.dashboard?.inventario?.productos_stock_bajo||0);
     if(id==='soporte') return Number(this.dashboard?.alertas?.soporte_pendiente||0);
