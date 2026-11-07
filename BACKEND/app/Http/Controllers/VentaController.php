@@ -38,7 +38,7 @@ class VentaController extends Controller
             'id_cliente' => 'required|integer|exists:clientes,id_cliente',
             'fecha_venta' => 'nullable|date',
             'tipo_comprobante' => 'required|string|max:50',
-            'numero_comprobante' => 'required|string|max:80',
+            'numero_comprobante' => 'nullable|string|max:80',
             'metodo_pago' => ['required', 'string', Rule::in(self::METODOS_PAGO)],
             'numero_operacion' => 'nullable|string|max:100',
             'igv_porcentaje' => 'nullable|numeric|min:0|max:100',
@@ -55,7 +55,8 @@ class VentaController extends Controller
             throw ValidationException::withMessages(['numero_operacion' => ['El número de operación es obligatorio para pagos que no son en efectivo.']]);
         }
 
-        if (Venta::where('numero_comprobante', $datos['numero_comprobante'])->exists()) {
+        $numeroSolicitado = trim((string) ($datos['numero_comprobante'] ?? ''));
+        if ($numeroSolicitado !== '' && Venta::where('numero_comprobante', $numeroSolicitado)->exists()) {
             throw ValidationException::withMessages(['numero_comprobante' => ['Ese comprobante de venta ya fue registrado.']]);
         }
 
@@ -97,12 +98,25 @@ class VentaController extends Controller
             $subtotal = $factor > 0 ? round($total / $factor, 2) : $total;
             $igv = round($total - $subtotal, 2);
 
+            $numeroComprobante = trim((string) ($datos['numero_comprobante'] ?? ''));
+            if ($numeroComprobante === '') {
+                $prefijo = mb_strtolower((string) $datos['tipo_comprobante']) === 'factura' ? 'F001' : 'B001';
+                $siguiente = ((int) DB::table('ventas')->lockForUpdate()->max('id_venta')) + 1;
+                $numeroComprobante = $prefijo.'-'.str_pad((string) $siguiente, 8, '0', STR_PAD_LEFT);
+            }
+
+            if (Venta::where('numero_comprobante', $numeroComprobante)->exists()) {
+                throw ValidationException::withMessages([
+                    'numero_comprobante' => ['No se pudo generar un número de comprobante único. Intenta nuevamente.'],
+                ]);
+            }
+
             $venta = Venta::create([
                 'id_cliente' => $datos['id_cliente'],
                 'id_usuario' => $request->user()->id_usuario,
                 'fecha_venta' => $datos['fecha_venta'] ?? now(),
                 'tipo_comprobante' => $datos['tipo_comprobante'],
-                'numero_comprobante' => $datos['numero_comprobante'],
+                'numero_comprobante' => $numeroComprobante,
                 'metodo_pago' => $datos['metodo_pago'],
                 'numero_operacion' => $datos['numero_operacion'] ?? null,
                 'subtotal' => $subtotal,
@@ -155,6 +169,7 @@ class VentaController extends Controller
 
         return response()->json([
             'mensaje' => 'Venta registrada; el precio final ya incluye IGV, y stock/Kardex fueron actualizados.',
+            'numero_comprobante' => $venta->numero_comprobante,
             'venta' => $venta->load(['cliente', 'usuario', 'detalles.producto']),
         ], 201);
     }
