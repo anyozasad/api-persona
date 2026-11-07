@@ -2986,3 +2986,139 @@ html,body{
     padding:0 12px 24px!important;
   }
 }
+
+
+/* UNIFIED_INTERNAL_PAGE_ACTIONS_2026_11_07 */
+/* La cabecera principal de cada módulo es mg-module-shell-head.
+   Estas reglas convierten las cabeceras históricas internas en barras de acción compactas. */
+.admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-hero{
+  min-height:0!important;
+  justify-content:flex-end!important;
+  padding:0 0 10px!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-hero-copy{display:none!important}
+.admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-new{
+  min-height:34px!important;
+  margin-left:auto!important;
+}
+
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-business-head{
+  min-height:0!important;
+  justify-content:flex-end!important;
+  margin:0 0 10px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-business-head>div:first-child{display:none!important}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-business-head:not(:has(.mg-business-actions)){display:none!important}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-business-actions{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  margin-left:auto!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-business-actions select{
+  min-height:34px!important;
+  border:1px solid #dde2d8!important;
+  border-radius:7px!important;
+  background:#fff!important;
+  color:#41473f!important;
+  padding:0 9px!important;
+}
+
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-follow-head{
+  min-height:0!important;
+  justify-content:flex-end!important;
+  margin:0 0 10px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-follow-head>div{display:none!important}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-follow-head>button{
+  min-height:34px!important;
+  border:1px solid #dde2d8!important;
+  border-radius:7px!important;
+  background:#fff!important;
+  color:#41473f!important;
+  font-size:8px!important;
+  font-weight:800!important;
+}
+
+.admin-shell.admin-home-redesign .mg-current-workspace .audit-hero{
+  min-height:0!important;
+  justify-content:flex-end!important;
+  margin:0 0 10px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .audit-hero:after,
+.admin-shell.admin-home-redesign .mg-current-workspace .audit-hero>div{display:none!important}
+.admin-shell.admin-home-redesign .mg-current-workspace .audit-export{
+  min-height:34px!important;
+}
+
+.admin-shell.admin-home-redesign .mg-current-workspace .config-hero{
+  min-height:0!important;
+  justify-content:flex-end!important;
+  margin:0 0 10px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .config-hero>div:first-child{display:none!important}
+.admin-shell.admin-home-redesign .mg-current-workspace .config-health{
+  margin-left:auto!important;
+  border:1px solid #dfe8c2!important;
+  border-radius:8px!important;
+  background:#f7fbe9!important;
+  padding:8px 11px!important;
+}
+
+.admin-shell.admin-home-redesign .mg-current-workspace .feedback-admin-head{
+  min-height:0!important;
+  justify-content:flex-end!important;
+  margin:0 0 10px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .feedback-admin-head>div{display:none!important}
+.admin-shell.admin-home-redesign .mg-current-workspace .feedback-admin-head>button{margin-left:auto!important}
+
+/* Los módulos complementarios reciben la cabecera común del padre;
+   su cabecera interna conserva solo las acciones CRUD. */
+.admin-shell.admin-home-redesign .mg-current-workspace app-admin-gym-suite .cf-suite-page-head{
+  min-height:0!important;
+  justify-content:flex-end!important;
+  margin:0 0 10px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace app-admin-gym-suite .cf-suite-page-head>div:first-child{
+  display:none!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace app-admin-gym-suite .cf-suite-page-head>div:last-child,
+.admin-shell.admin-home-redesign .mg-current-workspace app-admin-gym-suite .cf-suite-page-head>button{
+  margin-left:auto!important;
+}
+
+@media(max-width:700px){
+  .admin-shell.admin-home-redesign .mg-current-workspace .mg-business-actions,
+  .admin-shell.admin-home-redesign .mg-current-workspace app-admin-gym-suite .cf-suite-page-head>div:last-child{
+    width:100%!important;
+    flex-wrap:wrap!important;
+  }
+}
