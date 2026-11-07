@@ -3881,7 +3881,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.api.entrenadores().subscribe({
       next:r=>{
         this.entrenadores=r||[];
-        const principal=this.entrenadores[0];
+        const principal=this.entrenadores.find((e:any)=>String(e?.estado||'').toLowerCase()==='activo') ?? this.entrenadores[0];
         if(principal){
           if(!this.claseForm.id_entrenador) this.claseForm.id_entrenador=principal.id_entrenador;
           if(!this.rutinaForm.id_entrenador) this.rutinaForm.id_entrenador=principal.id_entrenador;
@@ -3899,7 +3899,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       next:r=>this.reservas=Array.isArray(r)?r:[],
       error:e=>{
         this.reservas=[];
-        console.warn('No se pudieron cargar las reservas:',e);
+        this.mostrarError(e);
       }
     });
   }
@@ -4128,7 +4128,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   guardarClase(){
-    const entrenadorPrincipal=this.entrenadores[0];
+    const entrenadorPrincipal=this.entrenadores.find((e:any)=>String(e?.estado||'').toLowerCase()==='activo');
     if(!entrenadorPrincipal){
       this.error='Primero registra el entrenador principal antes de programar una clase.';
       return;
