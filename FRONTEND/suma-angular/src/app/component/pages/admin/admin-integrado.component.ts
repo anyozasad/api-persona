@@ -3688,6 +3688,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       case 'entrenador':
         this.cargarEntrenadores();
         this.cargarUsuarios();
+        this.cargarDashboard();
         break;
       case 'clases':
         this.cargarClases();
@@ -4078,7 +4079,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.planEditandoId=0;
     this.planForm={nombre:'',duracion_meses:1,precio:0,descripcion:'',beneficios_texto:'',permite_reservas:true,estado:'Activo'};
   }
-  desactivarPlan(id:number){if(!confirm('¿Desactivar esta tarifa?'))return;this.api.eliminarMembresia(id).subscribe({next:r=>{this.ok(r.mensaje||'Tarifa desactivada');this.cargarMembresias();},error:e=>this.mostrarError(e)});}
+  desactivarPlan(id:number){if(!confirm('¿Desactivar esta tarifa?'))return;this.api.eliminarMembresia(id).subscribe({next:r=>{this.ok(r.mensaje||'Tarifa desactivada');this.cargarMembresias();this.cargarDashboard();},error:e=>this.mostrarError(e)});}
 
   guardarEntrenador(){
     const datos={...this.entrenadorForm};
@@ -4166,7 +4167,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.claseEditandoId=0;
     this.claseForm={id_entrenador:this.entrenadores[0]?.id_entrenador??null,nombre:'',descripcion:'',dia_semana:'Lunes',hora_inicio:'08:00',hora_fin:'09:00',cupo_maximo:15,estado:'Activo'};
   }
-  desactivarClase(id:number){ if(!confirm('¿Desactivar esta clase?')) return; this.api.desactivarClase(id).subscribe({next:()=>{this.ok('Clase desactivada');this.cancelarEdicionClase();this.cargarClases();},error:e=>this.mostrarError(e)}); }
+  desactivarClase(id:number){ if(!confirm('¿Desactivar esta clase?')) return; this.api.desactivarClase(id).subscribe({next:()=>{this.ok('Clase desactivada');this.cancelarEdicionClase();this.cargarClases();this.cargarReservas();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
 
   registrarAccesoPorCodigo(){
     const codigo=String(this.asistenciaCodigo||'').trim();
@@ -4235,7 +4236,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     const datos={id_proveedor:this.compraForm.id_proveedor,tipo_comprobante:this.compraForm.tipo_comprobante,numero_comprobante:this.compraForm.numero_comprobante,items:this.compraItems};
     this.api.registrarCompra(datos).subscribe({next:r=>{this.ok(r.mensaje||'Compra registrada');this.compraForm={id_proveedor:0,id_producto:0,cantidad:1,precio_compra:0,tipo_comprobante:'Factura',numero_comprobante:''};this.compraItems=[];this.cargarCompras();this.cargarProductos();this.cargarKardex();this.cargarDashboard();},error:e=>this.mostrarError(e)});
   }
-  anularCompra(id:number){ if(!confirm('¿Anular esta compra?')) return; this.api.anularCompra(id).subscribe({next:r=>{this.ok(r.mensaje||'Compra anulada');this.cargarCompras();this.cargarProductos();this.cargarKardex();},error:e=>this.mostrarError(e)}); }
+  anularCompra(id:number){ if(!confirm('¿Anular esta compra?')) return; this.api.anularCompra(id).subscribe({next:r=>{this.ok(r.mensaje||'Compra anulada');this.cargarCompras();this.cargarProductos();this.cargarKardex();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
 
   agregarItemVenta(){ if(!this.ventaForm.id_producto || Number(this.ventaForm.cantidad)<1){this.error='Selecciona producto y cantidad.';return;} const p=this.productos.find(x=>x.id_producto===this.ventaForm.id_producto); if(!p || Number(p.stock)<Number(this.ventaForm.cantidad)){this.error='Stock insuficiente para agregar ese producto.';return;} if(this.ventaItems.some(i=>i.id_producto===this.ventaForm.id_producto)){this.error='Ese producto ya está en el carrito.';return;} this.ventaItems.push({id_producto:this.ventaForm.id_producto,cantidad:Number(this.ventaForm.cantidad)});this.ventaForm.id_producto=0;this.ventaForm.cantidad=1; }
   quitarItemVenta(i:number){this.ventaItems.splice(i,1);}
@@ -4409,7 +4410,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
   desactivarRutina(id:number){ if(!confirm('¿Desactivar esta rutina?')) return; this.api.eliminarRutina(id).subscribe({next:r=>{this.ok(r.mensaje||'Rutina desactivada');this.cancelarEdicionRutina();this.cargarRutinas();},error:e=>this.mostrarError(e)}); }
 
-  cambiarEstadoReserva(id:number,estado:string){ this.api.cambiarEstadoReserva(id,estado).subscribe({next:r=>{this.ok(r.mensaje||'Reserva actualizada');this.cargarReservas();},error:e=>this.mostrarError(e)}); }
+  cambiarEstadoReserva(id:number,estado:string){ this.api.cambiarEstadoReserva(id,estado).subscribe({next:r=>{this.ok(r.mensaje||'Reserva actualizada');this.cargarReservas();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
 
   guardarUsuario(){
     const datos={...this.usuarioForm};
@@ -4530,9 +4531,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   ajustarStock(){ this.api.ajustarStock(this.ajusteForm).subscribe({next:r=>{this.ok(r.mensaje||'Stock ajustado');this.ajusteForm={id_producto:0,tipo:'Entrada',cantidad:1,motivo:''};this.cargarProductos();this.cargarKardex();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
 
-  abrirCaja(){ this.api.abrirCaja(Number(this.cajaAbrirForm.monto_inicial),this.cajaAbrirForm.observacion).subscribe({next:r=>{this.ok(r.mensaje||'Caja abierta');this.cargarCaja();},error:e=>this.mostrarError(e)}); }
-  movimientoCaja(){ this.api.movimientoCaja(this.movCajaForm.tipo,'Manual',this.movCajaForm.descripcion,Number(this.movCajaForm.monto)).subscribe({next:r=>{this.ok(r.mensaje||'Movimiento registrado');this.movCajaForm={tipo:'Ingreso',monto:0,descripcion:'',origen:'Manual'};this.cargarCaja();},error:e=>this.mostrarError(e)}); }
-  cerrarCaja(){ if(!confirm('¿Cerrar la caja actual?')) return; this.api.cerrarCaja(Number(this.cajaCerrarForm.monto_real),this.cajaCerrarForm.observacion).subscribe({next:r=>{this.ok(r.mensaje||'Caja cerrada');this.cajaCerrarForm={monto_real:0,observacion:''};this.cargarCaja();},error:e=>this.mostrarError(e)}); }
+  abrirCaja(){ this.api.abrirCaja(Number(this.cajaAbrirForm.monto_inicial),this.cajaAbrirForm.observacion).subscribe({next:r=>{this.ok(r.mensaje||'Caja abierta');this.cargarCaja();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
+  movimientoCaja(){ this.api.movimientoCaja(this.movCajaForm.tipo,'Manual',this.movCajaForm.descripcion,Number(this.movCajaForm.monto)).subscribe({next:r=>{this.ok(r.mensaje||'Movimiento registrado');this.movCajaForm={tipo:'Ingreso',monto:0,descripcion:'',origen:'Manual'};this.cargarCaja();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
+  cerrarCaja(){ if(!confirm('¿Cerrar la caja actual?')) return; this.api.cerrarCaja(Number(this.cajaCerrarForm.monto_real),this.cajaCerrarForm.observacion).subscribe({next:r=>{this.ok(r.mensaje||'Caja cerrada');this.cajaCerrarForm={monto_real:0,observacion:''};this.cargarCaja();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
 
   cargarConfiguracion(){
     this.api.configuracion().subscribe({
