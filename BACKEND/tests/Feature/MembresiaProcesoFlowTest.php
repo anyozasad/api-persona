@@ -216,6 +216,24 @@ class MembresiaProcesoFlowTest extends TestCase
         $this->assertDatabaseCount('pagos_membresia', 2);
     }
 
+
+    public function test_pago_digital_no_necesita_caja_abierta(): void
+    {
+        $this->postJson('/api/membresias/contratar', [
+            'id_cliente' => 1,
+            'id_membresia' => 1,
+            'metodo_pago' => 'Yape',
+            'numero_operacion' => 'YAPE-PRUEBA-001',
+        ])->assertCreated()
+          ->assertJsonPath('pago.estado_pago', 'Completado');
+
+        $this->assertDatabaseCount('cajas', 0);
+        $this->assertDatabaseHas('cliente_membresia', [
+            'id_cliente' => 1,
+            'estado' => 'Activo',
+        ]);
+    }
+
     public function test_pago_digital_exige_numero_de_operacion(): void
     {
         $this->abrirCaja();
