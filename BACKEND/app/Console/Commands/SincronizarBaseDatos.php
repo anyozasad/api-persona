@@ -18,18 +18,26 @@ class SincronizarBaseDatos extends Command
     {
         $this->info('Preparando migraciones pendientes del proyecto...');
 
-        foreach (['db:generar-interno', 'db:operacion-interno', 'db:produccion-interno'] as $comando) {
-            $codigoGenerar = Artisan::call($comando);
-            $salidaGenerar = trim(Artisan::output());
+        // El esquema base ahora se guarda en el repositorio. No generar migraciones
+        // duplicadas si ya existe create_core_gym_tables_if_missing.
+        $esquemaBaseIncluido = count(glob(database_path('migrations/*_create_core_gym_tables_if_missing.php')) ?: []) > 0;
 
-            if ($salidaGenerar !== '') {
-                $this->line($salidaGenerar);
-            }
+        if (!$esquemaBaseIncluido) {
+            foreach (['db:generar-interno', 'db:operacion-interno', 'db:produccion-interno'] as $comando) {
+                $codigoGenerar = Artisan::call($comando);
+                $salidaGenerar = trim(Artisan::output());
 
-            if ($codigoGenerar !== 0) {
-                $this->error("No se pudo ejecutar {$comando}.");
-                return self::FAILURE;
+                if ($salidaGenerar !== '') {
+                    $this->line($salidaGenerar);
+                }
+
+                if ($codigoGenerar !== 0) {
+                    $this->error("No se pudo ejecutar {$comando}.");
+                    return self::FAILURE;
+                }
             }
+        } else {
+            $this->info('Esquema base incluido en Git: no se generarán migraciones duplicadas.');
         }
 
         if (!Schema::hasTable('migrations')) {
