@@ -89,7 +89,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
           <button type="button" [class.active]="seccion==='progreso-fisico'" (click)="cambiarSegcion('progreso-fisico')"><span>•</span><span>Progreso Físico</span></button>
           <button type="button" [class.active]="seccion==='nutricion'" (click)="cambiarSegcion('nutricion')"><span>•</span><span>Nutrición</span></button>
           <button type="button" [class.active]="seccion==='asistencias'" (click)="cambiarSegcion('asistencias')"><span>•</span><span>Asistencias</span></button>
-          <button type="button" [class.active]="seccion==='attendance-tools'" (click)="cambiarSegcion('attendance-tools')"><span>•</span><span>Control de Acceso</span></button>
+          <button type="button" [class.active]="seccion==='attendance-tools'" (click)="cambiarSegcion('asistencias')"><span>•</span><span>Control de Acceso</span></button>
           <button type="button" [class.active]="seccion==='reporte-asistencias'" (click)="cambiarSegcion('reporte-asistencias')"><span>•</span><span>Reporte de Asistencias</span></button>
           <button type="button" [class.active]="seccion==='planes'" (click)="cambiarSegcion('planes')"><span>•</span><span>Planes y Tarifas</span></button>
           <button type="button" [class.active]="seccion==='sports-components'" (click)="cambiarSegcion('sports-components')"><span>•</span><span>Seguimiento Deportivo</span></button>
@@ -276,7 +276,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </section>
 
-      <section class="cf-live-page cf-workout-live-page" *ngIf="seccion==='rutinas'">
+      <section class="cf-live-page cf-workout-live-page" *ngIf="seccion==='rutinas-legacy'">
         <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Mi Plan de Entrenamiento</strong></div>
 
         <section class="cf-live-workout-head">
@@ -410,7 +410,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </section>
 
-      <section class="cf-live-page" *ngIf="seccion==='asistencias'">
+      <section class="cf-live-page" *ngIf="seccion==='asistencias-legacy'">
         <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Control de Asistencia</strong></div>
         <section class="cf-live-summary4">
           <article><span>✓</span><b>{{dashboard?.asistencias?.dentro_ahora ?? 0}}</b><small>Presentes</small></article>
@@ -429,7 +429,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </section>
 
-      <section class="cf-live-page" *ngIf="seccion==='entrenador'">
+      <section class="cf-live-page" *ngIf="seccion==='entrenador-legacy'">
         <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Entrenador</strong></div>
         <section class="cf-live-welcome cf-live-trainers-head">
           <div><h1>Hola, {{auth.usuario?.nombre_usuario || 'Administrador'}}</h1><p>Revisa la información del entrenador del gimnasio.</p></div>
@@ -451,7 +451,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </section>
 
-      <section class="cf-live-page" *ngIf="seccion==='planes'">
+      <section class="cf-live-page" *ngIf="seccion==='planes-legacy'">
         <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Planes de Membresía</strong></div>
         <section class="cf-live-pricing-head"><h1>Prueba Mallqui Gym gratis</h1><p>¡Obtén un pase gratis por 1 día!</p></section>
         <section class="cf-live-pricing-grid">
@@ -470,7 +470,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </section>
 
-      <section class="cf-live-page" *ngIf="seccion==='pagos'">
+      <section class="cf-live-page" *ngIf="seccion==='pagos-legacy'">
         <div class="cf-special-crumb"><span>⌂</span><small>Inicio</small><b>›</b><strong>Pagos</strong></div>
         <section class="cf-live-card cf-live-payments">
           <header><div><h2>Pagos por Mes</h2><p>Resumen</p></div><b>{{pagos.length}} registros</b></header>
@@ -1384,7 +1384,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </ng-container>
 
-      <ng-container *ngIf="seccion==='pagos-admin'">
+      <ng-container *ngIf="seccion==='pagos'">
         <section class="admin-list-card">
           <div class="management-heading">
             <div>
@@ -1409,7 +1409,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </ng-container>
 
-      <ng-container *ngIf="seccion==='entrenador-admin'">
+      <ng-container *ngIf="seccion==='entrenador'">
         <section class="trainer-single-layout">
           <article class="admin-form-card trainer-single-form" *ngIf="!entrenadores.length || entrenadorEditandoId">
             <div class="management-heading">
@@ -1525,7 +1525,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </ng-container>
 
-      <ng-container *ngIf="seccion==='attendance-tools'">
+      <ng-container *ngIf="seccion==='asistencias' || seccion==='attendance-tools'">
         <section class="management-grid">
           <article class="admin-form-card">
             <div class="management-heading">
@@ -1808,7 +1808,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </ng-container>
 
-      <ng-container *ngIf="seccion==='planes-admin'">
+      <ng-container *ngIf="seccion==='planes'">
         <section class="management-grid">
           <article class="admin-form-card">
             <div class="management-heading"><div><h2>{{planEditandoId ? 'Editar tarifa' : 'Nueva tarifa'}}</h2><p>Configura precio, duración y estado.</p></div><span>◆</span></div>
@@ -2016,7 +2016,7 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
         </section>
       </ng-container>
 
-      <ng-container *ngIf="seccion==='rutinas-admin'">
+      <ng-container *ngIf="seccion==='rutinas'">
         <div *ngIf="solicitudRutinaContexto" class="admin-request-context">
           <div>
             <span>SOLICITUD DEL PORTAL DEL CLIENTE</span>
@@ -2701,7 +2701,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     'dashboard','clientes','membresias','pagos','entrenador','clases','asistencias','attendance-tools','seguimiento','progreso-fisico','renovaciones','documentos-socio','mantenimiento-sistema',
     'rutinas','reservas','caja','ventas','historial-ventas','gastos','inventario','productos','kardex',
     'proveedores','compras','categorias','reportes','reportes-admin','reporte-asistencias','usuarios',
-    'auditoria','configuracion','opiniones','nutricion','entrenador-admin','rutinas-admin','pagos-admin','planes-admin'
+    'auditoria','configuracion','opiniones','nutricion'
   ];
   navGroups:any = {members:false,payments:false,trainers:false,training:false,diet:false,equipment:false,events:false,ui:false,operations:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
   uiElementLinks = [
@@ -2855,7 +2855,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       {claves:['socio','socios','cliente','clientes','miembro','miembros'],seccion:'clientes'},
       {claves:['membresia','membresias'],seccion:'membresias'},
       {claves:['pago','pagos'],seccion:'pagos'},
-      {claves:['asistencia','asistencias','entrada','salida'],seccion:'asistencias'},
+      {claves:['asistencia','asistencias','entrada','salida','control de acceso'],seccion:'asistencias'},
       {claves:['tarifa','tarifas','plan','planes'],seccion:'planes'},
       {claves:['clase','clases'],seccion:'clases'},
       {claves:['reserva','reservas','agenda'],seccion:'reservas'},
@@ -3206,6 +3206,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   private normalizarSegcion(id:string):string{
     if(id==='reportes') return 'reportes-admin';
+    if(id==='pagos-admin' || id==='pagos-legacy') return 'pagos';
+    if(id==='entrenador-admin' || id==='entrenador-legacy') return 'entrenador';
+    if(id==='planes-admin' || id==='planes-legacy') return 'planes';
+    if(id==='rutinas-admin' || id==='rutinas-legacy') return 'rutinas';
+    if(id==='asistencias-legacy') return 'asistencias';
     if(id==='socios-hub') return 'clientes';
     if(id==='servicios') return 'clases';
     if(id==='atencion') return 'soporte';
