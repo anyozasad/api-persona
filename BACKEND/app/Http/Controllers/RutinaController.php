@@ -46,9 +46,10 @@ class RutinaController extends Controller
         if (empty($datos['id_entrenador'])) {
             throw ValidationException::withMessages(['id_entrenador' => ['Selecciona un entrenador.']]);
         }
-        $this->validarEntrenadorActivo((int) $datos['id_entrenador']);
-
         $datos['estado'] = $datos['estado'] ?? 'Activo';
+        if ($datos['estado'] === 'Activo') {
+            $this->validarEntrenadorActivo((int) $datos['id_entrenador']);
+        }
 
         $rutina = DB::transaction(function () use ($datos) {
             $detalles = $datos['detalles'] ?? [];
@@ -100,7 +101,10 @@ class RutinaController extends Controller
 
         if ($idEntrenador = $this->idEntrenadorActual($request)) $datos['id_entrenador'] = $idEntrenador;
         $entrenadorFinal = (int) ($datos['id_entrenador'] ?? $rutina->id_entrenador);
-        $this->validarEntrenadorActivo($entrenadorFinal);
+        $estadoFinal = (string) ($datos['estado'] ?? $rutina->estado);
+        if ($estadoFinal === 'Activo') {
+            $this->validarEntrenadorActivo($entrenadorFinal);
+        }
 
         $fechaInicio = $datos['fecha_inicio'] ?? optional($rutina->fecha_inicio)->toDateString();
         $fechaFin = array_key_exists('fecha_fin', $datos) ? $datos['fecha_fin'] : optional($rutina->fecha_fin)->toDateString();
