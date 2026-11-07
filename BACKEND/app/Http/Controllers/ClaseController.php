@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Clase;
+use App\Models\Entrenador;
 use App\Models\Reserva;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +42,7 @@ class ClaseController extends Controller
         ]);
 
         $datos['estado'] = $datos['estado'] ?? 'Activo';
+        $this->validarEntrenadorActivo($datos['id_entrenador'] ?? null);
         $this->validarChoqueHorario($datos);
 
         return response()->json(Clase::create($datos)->load('entrenador'), 201);
@@ -76,6 +78,8 @@ class ClaseController extends Controller
             'hora_inicio', 'hora_fin', 'cupo_maximo', 'estado',
         ]), $datos);
 
+        $this->validarEntrenadorActivo($final['id_entrenador'] ?? null);
+
         if ($final['hora_fin'] <= $final['hora_inicio']) {
             throw ValidationException::withMessages([
                 'hora_fin' => ['La hora de fin debe ser posterior a la hora de inicio.'],
@@ -108,6 +112,24 @@ class ClaseController extends Controller
             'clase' => $clase,
             'reservas_canceladas' => $clase->reservas_canceladas ?? 0,
         ]);
+    }
+
+    private function validarEntrenadorActivo($idEntrenador): void
+    {
+        if (empty($idEntrenador)) {
+            return;
+        }
+
+        $activo = Entrenador::query()
+            ->where('id_entrenador', $idEntrenador)
+            ->whereRaw('LOWER(estado) = ?', ['activo'])
+            ->exists();
+
+        if (!$activo) {
+            throw ValidationException::withMessages([
+                'id_entrenador' => ['Selecciona un entrenador activo.'],
+            ]);
+        }
     }
 
     private function validarChoqueHorario(array $datos, ?int $idExcluir = null): void
