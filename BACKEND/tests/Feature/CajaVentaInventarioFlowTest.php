@@ -178,6 +178,25 @@ class CajaVentaInventarioFlowTest extends TestCase
         $this->assertDatabaseHas('productos', ['id_producto' => 1, 'stock' => 10]);
     }
 
+
+    public function test_venta_genera_numero_comprobante_si_frontend_no_lo_envia(): void
+    {
+        $this->abrirCaja();
+
+        $payload = $this->ventaPayload();
+        unset($payload['numero_comprobante']);
+
+        $this->postJson('/api/ventas', $payload)
+            ->assertCreated()
+            ->assertJsonPath('numero_comprobante', 'B001-00000001')
+            ->assertJsonPath('venta.numero_comprobante', 'B001-00000001');
+
+        $this->assertDatabaseHas('ventas', [
+            'numero_comprobante' => 'B001-00000001',
+            'estado' => 'Registrado',
+        ]);
+    }
+
     public function test_venta_efectivo_descuenta_stock_crea_kardex_y_movimiento_de_caja(): void
     {
         $this->abrirCaja();
