@@ -10,6 +10,7 @@ export class AdminApiService {
   // DASHBOARD
   // =========================================================
   dashboard(): Observable<any> { return this.http.get('/api/dashboard/resumen'); }
+  estadoOperativo(): Observable<any> { return this.http.get('/api/estado-sistema'); }
 
   // =========================================================
   // CLIENTES
