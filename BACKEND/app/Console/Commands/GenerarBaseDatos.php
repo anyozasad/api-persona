@@ -15,6 +15,13 @@ class GenerarBaseDatos extends Command
     {
         $force = (bool) $this->option('force');
 
+        $esquemaBaseIncluido = count(glob(database_path('migrations/*_create_core_gym_tables_if_missing.php')) ?: []) > 0;
+        if ($esquemaBaseIncluido && !$force) {
+            $this->info('El esquema base ya está incluido en database/migrations.');
+            $this->comment('Ejecuta directamente: php artisan db:sincronizar');
+            return self::SUCCESS;
+        }
+
         foreach (['db:generar-interno', 'db:operacion-interno', 'db:produccion-interno'] as $comando) {
             $codigo = Artisan::call($comando, ['--force' => $force]);
             $salida = trim(Artisan::output());
