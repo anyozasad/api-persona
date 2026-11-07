@@ -27,15 +27,15 @@ class DashboardController extends Controller
         $finMes = now()->endOfMonth();
 
         $tablas = [
-            'socios' => $this->tabla(['socios', 'clientes', 'app_socios', 'app_clientes']),
-            'planes' => $this->tabla(['planes', 'membresias', 'app_planes', 'app_membresias']),
-            'suscripciones' => $this->tabla(['suscripciones', 'cliente_membresia', 'app_suscripciones', 'app_cliente_membresia']),
+            'socios' => $this->tabla(['clientes', 'socios', 'app_clientes', 'app_socios']),
+            'planes' => $this->tabla(['membresias', 'planes', 'app_membresias', 'app_planes']),
+            'suscripciones' => $this->tabla(['cliente_membresia', 'suscripciones', 'app_cliente_membresia', 'app_suscripciones']),
             'pagos' => $this->tabla(['pagos_membresia', 'app_pagos_membresia']),
             'asistencias' => $this->tabla(['asistencias', 'app_asistencias']),
             'ventas' => $this->tabla(['ventas', 'app_ventas']),
-            'detalle_ventas' => $this->tabla(['detalle_ventas', 'detalle_venta', 'app_detalle_ventas', 'app_detalle_venta']),
+            'detalle_ventas' => $this->tabla(['detalle_venta', 'detalle_ventas', 'app_detalle_venta', 'app_detalle_ventas']),
             'productos' => $this->tabla(['productos', 'app_productos']),
-            'gastos' => $this->tabla(['gastos', 'movimientos_caja', 'app_gastos', 'app_movimientos_caja']),
+            'gastos' => $this->tabla(['movimientos_caja', 'gastos', 'app_movimientos_caja', 'app_gastos']),
             'cajas' => $this->tabla(['cajas', 'app_cajas']),
             'reservas' => $this->tabla(['reservas', 'app_reservas']),
             'soporte' => $this->tabla(['solicitudes_soporte', 'app_solicitudes_soporte']),
@@ -200,7 +200,7 @@ class DashboardController extends Controller
             'fuente' => [
                 'base_datos' => $this->db->getDatabaseName(),
                 'tablas_detectadas' => array_values(array_filter($tablas)),
-                'modo' => 'base_principal_con_sincronizacion_gym_system',
+                'modo' => 'base_principal',
             ],
             'periodo' => [
                 'fecha' => $hoy->format('d/m/Y'),
@@ -436,7 +436,7 @@ class DashboardController extends Controller
 
         if ($estado) {
             $resultado['pagos_pendientes'] = $this->db->table($tabla)
-                ->whereIn($estado, ['Pendiente', 'PENDIENTE', 'pendiente'])
+                ->whereIn($estado, ['Pendiente', 'PENDIENTE', 'pendiente', 'PendientePago', 'PENDIENTEPAGO', 'pendientepago'])
                 ->count();
         }
 
