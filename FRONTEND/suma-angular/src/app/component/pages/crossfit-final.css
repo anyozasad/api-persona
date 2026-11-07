@@ -2037,3 +2037,144 @@ html,body{
   object-position:55% 76%!important;
   filter:saturate(1.08) contrast(1.07) brightness(.95)!important;
 }
+
+
+/* MALLQUI_DASHBOARD_SYNC_PANEL_2026_11_07 */
+.admin-shell.admin-home-redesign .mg-sync-panel{
+  margin:14px 0 18px!important;
+  padding:17px!important;
+  border:1px solid #e7eadf!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  box-shadow:0 5px 18px rgba(21,25,18,.035)!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel>header{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  margin-bottom:13px!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel>header small{
+  display:block!important;
+  margin-bottom:4px!important;
+  color:#8c9385!important;
+  font-size:7px!important;
+  font-weight:900!important;
+  letter-spacing:1.1px!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel>header h2{
+  margin:0!important;
+  color:#1d211c!important;
+  font-size:14px!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel>header p{
+  margin:4px 0 0!important;
+  color:#8d9389!important;
+  font-size:8.5px!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel>header button{
+  min-height:34px!important;
+  padding:0 12px!important;
+  border:1px solid #dfe4d8!important;
+  border-radius:7px!important;
+  background:#f8faf4!important;
+  color:#30352e!important;
+  font-size:8px!important;
+  font-weight:800!important;
+  cursor:pointer!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel>header button:hover{
+  border-color:#c9f45a!important;
+  background:#f2fadf!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel>header button:disabled{
+  opacity:.55!important;
+  cursor:default!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:9px!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article{
+  min-height:63px!important;
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:9px!important;
+  padding:10px!important;
+  border:1px solid #ecefe8!important;
+  border-radius:9px!important;
+  background:#fbfcfa!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article>i{
+  width:34px!important;
+  height:34px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:8px!important;
+  background:#eef2e9!important;
+  color:#50584b!important;
+  font-size:11px!important;
+  font-style:normal!important;
+  font-weight:900!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article.ok>i{
+  background:#effbd0!important;
+  color:#5a7820!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article.warning{
+  border-color:#f1d9d5!important;
+  background:#fff9f8!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article.warning>i{
+  background:#ffe9e4!important;
+  color:#b64b39!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article div{
+  min-width:0!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article strong{
+  display:block!important;
+  color:#2a2e28!important;
+  font-size:9px!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article span{
+  display:block!important;
+  margin-top:2px!important;
+  overflow:hidden!important;
+  color:#92978f!important;
+  font-size:7.5px!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article>b{
+  color:#242824!important;
+  font-size:11px!important;
+  font-weight:900!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel>footer{
+  margin-top:10px!important;
+  padding-top:9px!important;
+  border-top:1px solid #eff1ec!important;
+  color:#969b93!important;
+  font-size:7.5px!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel>footer strong{
+  color:#565d53!important;
+}
+@media(max-width:1100px){
+  .admin-shell.admin-home-redesign .mg-sync-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:700px){
+  .admin-shell.admin-home-redesign .mg-sync-panel>header{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+  .admin-shell.admin-home-redesign .mg-sync-grid{
+    grid-template-columns:1fr!important;
+  }
+}
