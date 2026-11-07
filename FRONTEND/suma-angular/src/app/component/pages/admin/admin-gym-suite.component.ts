@@ -501,6 +501,69 @@ interface GymModuleConfig {
       filter:saturate(1.06) contrast(1.07) brightness(.94)!important;
     }
 
+
+    /* NEW_SUITE_UI_FINAL_PRIORITY_2026_11_07 */
+    :host{display:block!important;background:transparent!important;color:#1d211c!important}
+    :host .gym-suite,:host .cf-suite-complete{background:transparent!important;color:#1d211c!important}
+    :host .cfx-crumb{
+      min-height:34px!important;padding:0 11px!important;border:1px solid #e5e9df!important;border-radius:8px!important;
+      background:#fff!important;color:#747a71!important;box-shadow:none!important;
+    }
+    :host .cfx-crumb *{color:#747a71!important}
+    :host .gym-suite-hero,:host .gym-suite-panel,:host .cf-suite-card,:host .cf-suite-page-head{
+      border:1px solid #e5e9df!important;border-radius:10px!important;background:#fff!important;
+      box-shadow:0 4px 16px rgba(24,29,20,.035)!important;
+    }
+    :host .gym-suite-icon{
+      background:#effbd0!important;color:#5d7624!important;border-radius:9px!important;
+    }
+    :host .gym-suite-heading h2,:host .cf-suite-page-head h1,:host .cf-suite-card h2{
+      color:#1d211c!important;
+    }
+    :host .gym-suite-heading p,:host .cf-suite-page-head p,:host .cf-suite-card p{
+      color:#898f86!important;
+    }
+    :host button.primary,:host .cf-suite-page-head button.primary{
+      border-color:#111311!important;background:#111311!important;color:#c9f45a!important;border-radius:7px!important;
+    }
+    :host button.secondary,:host .gym-suite-toolbar .refresh{
+      border-color:#dde2d8!important;background:#fff!important;color:#41473f!important;border-radius:7px!important;
+    }
+    :host .gym-suite-search,:host .gym-suite-toolbar select,
+    :host .gym-suite-form-grid input,:host .gym-suite-form-grid select,:host .gym-suite-form-grid textarea{
+      border-color:#dfe4da!important;border-radius:7px!important;background:#fbfcfa!important;color:#272b26!important;
+      box-shadow:none!important;
+    }
+    :host .gym-suite-search:focus-within,
+    :host .gym-suite-form-grid input:focus,:host .gym-suite-form-grid select:focus,:host .gym-suite-form-grid textarea:focus{
+      border-color:#a7c94b!important;box-shadow:0 0 0 3px rgba(201,244,90,.16)!important;
+    }
+    :host .gym-suite-kpis article,:host .cf-suite-kpis article,:host .cf-suite-income-cards article,
+    :host .cf-payment-status-grid>div,:host .cf-payroll-notes>div{
+      border:1px solid #e5e9df!important;border-radius:9px!important;background:#fff!important;box-shadow:none!important;
+    }
+    :host .gym-suite-kpis strong,:host .cf-suite-kpis b,:host .cf-suite-income-cards b,
+    :host .cf-payment-status-grid b,:host .cf-payroll-notes b{color:#1d211c!important}
+    :host .gym-suite-kpis small,:host .cf-suite-kpis small,:host .cf-suite-income-cards small,
+    :host .cf-payment-status-grid small,:host .cf-payroll-notes small{color:#8a9087!important}
+    :host .gym-suite-table{background:#fff!important}
+    :host .gym-suite-table th{
+      background:#f7f8f5!important;color:#7b8178!important;border-color:#e4e8df!important;text-transform:uppercase!important;
+    }
+    :host .gym-suite-table td{background:#fff!important;color:#444a42!important;border-color:#eef0eb!important}
+    :host .gym-suite-table tbody tr:hover td{background:#fbfdf7!important}
+    :host .status-select,:host .badge,:host .status{
+      border-color:#dfe8c2!important;background:#effbd0!important;color:#587221!important;
+    }
+    :host .cf-suite-link{color:#60772c!important;font-weight:800!important}
+    :host .cf-income-bars i{background:#111311!important}
+    :host .gym-suite-modal{
+      border:1px solid #e5e9df!important;border-radius:10px!important;background:#fff!important;
+      box-shadow:0 24px 60px rgba(20,24,18,.22)!important;
+    }
+    :host .gym-suite-modal>header{background:#f8faf5!important;border-color:#e8ebe4!important}
+    :host .gym-suite-modal>header small{color:#667d2f!important}
+    :host .gym-suite-modal footer{border-color:#edf0e9!important}
   `]
 })
 export class AdminGymSuiteComponent implements OnInit, OnChanges {
