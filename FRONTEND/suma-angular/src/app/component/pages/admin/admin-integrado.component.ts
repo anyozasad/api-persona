@@ -689,6 +689,52 @@ import { AdminCrossfitExtrasComponent } from './admin-crossfit-extras.component'
               </button>
             </section>
 
+            <section class="mg-sync-panel">
+              <header>
+                <div>
+                  <small>ESTADO DEL SISTEMA</small>
+                  <h2>Usuario, Dashboard y Base de Datos</h2>
+                  <p>Resumen de sincronización de los módulos principales de Mallqui Gym.</p>
+                </div>
+                <button type="button" (click)="actualizarDashboardCompleto()" [disabled]="actualizandoDatos">
+                  {{actualizandoDatos ? 'Actualizando...' : '↻ Actualizar datos'}}
+                </button>
+              </header>
+              <div class="mg-sync-grid">
+                <article [class.ok]="sistemaSincronizado">
+                  <i>{{sistemaSincronizado ? '✓' : '!'}}</i>
+                  <div><strong>Conexión del sistema</strong><span>{{sistemaSincronizado ? 'API conectada y respondiendo' : 'Revisar conexión con la API'}}</span></div>
+                  <b>{{sistemaSincronizado ? 'ACTIVO' : 'REVISAR'}}</b>
+                </article>
+                <article>
+                  <i>♚</i>
+                  <div><strong>Socios</strong><span>Datos disponibles para usuario y administración</span></div>
+                  <b>{{clientes.length}}</b>
+                </article>
+                <article>
+                  <i>✦</i>
+                  <div><strong>Membresías</strong><span>Planes asignados y renovaciones</span></div>
+                  <b>{{membresiasCliente.length}}</b>
+                </article>
+                <article>
+                  <i>▦</i>
+                  <div><strong>Productos</strong><span>Catálogo e inventario sincronizado</span></div>
+                  <b>{{productos.length}}</b>
+                </article>
+                <article>
+                  <i>S/</i>
+                  <div><strong>Pagos</strong><span>Operaciones registradas</span></div>
+                  <b>{{pagos.length}}</b>
+                </article>
+                <article [class.warning]="totalAlertasDashboard()>0">
+                  <i>{{totalAlertasDashboard()>0 ? '!' : '✓'}}</i>
+                  <div><strong>Pendientes</strong><span>{{totalAlertasDashboard()>0 ? 'Hay tareas que requieren atención' : 'No hay alertas críticas'}}</span></div>
+                  <b>{{totalAlertasDashboard()}}</b>
+                </article>
+              </div>
+              <footer>Última sincronización: <strong>{{ultimaActualizacion || 'Pendiente'}}</strong></footer>
+            </section>
+
             <section class="mg-section-heading">
               <div>
                 <h2>Rutinas del día</h2>
@@ -2806,6 +2852,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.cargarClases();
     this.cargarRutinas();
     this.cargarAsistencias();
+    this.cargarClientes();
+    this.cargarMembresias();
+    this.cargarPagos();
+    this.cargarProductos();
     if (this.seccion !== 'dashboard') this.cargarSegcion(this.seccion);
 
     // Refresco inteligente: no interrumpe formularios ni trabaja cuando la pestaña está oculta.
@@ -2839,6 +2889,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     const destinos:Array<{claves:string[],seccion:string}>=[
       {claves:['historial venta','historial ventas'],seccion:'historial-ventas'},
       {claves:['reporte asistencia','reporte asistencias'],seccion:'reporte-asistencias'},
+      {claves:['matricular','matricula','nuevo socio','registrar socio'],seccion:'clientes'},
+      {claves:['seguimiento','seguimiento socio','seguimiento socios'],seccion:'seguimiento'},
       {claves:['socio','socios','cliente','clientes','miembro','miembros'],seccion:'clientes'},
       {claves:['membresia','membresias'],seccion:'membresias'},
       {claves:['pago','pagos'],seccion:'pagos'},
@@ -3500,14 +3552,52 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       + Number(this.dashboard?.membresias?.por_vencer_7_dias||0);
   }
 
+  get sistemaSincronizado(): boolean {
+    return !this.dashboardError && !!this.dashboard && this.ultimaActualizacionTs>0;
+  }
+
+  actualizarDashboardCompleto(): void {
+    if(this.actualizandoDatos) return;
+    this.actualizandoDatos=true;
+    this.error='';
+    this.cargarDashboard();
+    this.cargarClientes();
+    this.cargarMembresias();
+    this.cargarPagos();
+    this.cargarProductos();
+    this.cargarReservas();
+    this.cargarRutinas();
+    this.cargarAsistencias();
+    setTimeout(()=>{
+      this.actualizandoDatos=false;
+      this.ultimaActualizacion=new Date().toLocaleTimeString('es-PE');
+    },900);
+  }
+
   get membresiasPorVencerDashboard(): any[] {
     const datos=this.dashboard?.membresias?.detalle_por_vencer;
     return Array.isArray(datos) ? datos : [];
   }
 
   abrirAlertasDashboard(): void {
-    if(this.membresiasPorVencerDashboard.length){
-      this.cambiarSegcion('membresias');
+    if(this.membresiasPorVencerDashboard.length || Number(this.dashboard?.membresias?.por_vencer_7_dias||0)>0){
+      this.cambiarSegcion('renovaciones');
+      return;
+    }
+    if(Number(this.dashboard?.alertas?.rutinas_pendientes||0)>0){
+      this.cambiarSegcion('rutinas');
+      return;
+    }
+    if(Number(this.dashboard?.inventario?.productos_stock_bajo||0)>0){
+      this.cambiarSegcion('inventario');
+      return;
+    }
+    if(Number(this.dashboard?.alertas?.soporte_pendiente||0)>0){
+      this.cambiarSegcion('soporte');
+      return;
+    }
+    if(Number(this.dashboard?.alertas?.opiniones_pendientes||0)>0){
+      this.cambiarSegcion('opiniones');
       return;
     }
     this.cambiarSegcion('comunicacion');
@@ -3981,8 +4071,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   recargarTodo(): void {
+    if(this.seccion==='dashboard'){
+      this.actualizarDashboardCompleto();
+      return;
+    }
     this.cargarDashboard();
-    if (this.seccion !== 'dashboard') this.cargarSegcion(this.seccion);
+    this.cargarSegcion(this.seccion);
   }
 
   cargarDashboard(){
