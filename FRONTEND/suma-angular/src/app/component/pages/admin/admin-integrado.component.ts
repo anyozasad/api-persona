@@ -17,7 +17,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
   encapsulation: ViewEncapsulation.None,
   template: `
   <div class="admin-shell admin-home-redesign" [class.admin-sidebar-collapsed]="sidebarCerrado">
-    <header class="admin-wix-topbar">
+    <header class="mg-current-topbar">
       <div class="mg-top-greeting">
         <h1>Hola, {{auth.usuario?.nombre_usuario || 'Administrador'}}!</h1>
         <span>{{fechaDashboard}}</span>
@@ -43,7 +43,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
       </button>
     </header>
 
-    <aside class="admin-nav">
+    <aside class="mg-current-sidebar">
       <button type="button" class="mg-brand" (click)="cambiarSegcion('dashboard')" aria-label="Ir al inicio">
         <span class="mg-brand-icon">↔</span>
         <span><strong>Mallqui</strong><b>Gym</b></span>
@@ -171,7 +171,7 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
       {{sidebarCerrado ? '›' : '‹'}}
     </button>
 
-    <main class="admin-content">
+    <main class="mg-current-content">
       
 
       <nav class="admin-mobile-modules" aria-label="Módulos principales en móvil">
