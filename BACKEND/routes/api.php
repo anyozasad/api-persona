@@ -274,6 +274,7 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
     // MÓDULOS COMPLEMENTARIOS DEL DASHBOARD FITNESS
     Route::get('/admin-gym-registros/{modulo}', [AdminGymRecordController::class, 'index']);
     Route::post('/admin-gym-registros/{modulo}', [AdminGymRecordController::class, 'store']);
+    Route::post('/admin-gym-registros/{modulo}/imagen', [AdminGymRecordController::class, 'subirImagen']);
     Route::put('/admin-gym-registros/{modulo}/{id}', [AdminGymRecordController::class, 'update']);
     Route::patch('/admin-gym-registros/{modulo}/{id}/estado', [AdminGymRecordController::class, 'cambiarEstado']);
     Route::delete('/admin-gym-registros/{modulo}/{id}', [AdminGymRecordController::class, 'destroy']);
