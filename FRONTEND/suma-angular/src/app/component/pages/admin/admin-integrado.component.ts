@@ -146,8 +146,6 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
           <button type="button" [class.active]="seccion==='mantenimiento-sistema'" (click)="cambiarSegcion('mantenimiento-sistema')"><span>•</span><span>Mantenimiento del Sistema</span></button>
         </div>
 
-        <!-- Se ocultaron del menú principal los componentes de demostración de la plantilla
-             (acordeones, spinners, avatares, etc.) para mantener solo funciones reales del gimnasio. -->
       </nav>
 
       <div class="mg-sidebar-bottom">
@@ -189,8 +187,6 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
       </nav>
 
       <div class="mg-current-workspace">
-      <!-- Las pantallas antiguas de la plantilla fueron retiradas.
-           Todos los módulos administrativos usan la interfaz actual de Mallqui Gym. -->
 
       <section class="mg-module-shell-head" *ngIf="seccion!=='dashboard'">
         <div class="mg-module-shell-copy">
@@ -2346,27 +2342,6 @@ import { AdminGymSuiteComponent } from './admin-gym-suite.component';
       color:#647a2d!important;
     }
 
-    .admin-shell.admin-home-redesign .cf-live-page{
-      background:transparent!important;color:#232722!important;
-    }
-    .admin-shell.admin-home-redesign .cf-live-page .cf-special-crumb,
-    .admin-shell.admin-home-redesign .cf-live-page .cf-live-card,
-    .admin-shell.admin-home-redesign .cf-live-page .cf-live-welcome,
-    .admin-shell.admin-home-redesign .cf-live-page .cf-live-summary4 article,
-    .admin-shell.admin-home-redesign .cf-live-page .cf-workout-block{
-      border:1px solid #e5e9df!important;border-radius:10px!important;background:#fff!important;
-      box-shadow:0 4px 15px rgba(24,29,20,.03)!important;
-    }
-    .admin-shell.admin-home-redesign .cf-live-page h1,
-    .admin-shell.admin-home-redesign .cf-live-page h2,
-    .admin-shell.admin-home-redesign .cf-live-page h3,
-    .admin-shell.admin-home-redesign .cf-live-page b{color:#1d211c!important}
-    .admin-shell.admin-home-redesign .cf-live-page p,
-    .admin-shell.admin-home-redesign .cf-live-page small{color:#878d84!important}
-    .admin-shell.admin-home-redesign .cf-live-page em{color:#60762b!important}
-    .admin-shell.admin-home-redesign .cf-live-page .cf-live-goal div>i,
-    .admin-shell.admin-home-redesign .cf-live-page .cf-live-workout-progress div>i{background:#c9f45a!important}
-
     .admin-shell.admin-home-redesign .status-active,
     .admin-shell.admin-home-redesign .status-paid,
     .admin-shell.admin-home-redesign .plan-pill{
@@ -2697,10 +2672,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   dashboardError = '';
   autoRefreshActivo = true;
   busquedaAdmin = '';
-  topPanel = '';
-  mostrarAnalisisAvanzado = false;
-  workoutSemana = 1;
-  diaNutricionActivo = 'Domingo';
   nutricionPreview: any[] = [];
   suiteModules = ['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   modulosConVistaPropia = [
@@ -2710,24 +2681,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     'auditoria','configuracion','opiniones'
   ];
   navGroups:any = {members:false,payments:false,trainers:false,training:false,diet:false,equipment:false,events:false,ui:false,operations:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
-  uiElementLinks = [
-    {id:'alerts',label:'Alertas'},{id:'avatars',label:'Avatares'},{id:'badges',label:'Insignias'},
-    {id:'buttons',label:'Botones'},{id:'button-groups',label:'Grupos de Botones'},{id:'cards-ui',label:'Tarjetas'},
-    {id:'advanced-cards',label:'Tarjetas Avanzadas'},{id:'dropdowns',label:'Menús Desplegables'},{id:'list-items',label:'Elementos de Lista'},
-    {id:'progress-bars',label:'Barras de Progreso'},{id:'placeholders',label:'Marcadores'},{id:'spinners',label:'Indicadores de Carga'}
-  ];
-  jqueryLinks = [
-    {id:'accordions',label:'Acordeones'},{id:'carousel',label:'Carrusel'},{id:'modals',label:'Modales'},
-    {id:'popovers',label:'Ventanas Emergentes'},{id:'tabs-ui',label:'Pestañas'},{id:'tooltips',label:'Ayudas Emergentes'}
-  ];
-  formLinks = [
-    {id:'form-inputs',label:'Campos de Formulario'},{id:'checkbox-radio',label:'Casillas y Opciones'},
-    {id:'file-input',label:'Carga de Archivos'},{id:'validations',label:'Validaciones'},{id:'date-time',label:'Fecha y Hora'},
-    {id:'input-masks',label:'Máscaras de Entrada'},{id:'input-tags',label:'Etiquetas'}
-  ];
-
-  extraModules: string[] = [];
-
   private autoRefreshId: any = null;
 
   diasSemana = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
@@ -2936,42 +2889,27 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.error='No encontré esa función. Prueba con socios, reservas, caja, ventas, inventario, reportes o sistema.';
   }
 
-  seleccionarDiaNutricion(dia:string):void{
-    this.diaNutricionActivo=dia;
-    this.ok('Plan de alimentación: '+dia);
-  }
-
   toggleNavGroup(group:string):void{
     this.navGroups[group]=!this.navGroups[group];
   }
-
-  toggleTopPanel(panel:string):void { this.topPanel=this.topPanel===panel?'':panel; }
 
   toggleSidebar(): void {
     this.sidebarCerrado = !this.sidebarCerrado;
     try{localStorage.setItem('mallqui_admin_sidebar_closed', this.sidebarCerrado ? '1' : '0');}catch{}
   }
 
-  get estiloModuloActual():string{
-    if(['clientes','membresias','pagos','asistencias','reporte-asistencias','entrenador','clases','reservas','planes'].includes(this.seccion)) return 'personas';
-    if(['ventas','historial-ventas','caja','gastos','inventario','productos','kardex','categorias','proveedores','compras'].includes(this.seccion)) return 'operacion';
-    if(['salarios','ingresos','facturas'].includes(this.seccion)) return 'finanzas';
-    if(['equipos','eventos','galeria','noticias','soporte','opiniones','comunicacion'].includes(this.seccion)) return 'contenido';
-    return 'sistema';
-  }
-
   get etiquetaModuloActual():string{
     const mapa:any={
-      clientes:'GESTIÓN DE SOCIOS',membresias:'MEMBRESÍAS',pagos:'PAGOS Y COBROS',
+      clientes:'GESTIÓN DE SOCIOS',membresias:'MEMBRESÍAS',renovaciones:'RENOVACIONES Y AVISOS',pagos:'PAGOS Y COBROS',
       asistencias:'CONTROL DE ASISTENCIA','reporte-asistencias':'REPORTE DE ASISTENCIA',
-      entrenador:'EQUIPO DE ENTRENADORES',clases:'CLASES DEL GIMNASIO',reservas:'RESERVAS',
+      entrenador:'EQUIPO DE ENTRENADORES',clases:'CLASES DEL GIMNASIO',reservas:'RESERVAS',rutinas:'RUTINAS',seguimiento:'SEGUIMIENTO', 'progreso-fisico':'PROGRESO FÍSICO',nutricion:'NUTRICIÓN',
       planes:'PLANES Y PRECIOS',ventas:'VENTAS', 'historial-ventas':'HISTORIAL DE VENTAS',
       caja:'CONTROL DE CAJA',gastos:'GASTOS',inventario:'INVENTARIO',productos:'PRODUCTOS',
       kardex:'MOVIMIENTOS DE STOCK',categorias:'CATEGORÍAS',proveedores:'PROVEEDORES',
       compras:'COMPRAS',equipos:'EQUIPOS DEL GIMNASIO',eventos:'EVENTOS',galeria:'GALERÍA',
       noticias:'NOTICIAS',salarios:'SALARIOS',ingresos:'INGRESOS',facturas:'FACTURACIÓN',
       soporte:'ATENCIÓN AL CLIENTE',opiniones:'OPINIONES',comunicacion:'COMUNICACIÓN',
-      usuarios:'USUARIOS',auditoria:'AUDITORÍA',configuracion:'CONFIGURACIÓN'
+      usuarios:'USUARIOS',auditoria:'AUDITORÍA',configuracion:'CONFIGURACIÓN','documentos-socio':'DOCUMENTOS DEL SOCIO','mantenimiento-sistema':'MANTENIMIENTO DEL SISTEMA','reportes-admin':'REPORTES ADMINISTRATIVOS'
     };
     return mapa[this.seccion]||'MALLQUI GYM';
   }
@@ -2982,195 +2920,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(['pagos','ventas','ingresos','facturas','salarios','gastos'].includes(this.seccion)) return 'Control financiero';
     if(['clientes','membresias','asistencias','entrenador','clases','reservas','planes'].includes(this.seccion)) return 'Gestión activa';
     return this.dashboard?.fuente?.base_datos?'Sistema en línea':'Panel administrativo';
-  }
-
-  get panelesModuloActual():Array<{title:string,subtitle:string,badge:string,icon:string,bars:number[]}>{
-    const m=this.metricasModuloActual;
-    const barsA=[28,45,62,78,54,70,42];
-    const barsB=[35,52,40,82,66,58,74];
-    const barsC=[22,38,57,49,71,86,64];
-    const barsD=[30,68,44,76,55,80,61];
-    switch(this.estiloModuloActual){
-      case 'personas':
-        return [
-          {title:'Actividad de socios',subtitle:m[0]?.label||'Actividad',badge:m[0]?.value||'0',icon:'♚',bars:barsA},
-          {title:'Seguimiento',subtitle:m[1]?.label||'Estado',badge:m[1]?.value||'0',icon:'✓',bars:barsB},
-          {title:'Movimiento semanal',subtitle:m[2]?.label||'Semana',badge:m[2]?.value||'0',icon:'⌁',bars:barsC},
-          {title:'Estado general',subtitle:m[3]?.label||'Total',badge:m[3]?.value||'0',icon:'★',bars:barsD}
-        ];
-      case 'operacion':
-        return [
-          {title:'Operación de hoy',subtitle:m[0]?.label||'Operación',badge:m[0]?.value||'0',icon:'▣',bars:barsB},
-          {title:'Movimiento',subtitle:m[1]?.label||'Movimiento',badge:m[1]?.value||'0',icon:'↗',bars:barsD},
-          {title:'Control',subtitle:m[2]?.label||'Control',badge:m[2]?.value||'0',icon:'▦',bars:barsA},
-          {title:'Rendimiento',subtitle:m[3]?.label||'Rendimiento',badge:m[3]?.value||'0',icon:'⌘',bars:barsC}
-        ];
-      case 'finanzas':
-        return [
-          {title:'Resumen financiero',subtitle:m[0]?.label||'Ingresos',badge:m[0]?.value||'0',icon:'S/',bars:barsD},
-          {title:'Flujo del día',subtitle:m[1]?.label||'Ventas',badge:m[1]?.value||'0',icon:'↗',bars:barsB},
-          {title:'Operaciones',subtitle:m[2]?.label||'Operaciones',badge:m[2]?.value||'0',icon:'▤',bars:barsA},
-          {title:'Estado de caja',subtitle:m[3]?.label||'Caja',badge:m[3]?.value||'0',icon:'▣',bars:barsC}
-        ];
-      case 'contenido':
-        return [
-          {title:'Contenido activo',subtitle:m[0]?.label||'Activos',badge:m[0]?.value||'0',icon:'◇',bars:barsA},
-          {title:'Actividad reciente',subtitle:m[1]?.label||'Actividad',badge:m[1]?.value||'0',icon:'◫',bars:barsB},
-          {title:'Participación',subtitle:m[2]?.label||'Participación',badge:m[2]?.value||'0',icon:'♚',bars:barsC},
-          {title:'Estado',subtitle:m[3]?.label||'Sistema',badge:m[3]?.value||'0',icon:'●',bars:barsD}
-        ];
-      default:
-        return [
-          {title:'Usuarios y acceso',subtitle:m[0]?.label||'Usuarios',badge:m[0]?.value||'0',icon:'♙',bars:barsC},
-          {title:'Actividad del sistema',subtitle:m[1]?.label||'Eventos',badge:m[1]?.value||'0',icon:'⌘',bars:barsA},
-          {title:'Estado del servicio',subtitle:m[2]?.label||'Estado',badge:m[2]?.value||'0',icon:'●',bars:barsB},
-          {title:'Base de datos',subtitle:m[3]?.label||'Datos',badge:m[3]?.value||'0',icon:'▦',bars:barsD}
-        ];
-    }
-  }
-
-  get metricasModuloActual():Array<{label:string,value:string,icon:string}>{
-    const n=(v:any)=>Number(v||0);
-    const len=(v:any)=>Array.isArray(v)?v.length:0;
-    const money=(v:any)=>'S/ '+n(v).toFixed(2);
-    const activos=(lista:any[])=>Array.isArray(lista)
-      ? lista.filter((x:any)=>String(x?.estado||'').toLowerCase()==='activo').length
-      : 0;
-
-    switch(this.seccion){
-      case 'clientes':
-        return [
-          {label:'Socios registrados',value:String(len(this.clientes)),icon:'♚'},
-          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'✓'},
-          {label:'Nuevos este mes',value:String(n(this.dashboard?.clientes?.nuevos_mes)),icon:'+'},
-          {label:'Membresías activas',value:String(n(this.dashboard?.membresias?.activas)),icon:'★'}
-        ];
-      case 'membresias':
-      case 'planes':
-        return [
-          {label:'Membresías activas',value:String(n(this.dashboard?.membresias?.activas)),icon:'★'},
-          {label:'Por vencer',value:String(n(this.dashboard?.membresias?.por_vencer_7_dias)),icon:'!'},
-          {label:'Planes disponibles',value:String(len(this.planesMembresia)),icon:'▤'},
-          {label:'Pagos registrados',value:String(len(this.pagos)),icon:'S/'}
-        ];
-      case 'pagos':
-        return [
-          {label:'Pagos registrados',value:String(len(this.pagos)),icon:'S/'},
-          {label:'Ingresos del mes',value:money(this.dashboard?.ingresos?.total_mes),icon:'↗'},
-          {label:'Membresías activas',value:String(n(this.dashboard?.membresias?.activas)),icon:'★'},
-          {label:'Por vencer',value:String(n(this.dashboard?.membresias?.por_vencer_7_dias)),icon:'!'}
-        ];
-      case 'asistencias':
-      case 'reporte-asistencias':
-        return [
-          {label:'Dentro del gym',value:String(n(this.dashboard?.asistencias?.dentro_ahora)),icon:'✓'},
-          {label:'Accesos hoy',value:String(n(this.dashboard?.asistencias?.hoy)),icon:'⌁'},
-          {label:'Registros',value:String(len(this.asistencias)),icon:'▣'},
-          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'♚'}
-        ];
-      case 'rutinas':
-        return [
-          {label:'Rutinas',value:String(len(this.rutinas)),icon:'☷'},
-          {label:'Pendientes',value:String(n(this.dashboard?.alertas?.rutinas_pendientes)),icon:'!'},
-          {label:'Entrenadores',value:String(len(this.entrenadores)),icon:'♙'},
-          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'♚'}
-        ];
-      case 'clases':
-      case 'reservas':
-        return [
-          {label:'Clases activas',value:String(n(this.dashboard?.operacion?.clases_activas)),icon:'◷'},
-          {label:'Reservas hoy',value:String(n(this.dashboard?.reservas?.hoy)),icon:'◫'},
-          {label:'Entrenadores',value:String(len(this.entrenadores)),icon:'♙'},
-          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'♚'}
-        ];
-      case 'entrenador':
-        return [
-          {label:'Entrenadores',value:String(len(this.entrenadores)),icon:'♙'},
-          {label:'Activos',value:String(activos(this.entrenadores)),icon:'✓'},
-          {label:'Clases activas',value:String(n(this.dashboard?.operacion?.clases_activas)),icon:'◷'},
-          {label:'Rutinas',value:String(len(this.rutinas)),icon:'☷'}
-        ];
-      case 'ventas':
-      case 'historial-ventas':
-        return [
-          {label:'Ventas hoy',value:money(this.dashboard?.ventas?.hoy_total),icon:'S/'},
-          {label:'Operaciones',value:String(n(this.dashboard?.ventas?.hoy_cantidad)),icon:'▤'},
-          {label:'Ingresos del mes',value:money(this.dashboard?.ingresos?.total_mes),icon:'↗'},
-          {label:'Ventas registradas',value:String(len(this.ventas)),icon:'✓'}
-        ];
-      case 'caja':
-      case 'gastos':
-        return [
-          {label:'Estado de caja',value:this.dashboard?.caja?.abierta?'Abierta':'Cerrada',icon:'▣'},
-          {label:'Ventas hoy',value:money(this.dashboard?.ventas?.hoy_total),icon:'S/'},
-          {label:'Ingresos del mes',value:money(this.dashboard?.ingresos?.total_mes),icon:'↗'},
-          {label:'Gastos actuales',value:money(this.totalGastosCajaActual),icon:'↓'}
-        ];
-      case 'inventario':
-      case 'productos':
-      case 'kardex':
-      case 'categorias':
-      case 'proveedores':
-      case 'compras':
-        return [
-          {label:'Productos',value:String(len(this.productos)),icon:'▦'},
-          {label:'Stock bajo',value:String(n(this.dashboard?.inventario?.productos_stock_bajo)),icon:'!'},
-          {label:'Proveedores',value:String(len(this.proveedores)),icon:'◆'},
-          {label:'Compras',value:String(len(this.compras)),icon:'↘'}
-        ];
-      case 'reportes':
-        return [
-          {label:'Ingresos del mes',value:money(this.dashboard?.ingresos?.total_mes),icon:'↗'},
-          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'♚'},
-          {label:'Asistencias hoy',value:String(n(this.dashboard?.asistencias?.hoy)),icon:'✓'},
-          {label:'Ventas hoy',value:money(this.dashboard?.ventas?.hoy_total),icon:'S/'}
-        ];
-      case 'usuarios':
-      case 'auditoria':
-      case 'configuracion':
-        return [
-          {label:'Usuarios',value:String(len(this.usuarios)),icon:'♙'},
-          {label:'Auditorías',value:String(len(this.auditorias)),icon:'⌘'},
-          {label:'Sistema',value:this.dashboard?.fuente?.base_datos?'En línea':'Revisando',icon:'●'},
-          {label:'Base de datos',value:String(this.dashboard?.fuente?.base_datos||'—'),icon:'▦'}
-        ];
-      case 'soporte':
-      case 'opiniones':
-      case 'comunicacion':
-        return [
-          {label:'Alertas',value:String(n(this.dashboard?.alertas?.total)),icon:'!'},
-          {label:'Opiniones',value:String(len(this.opiniones)),icon:'◇'},
-          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'♚'},
-          {label:'Reservas hoy',value:String(n(this.dashboard?.reservas?.hoy)),icon:'◫'}
-        ];
-      case 'salarios':
-      case 'ingresos':
-      case 'facturas':
-        return [
-          {label:'Ingresos del mes',value:money(this.dashboard?.ingresos?.total_mes),icon:'↗'},
-          {label:'Ventas hoy',value:money(this.dashboard?.ventas?.hoy_total),icon:'S/'},
-          {label:'Operaciones hoy',value:String(n(this.dashboard?.ventas?.hoy_cantidad)),icon:'▤'},
-          {label:'Caja',value:this.dashboard?.caja?.abierta?'Abierta':'Cerrada',icon:'▣'}
-        ];
-      case 'nutricion':
-      case 'equipos':
-      case 'eventos':
-      case 'galeria':
-      case 'noticias':
-        return [
-          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'♚'},
-          {label:'Clases activas',value:String(n(this.dashboard?.operacion?.clases_activas)),icon:'◷'},
-          {label:'Reservas hoy',value:String(n(this.dashboard?.reservas?.hoy)),icon:'◫'},
-          {label:'Sistema',value:this.dashboard?.fuente?.base_datos?'En línea':'Revisando',icon:'●'}
-        ];
-      default:
-        return [
-          {label:'Socios activos',value:String(n(this.dashboard?.clientes?.activos)),icon:'♚'},
-          {label:'Ingresos',value:money(this.dashboard?.ingresos?.total_mes),icon:'↗'},
-          {label:'Reservas',value:String(n(this.dashboard?.reservas?.hoy)),icon:'◫'},
-          {label:'Alertas',value:String(n(this.dashboard?.alertas?.total)),icon:'!'}
-        ];
-    }
   }
 
   get tituloActual(): string { return this.titulos[this.seccion]?.[0] ?? 'Administrador'; }
@@ -3229,15 +2978,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   get moduloActivo():string{
     const s=this.seccion;
     if(s==='dashboard') return 'dashboard';
-    if(['clientes','membresias','pagos','planes','renovaciones','documentos-socio','members-list','members-cards','add-member','edit-member','edit-member-details'].includes(s)) return 'socios';
-    if(['clases','reservas','rutinas','entrenador','trainer-profile','seguimiento','progreso-fisico','nutricion','asistencias','attendance-tools','reporte-asistencias','sports-components'].includes(s)) return 'servicios';
+    if(['clientes','membresias','pagos','planes','renovaciones','documentos-socio'].includes(s)) return 'socios';
+    if(['clases','reservas','rutinas','entrenador','seguimiento','progreso-fisico','nutricion','asistencias','reporte-asistencias'].includes(s)) return 'servicios';
     if(['caja','ventas','historial-ventas','gastos','compras'].includes(s)) return 'operacion';
     if(['inventario','productos','kardex','proveedores','categorias','equipos'].includes(s)) return 'inventario';
     if(['eventos','galeria','noticias'].includes(s)) return 'contenido';
-    if(['salarios','ingresos','facturas','invoices-list','create-invoice','add-invoice','edit-invoice','invoice-details','expenses','payslip'].includes(s)) return 'finanzas';
-    if(['soporte','opiniones','comunicacion','contact'].includes(s)) return 'atencion';
+    if(['salarios','ingresos','facturas'].includes(s)) return 'finanzas';
+    if(['soporte','opiniones','comunicacion'].includes(s)) return 'atencion';
     if(['reportes','reportes-admin'].includes(s)) return 'reportes';
-    if(['usuarios','auditoria','configuracion','mantenimiento-sistema','my-profile','account-settings'].includes(s)) return 'sistema';
+    if(['usuarios','auditoria','configuracion','mantenimiento-sistema'].includes(s)) return 'sistema';
     return 'herramientas';
   }
 
@@ -3307,7 +3056,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         return [
           {id:'ingresos',nombre:'Ingresos'},
           {id:'facturas',nombre:'Facturas'},
-          {id:'gastos',nombre:'Gastos'},
           {id:'salarios',nombre:'Salarios'}
         ];
       case 'atencion':
