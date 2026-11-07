@@ -101,7 +101,8 @@ class VentaController extends Controller
             $numeroComprobante = trim((string) ($datos['numero_comprobante'] ?? ''));
             if ($numeroComprobante === '') {
                 $prefijo = mb_strtolower((string) $datos['tipo_comprobante']) === 'factura' ? 'F001' : 'B001';
-                $siguiente = ((int) DB::table('ventas')->lockForUpdate()->max('id_venta')) + 1;
+                $ultimoId = Venta::query()->lockForUpdate()->orderByDesc('id_venta')->value('id_venta');
+                $siguiente = ((int) $ultimoId) + 1;
                 $numeroComprobante = $prefijo.'-'.str_pad((string) $siguiente, 8, '0', STR_PAD_LEFT);
             }
 
