@@ -147,10 +147,19 @@ class AuthController extends Controller
             ], 403);
         }
 
+        // El administrador y el entrenador no necesitan buscar una ficha en clientes
+        // para autenticarse. En instalaciones legacy esa consulta puede fallar
+        // porque la tabla clientes tiene un esquema anterior al sistema actual.
+        $cliente = null;
+        if (mb_strtolower((string) $usuario->rol) === 'cliente' && Schema::hasTable('clientes')) {
+            if ($usuario->id_cliente && Schema::hasColumn('clientes', 'id_cliente')) {
+                $cliente = Cliente::find($usuario->id_cliente);
+            } elseif ($usuario->dni && Schema::hasColumn('clientes', 'dni')) {
+                $cliente = Cliente::where('dni', $usuario->dni)->first();
+            }
+        }
+
         $token = $usuario->createToken('sesion-api')->plainTextToken;
-        $cliente = $usuario->id_cliente
-            ? Cliente::find($usuario->id_cliente)
-            : ($usuario->dni ? Cliente::where('dni', $usuario->dni)->first() : null);
 
         return response()->json([
             'mensaje' => 'Inicio de sesión correcto',
