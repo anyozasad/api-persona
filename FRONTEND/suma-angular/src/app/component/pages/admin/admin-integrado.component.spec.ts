@@ -19,7 +19,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       'estadoOperativo', 'dashboard', 'clientes', 'membresiasDisponibles',
       'clienteMembresias', 'pagos', 'productos', 'reservas', 'rutinas',
       'asistencias', 'entrenadores', 'clases', 'cajaActual',
-      'registrarAccesoCodigo', 'cambiarEstadoReserva'
+      'registrarAccesoCodigo', 'cambiarEstadoReserva', 'confirmarPagoPendiente'
     ]);
 
     api.estadoOperativo.and.returnValue(of({
@@ -161,5 +161,56 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       inventario: { productos_stock_bajo: 2 }
     };
     expect(component.totalAlertasDashboard()).toBe(9);
+  });
+
+  it('calcula el grafico financiero con cifras de la API sin puntos simulados', () => {
+    component.dashboard = {
+      ingresos: { total_mes: 150, membresias_mes: 100, ventas_mes: 50 },
+      tendencias: {
+        ingresos_6_meses: [
+          { mes: 'Oct', total: 80, membresias: 50, ventas: 30 },
+          { mes: 'Nov', total: 150, membresias: 100, ventas: 50 }
+        ]
+      }
+    };
+    component.tipoIngresoDashboard = 'ventas';
+
+    expect(component.totalIngresoMesSeleccionado()).toBe(50);
+    expect(component.ingresosMensualesDashboard().map(m => m.total)).toEqual([30, 50]);
+    expect(component.maxIngresoGrafico()).toBe(50);
+    expect(component.puntosIngresosDashboard().length).toBe(2);
+    expect(component.lineaIngresosDashboard()).toContain(',');
+    expect(component.areaIngresosDashboard()).toContain(' Z');
+  });
+
+  it('calcula asistencias por dia y porcentajes sin divisiones por cero', () => {
+    component.dashboard = {
+      asistencias: { hoy: 6 },
+      reservas: { hoy: 2 },
+      ventas: { hoy_cantidad: 2 },
+      tendencias: {
+        asistencias_7_dias: [
+          { dia: 'Lun', total: 3 }, { dia: 'Mar', total: 6 }
+        ]
+      }
+    };
+
+    expect(component.totalActividadSemanal()).toBe(9);
+    expect(component.alturaAsistenciaSemana(3)).toBe(50);
+    expect(component.totalActividadOperativa()).toBe(10);
+    expect(component.porcentajeActividadOperativa('asistencias')).toBe(60);
+    component.dashboard = {};
+    expect(component.porcentajeActividadOperativa('ventas')).toBe(0);
+  });
+
+  it('no confirma pagos en efectivo si la caja esta cerrada', () => {
+    component.caja = { caja_abierta: false, caja: null };
+
+    component.confirmarPagoEfectivo({
+      id_pago: 7, estado_pago: 'Pendiente', metodo_pago: 'Efectivo'
+    });
+
+    expect(api.confirmarPagoPendiente).not.toHaveBeenCalled();
+    expect(component.error).toContain('Abre Caja');
   });
 });
