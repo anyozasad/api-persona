@@ -174,9 +174,17 @@ class AuthController extends Controller
     {
         /** @var Usuario $usuario */
         $usuario = $request->user();
-        $cliente = $usuario->id_cliente
-            ? Cliente::find($usuario->id_cliente)
-            : ($usuario->dni ? Cliente::where('dni', $usuario->dni)->first() : null);
+
+        // Las cuentas administrativas no dependen del modulo clientes.
+        // Consultar solo el esquema disponible en instalaciones legacy.
+        $cliente = null;
+        if (mb_strtolower((string) $usuario->rol) === 'cliente' && Schema::hasTable('clientes')) {
+            if ($usuario->id_cliente && Schema::hasColumn('clientes', 'id_cliente')) {
+                $cliente = Cliente::find($usuario->id_cliente);
+            } elseif ($usuario->dni && Schema::hasColumn('clientes', 'dni')) {
+                $cliente = Cliente::where('dni', $usuario->dni)->first();
+            }
+        }
 
         return response()->json([
             'usuario' => $usuario,
