@@ -224,6 +224,10 @@ export class LoginComponent {
     if (err?.status === 429) {
       return 'Hiciste demasiados intentos. Espera un minuto y vuelve a intentarlo.';
     }
+    // No mostrar consultas SQL ni rutas del servidor al usuario final.
+    if (typeof err?.status === 'number' && err.status >= 500) {
+      return 'El servidor no pudo completar el inicio de sesión. Revisa la configuración de la base de datos.';
+    }
     const errors = err?.error?.errors;
     if (errors && typeof errors === 'object') {
       const first = Object.values(errors)[0];
