@@ -470,12 +470,12 @@ import { catchError, forkJoin, of } from 'rxjs';
               </div>
             </section>
 
-            <section class="mg-expiry-alert" [class.has-warning]="membresiasPorVencerDashboard.length>0">
-              <div class="mg-expiry-icon">{{membresiasPorVencerDashboard.length>0 ? '!' : '✓'}}</div>
+            <section class="mg-expiry-alert" [class.has-warning]="totalMembresiasPorVencerDashboard>0">
+              <div class="mg-expiry-icon">{{totalMembresiasPorVencerDashboard>0 ? '!' : '✓'}}</div>
               <div class="mg-expiry-copy">
                 <small>ALERTA DE MEMBRESÍAS</small>
-                <ng-container *ngIf="membresiasPorVencerDashboard.length; else sinVencimientosDashboard">
-                  <h3>{{membresiasPorVencerDashboard.length}} membresía(s) por vencer</h3>
+                <ng-container *ngIf="totalMembresiasPorVencerDashboard; else sinVencimientosDashboard">
+                  <h3>{{totalMembresiasPorVencerDashboard}} membresía(s) por vencer</h3>
                   <p>El administrador debe realizar seguimiento y renovación dentro de los próximos 7 días.</p>
                   <div class="mg-expiry-members">
                     <span *ngFor="let v of membresiasPorVencerDashboard.slice(0,3)">
@@ -485,19 +485,19 @@ import { catchError, forkJoin, of } from 'rxjs';
                   </div>
                 </ng-container>
                 <ng-template #sinVencimientosDashboard>
-                  <h3>Membresías al día</h3>
-                  <p>No hay membresías que venzan durante los próximos 7 días.</p>
+                  <h3>{{dashboard ? 'Membresías al día' : 'Sin información de vencimientos'}}</h3>
+                  <p>{{dashboard ? 'No hay membresías que venzan durante los próximos 7 días.' : 'Actualiza el dashboard para consultar las membresías.'}}</p>
                 </ng-template>
               </div>
               <button type="button" (click)="cambiarSegcion('membresias')">
-                {{membresiasPorVencerDashboard.length ? 'Revisar y renovar' : 'Ver membresías'}}
+                {{totalMembresiasPorVencerDashboard ? 'Revisar y renovar' : 'Ver membresías'}}
               </button>
             </section>
 
             <section class="mg-section-heading">
               <div>
-                <h2>Rutinas del día</h2>
-                <p>Entrenamientos y actividades destacadas de Mallqui Gym.</p>
+                <h2>Rutinas activas</h2>
+                <p>Planes de entrenamiento actualmente registrados como activos.</p>
               </div>
               <button type="button" (click)="cambiarSegcion('rutinas')">Ver todas <span>›</span></button>
             </section>
@@ -824,7 +824,7 @@ import { catchError, forkJoin, of } from 'rxjs';
           <section class="mg-follow-kpis">
             <article><i>♚</i><div><small>Socios activos</small><b>{{clientesActivos}}</b></div></article>
             <article><i>✦</i><div><small>Membresías activas</small><b>{{dashboard?.membresias?.activas ?? 0}}</b></div></article>
-            <article class="warning"><i>!</i><div><small>Por vencer</small><b>{{membresiasPorVencerDashboard.length}}</b></div></article>
+            <article class="warning"><i>!</i><div><small>Por vencer</small><b>{{totalMembresiasPorVencerDashboard}}</b></div></article>
             <article><i>🏋</i><div><small>Rutinas activas</small><b>{{dashboard?.operacion?.rutinas_activas ?? rutinas.length}}</b></div></article>
           </section>
 
@@ -2416,7 +2416,7 @@ import { catchError, forkJoin, of } from 'rxjs';
     .admin-shell.admin-home-redesign .management-heading p,
     .admin-shell.admin-home-redesign .mg-business-card p,
     .admin-shell.admin-home-redesign .config-card p{
-      color:#8a9087!important;font-size:8.5px!important;
+      color:#8a9087!important;font-size:12px!important;
     }
     .admin-shell.admin-home-redesign .management-heading>span,
     .admin-shell.admin-home-redesign .management-heading .big-number{
@@ -2471,10 +2471,10 @@ import { catchError, forkJoin, of } from 'rxjs';
     }
     .admin-shell.admin-home-redesign .management-table th{
       background:#f7f8f5!important;color:#7b8178!important;border-color:#e4e8df!important;
-      font-size:7.5px!important;text-transform:uppercase!important;
+      font-size:11.5px!important;text-transform:uppercase!important;
     }
     .admin-shell.admin-home-redesign .management-table td{
-      background:#fff!important;color:#444a42!important;border-color:#eef0eb!important;font-size:8.5px!important;
+      background:#fff!important;color:#444a42!important;border-color:#eef0eb!important;font-size:12px!important;
     }
     .admin-shell.admin-home-redesign .management-table tbody tr:hover td{background:#fbfdf7!important}
     .admin-shell.admin-home-redesign .management-table td b{color:#20241f!important}
@@ -2550,11 +2550,11 @@ import { catchError, forkJoin, of } from 'rxjs';
       margin:4px 0!important;color:#1d211c!important;font-size:18px!important;letter-spacing:0!important;
     }
     .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-hero-copy p{
-      color:#898f86!important;font-size:8.5px!important;
+      color:#898f86!important;font-size:12px!important;
     }
     .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-new{
       min-height:36px!important;padding:0 12px!important;border:1px solid #111311!important;border-radius:7px!important;
-      background:#111311!important;color:#c9f45a!important;font-size:8.5px!important;box-shadow:none!important;transform:none!important;
+      background:#111311!important;color:#c9f45a!important;font-size:12px!important;box-shadow:none!important;transform:none!important;
     }
     .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-stats{gap:9px!important}
     .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-stats article{
@@ -2567,7 +2567,7 @@ import { catchError, forkJoin, of } from 'rxjs';
     }
     .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-stats small{color:#898f86!important;font-size:7px!important}
     .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-stats b{color:#1d211c!important;font-size:17px!important}
-    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-stats p{color:#92988f!important;font-size:7.5px!important}
+    .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-stats p{color:#92988f!important;font-size:11.5px!important}
     .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-card{
       border:1px solid #e5e9df!important;border-radius:10px!important;background:#fff!important;box-shadow:0 4px 16px rgba(24,29,20,.035)!important;
     }
@@ -2583,10 +2583,10 @@ import { catchError, forkJoin, of } from 'rxjs';
       border-color:#a7c94b!important;box-shadow:0 0 0 3px rgba(201,244,90,.16)!important;
     }
     .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-table th{
-      background:#f7f8f5!important;color:#7b8178!important;border-color:#e4e8df!important;font-size:7.5px!important;
+      background:#f7f8f5!important;color:#7b8178!important;border-color:#e4e8df!important;font-size:11.5px!important;
     }
     .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-table td{
-      color:#444a42!important;border-color:#eef0eb!important;font-size:8.5px!important;
+      color:#444a42!important;border-color:#eef0eb!important;font-size:12px!important;
     }
     .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-table tbody tr:hover{background:#fbfdf7!important}
     .admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-person>span{
@@ -3016,8 +3016,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       {claves:['invoices list','lista facturas'],seccion:'facturas'},
       {claves:['add invoice','agregar factura','nueva factura'],seccion:'facturas'},
       {claves:['edit invoice','editar factura'],seccion:'facturas'},
-      {claves:['tables','tabla','tablas'],seccion:'dashboard'},
-      {claves:['data table','datatable','filtros tabla'],seccion:'dashboard'},
+      {claves:['tables','tabla','tablas'],seccion:'tablas-admin'},
+      {claves:['data table','datatable','filtros tabla'],seccion:'tablas-admin'},
       {claves:['graph','graphs','graficos','gráficos'],seccion:'reportes-admin'},
       {claves:['apex','apex charts'],seccion:'reportes-admin'},
       {claves:['morris','morris charts'],seccion:'reportes-admin'},
@@ -3502,7 +3502,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   exportarDashboardCsv():void{
-    const d=this.dashboard||{};
+    if(!this.dashboard){
+      this.error='Primero carga el resumen del dashboard. No se exportarán indicadores sin datos.';
+      return;
+    }
+    const d=this.dashboard;
     const filas:any[][]=[
       ['MALLQUI GYM','RESUMEN DEL DASHBOARD'],
       ['Fecha',d?.periodo?.fecha||new Date().toLocaleDateString('es-PE')],
@@ -3545,7 +3549,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   reintentarDashboard():void{
     this.dashboardError='';
-    this.cargarDashboard();
+    this.actualizarDashboardCompleto();
   }
 
   get clientesActivos(): number {
@@ -3592,8 +3596,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   totalAlertasDashboard(): number {
-    const totalBackend=Number(this.dashboard?.alertas?.total);
-    if(Number.isFinite(totalBackend)) return totalBackend;
+    const totalOriginal=this.dashboard?.alertas?.total;
+    const totalBackend=Number(totalOriginal);
+    if(totalOriginal!==null && totalOriginal!==undefined &&
+       totalOriginal!=='' && Number.isFinite(totalBackend)) {
+      return Math.max(0,totalBackend);
+    }
 
     const a=this.dashboard?.alertas || {};
     return Number(a.rutinas_pendientes||0)
@@ -3659,7 +3667,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     }).subscribe({
       next:(r:any)=>{
         this.estadoOperativoDashboard=r.estado;
-        if(r.dashboard) this.dashboard=r.dashboard;
+        // Nunca conservar cifras antiguas tras una respuesta fallida del resumen.
+        this.dashboard=r.dashboard || null;
         this.clientes=Array.isArray(r.clientes)?r.clientes:[];
         this.planesMembresia=Array.isArray(r.planes)?r.planes:[];
         this.membresiasDisponibles=this.planesMembresia.filter((x:any)=>String(x?.estado||'').toLowerCase()==='activo');
@@ -3702,6 +3711,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   get membresiasPorVencerDashboard(): any[] {
     const datos=this.dashboard?.membresias?.detalle_por_vencer;
     return Array.isArray(datos) ? datos : [];
+  }
+
+  /** El API devuelve hasta ocho detalles, pero puede haber más vencimientos. */
+  get totalMembresiasPorVencerDashboard(): number {
+    const total=Number(this.dashboard?.membresias?.por_vencer_7_dias);
+    const listado=this.membresiasPorVencerDashboard.length;
+    return Number.isFinite(total) ? Math.max(0, listado, total) : listado;
   }
 
   abrirAlertasDashboard(): void {
@@ -3929,7 +3945,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       String(hoy.getDate()).padStart(2, '0')
     ].join('-');
     return (this.reservas || [])
-      .filter((reserva: any) => String(reserva?.fecha_clase || '').slice(0, 10) === fechaHoy)
+      .filter((reserva: any) =>
+        String(reserva?.fecha_clase || '').slice(0, 10) === fechaHoy &&
+        String(reserva?.estado || '').toLowerCase() !== 'cancelada')
       .sort((a: any, b: any) =>
         String(a?.clase?.hora_inicio || '').localeCompare(String(b?.clase?.hora_inicio || '')));
   }
@@ -4194,7 +4212,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       error:e=>{
         this.dashboardCargando=false;
         this.dashboardError=e?.error?.mensaje ?? e?.error?.message ?? 'No se pudo conectar con el resumen administrativo.';
-        if(!this.dashboard)this.mostrarError(e);
+        this.dashboard=null;
+        this.mostrarError(e);
       }
     });
   }
