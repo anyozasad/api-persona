@@ -72,15 +72,6 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             </div>
           </div>
 
-          <button class="mq-hero-nav-arrow mq-hero-nav-prev"
-                  type="button"
-                  aria-label="Imagen anterior del gimnasio"
-                  (click)="cambiarHero((heroIndex + heroImages.length - 1) % heroImages.length)">&#8592;</button>
-          <button class="mq-hero-nav-arrow mq-hero-nav-next"
-                  type="button"
-                  aria-label="Siguiente imagen del gimnasio"
-                  (click)="cambiarHero((heroIndex + 1) % heroImages.length)">&#8594;</button>
-
           <div class="mq-hero-dots" role="group" aria-label="Imágenes del gimnasio">
             <button *ngFor="let img of heroImages; let i = index"
                     type="button"
