@@ -66,15 +66,15 @@ import { AuthService } from '../../../auth.service';
 
           <form (ngSubmit)="ingresar()" #loginForm="ngForm">
             <label>
-              Gmail
+              Correo o usuario
               <div class="mq-login-input">
                 <span aria-hidden="true">✉</span>
                 <input
-                  type="email"
+                  type="text"
                   name="email"
                   [(ngModel)]="email"
-                  placeholder="usuario@gmail.com"
-                  autocomplete="email"
+                  placeholder="correo@gmail.com o usuario"
+                  autocomplete="username"
                   required>
               </div>
             </label>
@@ -165,7 +165,7 @@ export class LoginComponent {
     this.mensaje = '';
 
     if (!this.email.trim() || !this.password.trim()) {
-      this.error = 'Completa tu Gmail y contraseña.';
+      this.error = 'Ingresa tu correo o usuario y contraseña.';
       return;
     }
 
