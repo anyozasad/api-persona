@@ -4,7 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use RuntimeException;
 
 return new class extends Migration
 {
@@ -16,7 +15,7 @@ return new class extends Migration
 
         $driver = DB::connection()->getDriverName();
         if (!in_array($driver, ['mysql', 'mariadb'], true)) {
-            throw new RuntimeException('La reparacion de usuarios legacy requiere MySQL o MariaDB.');
+            throw new \RuntimeException('La reparacion de usuarios legacy requiere MySQL o MariaDB.');
         }
 
         // No borrar, reemplazar ni recrear usuarios: conservar todas sus cuentas.
@@ -31,7 +30,7 @@ return new class extends Migration
 
         if ($columnaAuto !== null) {
             if (!preg_match('/^[a-zA-Z0-9_]+$/', $columnaAuto)) {
-                throw new RuntimeException('El identificador actual tiene un nombre incompatible.');
+                throw new \RuntimeException('El identificador actual tiene un nombre incompatible.');
             }
 
             // MySQL admite un solo AUTO_INCREMENT por tabla. Preservar el que ya
