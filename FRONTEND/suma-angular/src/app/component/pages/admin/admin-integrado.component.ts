@@ -15,16 +15,16 @@ import { catchError, forkJoin, of } from 'rxjs';
   selector: 'app-admin-integrado',
   standalone: true,
   imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminGymSuiteComponent, AdminApplicationsComponent],
-  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css', '../crossfit-final.css', './admin-dashboard-polish.css', './admin-dashboard-premium.css', './admin-mantis-interactions.css', './admin-dashboard-refined.css'],
+  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css', '../crossfit-final.css', './admin-dashboard-polish.css', './admin-dashboard-premium.css', './admin-mantis-interactions.css', './admin-dashboard-refined.css', './admin-mantis-reference.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
-  <div class="admin-shell admin-home-redesign" [class.admin-sidebar-collapsed]="sidebarCerrado" [class.mg-mantis-collapsed]="sidebarCerrado" [class.mg-mantis-dark]="modoDashboard==='oscuro'" [class.mg-mantis-compact]="densidadDashboard==='compacta'" [class.mg-mantis-blue]="acentoDashboard==='azul'" [class.mg-mantis-green]="acentoDashboard==='verde'">
+  <div class="admin-shell admin-home-redesign" [class.admin-sidebar-collapsed]="sidebarCerrado" [class.mg-mantis-collapsed]="sidebarCerrado" [class.mg-mantis-dark]="modoDashboard==='oscuro'" [class.mg-mantis-compact]="densidadDashboard==='compacta'" [class.mg-mantis-blue]="acentoDashboard==='azul'" [class.mg-mantis-green]="acentoDashboard==='verde'" [class.mg-mantis-coral]="acentoDashboard==='coral'">
     <header class="mg-current-topbar">
       <div class="mg-mantis-identity">
         <button type="button" class="mg-mantis-icon-button mg-mantis-nav-toggle" (click)="toggleSidebar()"
           [attr.aria-label]="sidebarCerrado ? 'Expandir menú' : 'Contraer menú'" [attr.title]="sidebarCerrado ? 'Expandir menú' : 'Contraer menú'">☰</button>
         <div class="mg-top-greeting">
-          <h1>Hola, {{auth.usuario?.nombre_usuario || 'Administrador'}}!</h1>
+          <h1>{{seccion==='dashboard' ? 'Dashboard' : tituloActual}}</h1>
           <span>{{fechaDashboard}}</span>
         </div>
       </div>
@@ -135,25 +135,23 @@ import { catchError, forkJoin, of } from 'rxjs';
     </div>
     <aside class="mg-current-sidebar">
       <button type="button" class="mg-brand" (click)="cambiarSegcion('dashboard')" aria-label="Ir al inicio">
-        <span class="mg-brand-icon">↔</span>
+        <span class="mg-brand-icon">M</span>
         <span><strong>Mallqui</strong><b>Gym</b></span>
       </button>
 
       <nav class="admin-main-nav crossfit-sidebar-nav" aria-label="Navegación principal">
-        <button type="button" [class.active]="seccion==='dashboard'" (click)="cambiarSegcion('dashboard')">
-          <span class="admin-main-nav-icon">⌂</span><span>Inicio</span>
+        <span class="mg-nav-caption">TABLERO</span>
+        <button type="button" class="cf-nav-group-head mg-admin-group" [class.active]="navGroups.overview" (click)="toggleNavGroup('overview')" [attr.aria-expanded]="navGroups.overview">
+          <span class="admin-main-nav-icon">▥</span><span>Dashboard</span><i>{{navGroups.overview?'⌃':'⌄'}}</i>
         </button>
-        <button type="button" [class.active]="seccion==='reportes-admin'" (click)="cambiarSegcion('reportes-admin')">
-          <span class="admin-main-nav-icon">▥</span><span>Analíticas</span>
-        </button>
-        <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSegcion('noticias')">
-          <span class="admin-main-nav-icon">▤</span><span>Noticias</span>
-        </button>
-        <button type="button" [class.active]="seccion==='calendario-admin'" (click)="cambiarSegcion('calendario-admin')">
-          <span class="admin-main-nav-icon">◫</span><span>Calendario</span>
-        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.overview">
+          <button type="button" [class.active]="seccion==='dashboard'" (click)="cambiarSegcion('dashboard')"><span>•</span><span>Principal</span></button>
+          <button type="button" [class.active]="seccion==='reportes-admin'" (click)="cambiarSegcion('reportes-admin')"><span>•</span><span>Analíticas</span></button>
+          <button type="button" [class.active]="seccion==='ingresos'" (click)="cambiarSegcion('ingresos')"><span>•</span><span>Finanzas</span></button>
+        </div>
 
-        <button type="button" class="cf-nav-group-head mg-admin-group" [class.active]="navGroups.apps" (click)="toggleNavGroup('apps')">
+        <span class="mg-nav-caption">APLICACIONES</span>
+        <button type="button" class="cf-nav-group-head mg-admin-group" [class.active]="navGroups.apps" (click)="toggleNavGroup('apps')" [attr.aria-expanded]="navGroups.apps">
           <span class="admin-main-nav-icon">◇</span><span>Aplicaciones</span><i>{{navGroups.apps?'⌃':'⌄'}}</i>
         </button>
         <div class="cf-nav-children" *ngIf="navGroups.apps">
@@ -161,9 +159,23 @@ import { catchError, forkJoin, of } from 'rxjs';
           <button type="button" [class.active]="seccion==='calendario-admin'" (click)="cambiarSegcion('calendario-admin')"><span>•</span><span>Calendario</span></button>
           <button type="button" [class.active]="seccion==='tareas-admin'" (click)="cambiarSegcion('tareas-admin')"><span>•</span><span>Tablero de tareas</span></button>
           <button type="button" [class.active]="seccion==='tablas-admin'" (click)="cambiarSegcion('tablas-admin')"><span>•</span><span>Tablas avanzadas</span></button>
-          <button type="button" [class.active]="seccion==='componentes-ui'" (click)="cambiarSegcion('componentes-ui')"><span>•</span><span>Componentes UI</span></button>
+          <button type="button" [class.active]="seccion==='clientes'" (click)="cambiarSegcion('clientes')"><span>•</span><span>Clientes / socios</span></button>
+          <button type="button" [class.active]="seccion==='facturas'" (click)="cambiarSegcion('facturas')"><span>•</span><span>Facturación</span></button>
+          <button type="button" [class.active]="seccion==='soporte'" (click)="cambiarSegcion('soporte')"><span>•</span><span>Atención / chat</span></button>
+          <button type="button" [class.active]="seccion==='ventas'" (click)="cambiarSegcion('ventas')"><span>•</span><span>Tienda y ventas</span></button>
         </div>
 
+        <button type="button" class="cf-nav-group-head mg-admin-group" [class.active]="navGroups.ui" (click)="toggleNavGroup('ui')" [attr.aria-expanded]="navGroups.ui">
+          <span class="admin-main-nav-icon">▦</span><span>Componentes y datos</span><i>{{navGroups.ui?'⌃':'⌄'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.ui">
+          <button type="button" [class.active]="seccion==='componentes-ui'" (click)="cambiarSegcion('componentes-ui')"><span>•</span><span>Componentes UI</span></button>
+          <button type="button" [class.active]="seccion==='tablas-admin'" (click)="cambiarSegcion('tablas-admin')"><span>•</span><span>Tablas y filtros</span></button>
+          <button type="button" [class.active]="seccion==='reportes-admin'" (click)="cambiarSegcion('reportes-admin')"><span>•</span><span>Gráficos</span></button>
+          <button type="button" [class.active]="seccion==='usuarios'" (click)="cambiarSegcion('usuarios')"><span>•</span><span>Usuarios y perfiles</span></button>
+        </div>
+
+        <span class="mg-nav-caption">GESTIÓN DEL GIMNASIO</span>
         <button type="button" class="cf-nav-group-head mg-admin-group" [class.active]="navGroups.members" (click)="toggleNavGroup('members')">
           <span class="admin-main-nav-icon">♚</span><span>Socios y Servicios</span><i>{{navGroups.members?'⌃':'⌄'}}</i>
         </button>
@@ -288,6 +300,11 @@ import { catchError, forkJoin, of } from 'rxjs';
       </nav>
 
       <div class="mg-current-workspace">
+      <nav class="mg-mantis-breadcrumb" aria-label="Ruta del panel">
+        <button type="button" (click)="cambiarSegcion('dashboard')">Mallqui Gym</button>
+        <span>›</span>
+        <span>{{seccion==='dashboard' ? 'Dashboard / Principal' : tituloActual}}</span>
+      </nav>
 
       <section class="mg-module-shell-head" *ngIf="seccion!=='dashboard'">
         <div class="mg-module-shell-copy">
@@ -344,25 +361,35 @@ import { catchError, forkJoin, of } from 'rxjs';
               </div>
 
               <div class="mg-result-grid">
-                <button type="button" (click)="cambiarSegcion('clientes')">
-                  <i class="lime">♚</i>
-                  <div><strong>{{dashboard?.clientes?.activos ?? clientesActivos ?? 0}}</strong><span>Socios activos</span></div>
-                  <em>•••</em>
+                <button type="button" class="mg-mantis-kpi-card" (click)="cambiarSegcion('clientes')">
+                  <span class="mg-mantis-kpi-header"><span>Socios activos</span><i aria-hidden="true">♙</i></span>
+                  <strong>{{dashboard?.clientes?.activos ?? clientesActivos ?? 0}}</strong>
+                  <span class="mg-mantis-kpi-note">{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos registros este mes</span>
+                  <span class="mg-mantis-kpi-action">Ver socios ›</span>
                 </button>
-                <button type="button" (click)="cambiarSegcion('asistencias')">
-                  <i class="blue">♟</i>
-                  <div><strong>{{dashboard?.asistencias?.hoy ?? 0}}</strong><span>Asistencias</span></div>
-                  <em>•••</em>
+                <button type="button" class="mg-mantis-kpi-card" (click)="cambiarSegcion('asistencias')">
+                  <span class="mg-mantis-kpi-header"><span>Asistencias de hoy</span><i aria-hidden="true">✓</i></span>
+                  <strong>{{dashboard?.asistencias?.hoy ?? 0}}</strong>
+                  <span class="mg-mantis-kpi-note">{{totalActividadSemanal()}} asistencias en 7 días</span>
+                  <span class="mg-mantis-kpi-bars is-green" *ngIf="totalActividadSemanal()>0" aria-label="Tendencia real de los últimos siete días">
+                    <i *ngFor="let dia of diasActividadDashboard()" [style.height.%]="alturaAsistenciaSemana(dia.total)"></i>
+                  </span>
+                  <span class="mg-mantis-kpi-action">Control de acceso ›</span>
                 </button>
-                <button type="button" (click)="cambiarSegcion('reservas')">
-                  <i class="pink">◫</i>
-                  <div><strong>{{dashboard?.reservas?.hoy ?? reservasHoyDashboard().length}}</strong><span>Reservas</span></div>
-                  <em>•••</em>
+                <button type="button" class="mg-mantis-kpi-card" (click)="cambiarSegcion('reservas')">
+                  <span class="mg-mantis-kpi-header"><span>Reservas de hoy</span><i aria-hidden="true">◫</i></span>
+                  <strong>{{dashboard?.reservas?.hoy ?? reservasHoyDashboard().length}}</strong>
+                  <span class="mg-mantis-kpi-note">{{reservasHoyDashboard().length}} registros disponibles en agenda</span>
+                  <span class="mg-mantis-kpi-action">Ver reservas ›</span>
                 </button>
-                <button type="button" (click)="cambiarSegcion('ingresos')">
-                  <i class="lime">▥</i>
-                  <div><strong>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.0-0'}}</strong><span>Ingresos del mes</span></div>
-                  <em>•••</em>
+                <button type="button" class="mg-mantis-kpi-card" (click)="cambiarSegcion('ingresos')">
+                  <span class="mg-mantis-kpi-header"><span>Ingresos del mes</span><i aria-hidden="true">S/</i></span>
+                  <strong>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.0-0'}}</strong>
+                  <span class="mg-mantis-kpi-note">Membresías y ventas registradas</span>
+                  <span class="mg-mantis-kpi-bars is-orange" *ngIf="ingresosMensualesDashboard().length && maxIngresoGrafico()>0" aria-label="Ingresos de los últimos seis meses">
+                    <i *ngFor="let mes of ingresosMensualesDashboard()" [style.height.%]="alturaIngresoKpi(mes.total)"></i>
+                  </span>
+                  <span class="mg-mantis-kpi-action">Detalle financiero ›</span>
                 </button>
               </div>
             </section>
@@ -627,6 +654,27 @@ import { catchError, forkJoin, of } from 'rxjs';
                 </div>
               </div>
             </section>
+            <section class="mg-mantis-activity" aria-label="Movimientos del portal">
+              <header>
+                <h2>Actividad reciente</h2>
+                <button type="button" (click)="cambiarSegcion('reportes-admin')">Ver informes ›</button>
+              </header>
+              <div class="mg-mantis-activity-list" *ngIf="dashboard?.portal_clientes?.actividad_reciente?.length">
+                <button type="button" *ngFor="let actividad of (dashboard?.portal_clientes?.actividad_reciente || []).slice(0,6)"
+                  (click)="cambiarSegcion(destinoActividadDashboard(actividad.tipo))">
+                  <span class="mg-mantis-activity-symbol" aria-hidden="true">{{iconoActividadDashboard(actividad.tipo)}}</span>
+                  <span>
+                    <strong>{{actividad.titulo || actividad.tipo || 'Movimiento registrado'}}</strong>
+                    <small>{{actividad.cliente || 'Mallqui Gym'}} · {{actividad.detalle || 'Ver información'}}</small>
+                  </span>
+                  <b aria-hidden="true">›</b>
+                </button>
+              </div>
+              <p class="mg-mantis-activity-empty" *ngIf="!dashboard?.portal_clientes?.actividad_reciente?.length">
+                Todavía no hay actividad reciente registrada por la API.
+              </p>
+            </section>
+
           </aside>
         </section>
       </ng-container>
@@ -2859,7 +2907,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     'proveedores','compras','categorias','reportes-admin','reporte-asistencias','usuarios',
     'auditoria','configuracion','opiniones'
   ];
-  navGroups:any = {apps:false,members:false,payments:false,trainers:false,training:false,diet:false,equipment:false,events:false,ui:false,operations:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
+  navGroups:any = {overview:true,apps:false,members:false,payments:false,trainers:false,training:false,diet:false,equipment:false,events:false,ui:false,operations:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
   private autoRefreshId: any = null;
 
   diasSemana = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
@@ -3353,7 +3401,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   tipoIngresoDashboard: 'total'|'membresias'|'ventas' = 'total';
   modoDashboard: 'claro'|'oscuro' = 'claro';
   densidadDashboard: 'normal'|'compacta' = 'normal';
-  acentoDashboard: 'coral'|'azul'|'verde' = 'coral';
+  acentoDashboard: 'coral'|'azul'|'verde' = 'azul';
   personalizadorAbierto = false;
   avisosAbiertos = false;
   perfilAbiertoMantis = false;
@@ -3453,7 +3501,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   restablecerAparienciaMantis():void{
     this.guardarAparienciaMantis('tema','claro');
-    this.guardarAparienciaMantis('color','coral');
+    this.guardarAparienciaMantis('color','azul');
     this.guardarAparienciaMantis('densidad','normal');
     this.sidebarCerrado=false;
     try{localStorage.setItem('mallqui_admin_sidebar_closed','0');}catch{}
@@ -3492,6 +3540,37 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       .reduce((sum:number,x:any)=>sum+Number(x?.total||0),0);
     const objetivo=35;
     return Math.max(0,Math.min(100,Math.round((total/objetivo)*100)));
+  }
+
+  /** Altura relativa basada exclusivamente en el histórico devuelto por Laravel. */
+  alturaIngresoKpi(valor:any):number{
+    const valores=this.ingresosMensualesDashboard().map(item=>Number(item.total)||0);
+    const max=Math.max(1,...valores);
+    const dato=Math.max(0,Number(valor)||0);
+    return Math.min(100,(dato/max)*100);
+  }
+
+  destinoActividadDashboard(tipo:any):string{
+    const valor=String(tipo||'').toLowerCase();
+    if(valor.includes('reserva')) return 'reservas';
+    if(valor.includes('pago')) return 'pagos';
+    if(valor.includes('venta')||valor.includes('producto')) return 'ventas';
+    if(valor.includes('rutina')) return 'rutinas';
+    if(valor.includes('asistencia')) return 'asistencias';
+    if(valor.includes('soporte')||valor.includes('consulta')) return 'soporte';
+    if(valor.includes('membresia')||valor.includes('membresía')) return 'membresias';
+    return 'reportes-admin';
+  }
+
+  iconoActividadDashboard(tipo:any):string{
+    const ruta=this.destinoActividadDashboard(tipo);
+    if(ruta==='reservas') return '◫';
+    if(ruta==='pagos'||ruta==='ventas') return 'S/';
+    if(ruta==='rutinas') return '✦';
+    if(ruta==='asistencias') return '✓';
+    if(ruta==='soporte') return '✉';
+    if(ruta==='membresias') return '♙';
+    return '▥';
   }
 
   alturaAsistenciaSemana(total:any):number{
