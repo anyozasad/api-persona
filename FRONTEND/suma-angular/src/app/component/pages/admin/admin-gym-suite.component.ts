@@ -168,10 +168,10 @@ interface GymModuleConfig {
             <article><small>Monto Total</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>Valor facturado</span></article>
           </div>
           <section class="cf-suite-card">
-            <div class="cf-suite-invoice-note"><span>Selecciona facturas para enviar una actualización de pago.</span><button type="button" (click)="mostrarAviso('Actualización de pago preparada para los registros visibles.')">Enviar a todos</button></div>
-            <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th><input type="checkbox"></th><th>N.º de Factura</th><th>Socio del Gimnasio</th><th>Fecha de Creación</th><th>Fecha de Vencimiento</th><th>Estado</th><th>Monto</th><th>Acciones</th></tr></thead><tbody>
-              <tr *ngFor="let item of filtered"><td><input type="checkbox"></td><td>#INV-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.fecha || '—'}}</td><td>{{item.fecha || '—'}}</td><td><span class="status-select">{{item.estado}}</span></td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><div class="cf-invoice-actions"><button class="cf-suite-link" (click)="editar(item)">Ver</button><button class="cf-suite-link" (click)="editar(item)">Editar</button></div></td></tr>
-              <tr *ngIf="!filtered.length"><td colspan="8">No hay facturas registradas.</td></tr>
+            <div class="cf-suite-invoice-note"><span>Consulta facturas administrativas y filtra las que tienen pagos pendientes.</span><button type="button" (click)="estadoFiltro='Pendiente';filtrarLocal()">Ver pendientes</button></div>
+            <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>N.º de Factura</th><th>Socio del Gimnasio</th><th>Concepto</th><th>Fecha</th><th>Estado</th><th>Monto</th><th>Acción</th></tr></thead><tbody>
+              <tr *ngFor="let item of filtered"><td>#INV-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || '—'}}</td><td>{{item.fecha || '—'}}</td><td><span class="status-select">{{item.estado}}</span></td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><button type="button" class="cf-suite-link" (click)="editar(item)">Editar</button></td></tr>
+              <tr *ngIf="!filtered.length"><td colspan="7">No hay facturas con ese filtro.</td></tr>
             </tbody></table></div>
           </section>
           <section class="cf-suite-card"><header><div><h2>Estado de Pagos</h2><p>Progreso de cobranza</p></div></header><div class="cf-payment-status-grid"><div><b>{{tasaCobranza}}%</b><small>Tasa de Cobranza</small></div><div><b>{{contarEstados(['Pendiente','Emitida'])}}</b><small>Pendientes</small></div><div><b>{{filtered.length}}</b><small>Procesadas</small></div><div><b>S/ {{totalPagadoFacturas | number:'1.2-2'}}</b><small>Cobrado</small></div></div></section>

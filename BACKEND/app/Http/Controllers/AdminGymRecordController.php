@@ -19,6 +19,7 @@ class AdminGymRecordController extends Controller
         'ingresos',
         'facturas',
         'gastos',
+        'tareas',
     ];
 
     public function index(Request $request, string $modulo): JsonResponse

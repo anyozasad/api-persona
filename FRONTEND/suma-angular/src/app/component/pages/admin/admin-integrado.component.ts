@@ -8,12 +8,13 @@ import { ProductosComponent } from './pages/productos/productos';
 import { AdminComunicacionComponent } from './admin-comunicacion.component';
 import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
 import { AdminGymSuiteComponent } from './admin-gym-suite.component';
+import { AdminApplicationsComponent } from './admin-applications.component';
 import { catchError, forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'app-admin-integrado',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminGymSuiteComponent],
+  imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminGymSuiteComponent, AdminApplicationsComponent],
   styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css', '../crossfit-final.css', './admin-dashboard-polish.css', './admin-dashboard-premium.css', './admin-mantis-interactions.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
@@ -148,9 +149,20 @@ import { catchError, forkJoin, of } from 'rxjs';
         <button type="button" [class.active]="seccion==='noticias'" (click)="cambiarSegcion('noticias')">
           <span class="admin-main-nav-icon">▤</span><span>Noticias</span>
         </button>
-        <button type="button" [class.active]="seccion==='reservas'" (click)="cambiarSegcion('reservas')">
-          <span class="admin-main-nav-icon">◫</span><span>Agenda</span>
+        <button type="button" [class.active]="seccion==='calendario-admin'" (click)="cambiarSegcion('calendario-admin')">
+          <span class="admin-main-nav-icon">◫</span><span>Calendario</span>
         </button>
+
+        <button type="button" class="cf-nav-group-head mg-admin-group" [class.active]="navGroups.apps" (click)="toggleNavGroup('apps')">
+          <span class="admin-main-nav-icon">◇</span><span>Aplicaciones</span><i>{{navGroups.apps?'⌃':'⌄'}}</i>
+        </button>
+        <div class="cf-nav-children" *ngIf="navGroups.apps">
+          <button type="button" [class.active]="seccion==='aplicaciones'" (click)="cambiarSegcion('aplicaciones')"><span>•</span><span>Centro de aplicaciones</span></button>
+          <button type="button" [class.active]="seccion==='calendario-admin'" (click)="cambiarSegcion('calendario-admin')"><span>•</span><span>Calendario</span></button>
+          <button type="button" [class.active]="seccion==='tareas-admin'" (click)="cambiarSegcion('tareas-admin')"><span>•</span><span>Tablero de tareas</span></button>
+          <button type="button" [class.active]="seccion==='tablas-admin'" (click)="cambiarSegcion('tablas-admin')"><span>•</span><span>Tablas avanzadas</span></button>
+          <button type="button" [class.active]="seccion==='componentes-ui'" (click)="cambiarSegcion('componentes-ui')"><span>•</span><span>Componentes UI</span></button>
+        </div>
 
         <button type="button" class="cf-nav-group-head mg-admin-group" [class.active]="navGroups.members" (click)="toggleNavGroup('members')">
           <span class="admin-main-nav-icon">♚</span><span>Socios y Servicios</span><i>{{navGroups.members?'⌃':'⌄'}}</i>
@@ -854,6 +866,15 @@ import { catchError, forkJoin, of } from 'rxjs';
           </article>
         </section>
       </ng-container>
+
+      <app-admin-applications
+        *ngIf="['aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui'].includes(seccion)"
+        [modulo]="seccion"
+        [clientes]="clientes"
+        [productos]="productos"
+        [reservas]="reservas"
+        (navegar)="cambiarSegcion($event)">
+      </app-admin-applications>
 
       <app-admin-gym-suite
         *ngIf="suiteModules.includes(seccion)"
@@ -2785,7 +2806,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
   titulos: Record<string,[string,string]> = {
-    dashboard:['Panel Administrador','Datos reales del gimnasio'], clientes:['Socios','Registro y administración de socios'],
+    dashboard:['Panel Administrador','Datos reales del gimnasio'],
+    aplicaciones:['Aplicaciones','Accesos y módulos del gimnasio'],
+    'calendario-admin':['Calendario operativo','Eventos y reservas reales'],
+    'tareas-admin':['Tablero de tareas','Tareas y pendientes del equipo'],
+    'tablas-admin':['Tablas avanzadas','Búsqueda, filtros y exportación de datos'],
+    'componentes-ui':['Componentes UI','Ejemplos interactivos de formularios y controles'],
+    clientes:['Socios','Registro y administración de socios'],
     membresias:['Membresías','Asignación, renovación y vigencia de socios'], pagos:['Pagos','Pagos de membresías y compras de socios'],
     planes:['Planes y Precios','Precios, duración y beneficios de membresía'],
     gastos:['Gastos','Registro de egresos de la caja activa'],
@@ -2827,12 +2854,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   nutricionPreview: any[] = [];
   suiteModules = ['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   modulosConVistaPropia = [
-    'dashboard','clientes','membresias','pagos','entrenador','clases','asistencias','seguimiento','progreso-fisico','renovaciones','documentos-socio','mantenimiento-sistema',
+    'dashboard','aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui','clientes','membresias','pagos','entrenador','clases','asistencias','seguimiento','progreso-fisico','renovaciones','documentos-socio','mantenimiento-sistema',
     'rutinas','reservas','caja','ventas','historial-ventas','gastos','inventario','productos','kardex',
     'proveedores','compras','categorias','reportes-admin','reporte-asistencias','usuarios',
     'auditoria','configuracion','opiniones'
   ];
-  navGroups:any = {members:false,payments:false,trainers:false,training:false,diet:false,equipment:false,events:false,ui:false,operations:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
+  navGroups:any = {apps:false,members:false,payments:false,trainers:false,training:false,diet:false,equipment:false,events:false,ui:false,operations:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
   private autoRefreshId: any = null;
 
   diasSemana = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
@@ -3114,7 +3141,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(id==='atencion') return 'soporte';
     if(id==='gestion') return 'caja';
     const validas=[
-      'dashboard','clientes','membresias','renovaciones','pagos','planes','documentos-socio',
+      'dashboard','aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui','clientes','membresias','renovaciones','pagos','planes','documentos-socio',
       'clases','reservas','rutinas','seguimiento','progreso-fisico','nutricion','asistencias','reporte-asistencias','entrenador',
       'caja','ventas','historial-ventas','gastos','compras',
       'inventario','productos','categorias','proveedores','kardex','equipos',
@@ -3127,6 +3154,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   get moduloActivo():string{
     const s=this.seccion;
     if(s==='dashboard') return 'dashboard';
+    if(['aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui'].includes(s)) return 'aplicaciones';
     if(['clientes','membresias','pagos','planes','renovaciones','documentos-socio'].includes(s)) return 'socios';
     if(['clases','reservas','rutinas','entrenador','seguimiento','progreso-fisico','nutricion','asistencias','reporte-asistencias'].includes(s)) return 'servicios';
     if(['caja','ventas','historial-ventas','gastos','compras'].includes(s)) return 'operacion';
@@ -3142,6 +3170,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   get nombreModuloActual():string{
     const nombres:any={
       dashboard:'Panel Principal',
+      aplicaciones:'Centro de aplicaciones',
       socios:'Socios y membresías',
       servicios:'Fitness y servicios',
       operacion:'Operación',
@@ -3158,6 +3187,14 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   get tabsModuloActual():Array<{id:string,nombre:string}>{
     switch(this.moduloActivo){
+      case 'aplicaciones':
+        return [
+          {id:'aplicaciones',nombre:'Aplicaciones'},
+          {id:'calendario-admin',nombre:'Calendario'},
+          {id:'tareas-admin',nombre:'Tareas'},
+          {id:'tablas-admin',nombre:'Tablas'},
+          {id:'componentes-ui',nombre:'Componentes'}
+        ];
       case 'socios':
         return [
           {id:'clientes',nombre:'Socios'},
@@ -3936,6 +3973,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     switch (id) {
       case 'dashboard':
         this.cargarDashboard();
+        break;
+      case 'aplicaciones':
+      case 'calendario-admin':
+      case 'tareas-admin':
+      case 'tablas-admin':
+      case 'componentes-ui':
+        // La pantalla hija consulta los datos que necesita en la API.
         break;
       case 'nutricion':
         this.api.gymRegistros('nutricion').subscribe({
