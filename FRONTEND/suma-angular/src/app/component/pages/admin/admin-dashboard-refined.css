@@ -1,0 +1,422 @@
+/* Mallqui Gym | Dashboard ejecutivo 2026
+   Capa de refinamiento visual del componente ya existente.
+   Mantiene APIs, rutas, acciones, temas y datos originales. */
+.admin-shell.admin-home-redesign{
+  --mg-ui-radius:18px;
+  --mg-ui-stroke:#e5eaf0;
+  --mg-ui-text:#172638;
+  --mg-ui-muted:#718095;
+  --mg-ui-shadow:0 10px 35px rgba(25,41,62,.055);
+  --mg-ui-shadow-hover:0 19px 43px rgba(25,41,62,.11);
+}
+.admin-shell.admin-home-redesign .mg-current-workspace{
+  width:100%!important;min-width:0!important;
+}
+.admin-shell.admin-home-redesign .mg-current-content{
+  overflow-x:clip!important;
+}
+.admin-shell.admin-home-redesign .mg-dashboard,
+.admin-shell.admin-home-redesign .mg-dashboard-main,
+.admin-shell.admin-home-redesign .mg-dashboard-side{min-width:0!important}
+.admin-shell.admin-home-redesign:not(.mg-mantis-dark)>.mg-current-content{
+  background:linear-gradient(180deg,#f8fafc 0,#f4f7fa 520px,#f6f8fb 100%)!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-dark)>.mg-current-topbar{
+  background:rgba(255,255,255,.97)!important;
+  backdrop-filter:blur(14px)!important;
+  box-shadow:0 1px 0 rgba(22,39,58,.025)!important;
+}
+.admin-shell.admin-home-redesign .mg-top-greeting h1{
+  font-size:clamp(18px,1.35vw,22px)!important;
+  font-weight:780!important;
+  letter-spacing:-.65px!important;
+}
+.admin-shell.admin-home-redesign .mg-top-greeting span{line-height:1.45!important}
+.admin-shell.admin-home-redesign .mg-mantis-icon-button,
+.admin-shell.admin-home-redesign .mg-mantis-profile-button{
+  transition:background .16s ease,border-color .16s ease,transform .16s ease!important;
+}
+.admin-shell.admin-home-redesign .mg-mantis-icon-button:hover,
+.admin-shell.admin-home-redesign .mg-mantis-profile-button:hover{
+  transform:translateY(-1px)!important;
+}
+.admin-shell.admin-home-redesign .mg-mantis-search-wrap>.admin-wix-search{
+  border-radius:12px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-brand{
+  border-bottom:1px solid rgba(255,255,255,.075)!important;
+  padding-bottom:16px!important;margin-bottom:18px!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-dark) .mg-current-sidebar{
+  background:#152335!important;
+  border-right:1px solid #26394b!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .crossfit-sidebar-nav button{
+  transition:background .17s ease,color .17s ease!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .crossfit-sidebar-nav button.active{
+  background:rgba(255,255,255,.11)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.045)!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .crossfit-sidebar-nav button:hover{
+  background:rgba(255,255,255,.08)!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .cf-nav-children button.active{
+  color:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .cf-nav-children{
+  border-left-color:rgba(214,229,242,.18)!important;
+}
+.admin-shell.admin-home-redesign .mg-dashboard{
+  column-gap:clamp(16px,1.5vw,24px)!important;
+  row-gap:16px!important;
+}
+.admin-shell.admin-home-redesign .mg-dashboard-main>*{
+  min-width:0!important;
+}
+.admin-shell.admin-home-redesign .mg-pro-hero{
+  position:relative!important;
+  overflow:hidden!important;
+  min-height:242px!important;
+  margin-bottom:20px!important;
+  padding:clamp(24px,2.5vw,34px)!important;
+  border:1px solid rgba(255,255,255,.085)!important;
+  border-radius:21px!important;
+  background:linear-gradient(117deg,#102135 0%,#18394b 66%,#19545c 100%)!important;
+  box-shadow:0 14px 35px rgba(24,56,70,.16)!important;
+}
+.admin-shell.admin-home-redesign .mg-pro-hero::after{
+  right:-60px!important;bottom:-210px!important;
+  width:480px!important;height:480px!important;
+  border-color:rgba(255,255,255,.15)!important;
+}
+.admin-shell.admin-home-redesign .mg-pro-eyebrow{
+  letter-spacing:1.25px!important;color:#b6f0df!important;
+}
+.admin-shell.admin-home-redesign .mg-pro-eyebrow i{
+  background:#45d7a7!important;
+  box-shadow:0 0 0 4px rgba(69,215,167,.14)!important;
+}
+.admin-shell.admin-home-redesign .mg-pro-hero h2{
+  font-size:clamp(27px,2.5vw,40px)!important;
+  letter-spacing:-1.25px!important;
+  line-height:1.13!important;
+}
+.admin-shell.admin-home-redesign .mg-pro-hero p{
+  font-size:13px!important;
+  max-width:470px!important;
+  color:#d0dce7!important;
+}
+.admin-shell.admin-home-redesign .mg-pro-hero-actions button{
+  min-height:42px!important;
+  border-radius:10px!important;
+}
+.admin-shell.admin-home-redesign .mg-pro-hero-income{
+  border-radius:15px!important;
+  background:rgba(255,255,255,.09)!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045)!important;
+}
+.admin-shell.admin-home-redesign .mg-pro-hero-income>strong{
+  font-size:clamp(28px,2.7vw,40px)!important;
+  letter-spacing:-1.3px!important;
+  overflow-wrap:anywhere!important;
+}
+.admin-shell.admin-home-redesign .mg-results{
+  margin:0 0 22px!important;
+}
+.admin-shell.admin-home-redesign .mg-results>.mg-section-heading{
+  min-height:40px!important;
+  margin:0 0 13px!important;
+}
+.admin-shell.admin-home-redesign .mg-section-heading h2,
+.admin-shell.admin-home-redesign .mg-premium-analytics-head h2{
+  font-size:clamp(20px,1.7vw,24px)!important;
+  font-weight:790!important;
+  letter-spacing:-.65px!important;
+}
+.admin-shell.admin-home-redesign .mg-result-grid{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:13px!important;
+}
+.admin-shell.admin-home-redesign .mg-result-grid>button{
+  position:relative!important;overflow:hidden!important;
+  min-height:123px!important;
+  border-radius:var(--mg-ui-radius)!important;
+  padding:20px!important;
+  background:#fff!important;
+  border:1px solid var(--mg-ui-stroke)!important;
+  box-shadow:var(--mg-ui-shadow)!important;
+  transition:box-shadow .18s ease,transform .18s ease,border-color .18s ease!important;
+}
+.admin-shell.admin-home-redesign .mg-result-grid>button::after{
+  content:"";position:absolute;inset:auto 0 0;height:3px;
+  background:var(--mg-mantis-accent);opacity:0;
+  transition:opacity .2s ease;
+}
+.admin-shell.admin-home-redesign .mg-result-grid>button:hover{
+  transform:translateY(-3px)!important;
+  box-shadow:var(--mg-ui-shadow-hover)!important;
+  border-color:#d8e0e8!important;
+}
+.admin-shell.admin-home-redesign .mg-result-grid>button:hover::after{opacity:1}
+.admin-shell.admin-home-redesign .mg-result-grid i{
+  border-radius:14px!important;
+}
+.admin-shell.admin-home-redesign .mg-result-grid strong{
+  font-size:clamp(25px,2vw,31px)!important;
+  font-variant-numeric:tabular-nums!important;
+  overflow-wrap:anywhere!important;
+  letter-spacing:-.8px!important;
+}
+.admin-shell.admin-home-redesign .mg-result-grid span{
+  font-size:12px!important;
+  font-weight:580!important;
+  line-height:1.4!important;
+}
+.admin-shell.admin-home-redesign .mg-premium-analytics{margin-bottom:23px!important}
+.admin-shell.admin-home-redesign .mg-premium-analytics-head{
+  margin-bottom:14px!important;
+}
+.admin-shell.admin-home-redesign .mg-premium-analytics-head>div>span{
+  font-weight:800!important;letter-spacing:1.05px!important;
+}
+.admin-shell.admin-home-redesign .mg-premium-analytics-grid{
+  gap:15px!important;
+}
+.admin-shell.admin-home-redesign .mg-premium-card,
+.admin-shell.admin-home-redesign .mg-professor-actions,
+.admin-shell.admin-home-redesign .mg-sync-panel,
+.admin-shell.admin-home-redesign .mg-trainer-card,
+.admin-shell.admin-home-redesign .mg-mini-routine,
+.admin-shell.admin-home-redesign .mg-agenda{
+  border:1px solid var(--mg-ui-stroke)!important;
+  border-radius:var(--mg-ui-radius)!important;
+  box-shadow:var(--mg-ui-shadow)!important;
+}
+.admin-shell.admin-home-redesign .mg-premium-card{
+  padding:clamp(18px,1.65vw,25px)!important;
+}
+.admin-shell.admin-home-redesign .mg-premium-card>header h3{
+  font-size:15px!important;
+  line-height:1.35!important;
+  font-weight:750!important;
+}
+.admin-shell.admin-home-redesign .mg-revenue-overview strong{
+  font-size:clamp(29px,2.5vw,36px)!important;
+  font-variant-numeric:tabular-nums!important;
+}
+.admin-shell.admin-home-redesign .mg-revenue-chart svg{
+  display:block!important;width:100%!important;max-width:100%!important;
+}
+.admin-shell.admin-home-redesign .mg-revenue-line{
+  stroke-width:3.5!important;
+}
+.admin-shell.admin-home-redesign .mg-revenue-dot{
+  stroke:#fff!important;stroke-width:2.4!important;
+}
+.admin-shell.admin-home-redesign .mg-revenue-chart stop:first-child{
+  stop-color:var(--mg-mantis-accent)!important;
+}
+.admin-shell.admin-home-redesign .mg-revenue-chart stop:last-child{
+  stop-color:var(--mg-mantis-accent)!important;
+}
+.admin-shell.admin-home-redesign .mg-real-track{
+  border-radius:9px!important;max-width:37px!important;
+}
+.admin-shell.admin-home-redesign .mg-real-day b{font-variant-numeric:tabular-nums!important}
+.admin-shell.admin-home-redesign .mg-operations-ring strong{
+  font-variant-numeric:tabular-nums!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-actions{
+  margin-bottom:16px!important;padding:21px!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid{
+  gap:11px!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid>button{
+  min-height:83px!important;
+  border-radius:12px!important;
+  transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid>button:hover{
+  transform:translateY(-2px)!important;
+  border-color:#cbd7e3!important;
+  box-shadow:0 8px 20px rgba(34,53,76,.07)!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-alert{
+  border-radius:var(--mg-ui-radius)!important;
+  margin-bottom:19px!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel{
+  margin:18px 0 25px!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article{
+  border-radius:12px!important;
+}
+.admin-shell.admin-home-redesign .mg-agenda .mg-agenda-list{
+  min-width:0!important;
+}
+.admin-shell.admin-home-redesign .mg-agenda-list article{
+  min-width:0!important;
+}
+.admin-shell.admin-home-redesign .mg-agenda-list article strong,
+.admin-shell.admin-home-redesign .mg-agenda-list article span{
+  overflow-wrap:anywhere!important;
+}
+.admin-shell.admin-home-redesign .mg-trainer-card,
+.admin-shell.admin-home-redesign .mg-agenda{
+  padding:20px!important;
+}
+.admin-shell.admin-home-redesign .mg-trainer-avatar-img{
+  object-fit:cover!important;
+}
+.admin-shell.admin-home-redesign .mg-trainer-card .mg-video-card img{
+  width:100%!important;object-fit:cover!important;
+}
+.admin-shell.admin-home-redesign .mg-mini-routine{
+  transition:transform .16s ease,box-shadow .16s ease!important;
+}
+.admin-shell.admin-home-redesign .mg-mini-routine:hover{
+  transform:translateY(-2px)!important;
+  box-shadow:var(--mg-ui-shadow-hover)!important;
+}
+.admin-shell.admin-home-redesign .mg-module-shell-head,
+.admin-shell.admin-home-redesign .admin-list-card,
+.admin-shell.admin-home-redesign .admin-form-card,
+.admin-shell.admin-home-redesign .mg-business-card{
+  border-radius:15px!important;
+}
+.admin-shell.admin-home-redesign .table-wrap{
+  max-width:100%!important;
+  overflow-x:auto!important;
+}
+.admin-shell.admin-home-redesign .management-table th,
+.admin-shell.admin-home-redesign .mg-business-table th{
+  font-size:11px!important;letter-spacing:.025em!important;
+  white-space:nowrap!important;
+}
+.admin-shell.admin-home-redesign .management-table td,
+.admin-shell.admin-home-redesign .mg-business-table td{
+  line-height:1.5!important;
+}
+.admin-shell.admin-home-redesign .admin-primary,
+.admin-shell.admin-home-redesign .admin-secondary,
+.admin-shell.admin-home-redesign .table-action,
+.admin-shell.admin-home-redesign .table-danger{
+  border-radius:9px!important;
+}
+.admin-shell.admin-home-redesign button:focus-visible,
+.admin-shell.admin-home-redesign a:focus-visible{
+  outline:3px solid var(--mg-mantis-accent)!important;
+  outline-offset:3px!important;
+}
+/* No se aplican fondos blancos de la capa nueva al tema oscuro. */
+.admin-shell.admin-home-redesign.mg-mantis-dark .mg-result-grid>button{
+  background:#202d3b!important;border-color:#324254!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-dark .mg-pro-hero{
+  border-color:#30485b!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-dark .mg-current-workspace .mg-module-shell-head{
+  background:#202d3b!important;border-color:#324254!important;
+}
+/* Pantallas de escritorio: panel ejecutivo y tarjetas en una fila. */
+@media(min-width:1580px){
+  .admin-shell.admin-home-redesign .mg-dashboard{
+    grid-template-columns:minmax(0,1fr) minmax(270px,300px)!important;
+  }
+  .admin-shell.admin-home-redesign .mg-result-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+  .admin-shell.admin-home-redesign .mg-result-grid>button{
+    grid-template-columns:1fr!important;
+    align-content:center!important;justify-items:start!important;
+    min-height:154px!important;gap:9px!important;
+    padding:18px!important;
+  }
+  .admin-shell.admin-home-redesign .mg-result-grid i{
+    width:42px!important;height:42px!important;font-size:18px!important;
+  }
+  .admin-shell.admin-home-redesign .mg-result-grid strong{font-size:26px!important}
+  .admin-shell.admin-home-redesign .mg-premium-analytics-grid{
+    grid-template-columns:minmax(0,1.3fr) minmax(250px,.95fr)!important;
+  }
+  .admin-shell.admin-home-redesign .mg-revenue-card{
+    grid-row:span 2!important;
+  }
+}
+@media(max-width:1240px){
+  .admin-shell.admin-home-redesign .mg-dashboard{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .admin-shell.admin-home-redesign .mg-dashboard-side{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    align-items:start!important;gap:13px!important;
+  }
+  .admin-shell.admin-home-redesign .mg-dashboard-side .mg-agenda{
+    grid-column:1/-1!important;
+  }
+  .admin-shell.admin-home-redesign .mg-premium-analytics-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .admin-shell.admin-home-redesign .mg-revenue-card{
+    grid-column:1/-1!important;
+    min-height:390px!important;
+  }
+}
+@media(max-width:850px){
+  .admin-shell.admin-home-redesign .mg-premium-analytics-grid{
+    grid-template-columns:1fr!important;
+  }
+  .admin-shell.admin-home-redesign .mg-revenue-card{grid-column:auto!important}
+  .admin-shell.admin-home-redesign .mg-dashboard-side{
+    grid-template-columns:1fr!important;
+  }
+  .admin-shell.admin-home-redesign .mg-dashboard-side .mg-agenda{grid-column:auto!important}
+  .admin-shell.admin-home-redesign .mg-professor-action-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:700px){
+  .admin-shell.admin-home-redesign .mg-pro-hero{
+    padding:23px 19px!important;border-radius:16px!important;
+  }
+  .admin-shell.admin-home-redesign .mg-pro-hero h2{font-size:29px!important}
+  .admin-shell.admin-home-redesign .mg-result-grid{
+    gap:10px!important;
+  }
+  .admin-shell.admin-home-redesign .mg-result-grid>button{
+    min-height:117px!important;padding:13px!important;
+    grid-template-columns:35px minmax(0,1fr)!important;
+  }
+  .admin-shell.admin-home-redesign .mg-result-grid strong{
+    font-size:clamp(18px,5vw,24px)!important;
+  }
+  .admin-shell.admin-home-redesign .mg-professor-action-grid{
+    grid-template-columns:1fr!important;
+  }
+  .admin-shell.admin-home-redesign .mg-premium-card,
+  .admin-shell.admin-home-redesign .mg-trainer-card,
+  .admin-shell.admin-home-redesign .mg-agenda{padding:16px!important}
+  .admin-shell.admin-home-redesign .mg-operations-visual{
+    grid-template-columns:1fr!important;justify-items:center!important;
+  }
+  .admin-shell.admin-home-redesign .mg-operations-breakdown{
+    width:100%!important;
+  }
+}
+@media(max-width:420px){
+  .admin-shell.admin-home-redesign .mg-result-grid{
+    grid-template-columns:1fr!important;
+  }
+  .admin-shell.admin-home-redesign .mg-professor-actions{padding:15px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .admin-shell.admin-home-redesign .mg-result-grid>button,
+  .admin-shell.admin-home-redesign .mg-professor-action-grid>button,
+  .admin-shell.admin-home-redesign .mg-mini-routine{
+    transition:none!important;transform:none!important;
+  }
+}
