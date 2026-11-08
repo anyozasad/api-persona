@@ -98,6 +98,27 @@ class CrearAdminMallqui extends Command
             return self::FAILURE;
         }
 
+        // Sanctum necesita esta tabla tanto para cerrar sesiones antiguas
+        // como para generar el token del login. Prepararla antes de pedir datos.
+        if (!Schema::hasTable('personal_access_tokens')) {
+            $this->warn('Preparando tabla de sesiones de Sanctum...');
+            try {
+                $codigo = Artisan::call('migrate', [
+                    '--path' => 'database/migrations/2026_11_07_233000_ensure_sanctum_tokens_table.php',
+                    '--force' => true,
+                ]);
+                $salida = trim(Artisan::output());
+                if ($salida !== '') $this->line($salida);
+                if ($codigo !== 0 || !Schema::hasTable('personal_access_tokens')) {
+                    $this->error('No se pudo preparar la tabla de sesiones.');
+                    return self::FAILURE;
+                }
+            } catch (Throwable $e) {
+                $this->error('No se pudo preparar las sesiones de Sanctum: '.$e->getMessage());
+                return self::FAILURE;
+            }
+        }
+
         $nombreUsuario = trim((string) $this->ask('Nombre de usuario', 'admin'));
         $nombres = trim((string) $this->ask('Nombres', 'Administrador'));
         $apellidos = trim((string) $this->ask('Apellidos', 'Sistema'));
