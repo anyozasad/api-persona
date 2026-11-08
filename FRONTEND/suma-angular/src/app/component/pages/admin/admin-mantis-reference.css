@@ -827,3 +827,61 @@
     transition:none!important;transform:none!important;
   }
 }
+
+
+/* Iconos vectoriales originales (sin librerías externas). */
+.admin-shell.admin-home-redesign .mg-current-sidebar .admin-main-nav-icon svg{
+  display:block!important;width:18px!important;height:18px!important;
+  color:inherit!important;flex-shrink:0!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .crossfit-sidebar-nav button.active .admin-main-nav-icon svg{
+  color:var(--mg-mantis-accent)!important;
+}
+/* Evitar que estilos anteriores de módulos reintroduzcan botones verdes/negros. */
+.admin-shell.admin-home-redesign .mg-current-workspace .admin-primary,
+.admin-shell.admin-home-redesign .mg-current-workspace .config-save-bar button,
+.admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-new,
+.admin-shell.admin-home-redesign .mg-current-workspace .audit-pagination div button.active{
+  color:#fff!important;
+  background:var(--mg-mantis-accent)!important;
+  border-color:var(--mg-mantis-accent)!important;
+  border-radius:7px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .feedback-admin-list>article{
+  border-left-color:var(--mg-mantis-accent)!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .admin-request-context{
+  border-left-color:var(--mg-mantis-accent)!important;
+  background:#f2f7ff!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .trainer-main-avatar,
+.admin-shell.admin-home-redesign .mg-current-workspace .routine-exercise-number{
+  background:var(--mg-mantis-accent-soft)!important;
+  color:var(--mg-mantis-accent)!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-hero,
+.admin-shell.admin-home-redesign .mg-current-workspace .audit-hero{
+  border-radius:9px!important;
+  border-color:var(--mg-reference-line)!important;
+  background:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .clients-v3-table tbody tr:hover,
+.admin-shell.admin-home-redesign .mg-current-workspace .audit-table tbody tr:hover{
+  background:#f4f8ff!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace input:focus,
+.admin-shell.admin-home-redesign .mg-current-workspace select:focus,
+.admin-shell.admin-home-redesign .mg-current-workspace textarea:focus{
+  border-color:var(--mg-mantis-accent)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--mg-mantis-accent) 14%,transparent)!important;
+}
+@media(max-width:800px){
+  .admin-shell.admin-home-redesign .admin-mobile-modules button.active{
+    background:var(--mg-mantis-accent)!important;
+    border-color:var(--mg-mantis-accent)!important;
+    color:#fff!important;
+  }
+  .admin-shell.admin-home-redesign .admin-mobile-modules button>i{
+    background:var(--mg-mantis-accent)!important;color:#fff!important;
+  }
+}
