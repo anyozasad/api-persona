@@ -2,6 +2,11 @@
 
 use Illuminate\Support\Str;
 
+// En desarrollo local usar cache en archivos cuando falta la tabla `cache`.
+// En producción se respeta el almacén configurado por CACHE_STORE.
+$cacheStore = env('CACHE_STORE', 'file');
+$isLocalDevelopment = env('APP_ENV', 'production') === 'local';
+
 return [
 
     /*
@@ -15,7 +20,7 @@ return [
     |
     */
 
-    'default' => env('CACHE_STORE', 'database'),
+    'default' => ($isLocalDevelopment && $cacheStore === 'database') ? 'file' : $cacheStore,
 
     /*
     |--------------------------------------------------------------------------
