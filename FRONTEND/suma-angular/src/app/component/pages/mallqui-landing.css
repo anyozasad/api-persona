@@ -3722,3 +3722,36 @@ html{scroll-behavior:smooth}
 #inicio.mq-hero::before{
   opacity:.22 !important;
 }
+
+/* MALLQUI 2026 · FOTOS ORIGINALES DEL ZIP, SIN MOSAICOS */
+/* Respeta las cuatro tarjetas del diseño. Cada imagen es una foto completa. */
+#victorias .mq-gallery-item img,
+#victorias .mq-gallery-item:nth-child(1) img,
+#victorias .mq-gallery-item:nth-child(2) img,
+#victorias .mq-gallery-item:nth-child(3) img,
+#victorias .mq-gallery-item:nth-child(4) img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  object-position:center !important;
+  filter:none !important;
+  image-rendering:auto !important;
+  transform:none !important;
+}
+#victorias .mq-gallery-item:nth-child(2) img{
+  object-position:center 44% !important;
+}
+#victorias .mq-gallery-item:hover img{
+  transform:scale(1.015) !important;
+  filter:none !important;
+}
+/* En el visor conservar la proporción para no cortar retratos ni productos. */
+.mq-lightbox-photo img{
+  width:100% !important;
+  height:auto !important;
+  max-height:78vh !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  filter:none !important;
+  image-rendering:auto !important;
+}

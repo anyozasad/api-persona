@@ -159,7 +159,7 @@ import { GymApiService } from '../../../core/services/gym-api.service';
               [class.mq-gallery-wide]="i === 1 || i === 4"
               (click)="abrirGaleria(i)"
               [attr.aria-label]="'Abrir ' + foto.texto">
-              <img [src]="foto.img" [alt]="foto.alt">
+              <img [src]="foto.img" [alt]="foto.alt" loading="lazy" decoding="async">
               <span>{{foto.texto}}</span>
             </button>
           </div>
@@ -265,12 +265,12 @@ import { GymApiService } from '../../../core/services/gym-api.service';
           <button type="button" class="mq-lightbox-arrow prev" aria-label="Imagen anterior" (click)="galeriaAnterior()">‹</button>
 
           <div class="mq-lightbox-photo">
-            <img [src]="galeria[galeriaActiva].img" [alt]="galeria[galeriaActiva].alt">
+            <img [src]="fotosGaleria[galeriaActiva].img" [alt]="fotosGaleria[galeriaActiva].alt">
           </div>
 
           <div class="mq-lightbox-copy">
-            <h3>{{galeria[galeriaActiva].texto}}</h3>
-            <p>{{galeria[galeriaActiva].descripcion}}</p>
+            <h3>{{fotosGaleria[galeriaActiva].texto}}</h3>
+            <p>{{fotosGaleria[galeriaActiva].descripcion}}</p>
             <a routerLink="/clases-gym" (click)="cerrarGaleria()">Reservar sesión</a>
           </div>
 
@@ -370,32 +370,55 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
     '/assets/mallqui/mallqui-hero-interior-4k.webp'
   ];
 
+  // Cuatro tarjetas sin mosaicos: cada tarjeta muestra UNA foto original del ZIP.
   galeria = [
     {
-      img: 'assets/mallqui/mallqui-gallery-1.webp',
-      alt: 'Máquinas, equipos y primeros productos reales de Mallqui Gym',
+      img: 'assets/mallqui/fotos-reales/foto-32.jpg',
+      indiceFoto: 31,
+      alt: 'Equipos y máquinas reales del gimnasio Mallqui',
       texto: 'EQUIPOS Y MÁQUINAS',
-      descripcion: 'Fotografías reales de las máquinas, equipos y productos disponibles en Mallqui Gym.'
+      descripcion: 'Máquinas de entrenamiento y vista interior real de Mallqui Gym.'
     },
     {
-      img: 'assets/mallqui/mallqui-gallery-2.webp',
-      alt: 'Suplementos, productos y vistas reales del local de Mallqui Gym',
+      img: 'assets/mallqui/fotos-reales/foto-12.jpg',
+      indiceFoto: 11,
+      alt: 'Suplementos disponibles en el local',
       texto: 'PRODUCTOS Y LOCAL',
-      descripcion: 'Fotografías reales de suplementos, productos y distintas vistas del local.'
+      descripcion: 'Productos y suplementos fotografiados en Mallqui Gym.'
     },
     {
-      img: 'assets/mallqui/mallqui-gallery-3.webp',
-      alt: 'Local e imágenes reales del entrenador de Mallqui Gym',
+      img: 'assets/mallqui/fotos-reales/foto-23.jpg',
+      indiceFoto: 22,
+      alt: 'Entrenador real de Mallqui Gym',
       texto: 'LOCAL Y ENTRENADOR',
-      descripcion: 'Fotografías reales del local y del entrenador principal dentro de Mallqui Gym.'
+      descripcion: 'El entrenador y las instalaciones reales del gimnasio.'
     },
     {
-      img: 'assets/mallqui/mallqui-gallery-4.webp',
-      alt: 'Entrenador, suplementos e interior real de Mallqui Gym',
+      img: 'assets/mallqui/fotos-reales/foto-05.jpg',
+      indiceFoto: 4,
+      alt: 'Personas entrenando dentro de Mallqui Gym',
       texto: 'MÁS DE MALLQUI GYM',
-      descripcion: 'Más fotografías reales del entrenador, suplementos, productos e interior del gimnasio.'
+      descripcion: 'Ambiente, socios y equipos del gimnasio en fotografías reales.'
     }
   ];
+
+  // Los 34 archivos originales del ZIP pueden verse completos en el visor.
+  fotosGaleria = Array.from({ length: 34 }, (_, indice) => {
+    const numero = indice + 1;
+    const productos = (numero >= 9 && numero <= 17) || (numero >= 29 && numero <= 31) || numero >= 33;
+    const entrenador = numero >= 23 && numero <= 28;
+    const titulo = productos
+      ? 'PRODUCTOS DE MALLQUI GYM'
+      : entrenador
+        ? 'ENTRENADOR DE MALLQUI GYM'
+        : 'INSTALACIONES DE MALLQUI GYM';
+    return {
+      img: `assets/mallqui/fotos-reales/foto-${String(numero).padStart(2, '0')}.jpg`,
+      alt: `Fotografía real ${numero} de Mallqui Gym`,
+      texto: titulo,
+      descripcion: `Foto ${numero} de 34 · Imagen original del gimnasio, sin mosaicos.`
+    };
+  });
 
   clases = [
     {
@@ -572,7 +595,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   abrirGaleria(index: number): void {
-    this.galeriaActiva = index;
+    this.galeriaActiva = this.galeria[index]?.indiceFoto ?? 0;
     document.body.style.overflow = 'hidden';
   }
 
@@ -583,12 +606,12 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   galeriaAnterior(): void {
     if (this.galeriaActiva === null) return;
-    this.galeriaActiva = (this.galeriaActiva - 1 + this.galeria.length) % this.galeria.length;
+    this.galeriaActiva = (this.galeriaActiva - 1 + this.fotosGaleria.length) % this.fotosGaleria.length;
   }
 
   galeriaSiguiente(): void {
     if (this.galeriaActiva === null) return;
-    this.galeriaActiva = (this.galeriaActiva + 1) % this.galeria.length;
+    this.galeriaActiva = (this.galeriaActiva + 1) % this.fotosGaleria.length;
   }
 
   enviarChat(event: Event): void {
