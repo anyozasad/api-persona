@@ -349,7 +349,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   };
 
   heroImages = [
-    '/assets/mallqui/mallqui-gym-ai.png?v=hero-ai-20261105-1857'
+    '/assets/mallqui/mallqui-hero-interior-4k.webp'
   ];
 
   galeria = [
