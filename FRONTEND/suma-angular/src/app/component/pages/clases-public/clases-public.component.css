@@ -1017,3 +1017,27 @@
   Así, al terminar, transform/opacity vuelven al control normal del hover.
   Evita el bug donde el menú quedaba visualmente "pegado" tras entrar o regresar.
 */
+
+/* MALLQUI NAV UNIFICADO · HOME / CLASES / PLANES · 2026-11-07 */
+/* El menú de las pantallas secundarias replica la tipografía
+   de Inicio; no modifica navegación, altura ni tarjetas. */
+@media (min-width:1060px){
+  .classes-nav nav a,
+  .classes-nav nav a:link,
+  .classes-nav nav a:visited,
+  .classes-nav nav a:focus{
+    color:#f5f3f4 !important;
+    opacity:1 !important;
+    font-family:"Arial Narrow","Roboto Condensed",Arial,sans-serif !important;
+    font-size:14px !important;
+    font-weight:800 !important;
+    letter-spacing:.45px !important;
+    white-space:nowrap !important;
+    text-decoration:none !important;
+  }
+  .classes-nav nav a:hover,
+  .classes-nav nav a:focus-visible{
+    color:#ff6047 !important;
+    opacity:1 !important;
+  }
+}
