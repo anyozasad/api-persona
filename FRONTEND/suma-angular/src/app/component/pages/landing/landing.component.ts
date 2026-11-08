@@ -365,7 +365,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Imágenes locales en alta definición, sin dependencias de Internet.
   heroImages = [
-    '/assets/mallqui/mallqui-referencia-foto-personas-4k.webp',
+    '/assets/mallqui/mallqui-fondo-referencia-exacto.webp',
     '/assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
     '/assets/mallqui/mallqui-hero-interior-4k.webp'
   ];
