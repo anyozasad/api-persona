@@ -3545,3 +3545,41 @@ html{scroll-behavior:smooth}
 
 /* La portada utiliza la imagen local de alta resolución del componente.
    No ocultar el contenido ni sustituir la foto por un fondo incrustado. */
+
+/* CARRUSEL DE PORTADA · MALLQUI GYM
+   Tres imágenes reales del proyecto se alternan con un fundido suave.
+   No cambia posiciones, tamaños, menú, textos ni botones del inicio. */
+#inicio.mq-hero{
+  background-color:#17161a !important;
+}
+
+#inicio .mq-hero-bg{
+  opacity:0 !important;
+  transition:opacity 1.15s ease-in-out !important;
+  pointer-events:none !important;
+  object-position:center center !important;
+  /* Fotografía 4K sin enfoque artificial exagerado ni pérdida de detalle */
+  filter:contrast(1.07) saturate(1.08) brightness(1.02) !important;
+}
+
+#inicio .mq-hero-bg.mq-hero-bg-active{
+  opacity:1 !important;
+}
+
+#inicio .mq-hero-overlay{
+  background:
+    linear-gradient(90deg,
+      rgba(15,13,18,.35) 0%,
+      rgba(15,13,18,.23) 50%,
+      rgba(15,13,18,.34) 100%),
+    linear-gradient(180deg,
+      rgba(15,13,18,.08) 0%,
+      rgba(15,13,18,.12) 58%,
+      rgba(15,13,18,.25) 100%) !important;
+}
+
+@media (prefers-reduced-motion:reduce){
+  #inicio .mq-hero-bg{
+    transition:none !important;
+  }
+}
