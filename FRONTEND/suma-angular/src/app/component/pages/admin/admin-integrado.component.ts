@@ -3114,6 +3114,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   toggleNavGroup(group:string):void{
+    // Al contraer el menú no se debe impedir el acceso a submódulos.
+    if(this.sidebarCerrado){
+      this.sidebarCerrado=false;
+      this.navGroups[group]=true;
+      try{ localStorage.setItem('mallqui_admin_sidebar_closed','0'); }catch{}
+      return;
+    }
     this.navGroups[group]=!this.navGroups[group];
   }
 
