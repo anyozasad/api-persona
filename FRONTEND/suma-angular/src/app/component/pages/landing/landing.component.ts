@@ -53,11 +53,15 @@ import { GymApiService } from '../../../core/services/gym-api.service';
       <main>
         <section id="inicio" class="mq-hero">
           <img
+            *ngFor="let imagen of heroImages; let i = index"
             class="mq-hero-bg"
-            [src]="heroActual"
-            alt="Interior de Mallqui Gym"
-            decoding="sync"
-            fetchpriority="high">
+            [class.mq-hero-bg-active]="i === heroIndex"
+            [src]="imagen"
+            alt=""
+            aria-hidden="true"
+            decoding="async"
+            loading="eager"
+            [attr.fetchpriority]="i === 0 ? 'high' : 'low'">
           <div class="mq-hero-overlay"></div>
           <div class="mq-shell mq-hero-content">
             <p class="mq-overline">ENTRENA CON MALLQUI GYM</p>
@@ -68,10 +72,12 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             </div>
           </div>
 
-          <div class="mq-hero-dots" aria-hidden="true">
+          <div class="mq-hero-dots" role="group" aria-label="Imágenes del gimnasio">
             <button *ngFor="let img of heroImages; let i = index"
                     type="button"
                     [class.active]="i === heroIndex"
+                    [attr.aria-label]="'Mostrar imagen ' + (i + 1)"
+                    [attr.aria-pressed]="i === heroIndex"
                     (click)="cambiarHero(i)"></button>
           </div>
         </section>
@@ -348,8 +354,11 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   };
 
+  // Imágenes locales en alta definición, sin dependencias de Internet.
   heroImages = [
-    '/assets/mallqui/mallqui-hero-interior-4k.webp'
+    '/assets/mallqui/mallqui-hero-interior-4k.webp',
+    '/assets/mallqui/mallqui-beginner-ai-4k.webp',
+    '/assets/mallqui/mallqui-pro-ai-4k.webp'
   ];
 
   galeria = [
@@ -417,10 +426,6 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(private api: GymApiService) {}
 
-  get heroActual(): string {
-    return this.heroImages[this.heroIndex] || this.heroImages[0];
-  }
-
   ngOnInit(): void {
     this.api.informacionGym().subscribe({
       next: (r: any) => {
@@ -462,9 +467,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
       error: () => {}
     });
 
-    this.heroTimer = setInterval(() => {
-      this.heroIndex = (this.heroIndex + 1) % this.heroImages.length;
-    }, 5500);
+    this.iniciarCarruselHero();
   }
 
   ngAfterViewInit(): void {
@@ -495,8 +498,19 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
     document.body.style.overflow = '';
   }
 
+  private iniciarCarruselHero(): void {
+    if (this.heroTimer) clearInterval(this.heroTimer);
+    if (this.heroImages.length < 2 || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
+    this.heroTimer = setInterval(() => {
+      this.heroIndex = (this.heroIndex + 1) % this.heroImages.length;
+    }, 6000);
+  }
+
   cambiarHero(index: number): void {
+    if (index < 0 || index >= this.heroImages.length) return;
     this.heroIndex = index;
+    this.iniciarCarruselHero();
   }
 
   volverArriba(): void {
