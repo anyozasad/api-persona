@@ -2982,7 +2982,14 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       const color=localStorage.getItem('mallqui_mantis_color');
       const densidad=localStorage.getItem('mallqui_mantis_densidad');
       if(tema==='claro'||tema==='oscuro') this.modoDashboard=tema;
-      if(color==='coral'||color==='azul'||color==='verde') this.acentoDashboard=color;
+      // Nueva composición: iniciar en azul como Mantis, sin borrar preferencias posteriores.
+      if(localStorage.getItem('mallqui_mantis_reference_v1')!=='1'){
+        this.acentoDashboard='azul';
+        localStorage.setItem('mallqui_mantis_color','azul');
+        localStorage.setItem('mallqui_mantis_reference_v1','1');
+      }else if(color==='coral'||color==='azul'||color==='verde'){
+        this.acentoDashboard=color;
+      }
       if(densidad==='normal'||densidad==='compacta') this.densidadDashboard=densidad;
     }catch{
       this.sidebarCerrado = false;
