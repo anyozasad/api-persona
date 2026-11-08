@@ -3596,8 +3596,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   totalAlertasDashboard(): number {
-    const totalBackend=Number(this.dashboard?.alertas?.total);
-    if(Number.isFinite(totalBackend)) return totalBackend;
+    const totalOriginal=this.dashboard?.alertas?.total;
+    const totalBackend=Number(totalOriginal);
+    if(totalOriginal!==null && totalOriginal!==undefined &&
+       totalOriginal!=='' && Number.isFinite(totalBackend)) {
+      return Math.max(0,totalBackend);
+    }
 
     const a=this.dashboard?.alertas || {};
     return Number(a.rutinas_pendientes||0)
