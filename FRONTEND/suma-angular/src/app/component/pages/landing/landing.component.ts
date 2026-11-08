@@ -72,6 +72,15 @@ import { GymApiService } from '../../../core/services/gym-api.service';
             </div>
           </div>
 
+          <button class="mq-hero-nav-arrow mq-hero-nav-prev"
+                  type="button"
+                  aria-label="Imagen anterior del gimnasio"
+                  (click)="cambiarHero((heroIndex + heroImages.length - 1) % heroImages.length)">&#8592;</button>
+          <button class="mq-hero-nav-arrow mq-hero-nav-next"
+                  type="button"
+                  aria-label="Siguiente imagen del gimnasio"
+                  (click)="cambiarHero((heroIndex + 1) % heroImages.length)">&#8594;</button>
+
           <div class="mq-hero-dots" role="group" aria-label="Imágenes del gimnasio">
             <button *ngFor="let img of heroImages; let i = index"
                     type="button"
@@ -356,11 +365,9 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Imágenes locales en alta definición, sin dependencias de Internet.
   heroImages = [
-    '/assets/mallqui/mallqui-hero-interior-4k.webp',
-    '/assets/mallqui/mallqui-foto-real-panorama-4k.webp',
-    '/assets/mallqui/mallqui-foto-real-cardio-4k.webp',
-    '/assets/mallqui/mallqui-beginner-ai-4k.webp',
-    '/assets/mallqui/mallqui-pro-ai-4k.webp'
+    '/assets/mallqui/mallqui-referencia-foto-personas-4k.webp',
+    '/assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+    '/assets/mallqui/mallqui-hero-interior-4k.webp'
   ];
 
   galeria = [
