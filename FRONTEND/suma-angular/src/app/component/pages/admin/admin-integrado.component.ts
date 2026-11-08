@@ -3552,6 +3552,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   /** Altura relativa basada exclusivamente en el histórico devuelto por Laravel. */
   alturaIngresoKpi(valor:any):number{
     const valores=this.ingresosMensualesDashboard().map(item=>Number(item.total)||0);
+    if(!valores.length) return 0;
     const max=Math.max(1,...valores);
     const dato=Math.max(0,Number(valor)||0);
     return Math.min(100,(dato/max)*100);
