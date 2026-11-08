@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Throwable;
@@ -121,10 +122,18 @@ class AuthController extends Controller
 
         $loginNormalizado = mb_strtolower($login);
 
-        $usuario = Usuario::query()
-            ->whereRaw('LOWER(correo) = ?', [$loginNormalizado])
-            ->orWhere('nombre_usuario', $login)
-            ->first();
+        // Algunas bases gym_system antiguas tienen usuarios sin la columna correo.
+        // Consultar solo columnas existentes para no romper el inicio de sesión.
+        $consulta = Usuario::query();
+        if (Schema::hasColumn('usuarios', 'correo')) {
+            $consulta->where(function ($query) use ($loginNormalizado, $login) {
+                $query->whereRaw('LOWER(correo) = ?', [$loginNormalizado])
+                    ->orWhere('nombre_usuario', $login);
+            });
+        } else {
+            $consulta->where('nombre_usuario', $login);
+        }
+        $usuario = $consulta->first();
 
         if (!$usuario || !Hash::check($contrasena, $usuario->contrasena)) {
             throw ValidationException::withMessages([
