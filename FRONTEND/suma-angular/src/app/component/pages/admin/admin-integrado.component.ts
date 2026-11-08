@@ -15,7 +15,7 @@ import { catchError, forkJoin, of } from 'rxjs';
   selector: 'app-admin-integrado',
   standalone: true,
   imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminGymSuiteComponent, AdminApplicationsComponent],
-  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css', '../crossfit-final.css', './admin-dashboard-polish.css', './admin-dashboard-premium.css', './admin-mantis-interactions.css'],
+  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css', '../crossfit-final.css', './admin-dashboard-polish.css', './admin-dashboard-premium.css', './admin-mantis-interactions.css', './admin-dashboard-refined.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
   <div class="admin-shell admin-home-redesign" [class.admin-sidebar-collapsed]="sidebarCerrado" [class.mg-mantis-collapsed]="sidebarCerrado" [class.mg-mantis-dark]="modoDashboard==='oscuro'" [class.mg-mantis-compact]="densidadDashboard==='compacta'" [class.mg-mantis-blue]="acentoDashboard==='azul'" [class.mg-mantis-green]="acentoDashboard==='verde'">
@@ -338,139 +338,6 @@ import { catchError, forkJoin, of } from 'rxjs';
             </div>
           </section>
 
-            <section class="mg-professor-actions">
-              <header>
-                <div>
-                  <span>FUNCIONES PRINCIPALES</span>
-                  <h2>Gestión rápida del gimnasio</h2>
-                  <p>Accesos solicitados para la operación diaria de Mallqui Gym.</p>
-                </div>
-              </header>
-              <div class="mg-professor-action-grid">
-                <button type="button" class="matricula" (click)="abrirNuevoSocioDesdeDashboard()">
-                  <i>＋</i><div><strong>Matricular</strong><span>Registrar un nuevo socio</span></div><b>›</b>
-                </button>
-                <button type="button" class="seguimiento" (click)="cambiarSegcion('seguimiento')">
-                  <i>◎</i><div><strong>Seguimiento</strong><span>Membresía, asistencia y rutina</span></div><b>›</b>
-                </button>
-                <button type="button" class="asistencia" (click)="cambiarSegcion('asistencias')">
-                  <i>✓</i><div><strong>Asistencia</strong><span>Registrar entrada o salida</span></div><b>›</b>
-                </button>
-                <button type="button" class="rutinas" (click)="cambiarSegcion('rutinas')">
-                  <i>🏋</i><div><strong>Rutinas</strong><span>Asignar y controlar rutinas</span></div><b>›</b>
-                </button>
-              </div>
-            </section>
-
-            <section class="mg-expiry-alert" [class.has-warning]="membresiasPorVencerDashboard.length>0">
-              <div class="mg-expiry-icon">{{membresiasPorVencerDashboard.length>0 ? '!' : '✓'}}</div>
-              <div class="mg-expiry-copy">
-                <small>ALERTA DE MEMBRESÍAS</small>
-                <ng-container *ngIf="membresiasPorVencerDashboard.length; else sinVencimientosDashboard">
-                  <h3>{{membresiasPorVencerDashboard.length}} membresía(s) por vencer</h3>
-                  <p>El administrador debe realizar seguimiento y renovación dentro de los próximos 7 días.</p>
-                  <div class="mg-expiry-members">
-                    <span *ngFor="let v of membresiasPorVencerDashboard.slice(0,3)">
-                      <b>{{nombreCliente(v.cliente)}}</b>
-                      <em>{{v.membresia?.nombre || 'Plan'}} · vence {{v.fecha_fin}}<ng-container *ngIf="v.dias_restantes!==undefined"> · {{v.dias_restantes}} día(s)</ng-container></em>
-                    </span>
-                  </div>
-                </ng-container>
-                <ng-template #sinVencimientosDashboard>
-                  <h3>Membresías al día</h3>
-                  <p>No hay membresías que venzan durante los próximos 7 días.</p>
-                </ng-template>
-              </div>
-              <button type="button" (click)="cambiarSegcion('membresias')">
-                {{membresiasPorVencerDashboard.length ? 'Revisar y renovar' : 'Ver membresías'}}
-              </button>
-            </section>
-
-            <section class="mg-sync-panel">
-              <header>
-                <div>
-                  <small>ESTADO DEL SISTEMA</small>
-                  <h2>Usuario, Dashboard y Base de Datos</h2>
-                  <p>Resumen de sincronización de los módulos principales de Mallqui Gym.</p>
-                </div>
-                <button type="button" (click)="actualizarDashboardCompleto()" [disabled]="actualizandoDatos">
-                  {{actualizandoDatos ? 'Actualizando...' : '↻ Actualizar datos'}}
-                </button>
-              </header>
-              <div class="mg-sync-grid">
-                <article [class.ok]="sistemaSincronizado">
-                  <i>{{sistemaSincronizado ? '✓' : '!'}}</i>
-                  <div><strong>Conexión del sistema</strong><span>{{mensajeSincronizacion}}</span></div>
-                  <b>{{sistemaSincronizado ? 'ACTIVO' : 'REVISAR'}}</b>
-                </article>
-                <article>
-                  <i>♚</i>
-                  <div><strong>Socios</strong><span>Datos disponibles para usuario y administración</span></div>
-                  <b>{{clientes.length}}</b>
-                </article>
-                <article>
-                  <i>✦</i>
-                  <div><strong>Membresías</strong><span>Planes asignados y renovaciones</span></div>
-                  <b>{{membresiasCliente.length}}</b>
-                </article>
-                <article>
-                  <i>▦</i>
-                  <div><strong>Productos</strong><span>Catálogo e inventario sincronizado</span></div>
-                  <b>{{productos.length}}</b>
-                </article>
-                <article>
-                  <i>S/</i>
-                  <div><strong>Pagos</strong><span>Operaciones registradas</span></div>
-                  <b>{{pagos.length}}</b>
-                </article>
-                <article [class.warning]="totalAlertasDashboard()>0">
-                  <i>{{totalAlertasDashboard()>0 ? '!' : '✓'}}</i>
-                  <div><strong>Pendientes</strong><span>{{totalAlertasDashboard()>0 ? 'Hay tareas que requieren atención' : 'No hay alertas críticas'}}</span></div>
-                  <b>{{totalAlertasDashboard()}}</b>
-                </article>
-              </div>
-              <footer>Última sincronización: <strong>{{ultimaActualizacion || 'Pendiente'}}</strong></footer>
-            </section>
-
-            <section class="mg-section-heading">
-              <div>
-                <h2>Rutinas del día</h2>
-                <p>Entrenamientos y actividades destacadas de Mallqui Gym.</p>
-              </div>
-              <button type="button" (click)="cambiarSegcion('rutinas')">Ver todas <span>›</span></button>
-            </section>
-
-            <section class="mg-workout-grid" *ngIf="rutinasActivasDashboard.length; else sinRutinasDashboard">
-              <article class="mg-workout-card mg-workout-featured" *ngIf="rutinasActivasDashboard[0] as r">
-                <div class="mg-workout-copy">
-                  <h3>{{r.nombre_rutina || 'Rutina activa'}}</h3>
-                  <p>{{r.detalles?.length || 0}} ejercicios <span></span> {{r.objetivo || 'Entrenamiento'}}</p>
-                  <button type="button" (click)="cambiarSegcion('rutinas')">Ver rutina</button>
-                </div>
-                <img src="assets/mallqui/mallqui-cover.webp" alt="Rutina activa de Mallqui Gym">
-              </article>
-
-              <article class="mg-workout-card" *ngIf="rutinasActivasDashboard[1] as r">
-                <i class="mg-workout-icon">↗</i>
-                <h3>{{r.nombre_rutina || 'Rutina'}}</h3>
-                <p>{{r.detalles?.length || 0}} ejercicios <span></span> {{r.objetivo || 'Entrenamiento'}}</p>
-                <button type="button" (click)="cambiarSegcion('rutinas')">Ver rutina</button>
-              </article>
-
-              <article class="mg-workout-card" *ngIf="rutinasActivasDashboard[2] as r">
-                <i class="mg-workout-icon">✦</i>
-                <h3>{{r.nombre_rutina || 'Rutina'}}</h3>
-                <p>{{r.detalles?.length || 0}} ejercicios <span></span> {{r.objetivo || 'Entrenamiento'}}</p>
-                <button type="button" (click)="cambiarSegcion('rutinas')">Ver rutina</button>
-              </article>
-            </section>
-            <ng-template #sinRutinasDashboard>
-              <section class="mg-dashboard-empty">
-                <div><i>🏋</i><h3>No hay rutinas activas</h3><p>Registra o asigna una rutina para que aparezca en el inicio del administrador.</p></div>
-                <button type="button" (click)="cambiarSegcion('rutinas')">Gestionar rutinas</button>
-              </section>
-            </ng-template>
-
             <section class="mg-results">
               <div class="mg-section-heading compact">
                 <div><h2>Indicadores principales</h2><p>Resumen de socios, movimiento e ingresos.</p></div>
@@ -484,12 +351,12 @@ import { catchError, forkJoin, of } from 'rxjs';
                 </button>
                 <button type="button" (click)="cambiarSegcion('asistencias')">
                   <i class="blue">♟</i>
-                  <div><strong>{{dashboard?.asistencias?.hoy ?? asistencias.length ?? 0}}</strong><span>Asistencias</span></div>
+                  <div><strong>{{dashboard?.asistencias?.hoy ?? 0}}</strong><span>Asistencias</span></div>
                   <em>•••</em>
                 </button>
                 <button type="button" (click)="cambiarSegcion('reservas')">
                   <i class="pink">◫</i>
-                  <div><strong>{{dashboard?.reservas?.hoy ?? reservas.length ?? 0}}</strong><span>Reservas</span></div>
+                  <div><strong>{{dashboard?.reservas?.hoy ?? reservasHoyDashboard().length}}</strong><span>Reservas</span></div>
                   <em>•••</em>
                 </button>
                 <button type="button" (click)="cambiarSegcion('ingresos')">
@@ -579,6 +446,139 @@ import { catchError, forkJoin, of } from 'rxjs';
                 </article>
               </div>
             </section>
+            <section class="mg-professor-actions">
+              <header>
+                <div>
+                  <span>FUNCIONES PRINCIPALES</span>
+                  <h2>Gestión rápida del gimnasio</h2>
+                  <p>Accesos solicitados para la operación diaria de Mallqui Gym.</p>
+                </div>
+              </header>
+              <div class="mg-professor-action-grid">
+                <button type="button" class="matricula" (click)="abrirNuevoSocioDesdeDashboard()">
+                  <i>＋</i><div><strong>Matricular</strong><span>Registrar un nuevo socio</span></div><b>›</b>
+                </button>
+                <button type="button" class="seguimiento" (click)="cambiarSegcion('seguimiento')">
+                  <i>◎</i><div><strong>Seguimiento</strong><span>Membresía, asistencia y rutina</span></div><b>›</b>
+                </button>
+                <button type="button" class="asistencia" (click)="cambiarSegcion('asistencias')">
+                  <i>✓</i><div><strong>Asistencia</strong><span>Registrar entrada o salida</span></div><b>›</b>
+                </button>
+                <button type="button" class="rutinas" (click)="cambiarSegcion('rutinas')">
+                  <i>🏋</i><div><strong>Rutinas</strong><span>Asignar y controlar rutinas</span></div><b>›</b>
+                </button>
+              </div>
+            </section>
+
+            <section class="mg-expiry-alert" [class.has-warning]="membresiasPorVencerDashboard.length>0">
+              <div class="mg-expiry-icon">{{membresiasPorVencerDashboard.length>0 ? '!' : '✓'}}</div>
+              <div class="mg-expiry-copy">
+                <small>ALERTA DE MEMBRESÍAS</small>
+                <ng-container *ngIf="membresiasPorVencerDashboard.length; else sinVencimientosDashboard">
+                  <h3>{{membresiasPorVencerDashboard.length}} membresía(s) por vencer</h3>
+                  <p>El administrador debe realizar seguimiento y renovación dentro de los próximos 7 días.</p>
+                  <div class="mg-expiry-members">
+                    <span *ngFor="let v of membresiasPorVencerDashboard.slice(0,3)">
+                      <b>{{nombreCliente(v.cliente)}}</b>
+                      <em>{{v.membresia?.nombre || 'Plan'}} · vence {{v.fecha_fin}}<ng-container *ngIf="v.dias_restantes!==undefined"> · {{v.dias_restantes}} día(s)</ng-container></em>
+                    </span>
+                  </div>
+                </ng-container>
+                <ng-template #sinVencimientosDashboard>
+                  <h3>Membresías al día</h3>
+                  <p>No hay membresías que venzan durante los próximos 7 días.</p>
+                </ng-template>
+              </div>
+              <button type="button" (click)="cambiarSegcion('membresias')">
+                {{membresiasPorVencerDashboard.length ? 'Revisar y renovar' : 'Ver membresías'}}
+              </button>
+            </section>
+
+            <section class="mg-section-heading">
+              <div>
+                <h2>Rutinas del día</h2>
+                <p>Entrenamientos y actividades destacadas de Mallqui Gym.</p>
+              </div>
+              <button type="button" (click)="cambiarSegcion('rutinas')">Ver todas <span>›</span></button>
+            </section>
+
+            <section class="mg-workout-grid" *ngIf="rutinasActivasDashboard.length; else sinRutinasDashboard">
+              <article class="mg-workout-card mg-workout-featured" *ngIf="rutinasActivasDashboard[0] as r">
+                <div class="mg-workout-copy">
+                  <h3>{{r.nombre_rutina || 'Rutina activa'}}</h3>
+                  <p>{{r.detalles?.length || 0}} ejercicios <span></span> {{r.objetivo || 'Entrenamiento'}}</p>
+                  <button type="button" (click)="cambiarSegcion('rutinas')">Ver rutina</button>
+                </div>
+                <img src="assets/mallqui/mallqui-cover.webp" alt="Rutina activa de Mallqui Gym">
+              </article>
+
+              <article class="mg-workout-card" *ngIf="rutinasActivasDashboard[1] as r">
+                <i class="mg-workout-icon">↗</i>
+                <h3>{{r.nombre_rutina || 'Rutina'}}</h3>
+                <p>{{r.detalles?.length || 0}} ejercicios <span></span> {{r.objetivo || 'Entrenamiento'}}</p>
+                <button type="button" (click)="cambiarSegcion('rutinas')">Ver rutina</button>
+              </article>
+
+              <article class="mg-workout-card" *ngIf="rutinasActivasDashboard[2] as r">
+                <i class="mg-workout-icon">✦</i>
+                <h3>{{r.nombre_rutina || 'Rutina'}}</h3>
+                <p>{{r.detalles?.length || 0}} ejercicios <span></span> {{r.objetivo || 'Entrenamiento'}}</p>
+                <button type="button" (click)="cambiarSegcion('rutinas')">Ver rutina</button>
+              </article>
+            </section>
+            <ng-template #sinRutinasDashboard>
+              <section class="mg-dashboard-empty">
+                <div><i>🏋</i><h3>No hay rutinas activas</h3><p>Registra o asigna una rutina para que aparezca en el inicio del administrador.</p></div>
+                <button type="button" (click)="cambiarSegcion('rutinas')">Gestionar rutinas</button>
+              </section>
+            </ng-template>
+
+            <section class="mg-sync-panel">
+              <header>
+                <div>
+                  <small>ESTADO DEL SISTEMA</small>
+                  <h2>Usuario, Dashboard y Base de Datos</h2>
+                  <p>Resumen de sincronización de los módulos principales de Mallqui Gym.</p>
+                </div>
+                <button type="button" (click)="actualizarDashboardCompleto()" [disabled]="actualizandoDatos">
+                  {{actualizandoDatos ? 'Actualizando...' : '↻ Actualizar datos'}}
+                </button>
+              </header>
+              <div class="mg-sync-grid">
+                <article [class.ok]="sistemaSincronizado">
+                  <i>{{sistemaSincronizado ? '✓' : '!'}}</i>
+                  <div><strong>Conexión del sistema</strong><span>{{mensajeSincronizacion}}</span></div>
+                  <b>{{sistemaSincronizado ? 'ACTIVO' : 'REVISAR'}}</b>
+                </article>
+                <article>
+                  <i>♚</i>
+                  <div><strong>Socios</strong><span>Datos disponibles para usuario y administración</span></div>
+                  <b>{{clientes.length}}</b>
+                </article>
+                <article>
+                  <i>✦</i>
+                  <div><strong>Membresías</strong><span>Planes asignados y renovaciones</span></div>
+                  <b>{{membresiasCliente.length}}</b>
+                </article>
+                <article>
+                  <i>▦</i>
+                  <div><strong>Productos</strong><span>Catálogo e inventario sincronizado</span></div>
+                  <b>{{productos.length}}</b>
+                </article>
+                <article>
+                  <i>S/</i>
+                  <div><strong>Pagos</strong><span>Operaciones registradas</span></div>
+                  <b>{{pagos.length}}</b>
+                </article>
+                <article [class.warning]="totalAlertasDashboard()>0">
+                  <i>{{totalAlertasDashboard()>0 ? '!' : '✓'}}</i>
+                  <div><strong>Pendientes</strong><span>{{totalAlertasDashboard()>0 ? 'Hay tareas que requieren atención' : 'No hay alertas críticas'}}</span></div>
+                  <b>{{totalAlertasDashboard()}}</b>
+                </article>
+              </div>
+              <footer>Última sincronización: <strong>{{ultimaActualizacion || 'Pendiente'}}</strong></footer>
+            </section>
+
           </div>
 
           <aside class="mg-dashboard-side">
@@ -612,7 +612,7 @@ import { catchError, forkJoin, of } from 'rxjs';
               </header>
 
               <div class="mg-agenda-list">
-                <article *ngFor="let r of reservas.slice(0,6); let i=index">
+                <article *ngFor="let r of reservasHoyDashboard().slice(0,6); let i=index">
                   <i [class.dark]="i===4"></i>
                   <time>{{r.clase?.hora_inicio || '—'}}</time>
                   <div>
@@ -621,7 +621,7 @@ import { catchError, forkJoin, of } from 'rxjs';
                   </div>
                 </article>
 
-                <div class="mg-agenda-empty" *ngIf="!reservas.length">
+                <div class="mg-agenda-empty" *ngIf="!reservasHoyDashboard().length">
                   <i>◫</i><strong>Sin reservas registradas</strong><span>Las reservas reales aparecerán aquí cuando los socios agenden clases.</span>
                   <button type="button" (click)="cambiarSegcion('reservas')">Abrir agenda</button>
                 </div>
@@ -3918,6 +3918,20 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       next:(r:any)=>{this.ok(r?.mensaje||'Backup restaurado.');this.backupRestaurarArchivo=null;this.cargarDashboard();},
       error:e=>this.mostrarError(e)
     });
+  }
+
+  /** Agenda real del día: no mezcla reservas antiguas ni futuras. */
+  reservasHoyDashboard(): any[] {
+    const hoy = new Date();
+    const fechaHoy = [
+      hoy.getFullYear(),
+      String(hoy.getMonth() + 1).padStart(2, '0'),
+      String(hoy.getDate()).padStart(2, '0')
+    ].join('-');
+    return (this.reservas || [])
+      .filter((reserva: any) => String(reserva?.fecha_clase || '').slice(0, 10) === fechaHoy)
+      .sort((a: any, b: any) =>
+        String(a?.clase?.hora_inicio || '').localeCompare(String(b?.clase?.hora_inicio || '')));
   }
 
   diasActividadDashboard(): any[] {
