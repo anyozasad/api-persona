@@ -6,6 +6,7 @@ use App\Models\Usuario;
 use App\Services\JwtService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 
 class JwtAuthController extends Controller
@@ -21,10 +22,17 @@ class JwtAuthController extends Controller
             'contrasena' => 'required|string|max:100',
         ]);
 
-        $usuario = Usuario::query()
-            ->where('correo', trim($datos['login']))
-            ->orWhere('nombre_usuario', trim($datos['login']))
-            ->first();
+        $login = trim($datos['login']);
+        $consulta = Usuario::query();
+        if (Schema::hasColumn('usuarios', 'correo')) {
+            $consulta->where(function ($query) use ($login) {
+                $query->where('correo', $login)
+                    ->orWhere('nombre_usuario', $login);
+            });
+        } else {
+            $consulta->where('nombre_usuario', $login);
+        }
+        $usuario = $consulta->first();
 
         if (!$usuario || !Hash::check($datos['contrasena'], $usuario->contrasena)) {
             throw ValidationException::withMessages([
