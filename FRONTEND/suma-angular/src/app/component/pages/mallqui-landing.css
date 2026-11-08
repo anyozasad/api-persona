@@ -3685,3 +3685,40 @@ html{scroll-behavior:smooth}
   backdrop-filter:none !important;
   -webkit-backdrop-filter:none !important;
 }
+
+/* MALLQUI · FONDO OSCURO ELEGANTE · 2026-11-07 */
+/* Oscurecer las fotografías sin desenfocarlas ni mover la interfaz. */
+#inicio.mq-hero{
+  background-color:#141217 !important;
+}
+#inicio .mq-hero-overlay{
+  z-index:2 !important;
+  pointer-events:none !important;
+  background:
+    linear-gradient(90deg,
+      rgba(11,10,15,.52) 0%,
+      rgba(11,10,15,.36) 25%,
+      rgba(11,10,15,.38) 55%,
+      rgba(11,10,15,.49) 100%),
+    linear-gradient(180deg,
+      rgba(11,10,15,.13) 0%,
+      rgba(11,10,15,.08) 40%,
+      rgba(11,10,15,.34) 100%) !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+/* Conserva las fotos nítidas: la oscuridad viene de la capa superior. */
+#inicio .mq-hero-bg{
+  filter:contrast(1.05) saturate(1.07) brightness(1.01) !important;
+}
+#inicio .mq-hero-content{
+  z-index:3 !important;
+}
+#inicio .mq-hero h1,
+#inicio .mq-hero-sub{
+  text-shadow:0 5px 22px rgba(0,0,0,.58) !important;
+}
+/* Suavizar los acentos cálidos antiguos que iluminaban demasiado los bordes. */
+#inicio.mq-hero::before{
+  opacity:.22 !important;
+}
