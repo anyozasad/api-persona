@@ -242,7 +242,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.alturaIngresoKpi(100)).toBe(100);
     expect(component.alturaIngresoKpi(-5)).toBe(0);
     component.dashboard = null;
-    expect(component.alturaIngresoKpi(100)).toBe(100);
+    expect(component.alturaIngresoKpi(100)).toBe(0);
     expect(component.ingresosMensualesDashboard()).toEqual([]);
   });
 
