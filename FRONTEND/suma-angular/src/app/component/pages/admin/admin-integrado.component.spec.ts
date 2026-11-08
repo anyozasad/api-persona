@@ -213,4 +213,48 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(api.confirmarPagoPendiente).not.toHaveBeenCalled();
     expect(component.error).toContain('Abre Caja');
   });
+
+  it('inicia con dashboard expandido y diseño azul estilo Mantis', () => {
+    expect(component.navGroups.overview).toBeTrue();
+    expect(component.acentoDashboard).toBe('azul');
+    expect(component.modoDashboard).toBe('claro');
+  });
+
+  it('convierte un grupo del menu colapsado en un submenu accesible', () => {
+    component.sidebarCerrado = true;
+    component.navGroups.overview = false;
+
+    component.toggleNavGroup('overview');
+
+    expect(component.sidebarCerrado).toBeFalse();
+    expect(component.navGroups.overview).toBeTrue();
+  });
+
+  it('calcula las minigraficas de KPI solo con series reales', () => {
+    component.dashboard = { tendencias: { ingresos_6_meses: [
+      { mes: 'Sep', total: 25, membresias: 15, ventas: 10 },
+      { mes: 'Oct', total: 50, membresias: 30, ventas: 20 },
+      { mes: 'Nov', total: 100, membresias: 70, ventas: 30 }
+    ] }};
+    component.tipoIngresoDashboard = 'total';
+
+    expect(component.alturaIngresoKpi(25)).toBe(25);
+    expect(component.alturaIngresoKpi(100)).toBe(100);
+    expect(component.alturaIngresoKpi(-5)).toBe(0);
+    component.dashboard = null;
+    expect(component.alturaIngresoKpi(100)).toBe(0);
+    expect(component.ingresosMensualesDashboard()).toEqual([]);
+  });
+
+  it('abre los modulos reales desde la actividad reciente', () => {
+    expect(component.destinoActividadDashboard('reserva')).toBe('reservas');
+    expect(component.destinoActividadDashboard('pago')).toBe('pagos');
+    expect(component.destinoActividadDashboard('venta')).toBe('ventas');
+    expect(component.destinoActividadDashboard('rutina')).toBe('rutinas');
+    expect(component.destinoActividadDashboard('asistencia')).toBe('asistencias');
+    expect(component.destinoActividadDashboard('soporte')).toBe('soporte');
+    expect(component.destinoActividadDashboard('membresia')).toBe('membresias');
+    expect(component.destinoActividadDashboard('otro')).toBe('reportes-admin');
+    expect(component.iconoActividadDashboard('reserva')).toBe('◫');
+  });
 });
