@@ -42,6 +42,44 @@ class CrearAdminMallqui extends Command
             }
         }
 
+        // Las tablas usuarios antiguas pueden existir sin columnas de acceso.
+        // Prepararlas ANTES de solicitar datos evita perder tiempo en el formulario.
+        $columnasAcceso = [
+            'nombre_usuario', 'contrasena', 'correo', 'nombres', 'apellidos',
+            'dni', 'telefono', 'rol', 'estado', 'fecha_registro',
+            'id_cliente', 'id_entrenador',
+        ];
+        $faltantes = array_values(array_filter(
+            $columnasAcceso,
+            fn (string $columna) => !Schema::hasColumn('usuarios', $columna)
+        ));
+
+        if ($faltantes !== []) {
+            $this->warn('Preparando campos de usuarios existentes: '.implode(', ', $faltantes));
+            try {
+                $codigo = Artisan::call('migrate', [
+                    '--path' => 'database/migrations/2026_11_07_231000_ensure_usuarios_auth_fields.php',
+                    '--force' => true,
+                ]);
+                $salida = trim(Artisan::output());
+                if ($salida !== '') $this->line($salida);
+                if ($codigo !== 0) {
+                    $this->error('No se pudo completar el esquema de usuarios.');
+                    return self::FAILURE;
+                }
+
+                foreach ($columnasAcceso as $columna) {
+                    if (!Schema::hasColumn('usuarios', $columna)) {
+                        $this->error('Todavia falta la columna usuarios.'.$columna);
+                        return self::FAILURE;
+                    }
+                }
+            } catch (Throwable $e) {
+                $this->error('No se pudo preparar usuarios: '.$e->getMessage());
+                return self::FAILURE;
+            }
+        }
+
         $nombreUsuario = trim((string) $this->ask('Nombre de usuario', 'admin'));
         $nombres = trim((string) $this->ask('Nombres', 'Administrador'));
         $apellidos = trim((string) $this->ask('Apellidos', 'Sistema'));
