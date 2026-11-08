@@ -1,0 +1,574 @@
+/* MALLQUI GYM — panel administrativo 2026-11.
+   Capa final de presentación. No cambia eventos, consultas ni módulos. */
+.admin-shell.admin-home-redesign{
+  --mg-sidebar:252px;
+  --mg-topbar:88px;
+  --mg-polish-ink:#17202a;
+  --mg-polish-muted:#677484;
+  --mg-polish-line:#e7ebf0;
+  --mg-polish-accent:#ff6652;
+  --mg-polish-bg:#f5f7fa;
+  --mg-polish-shadow:0 6px 24px rgba(19,32,44,.045);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif!important;
+  background:var(--mg-polish-bg)!important;
+  color:var(--mg-polish-ink)!important;
+}
+.admin-shell.admin-home-redesign *,
+.admin-shell.admin-home-redesign *::before,
+.admin-shell.admin-home-redesign *::after{box-sizing:border-box}
+.admin-shell.admin-home-redesign button,
+.admin-shell.admin-home-redesign input,
+.admin-shell.admin-home-redesign select{
+  font-family:inherit!important;
+}
+.admin-shell.admin-home-redesign button:focus-visible,
+.admin-shell.admin-home-redesign a:focus-visible,
+.admin-shell.admin-home-redesign input:focus-visible{
+  outline:3px solid rgba(255,102,82,.55)!important;
+  outline-offset:2px!important;
+}
+/* Mantener cabecera y menú visibles mientras se recorre el dashboard. */
+.admin-shell.admin-home-redesign>.mg-current-topbar{
+  position:fixed!important;
+  top:0!important;
+  left:var(--mg-sidebar)!important;
+  right:0!important;
+  width:auto!important;
+  height:var(--mg-topbar)!important;
+  min-height:var(--mg-topbar)!important;
+  display:grid!important;
+  grid-template-columns:minmax(220px,1fr) minmax(260px,400px) 46px 46px!important;
+  gap:14px!important;
+  align-items:center!important;
+  padding:15px 32px!important;
+  border-bottom:1px solid var(--mg-polish-line)!important;
+  background:rgba(255,255,255,.98)!important;
+  box-shadow:0 3px 18px rgba(24,36,48,.045)!important;
+  z-index:3100!important;
+}
+.admin-shell.admin-home-redesign>.mg-current-sidebar{
+  position:fixed!important;
+  inset:0 auto 0 0!important;
+  width:var(--mg-sidebar)!important;
+  height:100dvh!important;
+  padding:22px 15px 16px!important;
+  background:#14191f!important;
+  border-right:1px solid #303740!important;
+  z-index:3200!important;
+}
+.admin-shell.admin-home-redesign>.mg-current-content{
+  grid-column:2!important;
+  grid-row:2!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:23px 30px 52px!important;
+  background:var(--mg-polish-bg)!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace{min-width:0!important;max-width:100%!important}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-brand{
+  min-height:58px!important;
+  margin-bottom:18px!important;
+  padding:2px 12px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-brand-icon,
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-brand b{
+  color:var(--mg-polish-accent)!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .crossfit-sidebar-nav{
+  gap:3px!important;
+  scrollbar-color:#47505b transparent!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .crossfit-sidebar-nav button{
+  min-height:45px!important;
+  padding:7px 11px!important;
+  gap:10px!important;
+  border-radius:10px!important;
+  color:#d0d7df!important;
+  transition:background .15s ease,color .15s ease!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .crossfit-sidebar-nav button>span:nth-child(2){
+  font-size:13px!important;
+  font-weight:500!important;
+  color:inherit!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .crossfit-sidebar-nav .cf-nav-group-head>span:nth-child(2){
+  font-size:12px!important;
+  font-weight:650!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .crossfit-sidebar-nav button:hover{
+  background:#252d36!important;
+  color:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .crossfit-sidebar-nav button.active{
+  background:#303039!important;
+  color:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .crossfit-sidebar-nav button.active::before{
+  background:var(--mg-polish-accent)!important;
+  left:-15px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .cf-nav-children{
+  margin:2px 0 6px 17px!important;
+  padding:4px 0 4px 10px!important;
+  border-left-color:#414851!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .cf-nav-children button{
+  min-height:36px!important;
+  padding:6px 9px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .cf-nav-children button>span:nth-child(2){
+  font-size:12px!important;
+  font-weight:450!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-sidebar-bottom{
+  gap:2px!important;
+  padding-top:12px!important;
+  border-top:1px solid #353b43!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-sidebar-bottom button{
+  min-height:43px!important;
+  color:#d0d7df!important;
+  border-radius:9px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-sidebar-bottom button b{
+  font-size:13px!important;
+  font-weight:500!important;
+}
+.admin-shell.admin-home-redesign .mg-top-greeting h1{
+  font-size:23px!important;
+  font-weight:750!important;
+  color:var(--mg-polish-ink)!important;
+}
+.admin-shell.admin-home-redesign .mg-top-greeting span{
+  font-size:12px!important;
+  color:var(--mg-polish-muted)!important;
+}
+.admin-shell.admin-home-redesign .admin-wix-search{
+  height:45px!important;
+  border:1px solid var(--mg-polish-line)!important;
+  background:#f8fafb!important;
+  border-radius:12px!important;
+}
+.admin-shell.admin-home-redesign .admin-wix-search input{
+  font-size:13px!important;
+}
+.admin-shell.admin-home-redesign .admin-top-user{
+  color:#fff!important;
+  background:#202630!important;
+  border-color:#202630!important;
+}
+.admin-shell.admin-home-redesign .mg-notification{
+  border-color:#e2e7eb!important;
+  background:#fff!important;
+}
+/* Una composición equilibrada: contenido principal + agenda lateral. */
+.admin-shell.admin-home-redesign .mg-dashboard{
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(270px,305px)!important;
+  align-items:start!important;
+  gap:22px!important;
+  background:transparent!important;
+  padding:0!important;
+}
+.admin-shell.admin-home-redesign .mg-dashboard-main{min-width:0!important;display:block!important}
+.admin-shell.admin-home-redesign .mg-dashboard-side{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:16px!important;
+  padding:0!important;
+  border:0!important;
+}
+.admin-shell.admin-home-redesign .mg-section-heading{
+  min-height:58px!important;
+  margin:2px 0 8px!important;
+  align-items:center!important;
+}
+.admin-shell.admin-home-redesign .mg-section-heading h2{
+  font-size:21px!important;
+  color:var(--mg-polish-ink)!important;
+  letter-spacing:-.4px!important;
+}
+.admin-shell.admin-home-redesign .mg-section-heading p{
+  font-size:12px!important;
+  line-height:1.5!important;
+  color:var(--mg-polish-muted)!important;
+}
+.admin-shell.admin-home-redesign .mg-section-heading>button{
+  font-size:12px!important;
+  font-weight:600!important;
+  color:#596575!important;
+}
+.admin-shell.admin-home-redesign .mg-section-heading>button:hover{color:#e5503d!important}
+.admin-shell.admin-home-redesign .mg-professor-actions,
+.admin-shell.admin-home-redesign .mg-sync-panel,
+.admin-shell.admin-home-redesign .mg-chart-card,
+.admin-shell.admin-home-redesign .mg-trainer-card,
+.admin-shell.admin-home-redesign .mg-agenda,
+.admin-shell.admin-home-redesign .mg-mini-routine{
+  border:1px solid var(--mg-polish-line)!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-shadow:var(--mg-polish-shadow)!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-actions{
+  padding:20px!important;
+  margin:0 0 17px!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-actions header span{
+  color:#df5947!important;
+  font-size:10px!important;
+  font-weight:750!important;
+  letter-spacing:1px!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-actions header h2{
+  font-size:20px!important;
+  color:var(--mg-polish-ink)!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-actions header p{
+  color:var(--mg-polish-muted)!important;
+  font-size:12px!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid>button{
+  min-height:86px!important;
+  grid-template-columns:46px minmax(0,1fr) 14px!important;
+  padding:14px!important;
+  border-radius:12px!important;
+  border:1px solid #e8ecf0!important;
+  background:#fbfcfd!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid i{
+  width:43px!important;height:43px!important;
+  border-radius:10px!important;
+  background:#fff0eb!important;
+  color:#df5947!important;
+  font-size:20px!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid strong{
+  font-size:14px!important;
+  color:#242a32!important;
+}
+.admin-shell.admin-home-redesign .mg-professor-action-grid span{
+  font-size:11px!important;
+  line-height:1.45!important;
+  color:#718091!important;
+}
+/* Alertas reales: visibles sin estética de error permanente. */
+.admin-shell.admin-home-redesign .mg-expiry-alert{
+  min-height:105px!important;
+  margin:0 0 17px!important;
+  padding:17px 20px!important;
+  background:#fff!important;
+  border:1px solid var(--mg-polish-line)!important;
+  border-left:4px solid #8bbd78!important;
+  border-radius:14px!important;
+  box-shadow:var(--mg-polish-shadow)!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-alert.has-warning{
+  border-left-color:#eaa148!important;
+  background:#fffaf3!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-icon{
+  background:#edf6ea!important;color:#447b3b!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-copy small{
+  font-size:10px!important;
+  color:#698167!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-copy h3{
+  font-size:16px!important;
+  color:var(--mg-polish-ink)!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-copy p{
+  font-size:12px!important;
+  color:var(--mg-polish-muted)!important;
+  line-height:1.5!important;
+}
+.admin-shell.admin-home-redesign .mg-expiry-alert>button{
+  min-height:41px!important;
+  padding:0 15px!important;
+  border-radius:9px!important;
+  font-size:12px!important;
+  color:#fff!important;
+  background:#252c33!important;
+}
+/* Información de sincronización con números y avisos legibles. */
+.admin-shell.admin-home-redesign .mg-sync-panel{
+  padding:21px!important;
+  margin:0 0 22px!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel>header{
+  align-items:flex-start!important;
+  margin-bottom:17px!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel>header small{
+  font-size:10px!important;
+  color:#bd6251!important;
+  letter-spacing:.9px!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel>header h2{
+  font-size:19px!important;
+  line-height:1.3!important;
+  color:var(--mg-polish-ink)!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel>header p{
+  font-size:12px!important;
+  color:var(--mg-polish-muted)!important;
+  line-height:1.5!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel>header button{
+  min-height:39px!important;
+  padding:0 15px!important;
+  font-size:12px!important;
+  font-weight:650!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  border:1px solid #dfe5eb!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article{
+  min-height:98px!important;
+  grid-template-columns:46px minmax(0,1fr) auto!important;
+  gap:11px!important;
+  padding:16px!important;
+  background:#fafbfd!important;
+  border:1px solid #e6ebef!important;
+  border-radius:12px!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article>i{
+  width:44px!important;height:44px!important;
+  font-size:17px!important;
+  border-radius:11px!important;
+  color:#495562!important;
+  background:#edf1f5!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article strong{
+  font-size:13px!important;
+  color:#202932!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article span{
+  font-size:11px!important;
+  line-height:1.45!important;
+  color:#728093!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article>b{
+  font-size:20px!important;
+  font-weight:750!important;
+  color:#1e2b36!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-grid article.warning{
+  border-color:#f2d9d0!important;
+  background:#fff8f5!important;
+}
+.admin-shell.admin-home-redesign .mg-sync-panel>footer{
+  margin-top:15px!important;
+  padding-top:13px!important;
+  font-size:11px!important;
+  color:#728093!important;
+}
+/* Vacíos de rutinas/reservas son estados, no fallos ni fotos faltantes. */
+.admin-shell.admin-home-redesign .mg-dashboard-empty{
+  min-height:188px!important;
+  padding:25px!important;
+  border:1px dashed #d6dfe7!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  gap:22px!important;
+}
+.admin-shell.admin-home-redesign .mg-dashboard-empty>div{gap:7px!important}
+.admin-shell.admin-home-redesign .mg-dashboard-empty i{
+  width:46px!important;height:46px!important;font-size:20px!important;
+  background:#fff0e9!important;
+}
+.admin-shell.admin-home-redesign .mg-dashboard-empty h3{
+  font-size:18px!important;
+  color:#293540!important;
+}
+.admin-shell.admin-home-redesign .mg-dashboard-empty p{
+  font-size:12px!important;
+  color:#738194!important;
+  line-height:1.5!important;
+}
+.admin-shell.admin-home-redesign .mg-dashboard-empty button{
+  min-height:42px!important;
+  padding:0 19px!important;
+  border-radius:10px!important;
+  font-size:12px!important;
+  color:#fff!important;
+  background:#222a32!important;
+  white-space:nowrap!important;
+}
+/* KPI: 4 tarjetas iguales, números bien visibles, sin "..." decorativos. */
+.admin-shell.admin-home-redesign .mg-results{margin-top:22px!important}
+.admin-shell.admin-home-redesign .mg-result-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:13px!important;
+}
+.admin-shell.admin-home-redesign .mg-result-grid>button{
+  min-height:109px!important;
+  grid-template-columns:52px minmax(0,1fr)!important;
+  gap:13px!important;
+  padding:19px!important;
+  border:1px solid var(--mg-polish-line)!important;
+  border-radius:13px!important;
+  box-shadow:var(--mg-polish-shadow)!important;
+}
+.admin-shell.admin-home-redesign .mg-result-grid i{
+  width:50px!important;
+  height:50px!important;
+  font-size:21px!important;
+  border-radius:12px!important;
+}
+.admin-shell.admin-home-redesign .mg-result-grid i.lime{background:#fff0ea!important;color:#cc503b!important}
+.admin-shell.admin-home-redesign .mg-result-grid i.blue{background:#eef5fd!important;color:#477aaf!important}
+.admin-shell.admin-home-redesign .mg-result-grid i.pink{background:#f3efff!important;color:#8769b9!important}
+.admin-shell.admin-home-redesign .mg-result-grid strong{
+  font-size:26px!important;
+  color:#202a35!important;
+  font-weight:760!important;
+}
+.admin-shell.admin-home-redesign .mg-result-grid span{
+  font-size:12px!important;
+  color:#728093!important;
+}
+.admin-shell.admin-home-redesign .mg-result-grid em{display:none!important}
+.admin-shell.admin-home-redesign .mg-chart-grid{grid-template-columns:1fr!important;gap:15px!important}
+.admin-shell.admin-home-redesign .mg-chart-card{
+  min-height:265px!important;
+  padding:19px 21px!important;
+}
+.admin-shell.admin-home-redesign .mg-chart-card header h3{font-size:15px!important;color:#26333e!important}
+.admin-shell.admin-home-redesign .mg-chart-card header>div{font-size:11px!important;color:#6b7a89!important}
+.admin-shell.admin-home-redesign .mg-bars>div>span{font-size:11px!important}
+.admin-shell.admin-home-redesign .mg-donut-legend p{font-size:11px!important}
+.admin-shell.admin-home-redesign .mg-donut-legend b{font-size:11px!important}
+.admin-shell.admin-home-redesign .mg-donut span{font-size:11px!important}
+.admin-shell.admin-home-redesign .mg-range{font-size:12px!important}
+/* Lateral limpio: agenda y entrenador claramente separados. */
+.admin-shell.admin-home-redesign .mg-trainer-card{padding:17px!important}
+.admin-shell.admin-home-redesign .mg-trainer-head strong{
+  font-size:13px!important;
+  color:#23303d!important;
+}
+.admin-shell.admin-home-redesign .mg-trainer-head span{
+  font-size:11px!important;
+  color:#748393!important;
+}
+.admin-shell.admin-home-redesign .mg-trainer-card>h3{font-size:14px!important}
+.admin-shell.admin-home-redesign .mg-trainer-card>small{font-size:11px!important}
+.admin-shell.admin-home-redesign .mg-mini-routine{padding:13px!important}
+.admin-shell.admin-home-redesign .mg-mini-routine strong{font-size:12px!important}
+.admin-shell.admin-home-redesign .mg-mini-routine span{font-size:11px!important}
+.admin-shell.admin-home-redesign .mg-agenda{padding:17px!important}
+.admin-shell.admin-home-redesign .mg-agenda h2{
+  font-size:18px!important;
+  color:#23303d!important;
+}
+.admin-shell.admin-home-redesign .mg-agenda header button{font-size:12px!important}
+.admin-shell.admin-home-redesign .mg-agenda-empty{
+  min-height:205px!important;
+  padding:20px 16px!important;
+  gap:9px!important;
+  background:#fafbfd!important;
+  border-color:#dce4ea!important;
+  border-radius:12px!important;
+}
+.admin-shell.admin-home-redesign .mg-agenda-empty strong{font-size:13px!important;color:#34404a!important}
+.admin-shell.admin-home-redesign .mg-agenda-empty span{
+  font-size:11px!important;
+  line-height:1.5!important;
+}
+.admin-shell.admin-home-redesign .mg-agenda-empty button{
+  min-height:38px!important;
+  padding:0 14px!important;
+  border-radius:9px!important;
+  background:#222a32!important;
+  color:#fff!important;
+  font-size:11px!important;
+}
+/* Estilo de los demás módulos sin tocar su lógica ni formularios. */
+.admin-shell.admin-home-redesign .mg-module-shell-head{
+  border-radius:14px!important;
+  background:#fff!important;
+  border:1px solid var(--mg-polish-line)!important;
+  box-shadow:var(--mg-polish-shadow)!important;
+}
+.admin-shell.admin-home-redesign .mg-module-shell-head h2{font-size:25px!important}
+.admin-shell.admin-home-redesign .mg-module-shell-head p{font-size:13px!important}
+.admin-shell.admin-home-redesign .mg-module-tabs button{font-size:12px!important}
+.admin-shell.admin-home-redesign .management-table,
+.admin-shell.admin-home-redesign .mg-business-table{font-size:12px!important}
+@media(min-width:1550px){
+  .admin-shell.admin-home-redesign .mg-dashboard{grid-template-columns:minmax(0,1fr) 315px!important}
+}
+@media(max-width:1270px){
+  .admin-shell.admin-home-redesign{--mg-sidebar:222px}
+  .admin-shell.admin-home-redesign>.mg-current-topbar{
+    grid-template-columns:minmax(190px,1fr) minmax(220px,330px) 42px 42px!important;
+    padding:13px 22px!important;
+  }
+  .admin-shell.admin-home-redesign>.mg-current-content{padding:22px 20px 45px!important}
+  .admin-shell.admin-home-redesign .mg-dashboard{grid-template-columns:minmax(0,1fr) 270px!important;gap:16px!important}
+  .admin-shell.admin-home-redesign .mg-sync-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:1050px){
+  .admin-shell.admin-home-redesign{--mg-sidebar:204px}
+  .admin-shell.admin-home-redesign .mg-dashboard{grid-template-columns:1fr!important}
+  .admin-shell.admin-home-redesign .mg-dashboard-side{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:15px!important;
+  }
+  .admin-shell.admin-home-redesign .mg-agenda{grid-column:1/-1!important}
+  .admin-shell.admin-home-redesign .mg-sync-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .admin-shell.admin-home-redesign>.mg-current-topbar{grid-template-columns:minmax(165px,1fr) 40px 40px!important}
+  .admin-shell.admin-home-redesign .admin-wix-search{display:none!important}
+}
+@media(max-width:930px) and (min-width:701px){
+  .admin-shell.admin-home-redesign{--mg-sidebar:78px}
+  .admin-shell.admin-home-redesign>.mg-current-sidebar .crossfit-sidebar-nav button>span:nth-child(2),
+  .admin-shell.admin-home-redesign>.mg-current-sidebar .crossfit-sidebar-nav .cf-nav-group-head>i,
+  .admin-shell.admin-home-redesign>.mg-current-sidebar .cf-nav-children,
+  .admin-shell.admin-home-redesign>.mg-current-sidebar .mg-sidebar-bottom button b{display:none!important}
+}
+@media(max-width:700px){
+  .admin-shell.admin-home-redesign{display:block!important;--mg-topbar:76px}
+  .admin-shell.admin-home-redesign>.mg-current-sidebar{display:none!important}
+  .admin-shell.admin-home-redesign>.mg-current-topbar{
+    position:sticky!important;top:0!important;left:0!important;right:0!important;
+    width:100%!important;height:76px!important;min-height:76px!important;
+    grid-template-columns:minmax(0,1fr) 40px!important;
+    padding:10px 14px!important;
+  }
+  .admin-shell.admin-home-redesign>.mg-current-content{
+    width:100%!important;padding:16px 12px 30px!important;
+  }
+  .admin-shell.admin-home-redesign .mg-top-greeting h1{font-size:18px!important}
+  .admin-shell.admin-home-redesign .mg-dashboard{display:grid!important;grid-template-columns:1fr!important;gap:18px!important}
+  .admin-shell.admin-home-redesign .mg-dashboard-side{grid-template-columns:1fr!important}
+  .admin-shell.admin-home-redesign .mg-professor-action-grid,
+  .admin-shell.admin-home-redesign .mg-sync-grid,
+  .admin-shell.admin-home-redesign .mg-result-grid{grid-template-columns:1fr!important}
+  .admin-shell.admin-home-redesign .mg-expiry-alert{grid-template-columns:42px minmax(0,1fr)!important}
+  .admin-shell.admin-home-redesign .mg-expiry-alert>button{grid-column:1/-1!important;width:100%!important}
+  .admin-shell.admin-home-redesign .mg-dashboard-empty{flex-direction:column!important;align-items:flex-start!important}
+  .admin-shell.admin-home-redesign .mg-dashboard-empty button{width:100%!important}
+  .admin-shell.admin-home-redesign .mg-section-heading h2{font-size:19px!important}
+  .admin-shell.admin-home-redesign .admin-mobile-modules{display:flex!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .admin-shell.admin-home-redesign .mg-professor-action-grid>button,
+  .admin-shell.admin-home-redesign .mg-result-grid>button{transition:none!important;transform:none!important}
+}
