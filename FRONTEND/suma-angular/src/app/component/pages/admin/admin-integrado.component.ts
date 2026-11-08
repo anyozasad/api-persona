@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -14,36 +14,124 @@ import { catchError, forkJoin, of } from 'rxjs';
   selector: 'app-admin-integrado',
   standalone: true,
   imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminGymSuiteComponent],
-  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css', '../crossfit-final.css', './admin-dashboard-polish.css', './admin-dashboard-premium.css'],
+  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css', '../crossfit-final.css', './admin-dashboard-polish.css', './admin-dashboard-premium.css', './admin-mantis-interactions.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
-  <div class="admin-shell admin-home-redesign" [class.admin-sidebar-collapsed]="sidebarCerrado">
+  <div class="admin-shell admin-home-redesign" [class.admin-sidebar-collapsed]="sidebarCerrado" [class.mg-mantis-collapsed]="sidebarCerrado" [class.mg-mantis-dark]="modoDashboard==='oscuro'" [class.mg-mantis-compact]="densidadDashboard==='compacta'" [class.mg-mantis-blue]="acentoDashboard==='azul'" [class.mg-mantis-green]="acentoDashboard==='verde'">
     <header class="mg-current-topbar">
-      <div class="mg-top-greeting">
-        <h1>Hola, {{auth.usuario?.nombre_usuario || 'Administrador'}}!</h1>
-        <span>{{fechaDashboard}}</span>
+      <div class="mg-mantis-identity">
+        <button type="button" class="mg-mantis-icon-button mg-mantis-nav-toggle" (click)="toggleSidebar()"
+          [attr.aria-label]="sidebarCerrado ? 'Expandir menú' : 'Contraer menú'" [attr.title]="sidebarCerrado ? 'Expandir menú' : 'Contraer menú'">☰</button>
+        <div class="mg-top-greeting">
+          <h1>Hola, {{auth.usuario?.nombre_usuario || 'Administrador'}}!</h1>
+          <span>{{fechaDashboard}}</span>
+        </div>
       </div>
 
-      <label class="admin-wix-search">
-        <span>⌕</span>
-        <input
-          type="text"
-          [(ngModel)]="busquedaAdmin"
-          (keydown.enter)="buscarEnPanel()"
-          placeholder="Buscar socios, rutinas o noticias..."
-          aria-label="Buscar en el panel">
-      </label>
+      <div class="mg-mantis-search-wrap">
+        <label class="admin-wix-search">
+          <span>⌕</span>
+          <input type="text" [(ngModel)]="busquedaAdmin"
+            (focus)="abrirBuscadorMantis()"
+            (keydown.enter)="buscarEnPanel(); cerrarMenusMantis()"
+            placeholder="Buscar módulos y funciones..." aria-label="Buscar módulo del panel"
+            autocomplete="off">
+          <kbd>↵</kbd>
+        </label>
+        <div *ngIf="busquedaAbierta" class="mg-mantis-search-results" role="listbox" aria-label="Módulos disponibles">
+          <div class="mg-mantis-dropdown-title">ACCESO RÁPIDO</div>
+          <button type="button" *ngFor="let modulo of accesosRapidosDashboard" (click)="irAAccesoRapido(modulo.id)"
+            role="option" [attr.aria-selected]="seccion===modulo.id">
+            <span>↗</span><strong>{{modulo.nombre}}</strong><small>Abrir módulo</small>
+          </button>
+          <p *ngIf="!accesosRapidosDashboard.length">No hay coincidencias. Prueba con socios, pagos, inventario o reservas.</p>
+        </div>
+      </div>
 
-      <button type="button" class="mg-notification" (click)="abrirAlertasDashboard()" title="Notificaciones">
-        ♧
-        <i *ngIf="totalAlertasDashboard()>0"></i>
-      </button>
+      <div class="mg-mantis-top-actions">
+        <button type="button" class="mg-mantis-icon-button" (click)="actualizarDashboardCompleto()"
+          [disabled]="actualizandoDatos" aria-label="Actualizar información" title="Actualizar información">↻</button>
+        <button type="button" class="mg-mantis-icon-button" (click)="exportarDashboardCsv()"
+          aria-label="Exportar resumen del dashboard" title="Exportar resumen a CSV">⇩</button>
+        <button type="button" class="mg-mantis-icon-button" (click)="abrirPersonalizadorMantis()"
+          aria-label="Personalizar apariencia" title="Personalizar apariencia">⚙</button>
+        <button type="button" class="mg-mantis-icon-button mg-mantis-bell"
+          (click)="alternarAlertasMantis()" [attr.aria-expanded]="avisosAbiertos"
+          aria-label="Notificaciones y pendientes" title="Notificaciones">
+          ♧ <i *ngIf="totalAlertasDashboard()>0"></i>
+        </button>
+        <button type="button" class="mg-mantis-profile-button"
+          (click)="alternarPerfilMantis()" [attr.aria-expanded]="perfilAbiertoMantis"
+          aria-label="Opciones de la cuenta" title="Opciones de la cuenta">
+          {{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}
+        </button>
+      </div>
 
-      <button type="button" class="admin-top-user" (click)="cambiarSegcion('configuracion')" title="Mi perfil y configuración">
-        {{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}
-      </button>
+      <div *ngIf="avisosAbiertos" class="mg-mantis-dropdown mg-mantis-alerts" role="region" aria-label="Notificaciones">
+        <div class="mg-mantis-dropdown-heading">
+          <strong>Notificaciones</strong>
+          <button type="button" (click)="cerrarMenusMantis()" aria-label="Cerrar notificaciones">×</button>
+        </div>
+        <p class="mg-mantis-dropdown-subtitle">{{totalAlertasDashboard()}} pendientes registrados</p>
+        <button type="button" *ngFor="let aviso of alertasRapidasDashboard" (click)="irAAccesoRapido(aviso.id)">
+          <span class="mg-mantis-alert-icon">{{aviso.icono}}</span>
+          <span><strong>{{aviso.nombre}}</strong><small>{{aviso.cantidad}} pendientes · Abrir módulo</small></span>
+          <b>›</b>
+        </button>
+        <p *ngIf="!alertasRapidasDashboard.length" class="mg-mantis-no-alerts">Sin pendientes registrados por el sistema.</p>
+        <button type="button" class="mg-mantis-dropdown-footer" (click)="irAAccesoRapido('comunicacion')">Ver todas las notificaciones ›</button>
+      </div>
+
+      <div *ngIf="perfilAbiertoMantis" class="mg-mantis-dropdown mg-mantis-profile-dropdown" role="region" aria-label="Perfil del administrador">
+        <div class="mg-mantis-dropdown-heading">
+          <strong>Mi cuenta</strong>
+          <button type="button" (click)="cerrarMenusMantis()" aria-label="Cerrar perfil">×</button>
+        </div>
+        <p class="mg-mantis-dropdown-subtitle">{{auth.usuario?.nombre_usuario || 'Administrador'}} · Administrador</p>
+        <button type="button" (click)="irAAccesoRapido('configuracion')">⚙ Configuración y contraseña</button>
+        <button type="button" (click)="irAAccesoRapido('auditoria')">▤ Historial de actividad</button>
+        <button type="button" (click)="cerrarMenusMantis(); cerrarSesion()">↪ Cerrar sesión</button>
+      </div>
     </header>
+    <button *ngIf="busquedaAbierta || avisosAbiertos || perfilAbiertoMantis" type="button"
+      class="mg-mantis-dismiss" aria-label="Cerrar desplegables" (click)="cerrarMenusMantis()"></button>
 
+    <div *ngIf="personalizadorAbierto" class="mg-mantis-drawer-overlay">
+      <button type="button" class="mg-mantis-drawer-backdrop" (click)="personalizadorAbierto=false" aria-label="Cerrar personalizador"></button>
+      <aside class="mg-mantis-drawer" role="dialog" aria-modal="true" aria-label="Personalizar dashboard">
+        <header>
+          <div><small>APARIENCIA</small><h2>Personalizar panel</h2><p>Los cambios se guardan en este navegador.</p></div>
+          <button type="button" (click)="personalizadorAbierto=false" aria-label="Cerrar personalizador">×</button>
+        </header>
+        <section>
+          <h3>Tema</h3>
+          <div class="mg-mantis-setting-row">
+            <button type="button" [class.active]="modoDashboard==='claro'" (click)="guardarAparienciaMantis('tema','claro')">☀ Claro</button>
+            <button type="button" [class.active]="modoDashboard==='oscuro'" (click)="guardarAparienciaMantis('tema','oscuro')">☾ Oscuro</button>
+          </div>
+        </section>
+        <section>
+          <h3>Color principal</h3>
+          <div class="mg-mantis-setting-row">
+            <button type="button" [class.active]="acentoDashboard==='coral'" (click)="guardarAparienciaMantis('color','coral')">● Coral</button>
+            <button type="button" [class.active]="acentoDashboard==='azul'" (click)="guardarAparienciaMantis('color','azul')">● Azul</button>
+            <button type="button" [class.active]="acentoDashboard==='verde'" (click)="guardarAparienciaMantis('color','verde')">● Verde</button>
+          </div>
+        </section>
+        <section>
+          <h3>Espaciado</h3>
+          <div class="mg-mantis-setting-row">
+            <button type="button" [class.active]="densidadDashboard==='normal'" (click)="guardarAparienciaMantis('densidad','normal')">Cómodo</button>
+            <button type="button" [class.active]="densidadDashboard==='compacta'" (click)="guardarAparienciaMantis('densidad','compacta')">Compacto</button>
+          </div>
+        </section>
+        <section>
+          <h3>Menú lateral</h3>
+          <button type="button" class="mg-mantis-setting-wide" (click)="toggleSidebar()">{{sidebarCerrado ? 'Expandir menú' : 'Contraer menú'}}</button>
+        </section>
+        <footer><button type="button" (click)="restablecerAparienciaMantis()">Restablecer apariencia</button></footer>
+      </aside>
+    </div>
     <aside class="mg-current-sidebar">
       <button type="button" class="mg-brand" (click)="cambiarSegcion('dashboard')" aria-label="Ir al inicio">
         <span class="mg-brand-icon">↔</span>
@@ -408,9 +496,14 @@ import { catchError, forkJoin, of } from 'rxjs';
               <div class="mg-premium-analytics-grid">
                 <article class="mg-premium-card mg-revenue-card">
                   <header><div><span>RENDIMIENTO FINANCIERO</span><h3>Ingresos de los últimos 6 meses</h3></div><i>S/</i></header>
+                  <div class="mg-mantis-chart-switch" role="group" aria-label="Tipo de ingresos">
+                    <button type="button" [class.active]="tipoIngresoDashboard==='total'" (click)="tipoIngresoDashboard='total'">Total</button>
+                    <button type="button" [class.active]="tipoIngresoDashboard==='membresias'" (click)="tipoIngresoDashboard='membresias'">Membresías</button>
+                    <button type="button" [class.active]="tipoIngresoDashboard==='ventas'" (click)="tipoIngresoDashboard='ventas'">Ventas</button>
+                  </div>
                   <div class="mg-revenue-overview">
-                    <strong>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</strong>
-                    <span>Mes actual</span>
+                    <strong>S/ {{totalIngresoMesSeleccionado() | number:'1.2-2'}}</strong>
+                    <span>{{nombreIngresoSeleccionado}} · Mes actual</span>
                   </div>
                   <div class="mg-revenue-chart" *ngIf="ingresosMensualesDashboard().length; else sinDatosIngresos">
                     <svg viewBox="0 0 720 245" preserveAspectRatio="none" role="img" aria-label="Evolución de ingresos mensuales en soles">
@@ -2810,6 +2903,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     try{
       this.sidebarCerrado = localStorage.getItem('mallqui_admin_sidebar_closed') === '1';
       this.autoRefreshActivo = localStorage.getItem('mallqui_admin_auto_refresh') !== '0';
+      const tema=localStorage.getItem('mallqui_mantis_tema');
+      const color=localStorage.getItem('mallqui_mantis_color');
+      const densidad=localStorage.getItem('mallqui_mantis_densidad');
+      if(tema==='claro'||tema==='oscuro') this.modoDashboard=tema;
+      if(color==='coral'||color==='azul'||color==='verde') this.acentoDashboard=color;
+      if(densidad==='normal'||densidad==='compacta') this.densidadDashboard=densidad;
     }catch{
       this.sidebarCerrado = false;
       this.autoRefreshActivo = true;
@@ -3214,13 +3313,113 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     return Math.max(0,Math.min(100,Math.round((valor/total)*1000)/10));
   }
 
+  tipoIngresoDashboard: 'total'|'membresias'|'ventas' = 'total';
+  modoDashboard: 'claro'|'oscuro' = 'claro';
+  densidadDashboard: 'normal'|'compacta' = 'normal';
+  acentoDashboard: 'coral'|'azul'|'verde' = 'coral';
+  personalizadorAbierto = false;
+  avisosAbiertos = false;
+  perfilAbiertoMantis = false;
+  busquedaAbierta = false;
+
+  get nombreIngresoSeleccionado():string{
+    return this.tipoIngresoDashboard==='ventas' ? 'Ventas' : this.tipoIngresoDashboard==='membresias' ? 'Membresías' : 'Total';
+  }
+
+  totalIngresoMesSeleccionado():number{
+    const ingreso=this.dashboard?.ingresos || {};
+    const valor=this.tipoIngresoDashboard==='ventas'
+      ? ingreso.ventas_mes : this.tipoIngresoDashboard==='membresias'
+        ? ingreso.membresias_mes : ingreso.total_mes;
+    return Number.isFinite(Number(valor)) ? Number(valor) : 0;
+  }
+
   ingresosMensualesDashboard(): {mes:string,total:number}[]{
     const datos=this.dashboard?.tendencias?.ingresos_6_meses;
     if(!Array.isArray(datos)) return [];
     return datos.slice(-6).map((item:any)=>({
       mes:String(item?.mes||'Mes'),
-      total:Math.max(0,Number(item?.total)||0)
+      total:Math.max(0,Number(item?.[this.tipoIngresoDashboard])||0)
     }));
+  }
+
+  get accesosRapidosDashboard():Array<{id:string,nombre:string}>{
+    const query=this.busquedaAdmin.trim().toLocaleLowerCase('es-PE');
+    return Object.entries(this.titulos)
+      .filter(([id,info])=>!query || id.toLowerCase().includes(query) || info[0].toLocaleLowerCase('es-PE').includes(query))
+      .slice(0,8)
+      .map(([id,info])=>({id,nombre:info[0]}));
+  }
+
+  get alertasRapidasDashboard():Array<{id:string,nombre:string,cantidad:number,icono:string}>{
+    const d=this.dashboard || {};
+    return [
+      {id:'renovaciones',nombre:'Membresías por vencer',cantidad:Number(d?.membresias?.por_vencer_7_dias||0),icono:'◷'},
+      {id:'pagos',nombre:'Pagos pendientes',cantidad:Number(d?.membresias?.pagos_pendientes||0),icono:'S/'},
+      {id:'inventario',nombre:'Stock bajo',cantidad:Number(d?.inventario?.productos_stock_bajo||0),icono:'▣'},
+      {id:'rutinas',nombre:'Rutinas pendientes',cantidad:Number(d?.alertas?.rutinas_pendientes||0),icono:'🏋'},
+      {id:'soporte',nombre:'Solicitudes de soporte',cantidad:Number(d?.alertas?.soporte_pendiente||0),icono:'✉'},
+      {id:'opiniones',nombre:'Opiniones pendientes',cantidad:Number(d?.alertas?.opiniones_pendientes||0),icono:'★'}
+    ].filter(aviso=>aviso.cantidad>0);
+  }
+
+  cerrarMenusMantis():void{
+    this.busquedaAbierta=false;
+    this.avisosAbiertos=false;
+    this.perfilAbiertoMantis=false;
+  }
+
+  abrirBuscadorMantis():void{
+    this.cerrarMenusMantis();
+    this.busquedaAbierta=true;
+  }
+
+  alternarAlertasMantis():void{
+    const abierto=!this.avisosAbiertos;
+    this.cerrarMenusMantis();
+    this.avisosAbiertos=abierto;
+  }
+
+  alternarPerfilMantis():void{
+    const abierto=!this.perfilAbiertoMantis;
+    this.cerrarMenusMantis();
+    this.perfilAbiertoMantis=abierto;
+  }
+
+  abrirPersonalizadorMantis():void{
+    this.cerrarMenusMantis();
+    this.personalizadorAbierto=true;
+  }
+
+  irAAccesoRapido(id:string):void{
+    this.cerrarMenusMantis();
+    this.cambiarSegcion(id);
+    this.busquedaAdmin='';
+  }
+
+  guardarAparienciaMantis(tipo:'tema'|'color'|'densidad',valor:string):void{
+    if(tipo==='tema' && (valor==='claro'||valor==='oscuro')) this.modoDashboard=valor;
+    if(tipo==='color' && (valor==='coral'||valor==='azul'||valor==='verde')) this.acentoDashboard=valor;
+    if(tipo==='densidad' && (valor==='normal'||valor==='compacta')) this.densidadDashboard=valor;
+    try{
+      localStorage.setItem('mallqui_mantis_tema',this.modoDashboard);
+      localStorage.setItem('mallqui_mantis_color',this.acentoDashboard);
+      localStorage.setItem('mallqui_mantis_densidad',this.densidadDashboard);
+    }catch{}
+  }
+
+  @HostListener('document:keydown.escape')
+  cerrarControlesConEscape():void{
+    this.cerrarMenusMantis();
+    this.personalizadorAbierto=false;
+  }
+
+  restablecerAparienciaMantis():void{
+    this.guardarAparienciaMantis('tema','claro');
+    this.guardarAparienciaMantis('color','coral');
+    this.guardarAparienciaMantis('densidad','normal');
+    this.sidebarCerrado=false;
+    try{localStorage.setItem('mallqui_admin_sidebar_closed','0');}catch{}
   }
 
   maxIngresoGrafico():number{
