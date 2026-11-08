@@ -80,6 +80,24 @@ class CrearAdminMallqui extends Command
             }
         }
 
+        // Las tablas antiguas a veces guardan rol como ENUM limitado.
+        // Verificar el tipo antes de solicitar contraseña u otros datos.
+        try {
+            $codigo = Artisan::call('migrate', [
+                '--path' => 'database/migrations/2026_11_07_232000_expand_usuarios_rol.php',
+                '--force' => true,
+            ]);
+            $salida = trim(Artisan::output());
+            if ($salida !== '') $this->line($salida);
+            if ($codigo !== 0) {
+                $this->error('No se pudo preparar la columna usuarios.rol.');
+                return self::FAILURE;
+            }
+        } catch (Throwable $e) {
+            $this->error('No se pudo preparar el rol de los usuarios: '.$e->getMessage());
+            return self::FAILURE;
+        }
+
         $nombreUsuario = trim((string) $this->ask('Nombre de usuario', 'admin'));
         $nombres = trim((string) $this->ask('Nombres', 'Administrador'));
         $apellidos = trim((string) $this->ask('Apellidos', 'Sistema'));
