@@ -168,7 +168,7 @@ interface GymModuleConfig {
             <article><small>Monto Total</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>Valor facturado</span></article>
           </div>
           <section class="cf-suite-card">
-            <div class="cf-suite-invoice-note"><span>Consulta facturas administrativas y filtra las que tienen pagos pendientes.</span><button type="button" (click)="estadoFiltro='Pendiente';filtrarLocal()">Ver pendientes</button></div>
+            <div class="cf-suite-invoice-note"><span>Consulta facturas administrativas y filtra las que tienen pagos pendientes.</span><div><button type="button" (click)="estadoFiltro='Pendiente';filtrarLocal()">Ver pendientes</button><button type="button" (click)="estadoFiltro='';filtrarLocal()">Ver todas</button></div></div>
             <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>N.º de Factura</th><th>Socio del Gimnasio</th><th>Concepto</th><th>Fecha</th><th>Estado</th><th>Monto</th><th>Acción</th></tr></thead><tbody>
               <tr *ngFor="let item of filtered"><td>#INV-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || '—'}}</td><td>{{item.fecha || '—'}}</td><td><span class="status-select">{{item.estado}}</span></td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><button type="button" class="cf-suite-link" (click)="editar(item)">Editar</button></td></tr>
               <tr *ngIf="!filtered.length"><td colspan="7">No hay facturas con ese filtro.</td></tr>
