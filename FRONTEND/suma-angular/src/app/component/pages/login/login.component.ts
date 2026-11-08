@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -110,8 +110,8 @@ import { AuthService } from '../../../auth.service';
             <p *ngIf="error" class="mq-login-error">{{ error }}</p>
             <p *ngIf="mensaje" class="mq-login-success">{{ mensaje }}</p>
 
-            <button class="mq-login-submit" type="submit" [disabled]="loginForm.invalid || cargando">
-              <span>{{ cargando ? 'Verificando...' : 'Iniciar sesión' }}</span>
+            <button class="mq-login-submit" type="submit" [disabled]="loginForm.invalid || cargando || segundosBloqueo > 0">
+              <span>{{ cargando ? 'Verificando...' : segundosBloqueo > 0 ? 'Reintentar en ' + segundosBloqueo + ' s' : 'Iniciar sesión' }}</span>
               <b>→</b>
             </button>
           </form>
@@ -134,12 +134,14 @@ import { AuthService } from '../../../auth.service';
     </div>
   `
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy {
   email = '';
   password = '';
   recordar = false;
   mostrarPassword = false;
   cargando = false;
+  segundosBloqueo = 0;
+  private temporizadorBloqueo: ReturnType<typeof setInterval> | null = null;
   error = '';
   mensaje = '';
   planSeleccionado = '';
@@ -161,6 +163,7 @@ export class LoginComponent {
   }
 
   ingresar(): void {
+    if (this.segundosBloqueo > 0) return;
     this.error = '';
     this.mensaje = '';
 
@@ -209,9 +212,33 @@ export class LoginComponent {
       },
       error: err => {
         this.cargando = false;
+        if (err?.status === 429) this.activarBloqueoTemporal(err);
         this.error = this.extraerError(err, 'No se pudo iniciar sesión. Verifica tus credenciales.');
       }
     });
+  }
+
+  private activarBloqueoTemporal(err: any): void {
+    // Laravel aplica throttle:5,1. Respetar Retry-After si es visible;
+    // si el navegador no puede leerlo, usar un máximo preventivo de 60 s.
+    const encabezado = Number(err?.headers?.get?.('Retry-After'));
+    this.segundosBloqueo = Number.isFinite(encabezado) && encabezado > 0
+      ? Math.min(Math.ceil(encabezado), 180)
+      : 60;
+
+    if (this.temporizadorBloqueo) clearInterval(this.temporizadorBloqueo);
+    this.temporizadorBloqueo = setInterval(() => {
+      this.segundosBloqueo = Math.max(0, this.segundosBloqueo - 1);
+      if (this.segundosBloqueo === 0 && this.temporizadorBloqueo) {
+        clearInterval(this.temporizadorBloqueo);
+        this.temporizadorBloqueo = null;
+        this.error = '';
+      }
+    }, 1000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.temporizadorBloqueo) clearInterval(this.temporizadorBloqueo);
   }
 
   recuperarPassword(): void {
@@ -222,7 +249,7 @@ export class LoginComponent {
 
   private extraerError(err: any, fallback: string): string {
     if (err?.status === 429) {
-      return 'Hiciste demasiados intentos. Espera un minuto y vuelve a intentarlo.';
+      return 'Demasiados intentos de acceso. Vuelve a intentarlo cuando termine la cuenta regresiva.';
     }
     // No mostrar consultas SQL ni rutas del servidor al usuario final.
     if (typeof err?.status === 'number' && err.status >= 500) {
