@@ -5,7 +5,9 @@ namespace App\Console\Commands;
 use App\Models\Usuario;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
+use Throwable;
 
 class CrearAdminMallqui extends Command
 {
@@ -18,6 +20,26 @@ class CrearAdminMallqui extends Command
         if (!Schema::hasTable('usuarios')) {
             $this->error('La tabla usuarios aun no existe. Ejecuta primero las migraciones.');
             return self::FAILURE;
+        }
+
+        // Reparar antes de pedir datos para no repetir preguntas si falla la DB.
+        if (!Schema::hasColumn('usuarios', 'id_usuario')) {
+            $this->warn('La tabla usuarios es antigua; se preparara su identificador sin borrar registros.');
+            try {
+                $codigo = Artisan::call('migrate', [
+                    '--path' => 'database/migrations/2026_11_07_230000_ensure_usuarios_identity.php',
+                    '--force' => true,
+                ]);
+                $salida = trim(Artisan::output());
+                if ($salida !== '') $this->line($salida);
+                if ($codigo !== 0 || !Schema::hasColumn('usuarios', 'id_usuario')) {
+                    $this->error('No se pudo preparar id_usuario. Revisa la migracion indicada.');
+                    return self::FAILURE;
+                }
+            } catch (Throwable $e) {
+                $this->error('No se pudo preparar la tabla usuarios: '.$e->getMessage());
+                return self::FAILURE;
+            }
         }
 
         $nombreUsuario = trim((string) $this->ask('Nombre de usuario', 'admin'));
