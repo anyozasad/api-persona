@@ -41,7 +41,17 @@ type NombreTabla = 'clientes' | 'productos' | 'reservas';
       </div>
       <div class="mg-app-section-caption">
         <div><h2>Aplicaciones del gimnasio</h2><p>Abre los módulos reales de tu sistema. No son páginas de muestra.</p></div>
-        <label class="mg-app-find">⌕ <input type="search" [(ngModel)]="busquedaApp" placeholder="Buscar aplicación..." aria-label="Buscar aplicaciones"></label>
+        <label class="mg-app-find">
+          <select [(ngModel)]="grupoApp" aria-label="Filtrar módulos por categoría">
+            <option value="">Todos los módulos</option>
+            <option value="Paneles">Paneles y gráficos</option>
+            <option value="Aplicaciones">Aplicaciones y atención</option>
+            <option value="Socios">Socios y gimnasio</option>
+            <option value="Comercio">Comercio y facturación</option>
+            <option value="Sistema">Herramientas y sistema</option>
+          </select>
+          ⌕ <input type="search" [(ngModel)]="busquedaApp" placeholder="Buscar aplicación..." aria-label="Buscar aplicaciones">
+        </label>
       </div>
       <div class="mg-app-grid">
         <button type="button" *ngFor="let app of aplicacionesFiltradas" (click)="navegar.emit(app.id)" class="mg-app-tile">
@@ -210,6 +220,7 @@ export class AdminApplicationsComponent implements OnInit, OnChanges {
   @Input() productos: any[] = [];
   @Input() reservas: any[] = [];
   @Output() navegar = new EventEmitter<string>();
+  @Output() refrescarDatos = new EventEmitter<void>();
 
   vistas: {id:VistaApps,nombre:string,icono:string}[] = [
     {id:'aplicaciones',nombre:'Aplicaciones',icono:'◈'},
@@ -218,24 +229,55 @@ export class AdminApplicationsComponent implements OnInit, OnChanges {
     {id:'tablas-admin',nombre:'Tablas',icono:'▤'},
     {id:'componentes-ui',nombre:'Componentes',icono:'◫'}
   ];
-  aplicaciones = [
-    {id:'clientes',nombre:'Socios',icono:'♙',descripcion:'Clientes y matrículas'},
-    {id:'membresias',nombre:'Membresías',icono:'✧',descripcion:'Planes y renovaciones'},
-    {id:'calendario-admin',nombre:'Calendario',icono:'▦',descripcion:'Eventos y reservas del gimnasio'},
-    {id:'tareas-admin',nombre:'Tareas',icono:'✓',descripcion:'Kanban de tareas del equipo'},
-    {id:'soporte',nombre:'Bandeja de consultas',icono:'✉',descripcion:'Responder mensajes de socios'},
-    {id:'usuarios',nombre:'Usuarios',icono:'♧',descripcion:'Cuentas y permisos'},
-    {id:'ventas',nombre:'Ventas',icono:'◈',descripcion:'Productos y punto de venta'},
-    {id:'productos',nombre:'Catálogo',icono:'▣',descripcion:'Productos y existencias'},
-    {id:'facturas',nombre:'Facturación',icono:'▤',descripcion:'Comprobantes administrativos'},
-    {id:'reportes-admin',nombre:'Analíticas',icono:'↗',descripcion:'Gráficos e indicadores reales'},
-    {id:'eventos',nombre:'Eventos',icono:'◷',descripcion:'Crear y editar actividades'},
-    {id:'comunicacion',nombre:'Notificaciones',icono:'♢',descripcion:'Avisos para clientes'},
-    {id:'inventario',nombre:'Inventario',icono:'▦',descripcion:'Movimientos y stock'},
-    {id:'reservas',nombre:'Reservas',icono:'⌁',descripcion:'Gestión de agenda'},
-    {id:'configuracion',nombre:'Configuración',icono:'⚙',descripcion:'Ajustes de la empresa'},
-    {id:'mantenimiento-sistema',nombre:'Mantenimiento',icono:'▥',descripcion:'Respaldo y diagnóstico'}
+  // Equivalentes funcionales de los módulos Mantis para las operaciones de Mallqui Gym.
+  // Cada destino es un módulo EXISTENTE, no una pantalla decorativa.
+  aplicaciones: Array<{id:string,nombre:string,icono:string,descripcion:string,grupo:string}> = [
+    {id:'dashboard',nombre:'Dashboard principal',icono:'◈',descripcion:'Indicadores, alertas y resumen de MySQL',grupo:'Paneles'},
+    {id:'reportes-admin',nombre:'Dashboard de analíticas',icono:'↗',descripcion:'Gráficos, tendencias y reportes operativos',grupo:'Paneles'},
+    {id:'ingresos',nombre:'Dashboard financiero',icono:'S/',descripcion:'Ingresos, pagos y evolución comercial',grupo:'Paneles'},
+    {id:'reporte-asistencias',nombre:'Indicadores de asistencia',icono:'▥',descripcion:'Asistencia real por socio y fechas',grupo:'Paneles'},
+    {id:'calendario-admin',nombre:'Calendario',icono:'▦',descripcion:'Eventos y reservas con fechas reales',grupo:'Aplicaciones'},
+    {id:'tareas-admin',nombre:'Gestión de tareas',icono:'✓',descripcion:'Crear, editar, mover y finalizar tareas',grupo:'Aplicaciones'},
+    {id:'soporte',nombre:'Chat y helpdesk',icono:'✉',descripcion:'Atender mensajes y solicitudes de socios',grupo:'Aplicaciones'},
+    {id:'comunicacion',nombre:'Notificaciones',icono:'♢',descripcion:'Enviar avisos y gestionar comunicaciones',grupo:'Aplicaciones'},
+    {id:'opiniones',nombre:'Opiniones de clientes',icono:'★',descripcion:'Moderar y responder valoraciones',grupo:'Aplicaciones'},
+    {id:'clientes',nombre:'Clientes y socios',icono:'♙',descripcion:'Registrar, editar, buscar y desactivar socios',grupo:'Socios'},
+    {id:'usuarios',nombre:'Usuarios y perfiles',icono:'♧',descripcion:'Gestionar cuentas, accesos y roles',grupo:'Socios'},
+    {id:'membresias',nombre:'Membresías',icono:'✧',descripcion:'Matricular y administrar suscripciones',grupo:'Socios'},
+    {id:'planes',nombre:'Planes y tarifas',icono:'▧',descripcion:'Gestionar planes del gimnasio',grupo:'Socios'},
+    {id:'renovaciones',nombre:'Renovaciones y avisos',icono:'◷',descripcion:'Consultar vencimientos y renovaciones',grupo:'Socios'},
+    {id:'pagos',nombre:'Pagos',icono:'S/',descripcion:'Confirmar pagos y consultar constancias',grupo:'Socios'},
+    {id:'reservas',nombre:'Reservas',icono:'⌁',descripcion:'Crear, editar y cancelar reservas',grupo:'Socios'},
+    {id:'clases',nombre:'Clases',icono:'▦',descripcion:'Programar sesiones, entrenadores y cupos',grupo:'Socios'},
+    {id:'entrenador',nombre:'Entrenador',icono:'♧',descripcion:'Control de entrenador asignado',grupo:'Socios'},
+    {id:'asistencias',nombre:'Asistencias',icono:'◷',descripcion:'Registrar entradas, salidas y consultas',grupo:'Socios'},
+    {id:'rutinas',nombre:'Rutinas',icono:'▣',descripcion:'Asignar y editar entrenamientos',grupo:'Socios'},
+    {id:'seguimiento',nombre:'Seguimiento',icono:'⌁',descripcion:'Controlar actividad y progreso de socios',grupo:'Socios'},
+    {id:'progreso-fisico',nombre:'Progreso físico',icono:'▤',descripcion:'Medidas y evolución individual',grupo:'Socios'},
+    {id:'nutricion',nombre:'Nutrición',icono:'◇',descripcion:'Gestionar fichas y planes nutricionales',grupo:'Socios'},
+    {id:'ventas',nombre:'Comercio electrónico / ventas',icono:'◈',descripcion:'Productos, pedidos y registros de venta',grupo:'Comercio'},
+    {id:'productos',nombre:'Catálogo de productos',icono:'▣',descripcion:'CRUD de productos e imágenes locales',grupo:'Comercio'},
+    {id:'inventario',nombre:'Inventario',icono:'▦',descripcion:'Productos, movimientos y existencias',grupo:'Comercio'},
+    {id:'kardex',nombre:'Kardex y stock',icono:'▤',descripcion:'Historial de entradas, salidas y ajustes',grupo:'Comercio'},
+    {id:'categorias',nombre:'Categorías',icono:'⊞',descripcion:'Clasificar productos',grupo:'Comercio'},
+    {id:'proveedores',nombre:'Proveedores',icono:'♧',descripcion:'Contactos y compras a proveedores',grupo:'Comercio'},
+    {id:'compras',nombre:'Compras',icono:'▣',descripcion:'Entradas de productos y documentos',grupo:'Comercio'},
+    {id:'caja',nombre:'Caja',icono:'S/',descripcion:'Apertura, movimientos y cierre',grupo:'Comercio'},
+    {id:'gastos',nombre:'Gastos',icono:'↘',descripcion:'Controlar egresos del gimnasio',grupo:'Comercio'},
+    {id:'facturas',nombre:'Facturación',icono:'▤',descripcion:'Administrar documentos y facturas internas',grupo:'Comercio'},
+    {id:'documentos-socio',nombre:'Documentos de socios',icono:'▤',descripcion:'Consultar constancias de pago confirmadas',grupo:'Comercio'},
+    {id:'tablas-admin',nombre:'Tablas avanzadas',icono:'▤',descripcion:'Filtros, ordenamiento, paginación y CSV',grupo:'Sistema'},
+    {id:'componentes-ui',nombre:'Formularios y componentes',icono:'◫',descripcion:'Controles, validaciones y elementos UI',grupo:'Sistema'},
+    {id:'eventos',nombre:'Eventos',icono:'◷',descripcion:'Administrar actividades del gimnasio',grupo:'Sistema'},
+    {id:'equipos',nombre:'Equipos',icono:'▣',descripcion:'Inventario de equipos del gimnasio',grupo:'Sistema'},
+    {id:'galeria',nombre:'Galería',icono:'▧',descripcion:'Fotos y recursos administrables',grupo:'Sistema'},
+    {id:'noticias',nombre:'Noticias',icono:'▤',descripcion:'Publicaciones y novedades',grupo:'Sistema'},
+    {id:'auditoria',nombre:'Auditoría',icono:'◎',descripcion:'Registro de actividad administrativa',grupo:'Sistema'},
+    {id:'configuracion',nombre:'Configuración',icono:'⚙',descripcion:'Ajustes y datos reales de la empresa',grupo:'Sistema'},
+    {id:'mantenimiento-sistema',nombre:'Mantenimiento',icono:'▥',descripcion:'Respaldo y mantenimiento de MySQL',grupo:'Sistema'},
+    {id:'verificacion-efsrt',nombre:'Comprobación EFSRT',icono:'✓',descripcion:'Verificación de módulos y estructura real',grupo:'Sistema'}
   ];
+  grupoApp = '';
   busquedaApp = '';
 
   hoyISO = this.formatearFecha(new Date());
@@ -298,13 +340,18 @@ export class AdminApplicationsComponent implements OnInit, OnChanges {
   get cargandoActual():boolean{return this.cargandoEventos||this.cargandoTareas;}
   get aplicacionesFiltradas(){
     const q=this.busquedaApp.trim().toLocaleLowerCase('es-PE');
-    return this.aplicaciones.filter(a=>!q||(a.nombre+' '+a.descripcion).toLocaleLowerCase('es-PE').includes(q));
+    return this.aplicaciones.filter(a=>
+      (!this.grupoApp || a.grupo===this.grupoApp) &&
+      (!q || (a.nombre+' '+a.descripcion+' '+a.grupo).toLocaleLowerCase('es-PE').includes(q))
+    );
   }
   abrirVista(id:VistaApps):void { this.navegar.emit(id); }
 
   refrescar():void {
     if(this.modulo==='calendario-admin')this.cargarEventos();
     if(this.modulo==='tareas-admin')this.cargarTareas();
+    // También actualizar los datos reales que usa el catálogo y las tablas.
+    this.refrescarDatos.emit();
   }
   cargarEventos():void {
     this.cargandoEventos=true;this.errorEventos='';
