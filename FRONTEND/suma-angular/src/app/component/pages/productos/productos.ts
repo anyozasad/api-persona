@@ -40,9 +40,9 @@ export class ProductosComponent implements OnInit {
     this.listar();
   }
 
-  listar(): void {
+  listar(limpiarError = true): void {
     this.cargando = true;
-    this.error = '';
+    if (limpiarError) this.error = '';
     this.productoService.listar().subscribe({
       next: d => { this.productos = d; this.cargando = false; },
       error: e => { this.cargando = false; this.error = this.mensajeError(e, 'No se pudieron obtener los productos.'); }
@@ -82,7 +82,8 @@ export class ProductosComponent implements OnInit {
             : 'Producto registrado correctamente.';
         }
         this.limpiarFormulario();
-        this.listar();
+        // No borrar la advertencia si el backend no confirmó la fotografía.
+        this.listar(false);
       },
       error: e => {
         this.guardando = false;
@@ -131,7 +132,8 @@ export class ProductosComponent implements OnInit {
             : 'Producto actualizado correctamente.';
         }
         this.limpiarFormulario();
-        this.listar();
+        // No borrar la advertencia si el backend no confirmó la fotografía.
+        this.listar(false);
       },
       error: e => {
         this.guardando = false;
