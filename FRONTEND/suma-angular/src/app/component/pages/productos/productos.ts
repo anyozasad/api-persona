@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Producto } from '../../../models/producto';
 import { Categoria } from '../../../models/categoria';
-import { ProductoService } from '../../../core/services/producto.service';
+import { ProductoService, DiagnosticoFotosProducto } from '../../../core/services/producto.service';
 import { CategoriaService } from '../../../core/services/categoria.service';
 import { AuthService } from '../../../auth.service';
 
@@ -17,6 +17,8 @@ import { AuthService } from '../../../auth.service';
 })
 export class ProductosComponent implements OnInit {
   productos: Producto[] = [];
+  diagnosticoFotos: DiagnosticoFotosProducto | null = null;
+  errorDiagnostico = '';
   categorias: Categoria[] = [];
   editando = false;
   cargando = false;
@@ -44,8 +46,16 @@ export class ProductosComponent implements OnInit {
     this.cargando = true;
     if (limpiarError) this.error = '';
     this.productoService.listar().subscribe({
-      next: d => { this.productos = d; this.cargando = false; },
-      error: e => { this.cargando = false; this.error = this.mensajeError(e, 'No se pudieron obtener los productos.'); }
+      next: d => {
+        this.productos = Array.isArray(d) ? d : [];
+        this.cargando = false;
+        this.cargarDiagnosticoFotos();
+      },
+      error: e => {
+        this.cargando = false;
+        this.diagnosticoFotos = null;
+        this.error = this.mensajeError(e, 'No se pudieron obtener los productos. Comprueba la conexión con Laravel y la base MySQL.');
+      }
     });
   }
 
@@ -59,6 +69,27 @@ export class ProductosComponent implements OnInit {
       },
       error: e => this.error = this.mensajeError(e, 'No se pudieron cargar las categorías.')
     });
+  }
+
+  cargarDiagnosticoFotos(): void {
+    this.productoService.diagnosticoFotos().subscribe({
+      next: datos => { this.diagnosticoFotos = datos; this.errorDiagnostico = ''; },
+      error: () => {
+        this.diagnosticoFotos = null;
+        this.errorDiagnostico = 'No se pudo comprobar qué fotos están guardadas en MySQL.';
+      }
+    });
+  }
+
+  /** No mostrar enlaces antiguos como imágenes rotas en el panel. */
+  fotoVisible(foto?: string | null): boolean {
+    const valor = String(foto || '').trim();
+    return /^data:image\/(?:png|jpe?g|webp);base64,/i.test(valor) ||
+      /^\/?assets\/mallqui\/[a-zA-Z0-9_./-]+\.(?:png|jpe?g|webp)$/i.test(valor);
+  }
+
+  get productosSinFoto(): number {
+    return this.productos.filter(p => !this.fotoVisible(p.foto)).length;
   }
 
   guardar(): void {
