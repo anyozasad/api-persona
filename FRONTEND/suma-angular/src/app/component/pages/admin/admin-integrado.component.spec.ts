@@ -424,4 +424,24 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.destinoActividadDashboard('otro')).toBe('reportes-admin');
     expect(component.iconoActividadDashboard('reserva')).toBe('◫');
   });
+
+  it('abre módulo según datos de ruta Angular y no siempre el dashboard', () => {
+    const ruta = { snapshot: { data: { seccion: 'productos' } } } as any;
+    const instancia = new AdminIntegradoComponent({} as any, api, {} as any, ruta);
+    spyOn(instancia, 'actualizarDashboardCompleto').and.stub();
+    spyOn(instancia as any, 'cargarSegcion').and.stub();
+    instancia.ngOnInit();
+    expect(instancia.seccion).toBe('productos');
+    expect((instancia as any).cargarSegcion).toHaveBeenCalledWith('productos');
+    instancia.ngOnDestroy();
+  });
+
+  it('Fitness abre rutinas y Herramientas abre tablas, no inicio', () => {
+    const cambiar = spyOn(component, 'cambiarSegcion').and.stub();
+    component.abrirModuloAdmin('fitness');
+    expect(cambiar).toHaveBeenCalledWith('rutinas');
+    component.abrirModuloAdmin('herramientas');
+    expect(cambiar).toHaveBeenCalledWith('tablas-admin');
+  });
+
 });
