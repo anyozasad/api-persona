@@ -530,3 +530,158 @@
     grid-template-columns:1fr!important;
   }
 }
+
+
+/* Tarjetas de productos dentro del inicio: fotografías REALES de MySQL. */
+.admin-shell.admin-home-redesign .mg-catalog-preview {
+  display:grid!important;
+  gap:15px!important;
+  margin:20px 0 25px!important;
+  padding:20px 23px 23px!important;
+  border:1px solid #e2e9df!important;
+  border-radius:17px!important;
+  background:#fff!important;
+  box-shadow:0 8px 30px rgba(15,27,16,.035)!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-preview>header {
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  flex-wrap:wrap!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-preview>header>div>span {
+  color:#64833d!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  letter-spacing:1.1px!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-preview>header h2 {
+  margin:5px 0!important;
+  font-size:20px!important;
+  color:#233525!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-preview>header p {
+  margin:0!important;
+  max-width:640px!important;
+  color:#69796b!important;
+  line-height:1.5!important;
+  font-size:12px!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-preview>header button,
+.admin-shell.admin-home-redesign .mg-catalog-empty button {
+  min-height:39px!important;
+  padding:9px 13px!important;
+  border:1px solid #cfe1c0!important;
+  border-radius:9px!important;
+  color:#38582b!important;
+  background:#f4f9e9!important;
+  font-size:12px!important;
+  font-weight:750!important;
+  cursor:pointer!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-summary {
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:7px!important;
+  color:#607563!important;
+  font-size:11px!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-summary span {
+  display:inline-flex!important;
+  gap:5px!important;
+  align-items:center!important;
+  border-radius:7px!important;
+  background:#f0f5e9!important;
+  padding:6px 9px!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-summary .mg-catalog-missing {
+  background:#fff4e5!important;
+  color:#805d25!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-cards {
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:13px!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-product {
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:6px!important;
+  min-width:0!important;
+  padding:10px!important;
+  border:1px solid #e2e9df!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  text-align:left!important;
+  cursor:pointer!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-product:hover {
+  border-color:#b4d585!important;
+  background:#fcfff8!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-product-photo {
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden!important;
+  width:100%!important;
+  aspect-ratio:4 / 3!important;
+  border-radius:9px!important;
+  background:#f2f5f0!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-product-photo img {
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-no-photo {
+  display:grid!important;
+  place-items:center!important;
+  gap:5px!important;
+  color:#7d8c7e!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-no-photo i {
+  font-size:31px!important;
+  font-style:normal!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-no-photo small {
+  font-size:11px!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-product>strong {
+  font-size:13px!important;
+  color:#1e3222!important;
+  line-height:1.35!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-product>small {
+  color:#6f7d6f!important;
+  font-size:11px!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-product>b {
+  color:#345b24!important;
+  font-size:14px!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-empty {
+  display:grid!important;
+  gap:9px!important;
+  justify-items:start!important;
+  padding:18px!important;
+  background:#f9fcf6!important;
+  border-radius:10px!important;
+  color:#405442!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-empty>strong {font-size:14px!important}
+.admin-shell.admin-home-redesign .mg-catalog-empty>p {font-size:12px!important}
+@media(max-width:1150px){
+  .admin-shell.admin-home-redesign .mg-catalog-cards {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:620px){
+  .admin-shell.admin-home-redesign .mg-catalog-cards {
+    grid-template-columns:1fr!important;
+  }
+  .admin-shell.admin-home-redesign .mg-catalog-preview {
+    padding:16px!important;
+  }
+}
