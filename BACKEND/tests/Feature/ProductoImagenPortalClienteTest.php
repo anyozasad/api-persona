@@ -20,6 +20,10 @@ class ProductoImagenPortalClienteTest extends TestCase
         $this->assertStringContainsString('seleccionarImagen(event: Event)', $adminTs);
         $this->assertStringContainsString('quitarImagen()', $adminTs);
 
+        $this->assertStringContainsString('[disabled]="procesandoImagen || guardando"', $adminHtml);
+        $this->assertStringContainsString('this.guardando = true;', $adminTs);
+        $this->assertStringContainsString('Producto y fotografía guardados correctamente', $adminTs);
+
         $this->assertStringContainsString('*ngIf="p.foto"', $usuario);
         $this->assertStringContainsString('[src]="p.foto"', $usuario);
         $this->assertStringContainsString('.mallqui-product-home-media img', $usuarioCss);
@@ -27,5 +31,8 @@ class ProductoImagenPortalClienteTest extends TestCase
         $this->assertStringNotContainsString('gym_portal_products', $controller);
         $this->assertStringContainsString("'foto' => \$producto->foto ?? null", $controller);
         $this->assertStringContainsString("Producto::with('categoria')", $controller);
+        $this->assertStringNotContainsString("->where('stock', '>', 0)", $controller);
+        $this->assertStringContainsString("p.stock>0 ? 'EN STOCK' : 'AGOTADO'", $usuario);
+        $this->assertStringNotContainsString(".filter((p:any)=>Number(p?.stock??0)>0)", $usuario);
     }
 }
