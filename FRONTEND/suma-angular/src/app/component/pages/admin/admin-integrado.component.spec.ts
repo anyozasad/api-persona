@@ -141,6 +141,25 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.cargarDashboard).toHaveBeenCalled();
   });
 
+  it('impide que reservas canceladas o finalizadas alteren los reportes de asistencia', () => {
+    component.reservas = [
+      { id_reserva: 7, estado: 'Cancelada' },
+      { id_reserva: 8, estado: 'Asistio' },
+      { id_reserva: 9, estado: 'NoAsistio' },
+      { id_reserva: 10, estado: 'Reservada' }
+    ];
+
+    expect(component.reservaAdmiteCambioEstado(component.reservas[0])).toBeFalse();
+    expect(component.reservaAdmiteCambioEstado(component.reservas[1])).toBeFalse();
+    expect(component.reservaAdmiteCambioEstado(component.reservas[2])).toBeFalse();
+    expect(component.reservaAdmiteCambioEstado(component.reservas[3])).toBeTrue();
+
+    component.cambiarEstadoReserva(7, 'Asistio');
+
+    expect(api.cambiarEstadoReserva).not.toHaveBeenCalled();
+    expect(component.error).toContain('finalizada o cancelada');
+  });
+
   it('actualiza el estado de una reserva mediante la API y recarga sus datos', () => {
     api.cambiarEstadoReserva.and.returnValue(of({ mensaje: 'Reserva actualizada' }));
     spyOn(component, 'ok');
