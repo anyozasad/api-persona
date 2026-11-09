@@ -314,9 +314,9 @@ export class AdminApplicationsComponent implements OnInit, OnChanges {
 
   constructor(private api: AdminApiService) {}
 
-  ngOnInit(): void { this.refrescar(); }
+  ngOnInit(): void { this.refrescar(false); }
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['modulo'] && !changes['modulo'].firstChange) this.refrescar();
+    if (changes['modulo'] && !changes['modulo'].firstChange) this.refrescar(false);
   }
 
   get tituloVista():string {
@@ -347,11 +347,11 @@ export class AdminApplicationsComponent implements OnInit, OnChanges {
   }
   abrirVista(id:VistaApps):void { this.navegar.emit(id); }
 
-  refrescar():void {
+  refrescar(recargarPanel=true):void {
     if(this.modulo==='calendario-admin')this.cargarEventos();
     if(this.modulo==='tareas-admin')this.cargarTareas();
-    // También actualizar los datos reales que usa el catálogo y las tablas.
-    this.refrescarDatos.emit();
+    // Consultar el backend general solo cuando el administrador pulsa Actualizar.
+    if(recargarPanel)this.refrescarDatos.emit();
   }
   cargarEventos():void {
     this.cargandoEventos=true;this.errorEventos='';
