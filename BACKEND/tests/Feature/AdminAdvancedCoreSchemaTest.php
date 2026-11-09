@@ -15,7 +15,7 @@ class AdminAdvancedCoreSchemaTest extends TestCase
     {
         parent::setUp();
 
-        foreach (['progreso_medidas','rutinas','cliente_membresia','membresias','clientes','configuracion_sistema'] as $tabla) {
+        foreach (['pagos_membresia','progreso_medidas','rutinas','cliente_membresia','membresias','clientes','configuracion_sistema'] as $tabla) {
             Schema::dropIfExists($tabla);
         }
 
@@ -45,6 +45,16 @@ class AdminAdvancedCoreSchemaTest extends TestCase
             $table->date('fecha_inicio');
             $table->date('fecha_fin');
             $table->string('estado');
+        });
+
+        Schema::create('pagos_membresia', function (Blueprint $table) {
+            $table->id('id_pago');
+            $table->unsignedBigInteger('id_cliente_membresia');
+            $table->dateTime('fecha_pago');
+            $table->decimal('monto', 10, 2);
+            $table->string('metodo_pago');
+            $table->string('numero_operacion')->nullable();
+            $table->string('estado_pago');
         });
 
         Schema::create('rutinas', function (Blueprint $table) {
@@ -102,6 +112,17 @@ class AdminAdvancedCoreSchemaTest extends TestCase
             'estado' => 'Activo',
         ]);
 
+        // El comprobante solo debe existir si hay pago confirmado.
+        DB::table('pagos_membresia')->insert([
+            'id_pago' => 1,
+            'id_cliente_membresia' => 1,
+            'fecha_pago' => now(),
+            'monto' => 80,
+            'metodo_pago' => 'Yape',
+            'numero_operacion' => 'OP-VALIDADA-01',
+            'estado_pago' => 'Completado',
+        ]);
+
         DB::table('rutinas')->insert([
             'id_rutina' => 1,
             'id_cliente' => 1,
@@ -140,6 +161,19 @@ class AdminAdvancedCoreSchemaTest extends TestCase
         $this->assertSame('Socio Actual', $json['socio']['nombre']);
         $this->assertSame('Rutina actual', $json['rutina']['nombre_rutina']);
         $this->assertSame('70.50', (string) $json['medidas'][0]['peso']);
+    }
+
+    public function test_no_emite_comprobante_de_membresia_si_el_pago_no_fue_confirmado(): void
+    {
+        DB::table('pagos_membresia')->where('id_pago', 1)
+            ->update(['estado_pago' => 'Pendiente']);
+
+        try {
+            app(GymSystemAdminController::class)->comprobante('1');
+            $this->fail('No debe emitir una constancia de pago pendiente.');
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            $this->assertSame(422, $e->getStatusCode());
+        }
     }
 
     public function test_vencimientos_carnet_y_comprobante_usan_misma_membresia_actual(): void

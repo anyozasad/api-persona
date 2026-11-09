@@ -471,7 +471,7 @@ export class AdminApplicationsComponent implements OnInit, OnChanges {
       fecha:this.fechaReserva(r),estado:r?.estado??r?.estado_reserva??'Registrada'
     }));
     return this.clientes.map((c:any)=>({
-      id:c?.id_cliente??c?.id??'',nombre:[c?.nombres,c?.apellidos].filter(Boolean).join(' ')||c?.nombre??'',
+      id:c?.id_cliente??c?.id??'',nombre:([c?.nombres,c?.apellidos].filter(Boolean).join(' ') || c?.nombre || ''),
       dni:c?.dni??'',telefono:c?.telefono??'',estado:c?.estado??''
     }));
   }

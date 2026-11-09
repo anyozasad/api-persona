@@ -16,7 +16,7 @@ class VerificacionEfsrtTest extends TestCase
 
         Schema::disableForeignKeyConstraints();
         try {
-            foreach (['reservas','productos','clientes'] as $tabla) {
+            foreach (['reservas','productos','clientes','membresias'] as $tabla) {
                 Schema::dropIfExists($tabla);
             }
         } finally {
