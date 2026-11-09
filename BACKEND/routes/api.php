@@ -39,6 +39,7 @@ use App\Http\Controllers\ComunicacionAdminController;
 use App\Http\Controllers\ClienteFichaController;
 use App\Http\Controllers\GymSystemAdminController;
 use App\Http\Controllers\AdminGymRecordController;
+use App\Http\Controllers\VerificacionEfsrtController;
 
 // ESTADO REAL DEL SISTEMA: una sola conexión y una sola DB_DATABASE.
 Route::get('/estado-sistema', function () {
@@ -296,6 +297,7 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
 
     Route::apiResource('/usuarios', UsuarioController::class);
     Route::get('/dashboard/resumen', [DashboardController::class, 'resumen']);
+    Route::get('/admin/verificacion-efsrt', [VerificacionEfsrtController::class, 'index']);
     Route::get('/auditorias', [AuditoriaController::class, 'index']);
 
     Route::get('/configuracion', [ConfiguracionSistemaController::class, 'show']);
