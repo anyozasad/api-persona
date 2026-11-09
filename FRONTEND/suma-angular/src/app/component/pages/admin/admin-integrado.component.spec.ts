@@ -20,7 +20,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       'clienteMembresias', 'pagos', 'productos', 'reservas', 'rutinas',
       'asistencias', 'entrenadores', 'clases', 'cajaActual',
       'registrarAccesoCodigo', 'cambiarEstadoReserva', 'confirmarPagoPendiente',
-      'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin', 'comprobantePago'
+      'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin', 'comprobantePago', 'verificacionEfsrt'
     ]);
 
     api.estadoOperativo.and.returnValue(of({
@@ -78,6 +78,39 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(api.comprobantePago).not.toHaveBeenCalled();
     expect(component.comprobanteDatos).toBeNull();
     expect(component.error).toContain('Selecciona un pago confirmado');
+  });
+
+  it('consulta la revisión EFSRT en el servidor y muestra tablas faltantes reales', () => {
+    const revision={
+      conexion:'disponible',
+      total_modulos:10,
+      modulos_con_estructura:8,
+      faltantes:2,
+      alertas:[],
+      modulos:[{id:'reservas',estado:'estructura_incompleta',
+        faltantes:['clases'],registros:1,destino:'reservas'}]
+    };
+    api.verificacionEfsrt.and.returnValue(of(revision));
+
+    component.cargarVerificacionEfsrt();
+
+    expect(api.verificacionEfsrt).toHaveBeenCalledTimes(1);
+    expect(component.verificacionEfsrtCargando).toBeFalse();
+    expect(component.verificacionEfsrt).toEqual(revision);
+    expect(component.verificacionEfsrt.modulos[0].estado).toBe('estructura_incompleta');
+  });
+
+  it('no da por aprobada la revisión si la base de datos está caída', () => {
+    api.verificacionEfsrt.and.returnValue(throwError(() => ({
+      status:503,error:{mensaje:'No fue posible consultar la base de datos.'}
+    })));
+    component.verificacionEfsrt={conexion:'disponible'};
+
+    component.cargarVerificacionEfsrt();
+
+    expect(component.verificacionEfsrt).toBeNull();
+    expect(component.verificacionEfsrtCargando).toBeFalse();
+    expect(component.verificacionEfsrtError).toContain('No fue posible');
   });
 
   it('sincroniza los datos del dashboard con las APIs operativas', () => {
