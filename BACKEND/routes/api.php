@@ -277,6 +277,7 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
     Route::apiResource('/entrenadores', EntrenadorController::class);
 
     Route::apiResource('/categorias', CategoriaController::class);
+    Route::get('/productos/diagnostico-fotos', [ProductoController::class, 'diagnosticoFotos']);
     Route::apiResource('/productos', ProductoController::class);
     Route::get('/kardex', [KardexController::class, 'index']);
     Route::post('/kardex/ajustar', [KardexController::class, 'ajustar']);
