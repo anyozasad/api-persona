@@ -533,9 +533,16 @@ class GymSystemAdminController extends Controller
 
     public function kardex(Request $request)
     {
-        // El repositorio de referencia modifica stock directamente y no posee tabla kardex.
-        // Este endpoint conserva la compatibilidad del dashboard actual sin leer otra base.
-        return response()->json([]);
+        // La ruta antigua no debe devolver una lista vacía inventada.
+        // Los movimientos se consultan desde la misma fuente que usa
+        // el Kardex principal y el dashboard moderno.
+        if (!$this->schema->hasTable('movimientos_inventario')) {
+            return response()->json([
+                'mensaje' => 'No está disponible el historial de inventario. Ejecuta las migraciones del sistema.',
+            ], 503);
+        }
+
+        return app(KardexController::class)->index($request);
     }
 
     public function ventas()
