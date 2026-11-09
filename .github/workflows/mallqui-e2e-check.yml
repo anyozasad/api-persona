@@ -1,0 +1,97 @@
+name: Mallqui Gym - compilación y pruebas EFSRT
+
+on:
+  push:
+    branches: [main, fix-efsrt-ci-integration-20261109]
+    paths:
+      - 'FRONTEND/suma-angular/**'
+      - 'BACKEND/**'
+      - '.github/workflows/mallqui-e2e-check.yml'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  angular:
+    name: Angular 20 - compilación y pruebas
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    defaults:
+      run:
+        working-directory: FRONTEND/suma-angular
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: FRONTEND/suma-angular/package-lock.json
+      - name: Instalar paquetes reproduciblemente
+        run: npm ci --no-audit --no-fund
+      - name: Compilar frontend de producción
+        run: npm run build
+      - name: Probar dashboard Angular sin interacción
+        env:
+          CHROME_BIN: /usr/bin/google-chrome
+        run: npm test -- --watch=false --browsers=ChromeHeadless
+
+  laravel:
+    name: Laravel 12 - MySQL y pruebas funcionales
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: gymci
+          MYSQL_DATABASE: mallqui_gym_pruebas
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pgymci"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
+    defaults:
+      run:
+        working-directory: BACKEND
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: mallqui_gym_pruebas
+      GYM_DB_DATABASE: mallqui_gym_pruebas
+      DB_USERNAME: root
+      DB_PASSWORD: gymci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_mysql, bcmath, intl, dom, curl, xml
+          coverage: none
+          tools: composer:v2
+      - name: Instalar dependencias de Laravel
+        run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Configurar entorno de integración
+        run: |
+          cp .env.example .env
+          php artisan key:generate --force
+      - name: Verificar sintaxis de controladores y pruebas
+        run: |
+          find app/Http/Controllers app/Services tests/Feature -name '*.php' -type f -print0 | xargs -0 -n1 php -l
+      - name: Ejecutar migraciones en la BD temporal de GitHub
+        run: php artisan migrate --force
+      - name: Verificar rutas de reservas, pagos y EFSRT
+        run: php artisan route:list --path=api --except-vendor
+      - name: Ejecutar pruebas del flujo principal
+        run: |
+          php artisan test --filter=ReservaClienteFlowTest
+          php artisan test --filter=ComprobanteMembresiaTest
+          php artisan test --filter=VerificacionEfsrtTest
+          php artisan test --filter=ProductoImagenDashboardTest
+          php artisan test --filter=EfsrtInterfazEvidenciaTest
