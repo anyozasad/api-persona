@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\GymSystemAdminController;
+use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\CategoriaController;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -145,4 +147,70 @@ class ProductoImagenDashboardTest extends TestCase
 
         $this->assertDatabaseMissing('productos', ['codigo' => 'IMG-003']);
     }
+
+    public function test_la_api_normal_del_dashboard_carga_producto_legacy_y_su_foto_desde_mysql(): void
+    {
+        $foto = 'data:image/png;base64,'
+            .'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jWl8AAAAASUVORK5CYII=';
+
+        // Se usa la misma ruta que solicita <app-productos>, NO solamente
+        // la antigua /api/gym-admin/productos.
+        $control = app(ProductoController::class);
+        $categorias = app(CategoriaController::class)->index()->getData(true);
+        $this->assertCount(1, $categorias);
+        $this->assertSame('Bebidas', $categorias[0]['nombre_categoria']);
+
+        $peticion = Request::create('/api/productos', 'POST', [
+            'id_categoria' => 1,
+            'codigo_producto' => 'LEGACY-IMG-101',
+            'nombre_producto' => 'Agua de prueba',
+            'descripcion' => 'Fotografía desde Angular',
+            'precio_compra' => 1.2,
+            'precio_venta' => 2.5,
+            'stock' => 8,
+            'stock_minimo' => 1,
+            'unidad_medida' => 'Unidad',
+            'estado' => 'Activo',
+            'foto' => $foto,
+        ]);
+        $respuesta = $control->store($peticion);
+        $this->assertSame(201, $respuesta->getStatusCode());
+        $producto = $respuesta->getData(true);
+        $this->assertSame($foto, $producto['foto']);
+        $this->assertSame('LEGACY-IMG-101', $producto['codigo_producto']);
+
+        $id = (string) $producto['id_producto'];
+        $this->assertDatabaseHas('productos', [
+            'id' => (int) $id,
+            'codigo' => 'LEGACY-IMG-101',
+            'foto' => $foto,
+        ]);
+        $this->assertSame($foto, $control->show($id)->getData(true)['foto']);
+        $this->assertSame($foto, $control->index($peticion)->getData(true)[0]['foto']);
+
+        // El portal legacy y el dashboard moderno muestran la misma foto.
+        $legacy = app(GymSystemAdminController::class)->producto($id)->getData(true);
+        $this->assertSame($foto, $legacy['foto']);
+
+        $nuevaFoto = 'data:image/webp;base64,'.base64_encode('imagen-actualizada');
+        $edicion = Request::create('/api/productos/'.$id, 'PUT', [
+            'id_categoria' => 1,
+            'codigo_producto' => 'LEGACY-IMG-101',
+            'nombre_producto' => 'Agua de prueba',
+            'precio_compra' => 1.2,
+            'precio_venta' => 3,
+            'stock_minimo' => 1,
+            'unidad_medida' => 'Unidad',
+            'estado' => 'Activo',
+            'foto' => $nuevaFoto,
+        ]);
+        $this->assertSame($nuevaFoto, $control->update($edicion, $id)->getData(true)['foto']);
+        $this->assertDatabaseHas('productos', ['id'=>(int) $id, 'foto'=>$nuevaFoto]);
+
+        $eliminacion = $control->destroy($id)->getData(true);
+        $this->assertSame('Inactivo', $eliminacion['producto']['estado']);
+        $this->assertSame($nuevaFoto, $eliminacion['producto']['foto']);
+        $this->assertDatabaseHas('productos', ['id'=>(int) $id,'estado'=>'inactivo']);
+    }
+
 }
