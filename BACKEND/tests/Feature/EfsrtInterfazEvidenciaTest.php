@@ -67,6 +67,17 @@ class EfsrtInterfazEvidenciaTest extends TestCase
         $this->assertStringContainsString("Route::get('/dashboard/resumen'", $api);
     }
 
+    public function test_impresion_de_pago_usa_codigo_local_y_no_solicita_un_qr_externo(): void
+    {
+        $archivo = base_path('../FRONTEND/suma-angular/src/app/component/pages/usuario/usuario.component.ts');
+        $pagina = (string) file_get_contents($archivo);
+
+        $this->assertStringContainsString("CONSTANCIA INTERNA DE PAGO", $pagina);
+        $this->assertStringContainsString('code128DataUri(qrContenido', $pagina);
+        $this->assertStringNotContainsString('quickchart.io/qr', $pagina);
+        $this->assertStringContainsString('no es un comprobante electrónico autorizado por SUNAT', $pagina);
+    }
+
     public function test_comprobante_interno_no_se_presenta_como_cpe_autorizado_sin_sunat(): void
     {
         $servicio = (string) file_get_contents(app_path('Services/ComprobanteMembresiaService.php'));
