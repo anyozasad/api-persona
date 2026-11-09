@@ -1010,3 +1010,18 @@ tbody tr.stock-row-alert{background:#fffdf6!important}
   color:#5d7624!important;
 }
 .empty-productos b{color:#343a32!important}
+
+/* Semana 05: conservar los colores/posiciones originales y hacer fiable
+   el selector de fotografía en escritorio y móvil. */
+.productos-page .image-upload-button{position:relative;overflow:hidden}
+.productos-page .image-upload-button input[type="file"]{
+  position:absolute!important;inset:0!important;
+  width:100%!important;height:100%!important;
+  opacity:0!important;pointer-events:auto!important;cursor:pointer!important;
+}
+.productos-page .boton-principal:disabled{
+  opacity:.65;cursor:wait;transform:none!important;
+}
+.productos-page .imagen-lista-para-guardar{
+  display:block;color:#557324!important;font-weight:700;
+}
