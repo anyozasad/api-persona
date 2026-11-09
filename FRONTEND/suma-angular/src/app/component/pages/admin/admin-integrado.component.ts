@@ -217,6 +217,8 @@ import { catchError, forkJoin, of } from 'rxjs';
         </div>
         <div class="mg-module-shell-actions">
           <span class="mg-module-state">{{estadoModuloActual}}</span>
+          <button type="button" class="mg-back-home" (click)="cambiarSegcion('dashboard')"
+            aria-label="Volver al panel principal">← Inicio</button>
           <button type="button" (click)="actualizarSegcionActual()" [disabled]="actualizandoDatos">
             {{actualizandoDatos ? 'Actualizando...' : '↻ Actualizar'}}
           </button>
