@@ -11,6 +11,7 @@ export class AdminApiService {
   // =========================================================
   dashboard(): Observable<any> { return this.http.get('/api/dashboard/resumen'); }
   estadoOperativo(): Observable<any> { return this.http.get('/api/estado-sistema'); }
+  verificacionEfsrt(): Observable<any> { return this.http.get('/api/admin/verificacion-efsrt'); }
 
   // =========================================================
   // CLIENTES

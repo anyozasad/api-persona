@@ -134,4 +134,54 @@ class ComprobanteMembresiaTest extends TestCase
         $this->assertStringContainsString('B001|00000015|179.00', $data['codigo_barras']);
         $this->assertSame('Completado', $data['estado']);
     }
+
+    public function test_documentos_de_membresia_usan_el_pago_real_y_no_el_precio_de_lista(): void
+    {
+        $controller = app(\App\Http\Controllers\GymSystemAdminController::class);
+        $respuesta = $controller->comprobante('1');
+
+        $this->assertSame(200, $respuesta->getStatusCode());
+        $datos = $respuesta->getData(true);
+        $this->assertSame('constancia_interna_membresia', $datos['tipo']);
+        $this->assertSame('B001-00000015', $datos['comprobante']['numero_comprobante']);
+        $this->assertSame(179.0, (float) $datos['datos']['precio']);
+    }
+
+    public function test_documentos_no_emiten_constancias_para_membresias_sin_pago_confirmado(): void
+    {
+        DB::table('pagos_membresia')->where('id_pago', 15)->update(['estado_pago'=>'Pendiente']);
+        $controller = app(\App\Http\Controllers\GymSystemAdminController::class);
+
+        try {
+            $controller->comprobante('1');
+            $this->fail('No debe generarse una constancia para una solicitud pendiente.');
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            $this->assertSame(422, $e->getStatusCode());
+        }
+    }
+
+    public function test_no_emite_comprobante_si_el_pago_sigue_pendiente(): void
+    {
+        DB::table('pagos_membresia')->where('id_pago', 15)->update(['estado_pago' => 'Pendiente']);
+
+        try {
+            app(ComprobanteMembresiaService::class)->formatear(PagoMembresia::findOrFail(15));
+            $this->fail('Un pago pendiente no puede generar una constancia de pago.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->assertArrayHasKey('pago', $e->errors());
+        }
+    }
+
+    public function test_no_emite_comprobante_si_el_pago_fue_rechazado(): void
+    {
+        DB::table('pagos_membresia')->where('id_pago', 15)->update(['estado_pago' => 'Rechazado']);
+
+        try {
+            app(ComprobanteMembresiaService::class)->formatear(PagoMembresia::findOrFail(15));
+            $this->fail('Un pago rechazado no puede generar una constancia de pago.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->assertArrayHasKey('pago', $e->errors());
+        }
+    }
+
 }

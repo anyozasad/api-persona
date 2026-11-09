@@ -139,7 +139,7 @@ import {
                 <b><i></i>{{rutinaActual?.entrenador ? 'Entrenador asignado' : 'Disponible'}}</b>
               </div>
               <div class="apex-coach-body">
-                <img src="assets/mallqui/mallqui-cover.webp" alt="Personal de Mallqui Gym">
+                <img src="assets/mallqui/mallqui-trainer-4k.webp" alt="Personal de Mallqui Gym">
                 <div>
                   <h3>{{rutinaActual?.entrenador ? nombreEntrenador : 'Personal de Mallqui Gym'}}</h3>
                   <p>{{rutinaActual?.entrenador ? 'Tu entrenador puede orientarte durante la sesión y revisar tu rutina.' : 'Recibe orientación del personal y solicita tu rutina desde tu cuenta.'}}</p>
@@ -189,7 +189,7 @@ import {
                   <button type="button" (click)="abrirModulo('reservas')">Ver reservas ↗</button>
                 </div>
                 <div class="apex-next-body">
-                  <img src="assets/mallqui/mallqui-cover.webp" alt="Próxima clase">
+                  <img src="assets/mallqui/mallqui-referencia-gym-equipos-4k.webp" alt="Próxima clase">
                   <div>
                     <h3>{{reservasActivas[0]?.clase?.nombre || 'Sin reserva próxima'}}</h3>
                     <p>{{reservasActivas.length ? fechaCortaPortal(reservasActivas[0]?.fecha_clase) : 'Reserva una clase cuando estés listo.'}}</p>
@@ -243,7 +243,7 @@ import {
                        (click)="abrirEnfoqueEntrenamiento('Cardiovascular')"
                        (keydown.enter)="abrirEnfoqueEntrenamiento('Cardiovascular')">
                 <span class="focus-index">01</span>
-                <div class="focus-icon focus-photo"><img src="assets/mallqui/mallqui-cover.webp" alt="Entrenamiento cardiovascular en caminadora"></div>
+                <div class="focus-icon focus-photo"><img src="assets/mallqui/mallqui-foto-real-cardio-4k.webp" alt="Entrenamiento cardiovascular en caminadora"></div>
                 <small>RESISTENCIA Y SALUD</small>
                 <h3>Cardiovascular</h3>
                 <p>Trabajo de resistencia, capacidad cardiovascular y acondicionamiento general.</p>
@@ -255,7 +255,7 @@ import {
                        (click)="abrirEnfoqueEntrenamiento('Masa muscular')"
                        (keydown.enter)="abrirEnfoqueEntrenamiento('Masa muscular')">
                 <span class="focus-index">02</span>
-                <div class="focus-icon focus-photo"><img src="assets/mallqui/mallqui-cover.webp" alt="Entrenamiento de fuerza con pesas"></div>
+                <div class="focus-icon focus-photo"><img src="assets/mallqui/mallqui-referencia-gym-equipos-4k.webp" alt="Entrenamiento de fuerza con pesas"></div>
                 <small>FUERZA</small>
                 <h3>Masa muscular</h3>
                 <p>Rutinas orientadas al desarrollo de fuerza y masa muscular con seguimiento del gimnasio.</p>
@@ -267,7 +267,7 @@ import {
                        (click)="abrirEnfoqueEntrenamiento('Tonificación')"
                        (keydown.enter)="abrirEnfoqueEntrenamiento('Tonificación')">
                 <span class="focus-index">03</span>
-                <div class="focus-icon focus-photo"><img src="assets/mallqui/mallqui-cover.webp" alt="Acondicionamiento y tonificación en gimnasio"></div>
+                <div class="focus-icon focus-photo"><img src="assets/mallqui/mallqui-referencia-foto-personas-4k.webp" alt="Acondicionamiento y tonificación en gimnasio"></div>
                 <small>ACONDICIONAMIENTO</small>
                 <h3>Tonificación</h3>
                 <p>Trabajo equilibrado de fuerza, resistencia y control corporal.</p>
@@ -279,7 +279,7 @@ import {
                        (click)="abrirEnfoqueEntrenamiento('CrossFit')"
                        (keydown.enter)="abrirEnfoqueEntrenamiento('CrossFit')">
                 <span class="focus-index">04</span>
-                <div class="focus-icon focus-photo"><img src="assets/mallqui/mallqui-cover.webp" alt="Entrenamiento funcional en gimnasio"></div>
+                <div class="focus-icon focus-photo"><img src="assets/mallqui/mallqui-hero-interior-4k.webp" alt="Entrenamiento funcional en gimnasio"></div>
                 <small>ENTRENAMIENTO FUNCIONAL</small>
                 <h3>CrossFit</h3>
                 <p>Sesiones funcionales de intensidad adaptada, combinando fuerza, movilidad y resistencia.</p>
@@ -291,7 +291,7 @@ import {
                        (click)="abrirEnfoqueEntrenamiento('Pérdida de peso')"
                        (keydown.enter)="abrirEnfoqueEntrenamiento('Pérdida de peso')">
                 <span class="focus-index">05</span>
-                <div class="focus-icon focus-photo"><img src="assets/mallqui/mallqui-cover.webp" alt="Cardio y acondicionamiento en caminadora"></div>
+                <div class="focus-icon focus-photo"><img src="assets/mallqui/mallqui-foto-real-cardio-4k.webp" alt="Cardio y acondicionamiento en caminadora"></div>
                 <small>AERÓBICO + ANAERÓBICO</small>
                 <h3>Pérdida de peso</h3>
                 <p>Trabajo cardiovascular y de acondicionamiento orientado a mejorar la condición física.</p>
@@ -316,7 +316,7 @@ import {
                 <article *ngFor="let p of productosInicioVisibles">
                   <div class="mallqui-product-home-media" [class.has-photo]="!!p.foto">
                     <img *ngIf="p.foto" [src]="p.foto" [alt]="p.nombre_producto" loading="lazy" decoding="async" (error)="imagenProductoError(p)">
-                    <img *ngIf="!p.foto" class="mallqui-product-home-fallback" src="assets/mallqui/mallqui-cover.webp" [alt]="p.nombre_producto || 'Producto Mallqui Gym'">
+                    <img *ngIf="!p.foto" class="mallqui-product-home-fallback" src="assets/mallqui/producto-sin-imagen.svg" [alt]="'Imagen no disponible para '+(p.nombre_producto || 'producto')">
                   </div>
                   <div class="mallqui-product-home-copy">
                     <span>{{nombreCategoriaProductoInicio(p)}}</span>
@@ -361,7 +361,7 @@ import {
             <div class="mallqui-wellbeing-grid">
               <article>
                 <span class="wellbeing-index">01</span>
-                <div class="wellbeing-icon wellbeing-photo"><img src="assets/mallqui/mallqui-cover.webp" alt="Actividad cardiovascular y resistencia"></div>
+                <div class="wellbeing-icon wellbeing-photo"><img src="assets/mallqui/mallqui-foto-real-cardio-4k.webp" alt="Actividad cardiovascular y resistencia"></div>
                 <small>SALUD CARDIOVASCULAR</small>
                 <h3>Resistencia y corazón</h3>
                 <p>La actividad física regular puede apoyar la resistencia cardiovascular y la salud general. Si una persona tiene hipertensión, enfermedad cardiaca u otra condición diagnosticada, su entrenamiento debe seguir indicaciones profesionales.</p>
@@ -370,7 +370,7 @@ import {
 
               <article>
                 <span class="wellbeing-index">02</span>
-                <div class="wellbeing-icon wellbeing-photo"><img src="assets/mallqui/mallqui-cover.webp" alt="Fuerza muscular y movilidad"></div>
+                <div class="wellbeing-icon wellbeing-photo"><img src="assets/mallqui/mallqui-referencia-gym-equipos-4k.webp" alt="Fuerza muscular y movilidad"></div>
                 <small>MÚSCULO Y ESQUELETO</small>
                 <h3>Fuerza y movilidad</h3>
                 <p>El trabajo progresivo de fuerza y movilidad ayuda a mantener la función física. Ante dolor lumbar, lesión, osteoporosis o molestias articulares, el ejercicio debe adaptarse con orientación adecuada.</p>
@@ -379,7 +379,7 @@ import {
 
               <article>
                 <span class="wellbeing-index">03</span>
-                <div class="wellbeing-icon wellbeing-photo"><img src="assets/mallqui/mallqui-cover.webp" alt="Meditación y bienestar mental"></div>
+                <div class="wellbeing-icon wellbeing-photo"><img src="assets/mallqui/mallqui-referencia-foto-personas-4k.webp" alt="Meditación y bienestar mental"></div>
                 <small>BIENESTAR MENTAL</small>
                 <h3>Actividad y estado de ánimo</h3>
                 <p>Mantenerse activo puede apoyar el bienestar, el descanso y el manejo del estrés. No reemplaza la atención de un profesional cuando existen problemas de salud mental.</p>
@@ -388,7 +388,7 @@ import {
 
               <article>
                 <span class="wellbeing-index">04</span>
-                <div class="wellbeing-icon wellbeing-photo"><img src="assets/mallqui/mallqui-cover.webp" alt="Acondicionamiento físico y salud metabólica"></div>
+                <div class="wellbeing-icon wellbeing-photo"><img src="assets/mallqui/mallqui-hero-interior-4k.webp" alt="Acondicionamiento físico y salud metabólica"></div>
                 <small>SALUD METABÓLICA</small>
                 <h3>Acondicionamiento general</h3>
                 <p>Combinar movimiento, fuerza y trabajo cardiovascular puede apoyar la salud metabólica y la condición física. El sistema no propone cambios rápidos de peso ni sustituye indicaciones médicas.</p>
@@ -397,7 +397,7 @@ import {
 
               <article>
                 <span class="wellbeing-index">05</span>
-                <div class="wellbeing-icon wellbeing-photo"><img src="assets/mallqui/mallqui-cover.webp" alt="Ejercicio de resistencia y capacidad respiratoria"></div>
+                <div class="wellbeing-icon wellbeing-photo"><img src="assets/mallqui/mallqui-foto-real-cardio-4k.webp" alt="Ejercicio de resistencia y capacidad respiratoria"></div>
                 <small>CAPACIDAD RESPIRATORIA</small>
                 <h3>Resistencia física</h3>
                 <p>El ejercicio progresivo puede mejorar la capacidad física general. Si existen asma u otras enfermedades respiratorias, la intensidad debe ajustarse con indicaciones del profesional de salud y del entrenador.</p>
@@ -2408,23 +2408,23 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       return 'assets/mallqui/mallqui-pro-ai-4k.webp';
     }
     if(n.includes('jalón') || n.includes('jalon') || n.includes('tracción') || n.includes('traccion') || n.includes('espalda')){
-      return 'assets/mallqui/mallqui-cover.webp';
+      return 'assets/mallqui/mallqui-hero-interior-4k.webp';
     }
     if(n.includes('mancuerna') || n.includes('hombro') || n.includes('fuerza') || n.includes('funcional') || n.includes('circuito')){
-      return 'assets/mallqui/mallqui-cover.webp';
+      return 'assets/mallqui/mallqui-hero-interior-4k.webp';
     }
     if(n.includes('caminata') || n.includes('trote') || n.includes('cinta') || n.includes('intervalo') || n.includes('cardio')){
       return 'assets/mallqui/mallqui-hero-4k.webp';
     }
 
-    return 'assets/mallqui/mallqui-cover.webp';
+    return 'assets/mallqui/mallqui-hero-interior-4k.webp';
   }
 
   imagenReferenciaFallback(event:Event):void{
     const img=event.target as HTMLImageElement;
     if(!img || img.dataset['fallbackAplicado']==='1')return;
     img.dataset['fallbackAplicado']='1';
-    img.src='assets/mallqui/mallqui-cover.webp';
+    img.src='assets/mallqui/mallqui-hero-interior-4k.webp';
   }
 
   solicitarRutinaConPerfil():void{
@@ -3792,64 +3792,64 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   imagenEjercicioCasa(ejercicio:any):string{
     const id=String(ejercicio?.id||'');
     const mapa:Record<string,string>={
-      sentadilla_silla:'assets/mallqui/mallqui-cover.webp',
-      zancada_asistida:'assets/mallqui/mallqui-cover.webp',
-      talones:'assets/mallqui/mallqui-cover.webp',
-      marcha:'assets/mallqui/mallqui-cover.webp',
-      flexion_pared_brazos:'assets/mallqui/mallqui-cover.webp',
-      circulos_brazos:'assets/mallqui/mallqui-cover.webp',
-      empuje_palmas:'assets/mallqui/mallqui-cover.webp',
-      extension_triceps_pared:'assets/mallqui/mallqui-cover.webp',
-      flexion_pared_pecho:'assets/mallqui/mallqui-cover.webp',
-      presion_pecho:'assets/mallqui/mallqui-cover.webp',
-      apertura_brazos:'assets/mallqui/mallqui-cover.webp',
-      plancha_pared_pecho:'assets/mallqui/mallqui-cover.webp',
-      bird_dog_espalda:'assets/mallqui/mallqui-cover.webp',
-      angel_pared:'assets/mallqui/mallqui-cover.webp',
-      remo_isometrico:'assets/mallqui/mallqui-cover.webp',
-      cobra_suave:'assets/mallqui/mallqui-cover.webp',
-      elevacion_lateral_hombros:'assets/mallqui/mallqui-cover.webp',
-      deslizamiento_pared:'assets/mallqui/mallqui-cover.webp',
-      rotacion_externa:'assets/mallqui/mallqui-cover.webp',
-      circulos_hombros:'assets/mallqui/mallqui-cover.webp',
-      puente_gluteos:'assets/mallqui/mallqui-cover.webp',
-      abduccion_pie:'assets/mallqui/mallqui-cover.webp',
-      patada_atras:'assets/mallqui/mallqui-cover.webp',
-      sentadilla_gluteos:'assets/mallqui/mallqui-cover.webp',
-      dead_bug:'assets/mallqui/mallqui-cover.webp',
-      bird_dog_core:'assets/mallqui/mallqui-cover.webp',
-      rodilla_mano:'assets/mallqui/mallqui-cover.webp',
-      respiracion_core:'assets/mallqui/mallqui-cover.webp',
-      sentadilla_mancuernas:'assets/mallqui/mallqui-cover.webp',
-      prensa_piernas:'assets/mallqui/mallqui-cover.webp',
-      extension_cuadriceps:'assets/mallqui/mallqui-cover.webp',
-      curl_femoral:'assets/mallqui/mallqui-cover.webp',
-      curl_biceps_mancuernas:'assets/mallqui/mallqui-cover.webp',
-      curl_martillo:'assets/mallqui/mallqui-cover.webp',
-      triceps_polea:'assets/mallqui/mallqui-cover.webp',
-      triceps_mancuerna:'assets/mallqui/mallqui-cover.webp',
-      press_banca_mancuernas:'assets/mallqui/mallqui-cover.webp',
-      press_pecho_maquina:'assets/mallqui/mallqui-cover.webp',
-      aperturas_mancuernas:'assets/mallqui/mallqui-cover.webp',
-      flexiones_banco:'assets/mallqui/mallqui-cover.webp',
-      jalon_pecho:'assets/mallqui/mallqui-cover.webp',
-      remo_sentado:'assets/mallqui/mallqui-cover.webp',
-      remo_mancuerna:'assets/mallqui/mallqui-cover.webp',
-      pullover_polea:'assets/mallqui/mallqui-cover.webp',
-      press_hombros:'assets/mallqui/mallqui-cover.webp',
-      elevacion_lateral_mancuernas:'assets/mallqui/mallqui-cover.webp',
-      face_pull:'assets/mallqui/mallqui-cover.webp',
-      elevacion_frontal_mancuernas:'assets/mallqui/mallqui-cover.webp',
-      hip_thrust_banco:'assets/mallqui/mallqui-cover.webp',
-      sentadilla_sumo_mancuerna:'assets/mallqui/mallqui-cover.webp',
-      abduccion_maquina:'assets/mallqui/mallqui-cover.webp',
-      patada_polea:'assets/mallqui/mallqui-cover.webp',
-      crunch_maquina:'assets/mallqui/mallqui-cover.webp',
-      plancha_colchoneta:'assets/mallqui/mallqui-cover.webp',
-      elevacion_rodillas_banco:'assets/mallqui/mallqui-cover.webp',
-      pallof_polea:'assets/mallqui/mallqui-cover.webp'
+      sentadilla_silla:'assets/mallqui/mallqui-pro-ai-4k.webp',
+      zancada_asistida:'assets/mallqui/mallqui-pro-ai-4k.webp',
+      talones:'assets/mallqui/mallqui-pro-ai-4k.webp',
+      marcha:'assets/mallqui/mallqui-hero-interior-4k.webp',
+      flexion_pared_brazos:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      circulos_brazos:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      empuje_palmas:'assets/mallqui/mallqui-hero-interior-4k.webp',
+      extension_triceps_pared:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      flexion_pared_pecho:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      presion_pecho:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      apertura_brazos:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      plancha_pared_pecho:'assets/mallqui/mallqui-beginner-ai-4k.webp',
+      bird_dog_espalda:'assets/mallqui/mallqui-beginner-ai-4k.webp',
+      angel_pared:'assets/mallqui/mallqui-hero-interior-4k.webp',
+      remo_isometrico:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      cobra_suave:'assets/mallqui/mallqui-hero-interior-4k.webp',
+      elevacion_lateral_hombros:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      deslizamiento_pared:'assets/mallqui/mallqui-hero-interior-4k.webp',
+      rotacion_externa:'assets/mallqui/mallqui-hero-interior-4k.webp',
+      circulos_hombros:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      puente_gluteos:'assets/mallqui/mallqui-pro-ai-4k.webp',
+      abduccion_pie:'assets/mallqui/mallqui-pro-ai-4k.webp',
+      patada_atras:'assets/mallqui/mallqui-pro-ai-4k.webp',
+      sentadilla_gluteos:'assets/mallqui/mallqui-pro-ai-4k.webp',
+      dead_bug:'assets/exercises/deadbug_human.webp',
+      bird_dog_core:'assets/mallqui/mallqui-beginner-ai-4k.webp',
+      rodilla_mano:'assets/mallqui/mallqui-beginner-ai-4k.webp',
+      respiracion_core:'assets/mallqui/mallqui-beginner-ai-4k.webp',
+      sentadilla_mancuernas:'assets/mallqui/mallqui-pro-ai-4k.webp',
+      prensa_piernas:'assets/mallqui/mallqui-pro-ai-4k.webp',
+      extension_cuadriceps:'assets/mallqui/mallqui-pro-ai-4k.webp',
+      curl_femoral:'assets/mallqui/mallqui-pro-ai-4k.webp',
+      curl_biceps_mancuernas:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      curl_martillo:'assets/mallqui/mallqui-hero-interior-4k.webp',
+      triceps_polea:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      triceps_mancuerna:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      press_banca_mancuernas:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      press_pecho_maquina:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      aperturas_mancuernas:'assets/mallqui/mallqui-hero-interior-4k.webp',
+      flexiones_banco:'assets/mallqui/mallqui-hero-interior-4k.webp',
+      jalon_pecho:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      remo_sentado:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      remo_mancuerna:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      pullover_polea:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      press_hombros:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      elevacion_lateral_mancuernas:'assets/mallqui/mallqui-hero-interior-4k.webp',
+      face_pull:'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+      elevacion_frontal_mancuernas:'assets/mallqui/mallqui-hero-interior-4k.webp',
+      hip_thrust_banco:'assets/mallqui/mallqui-hero-interior-4k.webp',
+      sentadilla_sumo_mancuerna:'assets/mallqui/mallqui-pro-ai-4k.webp',
+      abduccion_maquina:'assets/mallqui/mallqui-pro-ai-4k.webp',
+      patada_polea:'assets/mallqui/mallqui-pro-ai-4k.webp',
+      crunch_maquina:'assets/mallqui/mallqui-beginner-ai-4k.webp',
+      plancha_colchoneta:'assets/mallqui/mallqui-beginner-ai-4k.webp',
+      elevacion_rodillas_banco:'assets/mallqui/mallqui-beginner-ai-4k.webp',
+      pallof_polea:'assets/mallqui/mallqui-hero-interior-4k.webp'
     };
-    return mapa[id] || 'assets/mallqui/mallqui-cover.webp';
+    return mapa[id] || 'assets/mallqui/mallqui-hero-interior-4k.webp';
   }
 
   ocultarImagenEjercicio(event:any):void{

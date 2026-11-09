@@ -20,7 +20,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       'clienteMembresias', 'pagos', 'productos', 'reservas', 'rutinas',
       'asistencias', 'entrenadores', 'clases', 'cajaActual',
       'registrarAccesoCodigo', 'cambiarEstadoReserva', 'confirmarPagoPendiente',
-      'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin'
+      'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin', 'comprobantePago', 'verificacionEfsrt'
     ]);
 
     api.estadoOperativo.and.returnValue(of({
@@ -44,6 +44,78 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     const auth = { usuario: { nombre_usuario: 'admin', rol: 'Administrador' } } as any;
     const router = { navigate: jasmine.createSpy('navigate') } as any;
     component = new AdminIntegradoComponent(auth, api, router);
+  });
+
+  it('solo permite comprobantes de pagos completados, no pendientes', () => {
+    component.verComprobantePago({id_pago: 2,estado_pago:'Pendiente'});
+    expect(api.comprobantePago).not.toHaveBeenCalled();
+    expect(component.comprobanteDatos).toBeNull();
+    expect(component.error).toContain('no existe un pago confirmado');
+  });
+
+  it('consulta el comprobante real por id de pago y no por id de suscripcion', () => {
+    const registro={id_pago: 7,estado_pago:'Completado'};
+    const comprobante={
+      numero_comprobante:'B001-00000007',estado_pago:'Completado',
+      cliente:'Cliente prueba',monto:50,nota_tributaria:'Constancia interna'
+    };
+    api.comprobantePago.and.returnValue(of(comprobante));
+    component.pagos=[registro];
+    component.documentoPagoId=7;
+
+    component.generarComprobanteMembresia();
+
+    expect(api.comprobantePago).toHaveBeenCalledOnceWith(7);
+    expect(component.comprobanteDatos).toEqual(comprobante);
+  });
+
+  it('rechaza consultar un pago no confirmado aunque este seleccionado', () => {
+    component.pagos=[{id_pago:5,estado_pago:'Rechazado'}];
+    component.documentoPagoId=5;
+
+    component.generarComprobanteMembresia();
+
+    expect(api.comprobantePago).not.toHaveBeenCalled();
+    expect(component.comprobanteDatos).toBeNull();
+    expect(component.error).toContain('Selecciona un pago confirmado');
+  });
+
+  it('abre la comprobación EFSRT sin desviarla al inicio', () => {
+    expect((component as any).normalizarSegcion('verificacion-efsrt'))
+      .toBe('verificacion-efsrt');
+  });
+
+  it('consulta la revisión EFSRT en el servidor y muestra tablas faltantes reales', () => {
+    const revision={
+      conexion:'disponible',
+      total_modulos:10,
+      modulos_con_estructura:8,
+      faltantes:2,
+      alertas:[],
+      modulos:[{id:'reservas',estado:'estructura_incompleta',
+        faltantes:['clases'],registros:1,destino:'reservas'}]
+    };
+    api.verificacionEfsrt.and.returnValue(of(revision));
+
+    component.cargarVerificacionEfsrt();
+
+    expect(api.verificacionEfsrt).toHaveBeenCalledTimes(1);
+    expect(component.verificacionEfsrtCargando).toBeFalse();
+    expect(component.verificacionEfsrt).toEqual(revision);
+    expect(component.verificacionEfsrt.modulos[0].estado).toBe('estructura_incompleta');
+  });
+
+  it('no da por aprobada la revisión si la base de datos está caída', () => {
+    api.verificacionEfsrt.and.returnValue(throwError(() => ({
+      status:503,error:{mensaje:'No fue posible consultar la base de datos.'}
+    })));
+    component.verificacionEfsrt={conexion:'disponible'};
+
+    component.cargarVerificacionEfsrt();
+
+    expect(component.verificacionEfsrt).toBeNull();
+    expect(component.verificacionEfsrtCargando).toBeFalse();
+    expect(component.verificacionEfsrtError).toContain('No fue posible');
   });
 
   it('sincroniza los datos del dashboard con las APIs operativas', () => {

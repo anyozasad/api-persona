@@ -997,32 +997,42 @@ class GymSystemAdminController extends Controller
 
     public function comprobante(string $suscripcionId)
     {
-        $d = $this->db->table('cliente_membresia as cm')
-            ->join('clientes as c', 'c.id_cliente', '=', 'cm.id_cliente')
-            ->join('membresias as m', 'm.id_membresia', '=', 'cm.id_membresia')
-            ->where('cm.id_cliente_membresia', $suscripcionId)
-            ->select(
-                'cm.id_cliente_membresia as id',
-                DB::raw("CONCAT(c.nombres, ' ', c.apellidos) as socio"),
-                'c.dni',
-                'c.correo as email',
-                'm.nombre as plan',
-                'm.precio',
-                'cm.fecha_inicio',
-                'cm.fecha_fin',
-                'cm.estado'
-            )
+        // Compatibilidad con /gym-admin/documentos/comprobante/{suscripcionId}.
+        // Nunca presentar el precio de una membresía como un pago efectuado.
+        $relacion = $this->db->table('cliente_membresia')
+            ->where('id_cliente_membresia', $suscripcionId)
             ->first();
 
-        abort_if(!$d, 404, 'Comprobante no encontrado.');
+        abort_if(!$relacion, 404, 'Membresía no encontrada.');
+
+        $pago = \App\Models\PagoMembresia::query()
+            ->where('id_cliente_membresia', $suscripcionId)
+            ->where('estado_pago', 'Completado')
+            ->orderByDesc('fecha_pago')
+            ->orderByDesc('id_pago')
+            ->first();
+
+        abort_if(!$pago, 422, 'No existe un pago confirmado para esta membresía.');
+
+        $comprobante = app(\App\Services\ComprobanteMembresiaService::class)
+            ->formatear($pago);
 
         $cfg = $this->schema->hasTable('configuracion_sistema')
             ? $this->db->table('configuracion_sistema')->first()
             : null;
 
         return response()->json([
-            'tipo' => 'comprobante_suscripcion',
-            'datos' => $d,
+            'tipo' => 'constancia_interna_membresia',
+            'datos' => [
+                'id' => $relacion->id_cliente_membresia,
+                'socio' => $comprobante['cliente'],
+                'dni' => $comprobante['dni'],
+                'plan' => $comprobante['membresia'],
+                'precio' => $comprobante['monto'],
+                'fecha_inicio' => $comprobante['periodo']['inicio'],
+                'fecha_fin' => $comprobante['periodo']['fin'],
+            ],
+            'comprobante' => $comprobante,
             'configuracion' => $cfg,
         ]);
     }

@@ -419,7 +419,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
       descripcion: 'Aprende técnica, postura y una rutina segura para comenzar.',
       nivel: 'Principiante',
       horario: 'Según agenda',
-      img: 'assets/mallqui/mallqui-cover.webp'
+      img: 'assets/mallqui/mallqui-beginner-ai-4k.webp'
     },
     {
       id_clase: 0,
@@ -428,7 +428,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
       descripcion: 'Trabajo progresivo con cargas para mejorar fuerza e hipertrofia.',
       nivel: 'Intermedio',
       horario: 'Según agenda',
-      img: 'assets/mallqui/mallqui-cover.webp'
+      img: 'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp'
     },
     {
       id_clase: 0,
@@ -437,7 +437,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
       descripcion: 'Sesiones intensas orientadas a rendimiento y resistencia.',
       nivel: 'Avanzado',
       horario: 'Según agenda',
-      img: 'assets/mallqui/mallqui-cover.webp'
+      img: 'assets/mallqui/mallqui-foto-real-cardio-4k.webp'
     }
   ];
 
@@ -456,9 +456,9 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
         const clasesApi = Array.isArray(r?.clases) ? r.clases : [];
         if (clasesApi.length) {
           const fotos = [
-            'assets/mallqui/mallqui-cover.webp',
-            'assets/mallqui/mallqui-cover.webp',
-            'assets/mallqui/mallqui-cover.webp'
+            'assets/mallqui/mallqui-beginner-ai-4k.webp',
+            'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
+            'assets/mallqui/mallqui-foto-real-cardio-4k.webp'
           ];
 
           this.clases = clasesApi.slice(0, 3).map((clase: any, index: number) => ({
