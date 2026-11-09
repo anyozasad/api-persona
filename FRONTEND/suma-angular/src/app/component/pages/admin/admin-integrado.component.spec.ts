@@ -118,6 +118,30 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.verificacionEfsrtError).toContain('No fue posible');
   });
 
+  it('al regresar al Dashboard vuelve a consultar socios, pagos y productos reales', () => {
+    spyOn(window, 'scrollTo').and.stub();
+    component.seccion = 'clientes';
+    component.clientes = [{ id_cliente: 98, nombres: 'Dato anterior' }];
+    component.productos = [{ id_producto: 98, nombre_producto: 'Dato anterior' }];
+    component.dashboard = { ingresos: { total_mes: 9999 } };
+
+    api.clientes.and.returnValue(of([{ id_cliente: 3, nombres: 'Socio actualizado' }]));
+    api.productos.and.returnValue(of([{ id_producto: 4, nombre_producto: 'Producto actualizado' }]));
+
+    component.cambiarSegcion('dashboard');
+
+    expect(component.seccion).toBe('dashboard');
+    expect(api.estadoOperativo).toHaveBeenCalled();
+    expect(api.clientes).toHaveBeenCalled();
+    expect(api.productos).toHaveBeenCalled();
+    expect(api.pagos).toHaveBeenCalled();
+    expect(api.reservas).toHaveBeenCalled();
+    expect(component.clientes[0].id_cliente).toBe(3);
+    expect(component.productos[0].id_producto).toBe(4);
+    expect(component.dashboard?.ingresos?.total_mes).toBe(120);
+    expect(component.actualizandoDatos).toBeFalse();
+  });
+
   it('sincroniza los datos del dashboard con las APIs operativas', () => {
     component.actualizarDashboardCompleto();
 
