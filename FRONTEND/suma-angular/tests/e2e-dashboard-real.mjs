@@ -147,7 +147,7 @@ try {
       null,{timeout:25000}
     );
     await page.goto(base+'/clientes',{waitUntil:'domcontentloaded'});
-    const tabla=page.locator('.clients-v3-table, .clients-v3-shell');
+    const tabla=page.locator('.clients-v3-shell');
     await tabla.waitFor({timeout:15000});
     await page.locator('.clients-v3-shell').getByText('Interfaz Mallqui',{exact:false}).first().waitFor({timeout:25000});
     await page.screenshot({path:'evidencias-dashboard/15_Socio_persistido_MySQL.png',fullPage:true});
