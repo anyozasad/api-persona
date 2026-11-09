@@ -171,3 +171,21 @@ npm test -- --watch=false --browsers=ChromeHeadless
 ```
 
 **Limitaciones técnicas reales:** aún no se han ejecutado estos comandos con las dependencias, navegador y MySQL instalados en el equipo del usuario. La aprobación final exige que los comandos terminen correctamente, que las operaciones persistan en la base real, y que el supervisor valide sus evidencias. **No existe integración certificada SUNAT** para emitir una boleta electrónica con validez tributaria. Los documentos disponibles permiten elaborar una constancia interna, no probar una emisión autorizada. Las jornadas futuras de la bitácora siguen pendientes de su realización y validación, no se marcan como realizadas automáticamente.
+
+---
+
+## Resultado de la prueba automatizada integral — 09/11/2026
+
+**Ejecución verificable:** [GitHub Actions — Mallqui Gym, ejecución 42640826023](https://github.com/anyozasad/api-persona/actions/runs/42640826023)
+
+- **Angular 20:** instalación reproducible con `npm ci`, compilación de producción `npm run build` **aprobada** y **60 de 60 pruebas** ejecutadas correctamente en Chrome Headless.
+- **Laravel 12 + MySQL 8:** dependencias instaladas, sintaxis PHP revisada, migraciones aplicadas y suite completa de PHPUnit: **101 de 101 pruebas aprobadas, 571 aserciones**. En GitHub Actions se utilizó exclusivamente una base de prueba `mallqui_gym_pruebas`.
+- **Reservas:** cubiertas altas, edición, cancelación lógica, membresías, restricciones de cupo y duplicados.
+- **Pagos:** se valida la emisión de constancias solamente cuando el pago está confirmado. La constancia **no es** una boleta electrónica validada por SUNAT.
+- **Inventario:** el CRUD de productos soporta esquemas actuales y compatibles; pruebas de imágenes, actualización y eliminación lógica. Kardex antiguo conectado al historial real de movimientos y error explícito si falta tabla.
+- **Dashboard:** se reactivó como sección desplegable el `AdminDashboardToolsComponent` con sus 20 indicadores y controles operativos; se mantuvo la interfaz Mantis.
+- **Seguridad y diagnóstico:** autenticación de roles, revisión EFSRT, informes y validaciones incluidos en la suite.
+
+**Importante para evaluación:** los resultados anteriores prueban las rutas y operaciones cubiertas por las suites de CI, **no equivalen a una auditoría manual de todos los flujos ni a una comprobación de la base real del negocio en la computadora del instituto**. La emisión de comprobantes electrónicos autorizados por SUNAT depende de credenciales, firma digital e integración fiscal que no están disponibles en este repositorio. No se modificaron las fechas, horas o firmas originales de los documentos EFSRT.
+
+**Rama validada:** los cambios comprobados en la ejecución indicada se fusionaron a `main` con el PR [#25](https://github.com/anyozasad/api-persona/pull/25).
