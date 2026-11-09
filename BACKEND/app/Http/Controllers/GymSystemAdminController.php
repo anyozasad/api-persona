@@ -31,6 +31,50 @@ class GymSystemAdminController extends Controller
         if (!$esquemaActual) {
             $this->asegurarCompatibilidad();
         }
+
+        // Una base puede tener clientes modernos y productos heredados.
+        // Detectar cada esquema por su propia clave, sin asumir que todo es legacy.
+        $this->asegurarProductoLegacy();
+    }
+
+    private function usaProductosModernos(): bool
+    {
+        return $this->schema->hasTable('productos')
+            && $this->schema->hasColumn('productos', 'id_producto');
+    }
+
+    /** Completa únicamente la tabla legacy (id/categoria_id) al cargarla. */
+    private function asegurarProductoLegacy(): void
+    {
+        if (!$this->schema->hasTable('productos')
+            || !$this->schema->hasColumn('productos','id')
+            || !$this->schema->hasColumn('productos','categoria_id')
+            || $this->usaProductosModernos()) {
+            return;
+        }
+
+        $faltantes = [];
+        foreach (['descripcion','stock_minimo','unidad_medida','foto'] as $columna) {
+            if (!$this->schema->hasColumn('productos', $columna)) {
+                $faltantes[] = $columna;
+            }
+        }
+
+        if ($faltantes) {
+            $this->schema->table('productos', function ($tabla) use ($faltantes) {
+                if (in_array('descripcion',$faltantes,true)) $tabla->text('descripcion')->nullable();
+                if (in_array('stock_minimo',$faltantes,true)) $tabla->unsignedInteger('stock_minimo')->default(5);
+                if (in_array('unidad_medida',$faltantes,true)) $tabla->string('unidad_medida',30)->default('Unidad');
+                if (in_array('foto',$faltantes,true)) $tabla->mediumText('foto')->nullable();
+            });
+        }
+
+        // Data URL puede superar el tamaño VARCHAR(255) de instalaciones viejas.
+        $columnaFoto = $this->db->selectOne("SHOW COLUMNS FROM productos LIKE 'foto'");
+        $tipo = strtolower((string)($columnaFoto->Type ?? ''));
+        if ($tipo !== '' && !str_contains($tipo,'text')) {
+            $this->db->statement("ALTER TABLE productos MODIFY foto MEDIUMTEXT NULL");
+        }
     }
 
     private function asegurarCompatibilidad(): void
@@ -486,12 +530,16 @@ class GymSystemAdminController extends Controller
 
     public function productos()
     {
+        if ($this->usaProductosModernos()) return app(ProductoController::class)->index(request());
+
         $rows=$this->db->table('productos as p')->leftJoin('categorias as c','c.id','=','p.categoria_id')->select('p.*','c.nombre as categoria_nombre')->orderByDesc('p.id')->get();
         return response()->json($rows->map(fn($p)=>$this->mapProducto($p))->values());
     }
 
     public function producto(string $id)
     {
+        if ($this->usaProductosModernos()) return app(ProductoController::class)->show($id);
+
         $p=$this->db->table('productos as p')->leftJoin('categorias as c','c.id','=','p.categoria_id')->select('p.*','c.nombre as categoria_nombre')->where('p.id',$id)->first();
         abort_if(!$p,404,'Producto no encontrado.');
         return response()->json($this->mapProducto($p));
@@ -499,6 +547,8 @@ class GymSystemAdminController extends Controller
 
     public function guardarProducto(Request $request)
     {
+        if ($this->usaProductosModernos()) return app(ProductoController::class)->store($request);
+
         $d=$this->validarProducto($request);
         $id=$this->db->table('productos')->insertGetId($d);
         return response()->json(['mensaje'=>'Producto registrado.','id_producto'=>$id],201);
@@ -506,6 +556,8 @@ class GymSystemAdminController extends Controller
 
     public function actualizarProducto(Request $request,string $id)
     {
+        if ($this->usaProductosModernos()) return app(ProductoController::class)->update($request,$id);
+
         $actual=$this->db->table('productos')->where('id',$id)->first();
         abort_if(!$actual,404,'Producto no encontrado.');
         $datos=$this->validarProducto($request);
@@ -516,12 +568,22 @@ class GymSystemAdminController extends Controller
 
     public function cambiarEstadoProducto(Request $request,string $id)
     {
+        if ($this->usaProductosModernos()) {
+            $estado = ucfirst(strtolower((string)$request->input('estado','Inactivo')));
+            $request->merge(['estado'=>$estado]);
+            return app(ProductoController::class)->update($request,$id);
+        }
+
         $this->db->table('productos')->where('id',$id)->update(['estado'=>$this->estadoDb((string)$request->input('estado','Inactivo'))]);
         return response()->json(['mensaje'=>'Estado del producto actualizado.']);
     }
 
     public function ajustarStock(Request $request)
     {
+        if ($this->usaProductosModernos()) {
+            return app(KardexController::class)->ajustar($request,app(\App\Services\InventarioService::class));
+        }
+
         $d=$request->validate(['id_producto'=>'required|integer','tipo'=>'required|string|in:Entrada,Salida','cantidad'=>'required|integer|min:1','motivo'=>'nullable|string|max:255']);
         $p=$this->db->table('productos')->where('id',$d['id_producto'])->first();
         abort_if(!$p,404,'Producto no encontrado.');
