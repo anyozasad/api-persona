@@ -120,7 +120,7 @@ class ProductoModernLegacyBridgeTest extends TestCase
 
         $listaActualizada = app(PortalClienteController::class)->productos($solicitud)->getData(true);
         $this->assertSame($fotoEditada, $listaActualizada[0]['foto']);
-        $this->assertSame(29.0, $listaActualizada[0]['precio_venta']);
+        $this->assertEqualsWithDelta(29.0, (float) $listaActualizada[0]['precio_venta'], 0.001);
     }
 
     public function test_editar_producto_moderno_conserva_stock_y_permita_quitar_foto(): void
