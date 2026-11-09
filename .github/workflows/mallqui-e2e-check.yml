@@ -31,6 +31,17 @@ jobs:
           cache-dependency-path: FRONTEND/suma-angular/package-lock.json
       - name: Instalar paquetes reproduciblemente
         run: npm ci --no-audit --no-fund
+      - name: Validar sintaxis del iniciador Windows
+        shell: pwsh
+        working-directory: .
+        run: |
+          $tokens = $null
+          $errores = $null
+          [System.Management.Automation.Language.Parser]::ParseFile('INICIAR_DASHBOARD.ps1', [ref]$tokens, [ref]$errores) | Out-Null
+          if ($errores.Count -gt 0) {
+            $errores | ForEach-Object { Write-Error $_.Message }
+            exit 1
+          }
       - name: Compilar frontend de producción
         run: npm run build
       - name: Probar dashboard Angular sin interacción
