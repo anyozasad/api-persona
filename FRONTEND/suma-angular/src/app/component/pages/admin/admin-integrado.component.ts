@@ -15,7 +15,7 @@ import { catchError, forkJoin, of } from 'rxjs';
   selector: 'app-admin-integrado',
   standalone: true,
   imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminGymSuiteComponent, AdminApplicationsComponent],
-  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css', '../crossfit-final.css', './admin-dashboard-polish.css', './admin-dashboard-premium.css', './admin-mantis-interactions.css', './admin-dashboard-refined.css', './admin-mantis-reference.css'],
+  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css', '../crossfit-final.css', './admin-dashboard-polish.css', './admin-dashboard-premium.css', './admin-mantis-interactions.css', './admin-dashboard-refined.css', './admin-mantis-reference.css', './admin-efsrt-validation.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
   <div class="admin-shell admin-home-redesign" [class.admin-sidebar-collapsed]="sidebarCerrado" [class.mg-mantis-collapsed]="sidebarCerrado" [class.mg-mantis-dark]="modoDashboard==='oscuro'" [class.mg-mantis-compact]="densidadDashboard==='compacta'" [class.mg-mantis-blue]="acentoDashboard==='azul'" [class.mg-mantis-green]="acentoDashboard==='verde'" [class.mg-mantis-coral]="acentoDashboard==='coral'">
@@ -257,6 +257,7 @@ import { catchError, forkJoin, of } from 'rxjs';
           <button type="button" [class.active]="seccion==='configuracion'" (click)="cambiarSegcion('configuracion')"><span>•</span><span>Configuración</span></button>
           <button type="button" [class.active]="seccion==='documentos-socio'" (click)="cambiarSegcion('documentos-socio')"><span>•</span><span>Documentos del Socio</span></button>
           <button type="button" [class.active]="seccion==='mantenimiento-sistema'" (click)="cambiarSegcion('mantenimiento-sistema')"><span>•</span><span>Mantenimiento del Sistema</span></button>
+          <button type="button" [class.active]="seccion==='verificacion-efsrt'" (click)="cambiarSegcion('verificacion-efsrt')"><span>•</span><span>Comprobación EFSRT</span></button>
         </div>
 
       </nav>
@@ -839,6 +840,56 @@ import { catchError, forkJoin, of } from 'rxjs';
             </article>
           </section>
         </section>
+      </ng-container>
+
+      <ng-container *ngIf="seccion==='verificacion-efsrt'">
+        <section class="efsrt-head">
+          <div>
+            <small>REVISIÓN TÉCNICA DEL PROYECTO</small>
+            <h2>Comprobación EFSRT — Mallqui Gym</h2>
+            <p>Verificación de la conexión MySQL, existencia de tablas y coherencia de los registros reales.</p>
+          </div>
+          <button type="button" class="admin-primary"
+            (click)="cargarVerificacionEfsrt()" [disabled]="verificacionEfsrtCargando">
+            {{verificacionEfsrtCargando ? 'Comprobando...' : '↻ Comprobar de nuevo'}}
+          </button>
+        </section>
+        <p class="efsrt-notice warn" *ngIf="verificacionEfsrtError">{{verificacionEfsrtError}}</p>
+        <p class="efsrt-notice" *ngIf="verificacionEfsrtCargando">Consultando datos reales del servidor...</p>
+        <ng-container *ngIf="verificacionEfsrt as revision">
+          <section class="efsrt-summary">
+            <article><span>Conexión</span><strong>MySQL</strong><small>{{revision.conexion}}</small></article>
+            <article><span>Módulos revisados</span><strong>{{revision.total_modulos}}</strong><small>Revisión de estructura</small></article>
+            <article><span>Estructura disponible</span><strong>{{revision.modulos_con_estructura}}</strong><small>Sin tablas faltantes</small></article>
+            <article><span>Problemas detectados</span><strong>{{revision.faltantes + revision.alertas.length}}</strong><small>Tablas faltantes y alertas</small></article>
+          </section>
+          <p class="efsrt-notice">{{revision.nota}} Fecha de la consulta: {{revision.fecha_revision}}. Base: {{revision.base_datos}}.</p>
+          <div class="efsrt-table-wrap">
+            <table class="efsrt-table">
+              <thead><tr><th>Área del proyecto</th><th>Estructura</th><th>Registros</th><th>Faltantes</th><th>Acción</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let modulo of revision.modulos">
+                  <td><b>{{modulo.nombre}}</b></td>
+                  <td><span class="efsrt-status" [class.missing]="modulo.estado!=='estructura_disponible'">
+                    {{modulo.estado==='estructura_disponible' ? 'Disponible' : 'Incompleta'}}
+                  </span></td>
+                  <td>{{modulo.registros===null ? 'Sin tabla' : modulo.registros}}</td>
+                  <td>{{modulo.faltantes.length ? modulo.faltantes.join(', ') : 'Ninguna'}}</td>
+                  <td><button type="button" (click)="cambiarSegcion(modulo.destino)">Abrir módulo</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <section class="efsrt-issues">
+            <h3>Coherencia de la base de datos</h3>
+            <p *ngIf="!revision.alertas.length" class="efsrt-noproblems">No se detectaron duplicados, pagos sin membresía ni stock negativo en los controles aplicados.</p>
+            <article *ngFor="let alerta of revision.alertas">
+              <p><b>{{alerta.cantidad}}</b> · {{alerta.mensaje}}</p>
+              <button type="button" (click)="cambiarSegcion(alerta.destino)">Revisar datos ›</button>
+            </article>
+          </section>
+          <p class="efsrt-notice warn">La presencia de tablas no prueba por sí sola que todos los formularios funcionen. Para la evaluación hay que ejecutar altas, cambios, reservas, pagos, asistencia, pruebas y respaldos con el profesor.</p>
+        </ng-container>
       </ng-container>
 
       <ng-container *ngIf="seccion==='mantenimiento-sistema'">
@@ -2928,9 +2979,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   carnetDatos:any = null;
   comprobanteDatos:any = null;
   backupRestaurarArchivo:File|null = null;
+  verificacionEfsrt:any = null;
+  verificacionEfsrtCargando = false;
+  verificacionEfsrtError = '';
 
   dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
   titulos: Record<string,[string,string]> = {
+    'verificacion-efsrt':['Comprobación EFSRT','Estructura y coherencia de datos reales'],
     dashboard:['Panel Administrador','Datos reales del gimnasio'],
     aplicaciones:['Aplicaciones','Accesos y módulos del gimnasio'],
     'calendario-admin':['Calendario operativo','Eventos y reservas reales'],
@@ -4332,6 +4387,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         break;
       case 'mantenimiento-sistema':
         break;
+      case 'verificacion-efsrt':
+        this.cargarVerificacionEfsrt();
+        break;
       case 'reservas':
         this.cargarReservas();
         this.cargarClases();
@@ -4440,6 +4498,24 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     }
     this.cargarDashboard();
     this.cargarSegcion(this.seccion);
+  }
+
+  cargarVerificacionEfsrt():void {
+    if(this.verificacionEfsrtCargando)return;
+    this.verificacionEfsrtCargando=true;
+    this.verificacionEfsrtError='';
+    this.verificacionEfsrt=null;
+    this.api.verificacionEfsrt().subscribe({
+      next:(resultado:any)=>{
+        this.verificacionEfsrtCargando=false;
+        this.verificacionEfsrt=resultado;
+      },
+      error:(e:any)=>{
+        this.verificacionEfsrtCargando=false;
+        this.verificacionEfsrt=null;
+        this.verificacionEfsrtError=e?.error?.mensaje || 'No se pudo comprobar la base de datos. Revisa Laravel y MySQL.';
+      }
+    });
   }
 
   cargarDashboard(){
