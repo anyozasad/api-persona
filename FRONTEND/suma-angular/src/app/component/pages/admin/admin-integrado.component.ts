@@ -536,7 +536,7 @@ import { catchError, forkJoin, of } from 'rxjs';
                   <p>{{r.detalles?.length || 0}} ejercicios <span></span> {{r.objetivo || 'Entrenamiento'}}</p>
                   <button type="button" (click)="cambiarSegcion('rutinas')">Ver rutina</button>
                 </div>
-                <img src="assets/mallqui/mallqui-cover.webp" alt="Rutina activa de Mallqui Gym">
+                <img src="assets/mallqui/mallqui-hero-interior-4k.webp" alt="Rutina activa de Mallqui Gym">
               </article>
 
               <article class="mg-workout-card" *ngIf="rutinasActivasDashboard[1] as r">
@@ -611,7 +611,7 @@ import { catchError, forkJoin, of } from 'rxjs';
           <aside class="mg-dashboard-side">
             <article class="mg-trainer-card">
               <div class="mg-trainer-head">
-                <img class="mg-trainer-avatar-img" src="assets/mallqui/mallqui-cover.webp" alt="Entrenador Mallqui Gym">
+                <img class="mg-trainer-avatar-img" src="assets/mallqui/mallqui-trainer-4k.webp" alt="Entrenador Mallqui Gym">
                 <div>
                   <strong>{{entrenadores[0] ? nombreEntrenador(entrenadores[0]) : 'Entrenador Mallqui'}}</strong>
                   <span>{{entrenadores[0]?.especialidad || 'Entrenador principal'}}</span>
@@ -620,7 +620,7 @@ import { catchError, forkJoin, of } from 'rxjs';
               </div>
 
               <button type="button" class="mg-video-card" (click)="cambiarSegcion('rutinas')">
-                <img src="assets/mallqui/mallqui-cover.webp" alt="Rutina de Mallqui Gym">
+                <img src="assets/mallqui/mallqui-referencia-gym-equipos-4k.webp" alt="Rutina de Mallqui Gym">
                 <i>▶</i>
               </button>
               <h3>{{rutinasActivasDashboard[0]?.nombre_rutina || 'Sin rutina activa'}}</h3>
@@ -628,7 +628,7 @@ import { catchError, forkJoin, of } from 'rxjs';
             </article>
 
             <button type="button" class="mg-mini-routine" (click)="cambiarSegcion('rutinas')">
-              <img src="assets/mallqui/mallqui-cover.webp" alt="Rutina secundaria">
+              <img src="assets/mallqui/mallqui-foto-real-cardio-4k.webp" alt="Rutina secundaria">
               <div><strong>{{rutinasActivasDashboard[1]?.nombre_rutina || 'Gestionar rutinas'}}</strong><span>{{rutinasActivasDashboard[1]?.objetivo || 'Ver módulo de rutinas'}}</span></div>
             </button>
 
@@ -1963,12 +1963,71 @@ import { catchError, forkJoin, of } from 'rxjs';
       </ng-container>
 
       <ng-container *ngIf="seccion==='reservas'">
-        <section class="admin-list-card">
-          <div class="management-heading"><div><h2>Reservas de clases</h2><p>Controla asistencia, ausencias y cancelaciones.</p></div><span class="big-number">{{reservas.length}}</span></div>
-          <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Clase</th><th>Fecha</th><th>Entrenador</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>
-            <tr *ngFor="let r of reservas"><td>{{r.id_reserva}}</td><td>{{nombreCliente(r.cliente)}}</td><td>{{r.clase?.nombre}}</td><td>{{r.fecha_clase}}</td><td>{{nombreEntrenador(r.clase?.entrenador)}}</td><td>{{r.estado}}</td><td><button class="table-action" type="button" (click)="cambiarEstadoReserva(r.id_reserva,'Asistio')">Asistió</button> <button class="admin-secondary" type="button" (click)="cambiarEstadoReserva(r.id_reserva,'NoAsistio')">No asistió</button> <button class="table-danger" type="button" (click)="cambiarEstadoReserva(r.id_reserva,'Cancelada')">Cancelar</button></td></tr>
-            <tr *ngIf="!reservas.length"><td colspan="7">No hay reservas registradas.</td></tr>
-          </tbody></table></div>
+        <section class="management-grid">
+          <article class="admin-form-card">
+            <div class="management-heading">
+              <div>
+                <h2>{{reservaEditandoId ? 'Editar reserva' : 'Nueva reserva'}}</h2>
+                <p>Valida socio, membresía, fecha, horario y cupos disponibles.</p>
+              </div>
+              <span>◫</span>
+            </div>
+            <form (ngSubmit)="guardarReservaAdmin()">
+              <label>Socio
+                <select name="resSocio" [(ngModel)]="reservaForm.id_cliente" required>
+                  <option [ngValue]="0">Selecciona un socio</option>
+                  <option *ngFor="let c of clientes" [ngValue]="c.id_cliente" [disabled]="c.estado!=='Activo'">
+                    {{nombreCliente(c)}} · {{c.dni}}
+                  </option>
+                </select>
+              </label>
+              <label>Clase
+                <select name="resClase" [(ngModel)]="reservaForm.id_clase" required>
+                  <option [ngValue]="0">Selecciona una clase</option>
+                  <option *ngFor="let c of clases" [ngValue]="c.id_clase" [disabled]="c.estado!=='Activo'">
+                    {{c.nombre}} · {{c.dia_semana}} · {{c.hora_inicio}}
+                  </option>
+                </select>
+              </label>
+              <label>Fecha de la clase
+                <input type="date" name="resFecha" [(ngModel)]="reservaForm.fecha_clase"
+                  [min]="fechaMinimaReserva" required>
+              </label>
+              <p>Solo se permiten clases futuras, con membresía vigente y cupo disponible.</p>
+              <div class="form-row">
+                <button class="admin-primary" type="submit" [disabled]="reservaGuardando">
+                  {{reservaGuardando ? 'Guardando...' : (reservaEditandoId ? 'Guardar cambios' : 'Registrar reserva')}}
+                </button>
+                <button *ngIf="reservaEditandoId" class="admin-secondary" type="button"
+                  (click)="cancelarEdicionReservaAdmin()">Cancelar edición</button>
+              </div>
+            </form>
+          </article>
+          <article class="admin-list-card wide-card">
+            <div class="management-heading"><div><h2>Reservas de clases</h2><p>Alta, consulta, edición y cancelación con historial.</p></div><span class="big-number">{{reservas.length}}</span></div>
+            <div class="table-wrap"><table class="management-table">
+              <thead><tr><th>ID</th><th>Socio</th><th>Clase</th><th>Fecha</th><th>Entrenador</th><th>Estado</th><th>Acciones</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let r of reservas">
+                  <td>{{r.id_reserva}}</td><td>{{nombreCliente(r.cliente)}}</td>
+                  <td>{{r.clase?.nombre}}</td><td>{{r.fecha_clase | date:'dd/MM/yyyy'}}</td>
+                  <td>{{nombreEntrenador(r.clase?.entrenador)}}</td><td>{{r.estado}}</td>
+                  <td>
+                    <button class="table-action" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
+                      (click)="editarReservaAdmin(r)">Editar</button>
+                    <button class="table-action" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
+                      (click)="cambiarEstadoReserva(r.id_reserva,'Asistio')">Asistió</button>
+                    <button class="admin-secondary" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
+                      (click)="cambiarEstadoReserva(r.id_reserva,'NoAsistio')">No asistió</button>
+                    <button class="table-danger" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
+                      title="Cancelar sin eliminar el historial"
+                      (click)="cancelarReservaAdmin(r)">Eliminar / cancelar</button>
+                  </td>
+                </tr>
+                <tr *ngIf="!reservas.length"><td colspan="7">No hay reservas registradas.</td></tr>
+              </tbody>
+            </table></div>
+          </article>
         </section>
       </ng-container>
 
@@ -2824,6 +2883,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   categorias: any[] = [];
   rutinas: any[] = [];
   reservas: any[] = [];
+  reservaEditandoId = 0;
+  reservaGuardando = false;
+  reservaForm: any = {id_cliente:0,id_clase:0,fecha_clase:''};
   usuarios: any[] = [];
   opiniones: any[] = [];
   auditorias: any[] = [];
@@ -4874,7 +4936,102 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
   desactivarRutina(id:number){ if(!confirm('¿Desactivar esta rutina?')) return; this.api.eliminarRutina(id).subscribe({next:r=>{this.ok(r.mensaje||'Rutina desactivada');this.cancelarEdicionRutina();this.cargarRutinas();},error:e=>this.mostrarError(e)}); }
 
-  cambiarEstadoReserva(id:number,estado:string){ this.api.cambiarEstadoReserva(id,estado).subscribe({next:r=>{this.ok(r.mensaje||'Reserva actualizada');this.cargarReservas();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
+  get fechaMinimaReserva():string{
+    const hoy=new Date();
+    return [
+      hoy.getFullYear(),
+      String(hoy.getMonth()+1).padStart(2,'0'),
+      String(hoy.getDate()).padStart(2,'0')
+    ].join('-');
+  }
+
+  editarReservaAdmin(reserva:any):void{
+    if(!this.reservaAdmiteCambioEstado(reserva)){
+      this.error='No se puede editar una reserva finalizada o cancelada.';
+      return;
+    }
+    this.reservaEditandoId=Number(reserva.id_reserva);
+    this.reservaForm={
+      id_cliente:Number(reserva.id_cliente||reserva.cliente?.id_cliente||0),
+      id_clase:Number(reserva.id_clase||reserva.clase?.id_clase||0),
+      fecha_clase:String(reserva.fecha_clase||'').slice(0,10)
+    };
+    this.error='';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  cancelarEdicionReservaAdmin():void{
+    this.reservaEditandoId=0;
+    this.reservaGuardando=false;
+    this.reservaForm={id_cliente:0,id_clase:0,fecha_clase:''};
+  }
+
+  guardarReservaAdmin():void{
+    if(this.reservaGuardando)return;
+    const datos={
+      id_cliente:Number(this.reservaForm.id_cliente||0),
+      id_clase:Number(this.reservaForm.id_clase||0),
+      fecha_clase:String(this.reservaForm.fecha_clase||'').slice(0,10)
+    };
+    if(!datos.id_cliente||!datos.id_clase||!datos.fecha_clase){
+      this.error='Selecciona socio, clase y fecha para guardar la reserva.';
+      return;
+    }
+    if(datos.fecha_clase<this.fechaMinimaReserva){
+      this.error='La fecha de la reserva no puede ser anterior a hoy.';
+      return;
+    }
+    const editando=this.reservaEditandoId;
+    this.reservaGuardando=true;
+    this.error='';
+    const peticion=editando
+      ?this.api.actualizarReservaAdmin(editando,datos)
+      :this.api.crearReservaAdmin(datos);
+    peticion.subscribe({
+      next:(r:any)=>{
+        this.reservaGuardando=false;
+        this.cancelarEdicionReservaAdmin();
+        this.ok(r?.mensaje||(editando?'Reserva actualizada':'Reserva registrada'));
+        this.cargarReservas();
+        this.cargarDashboard();
+      },
+      error:e=>{
+        this.reservaGuardando=false;
+        this.mostrarError(e);
+      }
+    });
+  }
+
+  cancelarReservaAdmin(reserva:any):void{
+    if(!this.reservaAdmiteCambioEstado(reserva))return;
+    if(!confirm('¿Cancelar la reserva? Se conservará su historial.'))return;
+    this.api.eliminarReservaAdmin(Number(reserva.id_reserva)).subscribe({
+      next:(r:any)=>{
+        this.ok(r?.mensaje||'Reserva cancelada');
+        if(this.reservaEditandoId===Number(reserva.id_reserva))this.cancelarEdicionReservaAdmin();
+        this.cargarReservas();
+        this.cargarDashboard();
+      },
+      error:e=>this.mostrarError(e)
+    });
+  }
+
+  /** Los estados finalizados no deben editarse desde los botones del dashboard. */
+  reservaAdmiteCambioEstado(reserva:any):boolean{
+    return ['Reservada','Confirmada'].includes(String(reserva?.estado||''));
+  }
+
+  cambiarEstadoReserva(id:number,estado:string){
+    const reserva=this.reservas.find((r:any)=>Number(r.id_reserva)===Number(id));
+    if(reserva && !this.reservaAdmiteCambioEstado(reserva)){
+      this.error='La reserva está finalizada o cancelada. Actualiza el listado antes de intentar otra acción.';
+      return;
+    }
+    this.api.cambiarEstadoReserva(id,estado).subscribe({
+      next:r=>{this.ok(r.mensaje||'Reserva actualizada');this.cargarReservas();this.cargarDashboard();},
+      error:e=>this.mostrarError(e)
+    });
+  }
 
   guardarUsuario(){
     const datos={...this.usuarioForm};

@@ -106,7 +106,7 @@ class ReservaController extends Controller
             $ocupados = Reserva::query()
                 ->where('id_clase', $clase->id_clase)
                 ->whereDate('fecha_clase', $fechaClase)
-                ->whereIn('estado', ['Reservada', 'Asistio'])
+                ->whereIn('estado', ['Reservada', 'Confirmada', 'Asistio'])
                 ->count();
 
             if ($ocupados >= (int) $clase->cupo_maximo) {
@@ -126,6 +126,148 @@ class ReservaController extends Controller
             'mensaje' => 'Clase reservada correctamente.',
             'reserva' => $reserva->load(['clase.entrenador']),
         ], 201);
+    }
+
+    /**
+     * Registro desde recepción. Aplica las mismas reglas de fecha, membresía,
+     * duplicados y cupo que utiliza el portal del socio.
+     */
+    public function registrarDesdeAdmin(Request $request)
+    {
+        $datos = $request->validate([
+            'id_cliente' => 'required|integer|exists:clientes,id_cliente',
+            'id_clase' => 'required|integer|exists:clases,id_clase',
+            'fecha_clase' => 'required|date|after_or_equal:today',
+        ]);
+
+        $reserva = DB::transaction(function () use ($datos) {
+            $clase = Clase::where('id_clase', $datos['id_clase'])->lockForUpdate()->firstOrFail();
+            $cliente = Cliente::findOrFail($datos['id_cliente']);
+            $fecha = Carbon::parse($datos['fecha_clase'])->startOfDay();
+
+            $this->validarReservaAdministrativa($cliente, $clase, $fecha);
+
+            return Reserva::create([
+                'id_cliente' => $cliente->id_cliente,
+                'id_clase' => $clase->id_clase,
+                'fecha_clase' => $fecha->toDateString(),
+                'fecha_reserva' => now(),
+                'estado' => 'Reservada',
+            ]);
+        });
+
+        return response()->json([
+            'mensaje' => 'Reserva registrada desde el dashboard.',
+            'reserva' => $reserva->load(['cliente', 'clase.entrenador']),
+        ], 201);
+    }
+
+    /**
+     * Edita únicamente reservas pendientes. Conserva estado e historial;
+     * la cancelación equivale a baja lógica, nunca borrado físico.
+     */
+    public function actualizarDesdeAdmin(Request $request, string $id)
+    {
+        $datos = $request->validate([
+            'id_cliente' => 'required|integer|exists:clientes,id_cliente',
+            'id_clase' => 'required|integer|exists:clases,id_clase',
+            'fecha_clase' => 'required|date|after_or_equal:today',
+        ]);
+
+        $reserva = DB::transaction(function () use ($datos, $id) {
+            // Orden de bloqueo coherente con el alta: primero la clase.
+            $clase = Clase::where('id_clase', $datos['id_clase'])->lockForUpdate()->firstOrFail();
+            $reserva = Reserva::where('id_reserva', $id)->lockForUpdate()->firstOrFail();
+
+            if (!in_array((string) $reserva->estado, ['Reservada', 'Confirmada'], true)) {
+                throw ValidationException::withMessages([
+                    'estado' => ['Solo se pueden editar reservas pendientes.'],
+                ]);
+            }
+
+            $cliente = Cliente::findOrFail($datos['id_cliente']);
+            $fecha = Carbon::parse($datos['fecha_clase'])->startOfDay();
+            $this->validarReservaAdministrativa($cliente, $clase, $fecha, (int) $reserva->id_reserva);
+
+            $reserva->update([
+                'id_cliente' => $cliente->id_cliente,
+                'id_clase' => $clase->id_clase,
+                'fecha_clase' => $fecha->toDateString(),
+            ]);
+
+            return $reserva;
+        });
+
+        return response()->json([
+            'mensaje' => 'Reserva actualizada correctamente.',
+            'reserva' => $reserva->fresh(['cliente', 'clase.entrenador']),
+        ]);
+    }
+
+    public function eliminarDesdeAdmin(Request $request, string $id)
+    {
+        // DELETE es una baja lógica; no se destruyen registros de asistencia ni auditoría.
+        $request->merge(['estado' => 'Cancelada']);
+        return $this->cambiarEstado($request, $id);
+    }
+
+    private function validarReservaAdministrativa(
+        Cliente $cliente,
+        Clase $clase,
+        Carbon $fecha,
+        ?int $excluirReserva = null
+    ): void {
+        if (mb_strtolower((string) $cliente->estado) !== 'activo') {
+            throw ValidationException::withMessages(['id_cliente' => ['El socio no está activo.']]);
+        }
+
+        if (mb_strtolower((string) $clase->estado) !== 'activo') {
+            throw ValidationException::withMessages(['id_clase' => ['La clase está inactiva.']]);
+        }
+
+        $this->validarDiaClase($clase, $fecha);
+
+        $inicio = Carbon::parse($fecha->toDateString().' '.$clase->hora_inicio);
+        if ($inicio->isPast()) {
+            throw ValidationException::withMessages(['fecha_clase' => ['La clase ya comenzó.']]);
+        }
+
+        $membresia = ClienteMembresia::with('membresia')
+            ->where('id_cliente', $cliente->id_cliente)
+            ->where('estado', 'Activo')
+            ->whereDate('fecha_inicio', '<=', $fecha)
+            ->whereDate('fecha_fin', '>=', $fecha)
+            ->orderByDesc('fecha_fin')
+            ->first();
+
+        if (!$membresia) {
+            throw ValidationException::withMessages([
+                'id_cliente' => ['El socio necesita una membresía vigente para la fecha elegida.'],
+            ]);
+        }
+
+        if ($membresia->membresia && $membresia->membresia->permite_reservas === false) {
+            throw ValidationException::withMessages(['id_clase' => ['El plan no permite reservar clases.']]);
+        }
+
+        $repetida = Reserva::query()
+            ->where('id_cliente', $cliente->id_cliente)
+            ->where('id_clase', $clase->id_clase)
+            ->whereDate('fecha_clase', $fecha)
+            ->where('estado', '!=', 'Cancelada');
+        if ($excluirReserva !== null) $repetida->where('id_reserva', '!=', $excluirReserva);
+        if ($repetida->exists()) {
+            throw ValidationException::withMessages(['id_clase' => ['Ya existe una reserva para el mismo socio, clase y fecha.']]);
+        }
+
+        $ocupados = Reserva::query()
+            ->where('id_clase', $clase->id_clase)
+            ->whereDate('fecha_clase', $fecha)
+            ->whereIn('estado', ['Reservada', 'Confirmada', 'Asistio']);
+        if ($excluirReserva !== null) $ocupados->where('id_reserva', '!=', $excluirReserva);
+        if ($ocupados->count() >= (int) $clase->cupo_maximo) {
+            throw ValidationException::withMessages(['id_clase' => ['La clase ya alcanzó su cupo máximo.']]);
+        }
     }
 
     public function misReservas(Request $request)
@@ -174,18 +316,45 @@ class ReservaController extends Controller
             'estado' => ['required', Rule::in(['Reservada', 'Asistio', 'NoAsistio', 'Cancelada'])],
         ]);
 
-        $reserva = Reserva::with('clase')->findOrFail($id);
+        // Serializar cambios de estado para que dos administradores no puedan
+        // transformar a la vez una reserva ya cancelada o finalizada.
+        $reserva = DB::transaction(function () use ($request, $id, $datos) {
+            $reserva = Reserva::with('clase')->lockForUpdate()->findOrFail($id);
 
-        if (mb_strtolower((string) $request->user()?->rol) === 'entrenador') {
-            $entrenador = $this->entrenadorDelUsuario($request);
-            abort_unless(
-                (int) $reserva->clase?->id_entrenador === (int) $entrenador->id_entrenador,
-                403,
-                'No puedes modificar una reserva de otra clase.'
-            );
-        }
+            if (mb_strtolower((string) $request->user()?->rol) === 'entrenador') {
+                $entrenador = $this->entrenadorDelUsuario($request);
+                abort_unless(
+                    (int) $reserva->clase?->id_entrenador === (int) $entrenador->id_entrenador,
+                    403,
+                    'No puedes modificar una reserva de otra clase.'
+                );
+            }
 
-        $reserva->update(['estado' => $datos['estado']]);
+            $actual = (string) $reserva->estado;
+            $nuevo = (string) $datos['estado'];
+
+            // Repetir una misma petición no debe alterar ni duplicar el registro.
+            if ($actual === $nuevo) {
+                return $reserva;
+            }
+
+            // Las reservas finalizadas son históricas. Impedir pasar de Cancelada
+            // a Asistio, o de NoAsistio a Reservada, evita informes incoherentes.
+            if (!in_array($actual, ['Reservada', 'Confirmada'], true)) {
+                throw ValidationException::withMessages([
+                    'estado' => ['La reserva ya está finalizada o cancelada. No se puede cambiar su estado.'],
+                ]);
+            }
+
+            if ($nuevo === 'Reservada') {
+                throw ValidationException::withMessages([
+                    'estado' => ['La reserva ya fue registrada. Selecciona Asistió, No asistió o Cancelada.'],
+                ]);
+            }
+
+            $reserva->update(['estado' => $nuevo]);
+            return $reserva;
+        });
 
         return response()->json([
             'mensaje' => 'Estado de la reserva actualizado.',

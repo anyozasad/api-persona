@@ -64,3 +64,73 @@ En el navegador, ingresar con una cuenta Administrador a `http://localhost:4200/
 - La referencia comercial Mantis ofrece más de 100 páginas y aplicaciones premium. Este proyecto **no reproduce íntegramente todas esas páginas ni sus funcionalidades de terceros**. Las vistas empresariales se han adaptado a Mallqui Gym con código original.
 - No existe aquí un chat de tiempo real de Mantis; se usa la bandeja funcional de soporte al cliente. Tampoco se presume emisión SUNAT ni pasarela de pago sin certificación.
 - Los avisos de esquema incompleto del sistema no se ocultan: hay que completar las tablas de negocio que todavía falten antes de confirmar un despliegue en producción.
+
+---
+
+## Verificación EFSRT contra el Registro de Asistencia y la Bitácora (09/11/2026)
+
+**Alcance:** actividades de las semanas 01–11 de la bitácora oficial y registro EFSRT del 12/09/2026 al 21/11/2026. El documento separa 24 jornadas registradas y 8 programadas. Las fechas futuras y firmas del supervisor **no se consideran ejecutadas ni validadas por este documento técnico**.
+
+### Matriz de cumplimiento verificable
+
+| Semanas | Actividades documentadas | Ubicación del código y evidencia disponible | Verificación pendiente |
+|---|---|---|---|
+| 01 | Requerimientos, separación usuario/dashboard/API/BD, modelo de datos | `FRONTEND/suma-angular`, `BACKEND`, `BACKEND/database/migrations`, controladores y modelos | Captura de diagrama de relaciones de la BD local y requerimientos firmados |
+| 02 | Portada, menú, entrenamiento y responsive | `src/app/component/pages/usuario/usuario.component.ts`; imágenes en `public/assets/mallqui` | Inspección visual en escritorio y celular |
+| 03 | Login, registro, validaciones, BD | `login/login.component.ts`, `register/register.component.ts`, `BACKEND/app/Http/Controllers/AuthController.php` | Demostración real con cuentas y comprobación en MySQL |
+| 04 | Dashboard; CRUD de socios y reservas | `admin-integrado.component.ts`, `ClienteController.php`, `ReservaController.php`, `routes/api.php` | Probar altas, modificaciones y cancelaciones y consultar MySQL |
+| 05 | Estados de reservas, productos, stock e imágenes | `ReservaController.php`, `ProductoController.php`, `VentaController.php`; pruebas de imagen y reservas | Registrar producto con imagen, venta, descuento de stock y Kardex |
+| 06 | Asistencia, seguimiento, rutinas y entrenador | `AsistenciaController.php`, `RutinaController.php`, `EntrenadorController.php` y vistas de usuario/admin | Registrar una entrada y una salida; asignar rutina al socio |
+| 07 | Uniformidad del diseño, login, botones y navegación | `admin-mantis-reference.css`, `admin-integrado.component.ts`, estilos del login | Revisión visual completa y navegación en navegador |
+| 08 | Imágenes nítidas y locales, integración usuario/admin/BD | `public/assets/mallqui`; portada y carrusel referencian fotos locales; dashboard utiliza los mismos endpoints Laravel | Confirmar carga offline después de haber instalado y servido todos los recursos; comparar datos en MySQL |
+| 09 | Sincronización, registros duplicados y aviso de vencimientos | Control de duplicados y cupo en `ReservaController.php`; `DashboardController.php`; `ReporteController.php` | Probar CRUD/alerta con datos reales y capturas el 09/11 o después |
+| 10 | Pagos, boleta electrónica, permisos, offline, errores | `MembresiaProcesoController.php`, `ComprobanteMembresiaService.php`, roles en `routes/api.php` | **Emisión SUNAT no integrada:** el comprobante actual es interno. Verificar pagos, roles y modo offline |
+| 11 | Pruebas finales, datos duplicados, capturas y respaldo | Pruebas PHPUnit/Jasmine, módulo de respaldo en Configuración y Mantenimiento | Ejecutar todas las pruebas y guardar evidencias de noviembre; validación del supervisor pendiente |
+
+**Importante sobre comprobantes:** el sistema puede generar un comprobante interno de membresía y ventas con montos y numeración. **No se debe presentar como boleta electrónica CPE válida ante SUNAT** hasta integrar un emisor autorizado, su firma digital y la confirmación de aceptación correspondiente. No hay credenciales, homologación ni CDR verificados en el repositorio.
+
+### Mejoras aplicadas en la revisión EFSRT del 09/11/2026
+
+- CRUD de reservas desde el dashboard: formulario para alta y edición de socio, clase y fecha; cancelar conserva el historial.
+- Laravel valida acceso según roles, membresía vigente, estado del socio, clase activa, día, hora, cupo y registros duplicados, con transacciones.
+- Bloqueo de transiciones contradictorias (por ejemplo, cambiar una reserva cancelada a asistida), tanto en backend como en los controles del dashboard.
+- Carrusel principal y tarjetas relevantes reemplazan imágenes locales de miniatura por recursos locales existentes de mayor tamaño **sin modificar la estructura de la interfaz**.
+- Pruebas EFSRT añadidas a `ReservaClienteFlowTest.php`, `EfsrtInterfazEvidenciaTest.php` y `admin-integrado.component.spec.ts`.
+
+### Ejecución para la demostración real
+
+En PowerShell, desde la raíz del repositorio:
+
+```powershell
+git pull origin main
+cd BACKEND
+php artisan route:list --path=reservas
+php artisan test --filter=ReservaClienteFlowTest
+php artisan test --filter=EfsrtInterfazEvidenciaTest
+```
+
+En otra terminal, desde la raíz del repositorio:
+
+```powershell
+cd FRONTEND/suma-angular
+npm ci
+npm run build
+npm test -- --watch=false --browsers=ChromeHeadless
+```
+
+Para abrir en navegador con la base MySQL configurada, iniciar XAMPP/MySQL, el servidor Laravel (`php artisan serve` desde `BACKEND`) y Angular (`npm start` desde `FRONTEND/suma-angular`). Acceder a `http://localhost:4200/admin` con un administrador válido.
+
+### Secuencia de demostración de punta a punta
+
+1. Crear un socio con DNI nuevo desde administración; confirmar que aparece en MySQL.
+2. Asignar membresía vigente, registrar y confirmar pago; verificar que se refleja en la sesión del socio.
+3. Crear una clase activa con cupos, reservar desde el dashboard y verificar la misma reserva en el portal del socio.
+4. Editar la reserva pendiente; intentar una reserva duplicada y comprobar mensaje de validación.
+5. Cancelar la reserva desde administración; asegurar que permanece registrada con estado `Cancelada`, sin poder marcarla como asistida.
+6. Registrar entrada y salida de un socio con membresía; revisar seguimiento y reportes.
+7. Crear un producto con imagen local/base64 válida; registrar una venta y comprobar stock y Kardex.
+8. Comprobar alertas con membresía próxima a vencer; exportar reportes; generar un respaldo SQL.
+9. Probar login con rol Cliente, Entrenador y Administrador, y confirmar que los roles no pueden abrir acciones ajenas.
+10. Capturar pantallas, resultados de pruebas y consultas de MySQL sin alterar fechas ni firmas EFSRT.
+
+**Limitación técnica:** esta matriz documenta funciones existentes y cambios de código; no equivale a pruebas integradas ejecutadas sobre el equipo, el navegador y la base MySQL reales. Los tests añadidos requieren ejecución. Marcar resultados como aprobados solamente cuando el programa los confirme.

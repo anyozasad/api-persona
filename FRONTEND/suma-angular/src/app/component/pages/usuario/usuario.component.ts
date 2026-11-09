@@ -98,12 +98,12 @@ import {
         <section *ngIf="moduloActivo==='inicio'" class="member-dashboard mallqui-apex-home member-enter-up">
 
           <section class="mallqui-apex-hero">
-            <img class="mallqui-apex-static" src="assets/mallqui/mallqui-cover.webp" alt="" aria-hidden="true">
+            <img class="mallqui-apex-static" src="assets/mallqui/mallqui-hero-interior-4k.webp" alt="" aria-hidden="true">
             <div class="mallqui-apex-carousel" aria-hidden="true">
-              <img class="mallqui-apex-slide slide-1" src="assets/mallqui/mallqui-cover.webp" alt="" fetchpriority="high" decoding="async">
-              <img class="mallqui-apex-slide slide-2" src="assets/mallqui/mallqui-cover.webp" alt="" decoding="async">
-              <img class="mallqui-apex-slide slide-3" src="assets/mallqui/mallqui-cover.webp" alt="" decoding="async">
-              <img class="mallqui-apex-slide slide-4" src="assets/mallqui/mallqui-cover.webp" alt="" decoding="async">
+              <img class="mallqui-apex-slide slide-1" src="assets/mallqui/mallqui-hero-interior-4k.webp" alt="" fetchpriority="high" decoding="async">
+              <img class="mallqui-apex-slide slide-2" src="assets/mallqui/mallqui-referencia-gym-equipos-4k.webp" alt="" decoding="async">
+              <img class="mallqui-apex-slide slide-3" src="assets/mallqui/mallqui-foto-real-cardio-4k.webp" alt="" decoding="async">
+              <img class="mallqui-apex-slide slide-4" src="assets/mallqui/mallqui-referencia-foto-personas-4k.webp" alt="" decoding="async">
             </div>
             <div class="mallqui-apex-shade" aria-hidden="true"></div>
 
@@ -500,13 +500,13 @@ import {
               <article class="train-ux-visual-card">
                 <div class="train-ux-carousel" aria-hidden="true">
                   <img class="train-ux-slide train-ux-slide-1"
-                       src="assets/mallqui/mallqui-cover.webp"
+                       src="assets/mallqui/mallqui-referencia-gym-equipos-4k.webp"
                        alt="">
                   <img class="train-ux-slide train-ux-slide-2"
-                       src="assets/mallqui/mallqui-cover.webp"
+                       src="assets/mallqui/mallqui-foto-real-cardio-4k.webp"
                        alt="">
                   <img class="train-ux-slide train-ux-slide-3"
-                       src="assets/mallqui/mallqui-cover.webp"
+                       src="assets/mallqui/mallqui-referencia-foto-personas-4k.webp"
                        alt="">
                 </div>
                 <div class="train-ux-visual-shade"></div>
@@ -573,7 +573,7 @@ import {
 
             <div class="membership-unlocked-actions">
               <button type="button" (click)="abrirModulo('club')"><span>▥</span><b>Credencial de acceso</b><small>Mostrar código de barras</small></button>
-              <button type="button" (click)="ultimoPagoCompletado ? comprobante(ultimoPagoCompletado) : abrirModulo('pagos')"><span>▤</span><b>Mi boleta</b><small>Ver último comprobante</small></button>
+              <button type="button" (click)="ultimoPagoCompletado ? comprobante(ultimoPagoCompletado) : abrirModulo('pagos')"><span>▤</span><b>Mi comprobante</b><small>Ver último comprobante</small></button>
               <button type="button" (click)="abrirModulo('clases')"><span>▣</span><b>Clases</b><small>Ver horarios y reservar</small></button>
               <button type="button" (click)="abrirModulo('asistencias')"><span>✓</span><b>Asistencias</b><small>Entradas y salidas</small></button>
               <button type="button" (click)="tieneRutinaAsignadaGym ? abrirModulo('rutinas') : solicitarRutinaAlPersonal()" [disabled]="procesandoSolicitudRutina"><span>🏋</span><b>{{tieneRutinaAsignadaGym ? 'Mi rutina' : 'Solicitar rutina'}}</b><small>{{tieneRutinaAsignadaGym ? 'Ver ejercicios' : 'Enviar solicitud al personal'}}</small></button>
@@ -1163,7 +1163,7 @@ import {
         <section *ngIf="moduloActivo==='reservas'" class="member-module apex-reservations-page member-enter-up">
           <section class="apex-reservations-hero">
             <img class="apex-reservations-photo"
-                 src="assets/mallqui/mallqui-cover.webp"
+                 src="assets/mallqui/mallqui-hero-interior-4k.webp"
                  alt="" aria-hidden="true">
             <div class="apex-reservations-shade" aria-hidden="true"></div>
 
@@ -1529,7 +1529,7 @@ import {
                 </div>
 
                 <div class="membership-payment-review receipt-preview" *ngIf="ultimaBoleta">
-                  <p><span>BOLETA GENERADA</span><b>{{ultimaBoleta.numero_comprobante || ('B001-'+ultimaBoleta.id_pago)}}</b></p>
+                  <p><span>CONSTANCIA DE PAGO</span><b>{{ultimaBoleta.numero_comprobante || ('B001-'+ultimaBoleta.id_pago)}}</b></p>
                   <p><span>Membresía</span><b>{{ultimaBoleta.membresia}}</b></p>
                   <p><span>Periodo</span><b>{{ultimaBoleta.periodo?.inicio || ultimaBoleta.periodo?.fecha_inicio}} - {{ultimaBoleta.periodo?.fin || ultimaBoleta.periodo?.fecha_fin}}</b></p>
                   <p><span>Método</span><b>{{ultimaBoleta.metodo_pago}} · Op. {{ultimaBoleta.numero_operacion || '-'}}</b></p>
@@ -4108,7 +4108,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
     const ruc=String(empresa.ruc||'').trim();
     const rucValido=/^\d{11}$/.test(ruc);
-    const documentoTitulo=rucValido ? 'BOLETA DE VENTA ELECTRÓNICA' : 'BOLETA DE VENTA';
+    // Un RUC registrado NO demuestra que SUNAT haya aceptado un CPE.
+    const documentoTitulo='CONSTANCIA INTERNA DE PAGO';
 
     const qrContenido=[
       'MALLQUI GYM',
@@ -4118,7 +4119,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       'TOTAL '+monto.toFixed(2),
       'OPERACION '+String(c?.numero_operacion||'')
     ].join('|');
-    const qrUrl='https://quickchart.io/qr?size=280&margin=1&text='+encodeURIComponent(qrContenido);
+    // Código de barras Data URI generado localmente: funciona también sin Internet.
     const codigoLocal=code128DataUri(qrContenido,{height:72,module:2,quiet:12,text:false});
 
     const html=`<!doctype html>
@@ -4271,8 +4272,9 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     min-height:48mm;
   }
   .qr img{
-    width:46mm;
-    height:46mm;
+    width:82mm;
+    max-width:100%;
+    height:24mm;
     object-fit:contain;
     image-rendering:pixelated;
   }
@@ -4367,14 +4369,13 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     Representación impresa de la ${safe(documentoTitulo)}.<br>
     Conserva este comprobante como constancia de tu pago.
     <div class="qr">
-      <img src="${safe(qrUrl)}" alt="Código QR del comprobante"
-           onerror="this.onerror=null;this.src='${safe(codigoLocal)}';this.style.width='82mm';this.style.height='24mm';">
-      <div class="qr-fallback">Verificación local: ${safe(numero)}</div>
+      <img src="${safe(codigoLocal)}" alt="Código de barras interno del comprobante">
+      <div class="qr-fallback">Identificador interno: ${safe(numero)}</div>
     </div>
     <div class="nota-legal">
       ${rucValido
-        ? 'La validez tributaria electrónica depende de la emisión autorizada e integración con SUNAT.'
-        : 'RUC no configurado. Este documento funciona como constancia interna hasta completar la emisión electrónica autorizada.'}
+        ? 'CONSTANCIA INTERNA: no es un comprobante electrónico autorizado por SUNAT. La emisión oficial requiere integración y respuesta de SUNAT.'
+        : 'RUC no configurado. Este documento es una constancia interna y no sustituye la boleta electrónica de SUNAT.'}
     </div>
   </footer>
 </section>

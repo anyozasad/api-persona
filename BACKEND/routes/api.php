@@ -251,6 +251,12 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
     Route::apiResource('/clientes', ClienteController::class);
     Route::get('/clientes/{id}/ficha', [ClienteFichaController::class, 'show']);
 
+    // CRUD de reservas para recepción; cambio de estados existe en la ruta compartida
+    // con entrenador. Eliminar es cancelar, preservando el historial del socio.
+    Route::post('/reservas', [ReservaController::class, 'registrarDesdeAdmin']);
+    Route::put('/reservas/{id}', [ReservaController::class, 'actualizarDesdeAdmin']);
+    Route::delete('/reservas/{id}', [ReservaController::class, 'eliminarDesdeAdmin']);
+
     Route::apiResource('/asistencias', AsistenciaController::class)->only(['index', 'show']);
     Route::post('/asistencias/entrada', [AsistenciaController::class, 'entrada']);
     Route::post('/asistencias/salida', [AsistenciaController::class, 'salida']);
