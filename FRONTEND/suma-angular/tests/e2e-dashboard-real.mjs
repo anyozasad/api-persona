@@ -108,7 +108,15 @@ try {
     await form.waitFor({timeout:30000});
     const codigo='E2E-'+Date.now();
     const cat=form.locator('select[name=id_categoria]');
-    await cat.locator('option').nth(1).waitFor({timeout:20000});
+    // Los elementos <option> se consideran ocultos por Chromium, aunque el select
+    // esté listo; comprobar cantidad de opciones en lugar de esperar visibilidad.
+    await cat.evaluate(async el=>{
+      const inicio=Date.now();
+      while(el.options.length<2 && Date.now()-inicio<20000){
+        await new Promise(resolve=>setTimeout(resolve,100));
+      }
+      if(el.options.length<2) throw new Error('No existen categorías activas.');
+    });
     await cat.selectOption({index:1});
     await form.locator('input[name=codigo_producto]').fill(codigo);
     await form.locator('input[name=nombre_producto]').fill('Producto de prueba con fotografía');
