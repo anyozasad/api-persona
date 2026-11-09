@@ -7,8 +7,13 @@ describe('Semana 05 EFSRT - fotografía del producto', () => {
   let productosApi: jasmine.SpyObj<any>;
 
   beforeEach(() => {
-    productosApi = jasmine.createSpyObj('ProductoService', ['guardar','actualizar','listar','eliminar']);
+    productosApi = jasmine.createSpyObj('ProductoService', ['guardar','actualizar','listar','eliminar','diagnosticoFotos']);
     productosApi.listar.and.returnValue(of([]));
+    productosApi.diagnosticoFotos.and.returnValue(of({
+      base_datos:'gym_system', esquema:'laravel', total_productos:0,
+      fotos_guardadas_en_mysql:0, sin_foto:0, referencias_antiguas:0,
+      pendientes:[], nota:'Comprobación de prueba'
+    }));
     component = new ProductosComponent(productosApi as any, {} as any, {} as any, {} as any);
   });
 
