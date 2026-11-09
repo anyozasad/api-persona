@@ -999,7 +999,8 @@ import { catchError, forkJoin, of } from 'rxjs';
         [clientes]="clientes"
         [productos]="productos"
         [reservas]="reservas"
-        (navegar)="cambiarSegcion($event)">
+        (navegar)="cambiarSegcion($event)"
+        (refrescarDatos)="actualizarDashboardCompleto()">
       </app-admin-applications>
 
       <app-admin-gym-suite
@@ -3136,14 +3137,19 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       const color=localStorage.getItem('mallqui_mantis_color');
       const densidad=localStorage.getItem('mallqui_mantis_densidad');
       if(tema==='claro'||tema==='oscuro') this.modoDashboard=tema;
-      // Nueva composición: iniciar en azul como Mantis, sin borrar preferencias posteriores.
-      if(localStorage.getItem('mallqui_mantis_reference_v1')!=='1'){
-        this.acentoDashboard='azul';
-        localStorage.setItem('mallqui_mantis_color','azul');
-        localStorage.setItem('mallqui_mantis_reference_v1','1');
+      // Mantis es referencia de módulos, NO autorización para sustituir los colores
+      // que se eligieron para Mallqui Gym (blanco, negro y verde lima).
+      // La versión anterior forzaba el azul en la primera apertura.
+      // Revertir esa imposición solo una vez; respetar elecciones posteriores.
+      const reparado=localStorage.getItem('mallqui_palette_restored_20261109')==='1';
+      const azulImpuesto=localStorage.getItem('mallqui_mantis_reference_v1')==='1' && color==='azul';
+      if(!reparado && azulImpuesto){
+        this.acentoDashboard='verde';
+        localStorage.setItem('mallqui_mantis_color','verde');
       }else if(color==='coral'||color==='azul'||color==='verde'){
         this.acentoDashboard=color;
       }
+      if(!reparado)localStorage.setItem('mallqui_palette_restored_20261109','1');
       if(densidad==='normal'||densidad==='compacta') this.densidadDashboard=densidad;
     }catch{
       this.sidebarCerrado = false;
@@ -3569,7 +3575,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   tipoIngresoDashboard: 'total'|'membresias'|'ventas' = 'total';
   modoDashboard: 'claro'|'oscuro' = 'claro';
   densidadDashboard: 'normal'|'compacta' = 'normal';
-  acentoDashboard: 'coral'|'azul'|'verde' = 'azul';
+  acentoDashboard: 'coral'|'azul'|'verde' = 'verde';
   personalizadorAbierto = false;
   avisosAbiertos = false;
   perfilAbiertoMantis = false;
@@ -3669,7 +3675,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   restablecerAparienciaMantis():void{
     this.guardarAparienciaMantis('tema','claro');
-    this.guardarAparienciaMantis('color','azul');
+    this.guardarAparienciaMantis('color','verde');
     this.guardarAparienciaMantis('densidad','normal');
     this.sidebarCerrado=false;
     try{localStorage.setItem('mallqui_admin_sidebar_closed','0');}catch{}
