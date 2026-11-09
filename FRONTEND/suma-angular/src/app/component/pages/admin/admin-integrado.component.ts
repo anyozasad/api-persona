@@ -1966,7 +1966,15 @@ import { catchError, forkJoin, of } from 'rxjs';
         <section class="admin-list-card">
           <div class="management-heading"><div><h2>Reservas de clases</h2><p>Controla asistencia, ausencias y cancelaciones.</p></div><span class="big-number">{{reservas.length}}</span></div>
           <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Clase</th><th>Fecha</th><th>Entrenador</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>
-            <tr *ngFor="let r of reservas"><td>{{r.id_reserva}}</td><td>{{nombreCliente(r.cliente)}}</td><td>{{r.clase?.nombre}}</td><td>{{r.fecha_clase}}</td><td>{{nombreEntrenador(r.clase?.entrenador)}}</td><td>{{r.estado}}</td><td><button class="table-action" type="button" (click)="cambiarEstadoReserva(r.id_reserva,'Asistio')">Asistió</button> <button class="admin-secondary" type="button" (click)="cambiarEstadoReserva(r.id_reserva,'NoAsistio')">No asistió</button> <button class="table-danger" type="button" (click)="cambiarEstadoReserva(r.id_reserva,'Cancelada')">Cancelar</button></td></tr>
+            <tr *ngFor="let r of reservas"><td>{{r.id_reserva}}</td><td>{{nombreCliente(r.cliente)}}</td><td>{{r.clase?.nombre}}</td><td>{{r.fecha_clase}}</td><td>{{nombreEntrenador(r.clase?.entrenador)}}</td><td>{{r.estado}}</td><td>
+              <button class="table-action" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
+                [attr.title]="reservaAdmiteCambioEstado(r) ? 'Confirmar asistencia' : 'Reserva finalizada'"
+                (click)="cambiarEstadoReserva(r.id_reserva,'Asistio')">Asistió</button>
+              <button class="admin-secondary" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
+                (click)="cambiarEstadoReserva(r.id_reserva,'NoAsistio')">No asistió</button>
+              <button class="table-danger" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
+                (click)="cambiarEstadoReserva(r.id_reserva,'Cancelada')">Cancelar</button>
+            </td></tr>
             <tr *ngIf="!reservas.length"><td colspan="7">No hay reservas registradas.</td></tr>
           </tbody></table></div>
         </section>
@@ -4874,7 +4882,22 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
   desactivarRutina(id:number){ if(!confirm('¿Desactivar esta rutina?')) return; this.api.eliminarRutina(id).subscribe({next:r=>{this.ok(r.mensaje||'Rutina desactivada');this.cancelarEdicionRutina();this.cargarRutinas();},error:e=>this.mostrarError(e)}); }
 
-  cambiarEstadoReserva(id:number,estado:string){ this.api.cambiarEstadoReserva(id,estado).subscribe({next:r=>{this.ok(r.mensaje||'Reserva actualizada');this.cargarReservas();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
+  /** Los estados finalizados no deben editarse desde los botones del dashboard. */
+  reservaAdmiteCambioEstado(reserva:any):boolean{
+    return ['Reservada','Confirmada'].includes(String(reserva?.estado||''));
+  }
+
+  cambiarEstadoReserva(id:number,estado:string){
+    const reserva=this.reservas.find((r:any)=>Number(r.id_reserva)===Number(id));
+    if(reserva && !this.reservaAdmiteCambioEstado(reserva)){
+      this.error='La reserva está finalizada o cancelada. Actualiza el listado antes de intentar otra acción.';
+      return;
+    }
+    this.api.cambiarEstadoReserva(id,estado).subscribe({
+      next:r=>{this.ok(r.mensaje||'Reserva actualizada');this.cargarReservas();this.cargarDashboard();},
+      error:e=>this.mostrarError(e)
+    });
+  }
 
   guardarUsuario(){
     const datos={...this.usuarioForm};
