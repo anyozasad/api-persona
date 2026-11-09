@@ -573,7 +573,7 @@ import {
 
             <div class="membership-unlocked-actions">
               <button type="button" (click)="abrirModulo('club')"><span>▥</span><b>Credencial de acceso</b><small>Mostrar código de barras</small></button>
-              <button type="button" (click)="ultimoPagoCompletado ? comprobante(ultimoPagoCompletado) : abrirModulo('pagos')"><span>▤</span><b>Mi boleta</b><small>Ver último comprobante</small></button>
+              <button type="button" (click)="ultimoPagoCompletado ? comprobante(ultimoPagoCompletado) : abrirModulo('pagos')"><span>▤</span><b>Mi comprobante</b><small>Ver último comprobante</small></button>
               <button type="button" (click)="abrirModulo('clases')"><span>▣</span><b>Clases</b><small>Ver horarios y reservar</small></button>
               <button type="button" (click)="abrirModulo('asistencias')"><span>✓</span><b>Asistencias</b><small>Entradas y salidas</small></button>
               <button type="button" (click)="tieneRutinaAsignadaGym ? abrirModulo('rutinas') : solicitarRutinaAlPersonal()" [disabled]="procesandoSolicitudRutina"><span>🏋</span><b>{{tieneRutinaAsignadaGym ? 'Mi rutina' : 'Solicitar rutina'}}</b><small>{{tieneRutinaAsignadaGym ? 'Ver ejercicios' : 'Enviar solicitud al personal'}}</small></button>
@@ -1529,7 +1529,7 @@ import {
                 </div>
 
                 <div class="membership-payment-review receipt-preview" *ngIf="ultimaBoleta">
-                  <p><span>BOLETA GENERADA</span><b>{{ultimaBoleta.numero_comprobante || ('B001-'+ultimaBoleta.id_pago)}}</b></p>
+                  <p><span>CONSTANCIA DE PAGO</span><b>{{ultimaBoleta.numero_comprobante || ('B001-'+ultimaBoleta.id_pago)}}</b></p>
                   <p><span>Membresía</span><b>{{ultimaBoleta.membresia}}</b></p>
                   <p><span>Periodo</span><b>{{ultimaBoleta.periodo?.inicio || ultimaBoleta.periodo?.fecha_inicio}} - {{ultimaBoleta.periodo?.fin || ultimaBoleta.periodo?.fecha_fin}}</b></p>
                   <p><span>Método</span><b>{{ultimaBoleta.metodo_pago}} · Op. {{ultimaBoleta.numero_operacion || '-'}}</b></p>
