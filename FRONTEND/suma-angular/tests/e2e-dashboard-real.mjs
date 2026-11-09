@@ -85,6 +85,74 @@ try {
     await paso('Ruta '+ruta+' abre módulo propio',()=>pantalla(ruta,contenido,nombre));
   }
 
+  await paso('Menú simplificado sin categorías repetidas',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const menu=page.locator('.mg-clear-navigation');
+    await menu.waitFor({timeout:20000});
+    const grupos=menu.locator('.cf-nav-group-head');
+    assert.equal(await grupos.count(),6,'El menú debe presentar seis grupos claros.');
+    assert.equal(await menu.locator('.mg-direct-home').count(),1);
+    const titulo=await grupos.allTextContents();
+    assert.ok(titulo.some(t=>t.includes('Socios y membresías')));
+    assert.ok(titulo.some(t=>t.includes('Entrenamientos')));
+    assert.ok(titulo.some(t=>t.includes('Ventas e inventario')));
+    await page.screenshot({path:'evidencias-dashboard/13_Menu_simplificado.png',fullPage:true});
+  });
+
+  await paso('Formulario de socios en la página, sin oscurecer ni duplicar scroll',async()=>{
+    await page.goto(base+'/clientes',{waitUntil:'domcontentloaded'});
+    await page.getByRole('button',{name:/Agregar Socio/i}).first().click();
+    const area=page.locator('.client-editor-workspace');
+    await area.waitFor({timeout:10000});
+    assert.equal(await page.locator('.client-editor-backdrop').count(),0,
+      'No debe seguir existiendo el modal que tapa la página.');
+    assert.equal(await page.locator('.clients-v3-shell').count(),0,
+      'La tabla de socios debe ocultarse al editar, para evitar doble interfaz.');
+    const geometria=await area.locator('.client-editor-panel').evaluate(el=>{
+      const style=getComputedStyle(el);
+      const formulario=el.querySelector('.client-editor-form');
+      return {
+        ancho:el.getBoundingClientRect().width,
+        alto:el.getBoundingClientRect().height,
+        alturaTexto:parseFloat(getComputedStyle(el.querySelector('input[name=dni]')).fontSize),
+        panelOverflow:style.overflowY,
+        formularioOverflow:getComputedStyle(formulario).overflowY,
+        posicion:style.position
+      };
+    });
+    assert.ok(geometria.ancho>=650,'Formulario pequeño: '+JSON.stringify(geometria));
+    assert.ok(geometria.alturaTexto>=14,'Texto aún demasiado pequeño');
+    assert.notEqual(geometria.formularioOverflow,'auto','El formulario no debe tener segundo scroll');
+    assert.notEqual(geometria.panelOverflow,'auto','El panel no debe tener segundo scroll');
+    await page.screenshot({path:'evidencias-dashboard/14_Registrar_Socio_sin_drawer.png',fullPage:true,animations:'disabled'});
+    await area.getByRole('button',{name:/Volver a socios/}).click();
+    assert.equal(await area.count(),0,'El botón Volver debe cerrar el formulario.');
+    await page.locator('.clients-v3-shell').waitFor({timeout:10000});
+  });
+
+  await paso('Registrar socio desde nueva interfaz y verificar MySQL al recargar',async()=>{
+    await page.goto(base+'/clientes',{waitUntil:'domcontentloaded'});
+    await page.getByRole('button',{name:/Agregar Socio/i}).first().click();
+    const form=page.locator('.client-editor-workspace form.client-editor-form');
+    await form.waitFor({timeout:10000});
+    await form.locator('input[name=dni]').fill('88776655');
+    await form.locator('input[name=nombres]').fill('Prueba');
+    await form.locator('input[name=apellidos]').fill('Interfaz Mallqui');
+    await form.locator('input[name=telefono]').fill('987654321');
+    await form.locator('input[name=correo]').fill('interfaz-ci@example.test');
+    await form.locator('input[name=crear_acceso]').uncheck();
+    await form.locator('button.save').click();
+    await page.waitForFunction(()=>
+      Boolean(document.querySelector('.mg-top-greeting h1')?.textContent?.includes('Membresías')),
+      null,{timeout:25000}
+    );
+    await page.goto(base+'/clientes',{waitUntil:'domcontentloaded'});
+    const tabla=page.locator('.clients-v3-table, .clients-v3-shell');
+    await tabla.waitFor({timeout:15000});
+    await page.locator('.clients-v3-shell').getByText('Interfaz Mallqui',{exact:false}).first().waitFor({timeout:25000});
+    await page.screenshot({path:'evidencias-dashboard/15_Socio_persistido_MySQL.png',fullPage:true});
+  });
+
   await paso('Botón Fitness abre rutinas, no clases',async()=>{
     await page.setViewportSize({width:390,height:844});
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
