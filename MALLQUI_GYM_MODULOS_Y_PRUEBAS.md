@@ -189,3 +189,37 @@ npm test -- --watch=false --browsers=ChromeHeadless
 **Importante para evaluación:** los resultados anteriores prueban las rutas y operaciones cubiertas por las suites de CI, **no equivalen a una auditoría manual de todos los flujos ni a una comprobación de la base real del negocio en la computadora del instituto**. La emisión de comprobantes electrónicos autorizados por SUNAT depende de credenciales, firma digital e integración fiscal que no están disponibles en este repositorio. No se modificaron las fechas, horas o firmas originales de los documentos EFSRT.
 
 **Rama validada:** los cambios comprobados en la ejecución indicada se fusionaron a `main` con el PR [#25](https://github.com/anyozasad/api-persona/pull/25).
+
+---
+
+## Semana 05 — Productos con fotografía (corrección 09/11/2026)
+
+Esta sección corresponde a las cinco actividades que constan en **SEMANA 05** de la bitácora institucional EFSRT, no a una función decorativa.
+
+| Actividad exigida | Implementación en Mallqui Gym | Evidencia que se debe tomar en la ejecución real |
+|---|---|---|
+| 1. Relacionar reservas con usuarios y socios | `ReservaController.php` y las pantallas de reserva del dashboard/portal comparten MySQL | Reserva de un socio creada desde el dashboard y visible en el portal |
+| 2. Revisar estados de reserva | Estados y validaciones en `ReservaController.php`, botones del administrador | Reserva pendiente, asistencia y cancelación sin duplicados |
+| 3. Registrar productos con nombre, precio y stock | Formulario `FRONTEND/suma-angular/src/app/component/pages/productos/productos.html`, API `ProductoController.php` | Formulario del producto guardado y su fila en MySQL |
+| 4. **Guardar y mostrar imagen de producto** | Selector JPG/PNG/WEBP en el formulario, optimización en `productos.ts`, almacenamiento `productos.foto` en `MEDIUMTEXT`, lectura en `PortalClienteController.php`, imagen en `usuario.component.ts`. El catálogo muestra fotos incluso de productos agotados y su estado AGOTADO | **Dos capturas REALES de la MISMA foto:** (a) Dashboard → Productos → edición/lista; (b) Portal del socio → Productos. Consulta SQL: `SELECT id_producto, nombre_producto, stock, LENGTH(foto) AS bytes_foto FROM productos ORDER BY id_producto DESC;` |
+| 5. Revisar pagos y socios frente a la BD | APIs de pagos, clientes y verificación EFSRT | Consulta SQL de socios y pago confirmado, capturas de pantalla sin editar |
+
+### Comprobación específica de la fotografía
+
+1. Iniciar XAMPP/MySQL, Laravel y Angular con la misma configuración `BACKEND/.env`.
+2. Desde `BACKEND`, ejecutar las migraciones pendientes después de un respaldo: `php artisan migrate`. La migración `2026_11_09_235900_ensure_producto_foto_mediumtext.php` amplía la columna `foto` en instalaciones donde era demasiado pequeña.
+3. Entrar como Administrador → Productos. Elegir JPG, PNG o WEBP y observar la **vista previa real**. No se puede guardar mientras se está procesando.
+4. Registrar o editar el producto. Debe aparecer el mensaje de confirmación de fotografía guardada en MySQL.
+5. Actualizar el dashboard, comprobar la miniatura de la fila y entrar como socio para abrir Productos. Debe mostrarse la misma fotografía sin cargar recursos de terceros.
+6. Si tiene stock 0, el portal conserva la foto y muestra **AGOTADO**; no desaparece todo el producto.
+7. Si el producto ya existía sin fotografía, hay que subirle su foto real desde el formulario. El sistema no inventa una imagen para ese registro.
+
+**Importante:** las capturas de evidencia de EFSRT deben proceder del programa realmente ejecutado en el equipo. No se consideran válidas ilustraciones generadas ni capturas ficticias. Las pruebas automatizadas verifican el código y la BD de pruebas, pero no garantizan la presencia de fotografías de productos particulares en tu instalación local.
+
+### Pruebas automatizadas agregadas
+
+- `ProductoModernLegacyBridgeTest`: producto agotado aparece en portal con foto; cambio de fotografía y precio se refleja en la misma base.
+- `ProductoImagenPortalClienteTest`: valida la conexión del selector, bloqueo durante carga, imagen en portal y eliminación del filtro de stock.
+- `php artisan test --filter=ProductoModernLegacyBridgeTest`
+- `php artisan test --filter=ProductoImagenPortalClienteTest`
+

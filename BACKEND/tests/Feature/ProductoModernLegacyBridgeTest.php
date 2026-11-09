@@ -3,6 +3,9 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\GymSystemAdminController;
+use App\Http\Controllers\PortalClienteController;
+use App\Http\Controllers\ProductoController;
+use App\Models\Usuario;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +25,8 @@ class ProductoModernLegacyBridgeTest extends TestCase
         }
         Schema::create('clientes', function (Blueprint $tabla) {
             $tabla->id('id_cliente');
+            $tabla->string('estado')->default('Activo');
+            $tabla->string('dni')->nullable();
         });
         Schema::create('categorias', function (Blueprint $tabla) {
             $tabla->id('id_categoria');
@@ -70,6 +75,52 @@ class ProductoModernLegacyBridgeTest extends TestCase
         $this->assertCount(1,$lista);
         $this->assertSame($foto,$lista[0]['foto']);
         $this->assertSame('Proteína de prueba',$lista[0]['nombre_producto']);
+    }
+
+    public function test_semana_cinco_producto_sin_stock_conserva_foto_en_portal_y_tras_editar(): void
+    {
+        DB::table('clientes')->insert([
+            'id_cliente'=>1,'estado'=>'Activo','dni'=>'71234567'
+        ]);
+
+        $fotoInicial = 'data:image/png;base64,'.base64_encode('foto-cargada-en-mallqui');
+        $fotoEditada = 'data:image/webp;base64,'.base64_encode('foto-actualizada-en-mallqui');
+
+        DB::table('productos')->insert([
+            'id_producto'=>12,
+            'id_categoria'=>1,
+            'codigo_producto'=>'IMG-SEM05',
+            'nombre_producto'=>'Producto de semana cinco',
+            'foto'=>$fotoInicial,
+            'precio_compra'=>14,
+            'precio_venta'=>25,
+            'stock'=>0,
+            'stock_minimo'=>1,
+            'unidad_medida'=>'Unidad',
+            'estado'=>'Activo'
+        ]);
+
+        $usuario = new Usuario();
+        $usuario->id_cliente = 1;
+        $solicitud = Request::create('/api/mi-cuenta/productos', 'GET');
+        $solicitud->setUserResolver(fn () => $usuario);
+
+        $lista = app(PortalClienteController::class)->productos($solicitud)->getData(true);
+        $this->assertCount(1, $lista, 'La foto debe verse aunque el producto esté agotado.');
+        $this->assertSame($fotoInicial, $lista[0]['foto']);
+        $this->assertSame(0, $lista[0]['stock']);
+
+        $edicion = Request::create('/api/productos/12', 'PUT', [
+            'foto'=>$fotoEditada,
+            'precio_venta'=>29,
+        ]);
+        $respuesta = app(ProductoController::class)->update($edicion, '12');
+        $this->assertSame(200, $respuesta->getStatusCode());
+        $this->assertSame($fotoEditada, DB::table('productos')->where('id_producto', 12)->value('foto'));
+
+        $listaActualizada = app(PortalClienteController::class)->productos($solicitud)->getData(true);
+        $this->assertSame($fotoEditada, $listaActualizada[0]['foto']);
+        $this->assertEqualsWithDelta(29.0, (float) $listaActualizada[0]['precio_venta'], 0.001);
     }
 
     public function test_editar_producto_moderno_conserva_stock_y_permita_quitar_foto(): void

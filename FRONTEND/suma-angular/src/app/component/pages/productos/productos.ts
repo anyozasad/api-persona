@@ -24,6 +24,8 @@ export class ProductosComponent implements OnInit {
   error = '';
   busqueda = '';
   procesandoImagen = false;
+  guardando = false;
+  private imagenSolicitud = 0;
   producto: Producto = this.productoVacio();
 
   constructor(
@@ -38,9 +40,9 @@ export class ProductosComponent implements OnInit {
     this.listar();
   }
 
-  listar(): void {
+  listar(limpiarError = true): void {
     this.cargando = true;
-    this.error = '';
+    if (limpiarError) this.error = '';
     this.productoService.listar().subscribe({
       next: d => { this.productos = d; this.cargando = false; },
       error: e => { this.cargando = false; this.error = this.mensajeError(e, 'No se pudieron obtener los productos.'); }
@@ -60,23 +62,53 @@ export class ProductosComponent implements OnInit {
   }
 
   guardar(): void {
+    if (this.guardando) return;
+    if (this.procesandoImagen) {
+      this.error = 'La fotografía todavía se está preparando. Guarda el producto cuando termine.';
+      return;
+    }
     this.mensaje = '';
     this.error = '';
+    this.guardando = true;
+    const fotoEsperada = this.producto.foto;
     this.productoService.guardar(this.producto).subscribe({
-      next: () => { this.mensaje = 'Producto registrado correctamente.'; this.limpiarFormulario(); this.listar(); },
-      error: e => this.error = this.mensajeError(e, 'No se pudo registrar el producto.')
+      next: registrado => {
+        this.guardando = false;
+        if (fotoEsperada && registrado.foto !== fotoEsperada) {
+          this.error = 'Se registró el producto, pero no se confirmó su fotografía. Revisa el producto en el inventario.';
+        } else {
+          this.mensaje = fotoEsperada
+            ? 'Producto y fotografía guardados correctamente en MySQL.'
+            : 'Producto registrado correctamente.';
+        }
+        this.limpiarFormulario();
+        // No borrar la advertencia si el backend no confirmó la fotografía.
+        this.listar(false);
+      },
+      error: e => {
+        this.guardando = false;
+        this.error = this.mensajeError(e, 'No se pudo registrar el producto.');
+      }
     });
   }
 
   editar(p: Producto): void {
+    // Anular lecturas de imágenes anteriores para no asignarlas a otro producto.
+    this.imagenSolicitud++;
+    this.procesandoImagen = false;
     this.producto = { ...p };
     this.editando = true;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   actualizar(): void {
-    if (!this.producto.id_producto) return;
+    if (!this.producto.id_producto || this.guardando) return;
+    if (this.procesandoImagen) {
+      this.error = 'La fotografía todavía se está preparando. Guarda los cambios cuando termine.';
+      return;
+    }
     const id = this.producto.id_producto;
+    this.guardando = true;
     const datos: Partial<Producto> = {
       id_categoria: this.producto.id_categoria,
       codigo_producto: this.producto.codigo_producto,
@@ -90,8 +122,23 @@ export class ProductosComponent implements OnInit {
       estado: this.producto.estado
     };
     this.productoService.actualizar(id, datos).subscribe({
-      next: () => { this.mensaje = 'Producto actualizado correctamente.'; this.limpiarFormulario(); this.listar(); },
-      error: e => this.error = this.mensajeError(e, 'No se pudo actualizar el producto.')
+      next: actualizado => {
+        this.guardando = false;
+        if (datos.foto && actualizado.foto !== datos.foto) {
+          this.error = 'Se guardaron los datos, pero el servidor no confirmó la fotografía. Verifica el registro.';
+        } else {
+          this.mensaje = datos.foto
+            ? 'Producto y fotografía actualizados correctamente en MySQL.'
+            : 'Producto actualizado correctamente.';
+        }
+        this.limpiarFormulario();
+        // No borrar la advertencia si el backend no confirmó la fotografía.
+        this.listar(false);
+      },
+      error: e => {
+        this.guardando = false;
+        this.error = this.mensajeError(e, 'No se pudo actualizar el producto.');
+      }
     });
   }
 
@@ -162,13 +209,16 @@ export class ProductosComponent implements OnInit {
     }
 
     this.procesandoImagen = true;
+    const solicitud = ++this.imagenSolicitud;
     const lector = new FileReader();
 
     lector.onload = () => {
+      if (solicitud !== this.imagenSolicitud) return;
       const origen = String(lector.result || '');
       const imagen = new Image();
 
       imagen.onload = () => {
+        if (solicitud !== this.imagenSolicitud) return;
         try {
           const maximo = 900;
           const escala = Math.min(1, maximo / Math.max(imagen.width, imagen.height));
@@ -204,6 +254,7 @@ export class ProductosComponent implements OnInit {
       };
 
       imagen.onerror = () => {
+        if (solicitud !== this.imagenSolicitud) return;
         this.procesandoImagen = false;
         this.error = 'El archivo seleccionado no contiene una imagen válida.';
         input.value = '';
@@ -213,6 +264,7 @@ export class ProductosComponent implements OnInit {
     };
 
     lector.onerror = () => {
+      if (solicitud !== this.imagenSolicitud) return;
       this.procesandoImagen = false;
       this.error = 'No se pudo leer la imagen seleccionada.';
       input.value = '';
@@ -222,6 +274,8 @@ export class ProductosComponent implements OnInit {
   }
 
   quitarImagen(): void {
+    this.imagenSolicitud++;
+    this.procesandoImagen = false;
     this.producto.foto = null;
   }
 
@@ -233,6 +287,8 @@ export class ProductosComponent implements OnInit {
   }
 
   limpiarFormulario(): void {
+    this.imagenSolicitud++;
+    this.procesandoImagen = false;
     const cat = this.categorias[0]?.id_categoria ?? 0;
     this.producto = this.productoVacio();
     this.producto.id_categoria = cat;
