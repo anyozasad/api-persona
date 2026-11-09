@@ -106,5 +106,6 @@ jobs:
           php artisan test --filter=ComprobanteMembresiaTest
           php artisan test --filter=VerificacionEfsrtTest
           php artisan test --filter=ProductoImagenDashboardTest
+          php artisan test --filter=ProductoModernLegacyBridgeTest
           php artisan test --filter=KardexLegacyRealTest
           php artisan test --filter=EfsrtInterfazEvidenciaTest
