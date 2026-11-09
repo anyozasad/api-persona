@@ -536,7 +536,7 @@ import { catchError, forkJoin, of } from 'rxjs';
                   <p>{{r.detalles?.length || 0}} ejercicios <span></span> {{r.objetivo || 'Entrenamiento'}}</p>
                   <button type="button" (click)="cambiarSegcion('rutinas')">Ver rutina</button>
                 </div>
-                <img src="assets/mallqui/mallqui-cover.webp" alt="Rutina activa de Mallqui Gym">
+                <img src="assets/mallqui/mallqui-hero-interior-4k.webp" alt="Rutina activa de Mallqui Gym">
               </article>
 
               <article class="mg-workout-card" *ngIf="rutinasActivasDashboard[1] as r">
@@ -611,7 +611,7 @@ import { catchError, forkJoin, of } from 'rxjs';
           <aside class="mg-dashboard-side">
             <article class="mg-trainer-card">
               <div class="mg-trainer-head">
-                <img class="mg-trainer-avatar-img" src="assets/mallqui/mallqui-cover.webp" alt="Entrenador Mallqui Gym">
+                <img class="mg-trainer-avatar-img" src="assets/mallqui/mallqui-trainer-4k.webp" alt="Entrenador Mallqui Gym">
                 <div>
                   <strong>{{entrenadores[0] ? nombreEntrenador(entrenadores[0]) : 'Entrenador Mallqui'}}</strong>
                   <span>{{entrenadores[0]?.especialidad || 'Entrenador principal'}}</span>
@@ -620,7 +620,7 @@ import { catchError, forkJoin, of } from 'rxjs';
               </div>
 
               <button type="button" class="mg-video-card" (click)="cambiarSegcion('rutinas')">
-                <img src="assets/mallqui/mallqui-cover.webp" alt="Rutina de Mallqui Gym">
+                <img src="assets/mallqui/mallqui-referencia-gym-equipos-4k.webp" alt="Rutina de Mallqui Gym">
                 <i>▶</i>
               </button>
               <h3>{{rutinasActivasDashboard[0]?.nombre_rutina || 'Sin rutina activa'}}</h3>
@@ -628,7 +628,7 @@ import { catchError, forkJoin, of } from 'rxjs';
             </article>
 
             <button type="button" class="mg-mini-routine" (click)="cambiarSegcion('rutinas')">
-              <img src="assets/mallqui/mallqui-cover.webp" alt="Rutina secundaria">
+              <img src="assets/mallqui/mallqui-foto-real-cardio-4k.webp" alt="Rutina secundaria">
               <div><strong>{{rutinasActivasDashboard[1]?.nombre_rutina || 'Gestionar rutinas'}}</strong><span>{{rutinasActivasDashboard[1]?.objetivo || 'Ver módulo de rutinas'}}</span></div>
             </button>
 
