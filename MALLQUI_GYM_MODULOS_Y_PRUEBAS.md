@@ -134,3 +134,40 @@ Para abrir en navegador con la base MySQL configurada, iniciar XAMPP/MySQL, el s
 10. Capturar pantallas, resultados de pruebas y consultas de MySQL sin alterar fechas ni firmas EFSRT.
 
 **Limitación técnica:** esta matriz documenta funciones existentes y cambios de código; no equivale a pruebas integradas ejecutadas sobre el equipo, el navegador y la base MySQL reales. Los tests añadidos requieren ejecución. Marcar resultados como aprobados solamente cuando el programa los confirme.
+
+---
+
+## Complemento funcional aplicado el 09/11/2026 — Revisión de pendientes EFSRT
+
+Esta revisión agrega cambios reales al código del repositorio, sin alterar el formato, fechas, horas ni firmas de los dos documentos EFSRT.
+
+### Funciones que se completaron en esta revisión
+
+1. **Pagos y comprobantes:** Pagos ahora tiene el botón **Ver comprobante** solo en operaciones con estado `Completado`. En Documentos del socio se selecciona un **pago real** (no solo una suscripción); se puede consultar su serie, fecha, cliente, plan, método, total y abrir una impresión local. La API no genera constancias de pagos pendientes o rechazados. La ruta legacy de documentos también consulta un pago completado.
+2. **Comprobación EFSRT:** en el menú **Sistema → Comprobación EFSRT** hay un diagnóstico de solo lectura con acceso exclusivo del Administrador. Muestra el estado de las tablas principales, cantidad de registros reales, tablas faltantes y anomalías detectables: DNI repetidos, reservas duplicadas activas, pagos sin membresía relacionada y productos con stock negativo. El diagnóstico **no afirma que un módulo está funcional solo por tener una tabla**.
+3. **Imágenes locales del usuario:** se sustituyeron 74 referencias restantes a la miniatura `mallqui-cover.webp` por recursos locales de mejor tamaño ya presentes; la distribución de la interfaz se mantiene. Los ejercicios utilizan imágenes de referencia locales y `dead_bug` usa la imagen de ejercicio que existe en el proyecto. Los productos sin foto muestran un marcador SVG local que dice claramente que falta la imagen; los productos con foto siguen mostrando la foto guardada.
+4. **Validaciones y cobertura de pruebas:** se agregaron pruebas para pagos confirmados/no confirmados, diagnóstico de datos duplicados, permisos de acceso y navegación Angular.
+
+### Demostración que debe realizar el profesor en el equipo
+
+Desde `FRONTEND/suma-angular`, abrir Angular con `npm start`; desde `BACKEND`, tener configurado `gym_system` y ejecutar `php artisan serve`, con MySQL iniciado. En el dashboard, ingresar como Administrador a **Sistema → Comprobación EFSRT** para observar tablas reales y acceder a cada módulo. Después comprobar: inscripción de socio, membresía y pago, reserva de clase, asistencia, stock/productos, rutinas, alertas, consulta de comprobante y respaldo. Los resultados deben conservarse como capturas **reales** tomadas después de ejecutar el sistema.
+
+Comandos de validación (desde `BACKEND`):
+
+```powershell
+php artisan test --filter=VerificacionEfsrtTest
+php artisan test --filter=ComprobanteMembresiaTest
+php artisan test --filter=ReservaClienteFlowTest
+php artisan test --filter=EfsrtInterfazEvidenciaTest
+php artisan route:list --path=admin/verificacion-efsrt
+```
+
+Desde `FRONTEND/suma-angular`:
+
+```powershell
+npm ci
+npm run build
+npm test -- --watch=false --browsers=ChromeHeadless
+```
+
+**Limitaciones técnicas reales:** aún no se han ejecutado estos comandos con las dependencias, navegador y MySQL instalados en el equipo del usuario. La aprobación final exige que los comandos terminen correctamente, que las operaciones persistan en la base real, y que el supervisor valide sus evidencias. **No existe integración certificada SUNAT** para emitir una boleta electrónica con validez tributaria. Los documentos disponibles permiten elaborar una constancia interna, no probar una emisión autorizada. Las jornadas futuras de la bitácora siguen pendientes de su realización y validación, no se marcan como realizadas automáticamente.
