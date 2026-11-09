@@ -111,6 +111,9 @@ export class AdminApiService {
   // RESERVAS
   // =========================================================
   reservas(): Observable<any[]> { return this.http.get<any[]>('/api/reservas'); }
+  crearReservaAdmin(datos: any): Observable<any> { return this.http.post('/api/reservas', datos); }
+  actualizarReservaAdmin(id: number, datos: any): Observable<any> { return this.http.put(`/api/reservas/${id}`, datos); }
+  eliminarReservaAdmin(id: number): Observable<any> { return this.http.delete(`/api/reservas/${id}`); }
   cambiarEstadoReserva(id: number, estado: string): Observable<any> {
     return this.http.put(`/api/reservas/${id}/estado`, { estado });
   }
