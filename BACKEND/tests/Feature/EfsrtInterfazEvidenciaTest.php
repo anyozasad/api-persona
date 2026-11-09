@@ -67,6 +67,21 @@ class EfsrtInterfazEvidenciaTest extends TestCase
         $this->assertStringContainsString("Route::get('/dashboard/resumen'", $api);
     }
 
+    public function test_usuario_usa_fotografias_locales_y_placeholder_de_producto_sin_foto(): void
+    {
+        $frontend = base_path('../FRONTEND/suma-angular');
+        $portal = (string) file_get_contents(
+            $frontend.'/src/app/component/pages/usuario/usuario.component.ts'
+        );
+
+        $this->assertStringNotContainsString('mallqui-cover.webp', $portal);
+        $this->assertStringContainsString('assets/mallqui/producto-sin-imagen.svg', $portal);
+        $this->assertFileExists($frontend.'/public/assets/mallqui/producto-sin-imagen.svg');
+        $this->assertStringContainsString('assets/exercises/deadbug_human.webp', $portal);
+        $this->assertFileExists($frontend.'/public/assets/exercises/deadbug_human.webp');
+        $this->assertStringContainsString('mallqui-trainer-4k.webp', $portal);
+    }
+
     public function test_impresion_de_pago_usa_codigo_local_y_no_solicita_un_qr_externo(): void
     {
         $archivo = base_path('../FRONTEND/suma-angular/src/app/component/pages/usuario/usuario.component.ts');
