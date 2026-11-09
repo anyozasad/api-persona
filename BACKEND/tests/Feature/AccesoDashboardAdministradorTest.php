@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Usuario;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 /**
@@ -64,9 +66,16 @@ class AccesoDashboardAdministradorTest extends TestCase
             );
         }
 
+        $idToken = (int) explode('|', $token, 2)[0];
+        $this->assertTrue(DB::table('personal_access_tokens')->where('id', $idToken)->exists());
         $this->withHeaders($autorizacion)
             ->postJson('/api/auth/logout', [])
             ->assertOk();
+        $this->assertFalse(DB::table('personal_access_tokens')->where('id', $idToken)->exists());
+
+        // Laravel mantiene un guard en memoria durante el mismo proceso PHPUnit.
+        // Olvidarlo reproduce una petición HTTP independiente del navegador.
+        Auth::forgetGuards();
         $this->withHeaders($autorizacion)
             ->getJson('/api/dashboard/resumen')
             ->assertUnauthorized();
