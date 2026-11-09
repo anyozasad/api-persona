@@ -4108,7 +4108,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
     const ruc=String(empresa.ruc||'').trim();
     const rucValido=/^\d{11}$/.test(ruc);
-    const documentoTitulo=rucValido ? 'BOLETA DE VENTA ELECTRÓNICA' : 'BOLETA DE VENTA';
+    // Un RUC registrado NO demuestra que SUNAT haya aceptado un CPE.
+    const documentoTitulo='CONSTANCIA INTERNA DE PAGO';
 
     const qrContenido=[
       'MALLQUI GYM',
@@ -4118,7 +4119,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       'TOTAL '+monto.toFixed(2),
       'OPERACION '+String(c?.numero_operacion||'')
     ].join('|');
-    const qrUrl='https://quickchart.io/qr?size=280&margin=1&text='+encodeURIComponent(qrContenido);
+    // Código de barras Data URI generado localmente: funciona también sin Internet.
     const codigoLocal=code128DataUri(qrContenido,{height:72,module:2,quiet:12,text:false});
 
     const html=`<!doctype html>
@@ -4271,8 +4272,9 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     min-height:48mm;
   }
   .qr img{
-    width:46mm;
-    height:46mm;
+    width:82mm;
+    max-width:100%;
+    height:24mm;
     object-fit:contain;
     image-rendering:pixelated;
   }
@@ -4367,14 +4369,13 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     Representación impresa de la ${safe(documentoTitulo)}.<br>
     Conserva este comprobante como constancia de tu pago.
     <div class="qr">
-      <img src="${safe(qrUrl)}" alt="Código QR del comprobante"
-           onerror="this.onerror=null;this.src='${safe(codigoLocal)}';this.style.width='82mm';this.style.height='24mm';">
-      <div class="qr-fallback">Verificación local: ${safe(numero)}</div>
+      <img src="${safe(codigoLocal)}" alt="Código de barras interno del comprobante">
+      <div class="qr-fallback">Identificador interno: ${safe(numero)}</div>
     </div>
     <div class="nota-legal">
       ${rucValido
-        ? 'La validez tributaria electrónica depende de la emisión autorizada e integración con SUNAT.'
-        : 'RUC no configurado. Este documento funciona como constancia interna hasta completar la emisión electrónica autorizada.'}
+        ? 'CONSTANCIA INTERNA: no es un comprobante electrónico autorizado por SUNAT. La emisión oficial requiere integración y respuesta de SUNAT.'
+        : 'RUC no configurado. Este documento es una constancia interna y no sustituye la boleta electrónica de SUNAT.'}
     </div>
   </footer>
 </section>
