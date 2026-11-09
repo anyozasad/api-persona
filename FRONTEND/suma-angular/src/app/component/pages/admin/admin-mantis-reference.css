@@ -885,3 +885,41 @@
     background:var(--mg-mantis-accent)!important;color:#fff!important;
   }
 }
+
+/* Panel avanzado disponible bajo demanda, sin desplazar la portada original. */
+.admin-shell.admin-home-redesign .mg-advanced-tools-shell{
+  margin:18px 0 8px;
+  border:1px solid var(--mg-reference-line, #e3eaf4);
+  border-radius:9px;background:#fff;
+  padding:18px 20px;
+}
+.admin-shell.admin-home-redesign .mg-advanced-tools-head{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+.admin-shell.admin-home-redesign .mg-advanced-tools-head small{
+  color:var(--mg-mantis-accent, #1677ff);
+  font-size:11px;font-weight:750;letter-spacing:.9px;
+}
+.admin-shell.admin-home-redesign .mg-advanced-tools-head h3{
+  color:#263e59;font-size:19px;margin:4px 0 5px;
+}
+.admin-shell.admin-home-redesign .mg-advanced-tools-head p{
+  color:#72849a;font-size:12px;margin:0;
+}
+.admin-shell.admin-home-redesign .mg-advanced-tools-head button{white-space:nowrap}
+.admin-shell.admin-home-redesign .mg-advanced-tools-shell .dashboard-tools{
+  background:transparent;box-shadow:none;border:0;border-radius:0;
+  margin:18px 0 0;padding:0;
+}
+.admin-shell.admin-home-redesign .mg-advanced-tools-shell .tools-title span,
+.admin-shell.admin-home-redesign .mg-advanced-tools-shell .tools-card header span{
+  color:var(--mg-mantis-accent, #1677ff);
+}
+.admin-shell.admin-home-redesign.mg-mantis-dark .mg-advanced-tools-shell{
+  background:#202d3b;border-color:#3a4b5c;
+}
+.admin-shell.admin-home-redesign.mg-mantis-dark .mg-advanced-tools-head h3{color:#edf5ff}
+@media(max-width:660px){
+  .admin-shell.admin-home-redesign .mg-advanced-tools-shell{padding:14px}
+  .admin-shell.admin-home-redesign .mg-advanced-tools-head button{width:100%}
+}
