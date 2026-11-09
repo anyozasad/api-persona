@@ -79,6 +79,7 @@ try {
     Informar ("PHP: " + $php)
     Informar ("npm: " + $npm)
 
+    $nuevoEnv = $false
     $archivoEnv = Join-Path $backend '.env'
     $vendor = Join-Path $backend 'vendor\autoload.php'
     $nodeModules = Join-Path $frontend 'node_modules\@angular\cli\bin\ng.js'
@@ -86,7 +87,7 @@ try {
         if ($Preparar -and -not $SoloVerificar) {
             Copy-Item (Join-Path $backend '.env.example') $archivoEnv
             Informar 'Se creó BACKEND/.env desde el ejemplo. Comprueba DB_DATABASE, usuario y contraseña.'
-            Ejecutar $php @('artisan','key:generate','--force') $backend
+            $nuevoEnv = $true
         } else {
             Fallar 'Falta BACKEND/.env. Ejecuta el script con -Preparar.'
         }
@@ -100,6 +101,10 @@ try {
         } else {
             Fallar 'Falta BACKEND/vendor. Ejecuta este archivo con -Preparar.'
         }
+    }
+
+    if ($nuevoEnv) {
+        Ejecutar $php @('artisan','key:generate','--force') $backend
     }
 
     if (-not (Test-Path $nodeModules)) {
