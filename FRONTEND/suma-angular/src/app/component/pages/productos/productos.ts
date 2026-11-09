@@ -220,30 +220,44 @@ export class ProductosComponent implements OnInit {
       imagen.onload = () => {
         if (solicitud !== this.imagenSolicitud) return;
         try {
-          const maximo = 900;
-          const escala = Math.min(1, maximo / Math.max(imagen.width, imagen.height));
-          const ancho = Math.max(1, Math.round(imagen.width * escala));
-          const alto = Math.max(1, Math.round(imagen.height * escala));
-          const canvas = document.createElement('canvas');
-          canvas.width = ancho;
-          canvas.height = alto;
+          // Conservar hasta 4K cuando el archivo cabe en el límite de la API.
+          // Antes se reducía cualquier foto a 900 px y quedaba borrosa.
+          // Solo se disminuye resolución/calidad cuando el tamaño lo exige.
+          const dimensiones = [3840, 3200, 2560, 2048, 1600, 1200];
+          const calidades = [0.92, 0.88, 0.83, 0.76];
+          let fotoValida = '';
 
-          const ctx = canvas.getContext('2d');
-          if (!ctx) throw new Error('No se pudo preparar la imagen.');
+          for (const maximo of dimensiones) {
+            const escala = Math.min(1, maximo / Math.max(imagen.width, imagen.height));
+            const ancho = Math.max(1, Math.round(imagen.width * escala));
+            const alto = Math.max(1, Math.round(imagen.height * escala));
+            const canvas = document.createElement('canvas');
+            canvas.width = ancho;
+            canvas.height = alto;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) throw new Error('No se pudo preparar la imagen.');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(imagen, 0, 0, ancho, alto);
 
-          ctx.drawImage(imagen, 0, 0, ancho, alto);
-          let foto = canvas.toDataURL('image/webp', 0.82);
-
-          // Algunos navegadores antiguos pueden no generar WEBP.
-          if (!foto.startsWith('data:image/webp')) {
-            foto = canvas.toDataURL('image/jpeg', 0.82);
+            for (const calidad of calidades) {
+              let foto = canvas.toDataURL('image/webp', calidad);
+              if (!foto.startsWith('data:image/webp')) {
+                foto = canvas.toDataURL('image/jpeg', calidad);
+              }
+              if (foto.length <= 2_900_000) {
+                fotoValida = foto;
+                break;
+              }
+            }
+            if (fotoValida) break;
           }
 
-          if (foto.length > 2_900_000) {
-            this.error = 'La imagen sigue siendo demasiado grande. Selecciona una imagen más liviana.';
+          if (!fotoValida) {
+            this.error = 'La fotografía supera el tamaño permitido. Elige una imagen optimizada de hasta 5 MB.';
             this.producto.foto = null;
           } else {
-            this.producto.foto = foto;
+            this.producto.foto = fotoValida;
           }
         } catch {
           this.error = 'No se pudo procesar la imagen seleccionada.';
