@@ -1041,7 +1041,7 @@ import { catchError, forkJoin, of } from 'rxjs';
               <button type="button" class="mg-back-to-members" (click)="cerrarFormularioCliente()" aria-label="Volver a la lista de socios">← Volver a socios</button>
             </header>
 
-            <form #clienteNgForm="ngForm" class="client-editor-form" (ngSubmit)="guardarCliente()">
+            <form #clienteNgForm="ngForm" class="client-editor-form" autocomplete="off" (ngSubmit)="guardarCliente()">
               <section class="client-editor-section">
                 <div class="client-editor-section-title">
                   <span>1</span>
@@ -4667,7 +4667,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   nuevoCliente(){
     this.clienteEditandoId=0;
-    this.clienteForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:true,nombre_usuario:'',contrasena:''};
+    this.clienteForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:false,nombre_usuario:'',contrasena:''};
     this.error='';
     this.clienteFormularioAbierto=true;
   }
