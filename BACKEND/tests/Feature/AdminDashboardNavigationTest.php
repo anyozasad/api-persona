@@ -24,7 +24,7 @@ class AdminDashboardNavigationTest extends TestCase
             'caja','ventas','historial-ventas','gastos',
             'inventario','compras','proveedores','kardex','categorias',
             'soporte','opiniones','comunicacion',
-            'reportes','reporte-asistencias',
+            'reportes-admin','reporte-asistencias',
             'usuarios','auditoria','configuracion',
         ];
 
