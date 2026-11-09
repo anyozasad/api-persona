@@ -1,0 +1,88 @@
+/* Diagnóstico EFSRT integrado al diseño Mantis existente. */
+.admin-home-redesign .efsrt-head{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  background:#fff;border:1px solid #e7ecf4;border-radius:9px;padding:20px 24px;margin-bottom:16px;
+}
+.admin-home-redesign .efsrt-head small{
+  display:block;color:#1677ff;font-size:11px;font-weight:750;letter-spacing:.8px;
+}
+.admin-home-redesign .efsrt-head h2{
+  margin:6px 0;font-size:23px;color:#20344b;
+}
+.admin-home-redesign .efsrt-head p{margin:0;color:#71819a;font-size:12px;line-height:1.55}
+.admin-home-redesign .efsrt-head button{min-height:39px}
+.admin-home-redesign .efsrt-summary{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px;
+}
+.admin-home-redesign .efsrt-summary article{
+  background:#fff;border:1px solid #e7ecf4;border-radius:9px;padding:18px;
+  min-height:112px;
+}
+.admin-home-redesign .efsrt-summary span{
+  color:#77879c;font-size:12px;display:block;margin-bottom:12px;
+}
+.admin-home-redesign .efsrt-summary strong{
+  color:#21354c;font-size:27px;line-height:1.2;display:block;word-break:break-word;
+}
+.admin-home-redesign .efsrt-summary small{font-size:11px;color:#96a3b4}
+.admin-home-redesign .efsrt-notice{
+  background:#f2f6fd;border:1px solid #dce8f9;color:#405777;
+  border-radius:8px;padding:13px 16px;font-size:12px;margin:0 0 16px;
+}
+.admin-home-redesign .efsrt-notice.warn{background:#fff8eb;border-color:#f4dfb5;color:#8a5b18}
+.admin-home-redesign .efsrt-table-wrap{
+  background:#fff;border:1px solid #e7ecf4;border-radius:9px;overflow:auto;margin-bottom:16px;
+}
+.admin-home-redesign .efsrt-table{border-collapse:collapse;width:100%;min-width:710px;font-size:12px}
+.admin-home-redesign .efsrt-table th{
+  text-align:left;background:#f6f8fc;color:#65758c;font-size:11px;padding:14px;
+  border-bottom:1px solid #e7ecf4;
+}
+.admin-home-redesign .efsrt-table td{padding:13px 14px;border-bottom:1px solid #edf0f5;color:#334962;vertical-align:middle}
+.admin-home-redesign .efsrt-table tr:last-child td{border-bottom:0}
+.admin-home-redesign .efsrt-status{
+  display:inline-block;padding:5px 9px;border-radius:5px;background:#e9f7f1;
+  color:#087b57;font-size:11px;font-weight:720;white-space:nowrap;
+}
+.admin-home-redesign .efsrt-status.missing{background:#fff2e9;color:#a64d15}
+.admin-home-redesign .efsrt-table button{
+  border:1px solid #dae4f4;border-radius:6px;color:#176ac9;background:#f7faff;
+  padding:7px 10px;font-size:11px;cursor:pointer;white-space:nowrap;
+}
+.admin-home-redesign .efsrt-table button:hover{border-color:#1677ff}
+.admin-home-redesign .efsrt-issues{
+  background:#fff;border:1px solid #e7ecf4;border-radius:9px;padding:17px 20px;margin-bottom:16px;
+}
+.admin-home-redesign .efsrt-issues h3{font-size:16px;color:#23394f;margin:0 0 12px}
+.admin-home-redesign .efsrt-issues article{
+  display:flex;gap:12px;align-items:center;justify-content:space-between;
+  border-top:1px solid #edf0f4;padding:11px 0;font-size:12px;
+}
+.admin-home-redesign .efsrt-issues article:first-of-type{border-top:0}
+.admin-home-redesign .efsrt-issues article p{margin:0;color:#465c76}
+.admin-home-redesign .efsrt-issues article button{
+  cursor:pointer;border:0;background:transparent;color:#1677ff;font-size:12px;
+}
+.admin-home-redesign .efsrt-issues .efsrt-noproblems{
+  color:#63778d;font-size:12px;margin:0;
+}
+.admin-home-redesign.mg-mantis-dark .efsrt-head,
+.admin-home-redesign.mg-mantis-dark .efsrt-summary article,
+.admin-home-redesign.mg-mantis-dark .efsrt-table-wrap,
+.admin-home-redesign.mg-mantis-dark .efsrt-issues{
+  background:#202d3b;border-color:#354558;
+}
+.admin-home-redesign.mg-mantis-dark .efsrt-head h2,
+.admin-home-redesign.mg-mantis-dark .efsrt-summary strong,
+.admin-home-redesign.mg-mantis-dark .efsrt-issues h3{color:#f0f6ff}
+.admin-home-redesign.mg-mantis-dark .efsrt-table th{background:#28394b;color:#bbcbdb;border-color:#405268}
+.admin-home-redesign.mg-mantis-dark .efsrt-table td{color:#dfecff;border-color:#344758}
+@media(max-width:1040px){
+  .admin-home-redesign .efsrt-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:540px){
+  .admin-home-redesign .efsrt-head{padding:17px}
+  .admin-home-redesign .efsrt-summary{gap:8px}
+  .admin-home-redesign .efsrt-summary article{padding:13px;min-height:100px}
+  .admin-home-redesign .efsrt-summary strong{font-size:21px}
+}
