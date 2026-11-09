@@ -79,7 +79,7 @@ class VerificacionEfsrtTest extends TestCase
         $this->assertSame(1, $alertas->firstWhere('tipo','stock_negativo')['cantidad']);
     }
 
-    public function test_un_cliente_no_puede_abrir_el_diagnostico_del_administrador(): void
+    public function test_un_usuario_no_autenticado_no_puede_abrir_el_diagnostico(): void
     {
         $respuesta=$this->getJson('/api/admin/verificacion-efsrt');
         $respuesta->assertStatus(401);
