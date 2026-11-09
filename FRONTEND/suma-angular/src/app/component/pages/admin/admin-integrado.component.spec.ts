@@ -20,7 +20,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       'clienteMembresias', 'pagos', 'productos', 'reservas', 'rutinas',
       'asistencias', 'entrenadores', 'clases', 'cajaActual',
       'registrarAccesoCodigo', 'cambiarEstadoReserva', 'confirmarPagoPendiente',
-      'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin'
+      'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin', 'comprobantePago'
     ]);
 
     api.estadoOperativo.and.returnValue(of({
@@ -44,6 +44,40 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     const auth = { usuario: { nombre_usuario: 'admin', rol: 'Administrador' } } as any;
     const router = { navigate: jasmine.createSpy('navigate') } as any;
     component = new AdminIntegradoComponent(auth, api, router);
+  });
+
+  it('solo permite comprobantes de pagos completados, no pendientes', () => {
+    component.verComprobantePago({id_pago: 2,estado_pago:'Pendiente'});
+    expect(api.comprobantePago).not.toHaveBeenCalled();
+    expect(component.comprobanteDatos).toBeNull();
+    expect(component.error).toContain('no existe un pago confirmado');
+  });
+
+  it('consulta el comprobante real por id de pago y no por id de suscripcion', () => {
+    const registro={id_pago: 7,estado_pago:'Completado'};
+    const comprobante={
+      numero_comprobante:'B001-00000007',estado_pago:'Completado',
+      cliente:'Cliente prueba',monto:50,nota_tributaria:'Constancia interna'
+    };
+    api.comprobantePago.and.returnValue(of(comprobante));
+    component.pagos=[registro];
+    component.documentoPagoId=7;
+
+    component.generarComprobanteMembresia();
+
+    expect(api.comprobantePago).toHaveBeenCalledOnceWith(7);
+    expect(component.comprobanteDatos).toEqual(comprobante);
+  });
+
+  it('rechaza consultar un pago no confirmado aunque este seleccionado', () => {
+    component.pagos=[{id_pago:5,estado_pago:'Rechazado'}];
+    component.documentoPagoId=5;
+
+    component.generarComprobanteMembresia();
+
+    expect(api.comprobantePago).not.toHaveBeenCalled();
+    expect(component.comprobanteDatos).toBeNull();
+    expect(component.error).toContain('Selecciona un pago confirmado');
   });
 
   it('sincroniza los datos del dashboard con las APIs operativas', () => {
