@@ -1,7 +1,7 @@
-import { Component, HostListener, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit, Optional, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AdminApiService } from './admin-api.service';
 import { AuthService } from './auth.service';
 import { ProductosComponent } from './pages/productos/productos';
@@ -295,7 +295,7 @@ import { catchError, forkJoin, of } from 'rxjs';
         <button type="button" [class.active]="moduloActivo==='servicios'" (click)="abrirModuloAdmin('servicios')"><span>◉</span><b>Servicios</b><i *ngIf="badgeModulo('servicios')>0">{{badgeModulo('servicios')}}</i></button>
         <button type="button" [class.active]="moduloActivo==='operacion'" (click)="abrirModuloAdmin('operacion')"><span>▣</span><b>Caja</b></button>
         <button type="button" [class.active]="moduloActivo==='inventario'" (click)="abrirModuloAdmin('inventario')"><span>▦</span><b>Stock</b><i *ngIf="badgeModulo('inventario')>0">{{badgeModulo('inventario')}}</i></button>
-        <button type="button" [class.active]="moduloActivo==='servicios'" (click)="abrirModuloAdmin('servicios')"><span>✦</span><b>Fitness</b></button>
+        <button type="button" [class.active]="moduloActivo==='servicios'" (click)="abrirModuloAdmin('fitness')"><span>✦</span><b>Fitness</b></button>
         <button type="button" [class.active]="moduloActivo==='atencion'" (click)="abrirModuloAdmin('atencion')"><span>●</span><b>Atención</b><i *ngIf="badgeModulo('atencion')>0">{{badgeModulo('atencion')}}</i></button>
         <button type="button" [class.active]="moduloActivo==='reportes'" (click)="abrirModuloAdmin('reportes')"><span>↗</span><b>Reportes</b></button>
         <button type="button" [class.active]="moduloActivo==='sistema'" (click)="abrirModuloAdmin('sistema')"><span>⚙</span><b>Sistema</b></button>
@@ -3126,10 +3126,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   gastoForm: any = {descripcion:'',monto:0};
   cajaCerrarForm: any = {monto_real:0,observacion:''};
 
-  constructor(public auth: AuthService, private api: AdminApiService, private router: Router) {}
+  constructor(public auth: AuthService, private api: AdminApiService, private router: Router, @Optional() private route?: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.seccion = this.normalizarSegcion(this.seccionInicial || 'dashboard');
+    // Las rutas directas /productos, /pagos, /reservas, etc. deben abrir su módulo,
+    // no volver al resumen por defecto.
+    this.seccion = this.normalizarSegcion(this.route?.snapshot?.data?.['seccion'] || this.seccionInicial || 'dashboard');
     try{
       this.sidebarCerrado = localStorage.getItem('mallqui_admin_sidebar_closed') === '1';
       this.autoRefreshActivo = localStorage.getItem('mallqui_admin_auto_refresh') !== '0';
@@ -3494,6 +3496,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       dashboard:'dashboard',
       socios:'clientes',
       servicios:'clases',
+      fitness:'rutinas',
       operacion:'caja',
       inventario:'inventario',
       contenido:'eventos',
@@ -3501,7 +3504,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       atencion:'soporte',
       reportes:'reportes-admin',
       sistema:'configuracion',
-      herramientas:'tables'
+      herramientas:'tablas-admin'
     };
     this.cambiarSegcion(destino[modulo]||'dashboard');
   }
