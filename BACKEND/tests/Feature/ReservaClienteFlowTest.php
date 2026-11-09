@@ -188,6 +188,63 @@ class ReservaClienteFlowTest extends TestCase
         }
     }
 
+    public function test_dashboard_puede_registrar_editar_y_cancelar_reserva_sin_borrar_historial(): void
+    {
+        $this->crearMembresia(true);
+        $primeraFecha = Carbon::now()->next(Carbon::MONDAY)->toDateString();
+        $otraFecha = Carbon::now()->next(Carbon::MONDAY)->addWeek()->toDateString();
+        $controller = app(ReservaController::class);
+        $usuario = Usuario::findOrFail(1);
+
+        $crear = Request::create('/api/reservas', 'POST', [
+            'id_cliente' => 1, 'id_clase' => 1, 'fecha_clase' => $primeraFecha,
+        ]);
+        $crear->setUserResolver(fn () => $usuario);
+
+        $respuesta = $controller->registrarDesdeAdmin($crear);
+        $this->assertSame(201, $respuesta->getStatusCode());
+        $this->assertDatabaseCount('reservas', 1);
+
+        try {
+            $controller->registrarDesdeAdmin($crear);
+            $this->fail('La misma reserva no debe duplicarse al registrar dos veces.');
+        } catch (ValidationException $e) {
+            $this->assertDatabaseCount('reservas', 1);
+        }
+
+        $editar = Request::create('/api/reservas/1', 'PUT', [
+            'id_cliente' => 1, 'id_clase' => 1, 'fecha_clase' => $otraFecha,
+        ]);
+        $editar->setUserResolver(fn () => $usuario);
+        $respuestaEdicion = $controller->actualizarDesdeAdmin($editar, '1');
+
+        $this->assertSame(200, $respuestaEdicion->getStatusCode());
+        $this->assertDatabaseHas('reservas', [
+            'id_reserva' => 1, 'fecha_clase' => $otraFecha, 'estado' => 'Reservada',
+        ]);
+
+        $borrar = Request::create('/api/reservas/1', 'DELETE');
+        $borrar->setUserResolver(fn () => $usuario);
+        $respuestaCancelacion = $controller->eliminarDesdeAdmin($borrar, '1');
+
+        $this->assertSame(200, $respuestaCancelacion->getStatusCode());
+        $this->assertDatabaseHas('reservas', ['id_reserva' => 1, 'estado' => 'Cancelada']);
+        $this->assertDatabaseCount('reservas', 1);
+    }
+
+    public function test_dashboard_no_registra_reservas_sin_membresia(): void
+    {
+        $request = Request::create('/api/reservas', 'POST', [
+            'id_cliente' => 1,
+            'id_clase' => 1,
+            'fecha_clase' => Carbon::now()->next(Carbon::MONDAY)->toDateString(),
+        ]);
+        $request->setUserResolver(fn () => Usuario::findOrFail(1));
+
+        $this->expectException(ValidationException::class);
+        app(ReservaController::class)->registrarDesdeAdmin($request);
+    }
+
     private function cambiarEstadoReserva(int $id, string $estado)
     {
         $request = Request::create('/api/reservas/'.$id.'/estado', 'PUT', [
