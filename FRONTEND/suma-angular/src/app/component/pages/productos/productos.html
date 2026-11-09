@@ -117,7 +117,10 @@
             @if (producto.foto) {
               <button type="button" class="image-remove-button" (click)="quitarImagen()">Quitar imagen</button>
             }
-            <small>JPG, PNG o WEBP · máximo 5 MB · se optimiza automáticamente.</small>
+            <small>JPG, PNG o WEBP · máximo 5 MB · se optimiza automáticamente y se guarda en MySQL.</small>
+            @if (producto.foto && !procesandoImagen) {
+              <small class="imagen-lista-para-guardar">✓ Fotografía preparada: guarda el producto para publicarla en el catálogo.</small>
+            }
           </div>
         </div>
       </div>
@@ -166,9 +169,9 @@
         @if (editando) {
           <button class="boton-secundario" type="button" (click)="limpiarFormulario()">Cancelar</button>
         }
-        <button class="boton-principal" type="submit">
+        <button class="boton-principal" type="submit" [disabled]="procesandoImagen || guardando">
           <span>{{ editando ? '✓' : '+' }}</span>
-          {{ editando ? 'Guardar cambios' : 'Registrar producto' }}
+          {{ guardando ? 'Guardando en MySQL...' : (procesandoImagen ? 'Preparando fotografía...' : (editando ? 'Guardar cambios' : 'Registrar producto')) }}
         </button>
       </div>
     </form>
