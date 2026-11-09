@@ -86,15 +86,17 @@ try {
   }
 
   await paso('Botón Fitness abre rutinas, no clases',async()=>{
+    await page.setViewportSize({width:390,height:844});
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     await page.locator('.mg-current-topbar h1').waitFor();
-    const boton=page.getByRole('button',{name:'Fitness',exact:true});
+    const boton=page.locator('.admin-mobile-modules').getByRole('button',{name:'Fitness',exact:true});
     if(await boton.count()){
       await boton.first().click();
       await page.waitForTimeout(350);
       const titulo=String(await page.locator('.mg-current-topbar h1').textContent()||'');
       assert.notEqual(titulo.trim().toLowerCase(),'dashboard');
       assert.match(titulo,/rutina/i);
+      await page.setViewportSize({width:1440,height:900});
     }else{
       throw new Error('No aparece el botón Fitness');
     }
