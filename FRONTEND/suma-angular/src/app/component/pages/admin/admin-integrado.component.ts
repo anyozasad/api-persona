@@ -813,22 +813,28 @@ import { catchError, forkJoin, of } from 'rxjs';
             </article>
 
             <article class="mg-business-card">
-              <h3>Comprobante de membresía</h3>
-              <label>Suscripción
-                <select [(ngModel)]="documentoSuscripcionId">
-                  <option [ngValue]="0">Seleccionar</option>
-                  <option *ngFor="let m of membresiasCliente" [ngValue]="m.id_cliente_membresia">{{nombreCliente(m.cliente)}} · {{m.membresia?.nombre}} · {{m.fecha_fin}}</option>
+              <h3>Constancia de pago de membresía</h3>
+              <p>Selecciona un pago confirmado. Las solicitudes pendientes o rechazadas no generan constancias.</p>
+              <label>Pago confirmado
+                <select [(ngModel)]="documentoPagoId" (ngModelChange)="comprobanteDatos=null">
+                  <option [ngValue]="0">Seleccionar pago</option>
+                  <option *ngFor="let p of pagos" [ngValue]="p.id_pago" [disabled]="p.estado_pago!=='Completado'">
+                    {{clientePago(p)}} · {{planPago(p)}} · S/ {{p.monto | number:'1.2-2'}} · {{p.estado_pago}}
+                  </option>
                 </select>
               </label>
-              <button type="button" class="admin-primary" [disabled]="!documentoSuscripcionId" (click)="generarComprobanteMembresia()">Generar comprobante</button>
+              <button type="button" class="admin-primary" [disabled]="!documentoPagoId" (click)="generarComprobanteMembresia()">Consultar comprobante</button>
               <div class="mg-receipt-preview" *ngIf="comprobanteDatos">
-                <strong>{{comprobanteDatos.configuracion?.nombre_sistema || 'Mallqui Gym'}}</strong>
-                <p>Socio: {{comprobanteDatos.datos?.socio}}</p>
-                <p>DNI: {{comprobanteDatos.datos?.dni}}</p>
-                <p>Plan: {{comprobanteDatos.datos?.plan}}</p>
-                <p>Inicio: {{comprobanteDatos.datos?.fecha_inicio}}</p>
-                <p>Fin: {{comprobanteDatos.datos?.fecha_fin}}</p>
-                <p>Total: S/ {{comprobanteDatos.datos?.precio | number:'1.2-2'}}</p>
+                <strong>CONSTANCIA INTERNA — {{comprobanteDatos.numero_comprobante}}</strong>
+                <p>Socio: {{comprobanteDatos.cliente}}</p>
+                <p>DNI: {{comprobanteDatos.dni}}</p>
+                <p>Plan: {{comprobanteDatos.membresia}}</p>
+                <p>Fecha de pago: {{fecha(comprobanteDatos.fecha_pago)}}</p>
+                <p>Método: {{comprobanteDatos.metodo_pago}}</p>
+                <p>Estado: {{comprobanteDatos.estado_pago}}</p>
+                <p>Total: S/ {{comprobanteDatos.monto | number:'1.2-2'}}</p>
+                <p><small>{{comprobanteDatos.nota_tributaria}}</small></p>
+                <button type="button" class="admin-primary" (click)="imprimirComprobantePago()">Abrir / imprimir constancia</button>
               </div>
             </article>
           </section>
@@ -1221,15 +1227,24 @@ import { catchError, forkJoin, of } from 'rxjs';
             </div>
             <span class="big-number">{{pagos.length}}</span>
           </div>
+          <div *ngIf="comprobanteDatos && seccion==='pagos'" class="mg-receipt-preview" aria-live="polite">
+            <strong>Constancia interna: {{comprobanteDatos.numero_comprobante}}</strong>
+            <p>{{comprobanteDatos.cliente}} · {{comprobanteDatos.membresia}} · S/ {{comprobanteDatos.monto | number:'1.2-2'}}</p>
+            <p>{{comprobanteDatos.nota_tributaria}}</p>
+            <button type="button" class="admin-primary" (click)="imprimirComprobantePago()">Abrir / imprimir</button>
+            <button type="button" class="admin-secondary" (click)="comprobanteDatos=null">Cerrar</button>
+          </div>
           <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Plan</th><th>Monto</th><th>Método</th><th>N° operación</th><th>Fecha</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
             <tr *ngFor="let p of pagos">
               <td>{{p.id_pago}}</td><td>{{clientePago(p)}}</td><td>{{planPago(p)}}</td><td>S/ {{p.monto | number:'1.2-2'}}</td><td>{{p.metodo_pago}}</td><td>{{p.numero_operacion || '-'}}</td><td>{{fecha(p.fecha_pago)}}</td><td>{{p.estado_pago}}</td>
               <td>
-                <ng-container *ngIf="p.estado_pago==='Pendiente' && p.metodo_pago==='Efectivo'; else sinAccionPago">
+                <ng-container *ngIf="p.estado_pago==='Pendiente' && p.metodo_pago==='Efectivo'">
                   <button type="button" (click)="confirmarPagoEfectivo(p)">Confirmar</button>
                   <button type="button" (click)="rechazarPagoEfectivo(p)">Rechazar</button>
                 </ng-container>
-                <ng-template #sinAccionPago>-</ng-template>
+                <button *ngIf="p.estado_pago==='Completado'" type="button" class="table-action"
+                  (click)="verComprobantePago(p)">Ver comprobante</button>
+                <small *ngIf="p.estado_pago!=='Pendiente' && p.estado_pago!=='Completado'">Sin constancia</small>
               </td>
             </tr>
             <tr *ngIf="!pagos.length"><td colspan="9">No hay pagos registrados.</td></tr>
@@ -2909,7 +2924,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   renovacionesDias = 7;
   renovacionesLista:any[] = [];
   documentoClienteId = 0;
-  documentoSuscripcionId = 0;
+  documentoPagoId = 0;
   carnetDatos:any = null;
   comprobanteDatos:any = null;
   backupRestaurarArchivo:File|null = null;
@@ -4049,11 +4064,82 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   generarComprobanteMembresia(): void {
-    if(!this.documentoSuscripcionId) return;
-    this.api.comprobanteGym(Number(this.documentoSuscripcionId)).subscribe({
-      next:(r:any)=>this.comprobanteDatos=r,
+    if(!this.documentoPagoId) return;
+    const registro=this.pagos.find((p:any)=>Number(p.id_pago)===Number(this.documentoPagoId));
+    if(!registro || registro.estado_pago!=='Completado'){
+      this.comprobanteDatos=null;
+      this.error='Selecciona un pago confirmado para consultar la constancia.';
+      return;
+    }
+    this.verComprobantePago(registro);
+  }
+
+  verComprobantePago(pago:any):void {
+    if(!pago?.id_pago || pago.estado_pago!=='Completado'){
+      this.error='Todavía no existe un pago confirmado para generar la constancia.';
+      this.comprobanteDatos=null;
+      return;
+    }
+    this.comprobanteDatos=null;
+    this.api.comprobantePago(Number(pago.id_pago)).subscribe({
+      next:(r:any)=>{
+        if(r?.estado_pago!=='Completado'){
+          this.error='El pago no está confirmado.';
+          return;
+        }
+        this.comprobanteDatos=r;
+        this.error='';
+      },
       error:e=>this.mostrarError(e)
     });
+  }
+
+  /** Crea una hoja imprimible con el pago comprobado por Laravel, sin servicios web externos. */
+  imprimirComprobantePago():void {
+    const pago=this.comprobanteDatos;
+    if(!pago || pago.estado_pago!=='Completado'){
+      this.error='Primero consulta un pago confirmado.';
+      return;
+    }
+    const escapar=(valor:any):string=>String(valor??'').replace(/[&<>"']/g, (car:string)=>{
+      const mapa:Record<string,string>={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+      return mapa[car]||car;
+    });
+    const total=Number(pago.monto||0);
+    const empresa=pago.empresa||{};
+    const ventana=window.open('','_blank','width=620,height=760');
+    if(!ventana){
+      this.error='El navegador bloqueó la ventana de impresión. Permite ventanas emergentes para esta página.';
+      return;
+    }
+    const html=[
+      '<!doctype html><html lang="es"><head><meta charset="utf-8">',
+      '<title>Constancia '+escapar(pago.numero_comprobante)+'</title>',
+      '<style>@page{size:A4;margin:15mm}body{font:14px Arial,sans-serif;max-width:680px;margin:24px auto;color:#1d2837}',
+      'header{text-align:center;border-bottom:2px solid #1677ff;padding-bottom:18px}h1{font-size:20px}h2{font-size:16px}',
+      'dl{display:grid;grid-template-columns:170px 1fr;gap:9px;border-bottom:1px solid #ccc;padding-bottom:20px}',
+      'dt{font-weight:bold}dd{margin:0;overflow-wrap:anywhere}.total{font-size:22px;font-weight:bold;text-align:right}',
+      '.nota{background:#f1f4f8;padding:12px;font-size:12px}button{padding:10px 18px;margin:20px 0;background:#1677ff;color:#fff;border:0;border-radius:5px}',
+      '@media print{button{display:none}body{margin:0}}</style></head><body>',
+      '<header><h1>'+escapar(empresa.nombre||'Mallqui Gym')+'</h1>',
+      '<p>CONSTANCIA INTERNA DE PAGO · '+escapar(pago.numero_comprobante)+'</p>',
+      '<p>'+escapar(empresa.direccion||'')+'</p></header>',
+      '<h2>Datos registrados</h2><dl>',
+      '<dt>Cliente</dt><dd>'+escapar(pago.cliente||'-')+'</dd>',
+      '<dt>DNI</dt><dd>'+escapar(pago.dni||'-')+'</dd>',
+      '<dt>Plan</dt><dd>'+escapar(pago.membresia||'-')+'</dd>',
+      '<dt>Fecha</dt><dd>'+escapar(pago.fecha_pago||pago.fecha||'-')+'</dd>',
+      '<dt>Método de pago</dt><dd>'+escapar(pago.metodo_pago||'-')+'</dd>',
+      '<dt>Operación</dt><dd>'+escapar(pago.numero_operacion||'-')+'</dd>',
+      '<dt>Estado</dt><dd>'+escapar(pago.estado_pago)+'</dd></dl>',
+      '<p class="total">TOTAL: S/ '+(Number.isFinite(total)?total.toFixed(2):'0.00')+'</p>',
+      '<p class="nota">'+escapar(pago.nota_tributaria||'Documento interno, no equivale a un CPE SUNAT.')+'</p>',
+      '<button type="button" onclick="window.print()">Imprimir o guardar como PDF</button>',
+      '</body></html>'
+    ].join('');
+    ventana.document.write(html);
+    ventana.document.close();
+    ventana.focus();
   }
 
   descargarBackupSistema(): void {
@@ -4242,6 +4328,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       case 'documentos-socio':
         this.cargarClientes();
         this.cargarMembresias();
+        this.cargarPagos();
         break;
       case 'mantenimiento-sistema':
         break;
