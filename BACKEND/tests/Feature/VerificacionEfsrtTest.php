@@ -14,8 +14,13 @@ class VerificacionEfsrtTest extends TestCase
     {
         parent::setUp();
 
-        foreach (['reservas','productos','clientes'] as $tabla) {
-            Schema::dropIfExists($tabla);
+        Schema::disableForeignKeyConstraints();
+        try {
+            foreach (['reservas','productos','clientes'] as $tabla) {
+                Schema::dropIfExists($tabla);
+            }
+        } finally {
+            Schema::enableForeignKeyConstraints();
         }
 
         Schema::create('clientes', function (Blueprint $tabla) {
