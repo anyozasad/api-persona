@@ -1,0 +1,73 @@
+/*
+ * Mallqui Gym: restauración del esquema solicitado antes de Mantis.
+ * Esta capa no cambia posiciones, tamaños, rutas ni componentes.
+ * Blanco/gris suave + sidebar carbón + acentos verde lima.
+ * Solo se aplica a la interfaz en modo claro.
+ */
+.admin-shell.admin-home-redesign.mg-mantis-green {
+  --mg-mantis-accent:#a6d842;
+  --mg-mantis-accent-soft:#edf7d5;
+  --mg-mantis-page:#f7f9f8;
+  --mg-mantis-ink:#1d2d24;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark)>.mg-current-content{
+  background:#f7f9f8!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark)>.mg-current-sidebar{
+  background:#171d1e!important;
+  border-right:1px solid #30383b!important;
+  box-shadow:1px 0 10px rgba(0,0,0,.12)!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-sidebar .mg-brand{
+  border-bottom-color:#30383b!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-sidebar .mg-brand strong{
+  color:#f8f9f5!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-sidebar .mg-brand b{
+  color:#b9ec59!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-sidebar .mg-brand-icon{
+  background:#b9ec59!important;
+  color:#17200d!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-sidebar .mg-nav-caption{
+  color:#9faeb0!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-sidebar .crossfit-sidebar-nav button{
+  color:#d4dcda!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-sidebar .crossfit-sidebar-nav button .admin-main-nav-icon{
+  color:#c1cfc8!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-sidebar .crossfit-sidebar-nav button:hover{
+  color:#fff!important;
+  background:#303a34!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-sidebar .crossfit-sidebar-nav button.active{
+  color:#c6f272!important;
+  background:#303e25!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-sidebar .crossfit-sidebar-nav button.active .admin-main-nav-icon{
+  color:#c6f272!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-sidebar .cf-nav-children{
+  border-left-color:#3b4740!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-sidebar .mg-sidebar-bottom{
+  border-top-color:#30383b!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-sidebar .mg-sidebar-bottom button{
+  color:#d4dcda!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-sidebar .mg-sidebar-bottom button:hover{
+  background:#303a34!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-mantis-breadcrumb button:hover{
+  color:#496c14!important;
+}
+/* Texto verde oscuro sobre blanco: contraste suficiente en los enlaces. */
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-content a,
+.admin-shell.admin-home-redesign.mg-mantis-green:not(.mg-mantis-dark) .mg-current-content .mg-advanced-tools-head small{
+  color:#43651b;
+}

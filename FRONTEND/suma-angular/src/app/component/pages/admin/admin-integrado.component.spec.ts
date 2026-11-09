@@ -381,9 +381,9 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.error).toContain('Abre Caja');
   });
 
-  it('inicia con dashboard expandido y diseño azul estilo Mantis', () => {
+  it('conserva el dashboard expandido y la paleta Mallqui blanco negro verde lima', () => {
     expect(component.navGroups.overview).toBeTrue();
-    expect(component.acentoDashboard).toBe('azul');
+    expect(component.acentoDashboard).toBe('verde');
     expect(component.modoDashboard).toBe('claro');
   });
 
