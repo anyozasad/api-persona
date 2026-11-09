@@ -89,7 +89,7 @@ try {
     await page.setViewportSize({width:390,height:844});
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     await page.locator('.mg-current-topbar h1').waitFor();
-    const boton=page.locator('.admin-mobile-modules').getByRole('button',{name:'Fitness',exact:true});
+    const boton=page.locator('.admin-mobile-modules button').filter({hasText:'Fitness'});
     if(await boton.count()){
       await boton.first().click();
       await page.waitForTimeout(350);
