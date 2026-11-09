@@ -84,6 +84,17 @@ class VerificacionEfsrtTest extends TestCase
         $this->assertSame(1, $alertas->firstWhere('tipo','stock_negativo')['cantidad']);
     }
 
+    public function test_cliente_autenticado_no_puede_leer_el_diagnostico_privado(): void
+    {
+        $cliente = new \App\Models\Usuario([
+            'rol'=>'Cliente', 'estado'=>'Activo', 'nombre_usuario'=>'cliente.test',
+        ]);
+        $cliente->id_usuario=10;
+        $this->actingAs($cliente, 'sanctum');
+
+        $this->getJson('/api/admin/verificacion-efsrt')->assertStatus(403);
+    }
+
     public function test_un_usuario_no_autenticado_no_puede_abrir_el_diagnostico(): void
     {
         $respuesta=$this->getJson('/api/admin/verificacion-efsrt');
