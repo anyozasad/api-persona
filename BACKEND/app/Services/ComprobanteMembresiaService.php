@@ -5,11 +5,20 @@ namespace App\Services;
 use App\Models\ConfiguracionSistema;
 use App\Models\PagoMembresia;
 use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 
 class ComprobanteMembresiaService
 {
     public function formatear(PagoMembresia $pago): array
     {
+        // Una solicitud de cobro no es una venta cobrada: jamás emitir
+        // constancias de pago para registros pendientes, rechazados o anulados.
+        if ((string) $pago->estado_pago !== 'Completado') {
+            throw ValidationException::withMessages([
+                'pago' => ['El pago todavía no está confirmado. No se puede emitir un comprobante.'],
+            ]);
+        }
+
         $pago->loadMissing(['clienteMembresia.cliente', 'clienteMembresia.membresia']);
         $relacion = $pago->clienteMembresia;
         $cliente = $relacion?->cliente;
