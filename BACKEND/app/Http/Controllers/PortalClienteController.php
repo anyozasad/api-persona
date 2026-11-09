@@ -281,7 +281,8 @@ class PortalClienteController extends Controller
         return response()->json(
             Producto::with('categoria')
                 ->where('estado', 'Activo')
-                ->where('stock', '>', 0)
+                // Mostrar la ficha y foto incluso cuando el producto se agote.
+                // El stock determina disponibilidad, NO si el catálogo existe.
                 ->orderBy('nombre_producto')
                 ->get()
                 ->map(fn ($producto) => [
