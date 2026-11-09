@@ -19,7 +19,8 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       'estadoOperativo', 'dashboard', 'clientes', 'membresiasDisponibles',
       'clienteMembresias', 'pagos', 'productos', 'reservas', 'rutinas',
       'asistencias', 'entrenadores', 'clases', 'cajaActual',
-      'registrarAccesoCodigo', 'cambiarEstadoReserva', 'confirmarPagoPendiente'
+      'registrarAccesoCodigo', 'cambiarEstadoReserva', 'confirmarPagoPendiente',
+      'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin'
     ]);
 
     api.estadoOperativo.and.returnValue(of({
@@ -158,6 +159,57 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
 
     expect(api.cambiarEstadoReserva).not.toHaveBeenCalled();
     expect(component.error).toContain('finalizada o cancelada');
+  });
+
+  it('guarda reservas nuevas desde el formulario real del administrador', () => {
+    api.crearReservaAdmin.and.returnValue(of({ mensaje:'Reserva registrada' }));
+    spyOn(component, 'cargarReservas');
+    spyOn(component, 'cargarDashboard');
+    spyOn(component, 'ok');
+    component.reservaForm = {
+      id_cliente: 5, id_clase: 3, fecha_clase: '2099-11-12'
+    };
+
+    component.guardarReservaAdmin();
+
+    expect(api.crearReservaAdmin).toHaveBeenCalledWith({
+      id_cliente: 5, id_clase: 3, fecha_clase: '2099-11-12'
+    });
+    expect(component.reservaEditandoId).toBe(0);
+    expect(component.reservaGuardando).toBeFalse();
+    expect(component.cargarReservas).toHaveBeenCalled();
+    expect(component.cargarDashboard).toHaveBeenCalled();
+  });
+
+  it('edita datos de reservas pendientes sin modificar estados finalizados', () => {
+    api.actualizarReservaAdmin.and.returnValue(of({ mensaje:'Actualizada' }));
+    spyOn(component, 'cargarReservas');
+    spyOn(component, 'cargarDashboard');
+    spyOn(component, 'ok');
+    const reserva = {
+      id_reserva: 22, id_cliente: 5, id_clase: 3, estado:'Reservada', fecha_clase:'2099-11-12'
+    };
+    component.editarReservaAdmin(reserva);
+
+    expect(component.reservaEditandoId).toBe(22);
+    component.reservaForm.fecha_clase = '2099-11-19';
+    component.guardarReservaAdmin();
+
+    expect(api.actualizarReservaAdmin).toHaveBeenCalledWith(22, {
+      id_cliente: 5, id_clase: 3, fecha_clase:'2099-11-19'
+    });
+  });
+
+  it('evita registrar reservas con fechas incompletas o en el pasado', () => {
+    component.reservaForm = { id_cliente: 0, id_clase: 0, fecha_clase: '' };
+    component.guardarReservaAdmin();
+    expect(api.crearReservaAdmin).not.toHaveBeenCalled();
+    expect(component.error).toContain('Selecciona socio');
+
+    component.reservaForm = { id_cliente: 1, id_clase: 1, fecha_clase: '2020-01-01' };
+    component.guardarReservaAdmin();
+    expect(api.crearReservaAdmin).not.toHaveBeenCalled();
+    expect(component.error).toContain('no puede ser anterior');
   });
 
   it('actualiza el estado de una reserva mediante la API y recarga sus datos', () => {
