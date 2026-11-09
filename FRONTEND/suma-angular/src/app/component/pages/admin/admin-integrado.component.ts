@@ -9,12 +9,13 @@ import { AdminComunicacionComponent } from './admin-comunicacion.component';
 import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
 import { AdminGymSuiteComponent } from './admin-gym-suite.component';
 import { AdminApplicationsComponent } from './admin-applications.component';
+import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component';
 import { catchError, forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'app-admin-integrado',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminGymSuiteComponent, AdminApplicationsComponent],
+  imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminGymSuiteComponent, AdminApplicationsComponent, AdminDashboardToolsComponent],
   styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './admin-live.css', '../crossfit-final.css', './admin-dashboard-polish.css', './admin-dashboard-premium.css', './admin-mantis-interactions.css', './admin-dashboard-refined.css', './admin-mantis-reference.css', './admin-efsrt-validation.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
@@ -677,6 +678,26 @@ import { catchError, forkJoin, of } from 'rxjs';
             </section>
 
           </aside>
+        </section>
+
+        <section class="mg-advanced-tools-shell">
+          <div class="mg-advanced-tools-head">
+            <div>
+              <small>ANALÍTICA AVANZADA</small>
+              <h3>Centro de análisis operativo</h3>
+              <p>Indicadores, prioridades, actividad de socios y exportaciones con los datos registrados.</p>
+            </div>
+            <button type="button" class="admin-secondary"
+              [attr.aria-expanded]="herramientasAvanzadasAbiertas"
+              (click)="herramientasAvanzadasAbiertas=!herramientasAvanzadasAbiertas">
+              {{herramientasAvanzadasAbiertas ? 'Ocultar análisis' : 'Abrir análisis avanzado'}}
+            </button>
+          </div>
+          <app-admin-dashboard-tools
+            *ngIf="herramientasAvanzadasAbiertas"
+            [dashboard]="dashboard"
+            (irSeccion)="cambiarSeccion($event)">
+          </app-admin-dashboard-tools>
         </section>
       </ng-container>
 
@@ -2934,6 +2955,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   toast = '';
   error = '';
   dashboard: any = null;
+  herramientasAvanzadasAbiertas = false;
   reporteIngresos: any = null;
   reporteAsistencias: any = null;
   reporteVencimientos: any[] = [];
@@ -4257,6 +4279,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   totalActividadSemanal(): number {
     return this.diasActividadDashboard().reduce((total:number, d:any) => total + Number(d?.total || 0), 0);
+  }
+
+  /** Conecta los accesos del panel analítico con los módulos reales existentes. */
+  cambiarSeccion(id: string): void {
+    this.cambiarSegcion(id);
   }
 
   cambiarSegcion(id: string): void {
