@@ -6,6 +6,7 @@ use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class ProductoController extends Controller
 {
@@ -22,6 +23,59 @@ class ProductoController extends Controller
             && !Schema::hasColumn('productos', 'id_producto');
     }
 
+
+    /**
+     * Estado verificable de fotografías sin descargar los archivos grandes.
+     * Protegido por la misma autorización de administrador que el CRUD.
+     */
+    public function diagnosticoFotos()
+    {
+        $conexion = DB::connection();
+        $tabla = $conexion->table('productos');
+
+        $total = (clone $tabla)->count();
+        $sinFoto = (clone $tabla)->where(function ($consulta) {
+            $consulta->whereNull('foto')->orWhere('foto', '=', '');
+        })->count();
+        $conFoto = (clone $tabla)
+            ->where('foto', 'like', 'data:image/%;base64,%')->count();
+        $rutasAnteriores = max(0, $total - $sinFoto - $conFoto);
+
+        $id = $this->usaEsquemaOriginal() ? 'id' : 'id_producto';
+        $codigo = $this->usaEsquemaOriginal() ? 'codigo' : 'codigo_producto';
+        $nombre = $this->usaEsquemaOriginal() ? 'nombre' : 'nombre_producto';
+
+        // Ni credenciales ni cadenas base64 completas viajan en el diagnóstico.
+        $pendientes = $conexion->table('productos')
+            ->where(function ($consulta) {
+                $consulta->whereNull('foto')->orWhere('foto', '=', '')
+                    ->orWhere('foto', 'not like', 'data:image/%;base64,%');
+            })
+            ->orderBy($id)
+            ->limit(30)
+            ->get([$id, $codigo, $nombre, 'foto'])
+            ->map(function ($producto) use ($id, $codigo, $nombre) {
+                $foto = (string) ($producto->foto ?? '');
+                return [
+                    'id_producto' => (int) $producto->{$id},
+                    'codigo_producto' => (string) $producto->{$codigo},
+                    'nombre_producto' => (string) $producto->{$nombre},
+                    'problema' => $foto === '' ? 'sin_fotografia'
+                        : 'referencia_antigua_o_imagen_no_valida',
+                ];
+            });
+
+        return response()->json([
+            'base_datos' => (string) $conexion->getDatabaseName(),
+            'esquema' => $this->usaEsquemaOriginal() ? 'original' : 'laravel',
+            'total_productos' => $total,
+            'fotos_guardadas_en_mysql' => $conFoto,
+            'sin_foto' => $sinFoto,
+            'referencias_antiguas' => $rutasAnteriores,
+            'pendientes' => $pendientes,
+            'nota' => 'Las fotos guardadas como base64 viven en productos.foto. Las rutas antiguas requieren recuperar el archivo original.',
+        ]);
+    }
 
     public function index(Request $request)
     {
