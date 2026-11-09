@@ -547,7 +547,15 @@ class GymSystemAdminController extends Controller
 
     public function guardarProducto(Request $request)
     {
-        if ($this->usaProductosModernos()) return app(ProductoController::class)->store($request);
+        if ($this->usaProductosModernos()) {
+            $respuesta = app(ProductoController::class)->store($request);
+            $producto = $respuesta->getData(true);
+            return response()->json([
+                'mensaje'=>'Producto registrado.',
+                'id_producto'=>$producto['id_producto'],
+                'producto'=>$producto,
+            ],201);
+        }
 
         $d=$this->validarProducto($request);
         $id=$this->db->table('productos')->insertGetId($d);
@@ -556,7 +564,13 @@ class GymSystemAdminController extends Controller
 
     public function actualizarProducto(Request $request,string $id)
     {
-        if ($this->usaProductosModernos()) return app(ProductoController::class)->update($request,$id);
+        if ($this->usaProductosModernos()) {
+            $respuesta = app(ProductoController::class)->update($request,$id);
+            return response()->json([
+                'mensaje'=>'Producto actualizado.',
+                'producto'=>$respuesta->getData(true),
+            ]);
+        }
 
         $actual=$this->db->table('productos')->where('id',$id)->first();
         abort_if(!$actual,404,'Producto no encontrado.');
