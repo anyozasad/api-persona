@@ -299,6 +299,46 @@ import { catchError, forkJoin, of } from 'rxjs';
               </div>
             </section>
 
+            <section class="mg-catalog-preview" aria-label="Fotos de productos guardadas en MySQL">
+              <header>
+                <div>
+                  <span>CATÁLOGO REAL</span>
+                  <h2>Productos del gimnasio</h2>
+                  <p>Fotografías y existencias recuperadas directamente de la misma base de datos del inventario.</p>
+                </div>
+                <button type="button" (click)="cambiarSegcion('productos')">Administrar productos y fotos <span>›</span></button>
+              </header>
+              <div class="mg-catalog-summary" *ngIf="productos.length">
+                <span><strong>{{productos.length}}</strong> productos</span>
+                <span><strong>{{productosConImagenDashboard}}</strong> con fotografía</span>
+                <span *ngIf="productosConImagenDashboard < productos.length" class="mg-catalog-missing">
+                  <strong>{{productos.length - productosConImagenDashboard}}</strong> sin fotografía disponible
+                </span>
+              </div>
+              <div class="mg-catalog-cards" *ngIf="productos.length; else sinProductosDashboard">
+                <button type="button" *ngFor="let p of productosDestacadosDashboard"
+                  class="mg-catalog-product" (click)="cambiarSegcion('productos')">
+                  <div class="mg-catalog-product-photo">
+                    <img *ngIf="fotoProductoDisponibleDashboard(p.foto)" [src]="p.foto"
+                      [alt]="'Foto de ' + p.nombre_producto">
+                    <span *ngIf="!fotoProductoDisponibleDashboard(p.foto)" class="mg-catalog-no-photo">
+                      <i>▧</i><small>Sin foto en MySQL</small>
+                    </span>
+                  </div>
+                  <strong>{{p.nombre_producto}}</strong>
+                  <small>{{p.codigo_producto || 'Sin código'}} · Stock {{p.stock ?? 0}}</small>
+                  <b>S/ {{p.precio_venta ?? 0 | number:'1.2-2'}}</b>
+                </button>
+              </div>
+              <ng-template #sinProductosDashboard>
+                <div class="mg-catalog-empty">
+                  <strong>No hay productos cargados desde MySQL.</strong>
+                  <p>Abre Productos para registrar artículos y fotografías. Si ya existían, revisa la base de datos conectada.</p>
+                  <button type="button" (click)="cambiarSegcion('productos')">Ir a productos</button>
+                </div>
+              </ng-template>
+            </section>
+
             <section class="mg-premium-analytics" aria-label="Gráficos de actividad e ingresos">
               <div class="mg-premium-analytics-head">
                 <div><span>ANALÍTICA REAL</span><h2>Tendencias del gimnasio</h2><p>Gráficos construidos con información de la base de datos.</p></div>
@@ -4486,6 +4526,23 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.cargarConfiguracion();
         break;
     }
+  }
+
+  /** Los productos del inicio provienen de /api/productos, no de tarjetas de muestra. */
+  fotoProductoDisponibleDashboard(foto:any):boolean {
+    const valor=String(foto||'').trim();
+    return /^data:image\/(?:png|jpe?g|webp);base64,/i.test(valor) ||
+      /^\/?assets\/mallqui\/[a-zA-Z0-9_./-]+\.(?:png|jpe?g|webp)$/i.test(valor);
+  }
+
+  get productosConImagenDashboard():number {
+    return this.productos.filter(p=>this.fotoProductoDisponibleDashboard(p?.foto)).length;
+  }
+
+  get productosDestacadosDashboard():any[] {
+    return [...this.productos]
+      .sort((a,b)=>Number(this.fotoProductoDisponibleDashboard(b?.foto))-Number(this.fotoProductoDisponibleDashboard(a?.foto)))
+      .slice(0,4);
   }
 
   get gastosActuales(): any[] {
