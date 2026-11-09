@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Producto sin fotografía">
+<defs>
+ <linearGradient id="f" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eef5fc"/><stop offset="1" stop-color="#f9fbfd"/></linearGradient>
+</defs>
+<rect width="800" height="600" fill="url(#f)"/>
+<circle cx="400" cy="265" r="124" fill="#e3edf8"/>
+<g fill="none" stroke="#5e89b8" stroke-width="13" stroke-linejoin="round" stroke-linecap="round">
+ <rect x="327" y="206" width="146" height="135" rx="15"/>
+ <path d="M349 206c0-31 18-47 51-47s51 16 51 47"/>
+ <path d="m354 288 31-30 27 24 17-13 20 20"/>
+ <circle cx="367" cy="239" r="8" fill="#5e89b8" stroke="none"/>
+</g>
+<text x="400" y="439" font-family="Arial,Helvetica,sans-serif" font-size="29" font-weight="700" fill="#466987" text-anchor="middle">PRODUCTO SIN FOTO</text>
+<text x="400" y="478" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#748ba3" text-anchor="middle">La imagen aparece al agregarla desde Inventario</text>
+</svg>
