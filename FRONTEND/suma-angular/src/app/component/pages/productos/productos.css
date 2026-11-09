@@ -1025,3 +1025,105 @@ tbody tr.stock-row-alert{background:#fffdf6!important}
 .productos-page .imagen-lista-para-guardar{
   display:block;color:#557324!important;font-weight:700;
 }
+
+
+/* Verificación de fotografías: datos reales de la tabla productos (sin fotos simuladas). */
+.inventario-verificacion {
+  display:grid;
+  gap:11px;
+  margin:0 0 18px;
+  padding:17px 20px;
+  border:1px solid #d9e9d1;
+  border-radius:13px;
+  background:#f9fcf5;
+  box-shadow:none;
+}
+.inventario-verificacion-titulo {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px;
+}
+.inventario-verificacion-titulo>div {
+  display:grid;
+  gap:5px;
+}
+.inventario-verificacion-titulo strong {
+  font-size:15px;
+  font-weight:800;
+  color:#273f22;
+}
+.inventario-verificacion-titulo span {
+  color:#52674a;
+  font-size:12px;
+}
+.inventario-verificacion-titulo button {
+  min-height:36px;
+  padding:7px 12px;
+  border:1px solid #abc694;
+  border-radius:9px;
+  background:#fff;
+  font-weight:700;
+  font-size:12px;
+  color:#344f2a;
+  cursor:pointer;
+}
+.inventario-verificacion-contadores {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.inventario-verificacion-contadores span {
+  display:inline-flex;
+  align-items:center;
+  padding:6px 10px;
+  border:1px solid #dfebd6;
+  border-radius:8px;
+  background:#fff;
+  color:#436333;
+  font-size:12px;
+  font-weight:750;
+}
+.inventario-verificacion-contadores .con-foto {
+  color:#316636;
+  background:#f1fae8;
+}
+.inventario-verificacion-contadores .pendiente {
+  border-color:#f4d9a1;
+  background:#fff8e9;
+  color:#80581c;
+}
+.inventario-verificacion p {
+  margin:0;
+  max-width:850px;
+  color:#525d4e;
+  font-size:12px;
+  line-height:1.6;
+}
+.inventario-verificacion-error {
+  padding:12px 14px;
+  border:1px solid #efdcbd;
+  border-radius:10px;
+  background:#fff9ed;
+  color:#785828;
+  font-size:12px;
+}
+.producto-foto-pendiente {
+  color:#945815!important;
+  font-size:11px!important;
+  font-weight:700;
+}
+.tabla-productos .acciones-tabla .editar-btn {
+  min-height:35px;
+  font-size:11px;
+}
+@media(max-width:650px){
+  .inventario-verificacion {
+    padding:14px;
+  }
+  .inventario-verificacion-contadores {
+    flex-direction:column;
+    align-items:flex-start;
+  }
+}
