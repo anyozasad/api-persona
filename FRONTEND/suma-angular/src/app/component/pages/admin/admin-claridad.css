@@ -1,0 +1,357 @@
+/*
+ * Mallqui Gym • Navegación sencilla y registro de socios.
+ * Conserva la paleta elegida: carbón, blanco y verde lima.
+ * Estilos limitados al dashboard; no cambia portal ni Flutter.
+ */
+.admin-shell.admin-home-redesign .mg-clear-navigation {
+  display:flex!important;
+  flex-direction:column!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
+  gap:4px!important;
+  padding:4px 12px 18px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:#576151 transparent;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-nav-caption {
+  display:block!important;
+  padding:14px 11px 8px!important;
+  margin:0!important;
+  font-size:10px!important;
+  font-weight:750!important;
+  letter-spacing:1.2px!important;
+  color:#9aa6a3!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation>button,
+.admin-shell.admin-home-redesign .mg-clear-navigation .cf-nav-group-head {
+  display:flex!important;
+  align-items:center!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  min-height:46px!important;
+  padding:10px 12px!important;
+  gap:12px!important;
+  border:0!important;
+  border-radius:11px!important;
+  text-align:left!important;
+  font-size:13px!important;
+  font-weight:700!important;
+  line-height:1.4!important;
+  color:#d8e1de!important;
+  background:transparent!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .admin-main-nav-icon {
+  width:23px!important;
+  min-width:23px!important;
+  height:24px!important;
+  display:grid!important;
+  place-items:center!important;
+  font-size:21px!important;
+  color:#a9b7ae!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .cf-nav-group-head>i {
+  margin-left:auto!important;
+  font-style:normal!important;
+  color:#b7c4ba!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation>button:hover,
+.admin-shell.admin-home-redesign .mg-clear-navigation .cf-nav-group-head:hover {
+  background:rgba(201,244,90,.11)!important;
+  color:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation>button.active,
+.admin-shell.admin-home-redesign .mg-clear-navigation .cf-nav-group-head.active {
+  background:rgba(201,244,90,.15)!important;
+  color:#c9f45a!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .cf-nav-children {
+  display:grid!important;
+  gap:2px!important;
+  margin:2px 0 7px 15px!important;
+  padding:3px 0 3px 11px!important;
+  border-left:1px solid rgba(201,244,90,.22)!important;
+  background:transparent!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .cf-nav-children button {
+  display:flex!important;
+  align-items:center!important;
+  gap:11px!important;
+  min-height:39px!important;
+  padding:8px 10px!important;
+  border:0!important;
+  border-radius:9px!important;
+  text-align:left!important;
+  background:transparent!important;
+  color:#d1dad7!important;
+  font-size:12.5px!important;
+  line-height:1.45!important;
+  font-weight:600!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .cf-nav-children button>span:first-child {
+  width:12px!important;
+  flex:none!important;
+  font-size:13px!important;
+  text-align:center!important;
+  opacity:.7!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .cf-nav-children button:hover {
+  background:rgba(201,244,90,.10)!important;
+  color:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .cf-nav-children button.active {
+  background:rgba(201,244,90,.17)!important;
+  color:#c9f45a!important;
+  font-weight:750!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-sidebar-bottom {
+  flex:0 0 auto!important;
+  border-top:1px solid rgba(255,255,255,.12)!important;
+  padding:10px 12px 14px!important;
+}
+.admin-shell.admin-home-redesign .mg-sidebar-bottom .mg-sidebar-tip {
+  display:block;
+  color:#a9b4ab;
+  font-size:11px;
+  line-height:1.5;
+  padding:5px 8px 12px;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-sidebar-bottom button {
+  min-height:42px!important;
+  font-size:12.5px!important;
+  border-radius:9px!important;
+}
+
+/* Registro / edición de socio integrado a la página.
+   El formulario ya no se abre encima de un fondo borroso ni tiene doble scroll. */
+.admin-shell.admin-home-redesign .client-editor-workspace {
+  position:relative!important;
+  display:block!important;
+  width:min(100%,1080px)!important;
+  max-width:1080px!important;
+  margin:0 auto 36px!important;
+  padding:0!important;
+  background:transparent!important;
+  animation:none!important;
+  overflow:visible!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-panel {
+  position:static!important;
+  display:block!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:none!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+  border:1px solid #e3e9e2!important;
+  border-radius:18px!important;
+  background:#fff!important;
+  box-shadow:0 14px 35px rgba(12,24,18,.06)!important;
+  animation:none!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-head {
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  flex-wrap:wrap!important;
+  gap:12px!important;
+  padding:24px 30px!important;
+  border-radius:17px 17px 0 0!important;
+  background:#17201b!important;
+  color:#fff!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-head>div>span {
+  font-size:11px!important;
+  letter-spacing:1.1px!important;
+  color:#c9f45a!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-head h2 {
+  margin:5px 0 6px!important;
+  font-size:clamp(22px,2vw,29px)!important;
+  color:#fff!important;
+  line-height:1.25!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-head p {
+  font-size:13px!important;
+  color:#cbd4ce!important;
+  line-height:1.55!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .mg-back-to-members {
+  width:auto!important;
+  min-width:155px!important;
+  height:42px!important;
+  padding:9px 15px!important;
+  border-radius:10px!important;
+  border:1px solid #546158!important;
+  background:rgba(255,255,255,.07)!important;
+  color:#fff!important;
+  font-size:13px!important;
+  font-weight:700!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .mg-back-to-members:hover {
+  background:rgba(201,244,90,.18)!important;
+  border-color:#c9f45a!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-form {
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+  padding:24px 28px 26px!important;
+  background:#fafcf9!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-section {
+  display:grid!important;
+  gap:18px!important;
+  margin:0 0 19px!important;
+  padding:24px!important;
+  border:1px solid #e6ebe4!important;
+  border-radius:14px!important;
+  background:#fff!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-section-title {
+  display:flex!important;
+  gap:13px!important;
+  padding-bottom:14px!important;
+  border-bottom:1px solid #edf0e9!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-section-title>span {
+  width:36px!important;height:36px!important;
+  font-size:14px!important;
+  background:#eef9d5!important;
+  color:#354918!important;
+  border-radius:10px!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-section-title b {
+  font-size:15px!important;
+  font-weight:800!important;
+  color:#1b281d!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-section-title small {
+  font-size:12px!important;
+  color:#627166!important;
+  margin-top:4px!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-grid,
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-access-fields {
+  gap:15px!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-form label {
+  display:grid!important;
+  gap:8px!important;
+  font-size:13px!important;
+  font-weight:700!important;
+  color:#364438!important;
+  line-height:1.45!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-form input:not([type=checkbox]),
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-form select {
+  display:block!important;
+  min-height:48px!important;
+  padding:11px 14px!important;
+  border:1px solid #d6dfd5!important;
+  border-radius:10px!important;
+  box-shadow:none!important;
+  background:#fff!important;
+  color:#17221a!important;
+  font-size:14px!important;
+  font-weight:500!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-form input:focus,
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-form select:focus {
+  border-color:#8ba63f!important;
+  outline:2px solid rgba(178,224,77,.28)!important;
+  outline-offset:1px!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-form input::placeholder {
+  color:#929e92!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-switch {
+  display:flex!important;
+  align-items:center!important;
+  gap:13px!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-switch>div>b {
+  color:#1c2c1e!important;
+  font-size:13px!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-switch>div>small {
+  font-size:12px!important;
+  color:#687469!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-footer {
+  position:sticky!important;
+  bottom:0!important;
+  z-index:10!important;
+  display:flex!important;
+  justify-content:flex-end!important;
+  gap:12px!important;
+  margin:0!important;
+  padding:16px 0 4px!important;
+  border-top:1px solid #e8eee6!important;
+  background:rgba(250,252,249,.97)!important;
+  backdrop-filter:blur(8px);
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-footer button {
+  min-width:160px!important;
+  min-height:46px!important;
+  padding:10px 18px!important;
+  font-size:13px!important;
+  font-weight:750!important;
+  border-radius:10px!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-footer .cancel {
+  border:1px solid #d5dcd1!important;
+  background:#fff!important;
+  color:#38473b!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-footer .save {
+  border:0!important;
+  background:#c9f45a!important;
+  color:#1a2610!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-footer .save:not(:disabled):hover {
+  background:#baf042!important;
+}
+.admin-shell.admin-home-redesign .client-editor-workspace .client-editor-footer .save:disabled {
+  background:#d9e4bf!important;
+  color:#637057!important;
+  opacity:1!important;
+  cursor:not-allowed;
+}
+
+@media(max-width:800px){
+  .admin-shell.admin-home-redesign .client-editor-workspace .client-editor-head {
+    padding:19px 17px!important;
+  }
+  .admin-shell.admin-home-redesign .client-editor-workspace .client-editor-form {
+    padding:16px 12px!important;
+  }
+  .admin-shell.admin-home-redesign .client-editor-workspace .client-editor-section {
+    padding:17px!important;
+  }
+  .admin-shell.admin-home-redesign .client-editor-workspace .client-editor-grid.two,
+  .admin-shell.admin-home-redesign .client-editor-workspace .client-editor-access-fields {
+    grid-template-columns:1fr!important;
+  }
+  .admin-shell.admin-home-redesign .client-editor-workspace .client-editor-footer{
+    justify-content:stretch!important;
+  }
+  .admin-shell.admin-home-redesign .client-editor-workspace .client-editor-footer button{
+    min-width:0!important;
+    flex:1!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .admin-shell.admin-home-redesign .client-editor-workspace *,
+  .admin-shell.admin-home-redesign .mg-clear-navigation * {
+    animation:none!important;
+    scroll-behavior:auto!important;
+  }
+}
