@@ -4328,7 +4328,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   private cargarSegcion(id: string): void {
     switch (id) {
       case 'dashboard':
-        this.cargarDashboard();
+        // Al regresar desde socios, pagos o inventario no conservar listas
+        // desactualizadas: sincronizar el resumen y los módulos relacionados.
+        this.actualizarDashboardCompleto();
         break;
       case 'aplicaciones':
       case 'calendario-admin':
