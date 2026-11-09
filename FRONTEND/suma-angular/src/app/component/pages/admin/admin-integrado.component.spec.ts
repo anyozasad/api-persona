@@ -80,6 +80,11 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.error).toContain('Selecciona un pago confirmado');
   });
 
+  it('abre la comprobación EFSRT sin desviarla al inicio', () => {
+    expect((component as any).normalizarSegcion('verificacion-efsrt'))
+      .toBe('verificacion-efsrt');
+  });
+
   it('consulta la revisión EFSRT en el servidor y muestra tablas faltantes reales', () => {
     const revision={
       conexion:'disponible',
