@@ -174,18 +174,45 @@ class ReservaController extends Controller
             'estado' => ['required', Rule::in(['Reservada', 'Asistio', 'NoAsistio', 'Cancelada'])],
         ]);
 
-        $reserva = Reserva::with('clase')->findOrFail($id);
+        // Serializar cambios de estado para que dos administradores no puedan
+        // transformar a la vez una reserva ya cancelada o finalizada.
+        $reserva = DB::transaction(function () use ($request, $id, $datos) {
+            $reserva = Reserva::with('clase')->lockForUpdate()->findOrFail($id);
 
-        if (mb_strtolower((string) $request->user()?->rol) === 'entrenador') {
-            $entrenador = $this->entrenadorDelUsuario($request);
-            abort_unless(
-                (int) $reserva->clase?->id_entrenador === (int) $entrenador->id_entrenador,
-                403,
-                'No puedes modificar una reserva de otra clase.'
-            );
-        }
+            if (mb_strtolower((string) $request->user()?->rol) === 'entrenador') {
+                $entrenador = $this->entrenadorDelUsuario($request);
+                abort_unless(
+                    (int) $reserva->clase?->id_entrenador === (int) $entrenador->id_entrenador,
+                    403,
+                    'No puedes modificar una reserva de otra clase.'
+                );
+            }
 
-        $reserva->update(['estado' => $datos['estado']]);
+            $actual = (string) $reserva->estado;
+            $nuevo = (string) $datos['estado'];
+
+            // Repetir una misma petición no debe alterar ni duplicar el registro.
+            if ($actual === $nuevo) {
+                return $reserva;
+            }
+
+            // Las reservas finalizadas son históricas. Impedir pasar de Cancelada
+            // a Asistio, o de NoAsistio a Reservada, evita informes incoherentes.
+            if (!in_array($actual, ['Reservada', 'Confirmada'], true)) {
+                throw ValidationException::withMessages([
+                    'estado' => ['La reserva ya está finalizada o cancelada. No se puede cambiar su estado.'],
+                ]);
+            }
+
+            if ($nuevo === 'Reservada') {
+                throw ValidationException::withMessages([
+                    'estado' => ['La reserva ya fue registrada. Selecciona Asistió, No asistió o Cancelada.'],
+                ]);
+            }
+
+            $reserva->update(['estado' => $nuevo]);
+            return $reserva;
+        });
 
         return response()->json([
             'mensaje' => 'Estado de la reserva actualizado.',
