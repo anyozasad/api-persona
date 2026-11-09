@@ -199,3 +199,10 @@
   .member-page .mallqui-products-home-grid article:nth-child(4n){border-right:0}
   .member-page .mallqui-products-home-foot{align-items:flex-start;flex-direction:column}
 }
+/* Semana 5: mantener visible la fotografía de productos agotados;
+   cambiar solo la etiqueta de disponibilidad, no el diseño del catálogo. */
+.member-page .mallqui-product-home-status.sin-stock{
+  color:#eab76d;
+  background:rgba(234,183,109,.08);
+  border-color:rgba(234,183,109,.3);
+}
