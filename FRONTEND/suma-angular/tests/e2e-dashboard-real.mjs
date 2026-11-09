@@ -125,7 +125,7 @@ try {
     assert.notEqual(geometria.formularioOverflow,'auto','El formulario no debe tener segundo scroll');
     assert.notEqual(geometria.panelOverflow,'auto','El panel no debe tener segundo scroll');
     await page.screenshot({path:'evidencias-dashboard/14_Registrar_Socio_sin_drawer.png',fullPage:true,animations:'disabled'});
-    await area.getByRole('button',{name:/Volver a socios/}).click();
+    await area.getByRole('button',{name:/Volver a la lista de socios/}).click();
     assert.equal(await area.count(),0,'El botón Volver debe cerrar el formulario.');
     await page.locator('.clients-v3-shell').waitFor({timeout:10000});
   });
