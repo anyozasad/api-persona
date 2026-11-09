@@ -98,12 +98,12 @@ import {
         <section *ngIf="moduloActivo==='inicio'" class="member-dashboard mallqui-apex-home member-enter-up">
 
           <section class="mallqui-apex-hero">
-            <img class="mallqui-apex-static" src="assets/mallqui/mallqui-cover.webp" alt="" aria-hidden="true">
+            <img class="mallqui-apex-static" src="assets/mallqui/mallqui-hero-interior-4k.webp" alt="" aria-hidden="true">
             <div class="mallqui-apex-carousel" aria-hidden="true">
-              <img class="mallqui-apex-slide slide-1" src="assets/mallqui/mallqui-cover.webp" alt="" fetchpriority="high" decoding="async">
-              <img class="mallqui-apex-slide slide-2" src="assets/mallqui/mallqui-cover.webp" alt="" decoding="async">
-              <img class="mallqui-apex-slide slide-3" src="assets/mallqui/mallqui-cover.webp" alt="" decoding="async">
-              <img class="mallqui-apex-slide slide-4" src="assets/mallqui/mallqui-cover.webp" alt="" decoding="async">
+              <img class="mallqui-apex-slide slide-1" src="assets/mallqui/mallqui-hero-interior-4k.webp" alt="" fetchpriority="high" decoding="async">
+              <img class="mallqui-apex-slide slide-2" src="assets/mallqui/mallqui-referencia-gym-equipos-4k.webp" alt="" decoding="async">
+              <img class="mallqui-apex-slide slide-3" src="assets/mallqui/mallqui-foto-real-cardio-4k.webp" alt="" decoding="async">
+              <img class="mallqui-apex-slide slide-4" src="assets/mallqui/mallqui-referencia-foto-personas-4k.webp" alt="" decoding="async">
             </div>
             <div class="mallqui-apex-shade" aria-hidden="true"></div>
 
@@ -500,13 +500,13 @@ import {
               <article class="train-ux-visual-card">
                 <div class="train-ux-carousel" aria-hidden="true">
                   <img class="train-ux-slide train-ux-slide-1"
-                       src="assets/mallqui/mallqui-cover.webp"
+                       src="assets/mallqui/mallqui-referencia-gym-equipos-4k.webp"
                        alt="">
                   <img class="train-ux-slide train-ux-slide-2"
-                       src="assets/mallqui/mallqui-cover.webp"
+                       src="assets/mallqui/mallqui-foto-real-cardio-4k.webp"
                        alt="">
                   <img class="train-ux-slide train-ux-slide-3"
-                       src="assets/mallqui/mallqui-cover.webp"
+                       src="assets/mallqui/mallqui-referencia-foto-personas-4k.webp"
                        alt="">
                 </div>
                 <div class="train-ux-visual-shade"></div>
@@ -1163,7 +1163,7 @@ import {
         <section *ngIf="moduloActivo==='reservas'" class="member-module apex-reservations-page member-enter-up">
           <section class="apex-reservations-hero">
             <img class="apex-reservations-photo"
-                 src="assets/mallqui/mallqui-cover.webp"
+                 src="assets/mallqui/mallqui-hero-interior-4k.webp"
                  alt="" aria-hidden="true">
             <div class="apex-reservations-shade" aria-hidden="true"></div>
 
