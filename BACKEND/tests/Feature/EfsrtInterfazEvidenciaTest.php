@@ -67,6 +67,29 @@ class EfsrtInterfazEvidenciaTest extends TestCase
         $this->assertStringContainsString("Route::get('/dashboard/resumen'", $api);
     }
 
+    public function test_portada_publica_usa_tres_fotografias_distintas_y_locales(): void
+    {
+        $frontend = base_path('../FRONTEND/suma-angular');
+        $inicio = (string) file_get_contents(
+            $frontend.'/src/app/component/pages/landing/landing.component.ts'
+        );
+        $estilos = (string) file_get_contents(
+            $frontend.'/src/app/component/pages/mallqui-landing.css'
+        );
+
+        $this->assertStringNotContainsString('mallqui-cover.webp', $inicio);
+        $this->assertStringNotContainsString('mallqui-cover.webp', $estilos);
+
+        foreach ([
+            'mallqui-beginner-ai-4k.webp',
+            'mallqui-referencia-gym-equipos-4k.webp',
+            'mallqui-foto-real-cardio-4k.webp',
+        ] as $archivo) {
+            $this->assertStringContainsString($archivo, $inicio);
+            $this->assertFileExists($frontend.'/public/assets/mallqui/'.$archivo);
+        }
+    }
+
     public function test_usuario_usa_fotografias_locales_y_placeholder_de_producto_sin_foto(): void
     {
         $frontend = base_path('../FRONTEND/suma-angular');
