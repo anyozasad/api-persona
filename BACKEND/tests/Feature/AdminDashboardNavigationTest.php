@@ -30,13 +30,20 @@ class AdminDashboardNavigationTest extends TestCase
 
         $this->assertCount(26, $secciones);
 
+        // El menú actual usa una lista única y el método navegarMenu()
+        // en lugar de repetir un (click) por cada botón.
+        $this->assertStringContainsString('navegarMenu(item)', $source);
+        $this->assertStringContainsString('this.cambiarSegcion(item.id)', $source);
         foreach ($secciones as $seccion) {
             $this->assertStringContainsString(
-                "cambiarSegcion('".$seccion."')",
+                "id:'".$seccion."'",
                 $source,
-                'Falta acceso funcional a: '.$seccion
+                'El menú no incluye el acceso funcional a: '.$seccion
             );
         }
+        $this->assertStringContainsString('class="client-editor-workspace"', $source);
+        $this->assertStringNotContainsString('class="client-editor-backdrop"', $source);
+        $this->assertStringContainsString('admin-claridad.css', $source);
     }
 
     public function test_prioridades_abren_el_modulo_correcto(): void
