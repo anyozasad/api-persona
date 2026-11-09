@@ -207,7 +207,33 @@ try {
     await fila.waitFor({timeout:25000});
     assert.equal(await fila.locator('img.producto-foto').count(),1,
       'La fotografía del producto no se recuperó de MySQL.');
+    await fila.locator('img.producto-foto').evaluate(img=>{
+      if (!img.complete || img.naturalWidth===0) {
+        throw new Error('La foto existe en el HTML pero no se puede visualizar.');
+      }
+    });
+    await page.locator('.inventario-verificacion').waitFor({timeout:15000});
+    const diagnostico=await page.locator('.inventario-verificacion').innerText();
+    assert.match(diagnostico,/fotos? guardadas?|con foto guardada/i);
+    assert.match(diagnostico,/Base conectada:/i);
     await page.screenshot({path:'evidencias-dashboard/11_Producto_creado_y_foto.png',fullPage:true});
+  });
+
+  await paso('Dashboard principal muestra fotografía recuperada de productos MySQL',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const catalogo=page.locator('.mg-catalog-preview');
+    await catalogo.waitFor({timeout:25000});
+    await catalogo.getByText('Producto de prueba con fotografía').first().waitFor({timeout:20000});
+    const foto=catalogo.locator('.mg-catalog-product img').first();
+    await foto.waitFor({timeout:15000});
+    await foto.evaluate(img=>{
+      if(!img.complete || img.naturalWidth===0)
+        throw new Error('La fotografía del catálogo principal no cargó desde MySQL.');
+    });
+    await page.screenshot({
+      path:'evidencias-dashboard/16_Foto_Producto_en_Dashboard_Principal.png',
+      fullPage:true,animations:'disabled'
+    });
   });
 
   const movil=await browser.newContext({viewport:{width:390,height:844},locale:'es-PE'});
