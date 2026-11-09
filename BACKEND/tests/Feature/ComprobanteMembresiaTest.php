@@ -134,4 +134,29 @@ class ComprobanteMembresiaTest extends TestCase
         $this->assertStringContainsString('B001|00000015|179.00', $data['codigo_barras']);
         $this->assertSame('Completado', $data['estado']);
     }
+
+    public function test_no_emite_comprobante_si_el_pago_sigue_pendiente(): void
+    {
+        DB::table('pagos_membresia')->where('id_pago', 15)->update(['estado_pago' => 'Pendiente']);
+
+        try {
+            app(ComprobanteMembresiaService::class)->formatear(PagoMembresia::findOrFail(15));
+            $this->fail('Un pago pendiente no puede generar una constancia de pago.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->assertArrayHasKey('pago', $e->errors());
+        }
+    }
+
+    public function test_no_emite_comprobante_si_el_pago_fue_rechazado(): void
+    {
+        DB::table('pagos_membresia')->where('id_pago', 15)->update(['estado_pago' => 'Rechazado']);
+
+        try {
+            app(ComprobanteMembresiaService::class)->formatear(PagoMembresia::findOrFail(15));
+            $this->fail('Un pago rechazado no puede generar una constancia de pago.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->assertArrayHasKey('pago', $e->errors());
+        }
+    }
+
 }
