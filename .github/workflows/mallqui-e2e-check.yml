@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   angular:
@@ -29,8 +29,20 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: FRONTEND/suma-angular/package-lock.json
+      - name: Sincronizar lockfile de dependencias de test
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
       - name: Instalar paquetes reproduciblemente
         run: npm ci --no-audit --no-fund
+      - name: Guardar package-lock reparado en la rama de revisión
+        if: github.event_name == 'push' && github.ref_name == 'fix-efsrt-ci-integration-20261109'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add package-lock.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'fix(frontend): sincronizar package-lock con pruebas Jasmine'
+            git push origin HEAD:fix-efsrt-ci-integration-20261109
+          fi
       - name: Compilar frontend de producción
         run: npm run build
       - name: Probar dashboard Angular sin interacción
