@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoriaController;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tests\TestCase;
@@ -217,6 +218,58 @@ class ProductoImagenDashboardTest extends TestCase
         $this->assertSame('Inactivo', $eliminacion['producto']['estado']);
         $this->assertSame($nuevaFoto, $eliminacion['producto']['foto']);
         $this->assertDatabaseHas('productos', ['id'=>(int) $id,'estado'=>'inactivo']);
+    }
+
+
+    public function test_importador_recupera_foto_desde_archivo_sin_sobrescribir_datos(): void
+    {
+        $carpeta = storage_path('framework/testing/importar_fotos_ci_'.uniqid());
+        mkdir($carpeta, 0755, true);
+        $archivo = $carpeta.DIRECTORY_SEPARATOR.'FOTO-LOCAL-01.png';
+        file_put_contents($archivo, base64_decode(
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jWl8AAAAASUVORK5CYII='
+        ));
+
+        $id = DB::table('productos')->insertGetId([
+            'categoria_id' => 1,
+            'codigo' => 'FOTO-LOCAL-01',
+            'nombre' => 'Producto con imagen de carpeta',
+            'precio_compra' => 1,
+            'precio_venta' => 2,
+            'stock' => 6,
+            'estado' => 'activo',
+            'foto' => null,
+        ]);
+
+        try {
+            $this->assertSame(0, Artisan::call('productos:importar-fotos', [
+                'carpeta' => $carpeta,
+            ]));
+            $this->assertNull(DB::table('productos')->where('id',$id)->value('foto'),
+                'Vista previa nunca debe escribir en la BD.');
+
+            $this->assertSame(0, Artisan::call('productos:importar-fotos', [
+                'carpeta' => $carpeta,
+                '--aplicar' => true,
+            ]));
+            $fotoGuardada = (string) DB::table('productos')->where('id',$id)->value('foto');
+            $this->assertStringStartsWith('data:image/png;base64,', $fotoGuardada);
+            $this->assertSame($fotoGuardada, app(ProductoController::class)
+                ->show((string) $id)->getData(true)['foto']);
+
+            // Una segunda importación no puede modificar la foto que ya existe.
+            file_put_contents($archivo, base64_decode(
+                'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jWl8AAAAASUVORK5CYII='
+            ));
+            $this->assertSame(0, Artisan::call('productos:importar-fotos', [
+                'carpeta' => $carpeta,
+                '--aplicar' => true,
+            ]));
+            $this->assertSame($fotoGuardada, DB::table('productos')->where('id',$id)->value('foto'));
+        } finally {
+            @unlink($archivo);
+            @rmdir($carpeta);
+        }
     }
 
 }
