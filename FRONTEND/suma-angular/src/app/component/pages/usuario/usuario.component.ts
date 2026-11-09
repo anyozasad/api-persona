@@ -308,7 +308,7 @@ import {
                 </div>
                 <div class="mallqui-products-home-meta">
                   <b>{{productosDisponibles.length}}</b>
-                  <span>con stock</span>
+                  <span>en catálogo</span>
                 </div>
               </header>
 
@@ -324,17 +324,17 @@ import {
                     <p>{{p.descripcion || 'Producto disponible en recepción de Mallqui Gym.'}}</p>
                     <div>
                       <b>S/ {{p.precio_venta | number:'1.2-2'}}</b>
-                      <small>{{p.stock}} {{p.unidad_medida || 'unidad'}}{{p.stock===1 ? '' : 'es'}} disponibles</small>
+                      <small>{{p.stock>0 ? (p.stock+' '+(p.unidad_medida || 'unidad')+(p.stock===1 ? '' : 'es')+' disponibles') : 'Temporalmente agotado'}}</small>
                     </div>
                   </div>
-                  <span class="mallqui-product-home-status">EN STOCK</span>
+                  <span class="mallqui-product-home-status" [class.sin-stock]="p.stock<=0">{{p.stock>0 ? 'EN STOCK' : 'AGOTADO'}}</span>
                 </article>
               </div>
 
               <ng-template #sinProductosInicio>
                 <div class="mallqui-products-home-empty">
-                  <b>No hay productos con stock disponible.</b>
-                  <p>Cuando el administrador registre productos y existencias, aparecerán aquí automáticamente.</p>
+                  <b>No hay productos publicados.</b>
+                  <p>Cuando el administrador registre productos activos, aparecerán aquí con su fotografía, precio y stock.</p>
                 </div>
               </ng-template>
 
@@ -2866,7 +2866,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   private normalizarProductosPortal(items:any):any[]{
     return uniqueById(safeArray(items),['id_producto'])
-      .filter((p:any)=>Number(p?.stock??0)>0)
+      // Un producto agotado sigue mostrando su foto y ficha: solo se desactiva su disponibilidad.
       .filter((p:any)=>!p?.estado || String(p.estado).trim().toLowerCase()==='activo')
       .map((p:any)=>({...p,foto:this.fotoProductoSegura(p?.foto)}));
   }
