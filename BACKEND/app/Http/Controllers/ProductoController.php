@@ -5,11 +5,29 @@ namespace App\Http\Controllers;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Schema;
 
 class ProductoController extends Controller
 {
+    /**
+     * La instalación original gym_system tiene productos.id / categoria_id.
+     * La instalación Laravel nueva utiliza id_producto / id_categoria.
+     * Ambas deben operar en la misma conexión DB_DATABASE, sin copiar
+     * registros a una tabla paralela ni perder fotografías ya almacenadas.
+     */
+    private function usaEsquemaOriginal(): bool
+    {
+        return Schema::hasTable('productos')
+            && Schema::hasColumn('productos', 'id')
+            && !Schema::hasColumn('productos', 'id_producto');
+    }
+
+
     public function index(Request $request)
     {
+        if ($this->usaEsquemaOriginal()) {
+            return app(GymSystemAdminController::class)->productos();
+        }
         $query = Producto::with('categoria')->orderBy('nombre_producto');
 
         if ($request->boolean('stock_bajo')) {
@@ -25,6 +43,14 @@ class ProductoController extends Controller
 
     public function store(Request $request)
     {
+        if ($this->usaEsquemaOriginal()) {
+            $respuesta = app(GymSystemAdminController::class)->guardarProducto($request);
+            $id = (int) ($respuesta->getData(true)['id_producto'] ?? 0);
+            return response()->json(
+                app(GymSystemAdminController::class)->producto((string) $id)->getData(true),
+                201
+            );
+        }
         $datos = $request->validate([
             'id_categoria' => 'required|integer|exists:categorias,id_categoria',
             'codigo_producto' => 'required|string|max:60|unique:productos,codigo_producto',
@@ -60,6 +86,9 @@ class ProductoController extends Controller
 
     public function show(string $id)
     {
+        if ($this->usaEsquemaOriginal()) {
+            return app(GymSystemAdminController::class)->producto($id);
+        }
         return response()->json(
             Producto::with(['categoria', 'detallesCompra.compra', 'detallesVenta.venta'])
                 ->findOrFail($id)
@@ -68,6 +97,10 @@ class ProductoController extends Controller
 
     public function update(Request $request, string $id)
     {
+        if ($this->usaEsquemaOriginal()) {
+            app(GymSystemAdminController::class)->actualizarProducto($request, $id);
+            return app(GymSystemAdminController::class)->producto($id);
+        }
         $producto = Producto::findOrFail($id);
 
         $datos = $request->validate([
@@ -106,6 +139,14 @@ class ProductoController extends Controller
 
     public function destroy(string $id)
     {
+        if ($this->usaEsquemaOriginal()) {
+            $request = Request::create('/api/productos/'.$id, 'DELETE', ['estado' => 'Inactivo']);
+            app(GymSystemAdminController::class)->cambiarEstadoProducto($request, $id);
+            return response()->json([
+                'mensaje' => 'Producto desactivado correctamente. Se conserva su historial.',
+                'producto' => app(GymSystemAdminController::class)->producto($id)->getData(true),
+            ]);
+        }
         $producto = Producto::findOrFail($id);
         $producto->update(['estado' => 'Inactivo']);
 
