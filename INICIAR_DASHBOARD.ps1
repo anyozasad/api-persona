@@ -1,7 +1,7 @@
 # Mallqui Gym | Inicio y diagnóstico en Windows (PowerShell 5.1+).
 # Uso: powershell -ExecutionPolicy Bypass -File .\INICIAR_DASHBOARD.ps1
 # Primera instalación: agregar -Preparar (instala composer/npm y crea .env si no existe).
-# Migraciones: agregar -Migrar SOLO después de respaldar la base real.
+# Esquema y datos mínimos: -Migrar ejecuta sistema:preparar SOLO con respaldo confirmado.
 # Diagnóstico: agregar -SoloVerificar (no instala, migra ni inicia servicios).
 [CmdletBinding()]
 param(
@@ -119,9 +119,9 @@ try {
     if ($Migrar) {
         if ($SoloVerificar) { Fallar 'No combines -Migrar y -SoloVerificar.' }
         Avisar 'Las migraciones modifican la estructura de MySQL. Haz una copia de respaldo antes.'
-        $respuesta = Read-Host '¿Tienes un respaldo y autorizas php artisan migrate? Escribe SI'
+        $respuesta = Read-Host '¿Tienes respaldo y autorizas sistema:preparar (esquema y datos iniciales)? Escribe SI'
         if ($respuesta -ne 'SI') { Fallar 'Migración cancelada; no se modificó la base.' }
-        Ejecutar $php @('artisan','migrate','--force') $backend
+        Ejecutar $php @('artisan','sistema:preparar') $backend
     }
 
     if ($SoloVerificar) {
@@ -160,7 +160,7 @@ try {
         Avisar 'Laravel no responde con la API Mallqui Gym. Comprueba la consola PHP y el puerto 8000.'
     } elseif ($estado.database -ne $true -or $estado.operativo -ne $true) {
         Avisar 'MySQL no está disponible o faltan tablas. Inicia MySQL desde XAMPP y revisa BACKEND/.env.'
-        Avisar 'Si la base aún no tiene tablas, ejecuta el script con -Migrar después de hacer un respaldo.'
+        Avisar 'Si faltan tablas, usa -Migrar con respaldo previo: ejecuta sistema:preparar.'
     } else {
         Informar 'Backend y base de datos detectados.'
     }
