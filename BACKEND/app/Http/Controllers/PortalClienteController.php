@@ -16,6 +16,7 @@ use App\Services\ComprobanteMembresiaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -274,6 +275,29 @@ class PortalClienteController extends Controller
     public function productos(Request $request)
     {
         $this->clienteDelUsuario($request);
+
+        // Si la base original contiene productos.id/categoria_id, el cliente
+        // debe recibir exactamente las mismas fotos que el administrador.
+        // No crear otra tabla, copiar registros ni usar imágenes de muestra.
+        if (Schema::hasColumn('productos','id')
+            && !Schema::hasColumn('productos','id_producto')) {
+            $productos = app(GymSystemAdminController::class)->productos()->getData(true);
+            return response()->json(
+                collect($productos)
+                    ->filter(fn ($p) => strcasecmp((string) ($p['estado'] ?? ''), 'Activo') === 0)
+                    ->map(fn ($p) => [
+                        'id_producto' => (int) ($p['id_producto'] ?? 0),
+                        'codigo_producto' => (string) ($p['codigo_producto'] ?? ''),
+                        'nombre_producto' => (string) ($p['nombre_producto'] ?? ''),
+                        'descripcion' => $p['descripcion'] ?? null,
+                        'foto' => $p['foto'] ?? null,
+                        'precio_venta' => (float) ($p['precio_venta'] ?? 0),
+                        'stock' => (int) ($p['stock'] ?? 0),
+                        'unidad_medida' => $p['unidad_medida'] ?? 'Unidad',
+                        'categoria' => $p['categoria'] ?? null,
+                    ])->values()
+            );
+        }
 
         // Única fuente de productos: la base principal DB_DATABASE.
         // Inventario del administrador y portal del cliente comparten exactamente
