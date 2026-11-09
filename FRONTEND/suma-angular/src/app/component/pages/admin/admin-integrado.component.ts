@@ -3340,7 +3340,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       'caja','ventas','historial-ventas','gastos','compras',
       'inventario','productos','categorias','proveedores','kardex','equipos',
       'eventos','galeria','noticias','soporte','opiniones','comunicacion',
-      'ingresos','facturas','salarios','reportes-admin','usuarios','auditoria','configuracion','mantenimiento-sistema'
+      'ingresos','facturas','salarios','reportes-admin','usuarios','auditoria','configuracion','mantenimiento-sistema','verificacion-efsrt'
     ];
     return validas.includes(id) ? id : 'dashboard';
   }
