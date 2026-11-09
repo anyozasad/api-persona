@@ -1,0 +1,115 @@
+name: Mallqui Gym - Dashboard real navegador y MySQL
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'FRONTEND/suma-angular/src/app/**'
+      - 'FRONTEND/suma-angular/tests/e2e-dashboard-real.mjs'
+      - 'BACKEND/app/**'
+      - 'BACKEND/database/**'
+      - 'BACKEND/routes/**'
+      - 'BACKEND/tests/fixtures/SeedAdminE2E.php'
+      - '.github/workflows/mallqui-admin-browser.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  navegador-real:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: gymci
+          MYSQL_DATABASE: mallqui_gym_e2e
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pgymci"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
+    env:
+      CI: 'true'
+      APP_ENV: testing
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: '3306'
+      DB_DATABASE: mallqui_gym_e2e
+      GYM_DB_DATABASE: mallqui_gym_e2e
+      DB_USERNAME: root
+      DB_PASSWORD: gymci
+      E2E_ADMIN_PASSWORD: 'SoloPruebasE2e2026!'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Preparar PHP para Laravel
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring,pdo_mysql,bcmath,intl,dom,curl,xml
+          tools: composer:v2
+          coverage: none
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: FRONTEND/suma-angular/package-lock.json
+
+      - name: Instalar Laravel en entorno aislado
+        working-directory: BACKEND
+        run: |
+          composer install --no-interaction --prefer-dist --no-progress
+          cp .env.example .env
+          php artisan key:generate --force
+          php artisan migrate --force
+          php artisan db:seed --force
+          php tests/fixtures/SeedAdminE2E.php
+
+      - name: Instalar Angular y navegador Chromium
+        working-directory: FRONTEND/suma-angular
+        run: |
+          npm ci --no-audit --no-fund
+          npm install --no-save --no-package-lock playwright@1.57.0
+          PLAYWRIGHT_HOST_PLATFORM_OVERRIDE=ubuntu24.04-x64 npx playwright install chromium
+
+      - name: Ejecutar navegador contra ambos servidores y capturar fallos
+        shell: bash
+        run: |
+          set -e
+          cd BACKEND
+          php artisan serve --host=127.0.0.1 --port=8000 > ../laravel-e2e.log 2>&1 &
+          BACKEND_PID=$!
+          cd ../FRONTEND/suma-angular
+          npm start -- --host 127.0.0.1 --port 4200 > ../../angular-e2e.log 2>&1 &
+          FRONTEND_PID=$!
+          trap 'kill "$BACKEND_PID" "$FRONTEND_PID" 2>/dev/null || true' EXIT
+          for intento in $(seq 1 100); do
+            if curl -fsS 'http://127.0.0.1:8000/up' >/dev/null && \
+               curl -fsS 'http://127.0.0.1:4200/login' >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:4200/api/estado-sistema \
+            > ./e2e-estado.json
+          PLAYWRIGHT_HOST_PLATFORM_OVERRIDE=ubuntu24.04-x64 \
+            node tests/e2e-dashboard-real.mjs
+
+      - name: Evidencias de ejecución (datos ficticios)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mallqui-dashboard-real-frontend-laravel
+          retention-days: 30
+          if-no-files-found: warn
+          path: |
+            FRONTEND/suma-angular/evidencias-dashboard/
+            FRONTEND/suma-angular/e2e-estado.json
+            laravel-e2e.log
+            angular-e2e.log
