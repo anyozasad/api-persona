@@ -192,6 +192,12 @@ class ProductoImagenDashboardTest extends TestCase
         $legacy = app(GymSystemAdminController::class)->producto($id)->getData(true);
         $this->assertSame($foto, $legacy['foto']);
 
+        $diagnostico = $control->diagnosticoFotos()->getData(true);
+        $this->assertSame('original', $diagnostico['esquema']);
+        $this->assertSame(1, $diagnostico['total_productos']);
+        $this->assertSame(1, $diagnostico['fotos_guardadas_en_mysql']);
+        $this->assertSame(0, $diagnostico['sin_foto']);
+
         $nuevaFoto = 'data:image/webp;base64,'.base64_encode('imagen-actualizada');
         $edicion = Request::create('/api/productos/'.$id, 'PUT', [
             'id_categoria' => 1,
