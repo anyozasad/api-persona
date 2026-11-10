@@ -99,6 +99,31 @@ try {
     await page.screenshot({path:'evidencias-dashboard/13_Menu_simplificado.png',fullPage:true});
   });
 
+  await paso('Inicio EFSRT tiene exactamente seis acciones y no duplica pestañas',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const inicio=page.locator('.mg-efsrt-dashboard');
+    await inicio.waitFor({timeout:15000});
+    const acciones=inicio.locator('.mg-efsrt-actions>button');
+    assert.equal(await acciones.count(),6,'Debe haber seis accesos principales, no una pantalla saturada de botones.');
+    assert.equal(await page.locator('.mg-module-tabs').count(),0,'Las pestañas antiguas repiten el menú.');
+    assert.equal(await inicio.locator('.mg-premium-analytics').count(),0,
+      'Los gráficos avanzados deben estar cerrados al entrar.');
+    const nombres=await acciones.allTextContents();
+    for(const esperado of ['Matricular socio','Reservas','Asistencia','Rutinas','Productos','Pagos']){
+      assert.ok(nombres.some(x=>x.includes(esperado)),'Acceso faltante: '+esperado);
+    }
+    await page.screenshot({
+      path:'evidencias-dashboard/17_Inicio_EFSRT_Simplificado.png',
+      fullPage:true,animations:'disabled'
+    });
+    await inicio.getByRole('button',{name:/Gráficos y análisis de ingresos/}).click();
+    await inicio.locator('.mg-premium-analytics').waitFor({timeout:12000});
+    const analisis=await inicio.locator('.mg-premium-analytics').innerText();
+    assert.ok(analisis.includes('Ingresos'),'No se conservaron los gráficos reales.');
+    await inicio.getByRole('button',{name:/Gráficos y análisis de ingresos/}).click();
+    assert.equal(await inicio.locator('.mg-premium-analytics').count(),0);
+  });
+
   await paso('Formulario de socios en la página, sin oscurecer ni duplicar scroll',async()=>{
     await page.goto(base+'/clientes',{waitUntil:'domcontentloaded'});
     await page.getByRole('button',{name:/Agregar Socio/i}).first().click();
@@ -153,21 +178,18 @@ try {
     await page.screenshot({path:'evidencias-dashboard/15_Socio_persistido_MySQL.png',fullPage:true});
   });
 
-  await paso('Botón Fitness abre rutinas, no clases',async()=>{
+  await paso('Móvil muestra cinco accesos y Reservas abre la pantalla correcta',async()=>{
     await page.setViewportSize({width:390,height:844});
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
-    await page.locator('.mg-current-topbar h1').waitFor();
-    const boton=page.locator('.admin-mobile-modules button').filter({hasText:'Fitness'});
-    if(await boton.count()){
-      await boton.first().click();
-      await page.waitForTimeout(350);
-      const titulo=String(await page.locator('.mg-current-topbar h1').textContent()||'');
-      assert.notEqual(titulo.trim().toLowerCase(),'dashboard');
-      assert.match(titulo,/rutina/i);
-      await page.setViewportSize({width:1440,height:900});
-    }else{
-      throw new Error('No aparece el botón Fitness');
-    }
+    const movil=page.locator('.mg-efsrt-mobile-menu');
+    await movil.waitFor({timeout:15000});
+    assert.equal(await movil.locator('button').count(),5,'Menú móvil debe tener solo cinco opciones');
+    const reserv=movil.getByRole('button',{name:'Reservas'});
+    await reserv.click();
+    await page.locator('.mg-current-topbar h1').waitFor({timeout:10000});
+    const titulo=String(await page.locator('.mg-current-topbar h1').textContent()||'');
+    assert.match(titulo,/reservas/i);
+    await page.setViewportSize({width:1440,height:900});
   });
 
   await paso('Crear producto con foto desde el formulario y verificar persistencia',async()=>{
