@@ -53,10 +53,6 @@ import { catchError, forkJoin, of } from 'rxjs';
       <div class="mg-mantis-top-actions">
         <button type="button" class="mg-mantis-icon-button" (click)="actualizarDashboardCompleto()"
           [disabled]="actualizandoDatos" aria-label="Actualizar información" title="Actualizar información">↻</button>
-        <button type="button" class="mg-mantis-icon-button" (click)="exportarDashboardCsv()"
-          aria-label="Exportar resumen del dashboard" title="Exportar resumen a CSV">⇩</button>
-        <button type="button" class="mg-mantis-icon-button" (click)="abrirPersonalizadorMantis()"
-          aria-label="Personalizar apariencia" title="Personalizar apariencia">⚙</button>
         <button type="button" class="mg-mantis-icon-button mg-mantis-bell"
           (click)="alternarAlertasMantis()" [attr.aria-expanded]="avisosAbiertos"
           aria-label="Notificaciones y pendientes" title="Notificaciones">
@@ -190,16 +186,12 @@ import { catchError, forkJoin, of } from 'rxjs';
     <main class="mg-current-content">
       
 
-      <nav class="admin-mobile-modules" aria-label="Módulos principales en móvil">
-        <button type="button" [class.active]="moduloActivo==='dashboard'" (click)="abrirModuloAdmin('dashboard')"><span>⌂</span><b>Inicio</b></button>
-        <button type="button" [class.active]="moduloActivo==='socios'" (click)="abrirModuloAdmin('socios')"><span>♙</span><b>Socios</b><i *ngIf="badgeModulo('socios')>0">{{badgeModulo('socios')}}</i></button>
-        <button type="button" [class.active]="moduloActivo==='servicios'" (click)="abrirModuloAdmin('servicios')"><span>◉</span><b>Servicios</b><i *ngIf="badgeModulo('servicios')>0">{{badgeModulo('servicios')}}</i></button>
-        <button type="button" [class.active]="moduloActivo==='operacion'" (click)="abrirModuloAdmin('operacion')"><span>▣</span><b>Caja</b></button>
-        <button type="button" [class.active]="moduloActivo==='inventario'" (click)="abrirModuloAdmin('inventario')"><span>▦</span><b>Stock</b><i *ngIf="badgeModulo('inventario')>0">{{badgeModulo('inventario')}}</i></button>
-        <button type="button" [class.active]="moduloActivo==='servicios'" (click)="abrirModuloAdmin('fitness')"><span>✦</span><b>Fitness</b></button>
-        <button type="button" [class.active]="moduloActivo==='atencion'" (click)="abrirModuloAdmin('atencion')"><span>●</span><b>Atención</b><i *ngIf="badgeModulo('atencion')>0">{{badgeModulo('atencion')}}</i></button>
-        <button type="button" [class.active]="moduloActivo==='reportes'" (click)="abrirModuloAdmin('reportes')"><span>↗</span><b>Reportes</b></button>
-        <button type="button" [class.active]="moduloActivo==='sistema'" (click)="abrirModuloAdmin('sistema')"><span>⚙</span><b>Sistema</b></button>
+      <nav class="admin-mobile-modules mg-efsrt-mobile-menu" aria-label="Acceso rápido en móvil">
+        <button type="button" [class.active]="seccion==='dashboard'" (click)="cambiarSegcion('dashboard')"><span>⌂</span><b>Inicio</b></button>
+        <button type="button" [class.active]="seccion==='clientes'" (click)="cambiarSegcion('clientes')"><span>♙</span><b>Socios</b></button>
+        <button type="button" [class.active]="seccion==='reservas'" (click)="cambiarSegcion('reservas')"><span>◫</span><b>Reservas</b></button>
+        <button type="button" [class.active]="seccion==='productos'" (click)="cambiarSegcion('productos')"><span>▦</span><b>Productos</b></button>
+        <button type="button" (click)="toggleSidebar()" [attr.aria-expanded]="!sidebarCerrado"><span>☰</span><b>Menú</b></button>
       </nav>
 
       <div class="mg-current-workspace">
@@ -225,16 +217,7 @@ import { catchError, forkJoin, of } from 'rxjs';
         </div>
       </section>
 
-      <nav class="mg-module-tabs" *ngIf="seccion!=='dashboard' && tabsModuloActual.length">
-        <button
-          type="button"
-          *ngFor="let tab of tabsModuloActual"
-          [class.active]="seccion===tab.id"
-          (click)="cambiarSegcion(tab.id)">
-          {{tab.nombre}}
-          <i *ngIf="badgeTab(tab.id)>0">{{badgeTab(tab.id)}}</i>
-        </button>
-      </nav>
+
 
       <ng-container *ngIf="seccion==='dashboard'">
         <section class="mg-dashboard">
@@ -3006,64 +2989,65 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     'auditoria','configuracion','opiniones'
   ];
   /** Menú único, organizado por tarea; no repite funciones en tres secciones. */
+  // Navegación EFSRT: cinco áreas esenciales, más herramientas opcionales.
+  // Cada función aparece una sola vez; no se elimina ningún módulo existente.
   readonly menuPrincipal: Array<{
     id:string; titulo:string; icono:string;
     items:Array<{id:string;nombre:string;accion?:'nuevoSocio'}>
   }> = [
     {id:'members',titulo:'Socios y membresías',icono:'♙',items:[
-      {id:'clientes',nombre:'Socios'},
-      {id:'clientes',nombre:'Matricular socio',accion:'nuevoSocio'},
+      {id:'clientes',nombre:'Socios y matrícula'},
       {id:'membresias',nombre:'Membresías'},
-      {id:'renovaciones',nombre:'Renovaciones y avisos'},
       {id:'pagos',nombre:'Pagos'},
-      {id:'planes',nombre:'Planes y tarifas'},
-      {id:'documentos-socio',nombre:'Carnés y documentos'}
+      {id:'renovaciones',nombre:'Vencimientos'}
     ]},
     {id:'training',titulo:'Entrenamientos',icono:'✦',items:[
       {id:'reservas',nombre:'Reservas'},
-      {id:'asistencias',nombre:'Asistencias'},
+      {id:'asistencias',nombre:'Asistencia'},
       {id:'rutinas',nombre:'Rutinas'},
       {id:'seguimiento',nombre:'Seguimiento'},
-      {id:'progreso-fisico',nombre:'Progreso físico'},
-      {id:'clases',nombre:'Clases'},
-      {id:'entrenador',nombre:'Entrenador'},
-      {id:'nutricion',nombre:'Nutrición'}
+      {id:'entrenador',nombre:'Entrenador'}
     ]},
     {id:'operations',titulo:'Ventas e inventario',icono:'▦',items:[
-      {id:'productos',nombre:'Productos'},
-      {id:'inventario',nombre:'Inventario y stock'},
-      {id:'categorias',nombre:'Categorías'},
-      {id:'proveedores',nombre:'Proveedores'},
-      {id:'compras',nombre:'Compras'},
+      {id:'productos',nombre:'Productos y stock'},
       {id:'ventas',nombre:'Ventas'},
-      {id:'historial-ventas',nombre:'Historial de ventas'},
-      {id:'kardex',nombre:'Kardex'},
-      {id:'caja',nombre:'Caja'},
-      {id:'gastos',nombre:'Gastos'}
+      {id:'compras',nombre:'Compras'},
+      {id:'caja',nombre:'Caja'}
     ]},
-    {id:'payments',titulo:'Reportes y finanzas',icono:'↗',items:[
-      {id:'reportes-admin',nombre:'Reportes'},
-      {id:'ingresos',nombre:'Ingresos'},
-      {id:'reporte-asistencias',nombre:'Reporte de asistencias'},
-      {id:'facturas',nombre:'Facturación interna'},
-      {id:'salarios',nombre:'Salarios'}
+    {id:'payments',titulo:'Reportes',icono:'↗',items:[
+      {id:'reportes-admin',nombre:'Reportes del gimnasio'},
+      {id:'reporte-asistencias',nombre:'Reporte de asistencia'}
     ]},
-    {id:'menu',titulo:'Sistema y atención',icono:'⚙',items:[
-      {id:'usuarios',nombre:'Usuarios'},
-      {id:'configuracion',nombre:'Configuración'},
+    {id:'menu',titulo:'Administración',icono:'⚙',items:[
+      {id:'usuarios',nombre:'Usuarios y permisos'},
+      {id:'verificacion-efsrt',nombre:'Verificación EFSRT'},
       {id:'auditoria',nombre:'Auditoría'},
       {id:'mantenimiento-sistema',nombre:'Respaldos'},
-      {id:'verificacion-efsrt',nombre:'Verificación EFSRT'},
-      {id:'soporte',nombre:'Atención y soporte'},
-      {id:'comunicacion',nombre:'Notificaciones'},
-      {id:'opiniones',nombre:'Opiniones'}
+      {id:'configuracion',nombre:'Configuración'}
     ]},
-    {id:'apps',titulo:'Otras herramientas',icono:'⊞',items:[
+    {id:'apps',titulo:'Más funciones (opcional)',icono:'⊞',items:[
+      {id:'planes',nombre:'Planes y tarifas'},
+      {id:'documentos-socio',nombre:'Documentos del socio'},
+      {id:'progreso-fisico',nombre:'Progreso físico'},
+      {id:'clases',nombre:'Clases'},
+      {id:'nutricion',nombre:'Nutrición'},
+      {id:'inventario',nombre:'Ajustes de inventario'},
+      {id:'categorias',nombre:'Categorías'},
+      {id:'proveedores',nombre:'Proveedores'},
+      {id:'historial-ventas',nombre:'Historial de ventas'},
+      {id:'kardex',nombre:'Kardex'},
+      {id:'gastos',nombre:'Gastos'},
+      {id:'ingresos',nombre:'Ingresos'},
+      {id:'facturas',nombre:'Facturación interna'},
+      {id:'salarios',nombre:'Salarios'},
+      {id:'soporte',nombre:'Soporte'},
+      {id:'comunicacion',nombre:'Notificaciones a socios'},
+      {id:'opiniones',nombre:'Opiniones'},
       {id:'aplicaciones',nombre:'Aplicaciones'},
       {id:'calendario-admin',nombre:'Calendario'},
       {id:'tareas-admin',nombre:'Tareas'},
-      {id:'tablas-admin',nombre:'Tablas avanzadas'},
-      {id:'componentes-ui',nombre:'Componentes UI'},
+      {id:'tablas-admin',nombre:'Tablas'},
+      {id:'componentes-ui',nombre:'Componentes'},
       {id:'equipos',nombre:'Equipos'},
       {id:'eventos',nombre:'Eventos'},
       {id:'galeria',nombre:'Galería'},
