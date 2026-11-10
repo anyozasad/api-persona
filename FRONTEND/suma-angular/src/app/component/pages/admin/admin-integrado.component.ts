@@ -220,108 +220,137 @@ import { catchError, forkJoin, of } from 'rxjs';
 
 
       <ng-container *ngIf="seccion==='dashboard'">
-        <section class="mg-dashboard">
-          <div class="mg-dashboard-main">
-          <section class="mg-pro-hero" aria-label="Resumen ejecutivo de Mallqui Gym">
-            <div class="mg-pro-hero-copy">
-              <span class="mg-pro-eyebrow"><i></i> MALLQUI GYM / CENTRO DE CONTROL</span>
-              <h2>Tu gimnasio, bajo control.</h2>
-              <p>Controla socios, reservas, ingresos y entrenamiento con información real de tu gimnasio.</p>
-              <div class="mg-pro-hero-actions">
-                <button type="button" (click)="cambiarSegcion('reportes-admin')">Explorar reportes <span>↗</span></button>
-                <button type="button" class="secondary" (click)="actualizarDashboardCompleto()" [disabled]="actualizandoDatos">{{actualizandoDatos ? 'Actualizando...' : '↻ Actualizar datos'}}</button>
-              </div>
+        <section class="mg-dashboard mg-efsrt-dashboard" aria-label="Panel de control de Mallqui Gym">
+          <header class="mg-efsrt-hero">
+            <div>
+              <span class="mg-efsrt-eyebrow">MALLQUI GYM · ADMINISTRACIÓN</span>
+              <h2>Panel principal</h2>
+              <p>Socios, entrenamiento, ventas y pagos en un solo lugar.</p>
             </div>
-            <div class="mg-pro-hero-income">
-              <span>INGRESOS DEL MES</span>
-              <strong>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</strong>
-              <div class="mg-pro-trend" [class.negative]="(dashboard?.ingresos?.variacion_mes ?? 0) < 0">
-                <i>{{(dashboard?.ingresos?.variacion_mes ?? 0) >= 0 ? '↗' : '↘'}}</i>
-                {{dashboard?.ingresos?.variacion_mes ?? 0 | number:'1.1-1'}}% respecto al mes anterior
-              </div>
-              <small [class.warning]="!sistemaSincronizado">{{sistemaSincronizado ? '● Datos sincronizados' : '● Revisa el estado de conexión'}}</small>
+            <div class="mg-efsrt-hero-aside">
+              <span class="mg-efsrt-connection" [class.problem]="!sistemaSincronizado">
+                {{sistemaSincronizado ? '● Sistema conectado' : '● Revisar conexión'}}
+              </span>
+              <button type="button" (click)="actualizarDashboardCompleto()" [disabled]="actualizandoDatos">
+                {{actualizandoDatos ? 'Actualizando...' : '↻ Actualizar'}}
+              </button>
+            </div>
+          </header>
+
+          <section class="mg-efsrt-kpis" aria-label="Indicadores obtenidos de MySQL">
+            <article><span>Socios activos</span><strong>{{dashboard?.clientes?.activos ?? clientesActivos ?? 0}}</strong><small>Miembros registrados</small></article>
+            <article><span>Reservas de hoy</span><strong>{{dashboard?.reservas?.hoy ?? reservasHoyDashboard().length}}</strong><small>Sesiones programadas</small></article>
+            <article><span>Asistencias de hoy</span><strong>{{dashboard?.asistencias?.hoy ?? 0}}</strong><small>Ingresos al gimnasio</small></article>
+            <article><span>Ingresos del mes</span><strong>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</strong><small>Pagos y ventas</small></article>
+          </section>
+
+          <section class="mg-efsrt-work">
+            <div class="mg-efsrt-heading">
+              <h3>¿Qué necesitas hacer?</h3>
+              <p>Las seis acciones principales del gimnasio, según la bitácora EFSRT.</p>
+            </div>
+            <div class="mg-efsrt-actions">
+              <button type="button" (click)="abrirNuevoSocioDesdeDashboard()">
+                <span aria-hidden="true">♙</span><strong>Matricular socio</strong><small>Nuevo registro</small>
+              </button>
+              <button type="button" (click)="cambiarSegcion('reservas')">
+                <span aria-hidden="true">◫</span><strong>Reservas</strong><small>Gestionar sesiones</small>
+              </button>
+              <button type="button" (click)="cambiarSegcion('asistencias')">
+                <span aria-hidden="true">✓</span><strong>Asistencia</strong><small>Entrada y salida</small>
+              </button>
+              <button type="button" (click)="cambiarSegcion('rutinas')">
+                <span aria-hidden="true">✦</span><strong>Rutinas</strong><small>Plan de entrenamiento</small>
+              </button>
+              <button type="button" (click)="cambiarSegcion('productos')">
+                <span aria-hidden="true">▦</span><strong>Productos</strong><small>Fotos y stock</small>
+              </button>
+              <button type="button" (click)="cambiarSegcion('pagos')">
+                <span aria-hidden="true">S/</span><strong>Pagos</strong><small>Cobros y membresías</small>
+              </button>
             </div>
           </section>
 
-            <section class="mg-results">
-              <div class="mg-section-heading compact">
-                <div><h2>Indicadores principales</h2><p>Resumen de socios, movimiento e ingresos.</p></div>
+          <div class="mg-efsrt-grid">
+            <section class="mg-efsrt-panel mg-efsrt-renewals" [class.warning]="totalMembresiasPorVencerDashboard > 0">
+              <div class="mg-efsrt-heading"><h3>Vencimientos de membresías</h3><p>Alertas para el administrador.</p></div>
+              <strong class="mg-efsrt-renewal-count">{{totalMembresiasPorVencerDashboard}}</strong>
+              <p *ngIf="!totalMembresiasPorVencerDashboard">
+                {{dashboard ? 'No hay vencimientos durante los próximos siete días.' : 'Actualiza el panel para comprobar las membresías.'}}
+              </p>
+              <div class="mg-efsrt-renewal-rows" *ngIf="totalMembresiasPorVencerDashboard">
+                <p *ngFor="let registro of membresiasPorVencerDashboard.slice(0,3)">
+                  <b>{{nombreCliente(registro.cliente)}}</b>
+                  <span>{{registro.fecha_fin}} · {{registro.membresia?.nombre || 'Membresía'}}</span>
+                </p>
               </div>
-
-              <div class="mg-result-grid">
-                <button type="button" class="mg-mantis-kpi-card" (click)="cambiarSegcion('clientes')">
-                  <span class="mg-mantis-kpi-header"><span>Socios activos</span><i aria-hidden="true">♙</i></span>
-                  <strong>{{dashboard?.clientes?.activos ?? clientesActivos ?? 0}}</strong>
-                  <span class="mg-mantis-kpi-note">{{dashboard?.clientes?.nuevos_mes ?? 0}} nuevos registros este mes</span>
-                  <span class="mg-mantis-kpi-action">Ver socios ›</span>
-                </button>
-                <button type="button" class="mg-mantis-kpi-card" (click)="cambiarSegcion('asistencias')">
-                  <span class="mg-mantis-kpi-header"><span>Asistencias de hoy</span><i aria-hidden="true">✓</i></span>
-                  <strong>{{dashboard?.asistencias?.hoy ?? 0}}</strong>
-                  <span class="mg-mantis-kpi-note">{{totalActividadSemanal()}} asistencias en 7 días</span>
-                  <span class="mg-mantis-kpi-bars is-green" *ngIf="totalActividadSemanal()>0" aria-label="Tendencia real de los últimos siete días">
-                    <i *ngFor="let dia of diasActividadDashboard()" [style.height.%]="alturaAsistenciaSemana(dia.total)"></i>
-                  </span>
-                  <span class="mg-mantis-kpi-action">Control de acceso ›</span>
-                </button>
-                <button type="button" class="mg-mantis-kpi-card" (click)="cambiarSegcion('reservas')">
-                  <span class="mg-mantis-kpi-header"><span>Reservas de hoy</span><i aria-hidden="true">◫</i></span>
-                  <strong>{{dashboard?.reservas?.hoy ?? reservasHoyDashboard().length}}</strong>
-                  <span class="mg-mantis-kpi-note">{{reservasHoyDashboard().length}} registros disponibles en agenda</span>
-                  <span class="mg-mantis-kpi-action">Ver reservas ›</span>
-                </button>
-                <button type="button" class="mg-mantis-kpi-card" (click)="cambiarSegcion('ingresos')">
-                  <span class="mg-mantis-kpi-header"><span>Ingresos del mes</span><i aria-hidden="true">S/</i></span>
-                  <strong>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.0-0'}}</strong>
-                  <span class="mg-mantis-kpi-note">Membresías y ventas registradas</span>
-                  <span class="mg-mantis-kpi-bars is-orange" *ngIf="ingresosMensualesDashboard().length && maxIngresoGrafico()>0" aria-label="Ingresos de los últimos seis meses">
-                    <i *ngFor="let mes of ingresosMensualesDashboard()" [style.height.%]="alturaIngresoKpi(mes.total)"></i>
-                  </span>
-                  <span class="mg-mantis-kpi-action">Detalle financiero ›</span>
-                </button>
-              </div>
+              <button type="button" (click)="cambiarSegcion('renovaciones')">Revisar vencimientos</button>
             </section>
 
-            <section class="mg-catalog-preview" aria-label="Fotos de productos guardadas en MySQL">
-              <header>
-                <div>
-                  <span>CATÁLOGO REAL</span>
-                  <h2>Productos del gimnasio</h2>
-                  <p>Fotografías y existencias recuperadas directamente de la misma base de datos del inventario.</p>
-                </div>
-                <button type="button" (click)="cambiarSegcion('productos')">Administrar productos y fotos <span>›</span></button>
-              </header>
-              <div class="mg-catalog-summary" *ngIf="productos.length">
-                <span><strong>{{productos.length}}</strong> productos</span>
-                <span><strong>{{productosConImagenDashboard}}</strong> con fotografía</span>
-                <span *ngIf="productosConImagenDashboard < productos.length" class="mg-catalog-missing">
-                  <strong>{{productos.length - productosConImagenDashboard}}</strong> sin fotografía disponible
-                </span>
+            <section class="mg-efsrt-panel mg-efsrt-bookings">
+              <div class="mg-efsrt-heading"><h3>Próximas reservas</h3><p>Sesiones registradas para hoy.</p></div>
+              <div *ngIf="reservasHoyDashboard().length; else sinAgendaEfsrt">
+                <p *ngFor="let reserva of reservasHoyDashboard().slice(0,4)">
+                  <strong>{{reserva.clase?.hora_inicio || '—'}}</strong>
+                  <span>{{nombreCliente(reserva.cliente) || 'Socio'}} · {{reserva.clase?.nombre || 'Sesión'}}</span>
+                </p>
               </div>
-              <div class="mg-catalog-cards" *ngIf="productos.length; else sinProductosDashboard">
-                <button type="button" *ngFor="let p of productosDestacadosDashboard"
-                  class="mg-catalog-product" (click)="cambiarSegcion('productos')">
-                  <div class="mg-catalog-product-photo">
-                    <img *ngIf="fotoProductoDisponibleDashboard(p.foto)" [src]="p.foto"
-                      [alt]="'Foto de ' + p.nombre_producto">
-                    <span *ngIf="!fotoProductoDisponibleDashboard(p.foto)" class="mg-catalog-no-photo">
-                      <i>▧</i><small>Sin foto en MySQL</small>
-                    </span>
-                  </div>
-                  <strong>{{p.nombre_producto}}</strong>
-                  <small>{{p.codigo_producto || 'Sin código'}} · Stock {{p.stock ?? 0}}</small>
-                  <b>S/ {{p.precio_venta ?? 0 | number:'1.2-2'}}</b>
-                </button>
-              </div>
-              <ng-template #sinProductosDashboard>
-                <div class="mg-catalog-empty">
-                  <strong>No hay productos cargados desde MySQL.</strong>
-                  <p>Abre Productos para registrar artículos y fotografías. Si ya existían, revisa la base de datos conectada.</p>
-                  <button type="button" (click)="cambiarSegcion('productos')">Ir a productos</button>
-                </div>
-              </ng-template>
+              <ng-template #sinAgendaEfsrt><p class="mg-efsrt-empty">No hay reservas registradas para hoy.</p></ng-template>
             </section>
+          </div>
 
+          <section class="mg-catalog-preview mg-efsrt-product-preview" aria-label="Productos y fotografías reales de MySQL">
+            <header>
+              <div>
+                <span>INVENTARIO</span>
+                <h2>Productos del gimnasio</h2>
+                <p>Fotos, precios y existencias guardados en MySQL.</p>
+              </div>
+              <button type="button" (click)="cambiarSegcion('productos')">Gestionar productos</button>
+            </header>
+            <div class="mg-catalog-summary" *ngIf="productos.length">
+              <span><strong>{{productos.length}}</strong> productos</span>
+              <span><strong>{{productosConImagenDashboard}}</strong> con foto</span>
+              <span *ngIf="productosConImagenDashboard < productos.length" class="mg-catalog-missing">
+                <strong>{{productos.length - productosConImagenDashboard}}</strong> sin fotografía
+              </span>
+            </div>
+            <div class="mg-catalog-cards" *ngIf="productos.length; else sinProductosEfsrt">
+              <article *ngFor="let p of productosDestacadosDashboard" class="mg-catalog-product">
+                <div class="mg-catalog-product-photo">
+                  <img *ngIf="fotoProductoDisponibleDashboard(p.foto)" [src]="p.foto"
+                    [alt]="'Foto de ' + p.nombre_producto">
+                  <span *ngIf="!fotoProductoDisponibleDashboard(p.foto)" class="mg-catalog-no-photo">
+                    <i>▧</i><small>Foto pendiente</small>
+                  </span>
+                </div>
+                <strong>{{p.nombre_producto}}</strong>
+                <small>{{p.codigo_producto || 'Sin código'}} · Stock {{p.stock ?? 0}}</small>
+                <b>S/ {{p.precio_venta ?? 0 | number:'1.2-2'}}</b>
+              </article>
+            </div>
+            <ng-template #sinProductosEfsrt>
+              <p class="mg-efsrt-empty">No hay productos cargados desde MySQL. Registra productos y sus fotos desde Inventario.</p>
+            </ng-template>
+          </section>
+
+          <section class="mg-efsrt-data-status" [class.problem]="!sistemaSincronizado">
+            <div>
+              <strong>{{sistemaSincronizado ? 'Datos sincronizados con Laravel y MySQL' : 'No se confirmó la conexión de todos los módulos'}}</strong>
+              <p>{{mensajeSincronizacion}}</p>
+              <small>Socios: {{clientes.length}} · Productos: {{productos.length}} · Pagos: {{pagos.length}} · Reservas: {{reservas.length}}</small>
+            </div>
+            <button type="button" (click)="cambiarSegcion('verificacion-efsrt')">Verificar sistema</button>
+          </section>
+
+          <section class="mg-efsrt-optional">
+            <button type="button" class="mg-efsrt-optional-toggle"
+              [attr.aria-expanded]="mostrarGraficosDashboard"
+              (click)="mostrarGraficosDashboard=!mostrarGraficosDashboard">
+              <span>Gráficos y análisis de ingresos</span>
+              <span>{{mostrarGraficosDashboard ? 'Ocultar −' : 'Mostrar +'}}</span>
+            </button>
+            <ng-container *ngIf="mostrarGraficosDashboard">
             <section class="mg-premium-analytics" aria-label="Gráficos de actividad e ingresos">
               <div class="mg-premium-analytics-head">
                 <div><span>ANALÍTICA REAL</span><h2>Tendencias del gimnasio</h2><p>Gráficos construidos con información de la base de datos.</p></div>
@@ -401,229 +430,27 @@ import { catchError, forkJoin, of } from 'rxjs';
                 </article>
               </div>
             </section>
-            <section class="mg-professor-actions">
-              <header>
-                <div>
-                  <span>FUNCIONES PRINCIPALES</span>
-                  <h2>Gestión rápida del gimnasio</h2>
-                  <p>Accesos solicitados para la operación diaria de Mallqui Gym.</p>
-                </div>
-              </header>
-              <div class="mg-professor-action-grid">
-                <button type="button" class="matricula" (click)="abrirNuevoSocioDesdeDashboard()">
-                  <i>＋</i><div><strong>Matricular</strong><span>Registrar un nuevo socio</span></div><b>›</b>
-                </button>
-                <button type="button" class="seguimiento" (click)="cambiarSegcion('seguimiento')">
-                  <i>◎</i><div><strong>Seguimiento</strong><span>Membresía, asistencia y rutina</span></div><b>›</b>
-                </button>
-                <button type="button" class="asistencia" (click)="cambiarSegcion('asistencias')">
-                  <i>✓</i><div><strong>Asistencia</strong><span>Registrar entrada o salida</span></div><b>›</b>
-                </button>
-                <button type="button" class="rutinas" (click)="cambiarSegcion('rutinas')">
-                  <i>🏋</i><div><strong>Rutinas</strong><span>Asignar y controlar rutinas</span></div><b>›</b>
-                </button>
-              </div>
-            </section>
-
-            <section class="mg-expiry-alert" [class.has-warning]="totalMembresiasPorVencerDashboard>0">
-              <div class="mg-expiry-icon">{{totalMembresiasPorVencerDashboard>0 ? '!' : '✓'}}</div>
-              <div class="mg-expiry-copy">
-                <small>ALERTA DE MEMBRESÍAS</small>
-                <ng-container *ngIf="totalMembresiasPorVencerDashboard; else sinVencimientosDashboard">
-                  <h3>{{totalMembresiasPorVencerDashboard}} membresía(s) por vencer</h3>
-                  <p>El administrador debe realizar seguimiento y renovación dentro de los próximos 7 días.</p>
-                  <div class="mg-expiry-members">
-                    <span *ngFor="let v of membresiasPorVencerDashboard.slice(0,3)">
-                      <b>{{nombreCliente(v.cliente)}}</b>
-                      <em>{{v.membresia?.nombre || 'Plan'}} · vence {{v.fecha_fin}}<ng-container *ngIf="v.dias_restantes!==undefined"> · {{v.dias_restantes}} día(s)</ng-container></em>
-                    </span>
-                  </div>
-                </ng-container>
-                <ng-template #sinVencimientosDashboard>
-                  <h3>{{dashboard ? 'Membresías al día' : 'Sin información de vencimientos'}}</h3>
-                  <p>{{dashboard ? 'No hay membresías que venzan durante los próximos 7 días.' : 'Actualiza el dashboard para consultar las membresías.'}}</p>
-                </ng-template>
-              </div>
-              <button type="button" (click)="cambiarSegcion('membresias')">
-                {{totalMembresiasPorVencerDashboard ? 'Revisar y renovar' : 'Ver membresías'}}
-              </button>
-            </section>
-
-            <section class="mg-section-heading">
-              <div>
-                <h2>Rutinas activas</h2>
-                <p>Planes de entrenamiento actualmente registrados como activos.</p>
-              </div>
-              <button type="button" (click)="cambiarSegcion('rutinas')">Ver todas <span>›</span></button>
-            </section>
-
-            <section class="mg-workout-grid" *ngIf="rutinasActivasDashboard.length; else sinRutinasDashboard">
-              <article class="mg-workout-card mg-workout-featured" *ngIf="rutinasActivasDashboard[0] as r">
-                <div class="mg-workout-copy">
-                  <h3>{{r.nombre_rutina || 'Rutina activa'}}</h3>
-                  <p>{{r.detalles?.length || 0}} ejercicios <span></span> {{r.objetivo || 'Entrenamiento'}}</p>
-                  <button type="button" (click)="cambiarSegcion('rutinas')">Ver rutina</button>
-                </div>
-                <img src="assets/mallqui/mallqui-hero-interior-4k.webp" alt="Rutina activa de Mallqui Gym">
-              </article>
-
-              <article class="mg-workout-card" *ngIf="rutinasActivasDashboard[1] as r">
-                <i class="mg-workout-icon">↗</i>
-                <h3>{{r.nombre_rutina || 'Rutina'}}</h3>
-                <p>{{r.detalles?.length || 0}} ejercicios <span></span> {{r.objetivo || 'Entrenamiento'}}</p>
-                <button type="button" (click)="cambiarSegcion('rutinas')">Ver rutina</button>
-              </article>
-
-              <article class="mg-workout-card" *ngIf="rutinasActivasDashboard[2] as r">
-                <i class="mg-workout-icon">✦</i>
-                <h3>{{r.nombre_rutina || 'Rutina'}}</h3>
-                <p>{{r.detalles?.length || 0}} ejercicios <span></span> {{r.objetivo || 'Entrenamiento'}}</p>
-                <button type="button" (click)="cambiarSegcion('rutinas')">Ver rutina</button>
-              </article>
-            </section>
-            <ng-template #sinRutinasDashboard>
-              <section class="mg-dashboard-empty">
-                <div><i>🏋</i><h3>No hay rutinas activas</h3><p>Registra o asigna una rutina para que aparezca en el inicio del administrador.</p></div>
-                <button type="button" (click)="cambiarSegcion('rutinas')">Gestionar rutinas</button>
-              </section>
-            </ng-template>
-
-            <section class="mg-sync-panel">
-              <header>
-                <div>
-                  <small>ESTADO DEL SISTEMA</small>
-                  <h2>Usuario, Dashboard y Base de Datos</h2>
-                  <p>Resumen de sincronización de los módulos principales de Mallqui Gym.</p>
-                </div>
-                <button type="button" (click)="actualizarDashboardCompleto()" [disabled]="actualizandoDatos">
-                  {{actualizandoDatos ? 'Actualizando...' : '↻ Actualizar datos'}}
-                </button>
-              </header>
-              <div class="mg-sync-grid">
-                <article [class.ok]="sistemaSincronizado">
-                  <i>{{sistemaSincronizado ? '✓' : '!'}}</i>
-                  <div><strong>Conexión del sistema</strong><span>{{mensajeSincronizacion}}</span></div>
-                  <b>{{sistemaSincronizado ? 'ACTIVO' : 'REVISAR'}}</b>
-                </article>
-                <article>
-                  <i>♚</i>
-                  <div><strong>Socios</strong><span>Datos disponibles para usuario y administración</span></div>
-                  <b>{{clientes.length}}</b>
-                </article>
-                <article>
-                  <i>✦</i>
-                  <div><strong>Membresías</strong><span>Planes asignados y renovaciones</span></div>
-                  <b>{{membresiasCliente.length}}</b>
-                </article>
-                <article>
-                  <i>▦</i>
-                  <div><strong>Productos</strong><span>Catálogo e inventario sincronizado</span></div>
-                  <b>{{productos.length}}</b>
-                </article>
-                <article>
-                  <i>S/</i>
-                  <div><strong>Pagos</strong><span>Operaciones registradas</span></div>
-                  <b>{{pagos.length}}</b>
-                </article>
-                <article [class.warning]="totalAlertasDashboard()>0">
-                  <i>{{totalAlertasDashboard()>0 ? '!' : '✓'}}</i>
-                  <div><strong>Pendientes</strong><span>{{totalAlertasDashboard()>0 ? 'Hay tareas que requieren atención' : 'No hay alertas críticas'}}</span></div>
-                  <b>{{totalAlertasDashboard()}}</b>
-                </article>
-              </div>
-              <footer>Última sincronización: <strong>{{ultimaActualizacion || 'Pendiente'}}</strong></footer>
-            </section>
-
-          </div>
-
-          <aside class="mg-dashboard-side">
-            <article class="mg-trainer-card">
-              <div class="mg-trainer-head">
-                <img class="mg-trainer-avatar-img" src="assets/mallqui/mallqui-trainer-4k.webp" alt="Entrenador Mallqui Gym">
-                <div>
-                  <strong>{{entrenadores[0] ? nombreEntrenador(entrenadores[0]) : 'Entrenador Mallqui'}}</strong>
-                  <span>{{entrenadores[0]?.especialidad || 'Entrenador principal'}}</span>
-                </div>
-                <em>•••</em>
-              </div>
-
-              <button type="button" class="mg-video-card" (click)="cambiarSegcion('rutinas')">
-                <img src="assets/mallqui/mallqui-referencia-gym-equipos-4k.webp" alt="Rutina de Mallqui Gym">
-                <i>▶</i>
-              </button>
-              <h3>{{rutinasActivasDashboard[0]?.nombre_rutina || 'Sin rutina activa'}}</h3>
-              <small>{{rutinasActivasDashboard[0]?.detalles?.length || 0}} ejercicios</small>
-            </article>
-
-            <button type="button" class="mg-mini-routine" (click)="cambiarSegcion('rutinas')">
-              <img src="assets/mallqui/mallqui-foto-real-cardio-4k.webp" alt="Rutina secundaria">
-              <div><strong>{{rutinasActivasDashboard[1]?.nombre_rutina || 'Gestionar rutinas'}}</strong><span>{{rutinasActivasDashboard[1]?.objetivo || 'Ver módulo de rutinas'}}</span></div>
-            </button>
-
-            <section class="mg-agenda">
-              <header>
-                <h2>Agenda de hoy</h2>
-                <button type="button" (click)="cambiarSegcion('reservas')">Ver todas ›</button>
-              </header>
-
-              <div class="mg-agenda-list">
-                <article *ngFor="let r of reservasHoyDashboard().slice(0,6); let i=index">
-                  <i [class.dark]="i===4"></i>
-                  <time>{{r.clase?.hora_inicio || '—'}}</time>
+              <section class="mg-advanced-tools-shell">
+                <div class="mg-advanced-tools-head">
                   <div>
-                    <strong>{{r.clase?.nombre || 'Entrenamiento Personal'}}</strong>
-                    <span>{{nombreCliente(r.cliente) || 'Socio Mallqui'}}</span>
+                    <small>DATOS OPERATIVOS</small>
+                    <h3>Análisis avanzado</h3>
+                    <p>Consulta y exporta datos cuando necesites un reporte más completo.</p>
                   </div>
-                </article>
-
-                <div class="mg-agenda-empty" *ngIf="!reservasHoyDashboard().length">
-                  <i>◫</i><strong>Sin reservas registradas</strong><span>Las reservas reales aparecerán aquí cuando los socios agenden clases.</span>
-                  <button type="button" (click)="cambiarSegcion('reservas')">Abrir agenda</button>
+                  <button type="button" class="admin-secondary"
+                    [attr.aria-expanded]="herramientasAvanzadasAbiertas"
+                    (click)="herramientasAvanzadasAbiertas=!herramientasAvanzadasAbiertas">
+                    {{herramientasAvanzadasAbiertas ? 'Cerrar detalle' : 'Abrir detalle'}}
+                  </button>
                 </div>
-              </div>
-            </section>
-            <section class="mg-mantis-activity" aria-label="Movimientos del portal">
-              <header>
-                <h2>Actividad reciente</h2>
-                <button type="button" (click)="cambiarSegcion('reportes-admin')">Ver informes ›</button>
-              </header>
-              <div class="mg-mantis-activity-list" *ngIf="dashboard?.portal_clientes?.actividad_reciente?.length">
-                <button type="button" *ngFor="let actividad of (dashboard?.portal_clientes?.actividad_reciente || []).slice(0,6)"
-                  (click)="cambiarSegcion(destinoActividadDashboard(actividad.tipo))">
-                  <span class="mg-mantis-activity-symbol" aria-hidden="true">{{iconoActividadDashboard(actividad.tipo)}}</span>
-                  <span>
-                    <strong>{{actividad.titulo || actividad.tipo || 'Movimiento registrado'}}</strong>
-                    <small>{{actividad.cliente || 'Mallqui Gym'}} · {{actividad.detalle || 'Ver información'}}</small>
-                  </span>
-                  <b aria-hidden="true">›</b>
-                </button>
-              </div>
-              <p class="mg-mantis-activity-empty" *ngIf="!dashboard?.portal_clientes?.actividad_reciente?.length">
-                Todavía no hay actividad reciente registrada por la API.
-              </p>
-            </section>
-
-          </aside>
-        </section>
-
-        <section class="mg-advanced-tools-shell">
-          <div class="mg-advanced-tools-head">
-            <div>
-              <small>ANALÍTICA AVANZADA</small>
-              <h3>Centro de análisis operativo</h3>
-              <p>Indicadores, prioridades, actividad de socios y exportaciones con los datos registrados.</p>
-            </div>
-            <button type="button" class="admin-secondary"
-              [attr.aria-expanded]="herramientasAvanzadasAbiertas"
-              (click)="herramientasAvanzadasAbiertas=!herramientasAvanzadasAbiertas">
-              {{herramientasAvanzadasAbiertas ? 'Ocultar análisis' : 'Abrir análisis avanzado'}}
-            </button>
-          </div>
-          <app-admin-dashboard-tools
-            *ngIf="herramientasAvanzadasAbiertas"
-            [dashboard]="dashboard"
-            (irSeccion)="cambiarSeccion($event)">
-          </app-admin-dashboard-tools>
+                <app-admin-dashboard-tools
+                  *ngIf="herramientasAvanzadasAbiertas"
+                  [dashboard]="dashboard"
+                  (irSeccion)="cambiarSeccion($event)">
+                </app-admin-dashboard-tools>
+              </section>
+            </ng-container>
+          </section>
         </section>
       </ng-container>
 
@@ -3055,6 +2882,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     ]}
   ];
 
+  mostrarGraficosDashboard = false;
   navGroups:any = {overview:true,apps:false,members:false,payments:false,trainers:false,training:false,diet:false,equipment:false,events:false,ui:false,operations:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
   private autoRefreshId: any = null;
 
