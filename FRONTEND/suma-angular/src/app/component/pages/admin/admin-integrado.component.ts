@@ -25,7 +25,7 @@ import { catchError, forkJoin, of } from 'rxjs';
         <button type="button" class="mg-mantis-icon-button mg-mantis-nav-toggle" (click)="toggleSidebar()"
           [attr.aria-label]="sidebarCerrado ? 'Expandir menú' : 'Contraer menú'" [attr.title]="sidebarCerrado ? 'Expandir menú' : 'Contraer menú'">☰</button>
         <div class="mg-top-greeting">
-          <h1>{{seccion==='dashboard' ? 'Dashboard' : tituloActual}}</h1>
+          <h1>{{seccion==='dashboard' ? 'Inicio' : tituloActual}}</h1>
           <span>{{fechaDashboard}}</span>
         </div>
       </div>
@@ -34,13 +34,13 @@ import { catchError, forkJoin, of } from 'rxjs';
         <label class="admin-wix-search">
           <span>⌕</span>
           <input type="text" [(ngModel)]="busquedaAdmin"
-            (focus)="abrirBuscadorMantis()"
+            (input)="abrirBuscadorMantis()"
             (keydown.enter)="buscarEnPanel(); cerrarMenusMantis()"
             placeholder="Buscar módulos y funciones..." aria-label="Buscar módulo del panel"
             autocomplete="off">
           <kbd>↵</kbd>
         </label>
-        <div *ngIf="busquedaAbierta" class="mg-mantis-search-results" role="listbox" aria-label="Módulos disponibles">
+        <div *ngIf="busquedaAbierta && busquedaAdmin.trim().length > 0" class="mg-mantis-search-results" role="listbox" aria-label="Módulos disponibles">
           <div class="mg-mantis-dropdown-title">ACCESO RÁPIDO</div>
           <button type="button" *ngFor="let modulo of accesosRapidosDashboard" (click)="irAAccesoRapido(modulo.id)"
             role="option" [attr.aria-selected]="seccion===modulo.id">
@@ -3034,7 +3034,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       {claves:['proveedor','proveedores'],seccion:'proveedores'},
       {claves:['kardex','movimiento inventario'],seccion:'kardex'},
       {claves:['categoria','categorias'],seccion:'categorias'},
-      {claves:['producto','productos','inventario','stock'],seccion:'inventario'},
+      {claves:['producto','productos','inventario','stock'],seccion:'productos'},
       {claves:['soporte','consulta','consultas'],seccion:'soporte'},
       {claves:['opinion','opiniones','comentario'],seccion:'opiniones'},
       {claves:['notificacion','notificaciones','comunicacion','avisos'],seccion:'comunicacion'},
@@ -3443,9 +3443,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   get accesosRapidosDashboard():Array<{id:string,nombre:string}>{
     const query=this.busquedaAdmin.trim().toLocaleLowerCase('es-PE');
+    if (!query) return [];
     return Object.entries(this.titulos)
-      .filter(([id,info])=>!query || id.toLowerCase().includes(query) || info[0].toLocaleLowerCase('es-PE').includes(query))
-      .slice(0,8)
+      .filter(([id,info])=>id.toLowerCase().includes(query) || info[0].toLocaleLowerCase('es-PE').includes(query))
+      .slice(0,5)
       .map(([id,info])=>({id,nombre:info[0]}));
   }
 
