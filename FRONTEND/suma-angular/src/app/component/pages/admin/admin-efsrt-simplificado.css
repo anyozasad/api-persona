@@ -1,0 +1,403 @@
+/*
+ * Mallqui Gym | Panel EFSRT simplificado.
+ * La navegación conserva los módulos y las funciones CRUD.
+ * Se presenta solo la operación diaria en el inicio, sin paneles duplicados.
+ * Paleta original: blanco, grafito y verde lima.
+ */
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard {
+  display:block!important;
+  width:100%!important;
+  min-height:0!important;
+  padding:0!important;
+  margin:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  border:0!important;
+  color:#233128!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard *,
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard *::before,
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard *::after {box-sizing:border-box}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard button {
+  cursor:pointer!important;
+  font-family:inherit!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard button:focus-visible,
+.admin-shell.admin-home-redesign .mg-clear-navigation button:focus-visible,
+.admin-shell.admin-home-redesign .mg-efsrt-mobile-menu button:focus-visible {
+  outline:3px solid #95b93f!important;
+  outline-offset:2px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-hero {
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  flex-wrap:wrap!important;
+  gap:19px!important;
+  min-height:160px!important;
+  padding:29px 32px!important;
+  border:0!important;
+  border-radius:18px!important;
+  background:linear-gradient(112deg,#17221b 0%,#293c23 100%)!important;
+  color:#fff!important;
+  box-shadow:0 12px 26px rgba(10,35,18,.08)!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-eyebrow {
+  display:block!important;
+  color:#c9f45a!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  letter-spacing:1.4px!important;
+  margin-bottom:11px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-hero h2 {
+  margin:0 0 8px!important;
+  color:#fff!important;
+  font-size:clamp(26px,3.2vw,35px)!important;
+  font-weight:800!important;
+  line-height:1.15!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-hero p {
+  margin:0!important;
+  color:#d9e1d5!important;
+  font-size:13px!important;
+  font-weight:400!important;
+  line-height:1.55!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-hero-aside {
+  display:flex!important;
+  align-items:flex-end!important;
+  flex-direction:column!important;
+  gap:13px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-connection {
+  display:inline-flex!important;
+  align-items:center!important;
+  padding:6px 10px!important;
+  border:1px solid rgba(201,244,90,.3)!important;
+  border-radius:8px!important;
+  background:rgba(201,244,90,.1)!important;
+  color:#d0ff80!important;
+  font-size:12px!important;
+  font-weight:700!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-connection.problem {
+  border-color:rgba(255,193,127,.45)!important;
+  background:rgba(255,167,111,.13)!important;
+  color:#ffe0bf!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-hero-aside button {
+  min-height:41px!important;
+  min-width:120px!important;
+  padding:9px 14px!important;
+  border:1px solid #c9f45a!important;
+  border-radius:10px!important;
+  background:#c9f45a!important;
+  color:#192612!important;
+  font-size:13px!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-hero-aside button:disabled {opacity:.65!important;cursor:wait!important}
+.admin-shell.admin-home-redesign .mg-efsrt-kpis {
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:14px!important;
+  margin:17px 0 25px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-kpis article {
+  display:flex!important;
+  flex-direction:column!important;
+  gap:9px!important;
+  min-height:118px!important;
+  padding:19px 20px!important;
+  border:1px solid #e1e9dc!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  box-shadow:0 4px 20px rgba(18,43,19,.04)!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-kpis article span {
+  color:#5d7062!important;
+  font-size:12px!important;
+  font-weight:750!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-kpis article strong {
+  color:#1c3020!important;
+  font-size:clamp(23px,2vw,31px)!important;
+  font-weight:850!important;
+  line-height:1.15!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-kpis article small {
+  color:#7b8b7b!important;
+  font-size:11px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-heading h3 {
+  margin:0!important;
+  font-size:18px!important;
+  font-weight:800!important;
+  line-height:1.25!important;
+  color:#233529!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-heading p {
+  margin:5px 0 0!important;
+  font-size:12px!important;
+  color:#718171!important;
+  line-height:1.5!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-work {
+  display:grid!important;
+  gap:18px!important;
+  margin:0 0 24px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-actions {
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-actions button {
+  display:grid!important;
+  grid-template-columns:48px 1fr!important;
+  grid-template-rows:auto auto!important;
+  align-content:center!important;
+  justify-items:start!important;
+  align-items:center!important;
+  column-gap:14px!important;
+  row-gap:4px!important;
+  min-height:93px!important;
+  width:100%!important;
+  border:1px solid #e1e9de!important;
+  border-radius:14px!important;
+  padding:17px!important;
+  background:#fff!important;
+  text-align:left!important;
+  box-shadow:none!important;
+  color:#1e3826!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-actions button:hover {
+  border-color:#a6cf60!important;
+  background:#f8fde9!important;
+  transform:none!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-actions button>span {
+  grid-row:1 / 3!important;
+  grid-column:1!important;
+  display:grid!important;
+  place-items:center!important;
+  width:45px!important;
+  height:45px!important;
+  border-radius:12px!important;
+  background:#ebf7cf!important;
+  color:#395b26!important;
+  font-size:24px!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-actions button strong {
+  grid-column:2!important;
+  grid-row:1!important;
+  font-size:14px!important;
+  color:#213728!important;
+  font-weight:800!important;
+  line-height:1.3!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-actions button small {
+  grid-column:2!important;
+  grid-row:2!important;
+  color:#738375!important;
+  font-size:11px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-grid {
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:17px!important;
+  margin:0 0 22px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-panel {
+  padding:23px 24px!important;
+  border:1px solid #e1e9de!important;
+  border-radius:15px!important;
+  background:#fff!important;
+  min-height:205px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-renewal-count {
+  display:block!important;
+  margin-top:14px!important;
+  color:#253d25!important;
+  font-size:30px!important;
+  line-height:1!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-renewals.warning {
+  border-color:#ead8b2!important;
+  background:#fffdf8!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-renewals.warning .mg-efsrt-renewal-count {
+  color:#99621f!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-panel p {
+  font-size:12px!important;
+  line-height:1.5!important;
+  color:#647565!important;
+  margin:10px 0!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-renewal-rows p {
+  display:grid!important;
+  gap:4px!important;
+  padding:8px 0!important;
+  margin:0!important;
+  border-bottom:1px solid #eeeae0!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-renewal-rows b {color:#263c28!important}
+.admin-shell.admin-home-redesign .mg-efsrt-renewal-rows span {font-size:11px!important;color:#687b68!important}
+.admin-shell.admin-home-redesign .mg-efsrt-renewals button {
+  margin-top:13px!important;
+  min-height:36px!important;
+  padding:9px 13px!important;
+  border:1px solid #d3e3bb!important;
+  border-radius:9px!important;
+  background:#eff8df!important;
+  color:#365923!important;
+  font-size:12px!important;
+  font-weight:750!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-bookings>div:not(.mg-efsrt-heading)>p {
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  padding:11px 0!important;
+  border-bottom:1px solid #eef2eb!important;
+  margin:0!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-bookings>div:not(.mg-efsrt-heading)>p strong {
+  width:60px!important;
+  flex:none!important;
+  font-size:13px!important;
+  color:#385729!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-bookings>div:not(.mg-efsrt-heading)>p span {
+  color:#445446!important;
+  font-size:12px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-empty {color:#657765!important;font-size:13px!important;line-height:1.55!important}
+.admin-shell.admin-home-redesign .mg-efsrt-product-preview {
+  margin:0 0 22px!important;
+  min-width:0!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-product-preview .mg-catalog-product {
+  cursor:default!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-data-status {
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  flex-wrap:wrap!important;
+  gap:15px!important;
+  padding:19px 22px!important;
+  margin:0 0 21px!important;
+  border:1px solid #dce8d5!important;
+  border-radius:13px!important;
+  background:#f5faee!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-data-status.problem {
+  background:#fff9eb!important;
+  border-color:#e9d7ab!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-data-status strong {
+  display:block!important;
+  font-size:13px!important;
+  color:#2f4c29!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-data-status p {
+  margin:6px 0!important;
+  color:#557454!important;
+  font-size:12px!important;
+  line-height:1.5!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-data-status small {
+  color:#617365!important;
+  font-size:11px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-data-status button {
+  padding:10px 14px!important;
+  min-height:39px!important;
+  border:1px solid #bed8a8!important;
+  background:#fff!important;
+  color:#365c2a!important;
+  border-radius:9px!important;
+  font-size:12px!important;
+  font-weight:750!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-optional {
+  margin:0 0 30px!important;
+  border:1px solid #e5ebe2!important;
+  background:#fff!important;
+  border-radius:14px!important;
+  overflow:hidden!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-optional-toggle {
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  width:100%!important;
+  min-height:54px!important;
+  padding:15px 20px!important;
+  border:0!important;
+  background:#fff!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  color:#314734!important;
+  text-align:left!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-optional-toggle:hover {
+  background:#f8fcf3!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-optional>ng-container,
+.admin-shell.admin-home-redesign .mg-efsrt-optional .mg-premium-analytics {
+  max-width:100%!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-optional .mg-premium-analytics {
+  padding:16px!important;
+  margin:0!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-optional .mg-advanced-tools-shell {
+  padding:16px!important;
+  margin:0!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-admin-group {
+  padding:9px 12px!important;
+  min-height:45px!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .cf-nav-children button {
+  min-height:38px!important;
+  font-size:12.5px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-mobile-menu {
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:5px!important;
+  padding:8px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-mobile-menu button {
+  font-size:11px!important;
+  min-width:0!important;
+}
+@media(max-width:1100px){
+  .admin-shell.admin-home-redesign .mg-efsrt-kpis {grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .admin-shell.admin-home-redesign .mg-efsrt-actions {grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:700px){
+  .admin-shell.admin-home-redesign .mg-efsrt-hero{padding:23px 20px!important}
+  .admin-shell.admin-home-redesign .mg-efsrt-hero-aside{align-items:flex-start!important}
+  .admin-shell.admin-home-redesign .mg-efsrt-grid{grid-template-columns:1fr!important}
+  .admin-shell.admin-home-redesign .mg-efsrt-actions{grid-template-columns:1fr!important}
+  .admin-shell.admin-home-redesign .mg-efsrt-kpis{gap:9px!important}
+  .admin-shell.admin-home-redesign .mg-efsrt-kpis article{padding:15px!important;min-height:105px!important}
+  .admin-shell.admin-home-redesign .mg-efsrt-kpis article strong{font-size:23px!important}
+  .admin-shell.admin-home-redesign .mg-efsrt-panel{padding:17px!important;min-height:0!important}
+  .admin-shell.admin-home-redesign .mg-efsrt-mobile-menu{position:sticky!important;top:0!important;z-index:15!important}
+}
+@media(max-width:380px){
+  .admin-shell.admin-home-redesign .mg-efsrt-kpis{grid-template-columns:1fr!important}
+  .admin-shell.admin-home-redesign .mg-efsrt-mobile-menu button b {font-size:10px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .admin-shell.admin-home-redesign .mg-efsrt-dashboard *{transition:none!important;animation:none!important}
+}
