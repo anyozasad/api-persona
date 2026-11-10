@@ -13,7 +13,7 @@ class AdminDashboardNavigationTest extends TestCase
 
         $source = (string) file_get_contents($path);
 
-        $this->assertStringContainsString('class="mg-dashboard"', $source);
+        $this->assertStringContainsString('class="mg-dashboard mg-efsrt-dashboard"', $source);
         $this->assertStringNotContainsString('class="wixdash-page"', $source);
         $this->assertStringContainsString('buscarEnPanel(): void', $source);
         $this->assertStringContainsString('<app-admin-dashboard-tools', $source);
@@ -44,6 +44,11 @@ class AdminDashboardNavigationTest extends TestCase
         $this->assertStringContainsString('class="client-editor-workspace"', $source);
         $this->assertStringNotContainsString('class="client-editor-backdrop"', $source);
         $this->assertStringContainsString('admin-claridad.css', $source);
+        $this->assertStringContainsString('admin-efsrt-simplificado.css', $source);
+        $this->assertStringContainsString('Más funciones (opcional)', $source);
+        $this->assertStringContainsString('mostrarGraficosDashboard', $source);
+        $this->assertStringNotContainsString('class="mg-module-tabs"', $source);
+
     }
 
     public function test_prioridades_abren_el_modulo_correcto(): void
