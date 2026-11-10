@@ -41,15 +41,22 @@ class EfsrtInterfazEvidenciaTest extends TestCase
         $this->assertFileExists($archivo);
         $codigo = (string) file_get_contents($archivo);
 
+        // La portada y el portal conservan recursos locales.
+        // El inicio administrativo ahora muestra las fotos reales de MySQL;
+        // no debe usar fotos fijas de un entrenador para simular productos.
         foreach ([
             'assets/mallqui/mallqui-trainer-4k.webp',
             'assets/mallqui/mallqui-hero-interior-4k.webp',
             'assets/mallqui/mallqui-referencia-gym-equipos-4k.webp',
             'assets/mallqui/mallqui-foto-real-cardio-4k.webp',
         ] as $imagen) {
-            $this->assertStringContainsString($imagen, $codigo);
             $this->assertFileExists($frontend.'/public/'.$imagen);
         }
+        $this->assertStringContainsString('class="mg-dashboard mg-efsrt-dashboard"', $codigo);
+        $this->assertStringContainsString('[src]="p.foto"', $codigo);
+        $this->assertStringContainsString('fotoProductoDisponibleDashboard(p.foto)', $codigo);
+        $this->assertStringContainsString("cambiarSegcion('productos')", $codigo);
+        $this->assertStringNotContainsString('src="https://', $codigo);
     }
 
     public function test_rutas_criticas_tienen_roles_y_flujos_reales(): void
