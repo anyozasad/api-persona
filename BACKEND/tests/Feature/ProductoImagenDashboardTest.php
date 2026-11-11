@@ -122,6 +122,51 @@ class ProductoImagenDashboardTest extends TestCase
         $this->assertSame('18.00', (string) DB::table('productos')->where('id', $id)->value('precio_venta'));
     }
 
+    public function test_subir_foto_directamente_conserva_precio_y_stock(): void
+    {
+        $id = DB::table('productos')->insertGetId([
+            'categoria_id' => 1,
+            'codigo' => 'IMG-FILA-05',
+            'nombre' => 'Producto de prueba sin fotografía',
+            'precio_compra' => 9,
+            'precio_venta' => 17,
+            'stock' => 23,
+            'estado' => 'activo',
+            'foto' => null,
+        ]);
+        $foto = 'data:image/png;base64,'
+            .'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jWl8AAAAASUVORK5CYII=';
+        $request = Request::create('/api/productos/'.$id.'/foto', 'PATCH', ['foto' => $foto]);
+
+        $respuesta = app(ProductoController::class)->actualizarFoto($request, (string) $id);
+        $this->assertSame($foto, $respuesta->getData(true)['foto']);
+        $this->assertDatabaseHas('productos', [
+            'id' => $id, 'codigo' => 'IMG-FILA-05', 'foto' => $foto,
+            'precio_venta' => 17, 'stock' => 23,
+        ]);
+    }
+
+    public function test_subir_foto_rechaza_archivo_disfrazado(): void
+    {
+        $id = DB::table('productos')->insertGetId([
+            'categoria_id' => 1, 'codigo' => 'IMG-NO-VALIDA',
+            'nombre' => 'Producto sin foto', 'precio_compra' => 1,
+            'precio_venta' => 2, 'stock' => 4, 'estado' => 'activo',
+            'foto' => null,
+        ]);
+        $request = Request::create('/api/productos/'.$id.'/foto', 'PATCH', [
+            'foto' => 'data:image/png;base64,'.base64_encode('contenido falso'),
+        ]);
+
+        try {
+            app(ProductoController::class)->actualizarFoto($request, (string) $id);
+            $this->fail('La API debe rechazar un archivo que no es una imagen.');
+        } catch (HttpException $e) {
+            $this->assertSame(422, $e->getStatusCode());
+        }
+        $this->assertNull(DB::table('productos')->where('id', $id)->value('foto'));
+    }
+
     public function test_rechaza_texto_disfrazado_de_imagen(): void
     {
         $controller = app(GymSystemAdminController::class);
