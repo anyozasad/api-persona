@@ -69,6 +69,22 @@ try {
       'No están todas las tablas necesarias: '+JSON.stringify(data.faltantes));
   });
 
+  await paso('EFSRT lista exactamente once semanas y sus pendientes reales',async()=>{
+    await page.goto(base+'/verificacion-efsrt',{waitUntil:'domcontentloaded'});
+    const semanas=page.locator('.efsrt-week-card');
+    await semanas.first().waitFor({timeout:25000});
+    assert.equal(await semanas.count(),11,'La comprobación debe incluir las 11 semanas del documento.');
+    assert.equal(await semanas.filter({hasText:'Semana 05'}).count(),1);
+    assert.equal(await semanas.filter({hasText:'Semana 10'}).count(),1);
+    assert.equal(await semanas.filter({hasText:'Semana 11'}).count(),1);
+    const revision=await page.locator('.efsrt-weekly').innerText();
+    assert.match(revision,/Pendiente|Verificar en equipo/);
+    await page.screenshot({
+      path:'evidencias-dashboard/18_Revision_11_Semanas_EFSRT.png',
+      fullPage:true,animations:'disabled'
+    });
+  });
+
   const modulos=[
     ['/clientes','Socios','01_Socios'],
     ['/productos','Gestión de Productos','02_Productos'],
@@ -192,11 +208,13 @@ try {
     await page.setViewportSize({width:1440,height:900});
   });
 
+  let codigoProductoFoto = '';
   await paso('Crear producto con foto desde el formulario y verificar persistencia',async()=>{
     await page.goto(base+'/productos',{waitUntil:'domcontentloaded'});
     const form=page.locator('app-productos form.producto-form').first();
     await form.waitFor({timeout:30000});
     const codigo='E2E-'+Date.now();
+    codigoProductoFoto = codigo;
     const cat=form.locator('select[name=id_categoria]');
     // Los elementos <option> se consideran ocultos por Chromium, aunque el select
     // esté listo; comprobar cantidad de opciones en lugar de esperar visibilidad.
@@ -239,6 +257,52 @@ try {
     assert.match(diagnostico,/fotos? guardadas?|con foto guardada/i);
     assert.match(diagnostico,/Base conectada:/i);
     await page.screenshot({path:'evidencias-dashboard/11_Producto_creado_y_foto.png',fullPage:true});
+  });
+
+  await paso('Subir imagen desde la fila sin alterar el precio ni el stock',async()=>{
+    await page.goto(base+'/productos',{waitUntil:'domcontentloaded'});
+    const tabla=page.locator('app-productos .tabla-productos');
+    await tabla.waitFor({timeout:25000});
+    let fila=tabla.locator('tr').filter({hasText:codigoProductoFoto}).first();
+    await fila.waitFor({timeout:25000});
+    const stockAntes=await fila.locator('.stock-cell b').innerText();
+    const precioAntes=await fila.locator('.precio-tabla').innerText();
+
+    // Una foto existente se quita desde el formulario; la fila vacía permite
+    // volver a cargarla directamente sin abrir el formulario.
+    await fila.getByRole('button',{name:/Editar \/ cambiar foto/}).click();
+    const form=page.locator('app-productos form.producto-form').first();
+    await form.getByRole('button',{name:/Quitar imagen/}).click();
+    await form.getByRole('button',{name:/Guardar cambios/}).click();
+    await page.locator('app-productos .mensaje-ok').waitFor({timeout:25000});
+    await page.reload({waitUntil:'domcontentloaded'});
+    fila=page.locator('app-productos .tabla-productos tr').filter({hasText:codigoProductoFoto}).first();
+    await fila.waitFor({timeout:25000});
+    assert.equal(await fila.locator('img.producto-foto').count(),0);
+
+    const png=Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jWl8AAAAASUVORK5CYII=',
+      'base64'
+    );
+    await fila.locator('input[type=file]').setInputFiles({
+      name:'foto-fila.png',mimeType:'image/png',buffer:png
+    });
+    await page.locator('app-productos .mensaje-ok').waitFor({timeout:25000});
+    await page.reload({waitUntil:'domcontentloaded'});
+    fila=page.locator('app-productos .tabla-productos tr').filter({hasText:codigoProductoFoto}).first();
+    await fila.waitFor({timeout:25000});
+    assert.equal(await fila.locator('.stock-cell b').innerText(),stockAntes);
+    assert.equal(await fila.locator('.precio-tabla').innerText(),precioAntes);
+    const foto=fila.locator('img.producto-foto');
+    await foto.waitFor({timeout:15000});
+    await foto.evaluate(img=>{
+      if(!img.complete || img.naturalWidth===0)
+        throw new Error('La fotografía de la fila no se recuperó desde MySQL.');
+    });
+    await page.screenshot({
+      path:'evidencias-dashboard/19_Foto_desde_fila_con_stock_intacto.png',
+      fullPage:true,animations:'disabled'
+    });
   });
 
   await paso('Dashboard principal muestra fotografía recuperada de productos MySQL',async()=>{
