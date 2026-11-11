@@ -59,6 +59,17 @@ class EfsrtInterfazEvidenciaTest extends TestCase
         $this->assertStringNotContainsString('src="https://', $codigo);
     }
 
+    public function test_dashboard_tiene_revision_visible_de_las_once_semanas_sin_duplicar_menu(): void
+    {
+        $archivo = base_path('../FRONTEND/suma-angular/src/app/component/pages/admin/admin-integrado.component.ts');
+        $codigo = (string) file_get_contents($archivo);
+
+        $this->assertStringContainsString('Revisión de las 11 semanas', $codigo);
+        $this->assertStringContainsString('*ngFor="let semana of revision.semanas"', $codigo);
+        $this->assertStringContainsString('semana.estado', $codigo);
+        $this->assertStringContainsString("cambiarSegcion(semana.destino)", $codigo);
+    }
+
     public function test_rutas_criticas_tienen_roles_y_flujos_reales(): void
     {
         $api = (string) file_get_contents(base_path('routes/api.php'));
