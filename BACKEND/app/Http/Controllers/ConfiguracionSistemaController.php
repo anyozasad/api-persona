@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Throwable;
 
@@ -41,11 +42,41 @@ class ConfiguracionSistemaController extends Controller
 
     public function show()
     {
-        return response()->json([
-            'configuracion' => $this->configuracion(),
-            'estado' => $this->estadoSistema(),
-            'ultimo_respaldo' => $this->ultimoRespaldo(),
-        ]);
+        // Una base de datos parcialmente migrada NO debe responder con un
+        // HTML 500 genérico ni presentar datos de muestra como confirmados.
+        try {
+            if (!Schema::hasTable('configuracion_sistema')) {
+                return response()->json([
+                    'codigo' => 'CONFIGURACION_TABLA_AUSENTE',
+                    'mensaje' => 'Falta la tabla configuracion_sistema en la base activa. Realiza un respaldo y ejecuta las migraciones pendientes de Laravel.',
+                    'configuracion' => null,
+                ], 503);
+            }
+            $columnas = ['nombre_gimnasio', 'hora_apertura', 'hora_cierre', 'dias_atencion',
+                'referencia', 'frase_publicitaria', 'horario_detalle', 'tarifa_diaria', 'mensaje_productos'];
+            $faltantes = array_values(array_filter($columnas,
+                fn (string $columna) => !Schema::hasColumn('configuracion_sistema', $columna)));
+            if ($faltantes) {
+                return response()->json([
+                    'codigo' => 'CONFIGURACION_COLUMNAS_AUSENTES',
+                    'mensaje' => 'La configuración de MySQL necesita migraciones pendientes antes de poder guardarse.',
+                    'faltantes' => $faltantes,
+                    'configuracion' => null,
+                ], 503);
+            }
+            return response()->json([
+                'configuracion' => $this->configuracion(),
+                'estado' => $this->estadoSistema(),
+                'ultimo_respaldo' => $this->ultimoRespaldo(),
+            ]);
+        } catch (Throwable $e) {
+            report($e);
+            return response()->json([
+                'codigo' => 'CONFIGURACION_CONSULTA_FALLIDA',
+                'mensaje' => 'No fue posible recuperar la configuración desde la base de datos. Revisa Laravel, la conexión y el esquema.',
+                'configuracion' => null,
+            ], 503);
+        }
     }
 
     public function update(Request $request)
