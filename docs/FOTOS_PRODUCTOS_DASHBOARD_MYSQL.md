@@ -40,6 +40,33 @@ La galería **Elegir foto** sigue disponible **solo como alternativa opcional** 
 
 Se modificaron código Angular y API Laravel en GitHub, pero la base MySQL privada de la computadora **no se puede modificar desde GitHub**. Se aplicará automáticamente en el equipo local al ejecutar la versión nueva y abrir Productos. No sustituye la comprobación final de MySQL.
 
+## Corrección del panel de Inicio — noviembre de 2026
+
+Se identificó en la instalación local del usuario una lista de 10 productos con solo **1 foto guardada**, 9 pendientes y nombres `Producto Prueba`. La causa en el frontend era que la corrección automática solamente se iniciaba al abrir la pantalla de Productos, no el panel Inicio.
+
+- El panel **Inicio** también ejecuta la reparación administrativa **una sola vez por apertura** cuando detecta códigos de demostración y nombres pendientes. Al recibir confirmación desde Laravel vuelve a cargar el catálogo desde MySQL sin modificar la interfaz ni crear registros duplicados.
+- Si un `Producto Prueba N` ya tiene foto, Laravel compara el contenido con las fotos originales del gimnasio. Reconoce archivos JPEG exactos y, con GD habilitado, fotos optimizadas a WEBP/JPEG mediante una huella visual. Solo modifica el nombre/categoría cuando hay una coincidencia única y fiable; la foto existente no se reemplaza. Si la foto no coincide, deja intacto el producto.
+- El código reconoce `PROD-0010` para el décimo producto. Los nombres y categorías se obtienen de la fotografía real, no del número de código cuando ya hay una imagen elegida.
+- Los demás productos de demostración sin imagen reciben fotografía, nombre y categoría según la tabla anterior. Los productos reales y los precios/stock permanecen intactos.
+- En la pantalla **Inicio**, el mensaje sobre estructura de datos distingue **tablas o columnas faltantes** de una conexión MySQL caída. Una lista de 43 requisitos ausentes no demuestra que la base esté desconectada si los productos se están recuperando correctamente.
+
+### Si el diagnóstico de MySQL muestra tablas o columnas pendientes
+
+Desde `BACKEND`, con XAMPP/MySQL iniciado, crea y comprueba primero una copia del estado actual:
+
+```powershell
+php artisan backup:database
+```
+
+**Solo cuando el respaldo SQL esté confirmado**, aplica las migraciones pendientes y verifica los requisitos:
+
+```powershell
+php artisan sistema:preparar
+php artisan db:verificar
+```
+
+Estos comandos se ejecutan **en el equipo del usuario**, no desde GitHub. Pueden modificar la estructura de la BD y por eso requieren un respaldo previo. No uses `migrate:fresh` ni borres tablas para resolver el aviso.
+
 ## Si las fotos están en una carpeta y no en MySQL
 El sistema no puede recrear fotos que no existen. Primero respalda tu base de datos.
 Pon a cada archivo de foto el mismo nombre que el código del producto. Ejemplos:
