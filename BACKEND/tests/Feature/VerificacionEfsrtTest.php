@@ -92,6 +92,33 @@ class VerificacionEfsrtTest extends TestCase
         $this->assertStringContainsString('1 productos sin fotografía', implode(' ', $semana5['observaciones']));
     }
 
+    public function test_semana_cinco_no_acepta_productos_con_nombre_de_prueba_aunque_tengan_foto(): void
+    {
+        Schema::table('productos', function (Blueprint $tabla) {
+            $tabla->string('nombre_producto',150)->nullable();
+            $tabla->mediumText('foto')->nullable();
+        });
+        DB::table('productos')->insert([
+            'id_producto'=>1,
+            'nombre_producto'=>'Producto Prueba 10',
+            'foto'=>'data:image/jpeg;base64,AA==',
+            'stock'=>69,
+        ]);
+
+        $respuesta=app(VerificacionEfsrtController::class)->index();
+        $this->assertSame(200,$respuesta->getStatusCode());
+        $resultado=$respuesta->getData(true);
+        $alerta=collect($resultado['alertas'])->firstWhere('tipo','productos_prueba');
+        $this->assertNotNull($alerta);
+        $this->assertSame(1,$alerta['cantidad']);
+        $semana5=collect($resultado['semanas'])->firstWhere('semana',5);
+        $this->assertSame('pendiente',$semana5['estado']);
+        $this->assertStringContainsString(
+            'nombres de prueba',
+            implode(' ', $semana5['observaciones'])
+        );
+    }
+
     public function test_muestra_duplicados_en_reservas_y_stock_negativo(): void
     {
         DB::table('clientes')->insert([
