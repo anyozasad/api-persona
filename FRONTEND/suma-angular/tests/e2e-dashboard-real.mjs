@@ -192,12 +192,10 @@ try {
   await paso('Gastos no inventa cierres ni permite egresos sin caja verificada',async()=>{
     await page.goto(base+'/gastos',{waitUntil:'domcontentloaded'});
     await page.locator('.mg-current-topbar h1').waitFor({timeout:20000});
-    await page.waitForFunction(()=>{
-      const root=document.querySelector('.mg-current-workspace');
-      return root && (root.querySelector('.operation-locked-state') ||
-        root.querySelector('.expense-fetch-note') ||
-        root.querySelector('.management-grid form'));
-    },{timeout:20000});
+    await page.locator('.mg-current-workspace').waitFor({timeout:20000});
+    // La pantalla primero muestra "Consultando"; no confundir ese estado
+    // temporal con un error de caja ni capturarlo como resultado final.
+    await page.locator('.expense-fetch-note').waitFor({state:'hidden',timeout:25000});
     const error=await page.locator('.expense-fetch-note').count();
     assert.equal(error,0,'La consulta a MySQL para Gastos debe funcionar.');
     const bloque=page.locator('.operation-locked-state');
