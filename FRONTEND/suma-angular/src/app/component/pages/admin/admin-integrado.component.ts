@@ -2778,6 +2778,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   verificacionEfsrt:any = null;
   verificacionEfsrtCargando = false;
   verificacionEfsrtError = '';
+  private fotosDemoInicioIntentadas = false;
 
   dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
   titulos: Record<string,[string,string]> = {
@@ -3811,6 +3812,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         if(errores.length){
           this.error='No se pudieron sincronizar: '+errores.join(', ')+'.';
         }
+        // La vista inicial también completa las imágenes de las fichas
+        // originales de prueba; antes solo lo hacía la vista Productos.
+        if(this.seccion==='dashboard') this.revisarFotosDemoDelInicio();
       },
       error:(e:any)=>{
         this.dashboardCargando=false;
@@ -4518,6 +4522,43 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(this.auditoriaFiltros.hasta)f.hasta=this.auditoriaFiltros.hasta;
     this.api.auditorias(f).subscribe({next:r=>{this.auditorias=r;this.auditoriaPagina=1;},error:e=>this.mostrarError(e)});
   }
+  /**
+   * Ejecutar una única vez en Inicio. Solo afecta códigos y nombres de
+   * demostración que valida otra vez la API; nunca toca artículos reales.
+   */
+  private revisarFotosDemoDelInicio(): void {
+    if(this.fotosDemoInicioIntentadas) return;
+    const anteriores = new Set([
+      'Creatina','Shaker gris','BCAA','Shaker azul','Big M',
+      'Collagen Pro','NOXRAGE','Pro Mass XL','AN USA (cajas)',
+      'NOXRAGE (presentación alternativa)'
+    ]);
+    const necesitaRevision = this.productos.some((p:any)=>{
+      const codigo=String(p?.codigo_producto||'');
+      const nombre=String(p?.nombre_producto||'');
+      return /^PROD-(?:00[1-9]|0010|010)$/.test(codigo)
+        && (/^Producto Prueba (?:[1-9]|10)$/.test(nombre) || anteriores.has(nombre));
+    });
+    if(!necesitaRevision) return;
+    this.fotosDemoInicioIntentadas=true;
+    this.api.completarFotosIniciales().subscribe({
+      next:resultado=>{
+        if(resultado.actualizados>0){
+          this.api.productos().subscribe({
+            next:productos=>{ this.productos=Array.isArray(productos)?productos:[]; },
+            error:()=>{ this.error='Las fotos se actualizaron, pero falló la recarga del inventario.'; }
+          });
+        }
+        if(resultado.observaciones?.length){
+          this.error='Revisión de fotografías: '+resultado.observaciones.join(' ');
+        }
+      },
+      error:e=>{
+        this.error=e?.error?.mensaje || 'No fue posible completar fotografías y nombres de prueba en MySQL.';
+      }
+    });
+  }
+
   cargarProductos(){ this.api.productos().subscribe({next:r=>this.productos=r,error:e=>this.mostrarError(e)}); }
   cargarProveedores(){ this.api.proveedores().subscribe({next:r=>this.proveedores=r,error:e=>this.mostrarError(e)}); }
   cargarCompras(){ this.api.compras().subscribe({next:r=>this.compras=r,error:e=>this.mostrarError(e)}); }
