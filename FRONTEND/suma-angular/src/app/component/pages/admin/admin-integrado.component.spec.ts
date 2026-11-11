@@ -80,6 +80,15 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.error).toContain('Selecciona un pago confirmado');
   });
 
+  it('muestra solo Configuración en Administración y conserva herramientas internas', () => {
+    const administracion = component.menuPrincipal.find(grupo => grupo.titulo === 'Administración');
+    expect(administracion?.items.map(item => item.nombre)).toEqual(['Configuración']);
+
+    // Sus destinos siguen siendo accesibles mediante el enrutamiento del panel.
+    const modulos = ['usuarios','auditoria','mantenimiento-sistema','verificacion-efsrt'];
+    modulos.forEach(id => expect((component as any).normalizarSegcion(id)).toBe(id));
+  });
+
   it('abre la comprobación EFSRT sin desviarla al inicio', () => {
     expect((component as any).normalizarSegcion('verificacion-efsrt'))
       .toBe('verificacion-efsrt');
