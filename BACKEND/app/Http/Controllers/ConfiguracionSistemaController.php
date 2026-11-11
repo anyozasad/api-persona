@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Validation\Rule;
 use Throwable;
 
 class ConfiguracionSistemaController extends Controller
@@ -51,7 +52,7 @@ class ConfiguracionSistemaController extends Controller
     {
         $datos = $request->validate([
             'nombre_gimnasio' => 'required|string|max:120',
-            'ruc' => 'nullable|string|max:20',
+            'ruc' => ['nullable', 'regex:/^\\d{11}$/'], 
             'telefono' => 'nullable|string|max:30',
             'correo' => 'nullable|email|max:150',
             'direccion' => 'nullable|string|max:255',
@@ -61,9 +62,9 @@ class ConfiguracionSistemaController extends Controller
             'tarifa_diaria' => 'nullable|numeric|min:0|max:9999',
             'mensaje_productos' => 'nullable|string|max:1000',
             'hora_apertura' => 'required|date_format:H:i',
-            'hora_cierre' => 'required|date_format:H:i',
+            'hora_cierre' => 'required|date_format:H:i|after:hora_apertura',
             'dias_atencion' => 'required|array|min:1',
-            'dias_atencion.*' => 'string|max:20',
+            'dias_atencion.*' => ['required','string','distinct',Rule::in(['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'])],
             'dias_aviso_vencimiento' => 'required|integer|min:1|max:60',
             'minutos_cancelacion_reserva' => 'required|integer|min:0|max:1440',
             'dias_anticipacion_reserva' => 'required|integer|min:0|max:60',
@@ -95,6 +96,9 @@ class ConfiguracionSistemaController extends Controller
             'referencia' => $config->referencia,
             'frase_publicitaria' => $config->frase_publicitaria,
             'horario_detalle' => $config->horario_detalle,
+            'hora_apertura' => substr((string) $config->hora_apertura, 0, 5),
+            'hora_cierre' => substr((string) $config->hora_cierre, 0, 5),
+            'dias_atencion' => $config->dias_atencion,
             'tarifa_diaria' => $config->tarifa_diaria,
             'mensaje_productos' => $config->mensaje_productos,
             'ruc' => $config->ruc,
