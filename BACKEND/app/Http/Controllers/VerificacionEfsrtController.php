@@ -191,6 +191,89 @@ class VerificacionEfsrtController extends Controller
             [11, 'Pruebas finales, evidencia y respaldo', 'mantenimiento-sistema', []],
         ];
 
+        // Cinco actividades por semana, fieles a la bitácora original TEC.
+        // Incluye la evidencia especificada; no supone que exista ni que
+        // el supervisor ya la haya validado.
+        $actividadesBitacora = [
+            1 => [
+                ['Requerimientos del gimnasio y funciones principales', 'Lista de requerimientos'],
+                ['Requerimientos de usuario y administrador', 'Esquema de módulos'],
+                ['Separación de usuario, dashboard, API y BD', 'Estructura del proyecto'],
+                ['Datos de socios, reservas, pagos, productos y rutinas', 'Modelo de datos'],
+                ['Creación de tablas y relaciones de la BD', 'Captura de la BD'],
+            ],
+            2 => [
+                ['Configuración de frontend y rutas', 'Código del frontend'],
+                ['Menú con secciones principales', 'Captura del menú'],
+                ['Portada, mensaje y botón de reserva', 'Captura de portada'],
+                ['Secciones de entrenamiento y gimnasio', 'Captura de secciones'],
+                ['Pruebas responsive en distintos tamaños', 'Prueba responsive'],
+            ],
+            3 => [
+                ['Diseño del inicio de sesión', 'Captura del login'],
+                ['Formulario de registro de usuarios', 'Captura de registro'],
+                ['Login y registro conectados con backend y BD', 'Registro en BD'],
+                ['Validaciones de datos vacíos o incorrectos', 'Validaciones'],
+                ['Pruebas y correcciones del acceso', 'Evidencia de pruebas'],
+            ],
+            4 => [
+                ['Dashboard administrativo', 'Captura dashboard'],
+                ['Módulos de socios, reservas, pagos, productos, entrenador y reportes', 'Menú de módulos'],
+                ['Registro y listado de socios', 'CRUD de socios'],
+                ['Edición y baja de socios y reservas', 'CRUD de reservas'],
+                ['Persistencia de cambios en base de datos', 'Consulta de BD'],
+            ],
+            5 => [
+                ['Reservas y relación con usuarios y socios', 'Captura de reservas'],
+                ['Gestión de estados de reserva', 'Estados de reserva'],
+                ['Productos con nombre, precio y stock', 'CRUD productos'],
+                ['Fotografía guardada y visible en productos', 'Imagen de producto'],
+                ['Pagos y socios contrastados con BD', 'Pruebas de módulos'],
+            ],
+            6 => [
+                ['Asistencia e ingreso de socios', 'Módulo asistencia'],
+                ['Seguimiento y progreso individual', 'Módulo seguimiento'],
+                ['Rutinas por nivel y tipo de entrenamiento', 'Captura rutinas'],
+                ['Entrenador principal', 'Sección entrenador'],
+                ['Pruebas y corrección de funciones duplicadas', 'Pruebas dashboard'],
+            ],
+            7 => [
+                ['Diseño coherente del dashboard', 'Captura dashboard'],
+                ['Tarjetas, botones y espacios organizados', 'Captura interfaz'],
+                ['Eliminación de elementos repetidos', 'Captura interfaz'],
+                ['Login con el estilo del sistema', 'Captura login'],
+                ['Navegación a las funciones correctas', 'Prueba de navegación'],
+            ],
+            8 => [
+                ['Corrección de imágenes borrosas', 'Capturas de calidad'],
+                ['Imágenes guardadas localmente para trabajar sin Internet', 'Carpeta imágenes'],
+                ['Fotografías de entrenamiento, entrenador, productos y gimnasio', 'Capturas de imágenes'],
+                ['Portada principal con imagen nítida', 'Captura de portada'],
+                ['Pruebas de usuario, dashboard y BD', 'Evidencia de pruebas'],
+            ],
+            9 => [
+                ['Reservas sincronizadas entre usuario y dashboard', 'Prueba usuario-dashboard'],
+                ['Socios, productos y pagos comparados con BD', 'Consultas de BD'],
+                ['Eliminación de registros duplicados o inconsistentes', 'Prueba CRUD'],
+                ['Alerta de vencimiento de socios', 'Captura de alerta'],
+                ['Asistencia, seguimiento y rutinas integrados', 'Prueba de módulos'],
+            ],
+            10 => [
+                ['Flujo completo de pagos', 'Prueba de pagos'],
+                ['Preparación y validación de la boleta electrónica', 'Boleta electrónica'],
+                ['Fotos y recursos sin Internet externo', 'Prueba sin Internet'],
+                ['Permisos y control de acceso por rol', 'Prueba de accesos'],
+                ['Pruebas finales de módulos y registro de errores', 'Registro de errores'],
+            ],
+            11 => [
+                ['Pruebas de login y registro', 'Prueba de autenticación'],
+                ['Pruebas de módulos principales del dashboard', 'Checklist dashboard'],
+                ['Consulta de duplicados y datos incompletos de BD', 'Consulta final BD'],
+                ['Corrección de detalles de interfaz', 'Captura final'],
+                ['Organización de evidencias y respaldo del proyecto', 'Documentación y respaldo'],
+            ],
+        ];
+
         $resultado = [];
         foreach ($catalogo as [$numero, $titulo, $destino, $grupos]) {
             $observaciones = [];
@@ -258,6 +341,13 @@ class VerificacionEfsrtController extends Controller
                 'destino' => $destino,
                 'estado' => $estado,
                 'observaciones' => $observaciones,
+                'actividades' => collect($actividadesBitacora[$numero] ?? [])
+                    ->map(fn (array $item, int $i) => [
+                        'numero' => $i + 1,
+                        'actividad' => $item[0],
+                        'evidencia' => $item[1],
+                        'estado' => $numero >= 9 ? 'programada_por_validar' : 'evidencia_por_validar',
+                    ])->values()->all(),
             ];
         }
         return $resultado;
