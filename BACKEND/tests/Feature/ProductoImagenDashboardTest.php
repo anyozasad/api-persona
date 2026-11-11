@@ -49,6 +49,66 @@ class ProductoImagenDashboardTest extends TestCase
         ]);
     }
 
+    public function test_fotografias_de_los_diez_productos_de_prueba_se_instalan_solas_sin_cambiar_stock_ni_precios(): void
+    {
+        DB::table('categorias')->insert([
+            ['id'=>2,'nombre'=>'Accesorios','estado'=>'activo'],
+            ['id'=>3,'nombre'=>'Suplementos','estado'=>'activo'],
+        ]);
+        for ($n = 1; $n <= 10; $n++) {
+            DB::table('productos')->insert([
+                'categoria_id'=>1,
+                'codigo'=>'PROD-'.str_pad((string)$n,3,'0',STR_PAD_LEFT),
+                'nombre'=>'Producto Prueba '.$n,
+                'precio_compra'=>20,
+                'precio_venta'=>49,
+                'stock'=>20 + $n,
+                'estado'=>'activo',
+                'foto'=>null,
+            ]);
+        }
+
+        $control = app(ProductoController::class);
+        $resultado = $control->completarFotosIniciales();
+        $this->assertSame(200,$resultado->getStatusCode());
+        $this->assertSame(10,$resultado->getData(true)['actualizados']);
+
+        $productos = DB::table('productos')->orderBy('codigo')->get();
+        $this->assertCount(10,$productos);
+        foreach ($productos as $indice => $producto) {
+            $this->assertStringStartsWith('data:image/jpeg;base64,',$producto->foto);
+            $this->assertSame('49.00',(string)$producto->precio_venta);
+            $this->assertSame(21 + $indice,(int)$producto->stock);
+            $this->assertNotSame('Producto Prueba '.($indice+1),$producto->nombre);
+        }
+        $this->assertSame('Creatina',$productos[0]->nombre);
+        $this->assertSame('Shaker gris',$productos[1]->nombre);
+        $this->assertSame(2,(int)$productos[1]->categoria_id);
+        $this->assertSame(3,(int)$productos[0]->categoria_id);
+
+        // Idempotente: la segunda visita no vuelve a cambiar datos.
+        $segunda = $control->completarFotosIniciales();
+        $this->assertSame(0,$segunda->getData(true)['actualizados']);
+        $this->assertSame($productos[0]->foto,
+            DB::table('productos')->where('codigo','PROD-001')->value('foto'));
+    }
+
+    public function test_no_se_modifican_productos_reales_ni_fotografias_que_ya_estan_guardadas(): void
+    {
+        DB::table('categorias')->insert(['id'=>3,'nombre'=>'Suplementos','estado'=>'activo']);
+        DB::table('productos')->insert([
+            ['categoria_id'=>1,'codigo'=>'PROD-001','nombre'=>'Agua natural',
+             'precio_compra'=>2,'precio_venta'=>4,'stock'=>10,'estado'=>'activo','foto'=>null],
+            ['categoria_id'=>1,'codigo'=>'PROD-003','nombre'=>'Producto Prueba 3',
+             'precio_compra'=>2,'precio_venta'=>5,'stock'=>7,'estado'=>'activo',
+             'foto'=>'data:image/png;base64,AA=='],
+        ]);
+        $resultado = app(ProductoController::class)->completarFotosIniciales()->getData(true);
+        $this->assertSame(0,$resultado['actualizados']);
+        $this->assertDatabaseHas('productos',['codigo'=>'PROD-001','nombre'=>'Agua natural','foto'=>null,'stock'=>10]);
+        $this->assertDatabaseHas('productos',['codigo'=>'PROD-003','nombre'=>'Producto Prueba 3','foto'=>'data:image/png;base64,AA==']);
+    }
+
     public function test_producto_guarda_y_devuelve_imagen_optimizada(): void
     {
         $controller = app(GymSystemAdminController::class);
