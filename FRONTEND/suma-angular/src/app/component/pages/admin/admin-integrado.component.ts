@@ -1601,76 +1601,113 @@ import { catchError, forkJoin, of } from 'rxjs';
       </ng-container>
 
       <ng-container *ngIf="seccion==='gastos'">
-        <section class="operation-locked-state" *ngIf="!caja?.caja_abierta; else gastosCajaAbierta">
-          <div class="operation-locked-main">
-            <span class="operation-locked-icon">▣</span>
-            <small>CAJA REQUERIDA</small>
-            <h2>Abre la caja antes de registrar un gasto</h2>
-            <p>Todo egreso debe quedar asociado a una caja abierta para que el cierre, los reportes y la auditoría cuadren correctamente.</p>
-            <button type="button" class="admin-primary" (click)="cambiarSegcion('caja')">Ir a abrir caja</button>
-          </div>
-          <article class="operation-locked-side">
-            <span>Última operación</span>
-            <ng-container *ngIf="historialCaja[0] as ultima; else sinHistorialCaja">
-              <h3>Caja #{{ultima.id_caja}}</h3>
-              <p>{{ultima.estado}} · {{fecha(ultima.fecha_apertura)}}</p>
-              <div><small>Monto inicial</small><b>S/ {{ultima.monto_inicial ?? 0 | number:'1.2-2'}}</b></div>
-              <div><small>Monto real</small><b>S/ {{ultima.monto_real ?? 0 | number:'1.2-2'}}</b></div>
-            </ng-container>
-            <ng-template #sinHistorialCaja>
-              <h3>Sin historial todavía</h3>
-              <p>La primera caja aparecerá aquí después de abrirla.</p>
-            </ng-template>
-          </article>
+        <section class="operation-locked-main expense-fetch-note" *ngIf="cajaCargando">
+          <h2>Consultando estado de caja</h2>
+          <p>Revisando la caja actual y sus movimientos guardados en MySQL.</p>
         </section>
-
-        <ng-template #gastosCajaAbierta>
-          <section class="management-grid">
-            <article class="admin-form-card">
-              <div class="management-heading">
-                <div>
-                  <h2>Registrar gasto</h2>
-                  <p>Caja abierta · saldo esperado S/ {{caja?.resumen?.monto_esperado ?? 0 | number:'1.2-2'}}</p>
+        <section class="operation-locked-main expense-fetch-note" *ngIf="!cajaCargando && cajaError">
+          <small>NO SE PUDO CONSULTAR CAJA</small>
+          <h2>Estado de caja sin verificar</h2>
+          <p>{{cajaError}}. No se permite registrar egresos hasta confirmar el saldo.</p>
+          <button type="button" class="admin-secondary" (click)="cargarCaja()">Volver a consultar</button>
+        </section>
+        <ng-container *ngIf="!cajaCargando && !cajaError">
+          <section class="operation-locked-state" *ngIf="!caja?.caja_abierta; else gastosCajaAbierta">
+            <div class="operation-locked-main">
+              <span class="operation-locked-icon">▣</span>
+              <small>{{cajaInconsistente ? 'REVISIÓN NECESARIA' : 'CAJA SIN APERTURA ACTIVA'}}</small>
+              <h2>{{cajaInconsistente ? 'El historial y el estado actual no coinciden' : 'No hay caja abierta para registrar gastos'}}</h2>
+              <p>{{cajaInconsistente ? 'El historial registra una caja abierta, pero la consulta de la caja actual no la encontró. Revisa Caja antes de mover dinero.' : 'Puedes revisar el historial. Para registrar un nuevo gasto primero debes abrir la caja en el módulo Caja.'}}</p>
+              <button type="button" class="admin-primary" (click)="cambiarSegcion('caja')">
+                {{cajaInconsistente ? 'Revisar estado de caja' : 'Abrir caja'}}
+              </button>
+            </div>
+            <article class="operation-locked-side">
+              <span>Última caja registrada</span>
+              <ng-container *ngIf="historialCaja[0] as ultima; else sinHistorialCaja">
+                <h3>{{etiquetaCaja(ultima)}}</h3>
+                <p>{{ultima.estado || 'Sin estado registrado'}} · Apertura: {{fecha(ultima.fecha_apertura)}}</p>
+                <div><small>Monto inicial</small><b>S/ {{ultima.monto_inicial ?? 0 | number:'1.2-2'}}</b></div>
+                <div *ngIf="ultima.fecha_cierre && ultima.monto_real != null">
+                  <small>Monto contado al cierre</small><b>S/ {{ultima.monto_real | number:'1.2-2'}}</b>
                 </div>
-                <span>↓</span>
-              </div>
-              <form (ngSubmit)="registrarGasto()">
-                <label>Descripción
-                  <input [(ngModel)]="gastoForm.descripcion" name="gasto_descripcion" required minlength="3" placeholder="Ej. compra de productos de limpieza">
-                </label>
-                <label>Monto S/
-                  <input type="number" min="0.01" step="0.01" [(ngModel)]="gastoForm.monto" name="gasto_monto" required>
-                </label>
-                <button class="admin-primary" type="submit" [disabled]="!gastoForm.descripcion.trim() || gastoForm.monto<=0">Registrar gasto</button>
-              </form>
-            </article>
-            <article class="admin-list-card wide-card">
-              <div class="management-heading">
-                <div><h2>Gastos de la caja actual</h2><p>{{gastosActuales.length}} egresos registrados.</p></div>
-                <strong class="expense-total">S/ {{totalGastosCajaActual | number:'1.2-2'}}</strong>
-              </div>
-              <div class="table-wrap" *ngIf="gastosActuales.length; else sinGastosCaja">
-                <table class="management-table">
-                  <thead><tr><th>Fecha</th><th>Descripción</th><th>Origen</th><th>Monto</th><th>Estado</th></tr></thead>
-                  <tbody>
-                    <tr *ngFor="let g of gastosActuales">
-                      <td>{{fecha(g.fecha_movimiento)}}</td>
-                      <td><b>{{g.descripcion}}</b></td>
-                      <td>{{g.origen}}</td>
-                      <td><b>S/ {{g.monto | number:'1.2-2'}}</b></td>
-                      <td>{{g.estado}}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <ng-template #sinGastosCaja>
-                <div class="admin-empty-state compact">
-                  <span>✓</span><b>Sin gastos en esta caja</b><p>Aún no se han registrado egresos durante la caja actual.</p>
-                </div>
+                <p class="expense-no-close" *ngIf="!ultima.fecha_cierre">Esta caja no tiene cierre confirmado en el historial.</p>
+              </ng-container>
+              <ng-template #sinHistorialCaja>
+                <h3>Sin cajas registradas</h3>
+                <p>Al abrir la primera caja aparecerá aquí.</p>
               </ng-template>
             </article>
           </section>
-        </ng-template>
+          <section class="expense-history-card" *ngIf="!caja?.caja_abierta && historialCaja.length">
+            <div class="management-heading">
+              <div><h2>Historial reciente de caja</h2><p>Registros conservados en MySQL; consultar no modifica ningún movimiento.</p></div>
+              <button type="button" class="admin-secondary" (click)="cambiarSegcion('caja')">Ver caja y movimientos</button>
+            </div>
+            <div class="table-wrap">
+              <table class="management-table">
+                <thead><tr><th>Caja</th><th>Apertura</th><th>Cierre</th><th>Estado</th><th>Monto inicial</th><th>Contado al cierre</th></tr></thead>
+                <tbody>
+                  <tr *ngFor="let fila of historialCaja.slice(0,5)">
+                    <td>{{etiquetaCaja(fila)}}</td>
+                    <td>{{fecha(fila.fecha_apertura)}}</td>
+                    <td>{{fila.fecha_cierre ? fecha(fila.fecha_cierre) : 'Sin cierre'}}</td>
+                    <td>{{fila.estado || 'Sin información'}}</td>
+                    <td>S/ {{fila.monto_inicial ?? 0 | number:'1.2-2'}}</td>
+                    <td>{{fila.fecha_cierre && fila.monto_real != null ? 'S/ ' + (fila.monto_real | number:'1.2-2') : 'Pendiente de cierre'}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <ng-template #gastosCajaAbierta>
+            <section class="management-grid">
+              <article class="admin-form-card">
+                <div class="management-heading">
+                  <div>
+                    <h2>Registrar gasto</h2>
+                    <p>{{etiquetaCaja(caja?.caja)}} · saldo esperado S/ {{caja?.resumen?.monto_esperado ?? 0 | number:'1.2-2'}}</p>
+                  </div>
+                  <span>↓</span>
+                </div>
+                <form (ngSubmit)="registrarGasto()">
+                  <label>Descripción
+                    <input [(ngModel)]="gastoForm.descripcion" name="gasto_descripcion" required minlength="3" placeholder="Ej. compra de productos de limpieza">
+                  </label>
+                  <label>Monto S/
+                    <input type="number" min="0.01" step="0.01" [(ngModel)]="gastoForm.monto" name="gasto_monto" required>
+                  </label>
+                  <button class="admin-primary" type="submit" [disabled]="!gastoForm.descripcion.trim() || gastoForm.monto<=0">Registrar gasto</button>
+                </form>
+              </article>
+              <article class="admin-list-card wide-card">
+                <div class="management-heading">
+                  <div><h2>Gastos de la caja actual</h2><p>{{gastosActuales.length}} egresos registrados.</p></div>
+                  <strong class="expense-total">S/ {{totalGastosCajaActual | number:'1.2-2'}}</strong>
+                </div>
+                <div class="table-wrap" *ngIf="gastosActuales.length; else sinGastosCaja">
+                  <table class="management-table">
+                    <thead><tr><th>Fecha</th><th>Descripción</th><th>Origen</th><th>Monto</th><th>Estado</th></tr></thead>
+                    <tbody>
+                      <tr *ngFor="let g of gastosActuales">
+                        <td>{{fecha(g.fecha_movimiento)}}</td>
+                        <td><b>{{g.descripcion}}</b></td>
+                        <td>{{g.origen}}</td>
+                        <td><b>S/ {{g.monto | number:'1.2-2'}}</b></td>
+                        <td>{{g.estado}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <ng-template #sinGastosCaja>
+                  <div class="admin-empty-state compact">
+                    <span>✓</span><b>Sin gastos en esta caja</b><p>Aún no se han registrado egresos durante la caja actual.</p>
+                  </div>
+                </ng-template>
+              </article>
+            </section>
+          </ng-template>
+        </ng-container>
       </ng-container>
       <ng-container *ngIf="seccion==='inventario'">
         <div class="embedded-productos"><app-productos></app-productos></div>
@@ -2849,6 +2886,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ventas: any[] = [];
   kardex: any[] = [];
   caja: any = null;
+  cajaCargando = false;
+  cajaError = '';
   historialCaja: any[] = [];
   progresoClienteId = 0;
   progresoDatos: any = null;
@@ -3002,6 +3041,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     notificar_vencimientos:true, notificar_stock_bajo:true, notificar_pagos_pendientes:true
   };
   configEstado: any = null;
+  configCargando = false;
+  configDisponible = false;
+  configError = '';
   ultimoRespaldo: any = null;
   configPassword: any = {actual:'',nueva:'',confirmacion:''};
   configGuardando = false;
@@ -3253,11 +3295,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   get estadoModuloActual():string{
-    if(['caja'].includes(this.seccion)) return this.dashboard?.caja?.abierta?'Caja abierta':'Caja cerrada';
+    if(this.seccion==='configuracion')return this.estadoConfiguracionTexto;
+    if(['caja','gastos'].includes(this.seccion))return this.cajaCargando?'Consultando caja':this.cajaError?'Caja sin verificar':this.caja?.caja_abierta?'Caja abierta':'Caja sin apertura activa';
     if(['inventario','productos','kardex'].includes(this.seccion)) return (this.dashboard?.inventario?.productos_stock_bajo||0)+' alertas de stock';
     if(['pagos','ventas','ingresos','facturas','salarios','gastos'].includes(this.seccion)) return 'Control financiero';
     if(['clientes','membresias','asistencias','entrenador','clases','reservas','planes'].includes(this.seccion)) return 'Gestión activa';
-    return this.dashboard?.fuente?.base_datos?'Sistema en línea':'Panel administrativo';
+    return this.estadoOperativoDashboard?.operativo===true?'Sistema verificado'
+      :this.estadoOperativoDashboard?.database===true?'MySQL conectado · esquema pendiente':'Estado sin verificar';
   }
 
   get tituloActual(): string { return this.titulos[this.seccion]?.[0] ?? 'Administrador'; }
@@ -4482,6 +4526,17 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       .slice(0,4);
   }
 
+  get cajaInconsistente():boolean {
+    return this.caja?.caja_abierta===false
+      && this.historialCaja.some((registro:any)=>
+        String(registro?.estado||'').toLowerCase()==='abierta');
+  }
+
+  etiquetaCaja(c:any):string {
+    const id=Number(c?.id_caja ?? c?.id ?? 0);
+    return Number.isInteger(id) && id>0 ? 'Caja #'+id : 'Caja sin número registrado';
+  }
+
   get gastosActuales(): any[] {
     const movimientos = this.caja?.caja?.movimientos;
     return Array.isArray(movimientos)
@@ -4496,8 +4551,16 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   registrarGasto(): void {
     const descripcion=String(this.gastoForm.descripcion||'').trim();
     const monto=Number(this.gastoForm.monto||0);
-    if(!descripcion || monto<=0){
+    if(!descripcion || !Number.isFinite(monto) || monto<=0){
       this.error='Completa la descripción y un monto válido.';
+      return;
+    }
+    if(this.cajaCargando || this.cajaError || !this.caja?.caja_abierta){
+      this.error='Debes comprobar y abrir una caja antes de registrar un gasto.';
+      return;
+    }
+    if(monto>Number(this.caja?.resumen?.monto_esperado||0)){
+      this.error='El gasto supera el saldo disponible de la caja.';
       return;
     }
     this.api.movimientoCaja('Egreso','Gasto',descripcion,monto).subscribe({
@@ -4739,8 +4802,25 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   cargarVentas(){ this.api.ventas().subscribe({next:r=>this.ventas=r,error:e=>this.mostrarError(e)}); }
   cargarKardex(){ this.api.kardex().subscribe({next:r=>this.kardex=r,error:e=>this.mostrarError(e)}); }
   cargarCaja(){
-    this.api.cajaActual().subscribe({next:r=>this.caja=r,error:e=>this.mostrarError(e)});
-    this.api.historialCaja().subscribe({next:r=>this.historialCaja=r,error:e=>this.mostrarError(e)});
+    this.cajaCargando=true;
+    this.cajaError='';
+    forkJoin({
+      actual:this.api.cajaActual(),
+      historial:this.api.historialCaja()
+    }).subscribe({
+      next:({actual,historial})=>{
+        this.caja=actual;
+        this.historialCaja=Array.isArray(historial)?historial:[];
+        this.cajaCargando=false;
+      },
+      error:e=>{
+        this.caja=null;
+        this.historialCaja=[];
+        this.cajaCargando=false;
+        this.cajaError='No se pudieron consultar ambos registros de caja en Laravel y MySQL';
+        this.mostrarError(e);
+      }
+    });
   }
   cargarReportes(){
     this.api.reporteIngresos().subscribe({next:r=>this.reporteIngresos=r,error:e=>this.mostrarError(e)});
