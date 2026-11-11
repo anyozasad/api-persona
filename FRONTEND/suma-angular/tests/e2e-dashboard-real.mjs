@@ -239,8 +239,10 @@ try {
   });
 
   await paso('Configuración conserva siete secciones sin API y no guarda datos ficticios',async()=>{
-    await page.route('**/api/configuracion',async route=>{
+    let intercepciones=0;
+    await page.route('**/api/configuracion**',async route=>{
       if(route.request().method()==='GET'){
+        intercepciones++;
         await route.fulfill({status:503,contentType:'application/json',
           body:JSON.stringify({codigo:'CONFIGURACION_TABLA_AUSENTE',
             mensaje:'Falta la tabla configuracion_sistema',configuracion:null})});
@@ -248,6 +250,8 @@ try {
     });
     await page.goto(base+'/configuracion',{waitUntil:'domcontentloaded'});
     const config=page.locator('.config-page');
+    await config.locator('.config-fetch-status.warning').waitFor({timeout:25000});
+    assert.ok(intercepciones>0,'Debe interceptarse la consulta real de configuración.');
     await config.getByText('Datos del gimnasio',{exact:true}).waitFor({timeout:15000});
     for(const nombre of [
       'Datos del gimnasio','Horario de atención','Reglas operativas',
@@ -259,7 +263,12 @@ try {
     assert.match(await config.locator('.config-fetch-status.warning').innerText(),/Falta la tabla/);
     await page.screenshot({path:'evidencias-dashboard/34_Configuracion_opciones_sin_conexion.png',
       fullPage:true,animations:'disabled'});
-    await page.unroute('**/api/configuracion');
+    await page.unroute('**/api/configuracion**');
+    // El error 503 fue simulado a propósito; no registrarlo como falla real del servidor.
+    for(let i=incidencias.length-1;i>=0;i--){
+      if(incidencias[i].tipo==='api' && incidencias[i].detalle==='HTTP 503'
+          && incidencias[i].url.includes('/api/configuracion')) incidencias.splice(i,1);
+    }
   });
 
   await paso('Menú adicional agrupado y sin lista interminable',async()=>{
