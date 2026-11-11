@@ -28,6 +28,23 @@ export class ProductosComponent implements OnInit {
   procesandoImagen = false;
   guardando = false;
   fotoCargandoId: number | null = null;
+  galeriaProducto: Producto | null = null;
+  // Fotografías originales aportadas por el gimnasio. Solo aparecen productos
+  // identificables; no se mezclan fotos del entrenador ni de máquinas.
+  readonly fotosProductosMallqui = [
+    { archivo: 'foto-09.jpg', descripcion: 'NOXRAGE · suplemento (bolsa)' },
+    { archivo: 'foto-11.jpg', descripcion: 'AN USA · producto en cajas' },
+    { archivo: 'foto-12.jpg', descripcion: 'Creatina · suplemento' },
+    { archivo: 'foto-13.jpg', descripcion: 'Shaker · accesorio gris' },
+    { archivo: 'foto-14.jpg', descripcion: 'Shaker · accesorio azul' },
+    { archivo: 'foto-15.jpg', descripcion: 'Big M · suplemento' },
+    { archivo: 'foto-16.jpg', descripcion: 'BCAA · suplemento' },
+    { archivo: 'foto-17.jpg', descripcion: 'Collagen Pro · suplemento' },
+    { archivo: 'foto-29.jpg', descripcion: 'NOXRAGE · presentación alternativa' },
+    { archivo: 'foto-31.jpg', descripcion: 'Big M · presentación alternativa' },
+    { archivo: 'foto-33.jpg', descripcion: 'Pro Mass XL · suplemento' },
+  ];
+
   private imagenSolicitud = 0;
   producto: Producto = this.productoVacio();
 
@@ -222,29 +239,70 @@ export class ProductosComponent implements OnInit {
     return String(nombre || 'P').trim().charAt(0).toUpperCase() || 'P';
   }
 
+  abrirGaleriaProducto(item: Producto): void {
+    this.error = '';
+    this.galeriaProducto = item;
+  }
+
+  cerrarGaleriaProducto(): void {
+    if (this.fotoCargandoId === null) this.galeriaProducto = null;
+  }
+
   /**
-   * Carga la fotografía en la misma fila del inventario. No envía los demás
-   * datos del producto y confirma la escritura con la respuesta de MySQL.
+   * El archivo ya existe en public/assets/mallqui/fotos-reales, igual al ZIP
+   * original enviado. Se lee localmente y se almacena en productos.foto.
+   * No asignar automáticamente fotos a 'Producto Prueba N' sin verificar.
    */
+  seleccionarFotoGaleria(item: Producto, nombreArchivo: string): void {
+    if (!item.id_producto || this.fotoCargandoId !== null) return;
+    if (!this.fotosProductosMallqui.some(foto => foto.archivo === nombreArchivo)) {
+      this.error = 'La fotografía seleccionada no pertenece a la galería autorizada.';
+      return;
+    }
+    this.error = '';
+    this.fotoCargandoId = item.id_producto;
+    fetch('assets/mallqui/fotos-reales/' + nombreArchivo)
+      .then(async respuesta => {
+        if (!respuesta.ok) throw new Error('No se encontró la foto local en el proyecto Angular.');
+        const blob = await respuesta.blob();
+        return new File([blob], nombreArchivo, { type: 'image/jpeg' });
+      })
+      .then(archivo => this.guardarFotoDesdeArchivo(item, archivo))
+      .catch((error: Error) => {
+        this.fotoCargandoId = null;
+        this.error = error.message || 'No se pudo abrir la fotografía local.';
+      });
+  }
+
   seleccionarFotoDirecta(event: Event, item: Producto): void {
     const input = event.target as HTMLInputElement;
     const archivo = input.files?.[0];
     input.value = '';
     if (!archivo || !item.id_producto || this.fotoCargandoId !== null) return;
+    this.fotoCargandoId = item.id_producto;
+    this.guardarFotoDesdeArchivo(item, archivo);
+  }
 
+  private guardarFotoDesdeArchivo(item: Producto, archivo: File): void {
     this.mensaje = '';
     this.error = '';
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(archivo.type)) {
+      this.fotoCargandoId = null;
       this.error = 'Selecciona una fotografía JPG, PNG o WEBP.';
       return;
     }
     if (archivo.size === 0 || archivo.size > 5 * 1024 * 1024) {
+      this.fotoCargandoId = null;
       this.error = 'La fotografía debe pesar entre 1 byte y 5 MB.';
       return;
     }
-
     const id = item.id_producto;
-    this.fotoCargandoId = id;
+    if (!id) {
+      this.fotoCargandoId = null;
+      this.error = 'El producto todavía no tiene identificador en MySQL.';
+      return;
+    }
+
     this.prepararFotoDirecta(archivo).then(foto => {
       this.productoService.actualizarFoto(id, foto).subscribe({
         next: guardado => {
@@ -254,6 +312,7 @@ export class ProductosComponent implements OnInit {
             return;
           }
           this.productos = this.productos.map(p => p.id_producto === id ? guardado : p);
+          this.galeriaProducto = null;
           this.mensaje = 'Fotografía guardada en MySQL para ' + item.nombre_producto + '.';
           this.cargarDiagnosticoFotos();
         },
