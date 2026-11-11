@@ -10,30 +10,32 @@ La API reconoce tanto la estructura original de gym_system (id, codigo, categori
 - En Productos se identifican fotos ausentes o con referencias antiguas. El botón **Elegir foto** de cada fila abre la galería local o permite subir un archivo JPG/PNG/WEBP, optimiza y guarda únicamente la fotografía en MySQL, sin cambiar stock ni precio. **Editar / cambiar foto** conserva el formulario completo para productos que ya tienen fotografía.
 - El portal usa el mismo catálogo y fotografías de la base original o moderna.
 
-## Carga directa desde el dashboard (semana 05)
+## Solución automática de la semana 05 (sin seleccionar fotografías a mano)
 
-1. En **Ventas e inventario → Productos y stock**, localiza un producto sin foto.
-2. Pulsa **Subir foto** en su fila y selecciona la fotografía REAL del producto (JPG, PNG o WEBP, hasta 5 MB).
-3. El navegador optimiza la imagen y Laravel valida el contenido y guarda solo `productos.foto` en la base conectada.
-4. La fila muestra la fotografía cuando el servidor confirma lo guardado; la opción **Comprobar fotos** actualiza los contadores.
-5. Recarga el navegador y confirma que la imagen sigue visible. El portal del socio debe mostrar la misma foto.
+El sistema reconoce los diez registros ficticios `Producto Prueba 1–10` que se ven en el inventario (`PROD-001` a `PROD-0010`; también reconoce `PROD-010`).
 
-Los registros `Producto Prueba 1` a `Producto Prueba 10` no contienen fotos automáticamente. Si en MySQL aparece `foto = NULL`, es necesario subir el archivo real o usar el importador de abajo. No es correcto asignar imágenes genéricas del gimnasio a productos desconocidos.
+**Al abrir Productos y stock**, Angular detecta esos registros cuando no tienen foto y realiza una única petición administrativa a `POST /api/productos/completar-fotos-iniciales`. Laravel toma diez fotografías de productos **que ya están dentro del repositorio**, y guarda los JPEG originales como base64 en `productos.foto`. La lista vuelve a consultarse y aparece la fotografía persistida en MySQL, sin que el administrador tenga que elegir nada. También aparecen en el catálogo de usuario y en el inicio al volver a consultar la misma BD.
 
-**Seguridad:** la carga usa `PATCH /api/productos/{id}/foto`, disponible solamente para Administrador autenticado. No cambia otros campos del producto. Para comprobar las pruebas sin tocar datos reales se usa la base de datos de pruebas de GitHub Actions.
+Correspondencia explícita para los registros de prueba:
 
-## Fotos reales del ZIP de Mallqui Gym (revisión 11/11/2026)
+| Código | Nuevo nombre de demostración | Foto local | Categoría |
+|---|---|---|---|
+| PROD-001 | Creatina | foto-12.jpg | Suplementos |
+| PROD-002 | Shaker gris | foto-13.jpg | Accesorios |
+| PROD-003 | BCAA | foto-16.jpg | Suplementos |
+| PROD-004 | Shaker azul | foto-14.jpg | Accesorios |
+| PROD-005 | Big M | foto-15.jpg | Suplementos |
+| PROD-006 | Collagen Pro | foto-17.jpg | Suplementos |
+| PROD-007 | NOXRAGE | foto-09.jpg | Suplementos |
+| PROD-008 | Pro Mass XL | foto-33.jpg | Suplementos |
+| PROD-009 | AN USA (cajas) | foto-11.jpg | Suplementos |
+| PROD-0010 o PROD-010 | NOXRAGE (presentación alternativa) | foto-29.jpg | Suplementos |
 
-Se comparó el ZIP con las imágenes que ya están guardadas en `FRONTEND/suma-angular/public/assets/mallqui/fotos-reales/`: coinciden sus 34 tamaños de archivo y orden, de `foto-01.jpg` a `foto-34.jpg`.
+**Protección de la información:** el proceso modifica solamente las filas con el código exacto, nombre `Producto Prueba N` y fotografía vacía; conserva sus IDs, códigos, precios, stock e historial. Ajusta el nombre y la categoría únicamente en esos diez registros de demostración para que coincidan con la imagen. Necesita que existan las categorías `Accesorios` y `Suplementos` y que la carpeta original `FRONTEND/suma-angular/public/assets/mallqui/fotos-reales` esté disponible. Si algo falta, informa el motivo y no inventa fotos ni modifica otros registros. La operación es idempotente.
 
-- Las fotos 09, 11–17, 29, 31 y 33 muestran suplementos y accesorios reales del gimnasio. El resto incluye entrenador, máquinas, gimnasio y fotos repetidas, por eso no deben asignarse automáticamente a productos.
-- En **Productos y stock**, al pulsar **Elegir foto** sobre un registro sin imagen, aparece una galería con esas once imágenes de productos. Selecciona solamente la que corresponda al artículo; también está disponible **Subir otra fotografía del producto**.
-- El sistema convierte la imagen seleccionada a un formato optimizado y usa `PATCH /api/productos/{id}/foto` para guardar **solo** la columna de foto en MySQL. Después de guardar, se ve la fotografía en la tabla y, al refrescar, en el dashboard.
-- Los diez registros `Producto Prueba 1–10` no indican a qué suplemento o accesorio corresponde cada código, por lo que no es correcto adjudicar automáticamente fotografías por posición. En la galería puedes abrir **Editar datos y categoría** para poner el nombre correcto sin borrar ni crear registros duplicados.
-- No depende de URLs externas y las fotografías permanecen disponibles sin Internet si Angular y Laravel están sirviendo los archivos locales. No constituye conexión sin servidor.
-- Las fotografías de WhatsApp tienen la calidad y resolución del archivo recibido; no se presentan como originales 4K.
+La galería **Elegir foto** sigue disponible **solo como alternativa opcional** para productos distintos o para introducir fotos nuevas. No es necesaria para los diez registros de prueba.
 
-**La base MySQL de la computadora no se modifica con un `git pull`:** el repositorio contiene el código y los recursos, no los registros personales del equipo. Debes seleccionar la fotografía correcta por artículo y guardar para que se almacene en tu MySQL local.
+Se modificaron código Angular y API Laravel en GitHub, pero la base MySQL privada de la computadora **no se puede modificar desde GitHub**. Se aplicará automáticamente en el equipo local al ejecutar la versión nueva y abrir Productos. No sustituye la comprobación final de MySQL.
 
 ## Si las fotos están en una carpeta y no en MySQL
 El sistema no puede recrear fotos que no existen. Primero respalda tu base de datos.
@@ -64,7 +66,7 @@ Actualiza el repositorio anyozasad/api-persona, no el repo PHP anterior.
 Comprueba DB_DATABASE en BACKEND/.env. Respalda MySQL antes de migrar.
 Solo con respaldo, ejecuta php artisan migrate --force para ampliar la columna foto si es antigua.
 Reinicia Angular y Laravel, abre Productos y consulta la base y las fotos pendientes.
-Carga o importa los archivos originales, pulsa Comprobar fotos y vuelve al inicio.
+Para los diez productos de prueba, abre Productos y espera a que se guarden automáticamente; pulsa Comprobar fotos y vuelve al inicio.
 El inicio debe mostrar el producto con foto guardada y el catálogo del usuario debe devolver el mismo registro.
 NO ejecutes migrate:fresh ni importes un esquema SQL sobre datos reales.
 
