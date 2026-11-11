@@ -29,6 +29,7 @@ export const routes: Routes = [
   { path: 'entrenador', component: EntrenadorPanelComponent, canActivate: [authGuard, roleGuard(['Entrenador'])] },
   { path: 'admin', component: AdminIntegradoComponent, canActivate: [authGuard, roleGuard(['Administrador'])] },
   { path: 'admin-diseno', redirectTo: 'admin', pathMatch: 'full' },
+  { path: 'verificacion-efsrt', component: AdminIntegradoComponent, canActivate: [authGuard, roleGuard(['Administrador'])], data: { seccion: 'verificacion-efsrt' } },
   { path: 'productos', component: AdminIntegradoComponent, canActivate: [authGuard, roleGuard(['Administrador'])], data: { seccion: 'productos' } },
   { path: 'membresias', component: AdminIntegradoComponent, canActivate: [authGuard, roleGuard(['Administrador'])], data: { seccion: 'membresias' } },
   { path: 'clientes', component: AdminIntegradoComponent, canActivate: [authGuard, roleGuard(['Administrador'])], data: { seccion: 'clientes' } },
