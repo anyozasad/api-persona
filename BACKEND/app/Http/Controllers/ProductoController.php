@@ -77,6 +77,122 @@ class ProductoController extends Controller
         ]);
     }
 
+    /**
+     * Reemplaza exclusivamente los diez registros ficticios PROD-001..PROD-010
+     * que siguen sin foto por artículos identificables en las fotografías
+     * originales de Mallqui Gym. Idempotente y restringido a Administrador.
+     * Conserva los códigos, identificadores, precios, stock e historial.
+     *
+     * No se aplica a productos reales, fotos existentes o categorías ausentes.
+     */
+    public function completarFotosIniciales()
+    {
+        if (!Schema::hasTable('productos') || !Schema::hasTable('categorias')) {
+            return response()->json(['mensaje'=>'No se encuentran las tablas de productos y categorías.'],503);
+        }
+
+        $legacy = $this->usaEsquemaOriginal();
+        $codigoCampo = $legacy ? 'codigo' : 'codigo_producto';
+        $nombreCampo = $legacy ? 'nombre' : 'nombre_producto';
+        $categoriaCampo = $legacy ? 'categoria_id' : 'id_categoria';
+        $categoriaIdCampo = $legacy ? 'id' : 'id_categoria';
+        $categoriaNombreCampo = $legacy ? 'nombre' : 'nombre_categoria';
+
+        if (!Schema::hasColumn('productos','foto')
+            || !Schema::hasColumn('productos',$codigoCampo)
+            || !Schema::hasColumn('productos',$nombreCampo)
+            || !Schema::hasColumn('productos',$categoriaCampo)
+            || !Schema::hasColumn('categorias',$categoriaNombreCampo)) {
+            return response()->json(['mensaje'=>'No está preparada la estructura de fotografías en MySQL.'],503);
+        }
+
+        // Asegura columna MEDIUMTEXT en una instalación antigua de gym_system.
+        if ($legacy) app(GymSystemAdminController::class);
+
+        $ejemplos = [
+            1 => ['Creatina', 'Suplementos', 'foto-12.jpg'],
+            2 => ['Shaker gris', 'Accesorios', 'foto-13.jpg'],
+            3 => ['BCAA', 'Suplementos', 'foto-16.jpg'],
+            4 => ['Shaker azul', 'Accesorios', 'foto-14.jpg'],
+            5 => ['Big M', 'Suplementos', 'foto-15.jpg'],
+            6 => ['Collagen Pro', 'Suplementos', 'foto-17.jpg'],
+            7 => ['NOXRAGE', 'Suplementos', 'foto-09.jpg'],
+            8 => ['Pro Mass XL', 'Suplementos', 'foto-33.jpg'],
+            9 => ['AN USA (cajas)', 'Suplementos', 'foto-11.jpg'],
+            10 => ['NOXRAGE (presentación alternativa)', 'Suplementos', 'foto-29.jpg'],
+        ];
+
+        $baseFotos = base_path('../FRONTEND/suma-angular/public/assets/mallqui/fotos-reales');
+        $guardadas = 0;
+        $omitidas = 0;
+        $observaciones = [];
+
+        foreach ($ejemplos as $numero => [$nombreReal, $categoria, $archivo]) {
+            $codigo = 'PROD-'.str_pad((string)$numero,3,'0',STR_PAD_LEFT);
+            $nombrePrueba = 'Producto Prueba '.$numero;
+            $fila = DB::table('productos')
+                ->where($codigoCampo,$codigo)
+                ->where($nombreCampo,$nombrePrueba)
+                ->where(function ($q) {
+                    $q->whereNull('foto')->orWhere('foto','');
+                })->first();
+            if (!$fila) {
+                $omitidas++;
+                continue;
+            }
+
+            $idCategoria = DB::table('categorias')
+                ->where($categoriaNombreCampo,$categoria)->value($categoriaIdCampo);
+            if (!$idCategoria) {
+                $observaciones[] = "No existe la categoría {$categoria} para {$codigo}.";
+                continue;
+            }
+
+            $ruta = $baseFotos.DIRECTORY_SEPARATOR.$archivo;
+            if (!is_file($ruta) || is_link($ruta) || filesize($ruta) > 2100000) {
+                $observaciones[] = "Falta la fotografía local de {$codigo}.";
+                continue;
+            }
+
+            $contenido = file_get_contents($ruta);
+            $info = $contenido === false ? false : @getimagesizefromstring($contenido);
+            if (!$info || ($info['mime'] ?? '') !== 'image/jpeg') {
+                $observaciones[] = "La fotografía de {$codigo} no es un JPEG válido.";
+                continue;
+            }
+            $foto = 'data:image/jpeg;base64,'.base64_encode($contenido);
+            if (strlen($foto) > 2900000) {
+                $observaciones[] = "La fotografía de {$codigo} excede el tamaño permitido.";
+                continue;
+            }
+
+            // WHERE protege ante concurrencia o cambios efectuados por el usuario.
+            $actualizados = DB::table('productos')
+                ->where($codigoCampo,$codigo)
+                ->where($nombreCampo,$nombrePrueba)
+                ->where(function ($q) {
+                    $q->whereNull('foto')->orWhere('foto','');
+                })
+                ->update([
+                    $nombreCampo => $nombreReal,
+                    $categoriaCampo => $idCategoria,
+                    'foto' => $foto,
+                ]);
+            if ($actualizados === 1) $guardadas++;
+            else $omitidas++;
+        }
+
+        return response()->json([
+            'mensaje' => $guardadas
+                ? "{$guardadas} productos de prueba completados automáticamente con fotografías reales."
+                : 'No se encontraron registros de prueba sin fotografía para completar.',
+            'actualizados' => $guardadas,
+            'omitidos' => $omitidas,
+            'observaciones' => $observaciones,
+            'base_datos' => DB::connection()->getDatabaseName(),
+        ]);
+    }
+
     public function index(Request $request)
     {
         if ($this->usaEsquemaOriginal()) {
