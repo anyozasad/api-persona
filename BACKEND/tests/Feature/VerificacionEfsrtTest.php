@@ -62,6 +62,36 @@ class VerificacionEfsrtTest extends TestCase
         $this->assertSame('estructura_incompleta', $socios['estado']);
     }
 
+    public function test_verificacion_incluye_las_once_semanas_y_no_da_por_aprobado_lo_pendiente(): void
+    {
+        $respuesta = app(VerificacionEfsrtController::class)->index();
+        $this->assertSame(200, $respuesta->getStatusCode());
+        $datos = $respuesta->getData(true);
+
+        $this->assertCount(11, $datos['semanas']);
+        $this->assertSame(range(1, 11), array_column($datos['semanas'], 'semana'));
+        $semana5 = collect($datos['semanas'])->firstWhere('semana', 5);
+        $this->assertSame('pendiente', $semana5['estado']);
+        $this->assertStringContainsString('columna foto', implode(' ', $semana5['observaciones']));
+
+        $semana10 = collect($datos['semanas'])->firstWhere('semana', 10);
+        $this->assertSame('pendiente', $semana10['estado']);
+        $this->assertStringContainsString('SUNAT', implode(' ', $semana10['observaciones']));
+    }
+
+    public function test_semana_cinco_detecta_fotografias_ausentes_de_productos_reales(): void
+    {
+        Schema::table('productos', function (Blueprint $tabla) {
+            $tabla->mediumText('foto')->nullable();
+        });
+        DB::table('productos')->insert(['id_producto'=>1,'stock'=>6,'foto'=>null]);
+
+        $datos = app(VerificacionEfsrtController::class)->index()->getData(true);
+        $semana5 = collect($datos['semanas'])->firstWhere('semana', 5);
+        $this->assertSame('pendiente', $semana5['estado']);
+        $this->assertStringContainsString('1 productos sin fotografía', implode(' ', $semana5['observaciones']));
+    }
+
     public function test_muestra_duplicados_en_reservas_y_stock_negativo(): void
     {
         DB::table('clientes')->insert([
