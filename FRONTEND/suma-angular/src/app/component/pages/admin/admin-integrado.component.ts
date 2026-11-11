@@ -3737,7 +3737,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       socios:['clientes','socios','app_clientes','app_socios'],
       reservas:['reservas','app_reservas'],
       asistencias:['asistencias','app_asistencias'],
-      ingresos:['pagos_membresia','app_pagos_membresia','ventas','app_ventas']
+      ingresos:['pagos_membresia','pagos','app_pagos_membresia','app_pagos','ventas','app_ventas']
     };
     return candidatos[tipo].some(nombre=>disponibles.has(nombre));
   }
