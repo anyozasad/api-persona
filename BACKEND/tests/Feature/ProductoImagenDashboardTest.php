@@ -81,10 +81,14 @@ class ProductoImagenDashboardTest extends TestCase
             $this->assertSame(21 + $indice,(int)$producto->stock);
             $this->assertNotSame('Producto Prueba '.($indice+1),$producto->nombre);
         }
-        $this->assertSame('Creatina',$productos[0]->nombre);
-        $this->assertSame('Shaker gris',$productos[1]->nombre);
+        $this->assertSame('Level Pro Creatine Monohydrate 250 g',$productos[0]->nombre);
+        $this->assertSame('Shaker UN 20 años - Blanco',$productos[1]->nombre);
         $this->assertSame(2,(int)$productos[1]->categoria_id);
         $this->assertSame(3,(int)$productos[0]->categoria_id);
+        $this->assertSame('HD Blueberry 135 ml - Bebida energética',$productos[3]->nombre);
+        $this->assertSame(1,(int)$productos[3]->categoria_id);
+        $this->assertSame('Correas para pesas AN USA - Azul',$productos[8]->nombre);
+        $this->assertSame(2,(int)$productos[8]->categoria_id);
 
         // Idempotente: la segunda visita no vuelve a cambiar datos.
         $segunda = $control->completarFotosIniciales();
@@ -104,10 +108,66 @@ class ProductoImagenDashboardTest extends TestCase
         $resultado = app(ProductoController::class)->completarFotosIniciales()->getData(true);
         $this->assertSame(1,$resultado['actualizados']);
         $foto = DB::table('productos')->where('codigo','PROD-0010')->first();
-        $this->assertSame('NOXRAGE (presentación alternativa)',$foto->nombre);
+        $this->assertSame('Universe Nutrition NOXRAGE - Citrus Punch',$foto->nombre);
         $this->assertSame(69,(int)$foto->stock);
         $this->assertSame('29.00',(string)$foto->precio_venta);
         $this->assertStringStartsWith('data:image/jpeg;base64,',$foto->foto);
+    }
+
+    public function test_corrige_nombres_equivocados_de_la_version_anterior_sin_cambiar_foto_stock_ni_precio(): void
+    {
+        DB::table('categorias')->insert([
+            ['id'=>2,'nombre'=>'Accesorios','estado'=>'activo'],
+            ['id'=>3,'nombre'=>'Suplementos','estado'=>'activo'],
+        ]);
+        // La compatibilidad transforma la vieja columna VARCHAR en MEDIUMTEXT.
+        app(GymSystemAdminController::class);
+        $raiz = base_path('../FRONTEND/suma-angular/public/assets/mallqui/fotos-reales/');
+        $fotoBebida = 'data:image/jpeg;base64,'.base64_encode(file_get_contents($raiz.'foto-14.jpg'));
+        $fotoCorreas = 'data:image/jpeg;base64,'.base64_encode(file_get_contents($raiz.'foto-11.jpg'));
+
+        DB::table('productos')->insert([
+            ['categoria_id'=>2,'codigo'=>'PROD-004','nombre'=>'Shaker azul',
+             'precio_compra'=>7,'precio_venta'=>34,'stock'=>86,'estado'=>'activo','foto'=>$fotoBebida],
+            ['categoria_id'=>3,'codigo'=>'PROD-009','nombre'=>'AN USA (cajas)',
+             'precio_compra'=>8,'precio_venta'=>54,'stock'=>84,'estado'=>'activo','foto'=>$fotoCorreas],
+        ]);
+
+        $resultado = app(ProductoController::class)->completarFotosIniciales()->getData(true);
+        $this->assertSame(2, $resultado['actualizados']);
+        $bebida = DB::table('productos')->where('codigo','PROD-004')->first();
+        $correas = DB::table('productos')->where('codigo','PROD-009')->first();
+
+        $this->assertSame('HD Blueberry 135 ml - Bebida energética', $bebida->nombre);
+        $this->assertSame(1,(int)$bebida->categoria_id);
+        $this->assertSame($fotoBebida, $bebida->foto);
+        $this->assertSame(86,(int)$bebida->stock);
+        $this->assertSame('34.00',(string)$bebida->precio_venta);
+
+        $this->assertSame('Correas para pesas AN USA - Azul', $correas->nombre);
+        $this->assertSame(2,(int)$correas->categoria_id);
+        $this->assertSame($fotoCorreas,$correas->foto);
+        $this->assertSame(84,(int)$correas->stock);
+        $this->assertSame('54.00',(string)$correas->precio_venta);
+
+        $this->assertSame(0,app(ProductoController::class)->completarFotosIniciales()
+            ->getData(true)['actualizados']);
+    }
+
+    public function test_no_corrige_nombre_si_el_usuario_cambio_la_foto_original(): void
+    {
+        DB::table('categorias')->insert(['id'=>2,'nombre'=>'Accesorios','estado'=>'activo']);
+        DB::table('productos')->insert([
+            'categoria_id'=>2,'codigo'=>'PROD-004','nombre'=>'Shaker azul',
+            'precio_compra'=>5,'precio_venta'=>22,'stock'=>11,
+            'estado'=>'activo','foto'=>'data:image/jpeg;base64,AA==',
+        ]);
+        $resultado = app(ProductoController::class)->completarFotosIniciales()->getData(true);
+        $this->assertSame(0,$resultado['actualizados']);
+        $this->assertDatabaseHas('productos',[
+            'codigo'=>'PROD-004','nombre'=>'Shaker azul',
+            'foto'=>'data:image/jpeg;base64,AA==','stock'=>11,
+        ]);
     }
 
     public function test_no_se_modifican_productos_reales_ni_fotografias_que_ya_estan_guardadas(): void
