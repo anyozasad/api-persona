@@ -20,8 +20,10 @@ describe('Semana 05 EFSRT - fotografía del producto', () => {
   it('muestra solo fotos de productos y permite asignarlas de forma explícita', () => {
     const nombres=component.fotosProductosMallqui.map(f => f.descripcion);
     const archivos=component.fotosProductosMallqui.map(f => f.archivo);
-    expect(nombres.some(nombre => nombre.includes('Creatina'))).toBeTrue();
-    expect(nombres.some(nombre => nombre.includes('BCAA'))).toBeTrue();
+    expect(nombres.some(nombre => nombre.includes('Creatine Monohydrate'))).toBeTrue();
+    expect(nombres.some(nombre => nombre.includes('BCAA 6000'))).toBeTrue();
+    expect(nombres.some(nombre => nombre.includes('HD Blueberry'))).toBeTrue();
+    expect(nombres.some(nombre => nombre.includes('Correas para pesas AN USA'))).toBeTrue();
     expect(archivos).toContain('foto-12.jpg');
     expect(archivos).not.toContain('foto-18.jpg');
     expect(archivos).not.toContain('foto-23.jpg');
@@ -42,7 +44,7 @@ describe('Semana 05 EFSRT - fotografía del producto', () => {
       stock_minimo: 1, unidad_medida:'Unidad', estado:'Activo',foto:null
     };
     const completado: Producto = {
-      ...ejemplo, nombre_producto:'NOXRAGE (presentación alternativa)',
+      ...ejemplo, nombre_producto:'Universe Nutrition NOXRAGE - Citrus Punch',
       foto:'data:image/jpeg;base64,AA=='
     };
     productosApi.listar.and.returnValues(of([ejemplo]),of([completado]));
@@ -56,6 +58,31 @@ describe('Semana 05 EFSRT - fotografía del producto', () => {
     expect(productosApi.listar).toHaveBeenCalledTimes(2);
     expect(component.productos[0].foto).toBe(completado.foto);
     expect(component.mensaje).toContain('completado automáticamente');
+  });
+
+  it('corrige los nombres de prueba ya autocompletados en versiones anteriores', () => {
+    const anterior: Producto = {
+      id_producto: 4, id_categoria: 2, codigo_producto:'PROD-004',
+      nombre_producto:'Shaker azul', precio_compra:10, precio_venta:34,
+      stock:86, stock_minimo:1, unidad_medida:'Unidad',estado:'Activo',
+      foto:'data:image/jpeg;base64,AA=='
+    };
+    const corregido: Producto = {
+      ...anterior, id_categoria:1,
+      nombre_producto:'HD Blueberry 135 ml - Bebida energética'
+    };
+    productosApi.listar.and.returnValues(of([anterior]), of([corregido]));
+    productosApi.completarFotosIniciales.and.returnValue(of({
+      mensaje:'1 nombre corregido', actualizados:1, omitidos:9,
+      observaciones:[], base_datos:'gym_system'
+    }));
+
+    component.listar();
+
+    expect(productosApi.completarFotosIniciales).toHaveBeenCalledTimes(1);
+    expect(component.productos[0].nombre_producto).toBe(corregido.nombre_producto);
+    expect(component.productos[0].stock).toBe(86);
+    expect(component.productos[0].precio_venta).toBe(34);
   });
 
   it('impide guardar el producto antes de que termine de procesarse la imagen', () => {
