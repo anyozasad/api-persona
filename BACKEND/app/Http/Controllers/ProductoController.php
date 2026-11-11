@@ -93,6 +93,7 @@ class ProductoController extends Controller
 
         $legacy = $this->usaEsquemaOriginal();
         $codigoCampo = $legacy ? 'codigo' : 'codigo_producto';
+        $idCampo = $legacy ? 'id' : 'id_producto';
         $nombreCampo = $legacy ? 'nombre' : 'nombre_producto';
         $categoriaCampo = $legacy ? 'categoria_id' : 'id_categoria';
         $categoriaIdCampo = $legacy ? 'id' : 'id_categoria';
@@ -174,6 +175,7 @@ class ProductoController extends Controller
 
             // WHERE protege ante concurrencia o cambios efectuados por el usuario.
             $actualizados = DB::table('productos')
+                ->where($idCampo,$fila->{$idCampo})
                 ->where($codigoCampo,$codigo)
                 ->where($nombreCampo,$nombrePrueba)
                 ->where(function ($q) {
