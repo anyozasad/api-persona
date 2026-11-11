@@ -538,6 +538,40 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     instancia.ngOnDestroy();
   });
 
+  it('semana 06 prepara una rutina editable desde nivel y objetivo de socio', () => {
+    component.clientes=[
+      {id_cliente:7,nombres:'Julia',nivel_entrenamiento:'Principiante',
+       enfoque_entrenamiento:'Masa muscular'},
+    ];
+    component.rutinaForm={
+      id_cliente:7,id_entrenador:2,nombre_rutina:'',
+      objetivo:'',descripcion:'',fecha_inicio:'2026-11-11',fecha_fin:'',estado:'Activo'
+    };
+    component.rutinaDetallesForm=[{ejercicio:'',series:3,repeticiones:12}];
+
+    component.prepararRutinaSegunPerfil();
+
+    expect(component.rutinaForm.nombre_rutina).toBe('Plan Fuerza - Principiante');
+    expect(component.rutinaForm.objetivo).toContain('fuerza');
+    expect(component.rutinaDetallesForm.length).toBe(3);
+    expect(component.rutinaDetallesForm[0].series).toBe(2);
+    expect(component.rutinaDetallesForm[0].peso_recomendado).toBeNull();
+    expect(component.rutinaDetallesForm[0].ejercicio).toContain('Sentadilla');
+    expect(api.crearRutina).not.toHaveBeenCalled();
+  });
+
+  it('no sobrescribe ejercicios existentes al preparar la propuesta de la semana 06', () => {
+    component.clientes=[{id_cliente:1,nivel_entrenamiento:'Intermedio',enfoque_entrenamiento:'Cardio'}];
+    component.rutinaForm={id_cliente:1,id_entrenador:2,nombre_rutina:'Rutina del entrenador',objetivo:''};
+    component.rutinaDetallesForm=[{ejercicio:'Plancha',series:3,repeticiones:30}];
+
+    component.prepararRutinaSegunPerfil();
+
+    expect(component.error).toContain('Ya hay una rutina escrita');
+    expect(component.rutinaForm.nombre_rutina).toBe('Rutina del entrenador');
+    expect(component.rutinaDetallesForm[0].ejercicio).toBe('Plancha');
+  });
+
   it('Fitness abre rutinas y Herramientas abre tablas, no inicio', () => {
     const cambiar = spyOn(component, 'cambiarSegcion').and.stub();
     component.abrirModuloAdmin('fitness');
