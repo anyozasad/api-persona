@@ -238,6 +238,44 @@ try {
     });
   });
 
+  await paso('Configuración conserva siete secciones sin API y no guarda datos ficticios',async()=>{
+    await page.route('**/api/configuracion',async route=>{
+      if(route.request().method()==='GET'){
+        await route.fulfill({status:503,contentType:'application/json',
+          body:JSON.stringify({codigo:'CONFIGURACION_TABLA_AUSENTE',
+            mensaje:'Falta la tabla configuracion_sistema',configuracion:null})});
+      }else await route.continue();
+    });
+    await page.goto(base+'/configuracion',{waitUntil:'domcontentloaded'});
+    const config=page.locator('.config-page');
+    await config.getByText('Datos del gimnasio',{exact:true}).waitFor({timeout:15000});
+    for(const nombre of [
+      'Datos del gimnasio','Horario de atención','Reglas operativas',
+      'Notificaciones internas','Seguridad del administrador',
+      'Respaldo y mantenimiento','Información del sistema'
+    ])assert.equal(await config.getByRole('heading',{name:nombre,exact:true}).count(),1,
+      'Falta sección de Configuración cuando MySQL no está disponible: '+nombre);
+    assert.equal(await config.getByRole('button',{name:'Guardar configuración en MySQL'}).isDisabled(),true);
+    assert.match(await config.locator('.config-fetch-status.warning').innerText(),/Falta la tabla/);
+    await page.screenshot({path:'evidencias-dashboard/34_Configuracion_opciones_sin_conexion.png',
+      fullPage:true,animations:'disabled'});
+    await page.unroute('**/api/configuracion');
+  });
+
+  await paso('Menú adicional agrupado y sin lista interminable',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const menu=page.locator('.mg-clear-navigation');
+    await menu.locator('.cf-nav-group-head').filter({hasText:'Más funciones'}).click();
+    assert.equal(await menu.locator('.mg-optional-category-head').count(),4);
+    assert.equal(await menu.locator('.mg-optional-category-items').count(),0,
+      'Las opciones adicionales deben estar cerradas inicialmente.');
+    await menu.getByRole('button',{name:'Inventario y finanzas'}).click();
+    assert.equal(await menu.locator('.mg-optional-category-items').count(),1);
+    assert.equal(await menu.getByRole('button',{name:'Gastos',exact:true}).count(),1);
+    await page.screenshot({path:'evidencias-dashboard/35_Menu_adicional_agrupado.png',
+      fullPage:true,animations:'disabled'});
+  });
+
   await paso('Inicio EFSRT tiene exactamente seis acciones y no duplica pestañas',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const inicio=page.locator('.mg-efsrt-dashboard');
@@ -245,8 +283,9 @@ try {
     const acciones=inicio.locator('.mg-efsrt-actions>button');
     assert.equal(await acciones.count(),6,'Debe haber seis accesos principales, no una pantalla saturada de botones.');
     assert.equal(await page.locator('.mg-module-tabs').count(),0,'Las pestañas antiguas repiten el menú.');
-    assert.equal(await inicio.locator('.mg-premium-analytics').count(),0,
-      'Los gráficos avanzados deben estar cerrados al entrar.');
+    await inicio.locator('.mg-premium-analytics').waitFor({timeout:12000});
+    assert.equal(await inicio.locator('.mg-premium-analytics-grid .mg-premium-card').count(),3,
+      'Inicio debe mostrar tres gráficos alimentados por MySQL.');
     const nombres=await acciones.allTextContents();
     for(const esperado of ['Matricular socio','Reservas','Asistencia','Rutinas','Productos','Pagos']){
       assert.ok(nombres.some(x=>x.includes(esperado)),'Acceso faltante: '+esperado);
@@ -255,12 +294,15 @@ try {
       path:'evidencias-dashboard/17_Inicio_EFSRT_Simplificado.png',
       fullPage:true,animations:'disabled'
     });
-    await inicio.getByRole('button',{name:/Gráficos y análisis de ingresos/}).click();
-    await inicio.locator('.mg-premium-analytics').waitFor({timeout:12000});
     const analisis=await inicio.locator('.mg-premium-analytics').innerText();
-    assert.ok(analisis.includes('Ingresos'),'No se conservaron los gráficos reales.');
+    assert.ok(analisis.includes('Ingresos'),'Los gráficos deben mostrar ingresos reales.');
+    await page.screenshot({path:'evidencias-dashboard/33_Graficos_visibles_en_el_inicio.png',
+      fullPage:true,animations:'disabled'});
     await inicio.getByRole('button',{name:/Gráficos y análisis de ingresos/}).click();
-    assert.equal(await inicio.locator('.mg-premium-analytics').count(),0);
+    assert.equal(await inicio.locator('.mg-premium-analytics').count(),0,
+      'Se puede ocultar el análisis para despejar la pantalla.');
+    await inicio.getByRole('button',{name:/Gráficos y análisis de ingresos/}).click();
+    assert.equal(await inicio.locator('.mg-premium-analytics-grid .mg-premium-card').count(),3);
   });
 
   await paso('Formulario de socios en la página, sin oscurecer ni duplicar scroll',async()=>{
