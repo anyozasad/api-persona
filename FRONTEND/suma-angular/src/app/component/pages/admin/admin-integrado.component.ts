@@ -209,8 +209,11 @@ import { catchError, forkJoin, of } from 'rxjs';
         </div>
         <div class="mg-module-shell-actions">
           <span class="mg-module-state">{{estadoModuloActual}}</span>
-          <button type="button" class="mg-back-home" (click)="cambiarSegcion('dashboard')"
-            aria-label="Volver al panel principal">← Inicio</button>
+          <button type="button" class="mg-back-home"
+            (click)="cambiarSegcion(['usuarios','auditoria','mantenimiento-sistema','verificacion-efsrt'].includes(seccion) ? 'configuracion' : 'dashboard')"
+            [attr.aria-label]="['usuarios','auditoria','mantenimiento-sistema','verificacion-efsrt'].includes(seccion) ? 'Volver a configuración' : 'Volver al panel principal'">
+            {{['usuarios','auditoria','mantenimiento-sistema','verificacion-efsrt'].includes(seccion) ? '← Configuración' : '← Inicio'}}
+          </button>
           <button type="button" (click)="actualizarSegcionActual()" [disabled]="actualizandoDatos">
             {{actualizandoDatos ? 'Actualizando...' : '↻ Actualizar'}}
           </button>
@@ -2192,6 +2195,10 @@ import { catchError, forkJoin, of } from 'rxjs';
                 <label>Confirmar nueva<input type="password" [(ngModel)]="configPassword.confirmacion" name="cfg_pass_confirmar" autocomplete="new-password"></label>
                 <button type="button" class="config-secondary-button" (click)="cambiarContrasenaConfiguracion()">Actualizar contraseña</button>
               </div>
+              <div class="config-action-grid" aria-label="Accesos de seguridad administrativa">
+                <button type="button" (click)="cambiarSegcion('usuarios')">Usuarios y permisos</button>
+                <button type="button" (click)="cambiarSegcion('auditoria')">Historial de actividad</button>
+              </div>
             </article>
 
             <article class="config-card">
@@ -2210,6 +2217,7 @@ import { catchError, forkJoin, of } from 'rxjs';
                 <button type="button" (click)="crearRespaldoConfiguracion()" [disabled]="configAccion==='respaldo'">▣ {{configAccion==='respaldo' ? 'Generando...' : 'Crear respaldo'}}</button>
                 <button type="button" (click)="verificarSistemaConfiguracion()" [disabled]="configAccion==='estado'">✓ Verificar sistema</button>
                 <button type="button" (click)="limpiarCacheConfiguracion()" [disabled]="configAccion==='cache'">↻ Limpiar caché</button>
+                <button type="button" (click)="cambiarSegcion('mantenimiento-sistema')">Gestionar respaldos</button>
               </div>
             </article>
           </div>
@@ -2224,6 +2232,9 @@ import { catchError, forkJoin, of } from 'rxjs';
               <div><span class="tech-dot" [class.ok]="configEstado?.api"></span><p><b>API</b><small>Laravel {{configEstado?.laravel || ''}}</small></p><em>{{configEstado?.api ? 'CONECTADA' : 'ERROR'}}</em></div>
               <div><span class="tech-dot" [class.ok]="configEstado?.mysql"></span><p><b>Base de datos</b><small>MySQL</small></p><em>{{configEstado?.mysql ? 'CONECTADA' : 'ERROR'}}</em></div>
               <div><span class="tech-dot" [class.ok]="configEstado?.sanctum"></span><p><b>Seguridad</b><small>Laravel Sanctum</small></p><em>{{configEstado?.sanctum ? 'ACTIVA' : 'REVISAR'}}</em></div>
+            </div>
+            <div class="config-action-grid" aria-label="Diagnóstico técnico">
+              <button type="button" (click)="cambiarSegcion('verificacion-efsrt')">Diagnóstico avanzado</button>
             </div>
           </article>
 
@@ -2894,10 +2905,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       {id:'reporte-asistencias',nombre:'Reporte de asistencia'}
     ]},
     {id:'menu',titulo:'Administración',icono:'⚙',items:[
-      {id:'usuarios',nombre:'Usuarios y permisos'},
-      {id:'verificacion-efsrt',nombre:'Verificación EFSRT'},
-      {id:'auditoria',nombre:'Auditoría'},
-      {id:'mantenimiento-sistema',nombre:'Respaldos'},
       {id:'configuracion',nombre:'Configuración'}
     ]},
     {id:'apps',titulo:'Más funciones (opcional)',icono:'⊞',items:[
