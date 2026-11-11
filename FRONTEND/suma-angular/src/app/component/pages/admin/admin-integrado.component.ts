@@ -423,6 +423,7 @@ import { catchError, forkJoin, of } from 'rxjs';
                 </app-admin-dashboard-tools>
               </section>
             </ng-container>
+          </section>
 
           <section class="mg-efsrt-work">
             <div class="mg-efsrt-heading">
