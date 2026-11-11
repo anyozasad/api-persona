@@ -154,6 +154,40 @@ class ProductoImagenDashboardTest extends TestCase
             ->getData(true)['actualizados']);
     }
 
+    public function test_identifica_foto_optimizada_a_webp_en_producto_diez_sin_cambiar_foto_o_precio(): void
+    {
+        if (!function_exists('imagecreatefromstring') || !function_exists('imagewebp')) {
+            $this->markTestSkipped('Para detectar WEBP optimizado se necesita la extensión GD.');
+        }
+        DB::table('categorias')->insert([
+            ['id'=>2,'nombre'=>'Accesorios','estado'=>'activo'],
+            ['id'=>3,'nombre'=>'Suplementos','estado'=>'activo'],
+        ]);
+        app(GymSystemAdminController::class);
+        $ruta = base_path('../FRONTEND/suma-angular/public/assets/mallqui/fotos-reales/foto-09.jpg');
+        $imagen = imagecreatefromstring(file_get_contents($ruta));
+        $this->assertNotFalse($imagen);
+        ob_start();
+        imagewebp($imagen, null, 92);
+        $binario = ob_get_clean();
+        imagedestroy($imagen);
+        $foto = 'data:image/webp;base64,'.base64_encode($binario);
+
+        DB::table('productos')->insert([
+            'categoria_id'=>1,'codigo'=>'PROD-0010','nombre'=>'Producto Prueba 10',
+            'precio_compra'=>5,'precio_venta'=>29,'stock'=>69,'estado'=>'activo','foto'=>$foto,
+        ]);
+
+        $respuesta = app(ProductoController::class)->completarFotosIniciales()->getData(true);
+        $this->assertSame(1,$respuesta['actualizados']);
+        $registro = DB::table('productos')->where('codigo','PROD-0010')->first();
+        $this->assertSame('Universe Nutrition NOXRAGE - Fruit Punch',$registro->nombre);
+        $this->assertSame(3,(int)$registro->categoria_id);
+        $this->assertSame($foto,$registro->foto);
+        $this->assertSame(69,(int)$registro->stock);
+        $this->assertSame('29.00',(string)$registro->precio_venta);
+    }
+
     public function test_no_corrige_nombre_si_el_usuario_cambio_la_foto_original(): void
     {
         DB::table('categorias')->insert(['id'=>2,'nombre'=>'Accesorios','estado'=>'activo']);
