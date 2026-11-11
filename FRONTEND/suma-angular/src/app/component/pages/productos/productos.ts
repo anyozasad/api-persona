@@ -32,17 +32,17 @@ export class ProductosComponent implements OnInit {
   // Fotografías originales aportadas por el gimnasio. Solo aparecen productos
   // identificables; no se mezclan fotos del entrenador ni de máquinas.
   readonly fotosProductosMallqui = [
-    { archivo: 'foto-09.jpg', descripcion: 'NOXRAGE · suplemento (bolsa)' },
-    { archivo: 'foto-11.jpg', descripcion: 'AN USA · producto en cajas' },
-    { archivo: 'foto-12.jpg', descripcion: 'Creatina · suplemento' },
-    { archivo: 'foto-13.jpg', descripcion: 'Shaker · accesorio gris' },
-    { archivo: 'foto-14.jpg', descripcion: 'Shaker · accesorio azul' },
-    { archivo: 'foto-15.jpg', descripcion: 'Big M · suplemento' },
-    { archivo: 'foto-16.jpg', descripcion: 'BCAA · suplemento' },
-    { archivo: 'foto-17.jpg', descripcion: 'Collagen Pro · suplemento' },
-    { archivo: 'foto-29.jpg', descripcion: 'NOXRAGE · presentación alternativa' },
-    { archivo: 'foto-31.jpg', descripcion: 'Big M · presentación alternativa' },
-    { archivo: 'foto-33.jpg', descripcion: 'Pro Mass XL · suplemento' },
+    { archivo: 'foto-09.jpg', descripcion: 'UN NOXRAGE · Fruit Punch' },
+    { archivo: 'foto-11.jpg', descripcion: 'Correas para pesas AN USA · Azul' },
+    { archivo: 'foto-12.jpg', descripcion: 'Level Pro Creatine Monohydrate · 250 g' },
+    { archivo: 'foto-13.jpg', descripcion: 'Shaker UN 20 años · Blanco' },
+    { archivo: 'foto-14.jpg', descripcion: 'HD Blueberry · Bebida energética 135 ml' },
+    { archivo: 'foto-15.jpg', descripcion: 'Universe Nutrition BIGM · Vainilla 2 kg' },
+    { archivo: 'foto-16.jpg', descripcion: 'Universe Nutrition BCAA 6000 · Fruit Punch' },
+    { archivo: 'foto-17.jpg', descripcion: 'Universe Nutrition Collagen Pro · Fruit Punch' },
+    { archivo: 'foto-29.jpg', descripcion: 'UN NOXRAGE · Citrus Punch' },
+    { archivo: 'foto-31.jpg', descripcion: 'BIGM Vainilla · Otra fotografía del mismo producto' },
+    { archivo: 'foto-33.jpg', descripcion: 'AN Pro Mass XL · Sobre 60 g' },
   ];
 
   private imagenSolicitud = 0;
@@ -70,14 +70,24 @@ export class ProductosComponent implements OnInit {
         this.cargando = false;
         this.cargarDiagnosticoFotos();
 
-        // Los diez registros iniciales provienen de datos de prueba.
-        // Completar sus fotografías de forma automática una sola vez,
-        // sin exigir al administrador seleccionar una por una.
-        if (!this.fotosDemoIntentadas && this.productos.some(p =>
-          /^PROD-(?:00[1-9]|0010|010)$/.test(String(p.codigo_producto)) &&
-          /^Producto Prueba (?:[1-9]|10)$/.test(String(p.nombre_producto)) &&
-          !p.foto
-        )) {
+        // Corregir tanto productos ficticios sin imagen como los nombres
+        // equivocados que asignó una versión previa de la aplicación.
+        // La API compara la foto original y protege los cambios manuales.
+        const nombresAnteriores = new Set([
+          'Creatina', 'Shaker gris', 'BCAA', 'Shaker azul', 'Big M',
+          'Collagen Pro', 'NOXRAGE', 'Pro Mass XL', 'AN USA (cajas)',
+          'NOXRAGE (presentación alternativa)'
+        ]);
+        if (!this.fotosDemoIntentadas && this.productos.some(p => {
+          const codigo = String(p.codigo_producto ?? '');
+          const nombre = String(p.nombre_producto ?? '');
+          const esDemo = /^PROD-(?:00[1-9]|0010|010)$/.test(codigo);
+          const sinFoto = !this.fotoVisible(p.foto);
+          return esDemo && (
+            (/^Producto Prueba (?:[1-9]|10)$/.test(nombre) && sinFoto) ||
+            (nombresAnteriores.has(nombre) && !sinFoto)
+          );
+        })) {
           this.fotosDemoIntentadas = true;
           this.completarFotosDemo();
         }
