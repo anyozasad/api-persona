@@ -114,6 +114,38 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.verificacionEfsrt.modulos[0].estado).toBe('estructura_incompleta');
   });
 
+  it('genera CSV de once semanas reales sin afirmar que todo está aprobado', () => {
+    component.verificacionEfsrt = {
+      fecha_revision:'2026-11-11 16:30:00',
+      base_datos:'gym_system',
+      semanas:Array.from({length:11},(_,i)=>({
+        semana:i+1,
+        titulo:'Semana '+(i+1),
+        estado:i===4?'pendiente':'verificacion_manual',
+        observaciones:i===4?['Faltan 9 fotografías','Sin validar en equipo']:['Verificar en equipo'],
+        destino:i===4?'productos':'dashboard'
+      })),
+      modulos:[{nombre:'Productos',estado:'estructura_incompleta',registros:10,faltantes:['categorias']}],
+      alertas:[{tipo:'stock_negativo',cantidad:1,mensaje:'=SUM(10,20)'}]
+    };
+    const csv=component.construirInformeEfsrtCsv();
+    expect(csv).toContain('"Base de datos";"gym_system"');
+    expect(csv).toContain('"Semana";"Actividad";"Estado"');
+    expect(csv).toContain('"5";"Semana 5";"Pendiente"');
+    expect(csv).toContain('"11";"Semana 11";"Verificación manual"');
+    expect(csv).toContain('"Faltan 9 fotografías');
+    expect(csv).toContain('categorias');
+    expect(csv).toContain('"\'=SUM(10,20)"'); // no ejecutar fórmulas de celdas en Excel
+    expect(csv).toContain('no certifican SUNAT');
+  });
+
+  it('no exporta informe EFSRT con semanas incompletas o datos no consultados', () => {
+    component.verificacionEfsrt={semanas:[]};
+    expect(component.construirInformeEfsrtCsv()).toBe('');
+    component.descargarInformeEfsrt();
+    expect(component.error).toContain('Primero comprueba las 11 semanas');
+  });
+
   it('no da por aprobada la revisión si la base de datos está caída', () => {
     api.verificacionEfsrt.and.returnValue(throwError(() => ({
       status:503,error:{mensaje:'No fue posible consultar la base de datos.'}
