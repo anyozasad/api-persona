@@ -2178,12 +2178,25 @@ import { catchError, forkJoin, of } from 'rxjs';
               <h2>Administra Mallqui Gym desde un solo lugar</h2>
               <p>Datos reales del gimnasio, mensualidades, horarios, contacto, reglas operativas y estado del sistema.</p>
             </div>
-            <div class="config-health" [class.ok]="configEstado?.mysql">
+            <div class="config-health" [class.ok]="configDisponible && configEstado?.mysql && configEstado?.operativo===true" [class.warning]="configEstado?.mysql && configEstado?.operativo!==true">
               <span></span>
-              <div><b>{{configEstado?.mysql ? 'Sistema operativo' : 'Revisar conexión'}}</b><small>Laravel API + MySQL</small></div>
+              <div><b>{{estadoConfiguracionTexto}}</b><small>{{configEstado?.operativo===false ? 'Hay requisitos de estructura pendientes' : 'Consulta en Laravel y MySQL'}}</small></div>
             </div>
           </div>
 
+          <div class="config-fetch-status" *ngIf="configCargando">
+            Consultando la configuración del gimnasio desde MySQL...
+          </div>
+          <div class="config-fetch-status warning" *ngIf="!configCargando && !configDisponible">
+            <strong>No se pudo cargar la configuración guardada.</strong>
+            <span>{{configError || 'No hay respuesta verificada del servidor.'}} Los valores de muestra no se presentan como datos del negocio.</span>
+            <button type="button" class="admin-secondary" (click)="cargarConfiguracion()">Reintentar consulta</button>
+          </div>
+          <ng-container *ngIf="configDisponible && !configCargando">
+            <p class="config-source-info">
+              Datos consultados desde MySQL. Comprueba que el contacto, los horarios y las tarifas correspondan al gimnasio.
+              <span *ngIf="configUltimoGuardado">Última modificación: {{fecha(configUltimoGuardado)}}</span>
+            </p>
           <div class="config-main-grid">
             <article class="config-card config-business">
               <div class="config-card-head">
@@ -2195,11 +2208,11 @@ import { catchError, forkJoin, of } from 'rxjs';
                 <label class="span-2">Nombre del gimnasio
                   <input [(ngModel)]="configuracionForm.nombre_gimnasio" name="cfg_nombre" placeholder="Mallqui Gym">
                 </label>
-                <label>RUC
-                  <input [(ngModel)]="configuracionForm.ruc" name="cfg_ruc" placeholder="Opcional">
+                <label>RUC del gimnasio (si está registrado)
+                  <input [(ngModel)]="configuracionForm.ruc" name="cfg_ruc" inputmode="numeric" maxlength="11" pattern="[0-9]{11}" placeholder="11 dígitos">
                 </label>
                 <label>Teléfono
-                  <input [(ngModel)]="configuracionForm.telefono" name="cfg_telefono" placeholder="+51 ...">
+                  <input [(ngModel)]="configuracionForm.telefono" name="cfg_telefono" inputmode="tel" placeholder="Teléfono de contacto">
                 </label>
                 <label>Correo de contacto
                   <input type="email" [(ngModel)]="configuracionForm.correo" name="cfg_correo" placeholder="contacto@...">
@@ -2210,7 +2223,7 @@ import { catchError, forkJoin, of } from 'rxjs';
                 <label>Referencia
                   <input [(ngModel)]="configuracionForm.referencia" name="cfg_referencia" placeholder="Referencia del local">
                 </label>
-                <label>Tarifa diaria
+                <label>Tarifa diaria (S/)
                   <input type="number" min="0" step="0.50" [(ngModel)]="configuracionForm.tarifa_diaria" name="cfg_tarifa_diaria">
                 </label>
                 <label class="span-2">Frase del gimnasio
@@ -2224,21 +2237,22 @@ import { catchError, forkJoin, of } from 'rxjs';
 
             <article class="config-card">
               <div class="config-card-head simple">
-                <div><span>02</span><div><h3>Horario de atención</h3><p>Define cuándo atiende el gimnasio.</p></div></div>
+                <div><span>02</span><div><h3>Horario de atención</h3><p>Horario general y excepciones de cada día, guardados en MySQL.</p></div></div>
               </div>
               <div class="config-time-grid">
-                <label>Apertura<input type="time" [(ngModel)]="configuracionForm.hora_apertura" name="cfg_apertura"></label>
-                <label>Cierre<input type="time" [(ngModel)]="configuracionForm.hora_cierre" name="cfg_cierre"></label>
+                <label>Primera apertura habitual<input type="time" [(ngModel)]="configuracionForm.hora_apertura" name="cfg_apertura" required></label>
+                <label>Último cierre habitual<input type="time" [(ngModel)]="configuracionForm.hora_cierre" name="cfg_cierre" required></label>
               </div>
               <div class="config-days">
                 <button type="button" *ngFor="let dia of diasSemana"
                   [class.active]="configuracionForm.dias_atencion?.includes(dia)"
-                  (click)="toggleDiaConfiguracion(dia)">
+                  (click)="toggleDiaConfiguracion(dia)" [attr.aria-pressed]="configuracionForm.dias_atencion?.includes(dia)">
                   {{dia.substring(0,3)}}
                 </button>
               </div>
-              <label class="config-schedule-detail">Horario detallado
-                <textarea [(ngModel)]="configuracionForm.horario_detalle" name="cfg_horario_detalle" rows="5"></textarea>
+              <p class="config-schedule-help">Selecciona los días de atención. Indica abajo descansos, horario del sábado y domingo u otros cambios: este detalle se muestra en el portal del cliente.</p>
+              <label class="config-schedule-detail">Horario detallado por día y descansos
+                <textarea [(ngModel)]="configuracionForm.horario_detalle" name="cfg_horario_detalle" rows="5" placeholder="Ej. Lunes a viernes 6:00-12:00 y 14:00-21:30; sábado 6:00-12:00..."></textarea>
               </label>
             </article>
           </div>
@@ -2258,7 +2272,7 @@ import { catchError, forkJoin, of } from 'rxjs';
 
             <article class="config-card">
               <div class="config-card-head simple">
-                <div><span>04</span><div><h3>Notificaciones internas</h3><p>Elige qué situaciones deben generar alertas.</p></div></div>
+                <div><span>04</span><div><h3>Notificaciones internas</h3><p>Preferencias guardadas para los módulos de avisos del gimnasio.</p></div></div>
               </div>
               <div class="config-switches">
                 <label><div><b>Membresías por vencer</b><small>Mostrar alertas antes del vencimiento.</small></div><input type="checkbox" [(ngModel)]="configuracionForm.notificar_vencimientos" name="cfg_not_venc"><i></i></label>
@@ -2323,9 +2337,10 @@ import { catchError, forkJoin, of } from 'rxjs';
           </article>
 
           <div class="config-save-bar">
-            <div><b>Cambios de configuración</b><small>Los datos se guardan en MySQL y se mantienen al reiniciar el sistema.</small></div>
-            <button type="button" (click)="guardarConfiguracion()" [disabled]="configGuardando">{{configGuardando ? 'Guardando...' : 'Guardar configuración'}}</button>
+            <div><b>Configuración del negocio</b><small>Los cambios se confirman desde Laravel y se guardan en MySQL.</small></div>
+            <button type="button" (click)="guardarConfiguracion()" [disabled]="configGuardando || !configDisponible">{{configGuardando ? 'Guardando...' : 'Guardar configuración en MySQL'}}</button>
           </div>
+          </ng-container>
         </section>
       </ng-container>
       <ng-container *ngIf="seccion==='opiniones'">
@@ -3044,6 +3059,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   configCargando = false;
   configDisponible = false;
   configError = '';
+  configUltimoGuardado = '';
   ultimoRespaldo: any = null;
   configPassword: any = {actual:'',nueva:'',confirmacion:''};
   configGuardando = false;
@@ -5583,21 +5599,64 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   movimientoCaja(){ this.api.movimientoCaja(this.movCajaForm.tipo,'Manual',this.movCajaForm.descripcion,Number(this.movCajaForm.monto)).subscribe({next:r=>{this.ok(r.mensaje||'Movimiento registrado');this.movCajaForm={tipo:'Ingreso',monto:0,descripcion:'',origen:'Manual'};this.cargarCaja();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
   cerrarCaja(){ if(!confirm('¿Cerrar la caja actual?')) return; this.api.cerrarCaja(Number(this.cajaCerrarForm.monto_real),this.cajaCerrarForm.observacion).subscribe({next:r=>{this.ok(r.mensaje||'Caja cerrada');this.cajaCerrarForm={monto_real:0,observacion:''};this.cargarCaja();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
 
+  get estadoConfiguracionTexto():string {
+    if(this.configCargando) return 'Consultando MySQL';
+    if(!this.configDisponible || !this.configEstado) return 'Conexión sin verificar';
+    if(this.configEstado?.api!==true || this.configEstado?.mysql!==true) return 'Revisar conexión';
+    if(this.configEstado?.operativo===false) return 'MySQL conectado · esquema pendiente';
+    if(this.configEstado?.operativo===true) return 'Sistema verificado';
+    return 'MySQL conectado · módulos sin verificar';
+  }
+
+  /** Revisa también el esquema operativo, no solo si SELECT 1 responde. */
+  comprobarEsquemaConfiguracion():void {
+    this.api.estadoOperativo().subscribe({
+      next:diagnostico=>{
+        if(this.configEstado){
+          this.configEstado={
+            ...this.configEstado,
+            operativo:diagnostico?.operativo===true,
+            faltantes:Array.isArray(diagnostico?.faltantes)?diagnostico.faltantes:[]
+          };
+        }
+      },
+      error:()=>{ if(this.configEstado)this.configEstado={...this.configEstado,operativo:null}; }
+    });
+  }
+
   cargarConfiguracion(){
+    this.configCargando=true;
+    this.configDisponible=false;
+    this.configError='';
+    this.configEstado=null;
     this.api.configuracion().subscribe({
       next:r=>{
-        const cfg=r?.configuracion || {};
+        const cfg=r?.configuracion;
+        if(!cfg || !cfg.nombre_gimnasio){
+          this.configCargando=false;
+          this.configError='El servidor no entregó una configuración válida.';
+          return;
+        }
         this.configuracionForm={
           ...this.configuracionForm,
           ...cfg,
-          hora_apertura:String(cfg.hora_apertura || '06:00').slice(0,5),
-          hora_cierre:String(cfg.hora_cierre || '22:00').slice(0,5),
-          dias_atencion:Array.isArray(cfg.dias_atencion)?cfg.dias_atencion:this.configuracionForm.dias_atencion
+          hora_apertura:String(cfg.hora_apertura||'').slice(0,5),
+          hora_cierre:String(cfg.hora_cierre||'').slice(0,5),
+          dias_atencion:Array.isArray(cfg.dias_atencion)?cfg.dias_atencion:[]
         };
-        this.configEstado=r?.estado || null;
-        this.ultimoRespaldo=r?.ultimo_respaldo || null;
+        this.configUltimoGuardado=String(cfg.updated_at||'');
+        this.configEstado=r?.estado||null;
+        this.ultimoRespaldo=r?.ultimo_respaldo||null;
+        this.configDisponible=true;
+        this.configCargando=false;
+        this.comprobarEsquemaConfiguracion();
       },
-      error:e=>this.mostrarError(e)
+      error:e=>{
+        this.configCargando=false;
+        this.configDisponible=false;
+        this.configError='No se pudo consultar /api/configuracion en Laravel.';
+        this.mostrarError(e);
+      }
     });
   }
 
@@ -5610,11 +5669,59 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   guardarConfiguracion(){
-    if(!this.configuracionForm.nombre_gimnasio?.trim()){this.error='Ingresa el nombre del gimnasio.';return;}
+    if(!this.configDisponible){
+      this.error='Primero carga la configuración real desde MySQL.';
+      return;
+    }
+    if(!String(this.configuracionForm.nombre_gimnasio||'').trim()){
+      this.error='Ingresa el nombre del gimnasio.';
+      return;
+    }
+    const ruc=String(this.configuracionForm.ruc||'').trim();
+    if(ruc && !/^\d{11}$/.test(ruc)){
+      this.error='El RUC debe contener exactamente 11 dígitos, o dejarse vacío.';
+      return;
+    }
+    const inicio=String(this.configuracionForm.hora_apertura||'').slice(0,5);
+    const fin=String(this.configuracionForm.hora_cierre||'').slice(0,5);
+    if(!/^\d{2}:\d{2}$/.test(inicio) || !/^\d{2}:\d{2}$/.test(fin) || fin<=inicio){
+      this.error='La hora de cierre habitual debe ser posterior a la apertura.';
+      return;
+    }
+    if(!Array.isArray(this.configuracionForm.dias_atencion) ||
+       this.configuracionForm.dias_atencion.length===0){
+      this.error='Selecciona al menos un día de atención.';
+      return;
+    }
+    if(this.configuracionForm.correo &&
+       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(this.configuracionForm.correo).trim())){
+      this.error='Ingresa un correo de contacto válido o deja el campo vacío.';
+      return;
+    }
+    this.error='';
     this.configGuardando=true;
-    const datos={...this.configuracionForm,hora_apertura:String(this.configuracionForm.hora_apertura).slice(0,5),hora_cierre:String(this.configuracionForm.hora_cierre).slice(0,5)};
+    const datos={
+      ...this.configuracionForm,
+      ruc:ruc||null,
+      hora_apertura:inicio,
+      hora_cierre:fin
+    };
     this.api.guardarConfiguracion(datos).subscribe({
-      next:r=>{this.configGuardando=false;this.configuracionForm={...this.configuracionForm,...r.configuracion,hora_apertura:String(r.configuracion?.hora_apertura||datos.hora_apertura).slice(0,5),hora_cierre:String(r.configuracion?.hora_cierre||datos.hora_cierre).slice(0,5)};this.ok(r.mensaje||'Configuración guardada');},
+      next:r=>{
+        this.configGuardando=false;
+        if(!r?.configuracion){
+          this.error='El servidor respondió sin confirmar los datos guardados.';
+          return;
+        }
+        this.configuracionForm={
+          ...this.configuracionForm,
+          ...r.configuracion,
+          hora_apertura:String(r.configuracion.hora_apertura||datos.hora_apertura).slice(0,5),
+          hora_cierre:String(r.configuracion.hora_cierre||datos.hora_cierre).slice(0,5)
+        };
+        this.configUltimoGuardado=String(r.configuracion.updated_at||'');
+        this.ok('Configuración guardada en MySQL. Se reflejará también en el portal.');
+      },
       error:e=>{this.configGuardando=false;this.mostrarError(e);}
     });
   }
@@ -5622,7 +5729,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   verificarSistemaConfiguracion(){
     this.configAccion='estado';
     this.api.estadoSistema().subscribe({
-      next:r=>{this.configAccion='';this.configEstado=r;this.ok(r.mysql?'Sistema verificado: API y MySQL conectados.':'La API responde, pero MySQL requiere revisión.');},
+      next:r=>{
+        this.configAccion='';
+        this.configEstado=r;
+        this.comprobarEsquemaConfiguracion();
+        this.ok(r.mysql?'MySQL conectado; revisando la estructura de los módulos.':'La API responde, pero MySQL requiere revisión.');
+      },
       error:e=>{this.configAccion='';this.mostrarError(e);}
     });
   }
