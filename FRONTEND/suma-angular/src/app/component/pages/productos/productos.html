@@ -269,13 +269,11 @@
                 </td>
                 <td><span class="estado-chip" [class.inactivo]="item.estado !== 'Activo'">{{ item.estado }}</span></td>
                 <td class="acciones-tabla">
-                  <input #archivoFotoFila type="file" hidden accept="image/jpeg,image/png,image/webp"
-                    [disabled]="fotoCargandoId !== null" (change)="seleccionarFotoDirecta($event, item)">
                   <button type="button" class="editar-btn" [disabled]="fotoCargandoId !== null"
-                    [title]="fotoVisible(item.foto) ? 'Editar producto o cambiar su fotografía' : 'Seleccionar foto y guardarla directamente en MySQL'"
-                    (click)="fotoVisible(item.foto) ? editar(item) : archivoFotoFila.click()">{{
+                    [title]="fotoVisible(item.foto) ? 'Editar producto o cambiar su fotografía' : 'Elegir una foto real del gimnasio o subir otra desde tu equipo'"
+                    (click)="fotoVisible(item.foto) ? editar(item) : abrirGaleriaProducto(item)">{{
                       fotoCargandoId === item.id_producto ? 'Guardando foto...' :
-                      (fotoVisible(item.foto) ? 'Editar / cambiar foto' : 'Subir foto')
+                      (fotoVisible(item.foto) ? 'Editar / cambiar foto' : 'Elegir foto')
                     }}</button>
                   <button type="button" class="peligro" (click)="eliminar(item.id_producto!)">Desactivar</button>
                 </td>
@@ -300,4 +298,46 @@
       </div>
     }
   </section>
+  <!-- Semana 05: galería de fotografías que YA están dentro del proyecto. -->
+  <div class="foto-catalogo-overlay" *ngIf="galeriaProducto as seleccionado"
+       (click)="cerrarGaleriaProducto()">
+    <section class="foto-catalogo-dialog" role="dialog" aria-modal="true"
+             aria-label="Elegir fotografía real del producto"
+             (click)="$event.stopPropagation()">
+      <header class="foto-catalogo-cabecera">
+        <div>
+          <strong>Fotografía del producto</strong>
+          <small>{{seleccionado.codigo_producto}} · {{seleccionado.nombre_producto}}</small>
+        </div>
+        <button type="button" [disabled]="fotoCargandoId !== null"
+                (click)="cerrarGaleriaProducto()" aria-label="Cerrar galería">✕</button>
+      </header>
+      <p class="foto-catalogo-ayuda">
+        Elige la imagen que corresponde a este producto. Son las fotos reales de Mallqui Gym
+        incluidas en el proyecto y funcionan sin Internet. Se guardará en MySQL.
+      </p>
+      <div class="foto-catalogo-imagenes">
+        <button *ngFor="let referencia of fotosProductosMallqui" type="button"
+                [disabled]="fotoCargandoId !== null"
+                (click)="seleccionarFotoGaleria(seleccionado, referencia.archivo)"
+                [attr.aria-label]="'Usar fotografía de ' + referencia.descripcion">
+          <img [src]="'assets/mallqui/fotos-reales/' + referencia.archivo"
+               [alt]="referencia.descripcion" loading="lazy">
+          <span>{{referencia.descripcion}}</span>
+        </button>
+      </div>
+      <footer class="foto-catalogo-pie">
+        <label class="foto-catalogo-subir">
+          <input type="file" accept="image/jpeg,image/png,image/webp"
+                 [disabled]="fotoCargandoId !== null"
+                 (change)="seleccionarFotoDirecta($event, seleccionado)">
+          Subir otra fotografía del producto
+        </label>
+        <span *ngIf="fotoCargandoId !== null">Guardando fotografía en MySQL...</span>
+        <button type="button" (click)="cerrarGaleriaProducto()"
+                [disabled]="fotoCargandoId !== null">Cancelar</button>
+      </footer>
+      <p class="foto-catalogo-error" *ngIf="error">{{error}}</p>
+    </section>
+  </div>
 </div>
