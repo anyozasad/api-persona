@@ -158,13 +158,20 @@ class ProductoController extends Controller
             $esInicial = $fila->{$nombreCampo} === $nombreInicial;
             $fotoAnterior = trim((string)($fila->foto ?? ''));
 
-            // Solo se instala la foto cuando es un producto demo sin imagen.
-            // Las etiquetas previas se reparan únicamente con imagen idéntica.
-            if ($esInicial && $fotoAnterior !== '') {
-                $omitidos++;
-                continue;
-            }
-            if (!$esInicial && $fotoAnterior === '') {
+            // Si una fotografía ya fue seleccionada manualmente para un
+            // registro ficticio, identificar la foto real sin sustituirla.
+            // Nunca inferir su nombre a partir del código de demostración.
+            $tieneFoto = $fotoAnterior !== '';
+            if ($tieneFoto) {
+                $fotoIdentificada = $this->identificarFotoCatalogo($fotoAnterior, $catalogo, $baseFotos);
+                if ($fotoIdentificada === null) {
+                    $observaciones[] = "No se modificó {$codigo}: foto diferente o sin coincidencia verificable.";
+                    $omitidos++;
+                    continue;
+                }
+                [$nombreCorrecto, $categoria, $archivo] = array_slice($catalogo[$fotoIdentificada], 0, 3);
+            } elseif (!$esInicial) {
+                // No volver a colocar una imagen que el usuario eliminó.
                 $omitidos++;
                 continue;
             }
@@ -185,12 +192,6 @@ class ProductoController extends Controller
                 $observaciones[] = "La fotografía de {$codigo} es demasiado grande.";
                 continue;
             }
-            if (!$esInicial && !hash_equals(hash('sha256',$foto), hash('sha256',$fotoAnterior))) {
-                // Si el cliente cambió la foto, conservar su elección y nombre.
-                $omitidos++;
-                continue;
-            }
-
             $idCategoria = DB::table('categorias')
                 ->where($categoriaNombreCampo, $categoria)->value($categoriaIdCampo);
             if (!$idCategoria) {
@@ -203,20 +204,20 @@ class ProductoController extends Controller
                 ->where($codigoCampo, $codigo)
                 ->where($nombreCampo, $esInicial ? $nombreInicial : $nombreAnterior);
 
-            if ($esInicial) {
+            if ($tieneFoto) {
+                // Comparación optimista para no pisar un cambio posterior.
+                $query->where('foto', $fotoAnterior);
+            } else {
                 $query->where(function ($q) {
                     $q->whereNull('foto')->orWhere('foto','');
                 });
-            } else {
-                // Previene sobrescribir cambios manuales concurrentes.
-                $query->where('foto', $foto);
             }
 
             $cambios = [
                 $nombreCampo => $nombreCorrecto,
                 $categoriaCampo => $idCategoria,
             ];
-            if ($esInicial) $cambios['foto'] = $foto;
+            if (!$tieneFoto) $cambios['foto'] = $foto;
             $escrituras = $query->update($cambios);
 
             if ($escrituras === 1) $actualizados++;
@@ -232,6 +233,99 @@ class ProductoController extends Controller
             'observaciones'=>$observaciones,
             'base_datos'=>DB::connection()->getDatabaseName(),
         ]);
+    }
+
+    /**
+     * Determina a qué artículo corresponde una fotografía EXISTENTE de los
+     * registros de prueba. Admite JPEG idéntico o WEBP/JPEG optimizado por el
+     * navegador. Solo acepta una coincidencia visual clara y única.
+     */
+    private function identificarFotoCatalogo(string $foto, array $catalogo, string $directorio): ?int
+    {
+        if (strlen($foto) > 3000000
+            || !preg_match('~^data:image/(?:png|jpeg|webp);base64,([A-Za-z0-9+/]+={0,2})$~D', $foto, $partes)) {
+            return null;
+        }
+        $contenido = base64_decode($partes[1], true);
+        if ($contenido === false || strlen($contenido) > 2200000) return null;
+
+        $opciones = [];
+        foreach ($catalogo as $numero => $datos) {
+            $opciones[$datos[2]] = $numero;
+        }
+        // BIGM cuenta con dos tomas: ambas representan el mismo artículo.
+        $opciones['foto-31.jpg'] = 5;
+
+        $firmaActual = null;
+        $coincidencias = [];
+        foreach ($opciones as $archivo => $numero) {
+            $ruta = $directorio.DIRECTORY_SEPARATOR.$archivo;
+            if (!is_file($ruta) || is_link($ruta)) continue;
+            $original = file_get_contents($ruta);
+            if ($original === false) continue;
+
+            if (hash_equals(hash('sha256', $original), hash('sha256', $contenido))) {
+                return $numero;
+            }
+            if (!function_exists('imagecreatefromstring')) continue;
+            $firmaActual ??= $this->firmaVisualImagen($contenido);
+            if ($firmaActual === null) return null;
+
+            $firmaLocal = $this->firmaVisualImagen($original);
+            if ($firmaLocal === null) continue;
+            $distancia = 0;
+            for ($i = 0; $i < 64; $i++) {
+                if ($firmaActual[$i] !== $firmaLocal[$i]) $distancia++;
+            }
+            $coincidencias[] = ['numero'=>$numero,'distancia'=>$distancia];
+        }
+        if (!$coincidencias) return null;
+
+        usort($coincidencias, fn ($a, $b) => $a['distancia'] <=> $b['distancia']);
+        $primera = $coincidencias[0];
+        $segunda = $coincidencias[1]['distancia'] ?? 65;
+
+        // Sin coincidencia nítida, conservar foto y nombre del usuario.
+        return $primera['distancia'] <= 6 && ($segunda - $primera['distancia']) >= 8
+            ? $primera['numero'] : null;
+    }
+
+    /** Hash de diferencias 9x8 de la imagen, resistente a JPEG/WEBP. */
+    private function firmaVisualImagen(string $bytes): ?string
+    {
+        if (!function_exists('imagecreatefromstring') || !function_exists('imagecreatetruecolor')) {
+            return null;
+        }
+        $imagen = @imagecreatefromstring($bytes);
+        if ($imagen === false) return null;
+
+        try {
+            $ancho = imagesx($imagen);
+            $alto = imagesy($imagen);
+            if ($ancho < 9 || $alto < 8 || $ancho*$alto > 36000000) return null;
+            $miniatura = imagecreatetruecolor(9, 8);
+            if ($miniatura === false) return null;
+            try {
+                imagecopyresampled($miniatura, $imagen, 0, 0, 0, 0, 9, 8, $ancho, $alto);
+                $firma = '';
+                for ($y = 0; $y < 8; $y++) {
+                    for ($x = 0; $x < 8; $x++) {
+                        $izquierda = imagecolorat($miniatura, $x, $y);
+                        $derecha = imagecolorat($miniatura, $x+1, $y);
+                        $grisA = ((($izquierda>>16)&255)*299 + (($izquierda>>8)&255)*587
+                            + ($izquierda&255)*114);
+                        $grisB = ((($derecha>>16)&255)*299 + (($derecha>>8)&255)*587
+                            + ($derecha&255)*114);
+                        $firma .= $grisA > $grisB ? '1' : '0';
+                    }
+                }
+                return $firma;
+            } finally {
+                imagedestroy($miniatura);
+            }
+        } finally {
+            imagedestroy($imagen);
+        }
     }
 
     public function index(Request $request)
