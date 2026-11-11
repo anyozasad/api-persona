@@ -27,6 +27,33 @@ Los gráficos mantienen cálculos reales de la API, pero se abren únicamente de
 | 10 | Pagos de extremo a extremo; boleta electrónica; uso offline; permisos; pruebas finales | Pagos, comprobantes internos, Usuarios y permisos, assets locales y pruebas E2E | PENDIENTE: boleta electrónica autorizada SUNAT; una constancia interna no sustituye CPE; pruebas locales y firmas futuras |
 | 11 | Probar login/registro/navegación; módulos; duplicados y vacíos; últimos retoques; evidencias y respaldo | Login, los cinco grupos del menú, Verificación EFSRT, Respaldos, GitHub Actions | Tests de navegador/MySQL y capturas automáticas; backup SQL real y firmas aún deben verificarse al terminar el periodo |
 
+## Corrección técnica del 11 de noviembre de 2026
+
+La actualización se aplicó directamente a la rama `main` de `anyozasad/api-persona`; no se genera ZIP ni se cambia la paleta del dashboard.
+
+- **Semana 05:** `Productos y stock` permite **Subir foto** desde cada fila mediante `PATCH /api/productos/{id}/foto`. La API comprueba que los bytes correspondan a JPG/PNG/WEBP y modifica solo la columna `foto`. Se añade prueba de persistencia con precio y stock intactos.
+- **Semanas 01–11:** en **Administración → Comprobación EFSRT**, el servidor revisa once semanas reales, con verificación de estructuras modernas y legacy, productos sin foto, inconsistencias en la BD y respaldo presente. Cada semana enlaza al módulo que corresponde. **Verificar en equipo** no significa aprobado.
+- **Semana 11:** la descarga del backup del panel utiliza el comando SQL `backup:database` con `mysqldump` y entrega el archivo real; evita armar una copia enorme en memoria. Requiere MySQL y el ejecutable `mysqldump` disponible.
+- **Pruebas:** PHPUnit verifica la revisión de once semanas y fotos ausentes. La prueba E2E de Chromium con base temporal verifica la pantalla de once semanas y la carga de foto desde una fila, con stock y precio invariantes. Los resultados solo cuentan como aprobados si GitHub Actions o el equipo local los ejecuta correctamente.
+
+### Lo que no puede darse por completado automáticamente
+
+1. Los productos con `foto = NULL` en la BD local necesitan fotografías originales. El código no puede inventar imágenes de productos desconocidos.
+2. Las operaciones, roles, alertas y comprobantes requieren demostración con datos reales de la instalación de Windows/XAMPP; las pruebas de CI utilizan MySQL de ensayo.
+3. Los comprobantes que genera el sistema son **internos**, no CPE SUNAT validados. El modo sin conexión a Internet tampoco equivale a operar sin servidor MySQL local.
+4. Las capturas finales, la exportación del respaldo, la evidencia de las jornadas todavía futuras y las firmas del supervisor siguen sujetas a comprobación real.
+
+En la raíz del repositorio:
+
+```powershell
+git pull origin main
+cd BACKEND
+php artisan migrate --force
+php artisan route:list --path=api
+```
+
+**Precaución:** respalda MySQL antes de aplicar migraciones. Nunca uses `migrate:fresh` sobre la base de producción. Inicia MySQL de XAMPP, Laravel y Angular como se describe en la guía principal.
+
 ## Reglas para la evaluación
 
 1. El sistema debe mostrar los valores reales de DB_DATABASE; no se usarán tarjetas estáticas para simular socios ni productos.
