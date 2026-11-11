@@ -981,44 +981,45 @@ class GymSystemAdminController extends Controller
         return response()->json(['mensaje'=>'Configuración de la base principal actualizada.','configuracion'=>$this->db->table('configuracion')->first()]);
     }
 
+    /**
+     * Descargar un respaldo SQL íntegro de la base principal. Se reutiliza
+     * el mismo comando de Configuración; no se construye en memoria un SQL
+     * enorme ni se ofrece una copia incompleta como si fuera verificada.
+     */
     public function backup()
     {
-        $cfg = $this->schema->hasTable('configuracion_sistema')
-            ? $this->db->table('configuracion_sistema')->first()
-            : null;
-
-        $nombreBase = $cfg->nombre_gimnasio ?? 'Mallqui_Gym';
-        $nombre = preg_replace('/[^A-Za-z0-9\-]/', '_', (string) $nombreBase);
-        $out = "-- Backup base principal\n-- Fecha: ".now()->format('Y-m-d H:i:s')."\n\nSET FOREIGN_KEY_CHECKS=0;\n";
-
-        $base = $this->db->getDatabaseName();
-        $tables = collect($this->db->select(
-            "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_TYPE = 'BASE TABLE' ORDER BY TABLE_NAME",
-            [$base]
-        ))->map(fn ($r) => $r->TABLE_NAME);
-
-        foreach ($tables as $t) {
-            $cr = $this->db->select("SHOW CREATE TABLE `{$t}`")[0] ?? null;
-            if ($cr) {
-                $vals = array_values((array) $cr);
-                $out .= "\nDROP TABLE IF EXISTS `{$t}`;\n".($vals[1] ?? '').";\n";
-            }
-
-            foreach ($this->db->table($t)->get() as $row) {
-                $vals = array_map(
-                    fn ($v) => $v === null ? 'NULL' : $this->db->getPdo()->quote((string) $v),
-                    array_values((array) $row)
-                );
-                $out .= "INSERT INTO `{$t}` VALUES (".implode(',', $vals).");\n";
-            }
+        if (config('database.default') !== 'mysql') {
+            return response()->json(['mensaje'=>'El respaldo requiere MySQL.'], 503);
         }
 
-        $out .= "\nSET FOREIGN_KEY_CHECKS=1;\n";
+        try {
+            $resultado = Artisan::call('backup:database', ['--keep'=>30]);
+            if ($resultado !== 0) {
+                return response()->json([
+                    'mensaje'=>'No se generó el respaldo SQL. '.trim(Artisan::output()),
+                ], 500);
+            }
 
-        return response($out, 200, [
-            'Content-Type' => 'application/sql; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="backup_'.$nombre.'_'.now()->format('Y-m-d_H-i-s').'.sql"',
-        ]);
+            $carpeta = storage_path('app/backups');
+            $base = (string) $this->db->getDatabaseName();
+            $archivos = glob($carpeta.DIRECTORY_SEPARATOR.$base.'_*.sql') ?: [];
+            usort($archivos, fn ($a,$b) => filemtime($b) <=> filemtime($a));
+            $archivo = $archivos[0] ?? null;
+
+            if (!$archivo || !is_file($archivo) || filesize($archivo) < 100) {
+                return response()->json(['mensaje'=>'No se encontró un respaldo SQL válido para descargar.'], 500);
+            }
+
+            return response()->download($archivo, basename($archivo), [
+                'Content-Type' => 'application/sql; charset=UTF-8',
+                'Cache-Control' => 'private, no-store',
+            ]);
+        } catch (\Throwable $error) {
+            report($error);
+            return response()->json([
+                'mensaje'=>'No se pudo crear el respaldo. Comprueba MySQL y mysqldump.',
+            ], 500);
+        }
     }
 
     public function restaurar(Request $request)
