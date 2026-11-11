@@ -189,6 +189,57 @@ try {
     });
   });
 
+  await paso('Gastos no inventa cierres ni permite egresos sin caja verificada',async()=>{
+    await page.goto(base+'/gastos',{waitUntil:'domcontentloaded'});
+    await page.locator('.mg-current-topbar h1').waitFor({timeout:20000});
+    await page.waitForFunction(()=>{
+      const root=document.querySelector('.mg-current-workspace');
+      return root && (root.querySelector('.operation-locked-state') ||
+        root.querySelector('.expense-fetch-note') ||
+        root.querySelector('.management-grid form'));
+    },{timeout:20000});
+    const error=await page.locator('.expense-fetch-note').count();
+    assert.equal(error,0,'La consulta a MySQL para Gastos debe funcionar.');
+    const bloque=page.locator('.operation-locked-state');
+    if(await bloque.count()){
+      const texto=await bloque.innerText();
+      assert.match(texto,/caja abierta|estado actual no coinciden/i);
+      const titulo=await bloque.locator('.operation-locked-side h3').innerText();
+      assert.ok(titulo!=='Caja #','La última caja no puede mostrar un número vacío.');
+    }
+    await page.screenshot({
+      path:'evidencias-dashboard/31_Gastos_estado_caja_real.png',
+      fullPage:true,animations:'disabled'
+    });
+  });
+
+  await paso('Configuración guarda en MySQL y sincroniza el portal real',async()=>{
+    await page.goto(base+'/configuracion',{waitUntil:'domcontentloaded'});
+    const config=page.locator('.config-page');
+    await config.locator('input[name=cfg_frase]').waitFor({timeout:25000});
+    const mensaje='Mallqui Gym - información verificada en la prueba de integración';
+    await config.locator('input[name=cfg_frase]').fill(mensaje);
+    await config.getByRole('button',{name:'Guardar configuración en MySQL'}).click();
+    await page.waitForFunction(expected=>{
+      const etiqueta=document.querySelector('.config-save-bar');
+      return etiqueta && document.querySelector('input[name=cfg_frase]')?.value===expected;
+    },mensaje,{timeout:15000});
+    await page.reload({waitUntil:'domcontentloaded'});
+    await config.locator('input[name=cfg_frase]').waitFor({timeout:25000});
+    assert.equal(await config.locator('input[name=cfg_frase]').inputValue(),mensaje,
+      'La configuración debe conservarse después de actualizar el navegador.');
+    const respuesta=await context.request.get(base+'/api/informacion-gym');
+    assert.equal(respuesta.status(),200);
+    const info=await respuesta.json();
+    assert.equal(info.frase_publicitaria,mensaje,
+      'La portada del usuario debe recibir los mismos datos guardados por el administrador.');
+    assert.equal(await config.locator('.config-fetch-status.warning').count(),0);
+    await page.screenshot({
+      path:'evidencias-dashboard/32_Configuracion_persistida_en_MySQL.png',
+      fullPage:true,animations:'disabled'
+    });
+  });
+
   await paso('Inicio EFSRT tiene exactamente seis acciones y no duplica pestañas',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const inicio=page.locator('.mg-efsrt-dashboard');
