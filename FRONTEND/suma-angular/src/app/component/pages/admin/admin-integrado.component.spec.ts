@@ -20,7 +20,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       'clienteMembresias', 'pagos', 'productos', 'reservas', 'rutinas',
       'asistencias', 'entrenadores', 'clases', 'cajaActual',
       'registrarAccesoCodigo', 'cambiarEstadoReserva', 'confirmarPagoPendiente',
-      'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin', 'comprobantePago', 'verificacionEfsrt'
+      'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin', 'comprobantePago', 'verificacionEfsrt', 'completarFotosIniciales'
     ]);
 
     api.estadoOperativo.and.returnValue(of({
@@ -140,6 +140,39 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.productos[0].id_producto).toBe(4);
     expect(component.dashboard?.ingresos?.total_mes).toBe(120);
     expect(component.actualizandoDatos).toBeFalse();
+  });
+
+  it('desde Inicio corrige automáticamente productos ficticios con fotos y nombres pendientes', () => {
+    const anterior={id_producto:10,codigo_producto:'PROD-0010',
+      nombre_producto:'Producto Prueba 10',foto:'data:image/webp;base64,AA==',
+      stock:69,precio_venta:29};
+    const corregido={...anterior,
+      nombre_producto:'Universe Nutrition NOXRAGE - Fruit Punch'};
+    api.productos.and.returnValues(of([anterior]),of([corregido]));
+    api.completarFotosIniciales.and.returnValue(of({
+      mensaje:'Fotografía reconocida',actualizados:1,
+      omitidos:9,observaciones:[],base_datos:'gym_system'
+    }));
+
+    component.actualizarDashboardCompleto();
+
+    expect(api.completarFotosIniciales).toHaveBeenCalledTimes(1);
+    expect(api.productos).toHaveBeenCalledTimes(2);
+    expect(component.productos[0].nombre_producto).toBe(corregido.nombre_producto);
+    expect(component.productos[0].foto).toBe(anterior.foto);
+    expect(component.productos[0].stock).toBe(69);
+  });
+
+  it('no llama a la reparación para registros de productos reales', () => {
+    api.productos.and.returnValue(of([{
+      id_producto:7,codigo_producto:'NUT-007',
+      nombre_producto:'Suplemento personalizado',foto:null,
+      stock:10,precio_venta:45
+    }]));
+
+    component.actualizarDashboardCompleto();
+
+    expect(api.completarFotosIniciales).not.toHaveBeenCalled();
   });
 
   it('sincroniza los datos del dashboard con las APIs operativas', () => {
