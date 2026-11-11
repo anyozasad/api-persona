@@ -336,7 +336,7 @@ import { catchError, forkJoin, of } from 'rxjs';
 
           <section class="mg-efsrt-data-status" [class.problem]="!sistemaSincronizado">
             <div>
-              <strong>{{sistemaSincronizado ? 'Datos sincronizados con Laravel y MySQL' : 'No se confirmó la conexión de todos los módulos'}}</strong>
+              <strong>{{sistemaSincronizado ? 'Datos sincronizados con Laravel y MySQL' : 'Hay módulos con estructura de datos pendiente'}}</strong>
               <p>{{mensajeSincronizacion}}</p>
               <small>Socios: {{clientes.length}} · Productos: {{productos.length}} · Pagos: {{pagos.length}} · Reservas: {{reservas.length}}</small>
             </div>
@@ -3741,7 +3741,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     const faltantes=Array.isArray(this.estadoOperativoDashboard?.faltantes)
       ? this.estadoOperativoDashboard.faltantes
       : [];
-    if(faltantes.length) return 'Faltan '+faltantes.length+' objeto(s) de base de datos';
+    if(faltantes.length) return 'Faltan '+faltantes.length+' requisitos de tablas o columnas en MySQL. Haz respaldo antes de ejecutar sistema:preparar.';
     if(this.erroresSincronizacion.length) return 'Falló: '+this.erroresSincronizacion.join(', ');
     if(this.sistemaSincronizado) return 'API, dashboard y base de datos sincronizados';
     return 'Revisar conexión y esquema funcional';
