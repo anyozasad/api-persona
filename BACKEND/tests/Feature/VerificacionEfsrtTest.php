@@ -79,6 +79,35 @@ class VerificacionEfsrtTest extends TestCase
         $this->assertStringContainsString('SUNAT', implode(' ', $semana10['observaciones']));
     }
 
+    public function test_cada_semana_revisa_cinco_actividades_de_la_bitacora_oficial(): void
+    {
+        $datos=app(VerificacionEfsrtController::class)->index()->getData(true);
+        $this->assertCount(11,$datos['semanas']);
+        $this->assertSame(55,array_sum(array_map(
+            fn ($semana)=>count($semana['actividades']),$datos['semanas']
+        )));
+
+        $semana5=collect($datos['semanas'])->firstWhere('semana',5);
+        $this->assertSame('Fotografía guardada y visible en productos',
+            $semana5['actividades'][3]['actividad']);
+        $this->assertSame('Imagen de producto',
+            $semana5['actividades'][3]['evidencia']);
+
+        $semana6=collect($datos['semanas'])->firstWhere('semana',6);
+        $this->assertStringContainsString('nivel y tipo',
+            $semana6['actividades'][2]['actividad']);
+
+        $semana10=collect($datos['semanas'])->firstWhere('semana',10);
+        $this->assertSame('programada_por_validar',
+            $semana10['actividades'][1]['estado']);
+        $this->assertSame('Boleta electrónica',
+            $semana10['actividades'][1]['evidencia']);
+
+        $semana11=collect($datos['semanas'])->firstWhere('semana',11);
+        $this->assertSame('Documentación y respaldo',
+            $semana11['actividades'][4]['evidencia']);
+    }
+
     public function test_semana_cinco_detecta_fotografias_ausentes_de_productos_reales(): void
     {
         Schema::table('productos', function (Blueprint $tabla) {
