@@ -7,7 +7,7 @@ describe('Semana 05 EFSRT - fotografía del producto', () => {
   let productosApi: jasmine.SpyObj<any>;
 
   beforeEach(() => {
-    productosApi = jasmine.createSpyObj('ProductoService', ['guardar','actualizar','listar','eliminar','diagnosticoFotos']);
+    productosApi = jasmine.createSpyObj('ProductoService', ['guardar','actualizar','listar','eliminar','diagnosticoFotos','completarFotosIniciales']);
     productosApi.listar.and.returnValue(of([]));
     productosApi.diagnosticoFotos.and.returnValue(of({
       base_datos:'gym_system', esquema:'laravel', total_productos:0,
@@ -32,6 +32,30 @@ describe('Semana 05 EFSRT - fotografía del producto', () => {
     component.cerrarGaleriaProducto();
     expect(component.galeriaProducto).toBeNull();
     expect(productosApi.actualizar).not.toHaveBeenCalled();
+  });
+
+  it('completa automáticamente las fotos al abrir el inventario de prueba', () => {
+    const ejemplo: Producto = {
+      id_producto: 10, id_categoria: 1, codigo_producto:'PROD-0010',
+      nombre_producto:'Producto Prueba 10',
+      precio_compra: 4, precio_venta: 20, stock: 5,
+      stock_minimo: 1, unidad_medida:'Unidad', estado:'Activo',foto:null
+    };
+    const completado: Producto = {
+      ...ejemplo, nombre_producto:'NOXRAGE (presentación alternativa)',
+      foto:'data:image/jpeg;base64,AA=='
+    };
+    productosApi.listar.and.returnValues(of([ejemplo]),of([completado]));
+    productosApi.completarFotosIniciales.and.returnValue(of({
+      mensaje:'1 producto completado automáticamente',actualizados:1,
+      omitidos:0,observaciones:[],base_datos:'gym_system'
+    }));
+
+    component.listar();
+    expect(productosApi.completarFotosIniciales).toHaveBeenCalledTimes(1);
+    expect(productosApi.listar).toHaveBeenCalledTimes(2);
+    expect(component.productos[0].foto).toBe(completado.foto);
+    expect(component.mensaje).toContain('completado automáticamente');
   });
 
   it('impide guardar el producto antes de que termine de procesarse la imagen', () => {
