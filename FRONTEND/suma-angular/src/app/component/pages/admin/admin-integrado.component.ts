@@ -638,6 +638,26 @@ import { catchError, forkJoin, of } from 'rxjs';
             <article><span>Problemas detectados</span><strong>{{revision.faltantes + revision.alertas.length}}</strong><small>Tablas faltantes y alertas</small></article>
           </section>
           <p class="efsrt-notice">{{revision.nota}} Fecha de la consulta: {{revision.fecha_revision}}. Base: {{revision.base_datos}}.</p>
+          <section class="efsrt-weekly" *ngIf="revision.semanas?.length" aria-label="Revisión de las 11 semanas EFSRT">
+            <div class="efsrt-weekly-head">
+              <div><h3>Revisión de las 11 semanas</h3>
+                <p>Los pendientes se calculan con datos reales. Tener un módulo visible no significa haber aprobado sus pruebas.</p></div>
+              <strong>{{revision.semanas_pendientes}} con observaciones</strong>
+            </div>
+            <div class="efsrt-weekly-grid">
+              <article *ngFor="let semana of revision.semanas" class="efsrt-week-card">
+                <div class="efsrt-week-top">
+                  <b>Semana {{semana.semana < 10 ? '0' + semana.semana : semana.semana}}</b>
+                  <span [class.pending]="semana.estado==='pendiente'">{{
+                    semana.estado==='pendiente' ? 'Pendiente' : 'Verificar en equipo'
+                  }}</span>
+                </div>
+                <h4>{{semana.titulo}}</h4>
+                <p *ngFor="let detalle of semana.observaciones">{{detalle}}</p>
+                <button type="button" (click)="cambiarSegcion(semana.destino)">Revisar función</button>
+              </article>
+            </div>
+          </section>
           <div class="efsrt-table-wrap">
             <table class="efsrt-table">
               <thead><tr><th>Área del proyecto</th><th>Estructura</th><th>Registros</th><th>Faltantes</th><th>Acción</th></tr></thead>
