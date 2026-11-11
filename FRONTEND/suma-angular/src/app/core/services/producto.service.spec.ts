@@ -53,6 +53,20 @@ describe('ProductoService - pruebas CRUD Mallqui Gym', () => {
     }]);
   });
 
+  it('inicializa fotografías de productos de prueba por POST sin seleccionar archivos', () => {
+    servicio.completarFotosIniciales().subscribe(resultado => {
+      expect(resultado.actualizados).toBe(10);
+    });
+
+    const req = httpMock.expectOne(`${api}/completar-fotos-iniciales`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({});
+    req.flush({
+      mensaje:'Fotografías asignadas', actualizados:10,
+      omitidos:0, observaciones:[], base_datos:'gym_system'
+    });
+  });
+
   it('usa POST y envia los datos correctos al crear', () => {
     const datos: any = {
       id_categoria: 1,
