@@ -219,11 +219,11 @@ try {
     await config.locator('input[name=cfg_frase]').waitFor({timeout:25000});
     const mensaje='Mallqui Gym - información verificada en la prueba de integración';
     await config.locator('input[name=cfg_frase]').fill(mensaje);
-    await config.getByRole('button',{name:'Guardar configuración en MySQL'}).click();
-    await page.waitForFunction(expected=>{
-      const etiqueta=document.querySelector('.config-save-bar');
-      return etiqueta && document.querySelector('input[name=cfg_frase]')?.value===expected;
-    },mensaje,{timeout:15000});
+    const [guardado]=await Promise.all([
+      page.waitForResponse(r=>r.url().includes('/api/configuracion') && r.request().method()==='PUT',{timeout:25000}),
+      config.getByRole('button',{name:'Guardar configuración en MySQL'}).click()
+    ]);
+    assert.equal(guardado.status(),200,'Laravel debe confirmar que la configuración fue guardada.');
     await page.reload({waitUntil:'domcontentloaded'});
     await config.locator('input[name=cfg_frase]').waitFor({timeout:25000});
     assert.equal(await config.locator('input[name=cfg_frase]').inputValue(),mensaje,
