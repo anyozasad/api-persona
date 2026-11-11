@@ -18,7 +18,8 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     api = jasmine.createSpyObj('AdminApiService', [
       'estadoOperativo', 'dashboard', 'clientes', 'membresiasDisponibles',
       'clienteMembresias', 'pagos', 'productos', 'reservas', 'rutinas',
-      'asistencias', 'entrenadores', 'clases', 'cajaActual',
+      'asistencias', 'entrenadores', 'clases', 'cajaActual', 'historialCaja', 'movimientoCaja',
+      'configuracion', 'guardarConfiguracion', 'estadoSistema',
       'registrarAccesoCodigo', 'cambiarEstadoReserva', 'confirmarPagoPendiente',
       'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin', 'comprobantePago', 'verificacionEfsrt', 'completarFotosIniciales'
     ]);
@@ -40,6 +41,21 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       'productos', 'reservas', 'rutinas', 'asistencias', 'entrenadores', 'clases'
     ].forEach(metodo => api[metodo].and.returnValue(of([])));
     api.cajaActual.and.returnValue(of({ caja_abierta: false, caja: null }));
+    api.historialCaja.and.returnValue(of([]));
+    api.configuracion.and.returnValue(of({
+      configuracion:{
+        nombre_gimnasio:'Mallqui Gym',hora_apertura:'06:00:00',
+        hora_cierre:'21:30:00',dias_atencion:['Lunes','Martes']
+      },
+      estado:{api:true,mysql:true},ultimo_respaldo:null
+    }));
+    api.estadoSistema.and.returnValue(of({api:true,mysql:true}));
+    api.guardarConfiguracion.and.returnValue(of({
+      mensaje:'Guardado',configuracion:{
+        nombre_gimnasio:'Mallqui Gym',hora_apertura:'06:00:00',hora_cierre:'21:30:00',
+        dias_atencion:['Lunes','Martes'],updated_at:'2026-11-11 16:50:00'
+      }
+    }));
 
     const auth = { usuario: { nombre_usuario: 'admin', rol: 'Administrador' } } as any;
     const router = { navigate: jasmine.createSpy('navigate') } as any;
@@ -78,6 +94,85 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(api.comprobantePago).not.toHaveBeenCalled();
     expect(component.comprobanteDatos).toBeNull();
     expect(component.error).toContain('Selecciona un pago confirmado');
+  });
+
+  it('Gastos detecta una caja abierta en historial si la consulta de caja dice cerrada', () => {
+    component.caja={caja_abierta:false,caja:null};
+    component.historialCaja=[{id:7,estado:'abierta',fecha_apertura:'2026-11-11 08:00:00'}];
+    expect(component.cajaInconsistente).toBeTrue();
+    expect(component.etiquetaCaja(component.historialCaja[0])).toBe('Caja #7');
+    expect(component.etiquetaCaja({})).toBe('Caja sin número registrado');
+  });
+
+  it('Gastos no permite registrar un egreso sin saldo verificado', () => {
+    component.gastoForm={descripcion:'Limpieza',monto:130};
+    component.caja={caja_abierta:true,resumen:{monto_esperado:100},caja:{movimientos:[]}};
+    component.registrarGasto();
+    expect(component.error).toContain('supera el saldo disponible');
+    expect(api.movimientoCaja).not.toHaveBeenCalled();
+
+    component.caja={caja_abierta:false,caja:null};
+    component.gastoForm={descripcion:'Limpieza',monto:20};
+    component.registrarGasto();
+    expect(component.error).toContain('Debes comprobar');
+    expect(api.movimientoCaja).not.toHaveBeenCalled();
+  });
+
+  it('Gastos consulta estado e historial de caja como una sola revisión', () => {
+    const actual={caja_abierta:true,caja:{id_caja:3,movimientos:[]},resumen:{monto_esperado:100}};
+    api.cajaActual.and.returnValue(of(actual));
+    api.historialCaja.and.returnValue(of([{id_caja:3,estado:'Abierta'}]));
+
+    component.cargarCaja();
+
+    expect(api.cajaActual).toHaveBeenCalled();
+    expect(api.historialCaja).toHaveBeenCalled();
+    expect(component.caja).toEqual(actual);
+    expect(component.historialCaja[0].id_caja).toBe(3);
+    expect(component.cajaError).toBe('');
+    expect(component.cajaCargando).toBeFalse();
+  });
+
+  it('Configuración carga datos de MySQL y diferencia conexión de esquema', () => {
+    api.estadoOperativo.and.returnValue(of({
+      api:true,database:true,operativo:false,faltantes:['reservas','clases']
+    }));
+
+    component.cargarConfiguracion();
+
+    expect(component.configDisponible).toBeTrue();
+    expect(component.configCargando).toBeFalse();
+    expect(component.configuracionForm.hora_apertura).toBe('06:00');
+    expect(component.estadoConfiguracionTexto).toContain('esquema pendiente');
+    expect(component.configEstado.faltantes.length).toBe(2);
+  });
+
+  it('Configuración rechaza horarios falsos y RUC inválido antes de guardar', () => {
+    component.configDisponible=true;
+    component.configuracionForm={
+      nombre_gimnasio:'Mallqui Gym',ruc:'123',hora_apertura:'06:00',
+      hora_cierre:'21:30',dias_atencion:['Lunes'],correo:''
+    };
+    component.guardarConfiguracion();
+    expect(component.error).toContain('11 dígitos');
+
+    component.configuracionForm.ruc='';
+    component.configuracionForm.hora_cierre='05:00';
+    component.guardarConfiguracion();
+    expect(component.error).toContain('posterior a la apertura');
+    expect(api.guardarConfiguracion).not.toHaveBeenCalled();
+  });
+
+  it('Configuración evita usar datos ficticios cuando Laravel no responde', () => {
+    api.configuracion.and.returnValue(throwError(()=>new Error('backend offline')));
+    spyOn(component as any,'mostrarError').and.stub();
+
+    component.cargarConfiguracion();
+
+    expect(component.configDisponible).toBeFalse();
+    expect(component.configCargando).toBeFalse();
+    expect(component.configError).toContain('Laravel');
+    expect(component.estadoConfiguracionTexto).toBe('Conexión sin verificar');
   });
 
   it('muestra solo Configuración en Administración y conserva herramientas internas', () => {
