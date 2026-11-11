@@ -191,6 +191,45 @@ class ProductoController extends Controller
         return response()->json($producto->fresh('categoria'));
     }
 
+    /**
+     * Semana 05: permite cargar solo la foto del producto desde su fila
+     * sin cambiar precio, stock ni datos de inventario. Funciona con
+     * productos.id (gym_system) o productos.id_producto (Laravel).
+     */
+    public function actualizarFoto(Request $request, string $id)
+    {
+        $datos = $request->validate([
+            'foto' => 'required|string|max:2900000',
+        ]);
+
+        $foto = $datos['foto'];
+        if (!preg_match('~^data:image/(png|jpeg|webp);base64,([A-Za-z0-9+/]+={0,2})$~D', $foto, $coincidencia)) {
+            abort(422, 'Selecciona una fotografía PNG, JPG o WEBP válida.');
+        }
+
+        $contenido = base64_decode($coincidencia[2], true);
+        if ($contenido === false || strlen($contenido) > 2200000) {
+            abort(422, 'La fotografía es demasiado grande o no se pudo leer.');
+        }
+        $informacion = @getimagesizefromstring($contenido);
+        if (!$informacion || ($informacion['mime'] ?? '') !== 'image/'.$coincidencia[1]
+            || $informacion[0] < 1 || $informacion[1] < 1
+            || ($informacion[0] * $informacion[1]) > 36000000) {
+            abort(422, 'El archivo no contiene una imagen válida.');
+        }
+
+        if ($this->usaEsquemaOriginal()) {
+            $existe = DB::table('productos')->where('id', $id)->exists();
+            abort_unless($existe, 404, 'Producto no encontrado.');
+            DB::table('productos')->where('id', $id)->update(['foto' => $foto]);
+            return app(GymSystemAdminController::class)->producto($id);
+        }
+
+        $producto = Producto::findOrFail($id);
+        $producto->update(['foto' => $foto]);
+        return response()->json($producto->fresh('categoria'));
+    }
+
     public function destroy(string $id)
     {
         if ($this->usaEsquemaOriginal()) {
