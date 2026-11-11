@@ -259,6 +259,30 @@ try {
     await page.screenshot({path:'evidencias-dashboard/15_Socio_persistido_MySQL.png',fullPage:true});
   });
 
+  await paso('Semana 06: preparar ejercicios editables de acuerdo al perfil del socio',async()=>{
+    await page.goto(base+'/rutinas',{waitUntil:'domcontentloaded'});
+    const editor=page.locator('.routine-management .routine-editor-card');
+    await editor.waitFor({timeout:25000});
+    const socios=editor.locator('select[name=rucliente]');
+    await socios.evaluate(async el=>{
+      const inicio=Date.now();
+      while(el.options.length<2 && Date.now()-inicio<15000){
+        await new Promise(resolve=>setTimeout(resolve,100));
+      }
+      if(el.options.length<2) throw new Error('No hay socios para revisar rutinas.');
+    });
+    await socios.selectOption({index:1});
+    await editor.getByRole('button',{name:'Sugerir ejercicios'}).click();
+    assert.equal(await editor.locator('.routine-exercise-row').count(),3,
+      'La propuesta inicial debe preparar ejercicios editables.');
+    const nombre=await editor.locator('input[name=runombre]').inputValue();
+    assert.match(nombre,/Plan .+ - (Principiante|Intermedio|Avanzado)/);
+    await page.screenshot({
+      path:'evidencias-dashboard/30_Rutina_segun_nivel_y_objetivo.png',
+      fullPage:true,animations:'disabled'
+    });
+  });
+
   await paso('Móvil muestra cinco accesos y Reservas abre la pantalla correcta',async()=>{
     await page.setViewportSize({width:390,height:844});
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
