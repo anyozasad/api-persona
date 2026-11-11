@@ -129,7 +129,7 @@ try {
         Ejecutar $php @('artisan','backup:database') $backend
         $carpetaRespaldos = Join-Path $backend 'storage\app\backups'
         $nuevoRespaldo = Get-ChildItem -LiteralPath $carpetaRespaldos -Filter '*.sql' -File -ErrorAction SilentlyContinue |
-            Where-Object { $_.Length -gt 200 -and $_.LastWriteTimeUtc -ge $inicioRespaldo.AddSeconds(-2) } |
+            Where-Object { $_.Length -gt 200 -and $_.LastWriteTimeUtc -ge $inicioRespaldo } |
             Sort-Object -Property LastWriteTimeUtc -Descending |
             Select-Object -First 1
         if ($null -eq $nuevoRespaldo) {
