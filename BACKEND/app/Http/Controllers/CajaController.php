@@ -37,7 +37,7 @@ class CajaController extends Controller
         ]);
 
         $caja = DB::transaction(function () use ($datos, $request) {
-            if (Caja::where('estado', 'Abierta')->lockForUpdate()->exists()) {
+            if (Caja::whereRaw('LOWER(estado) = ?', ['abierta'])->lockForUpdate()->exists()) {
                 throw ValidationException::withMessages([
                     'caja' => ['Ya existe una caja abierta. Debe cerrarse antes de abrir otra.'],
                 ]);
@@ -68,10 +68,18 @@ class CajaController extends Controller
         ]);
 
         $movimiento = DB::transaction(function () use ($datos, $request) {
-            $caja = Caja::where('estado', 'Abierta')->lockForUpdate()->first();
+            $caja = Caja::whereRaw('LOWER(estado) = ?', ['abierta'])->lockForUpdate()->first();
             if (!$caja) {
                 throw ValidationException::withMessages([
                     'caja' => ['No existe una caja abierta.'],
+                ]);
+            }
+
+            // Evitar egresos superiores al saldo disponible de la caja.
+            if ($datos['tipo'] === 'Egreso' &&
+                (float) $datos['monto'] > (float) $this->resumen($caja)['monto_esperado']) {
+                throw ValidationException::withMessages([
+                    'monto' => ['El egreso supera el saldo disponible de la caja.'],
                 ]);
             }
 
@@ -101,7 +109,7 @@ class CajaController extends Controller
         ]);
 
         $caja = DB::transaction(function () use ($datos) {
-            $caja = Caja::where('estado', 'Abierta')->lockForUpdate()->first();
+            $caja = Caja::whereRaw('LOWER(estado) = ?', ['abierta'])->lockForUpdate()->first();
             if (!$caja) {
                 throw ValidationException::withMessages([
                     'caja' => ['No existe una caja abierta para cerrar.'],
