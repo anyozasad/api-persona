@@ -101,6 +101,18 @@ describe('ProductoService - pruebas CRUD Mallqui Gym', () => {
     req.flush({ id_producto: 2, ...cambios });
   });
 
+  it('guarda solo foto con PATCH y no envía precio, stock ni nombre', () => {
+    const foto = 'data:image/png;base64,AA==';
+    servicio.actualizarFoto(12, foto).subscribe(producto => {
+      expect(producto.foto).toBe(foto);
+    });
+
+    const req = httpMock.expectOne(`${api}/12/foto`);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({ foto });
+    req.flush({ id_producto: 12, foto });
+  });
+
   it('usa DELETE para desactivar sin borrar el historial', () => {
     servicio.eliminar(2).subscribe();
 
