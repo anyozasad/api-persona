@@ -2213,15 +2213,22 @@ import { catchError, forkJoin, of } from 'rxjs';
           <div class="config-fetch-status" *ngIf="configCargando">
             Consultando la configuración del gimnasio desde MySQL...
           </div>
-          <div class="config-fetch-status warning" *ngIf="!configCargando && !configDisponible">
-            <strong>No se pudo cargar la configuración guardada.</strong>
-            <span>{{configError || 'No hay respuesta verificada del servidor.'}} Los valores de muestra no se presentan como datos del negocio.</span>
-            <button type="button" class="admin-secondary" (click)="cargarConfiguracion()">Reintentar consulta</button>
+          <div class="config-fetch-status warning" *ngIf="!configCargando && !configDisponible" role="alert">
+            <strong>No se pudo conectar con la configuración de MySQL</strong>
+            <span>{{configError || 'El servidor todavía no entregó datos confirmados.'}}</span>
+            <span>Las opciones siguen visibles para revisión, pero no se guardarán cambios hasta recuperar el servidor y su tabla de configuración.</span>
+            <div class="config-recovery-actions">
+              <button type="button" class="admin-secondary" (click)="cargarConfiguracion()">Reintentar conexión</button>
+              <button type="button" class="admin-secondary" (click)="cambiarSegcion('verificacion-efsrt')">Revisar tablas del sistema</button>
+            </div>
           </div>
-          <ng-container *ngIf="configDisponible && !configCargando">
-            <p class="config-source-info">
+          <ng-container *ngIf="!configCargando">
+            <p class="config-source-info" *ngIf="configDisponible">
               Datos consultados desde MySQL. Comprueba que el contacto, los horarios y las tarifas correspondan al gimnasio.
               <span *ngIf="configUltimoGuardado">Última modificación: {{fecha(configUltimoGuardado)}}</span>
+            </p>
+            <p class="config-source-info warning" *ngIf="!configDisponible">
+              Los campos están disponibles para inspección. No se presenta ninguna información como guardada ni se permiten cambios hasta recuperar MySQL.
             </p>
           <div class="config-main-grid">
             <article class="config-card config-business">
@@ -5639,6 +5646,20 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   movimientoCaja(){ this.api.movimientoCaja(this.movCajaForm.tipo,'Manual',this.movCajaForm.descripcion,Number(this.movCajaForm.monto)).subscribe({next:r=>{this.ok(r.mensaje||'Movimiento registrado');this.movCajaForm={tipo:'Ingreso',monto:0,descripcion:'',origen:'Manual'};this.cargarCaja();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
   cerrarCaja(){ if(!confirm('¿Cerrar la caja actual?')) return; this.api.cerrarCaja(Number(this.cajaCerrarForm.monto_real),this.cajaCerrarForm.observacion).subscribe({next:r=>{this.ok(r.mensaje||'Caja cerrada');this.cajaCerrarForm={monto_real:0,observacion:''};this.cargarCaja();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
 
+  private configuracionSinDatos():any {
+    // Sólo campos vacíos para el modo diagnóstico; NUNCA se envían como
+    // configuración del gimnasio si la consulta MySQL falló.
+    return {
+      nombre_gimnasio:'',ruc:'',telefono:'',correo:'',direccion:'',
+      referencia:'',frase_publicitaria:'',horario_detalle:'',
+      tarifa_diaria:null,mensaje_productos:'',hora_apertura:'',
+      hora_cierre:'',dias_atencion:[],dias_aviso_vencimiento:null,
+      minutos_cancelacion_reserva:null,dias_anticipacion_reserva:null,
+      stock_minimo_default:null,notificar_vencimientos:false,
+      notificar_stock_bajo:false,notificar_pagos_pendientes:false
+    };
+  }
+
   get estadoConfiguracionTexto():string {
     if(this.configCargando) return 'Consultando MySQL';
     if(!this.configDisponible || !this.configEstado) return 'Conexión sin verificar';
@@ -5674,7 +5695,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         const cfg=r?.configuracion;
         if(!cfg || !cfg.nombre_gimnasio){
           this.configCargando=false;
-          this.configError='El servidor no entregó una configuración válida.';
+          this.configDisponible=false;
+          this.configuracionForm=this.configuracionSinDatos();
+          this.configError='El servidor no entregó datos confirmados de configuración. Comprueba la base seleccionada por Laravel.';
           return;
         }
         this.configuracionForm={
@@ -5694,8 +5717,28 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       error:e=>{
         this.configCargando=false;
         this.configDisponible=false;
-        this.configError='No se pudo consultar /api/configuracion en Laravel.';
-        this.mostrarError(e);
+        // Evitar confundir los valores predeterminados con datos reales:
+        // la pantalla sigue mostrando las secciones, pero vacías.
+        this.configuracionForm=this.configuracionSinDatos();
+        this.configEstado=null;
+        this.configUltimoGuardado='';
+        this.ultimoRespaldo=null;
+        const estado=Number(e?.status||0);
+        const causa=String(e?.error?.codigo||'');
+        if(causa==='CONFIGURACION_TABLA_AUSENTE'){
+          this.configError='Falta la tabla configuracion_sistema. Respalda MySQL y aplica las migraciones de BACKEND.';
+        }else if(causa==='CONFIGURACION_COLUMNAS_AUSENTES'){
+          this.configError='Faltan columnas de configuración en MySQL: '+(Array.isArray(e?.error?.faltantes)?e.error.faltantes.join(', '):'revisar las migraciones')+'.';
+        }else if(estado===401||estado===403){
+          this.configError='Sesión o permisos de administrador no válidos. Vuelve a iniciar sesión.';
+        }else if(estado===404){
+          this.configError='Laravel no reconoce /api/configuracion. Reinicia el backend actualizado y revisa sus rutas.';
+        }else if(estado===0){
+          this.configError='No hay conexión con Laravel. Revisa que el backend esté iniciado y que Angular tenga el proxy de API activo.';
+        }else{
+          this.configError='El servidor respondió HTTP '+(estado||'desconocido')+'. Comprueba conexión, tabla configuracion_sistema y registros de Laravel.';
+        }
+        this.error=this.configError;
       }
     });
   }
