@@ -147,6 +147,31 @@ try {
     await page.screenshot({path:'evidencias-dashboard/13_Menu_simplificado.png',fullPage:true});
   });
 
+  await paso('Administración muestra solo Configuración y conserva funciones internas',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const menu=page.locator('.mg-clear-navigation');
+    const administracion=menu.locator('.cf-nav-group-head').filter({hasText:'Administración'});
+    await administracion.click();
+    const hijos=menu.locator('.cf-nav-children').filter({hasText:'Configuración'});
+    await hijos.waitFor({timeout:12000});
+    assert.equal(await hijos.locator('button').count(),1,
+      'En Administración debe existir solo la entrada Configuración.');
+    await hijos.getByRole('button',{name:/Configuración/}).click();
+    const configuracion=page.locator('.config-page');
+    await configuracion.waitFor({timeout:15000});
+    for(const herramienta of [
+      'Usuarios y permisos','Historial de actividad',
+      'Gestionar respaldos','Diagnóstico avanzado'
+    ]){
+      assert.equal(await configuracion.getByRole('button',{name:herramienta}).count(),1,
+        'Debe conservarse la herramienta: '+herramienta);
+    }
+    await page.screenshot({
+      path:'evidencias-dashboard/21_Configuracion_sin_modulos_duplicados.png',
+      fullPage:true,animations:'disabled'
+    });
+  });
+
   await paso('Inicio EFSRT tiene exactamente seis acciones y no duplica pestañas',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const inicio=page.locator('.mg-efsrt-dashboard');
