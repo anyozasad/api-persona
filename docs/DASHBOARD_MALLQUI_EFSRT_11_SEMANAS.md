@@ -5,7 +5,7 @@ Revisión técnica: 10 de noviembre de 2026. Las semanas 10 y 11 incluyen activi
 
 ## Cómo usar el dashboard sin perderse
 
-En /admin solo se ven seis acciones de trabajo diario: Matricular socio, Reservas, Asistencia, Rutinas, Productos y Pagos.
+En /admin se muestran seis acciones compactas de trabajo diario: Matricular socio, Reservas, Asistencia, Rutinas, Productos y Pagos.
 El menú lateral está ordenado en cinco áreas: Socios y membresías, Entrenamientos, Ventas e inventario, Reportes y Administración.
 Las funciones adicionales siguen accesibles en Más funciones (opcional), inicialmente cerrada.
 Se eliminaron las pestañas duplicadas de cada módulo y los enlaces de apariencia/exportación que recargaban innecesariamente la cabecera.
@@ -32,7 +32,7 @@ Los gráficos mantienen cálculos reales de la API, pero se abren únicamente de
 La actualización se aplicó directamente a la rama `main` de `anyozasad/api-persona`; no se genera ZIP ni se cambia la paleta del dashboard.
 
 - **Semana 05:** `Productos y stock` permite **Subir foto** desde cada fila mediante `PATCH /api/productos/{id}/foto`. La API comprueba que los bytes correspondan a JPG/PNG/WEBP y modifica solo la columna `foto`. Se añade prueba de persistencia con precio y stock intactos.
-- **Semanas 01–11:** en **Administración → Comprobación EFSRT**, el servidor revisa once semanas reales, con verificación de estructuras modernas y legacy, productos sin foto, inconsistencias en la BD y respaldo presente. Cada semana enlaza al módulo que corresponde. **Verificar en equipo** no significa aprobado.
+- **Semanas 01–11:** en **Configuración → Información del sistema → Diagnóstico avanzado**, el servidor revisa once semanas reales, con verificación de estructuras modernas y legacy, productos sin foto, inconsistencias en la BD y respaldo presente. Cada semana enlaza al módulo que corresponde. **Verificar en equipo** no significa aprobado.
 - **Semana 11:** la descarga del backup del panel utiliza `backup:database` con `mysqldump` y entrega el archivo SQL real. La restauración usa el cliente `mysql` para procesar múltiples sentencias y **antes crea un respaldo preventivo**; si no se puede crear, la restauración se cancela. Requiere MySQL, `mysqldump` y `mysql.exe` (o la variable `MYSQL_PATH`). Nunca restaurar sin verificar previamente el archivo y la copia de seguridad.
 - **Pruebas:** PHPUnit verifica la revisión de once semanas y fotos ausentes. La prueba E2E de Chromium con base temporal verifica la pantalla de once semanas y la carga de foto desde una fila, con stock y precio invariantes. Los resultados solo cuentan como aprobados si GitHub Actions o el equipo local los ejecuta correctamente.
 
@@ -53,6 +53,32 @@ php artisan route:list --path=api
 ```
 
 **Precaución:** respalda MySQL antes de aplicar migraciones. Nunca uses `migrate:fresh` sobre la base de producción. Inicia MySQL de XAMPP, Laravel y Angular como se describe en la guía principal.
+
+## Revisión de funcionalidad y preparación de MySQL (11/11/2026)
+
+**Esta versión no se declara terminada sin pruebas en el equipo del gimnasio.** Se corrigieron fallos verificables, sin cambiar la paleta blanco/grafito/verde lima ni generar otro ZIP:
+
+- **Inicio del dashboard:** distingue 0 movimientos reales de una tabla de reservas/asistencias/pagos que todavía no existe. Si MySQL funciona pero su esquema está incompleto, el estado indica **Esquema pendiente**, no confunde el problema con pérdida de conexión.
+- **Semana 05:** el sistema reconoce productos de prueba y asigna los nombres, categorías y fotos locales verificables. Los artículos de prueba sin foto necesitan **Bebidas, Suplementos y Accesorios**; `sistema:preparar` ahora crea únicamente las categorías que faltan, compatible con tablas antiguas `nombre` y nuevas `nombre_categoria`, sin alterar las existentes.
+- **Semana 11:** **Configuración → Información del sistema → Diagnóstico avanzado** muestra las once semanas, módulos y alertas reales. El botón **Descargar revisión CSV** permite guardar esos resultados para revisión del profesor. No registra trabajo de campo como aprobado automáticamente.
+- **Preparación sin perder datos:** `INICIAR_DASHBOARD.ps1 -Migrar` solicita autorización, ejecuta `backup:database`, comprueba que existe un respaldo SQL nuevo y solo entonces ejecuta `sistema:preparar`. Si falla el respaldo, se cancela la preparación. No utiliza `migrate:fresh`.
+- **Seguridad y pruebas:** se añadieron comprobaciones para impedir ceros falsos, proteger la preparación con respaldo y verificar la exportación EFSRT; GitHub Actions realiza las pruebas en una base MySQL **temporal**, no la del usuario.
+
+Para sincronizar los cambios en Windows y preparar la estructura pendiente, primero actualiza el código de la carpeta principal:
+
+```powershell
+git pull origin main
+```
+
+Después, **solo si dispones de acceso al MySQL correcto y autorizas las migraciones**, desde la raíz del proyecto:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\INICIAR_DASHBOARD.ps1 -Migrar
+```
+
+La rutina pedirá escribir `SI`. Si no puede generar la copia SQL preventiva, no ejecutará migraciones. Guarda y verifica la copia antes de entregar el trabajo.
+
+**Límites de cumplimiento:** no se puede afirmar que las once semanas están 100% concluidas mientras falten requisitos de esquema, fotografías reales sin correspondencia, pruebas con cuentas y datos de la instalación local, comprobantes electrónicos SUNAT autorizados, o evidencias y firmas del supervisor. Los 0 de pagos/reservas podrían ser correctos si la tabla existe y no hay actividad; no deben sustituirse por cifras simuladas.
 
 ## Reglas para la evaluación
 
