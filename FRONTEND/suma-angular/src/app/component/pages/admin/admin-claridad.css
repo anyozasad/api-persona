@@ -625,15 +625,23 @@
   display:grid!important;
   place-items:center!important;
   overflow:hidden!important;
-  width:100%!important;
-  aspect-ratio:4 / 3!important;
+  /* Miniatura de inventario: la foto no debe ocupar toda la tarjeta. */
+  width:80px!important;
+  height:80px!important;
+  max-width:100%!important;
+  aspect-ratio:1 / 1!important;
+  align-self:flex-start!important;
   border-radius:9px!important;
   background:#f2f5f0!important;
 }
 .admin-shell.admin-home-redesign .mg-catalog-product-photo img {
+  display:block!important;
   width:100%!important;
   height:100%!important;
+  padding:4px!important;
+  box-sizing:border-box!important;
   object-fit:contain!important;
+  object-position:center!important;
 }
 .admin-shell.admin-home-redesign .mg-catalog-no-photo {
   display:grid!important;
