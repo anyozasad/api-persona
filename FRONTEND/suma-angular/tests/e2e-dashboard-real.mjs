@@ -285,7 +285,7 @@ try {
     await galeria.waitFor({timeout:15000});
     assert.equal(await galeria.locator('.foto-catalogo-imagenes button').count(),11,
       'La galería debe usar once fotos reales de los productos aportados.');
-    await galeria.getByRole('button',{name:/Usar fotografía de Creatina/}).click();
+    await galeria.getByRole('button',{name:/Usar fotografía de Level Pro Creatine Monohydrate/}).click();
     await page.locator('app-productos .mensaje-ok').waitFor({timeout:25000});
     await page.reload({waitUntil:'domcontentloaded'});
     fila=page.locator('app-productos .tabla-productos tr').filter({hasText:codigoProductoFoto}).first();
