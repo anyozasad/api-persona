@@ -14,24 +14,27 @@ La API reconoce tanto la estructura original de gym_system (id, codigo, categori
 
 El sistema reconoce los diez registros ficticios `Producto Prueba 1–10` que se ven en el inventario (`PROD-001` a `PROD-0010`; también reconoce `PROD-010`).
 
-**Al abrir Productos y stock**, Angular detecta esos registros cuando no tienen foto y realiza una única petición administrativa a `POST /api/productos/completar-fotos-iniciales`. Laravel toma diez fotografías de productos **que ya están dentro del repositorio**, y guarda los JPEG originales como base64 en `productos.foto`. La lista vuelve a consultarse y aparece la fotografía persistida en MySQL, sin que el administrador tenga que elegir nada. También aparecen en el catálogo de usuario y en el inicio al volver a consultar la misma BD.
+**Al abrir Productos y stock**, Angular detecta esos registros cuando no tienen foto **o conservan un nombre equivocado de la asignación automática anterior** y realiza una única petición administrativa a `POST /api/productos/completar-fotos-iniciales`. Laravel toma diez fotografías de productos **que ya están dentro del repositorio**, y guarda los JPEG originales como base64 en `productos.foto`. La lista vuelve a consultarse y aparecen el nombre correcto y la fotografía persistida en MySQL, sin que el administrador tenga que elegir nada. También aparecen en el catálogo de usuario y en el inicio al volver a consultar la misma BD.
 
-Correspondencia explícita para los registros de prueba:
+Correspondencia corregida **leyendo las etiquetas originales**, no mediante nombres genéricos:
 
-| Código | Nuevo nombre de demostración | Foto local | Categoría |
+| Código de prueba | Nombre correspondiente a la foto | Categoría | Archivo |
 |---|---|---|---|
-| PROD-001 | Creatina | foto-12.jpg | Suplementos |
-| PROD-002 | Shaker gris | foto-13.jpg | Accesorios |
-| PROD-003 | BCAA | foto-16.jpg | Suplementos |
-| PROD-004 | Shaker azul | foto-14.jpg | Accesorios |
-| PROD-005 | Big M | foto-15.jpg | Suplementos |
-| PROD-006 | Collagen Pro | foto-17.jpg | Suplementos |
-| PROD-007 | NOXRAGE | foto-09.jpg | Suplementos |
-| PROD-008 | Pro Mass XL | foto-33.jpg | Suplementos |
-| PROD-009 | AN USA (cajas) | foto-11.jpg | Suplementos |
-| PROD-0010 o PROD-010 | NOXRAGE (presentación alternativa) | foto-29.jpg | Suplementos |
+| PROD-001 | Level Pro Creatine Monohydrate 250 g | Suplementos | foto-12.jpg |
+| PROD-002 | Shaker UN 20 años - Blanco | Accesorios | foto-13.jpg |
+| PROD-003 | Universe Nutrition BCAA 6000 - Fruit Punch | Suplementos | foto-16.jpg |
+| PROD-004 | HD Blueberry 135 ml - Bebida energética | Bebidas | foto-14.jpg |
+| PROD-005 | Universe Nutrition BIGM Vainilla 2 kg | Suplementos | foto-15.jpg |
+| PROD-006 | Universe Nutrition Collagen Pro - Fruit Punch | Suplementos | foto-17.jpg |
+| PROD-007 | Universe Nutrition NOXRAGE - Fruit Punch | Suplementos | foto-09.jpg |
+| PROD-008 | AN Pro Mass XL - Sobre 60 g | Suplementos | foto-33.jpg |
+| PROD-009 | Correas para pesas AN USA - Azul | Accesorios | foto-11.jpg |
+| PROD-0010 o PROD-010 | Universe Nutrition NOXRAGE - Citrus Punch | Suplementos | foto-29.jpg |
 
-**Protección de la información:** el proceso modifica solamente las filas con el código exacto, nombre `Producto Prueba N` y fotografía vacía; conserva sus IDs, códigos, precios, stock e historial. Ajusta el nombre y la categoría únicamente en esos diez registros de demostración para que coincidan con la imagen. Necesita que existan las categorías `Accesorios` y `Suplementos` y que la carpeta original `FRONTEND/suma-angular/public/assets/mallqui/fotos-reales` esté disponible. Si algo falta, informa el motivo y no inventa fotos ni modifica otros registros. La operación es idempotente.
+Se detectaron y corrigieron errores de correspondencia de la primera versión: **foto-14 es una bebida energética HD Blueberry de 135 ml, no un shaker**; **foto-11 son correas para levantar pesas AN USA, no suplementos en cajas**. El BIGM se identifica por su marca y sabor; la creatina incluye su marca y contenido.
+
+**Cómo actúa la reparación:** el sistema asigna nombre, categoría y fotografía a los diez registros ficticios originales solo si su `foto` está vacía. Si la versión anterior ya guardó un nombre incorrecto, corrige el nombre y la categoría exclusivamente cuando el contenido de la fotografía en MySQL coincide exactamente con la imagen local previamente asignada. No sobrescribe productos reales, imágenes personalizadas, códigos, precios, stock ni movimientos de inventario. Si ya existe un nombre correcto, no vuelve a modificarlo. Necesita las categorías `Bebidas`, `Accesorios` y `Suplementos`.
+
 
 La galería **Elegir foto** sigue disponible **solo como alternativa opcional** para productos distintos o para introducir fotos nuevas. No es necesaria para los diez registros de prueba.
 
