@@ -241,10 +241,26 @@ import { catchError, forkJoin, of } from 'rxjs';
           </header>
 
           <section class="mg-efsrt-kpis" aria-label="Indicadores obtenidos de MySQL">
-            <article><span>Socios activos</span><strong>{{dashboard?.clientes?.activos ?? clientesActivos ?? 0}}</strong><small>Miembros registrados</small></article>
-            <article><span>Reservas de hoy</span><strong>{{dashboard?.reservas?.hoy ?? reservasHoyDashboard().length}}</strong><small>Sesiones programadas</small></article>
-            <article><span>Asistencias de hoy</span><strong>{{dashboard?.asistencias?.hoy ?? 0}}</strong><small>Ingresos al gimnasio</small></article>
-            <article><span>Ingresos del mes</span><strong>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</strong><small>Pagos y ventas</small></article>
+            <article>
+              <span>Socios activos</span>
+              <strong>{{fuenteKpiDisponible('socios') ? (dashboard?.clientes?.activos ?? clientesActivos ?? 0) : '—'}}</strong>
+              <small>{{fuenteKpiDisponible('socios') ? 'Miembros registrados' : 'Datos de socios no disponibles'}}</small>
+            </article>
+            <article>
+              <span>Reservas de hoy</span>
+              <strong>{{fuenteKpiDisponible('reservas') ? (dashboard?.reservas?.hoy ?? reservasHoyDashboard().length) : '—'}}</strong>
+              <small>{{fuenteKpiDisponible('reservas') ? 'Sesiones programadas' : 'Falta habilitar las reservas en MySQL'}}</small>
+            </article>
+            <article>
+              <span>Asistencias de hoy</span>
+              <strong>{{fuenteKpiDisponible('asistencias') ? (dashboard?.asistencias?.hoy ?? 0) : '—'}}</strong>
+              <small>{{fuenteKpiDisponible('asistencias') ? 'Ingresos al gimnasio' : 'Falta habilitar la asistencia en MySQL'}}</small>
+            </article>
+            <article>
+              <span>Ingresos del mes</span>
+              <strong>{{fuenteKpiDisponible('ingresos') ? 'S/ ' + ((dashboard?.ingresos?.total_mes ?? 0) | number:'1.2-2') : '—'}}</strong>
+              <small>{{fuenteKpiDisponible('ingresos') ? 'Pagos y ventas' : 'Faltan tablas de pagos y ventas'}}</small>
+            </article>
           </section>
 
           <section class="mg-efsrt-pulse" aria-label="Pendientes de la operación del gimnasio">
@@ -3705,6 +3721,25 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   reintentarDashboard():void{
     this.dashboardError='';
     this.actualizarDashboardCompleto();
+  }
+
+  /**
+   * Un 0 significa "sin movimientos" solamente cuando existe la fuente.
+   * Si falta la tabla en el MySQL local, se muestra "—" en lugar de inventar
+   * que las reservas, asistencias o cobros están funcionando.
+   */
+  fuenteKpiDisponible(tipo:'socios'|'reservas'|'asistencias'|'ingresos'):boolean {
+    if(!this.dashboard) return false;
+    const tablas=this.dashboard?.fuente?.tablas_detectadas;
+    if(!Array.isArray(tablas)) return true; // Compatibilidad con API de versiones anteriores.
+    const disponibles=new Set(tablas.map((tabla:any)=>String(tabla).toLowerCase()));
+    const candidatos:Record<string,string[]>={
+      socios:['clientes','socios','app_clientes','app_socios'],
+      reservas:['reservas','app_reservas'],
+      asistencias:['asistencias','app_asistencias'],
+      ingresos:['pagos_membresia','app_pagos_membresia','ventas','app_ventas']
+    };
+    return candidatos[tipo].some(nombre=>disponibles.has(nombre));
   }
 
   get clientesActivos(): number {
