@@ -59,6 +59,30 @@ try {
     await page.screenshot({path:'evidencias-dashboard/Inicio_Dashboard.png',fullPage:true});
   });
 
+  await paso('Panel muestra indicadores operativos y accesos compactos, no solo una plantilla',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    await page.locator('.mg-efsrt-kpis').waitFor({timeout:25000});
+    const prioridades=page.locator('.mg-efsrt-pulse-items button');
+    assert.equal(await prioridades.count(),3);
+    const textos=await page.locator('.mg-efsrt-pulse').innerText();
+    assert.match(textos,/Membresías por vencer/);
+    assert.match(textos,/Productos con stock bajo/);
+    assert.match(textos,/Pagos pendientes/);
+    const accesos=page.locator('.mg-efsrt-actions button');
+    assert.equal(await accesos.count(),6);
+    const primero=await accesos.first().boundingBox();
+    const ultimo=await accesos.last().boundingBox();
+    assert.ok(primero && ultimo,'Los accesos deben ser visibles.');
+    assert.ok(Math.abs(primero.y-ultimo.y)<10,'Los seis accesos deben quedar en una sola fila en escritorio.');
+    const encabezado=await page.locator('.mg-efsrt-hero').boundingBox();
+    assert.ok(encabezado && encabezado.height<165,'El encabezado no debe ocultar la información útil.');
+
+    await page.screenshot({
+      path:'evidencias-dashboard/20_Panel_operativo_compacto.png',
+      fullPage:true,animations:'disabled'
+    });
+  });
+
   await paso('API Laravel + MySQL están disponibles',async()=>{
     const res=await context.request.get(base+'/api/estado-sistema');
     assert.equal(res.status(),200);
