@@ -106,6 +106,7 @@ class VerificacionEfsrtController extends Controller
             }
 
             $faltantesTotales = collect($modulos)->sum(fn ($modulo) => count($modulo['faltantes']));
+            $semanas = $this->evaluarSemanas($alertas);
 
             return response()->json([
                 'fecha_revision' => now()->toDateTimeString(),
@@ -117,6 +118,8 @@ class VerificacionEfsrtController extends Controller
                     ->where('estado','estructura_disponible')->count(),
                 'faltantes' => $faltantesTotales,
                 'alertas' => $alertas,
+                'semanas' => $semanas,
+                'semanas_pendientes' => collect($semanas)->where('estado', 'pendiente')->count(),
                 'nota' => 'Diagnóstico de estructuras y coherencia de registros. '
                     .'No reemplaza las pruebas funcionales con usuario, dashboard y MySQL. '
                     .'La emisión SUNAT requiere integración y autorización independientes.',
@@ -127,6 +130,94 @@ class VerificacionEfsrtController extends Controller
                 'mensaje'=>'No fue posible consultar la base de datos para la revisión.',
             ], 503);
         }
+    }
+
+    /**
+     * Control de las once semanas, sin marcar trabajo presencial o CI como
+     * aprobado únicamente por encontrar una tabla. No escribe datos.
+     * Las alternativas cubren bases modernas y productos heredados.
+     */
+    private function evaluarSemanas(array $alertas): array
+    {
+        $existe = fn (array $alternativas): bool =>
+            collect($alternativas)->contains(fn ($tabla) => Schema::hasTable($tabla));
+
+        $catalogo = [
+            [1, 'Requerimientos y estructura', 'verificacion-efsrt', [['usuarios'], ['productos'], ['reservas']]],
+            [2, 'Portada, menú y diseño adaptable', 'dashboard', []],
+            [3, 'Inicio de sesión y registro', 'usuarios', [['usuarios']]],
+            [4, 'Socios, reservas y panel administrador', 'clientes', [['clientes','socios'], ['reservas']]],
+            [5, 'Productos, fotografías y pagos', 'productos', [['productos'], ['categorias'], ['pagos_membresia','pagos']]],
+            [6, 'Asistencia, rutinas y entrenador', 'asistencias', [['asistencias'], ['rutinas'], ['entrenadores']]],
+            [7, 'Interfaz, navegación y botones', 'dashboard', []],
+            [8, 'Fotografías locales y sincronización', 'productos', [['productos']]],
+            [9, 'Duplicados, alertas y datos consistentes', 'renovaciones', [['reservas'], ['productos'], ['cliente_membresia','suscripciones']]],
+            [10, 'Pagos, comprobantes, permisos y uso sin conexión', 'pagos', [['pagos_membresia','pagos'], ['usuarios']]],
+            [11, 'Pruebas finales, evidencia y respaldo', 'mantenimiento-sistema', []],
+        ];
+
+        $resultado = [];
+        foreach ($catalogo as [$numero, $titulo, $destino, $grupos]) {
+            $observaciones = [];
+            foreach ($grupos as $alternativas) {
+                if (!$existe($alternativas)) {
+                    $observaciones[] = 'Falta tabla de datos: '.implode(' / ', $alternativas).'.';
+                }
+            }
+
+            if ($numero === 5 || $numero === 8) {
+                if ($this->columnas('productos', ['foto'])) {
+                    $sinFoto = DB::table('productos')->where(function ($q) {
+                        $q->whereNull('foto')->orWhere('foto', '');
+                    })->count();
+                    if ($sinFoto > 0) {
+                        $observaciones[] = "Hay {$sinFoto} productos sin fotografía en MySQL.";
+                    }
+                    $rutas = DB::table('productos')->whereNotNull('foto')
+                        ->where('foto','!=','')
+                        ->where('foto','not like','data:image/%;base64,%')->count();
+                    if ($rutas > 0) {
+                        $observaciones[] = "Revisar {$rutas} referencias antiguas de fotografías.";
+                    }
+                } elseif (Schema::hasTable('productos')) {
+                    $observaciones[] = 'La tabla productos no tiene la columna foto.';
+                }
+            }
+
+            if ($numero === 9) {
+                foreach ($alertas as $alerta) {
+                    if (in_array($alerta['tipo'], ['duplicados_clientes','reservas_duplicadas','pagos_huerfanos','stock_negativo'], true)) {
+                        $observaciones[] = $alerta['mensaje'];
+                    }
+                }
+            }
+
+            if ($numero === 10) {
+                $observaciones[] = 'La boleta electrónica SUNAT y el modo completamente offline no están acreditados.';
+            }
+
+            if ($numero === 11) {
+                $directorio = storage_path('app/backups');
+                $respaldos = is_dir($directorio) ? glob($directorio.DIRECTORY_SEPARATOR.'*.sql') : [];
+                if (!$respaldos) {
+                    $observaciones[] = 'No existe todavía un respaldo SQL verificado en storage/app/backups.';
+                }
+            }
+
+            // El código fuente o una tabla no certifican pruebas de interfaz y flujo.
+            $estado = $observaciones ? 'pendiente' : 'verificacion_manual';
+            if (!$observaciones) {
+                $observaciones[] = 'Comprobar el flujo completo con navegador, Laravel y MySQL; guardar evidencia real.';
+            }
+            $resultado[] = [
+                'semana' => $numero,
+                'titulo' => $titulo,
+                'destino' => $destino,
+                'estado' => $estado,
+                'observaciones' => $observaciones,
+            ];
+        }
+        return $resultado;
     }
 
     /** Antes de consultar, comprobar tablas y columnas de esquemas existentes. */
