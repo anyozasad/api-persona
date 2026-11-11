@@ -4,8 +4,8 @@
 
 ## Evidencia ejecutada de forma automática
 
-- [Laravel 12 + MySQL 8 de pruebas y Angular 20](https://github.com/anyozasad/api-persona/actions/runs/43113509717): **121 pruebas PHPUnit (760 aserciones)** y **104 pruebas Angular** aprobadas. Revisadas directamente en los registros de ejecución.
-- [Navegador real + Laravel + MySQL temporal](https://github.com/anyozasad/api-persona/actions/runs/43113267193): **32 comprobaciones de Chromium aprobadas**, con capturas. Incluye login, 18 rutas de módulos administrativos, menú simplificado, registro de socio, creación y recuperación de foto de producto, miniaturas, stock y precio sin alteraciones, exportación EFSRT y vista móvil.
+- [Laravel 12 + MySQL temporal y Angular 20](https://github.com/anyozasad/api-persona/actions/runs/43115269083): **122 pruebas PHPUnit (768 aserciones)** y **106 pruebas Angular** aprobadas. Revisadas directamente en los registros de ejecución.
+- [Navegador Chromium + Laravel + MySQL temporal](https://github.com/anyozasad/api-persona/actions/runs/43115269110): **33 comprobaciones aprobadas**, con capturas. Incluye login, 18 rutas administrativas, socio y foto de producto persistidos, stock y precio invariantes, exportación de EFSRT con 55 actividades desglosadas, propuesta de rutina por nivel/tipo y vista móvil.
 - La suite de CI no consulta ni modifica la base del equipo Windows; los registros de ensayo no deben copiarse a producción.
 
 ## Correcciones funcionales verificadas en código y sometidas a CI
@@ -16,6 +16,14 @@
 4. **Panel de inicio:** diferencia datos faltantes de valores cero reales; evita presentar tablas de MySQL ausentes como actividad económica cero.
 5. **Configuración y EFSRT:** exporta el estado de las 11 semanas y módulos en un CSV basado en MySQL, sin declararlos automáticamente aprobados.
 6. **Seguridad de datos:** el script de preparación de Windows exige respaldo nuevo confirmado de MySQL antes de ejecutar migraciones, y cancela el proceso si no puede producirlo.
+
+## Contraste con los documentos oficiales TEC recuperados
+
+La revisión se contrastó con `Bitacora_Mallqui_Gym_4_Horas_Cuadrado(1).docx` y `Registro_EFSRT_Tarde_4H(1).docx` (11 semanas, 5 actividades por semana). En el dashboard, desde **Configuración → Información del sistema → Diagnóstico avanzado**, cada semana presenta sus 5 actividades y la evidencia indicada en el registro; el CSV las incluye. Ninguna evidencia se marca como validada por la mera presencia de un botón.
+
+Corrección funcional adicional de la **semana 06**: en **Entrenamientos → Rutinas** se añadió **Sugerir ejercicios** cuando se selecciona un socio. Usa `nivel_entrenamiento` y `enfoque_entrenamiento` guardados en su ficha, ofrece una propuesta de 3 ejercicios, y exige revisión del entrenador antes de guardar con la API existente. No modifica las rutinas previas ni asigna cargas máximas de forma automática.
+
+**Pendientes ajenos a CI:** imágenes y nombres reales de los productos de XAMPP (semana 05), pruebas cruzadas en la instalación del gimnasio (semana 09), boleta electrónica validada por SUNAT y validación de uso sin Internet externo (semana 10), evidencias finales y firmas programadas hasta el 21/11/2026 (semana 11). La aplicación NO debe anunciar cumplimiento total sin esa comprobación presencial.
 
 ## Cumplimiento por semanas — sin inventar aprobación
 
