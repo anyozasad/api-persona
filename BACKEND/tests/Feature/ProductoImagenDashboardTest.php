@@ -93,6 +93,23 @@ class ProductoImagenDashboardTest extends TestCase
             DB::table('productos')->where('codigo','PROD-001')->value('foto'));
     }
 
+    public function test_producto_diez_usa_codigo_prod_0010_como_en_el_dashboard(): void
+    {
+        DB::table('categorias')->insert(['id'=>3,'nombre'=>'Suplementos','estado'=>'activo']);
+        DB::table('productos')->insert([
+            'categoria_id'=>1,'codigo'=>'PROD-0010',
+            'nombre'=>'Producto Prueba 10','precio_compra'=>9,
+            'precio_venta'=>29,'stock'=>69,'estado'=>'activo','foto'=>null,
+        ]);
+        $resultado = app(ProductoController::class)->completarFotosIniciales()->getData(true);
+        $this->assertSame(1,$resultado['actualizados']);
+        $foto = DB::table('productos')->where('codigo','PROD-0010')->first();
+        $this->assertSame('NOXRAGE (presentación alternativa)',$foto->nombre);
+        $this->assertSame(69,(int)$foto->stock);
+        $this->assertSame('29.00',(string)$foto->precio_venta);
+        $this->assertStringStartsWith('data:image/jpeg;base64,',$foto->foto);
+    }
+
     public function test_no_se_modifican_productos_reales_ni_fotografias_que_ya_estan_guardadas(): void
     {
         DB::table('categorias')->insert(['id'=>3,'nombre'=>'Suplementos','estado'=>'activo']);
