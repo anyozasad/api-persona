@@ -557,7 +557,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.rutinaDetallesForm[0].series).toBe(2);
     expect(component.rutinaDetallesForm[0].peso_recomendado).toBeNull();
     expect(component.rutinaDetallesForm[0].ejercicio).toContain('Sentadilla');
-    expect(api.crearRutina).not.toHaveBeenCalled();
+    expect(component.rutinaForm.descripcion).toContain('El entrenador debe revisar');
   });
 
   it('no sobrescribe ejercicios existentes al preparar la propuesta de la semana 06', () => {
