@@ -127,7 +127,15 @@ try {
     ['/asistencias','Asistencias','07_Asistencias'],
     ['/caja','Caja','08_Caja'],
     ['/reportes','Reportes','09_Reportes'],
-    ['/usuarios','Usuarios','10_Usuarios']
+    ['/usuarios','Usuarios','10_Usuarios'],
+    ['/entrenadores','Entrenadores','22_Entrenadores'],
+    ['/clases','Clases','23_Clases'],
+    ['/categorias','Categorías','24_Categorias'],
+    ['/proveedores','Proveedores','25_Proveedores'],
+    ['/compras','Compras','26_Compras'],
+    ['/ventas','Ventas','27_Ventas'],
+    ['/kardex','Kardex','28_Kardex'],
+    ['/auditoria','Auditoría','29_Auditoria']
   ];
   for(const [ruta,contenido,nombre] of modulos){
     await paso('Ruta '+ruta+' abre módulo propio',()=>pantalla(ruta,contenido,nombre));
