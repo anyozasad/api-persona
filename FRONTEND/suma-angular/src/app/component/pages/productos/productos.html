@@ -316,6 +316,10 @@
         Elige la imagen que corresponde a este producto. Son las fotos reales de Mallqui Gym
         incluidas en el proyecto y funcionan sin Internet. Se guardará en MySQL.
       </p>
+      <p class="foto-catalogo-ayuda" *ngIf="seleccionado.nombre_producto.startsWith('Producto Prueba')">
+        Este registro tiene nombre de prueba. Revisa el nombre y la categoría para
+        que coincidan con la fotografía antes de presentarlo como inventario real.
+      </p>
       <div class="foto-catalogo-imagenes">
         <button *ngFor="let referencia of fotosProductosMallqui" type="button"
                 [disabled]="fotoCargandoId !== null"
@@ -333,6 +337,8 @@
                  (change)="seleccionarFotoDirecta($event, seleccionado)">
           Subir otra fotografía del producto
         </label>
+        <button type="button" [disabled]="fotoCargandoId !== null"
+                (click)="editarDesdeGaleria(seleccionado)">Editar datos y categoría</button>
         <span *ngIf="fotoCargandoId !== null">Guardando fotografía en MySQL...</span>
         <button type="button" (click)="cerrarGaleriaProducto()"
                 [disabled]="fotoCargandoId !== null">Cancelar</button>
