@@ -7,8 +7,20 @@ La API reconoce tanto la estructura original de gym_system (id, codigo, categori
 - /api/productos: devuelve foto y datos reales de MySQL en ambos esquemas.
 - /api/productos/diagnostico-fotos: solo administrador; muestra nombre de base y fotos faltantes sin transferir las imágenes.
 - El inicio /admin muestra fotos disponibles en la sección Productos del gimnasio.
-- En Productos se identifican fotos ausentes o con referencias antiguas, con opción Editar / subir foto.
+- En Productos se identifican fotos ausentes o con referencias antiguas. El botón **Subir foto** de cada fila selecciona JPG/PNG/WEBP, optimiza y guarda únicamente la fotografía en MySQL, sin cambiar stock ni precio. El botón **Editar / cambiar foto** conserva el formulario completo para productos que ya tienen fotografía.
 - El portal usa el mismo catálogo y fotografías de la base original o moderna.
+
+## Carga directa desde el dashboard (semana 05)
+
+1. En **Ventas e inventario → Productos y stock**, localiza un producto sin foto.
+2. Pulsa **Subir foto** en su fila y selecciona la fotografía REAL del producto (JPG, PNG o WEBP, hasta 5 MB).
+3. El navegador optimiza la imagen y Laravel valida el contenido y guarda solo `productos.foto` en la base conectada.
+4. La fila muestra la fotografía cuando el servidor confirma lo guardado; la opción **Comprobar fotos** actualiza los contadores.
+5. Recarga el navegador y confirma que la imagen sigue visible. El portal del socio debe mostrar la misma foto.
+
+Los registros `Producto Prueba 1` a `Producto Prueba 10` no contienen fotos automáticamente. Si en MySQL aparece `foto = NULL`, es necesario subir el archivo real o usar el importador de abajo. No es correcto asignar imágenes genéricas del gimnasio a productos desconocidos.
+
+**Seguridad:** la carga usa `PATCH /api/productos/{id}/foto`, disponible solamente para Administrador autenticado. No cambia otros campos del producto. Para comprobar las pruebas sin tocar datos reales se usa la base de datos de pruebas de GitHub Actions.
 
 ## Si las fotos están en una carpeta y no en MySQL
 El sistema no puede recrear fotos que no existen. Primero respalda tu base de datos.
