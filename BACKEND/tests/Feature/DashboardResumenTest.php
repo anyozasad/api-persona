@@ -187,6 +187,58 @@ class DashboardResumenTest extends TestCase
             ->assertJsonPath('membresias.pagos_pendientes', 1);
     }
 
+    public function test_no_presenta_membresias_sin_pago_como_ingresos_reales(): void
+    {
+        Schema::create('membresias', function (Blueprint $table) {
+            $table->id('id_membresia');
+            $table->string('nombre');
+            $table->decimal('precio', 10, 2)->default(80);
+            $table->string('estado')->default('Activo');
+        });
+        Schema::create('cliente_membresia', function (Blueprint $table) {
+            $table->id('id_cliente_membresia');
+            $table->unsignedBigInteger('id_cliente');
+            $table->unsignedBigInteger('id_membresia');
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
+            $table->decimal('monto', 10, 2)->default(80);
+            $table->string('estado');
+        });
+        DB::table('membresias')->insert([
+            'id_membresia'=>1,'nombre'=>'Mensual','precio'=>80,'estado'=>'Activo',
+        ]);
+        DB::table('cliente_membresia')->insert([
+            'id_cliente_membresia'=>1,'id_cliente'=>1,'id_membresia'=>1,
+            'fecha_inicio'=>today()->toDateString(),
+            'fecha_fin'=>today()->addMonth()->toDateString(),
+            'monto'=>80,'estado'=>'Activo',
+        ]);
+
+        $this->getJson('/api/dashboard/resumen')
+            ->assertOk()
+            ->assertJsonPath('membresias.activas',1)
+            ->assertJsonPath('ingresos.membresias_mes',0)
+            ->assertJsonPath('ingresos.total_mes',0);
+    }
+
+    public function test_pago_sin_estado_verificable_no_se_suma_como_confirmado(): void
+    {
+        Schema::create('pagos', function (Blueprint $table) {
+            $table->id('id_pago');
+            $table->decimal('monto', 10, 2);
+            $table->dateTime('fecha_pago');
+            // No hay estado_pago ni estado; no existe prueba de cobro.
+        });
+        DB::table('pagos')->insert([
+            'id_pago'=>1,'monto'=>159,'fecha_pago'=>now(),
+        ]);
+
+        $this->getJson('/api/dashboard/resumen')
+            ->assertOk()
+            ->assertJsonPath('ingresos.membresias_mes',0)
+            ->assertJsonPath('ingresos.total_mes',0);
+    }
+
     public function test_dashboard_cuenta_pago_efectivo_pendiente_desde_pagos_membresia(): void
     {
         Schema::create('membresias', function (Blueprint $table) {
