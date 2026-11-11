@@ -17,6 +17,23 @@ describe('Semana 05 EFSRT - fotografía del producto', () => {
     component = new ProductosComponent(productosApi as any, {} as any, {} as any, {} as any);
   });
 
+  it('muestra solo fotos de productos y permite asignarlas de forma explícita', () => {
+    const nombres=component.fotosProductosMallqui.map(f => f.descripcion);
+    const archivos=component.fotosProductosMallqui.map(f => f.archivo);
+    expect(nombres.some(nombre => nombre.includes('Creatina'))).toBeTrue();
+    expect(nombres.some(nombre => nombre.includes('BCAA'))).toBeTrue();
+    expect(archivos).toContain('foto-12.jpg');
+    expect(archivos).not.toContain('foto-18.jpg');
+    expect(archivos).not.toContain('foto-23.jpg');
+
+    const producto={...component.producto,id_producto:5,nombre_producto:'Producto Prueba 5'};
+    component.abrirGaleriaProducto(producto);
+    expect(component.galeriaProducto).toEqual(producto);
+    component.cerrarGaleriaProducto();
+    expect(component.galeriaProducto).toBeNull();
+    expect(productosApi.actualizar).not.toHaveBeenCalled();
+  });
+
   it('impide guardar el producto antes de que termine de procesarse la imagen', () => {
     component.procesandoImagen = true;
     component.guardar();
