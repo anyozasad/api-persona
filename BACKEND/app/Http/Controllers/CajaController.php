@@ -14,7 +14,7 @@ class CajaController extends Controller
     public function actual()
     {
         $caja = Caja::with(['usuarioApertura', 'movimientos.usuario'])
-            ->where('estado', 'Abierta')
+            ->whereRaw('LOWER(estado) = ?', ['abierta'])
             ->orderByDesc('fecha_apertura')
             ->first();
 
