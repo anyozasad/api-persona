@@ -4,7 +4,7 @@
 
 ## Evidencia ejecutada de forma automática
 
-- [Laravel 12 + MySQL 8 de pruebas y Angular 20](https://github.com/anyozasad/api-persona/actions/runs/43109350468): **118 pruebas PHPUnit (748 aserciones)** y **104 pruebas Angular** aprobadas. Revisadas directamente en los registros de ejecución.
+- [Laravel 12 + MySQL 8 de pruebas y Angular 20](https://github.com/anyozasad/api-persona/actions/runs/43113509717): **121 pruebas PHPUnit (760 aserciones)** y **104 pruebas Angular** aprobadas. Revisadas directamente en los registros de ejecución.
 - [Navegador real + Laravel + MySQL temporal](https://github.com/anyozasad/api-persona/actions/runs/43113267193): **32 comprobaciones de Chromium aprobadas**, con capturas. Incluye login, 18 rutas de módulos administrativos, menú simplificado, registro de socio, creación y recuperación de foto de producto, miniaturas, stock y precio sin alteraciones, exportación EFSRT y vista móvil.
 - La suite de CI no consulta ni modifica la base del equipo Windows; los registros de ensayo no deben copiarse a producción.
 
