@@ -119,3 +119,28 @@
 .admin-home-redesign.mg-mantis-dark .efsrt-week-card p{color:#d0dce9}
 @media(max-width:1000px){.admin-home-redesign .efsrt-weekly-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.admin-home-redesign .efsrt-weekly-grid{grid-template-columns:1fr}}
+
+/* Actividades exactas del registro EFSRT: detalle discreto y colapsado. */
+.admin-home-redesign .efsrt-week-activities{
+  margin:12px 0!important;padding:9px 11px!important;
+  background:#f7faf3!important;border:1px solid #e5eadf!important;
+  border-radius:9px!important;color:#344a32!important;
+}
+.admin-home-redesign .efsrt-week-activities summary{
+  cursor:pointer!important;font-size:12px!important;font-weight:750!important;
+  line-height:1.4!important;
+}
+.admin-home-redesign .efsrt-week-activities ol{
+  margin:10px 0 0!important;padding-left:22px!important;
+  display:grid!important;gap:9px!important;
+}
+.admin-home-redesign .efsrt-week-activities li{
+  font-size:11px!important;line-height:1.45!important;
+}
+.admin-home-redesign .efsrt-week-activities li span{
+  display:block!important;color:#283b2a!important;
+}
+.admin-home-redesign .efsrt-week-activities li small{
+  display:block!important;margin-top:3px!important;
+  color:#667865!important;font-size:10px!important;
+}
