@@ -19,7 +19,7 @@ class DashboardResumenTest extends TestCase
 
         foreach ([
             'solicitudes_soporte','productos','ventas','detalle_venta','detalle_ventas',
-            'reservas','cajas','gastos','movimientos_caja','asistencias','pagos_membresia',
+            'reservas','cajas','gastos','movimientos_caja','asistencias','pagos_membresia','pagos',
             'cliente_membresia','membresias','planes','rutinas','clases','entrenadores',
             'clientes','socios','usuarios'
         ] as $tabla) {
@@ -165,6 +165,27 @@ class DashboardResumenTest extends TestCase
             ->assertJsonPath('fuente.modo', 'base_principal');
     }
 
+
+    public function test_dashboard_muestra_ingresos_desde_tabla_pagos_legacy_si_no_existe_pagos_membresia(): void
+    {
+        Schema::create('pagos', function (Blueprint $table) {
+            $table->id('id_pago');
+            $table->decimal('monto', 10, 2);
+            $table->dateTime('fecha_pago');
+            $table->string('estado_pago');
+            $table->string('metodo_pago')->default('Efectivo');
+        });
+        DB::table('pagos')->insert([
+            ['id_pago'=>1,'monto'=>80,'fecha_pago'=>now(),'estado_pago'=>'Completado','metodo_pago'=>'Efectivo'],
+            ['id_pago'=>2,'monto'=>40,'fecha_pago'=>now(),'estado_pago'=>'Pendiente','metodo_pago'=>'Efectivo'],
+        ]);
+
+        $this->getJson('/api/dashboard/resumen')
+            ->assertOk()
+            ->assertJsonPath('ingresos.membresias_mes', 80)
+            ->assertJsonPath('ingresos.total_mes', 80)
+            ->assertJsonPath('membresias.pagos_pendientes', 1);
+    }
 
     public function test_dashboard_cuenta_pago_efectivo_pendiente_desde_pagos_membresia(): void
     {
