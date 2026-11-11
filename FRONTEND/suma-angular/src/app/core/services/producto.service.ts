@@ -45,6 +45,10 @@ export class ProductoService {
     return this.http.put<Producto>(`${this.apiUrl}/${id}`, producto);
   }
 
+  actualizarFoto(id: number, foto: string): Observable<Producto> {
+    return this.http.patch<Producto>(`${this.apiUrl}/${id}/foto`, { foto });
+  }
+
   eliminar(id: number): Observable<{ mensaje: string; producto?: Producto }> {
     return this.http.delete<{ mensaje: string; producto?: Producto }>(`${this.apiUrl}/${id}`);
   }
