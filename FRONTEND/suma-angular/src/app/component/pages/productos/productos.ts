@@ -84,7 +84,7 @@ export class ProductosComponent implements OnInit {
           const esDemo = /^PROD-(?:00[1-9]|0010|010)$/.test(codigo);
           const sinFoto = !this.fotoVisible(p.foto);
           return esDemo && (
-            (/^Producto Prueba (?:[1-9]|10)$/.test(nombre) && sinFoto) ||
+            /^Producto Prueba (?:[1-9]|10)$/.test(nombre) ||
             (nombresAnteriores.has(nombre) && !sinFoto)
           );
         })) {
