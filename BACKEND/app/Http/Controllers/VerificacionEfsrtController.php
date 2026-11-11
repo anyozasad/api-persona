@@ -45,19 +45,32 @@ class VerificacionEfsrtController extends Controller
 
             $modulos = [];
             foreach ($definiciones as $definicion) {
+                // Adaptación de tablas antiguas equivalentes; nunca considerar
+                // movimientos de caja como si fueran Kardex de inventario.
+                $alternativas = [
+                    'clientes' => ['clientes','socios'],
+                    'membresias' => ['membresias','planes'],
+                    'cliente_membresia' => ['cliente_membresia','suscripciones'],
+                    'pagos_membresia' => ['pagos_membresia','pagos'],
+                    'detalle_venta' => ['detalle_venta','detalle_ventas'],
+                    'configuracion_sistema' => ['configuracion_sistema','configuracion'],
+                ];
                 $faltantes = array_values(array_filter(
                     $definicion['tablas'],
-                    fn (string $tabla) => !Schema::hasTable($tabla)
+                    fn (string $tabla) => !collect($alternativas[$tabla] ?? [$tabla])
+                        ->contains(fn ($alternativa) => Schema::hasTable($alternativa))
                 ));
                 $listo = count($faltantes) === 0;
+                $principal = collect($alternativas[$definicion['principal']] ?? [$definicion['principal']])
+                    ->first(fn ($tabla) => Schema::hasTable($tabla));
                 $modulos[] = [
                     'id' => $definicion['id'],
                     'nombre' => $definicion['nombre'],
                     'destino' => $definicion['destino'],
                     // "disponible" significa estructura presente, no CRUD probado.
                     'estado' => $listo ? 'estructura_disponible' : 'estructura_incompleta',
-                    'registros' => Schema::hasTable($definicion['principal'])
-                        ? (int) DB::table($definicion['principal'])->count()
+                    'registros' => $principal
+                        ? (int) DB::table($principal)->count()
                         : null,
                     'faltantes' => $faltantes,
                 ];
