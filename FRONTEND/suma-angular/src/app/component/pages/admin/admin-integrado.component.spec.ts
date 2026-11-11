@@ -418,6 +418,9 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.fuenteKpiDisponible('reservas')).toBeTrue();
     expect(component.fuenteKpiDisponible('asistencias')).toBeTrue();
     expect(component.fuenteKpiDisponible('ingresos')).toBeTrue();
+    component.dashboard.fuente.tablas_detectadas=['pagos'];
+    expect(component.fuenteKpiDisponible('ingresos')).toBeTrue();
+    expect(component.fuenteKpiDisponible('reservas')).toBeFalse();
   });
 
   it('calcula alertas a partir del desglose cuando el total no esta disponible', () => {
