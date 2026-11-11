@@ -225,7 +225,7 @@ import { catchError, forkJoin, of } from 'rxjs';
             <div>
               <span class="mg-efsrt-eyebrow">MALLQUI GYM · ADMINISTRACIÓN</span>
               <h2>Panel principal</h2>
-              <p>Socios, entrenamiento, ventas y pagos en un solo lugar.</p>
+              <p>Control diario de socios, reservas, asistencia e inventario.</p>
             </div>
             <div class="mg-efsrt-hero-aside">
               <span class="mg-efsrt-connection" [class.problem]="!sistemaSincronizado">
@@ -244,10 +244,37 @@ import { catchError, forkJoin, of } from 'rxjs';
             <article><span>Ingresos del mes</span><strong>S/ {{dashboard?.ingresos?.total_mes ?? 0 | number:'1.2-2'}}</strong><small>Pagos y ventas</small></article>
           </section>
 
+          <section class="mg-efsrt-pulse" aria-label="Pendientes de la operación del gimnasio">
+            <div class="mg-efsrt-pulse-intro">
+              <strong>Estado de la operación</strong>
+              <small>{{sistemaSincronizado ? 'Pendientes calculados desde MySQL' : 'Datos parciales: verifica la conexión y las tablas pendientes'}}</small>
+            </div>
+            <div class="mg-efsrt-pulse-items">
+              <button type="button" (click)="cambiarSegcion('renovaciones')"
+                [class.has-pending]="(dashboard?.membresias?.por_vencer_7_dias ?? 0)>0">
+                <strong>{{dashboard?.membresias?.por_vencer_7_dias ?? '—'}}</strong>
+                <span>Membresías por vencer<small>Próximos 7 días</small></span>
+                <span class="mg-efsrt-pulse-action" aria-hidden="true">›</span>
+              </button>
+              <button type="button" (click)="cambiarSegcion('inventario')"
+                [class.has-pending]="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0">
+                <strong>{{dashboard?.inventario?.productos_stock_bajo ?? '—'}}</strong>
+                <span>Productos con stock bajo<small>Revisar inventario</small></span>
+                <span class="mg-efsrt-pulse-action" aria-hidden="true">›</span>
+              </button>
+              <button type="button" (click)="cambiarSegcion('pagos')"
+                [class.has-pending]="(dashboard?.membresias?.pagos_pendientes ?? 0)>0">
+                <strong>{{dashboard?.membresias?.pagos_pendientes ?? '—'}}</strong>
+                <span>Pagos pendientes<small>Revisar cobros</small></span>
+                <span class="mg-efsrt-pulse-action" aria-hidden="true">›</span>
+              </button>
+            </div>
+          </section>
+
           <section class="mg-efsrt-work">
             <div class="mg-efsrt-heading">
-              <h3>¿Qué necesitas hacer?</h3>
-              <p>Las seis acciones principales del gimnasio, según la bitácora EFSRT.</p>
+              <h3>Operaciones del día</h3>
+              <p>Registra movimientos reales desde los módulos del gimnasio.</p>
             </div>
             <div class="mg-efsrt-actions">
               <button type="button" (click)="abrirNuevoSocioDesdeDashboard()">
