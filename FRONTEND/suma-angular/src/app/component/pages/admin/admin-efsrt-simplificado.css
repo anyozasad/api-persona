@@ -623,3 +623,96 @@
   .admin-shell.admin-home-redesign .expense-history-card{padding:12px!important}
   .admin-shell.admin-home-redesign .config-health{max-width:100%!important}
 }
+
+
+/* Mallqui: categorías opcionales compactas; no mostrar 26 enlaces de golpe. */
+.admin-shell.admin-home-redesign .mg-optional-guide{
+  margin:4px 5px 8px!important;color:#96a897!important;
+  font-size:10.5px!important;line-height:1.5!important;
+}
+.admin-shell.admin-home-redesign .mg-optional-category{
+  margin:3px 0!important;
+}
+.admin-shell.admin-home-redesign .mg-optional-category-head{
+  width:100%!important;min-height:39px!important;
+  display:flex!important;align-items:center!important;
+  justify-content:space-between!important;gap:8px!important;
+  padding:9px 12px!important;
+  border:0!important;border-radius:8px!important;
+  background:transparent!important;color:#b9c8ba!important;
+  text-align:left!important;font-size:11.5px!important;
+  font-weight:650!important;
+}
+.admin-shell.admin-home-redesign .mg-optional-category-head:hover,
+.admin-shell.admin-home-redesign .mg-optional-category-head.active{
+  background:#283728!important;color:#c9f45a!important;
+}
+.admin-shell.admin-home-redesign .mg-optional-category-items{
+  margin:2px 0 8px 8px!important;padding:3px 0 3px 8px!important;
+  border-left:1px solid #465549!important;
+}
+.admin-shell.admin-home-redesign .mg-optional-category-items button{
+  min-height:36px!important;width:100%!important;
+  display:flex!important;align-items:center!important;gap:8px!important;
+  padding:8px 10px!important;text-align:left!important;
+  font-size:11.5px!important;color:#b6c3b8!important;
+  border:0!important;border-radius:7px!important;
+  background:transparent!important;
+}
+.admin-shell.admin-home-redesign .mg-optional-category-items button.active,
+.admin-shell.admin-home-redesign .mg-optional-category-items button:hover{
+  background:#33452b!important;color:#c9f45a!important;
+}
+.admin-shell.admin-home-redesign .config-recovery-actions{
+  display:flex!important;gap:9px!important;flex-wrap:wrap!important;
+}
+.admin-shell.admin-home-redesign .config-source-info.warning{
+  padding:11px 13px!important;border-radius:8px!important;
+  border:1px solid #ebdcb8!important;background:#fff9ee!important;
+  color:#735527!important;
+}
+.admin-shell.admin-home-redesign .config-fetch-status.warning{
+  max-width:100%!important;box-sizing:border-box!important;
+}
+.admin-shell.admin-home-redesign .config-fetch-status.warning strong{
+  font-size:13px!important;
+}
+.admin-shell.admin-home-redesign .config-fetch-status.warning span{
+  font-size:12px!important;line-height:1.5!important;
+}
+/* Mostrar gráficos cerca de los KPI y sin alterar la paleta blanca/verde lima. */
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard > .mg-efsrt-optional{
+  margin:0 0 16px!important;overflow:visible!important;
+  border:1px solid #e0e9d8!important;border-radius:14px!important;
+  background:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-analytics{
+  margin:0!important;padding:14px 17px!important;
+  background:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-analytics-grid{
+  gap:12px!important;align-items:stretch!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-card{
+  min-width:0!important;border:1px solid #e4ecdc!important;
+  border-radius:12px!important;background:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-revenue-line{
+  stroke:#86b63b!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-revenue-dot{
+  fill:#9ccb48!important;stroke:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-efsrt-optional-toggle{
+  border-radius:13px 13px 0 0!important;
+  padding:12px 17px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-no-chart-data{
+  padding:16px!important;color:#6c806a!important;
+  text-align:center!important;
+}
+@media(max-width:940px){
+  .admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-analytics-grid{
+    grid-template-columns:1fr!important;
+  }
+}
