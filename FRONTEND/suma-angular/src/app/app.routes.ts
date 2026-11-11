@@ -43,6 +43,8 @@ export const routes: Routes = [
   { path: 'compras', component: AdminIntegradoComponent, canActivate: [authGuard, roleGuard(['Administrador'])], data: { seccion: 'compras' } },
   { path: 'ventas', component: AdminIntegradoComponent, canActivate: [authGuard, roleGuard(['Administrador'])], data: { seccion: 'ventas' } },
   { path: 'caja', component: AdminIntegradoComponent, canActivate: [authGuard, roleGuard(['Administrador'])], data: { seccion: 'caja' } },
+  { path: 'gastos', component: AdminIntegradoComponent, canActivate: [authGuard, roleGuard(['Administrador'])], data: { seccion: 'gastos' } },
+  { path: 'configuracion', component: AdminIntegradoComponent, canActivate: [authGuard, roleGuard(['Administrador'])], data: { seccion: 'configuracion' } },
   { path: 'kardex', component: AdminIntegradoComponent, canActivate: [authGuard, roleGuard(['Administrador'])], data: { seccion: 'kardex' } },
   { path: 'usuarios', component: AdminIntegradoComponent, canActivate: [authGuard, roleGuard(['Administrador'])], data: { seccion: 'usuarios' } },
   { path: 'auditoria', component: AdminIntegradoComponent, canActivate: [authGuard, roleGuard(['Administrador'])], data: { seccion: 'auditoria' } },
