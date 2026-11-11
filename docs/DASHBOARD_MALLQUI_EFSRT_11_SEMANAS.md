@@ -33,7 +33,7 @@ La actualización se aplicó directamente a la rama `main` de `anyozasad/api-per
 
 - **Semana 05:** `Productos y stock` permite **Subir foto** desde cada fila mediante `PATCH /api/productos/{id}/foto`. La API comprueba que los bytes correspondan a JPG/PNG/WEBP y modifica solo la columna `foto`. Se añade prueba de persistencia con precio y stock intactos.
 - **Semanas 01–11:** en **Administración → Comprobación EFSRT**, el servidor revisa once semanas reales, con verificación de estructuras modernas y legacy, productos sin foto, inconsistencias en la BD y respaldo presente. Cada semana enlaza al módulo que corresponde. **Verificar en equipo** no significa aprobado.
-- **Semana 11:** la descarga del backup del panel utiliza el comando SQL `backup:database` con `mysqldump` y entrega el archivo real; evita armar una copia enorme en memoria. Requiere MySQL y el ejecutable `mysqldump` disponible.
+- **Semana 11:** la descarga del backup del panel utiliza `backup:database` con `mysqldump` y entrega el archivo SQL real. La restauración usa el cliente `mysql` para procesar múltiples sentencias y **antes crea un respaldo preventivo**; si no se puede crear, la restauración se cancela. Requiere MySQL, `mysqldump` y `mysql.exe` (o la variable `MYSQL_PATH`). Nunca restaurar sin verificar previamente el archivo y la copia de seguridad.
 - **Pruebas:** PHPUnit verifica la revisión de once semanas y fotos ausentes. La prueba E2E de Chromium con base temporal verifica la pantalla de once semanas y la carga de foto desde una fila, con stock y precio invariantes. Los resultados solo cuentan como aprobados si GitHub Actions o el equipo local los ejecuta correctamente.
 
 ### Lo que no puede darse por completado automáticamente
