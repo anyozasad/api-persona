@@ -31,8 +31,8 @@ class BaseDatosUnicaSistemaTest extends TestCase
         $inicio = (string) file_get_contents(base_path('../INICIAR_DASHBOARD.ps1'));
         $preparacion = (string) file_get_contents(app_path('Console/Commands/PrepararMallquiSistema.php'));
 
-        $posRespaldo = strpos($inicio, "Ejecutar $php @('artisan','backup:database')");
-        $posPreparacion = strpos($inicio, "Ejecutar $php @('artisan','sistema:preparar')");
+        $posRespaldo = strpos($inicio, "Ejecutar \$php @('artisan','backup:database')");
+        $posPreparacion = strpos($inicio, "Ejecutar \$php @('artisan','sistema:preparar')");
         $this->assertNotFalse($posRespaldo);
         $this->assertNotFalse($posPreparacion);
         $this->assertLessThan($posPreparacion, $posRespaldo,
