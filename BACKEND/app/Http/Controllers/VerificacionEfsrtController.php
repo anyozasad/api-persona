@@ -118,6 +118,28 @@ class VerificacionEfsrtController extends Controller
                 }
             }
 
+            // Una instalación con productos llamados "Producto Prueba N"
+            // todavía muestra datos de demostración, aunque tenga fotos.
+            // Advertirlo sin cambiar automáticamente precios ni historiales.
+            if (Schema::hasTable('productos')) {
+                $nombreProducto = Schema::hasColumn('productos', 'nombre_producto')
+                    ? 'nombre_producto'
+                    : (Schema::hasColumn('productos', 'nombre') ? 'nombre' : null);
+                if ($nombreProducto !== null) {
+                    $dePrueba = DB::table('productos')
+                        ->where($nombreProducto, 'like', 'Producto Prueba %')
+                        ->count();
+                    if ($dePrueba > 0) {
+                        $alertas[] = [
+                            'tipo'=>'productos_prueba',
+                            'cantidad'=>$dePrueba,
+                            'mensaje'=>"Hay {$dePrueba} productos con nombres de prueba; verifica sus nombres y fotografías reales.",
+                            'destino'=>'productos',
+                        ];
+                    }
+                }
+            }
+
             $faltantesTotales = collect($modulos)->sum(fn ($modulo) => count($modulo['faltantes']));
             $semanas = $this->evaluarSemanas($alertas);
 
@@ -194,6 +216,14 @@ class VerificacionEfsrtController extends Controller
                     }
                 } elseif (Schema::hasTable('productos')) {
                     $observaciones[] = 'La tabla productos no tiene la columna foto.';
+                }
+            }
+
+            if ($numero === 5) {
+                foreach ($alertas as $alerta) {
+                    if ($alerta['tipo'] === 'productos_prueba') {
+                        $observaciones[] = $alerta['mensaje'];
+                    }
                 }
             }
 
