@@ -27,6 +27,7 @@ export class ProductosComponent implements OnInit {
   busqueda = '';
   procesandoImagen = false;
   guardando = false;
+  fotoCargandoId: number | null = null;
   private imagenSolicitud = 0;
   producto: Producto = this.productoVacio();
 
@@ -219,6 +220,99 @@ export class ProductosComponent implements OnInit {
 
   inicialProducto(nombre?: string): string {
     return String(nombre || 'P').trim().charAt(0).toUpperCase() || 'P';
+  }
+
+  /**
+   * Carga la fotografía en la misma fila del inventario. No envía los demás
+   * datos del producto y confirma la escritura con la respuesta de MySQL.
+   */
+  seleccionarFotoDirecta(event: Event, item: Producto): void {
+    const input = event.target as HTMLInputElement;
+    const archivo = input.files?.[0];
+    input.value = '';
+    if (!archivo || !item.id_producto || this.fotoCargandoId !== null) return;
+
+    this.mensaje = '';
+    this.error = '';
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(archivo.type)) {
+      this.error = 'Selecciona una fotografía JPG, PNG o WEBP.';
+      return;
+    }
+    if (archivo.size === 0 || archivo.size > 5 * 1024 * 1024) {
+      this.error = 'La fotografía debe pesar entre 1 byte y 5 MB.';
+      return;
+    }
+
+    const id = item.id_producto;
+    this.fotoCargandoId = id;
+    this.prepararFotoDirecta(archivo).then(foto => {
+      this.productoService.actualizarFoto(id, foto).subscribe({
+        next: guardado => {
+          this.fotoCargandoId = null;
+          if (guardado.foto !== foto) {
+            this.error = 'MySQL no confirmó la fotografía. Comprueba el registro.';
+            return;
+          }
+          this.productos = this.productos.map(p => p.id_producto === id ? guardado : p);
+          this.mensaje = 'Fotografía guardada en MySQL para ' + item.nombre_producto + '.';
+          this.cargarDiagnosticoFotos();
+        },
+        error: e => {
+          this.fotoCargandoId = null;
+          this.error = this.mensajeError(e, 'No se pudo guardar la fotografía en MySQL.');
+        }
+      });
+    }).catch((mensaje: string) => {
+      this.fotoCargandoId = null;
+      this.error = mensaje || 'No se pudo leer la fotografía.';
+    });
+  }
+
+  private prepararFotoDirecta(archivo: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const lector = new FileReader();
+      lector.onerror = () => reject('No se pudo leer el archivo seleccionado.');
+      lector.onload = () => {
+        const imagen = new Image();
+        imagen.onerror = () => reject('El archivo seleccionado no es una imagen válida.');
+        imagen.onload = () => {
+          try {
+            // Mantener resolución original cuando sea posible; reducir solo
+            // cuando la API necesite una imagen más ligera.
+            const dimensiones = [3840, 3200, 2560, 2048, 1600, 1200];
+            const calidades = [0.92, 0.88, 0.83, 0.76];
+            for (const maximo of dimensiones) {
+              const escala = Math.min(1, maximo / Math.max(imagen.width, imagen.height));
+              const ancho = Math.max(1, Math.round(imagen.width * escala));
+              const alto = Math.max(1, Math.round(imagen.height * escala));
+              const canvas = document.createElement('canvas');
+              canvas.width = ancho;
+              canvas.height = alto;
+              const ctx = canvas.getContext('2d');
+              if (!ctx) throw new Error('No se pudo preparar la fotografía.');
+              ctx.imageSmoothingEnabled = true;
+              ctx.imageSmoothingQuality = 'high';
+              ctx.drawImage(imagen, 0, 0, ancho, alto);
+              for (const calidad of calidades) {
+                let foto = canvas.toDataURL('image/webp', calidad);
+                if (!foto.startsWith('data:image/webp')) {
+                  foto = canvas.toDataURL('image/jpeg', calidad);
+                }
+                if (foto.length <= 2_900_000) {
+                  resolve(foto);
+                  return;
+                }
+              }
+            }
+            reject('La fotografía supera el tamaño admitido. Selecciona una más liviana.');
+          } catch {
+            reject('No se pudo optimizar la fotografía.');
+          }
+        };
+        imagen.src = String(lector.result || '');
+      };
+      lector.readAsDataURL(archivo);
+    });
   }
 
   seleccionarImagen(event: Event): void {
