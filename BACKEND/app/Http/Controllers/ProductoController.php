@@ -128,10 +128,15 @@ class ProductoController extends Controller
         $observaciones = [];
 
         foreach ($ejemplos as $numero => [$nombreReal, $categoria, $archivo]) {
-            $codigo = 'PROD-'.str_pad((string)$numero,3,'0',STR_PAD_LEFT);
+            // El décimo producto de gym_system usa PROD-0010; instalaciones
+            // alternativas pueden usar PROD-010. Aceptar ambas variantes.
+            $codigos = array_unique([
+                'PROD-'.str_pad((string)$numero,3,'0',STR_PAD_LEFT),
+                'PROD-00'.$numero,
+            ]);
             $nombrePrueba = 'Producto Prueba '.$numero;
             $fila = DB::table('productos')
-                ->where($codigoCampo,$codigo)
+                ->whereIn($codigoCampo,$codigos)
                 ->where($nombreCampo,$nombrePrueba)
                 ->where(function ($q) {
                     $q->whereNull('foto')->orWhere('foto','');
@@ -140,6 +145,7 @@ class ProductoController extends Controller
                 $omitidas++;
                 continue;
             }
+            $codigo = (string)$fila->{$codigoCampo};
 
             $idCategoria = DB::table('categorias')
                 ->where($categoriaNombreCampo,$categoria)->value($categoriaIdCampo);
