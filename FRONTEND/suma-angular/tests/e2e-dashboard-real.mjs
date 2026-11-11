@@ -98,6 +98,13 @@ try {
     const semanas=page.locator('.efsrt-week-card');
     await semanas.first().waitFor({timeout:25000});
     assert.equal(await semanas.count(),11,'La comprobación debe incluir las 11 semanas del documento.');
+    assert.equal(await page.locator('.efsrt-week-activities').count(),11,
+      'Cada semana necesita desglose de las cinco actividades de la bitácora.');
+    const semanaCinco=semanas.filter({hasText:'Semana 05'});
+    await semanaCinco.locator('.efsrt-week-activities summary').click();
+    assert.equal(await semanaCinco.locator('.efsrt-week-activities li').count(),5,
+      'La semana 05 debe comprobar sus cinco actividades, incluida la foto del producto.');
+    assert.match(await semanaCinco.locator('.efsrt-week-activities').innerText(),/Imagen de producto/);
     assert.equal(await semanas.filter({hasText:'Semana 05'}).count(),1);
     assert.equal(await semanas.filter({hasText:'Semana 10'}).count(),1);
     assert.equal(await semanas.filter({hasText:'Semana 11'}).count(),1);
