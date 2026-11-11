@@ -552,53 +552,35 @@ class DashboardController extends Controller
         return $resultado;
     }
 
+    /**
+     * Ingresos realmente cobrados. Una suscripción activa o la tarifa de un
+     * plan NO son evidencia de un pago. Nunca inventar ingresos por tener
+     * membresías registradas o por carecer de la tabla de pagos.
+     */
     private function ingresosSuscripcionesPeriodo(?string $pagos, ?string $suscripciones, ?string $planes, Carbon $desde, Carbon $hasta): float
     {
-        if ($pagos) {
-            $monto = $this->columna($pagos, ['monto', 'total', 'importe']);
-            $fecha = $this->columna($pagos, ['fecha_pago', 'fecha', 'created_at']);
-            if ($monto) {
-                $q = $this->db->table($pagos);
-                if ($fecha) {
-                    $q->whereBetween($fecha, [$desde, $hasta]);
-                }
-                $estado = $this->columna($pagos, ['estado_pago', 'estado', 'status']);
-                if ($estado) {
-                    $q->whereIn($estado, ['Completado', 'COMPLETADO', 'completado', 'Pagado', 'PAGADO', 'pagado', 1, '1']);
-                }
-                return (float) $q->sum($monto);
-            }
-        }
-
-        if (!$suscripciones) {
+        if (!$pagos) {
             return 0;
         }
 
-        $monto = $this->columna($suscripciones, ['monto', 'total', 'importe', 'precio']);
-        $fecha = $this->columna($suscripciones, ['fecha_pago', 'fecha_suscripcion', 'fecha_inicio', 'fecha', 'created_at']);
-        if ($monto) {
-            $q = $this->db->table($suscripciones);
-            if ($fecha) {
-                $q->whereBetween($fecha, [$desde, $hasta]);
-            }
-            return (float) $q->sum($monto);
+        $monto = $this->columna($pagos, ['monto', 'total', 'importe']);
+        $fecha = $this->columna($pagos, ['fecha_pago', 'fecha', 'created_at']);
+        $estado = $this->columna($pagos, ['estado_pago', 'estado', 'status']);
+
+        // Sin importe, fecha y confirmación de pago no se puede afirmar
+        // que existió un ingreso durante el mes consultado.
+        if (!$monto || !$fecha || !$estado) {
+            return 0;
         }
 
-        if ($planes) {
-            $idPlanSub = $this->columna($suscripciones, ['id_plan', 'id_membresia']);
-            $idPlan = $this->columna($planes, ['id_plan', 'id_membresia', 'id']);
-            $precio = $this->columna($planes, ['precio', 'precio_plan', 'costo']);
-            if ($idPlanSub && $idPlan && $precio) {
-                $q = $this->db->table($suscripciones . ' as s')
-                    ->join($planes . ' as p', 'p.' . $idPlan, '=', 's.' . $idPlanSub);
-                if ($fecha) {
-                    $q->whereBetween('s.' . $fecha, [$desde, $hasta]);
-                }
-                return (float) $q->sum('p.' . $precio);
-            }
-        }
+        $q = $this->db->table($pagos)
+            ->whereBetween($fecha, [$desde, $hasta])
+            ->whereIn($estado, [
+                'Completado', 'COMPLETADO', 'completado',
+                'Pagado', 'PAGADO', 'pagado', 1, '1',
+            ]);
 
-        return 0;
+        return (float) $q->sum($monto);
     }
 
     private function ventasTotalPeriodo(?string $tabla, Carbon $desde, Carbon $hasta): float
