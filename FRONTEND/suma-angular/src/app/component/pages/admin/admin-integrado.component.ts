@@ -232,7 +232,7 @@ import { catchError, forkJoin, of } from 'rxjs';
             </div>
             <div class="mg-efsrt-hero-aside">
               <span class="mg-efsrt-connection" [class.problem]="!sistemaSincronizado">
-                {{sistemaSincronizado ? '● Sistema conectado' : '● Revisar conexión'}}
+                {{sistemaSincronizado ? '● Sistema conectado' : (estadoOperativoDashboard?.database ? '● Esquema pendiente' : '● Revisar conexión')}}
               </span>
               <button type="button" (click)="actualizarDashboardCompleto()" [disabled]="actualizandoDatos">
                 {{actualizandoDatos ? 'Actualizando...' : '↻ Actualizar'}}
