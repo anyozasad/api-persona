@@ -11,6 +11,17 @@
 }
 .admin-home-redesign .efsrt-head p{margin:0;color:#71819a;font-size:12px;line-height:1.55}
 .admin-home-redesign .efsrt-head button{min-height:39px}
+.admin-home-redesign .efsrt-export-actions{
+  display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap;
+}
+.admin-home-redesign .efsrt-export-actions button{
+  min-height:39px;padding:8px 12px;border-radius:8px;font-size:12px;white-space:nowrap;
+}
+.admin-home-redesign .efsrt-export-actions button:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:540px){
+  .admin-home-redesign .efsrt-export-actions{width:100%;justify-content:stretch}
+  .admin-home-redesign .efsrt-export-actions button{flex:1}
+}
 .admin-home-redesign .efsrt-summary{
   display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px;
 }
