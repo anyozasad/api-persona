@@ -25,6 +25,22 @@ export class ProductoService {
 
   constructor(private http: HttpClient) {}
 
+  completarFotosIniciales(): Observable<{
+    mensaje: string;
+    actualizados: number;
+    omitidos: number;
+    observaciones: string[];
+    base_datos: string;
+  }> {
+    return this.http.post<{
+      mensaje: string;
+      actualizados: number;
+      omitidos: number;
+      observaciones: string[];
+      base_datos: string;
+    }>(`${this.apiUrl}/completar-fotos-iniciales`, {});
+  }
+
   diagnosticoFotos(): Observable<DiagnosticoFotosProducto> {
     return this.http.get<DiagnosticoFotosProducto>(`${this.apiUrl}/diagnostico-fotos`);
   }
