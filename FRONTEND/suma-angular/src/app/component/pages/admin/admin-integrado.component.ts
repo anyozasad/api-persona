@@ -1794,6 +1794,20 @@ import { catchError, forkJoin, of } from 'rxjs';
                 </div>
               </div>
 
+              <div class="routine-profile-helper" *ngIf="!rutinaEditandoId">
+                <div>
+                  <strong>Preparar rutina según el perfil</strong>
+                  <small *ngIf="clienteSeleccionadoRutina() as perfil">
+                    Nivel: {{perfil.nivel_entrenamiento || 'Sin nivel definido'}} ·
+                    Objetivo: {{perfil.enfoque_entrenamiento || 'General'}}
+                  </small>
+                  <small *ngIf="!clienteSeleccionadoRutina()">Selecciona un socio para usar su nivel y tipo de entrenamiento.</small>
+                </div>
+                <button type="button" class="admin-secondary"
+                  [disabled]="!rutinaForm.id_cliente" (click)="prepararRutinaSegunPerfil()">
+                  Sugerir ejercicios
+                </button>
+              </div>
               <label>Nombre de la rutina
                 <input [(ngModel)]="rutinaForm.nombre_rutina" name="runombre" required placeholder="Ej. Rutina fuerza inicial">
               </label>
@@ -5084,6 +5098,59 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.categoriaForm={nombre_categoria:'',descripcion:'',estado:'Activo'};
   }
   desactivarCategoria(id:number){ if(!confirm('¿Desactivar esta categoría?')) return; this.api.eliminarCategoria(id).subscribe({next:r=>{this.ok(r.mensaje||'Categoría desactivada');this.cancelarEdicionCategoria();this.cargarCategorias();},error:e=>this.mostrarError(e)}); }
+
+  clienteSeleccionadoRutina():any|null {
+    return this.clientes.find((c:any)=>
+      Number(c.id_cliente)===Number(this.rutinaForm.id_cliente)) || null;
+  }
+
+  /** Sugerencias iniciales de la semana 06: se revisan y guardan por el
+   * entrenador desde el formulario existente, nunca se almacenan solas.
+   * Evitar cargas máximas o rutinas médicas calculadas automáticamente.
+   */
+  prepararRutinaSegunPerfil():void {
+    if (this.rutinaEditandoId) return;
+    const cliente=this.clienteSeleccionadoRutina();
+    if (!cliente) {
+      this.error='Selecciona un socio registrado para preparar su rutina.';
+      return;
+    }
+    if (String(this.rutinaForm.nombre_rutina||'').trim() ||
+        this.rutinaDetallesForm.some((d:any)=>String(d.ejercicio||'').trim())) {
+      this.error='Ya hay una rutina escrita. Guarda o limpia el formulario antes de generar otra propuesta.';
+      return;
+    }
+    const nivelOriginal=String(cliente.nivel_entrenamiento||'').toLowerCase();
+    const nivel=nivelOriginal.includes('avanz')?'Avanzado'
+      :nivelOriginal.includes('intermed')?'Intermedio':'Principiante';
+    const enfoqueOriginal=String(cliente.enfoque_entrenamiento||'').toLowerCase();
+    const tipo=enfoqueOriginal.includes('cardio') || enfoqueOriginal.includes('peso') ||
+      enfoqueOriginal.includes('aerob')?'Cardiovascular'
+      :enfoqueOriginal.includes('cross')?'Funcional'
+      :enfoqueOriginal.includes('masa') || enfoqueOriginal.includes('fuerza')?'Fuerza'
+      :enfoqueOriginal.includes('tonif')?'Tonificación':'General';
+    const ejercicios:Record<string,string[]>={
+      Cardiovascular:['Marcha o caminata controlada','Movilidad de cuerpo completo','Sentadilla asistida'],
+      Funcional:['Sentadilla con peso corporal','Remo con banda elástica','Paso lateral controlado'],
+      Fuerza:['Sentadilla con peso corporal','Remo con banda elástica','Flexión inclinada'],
+      Tonificación:['Sentadilla asistida','Puente de glúteos','Remo con banda elástica'],
+      General:['Movilidad articular','Sentadilla asistida','Estiramiento dinámico suave']
+    };
+    const series=nivel==='Principiante'?2:3;
+    const repeticiones=nivel==='Avanzado'?12:10;
+    this.rutinaForm.nombre_rutina=`Plan ${tipo} - ${nivel}`;
+    this.rutinaForm.objetivo=tipo==='Cardiovascular'?'Mejorar resistencia y movilidad'
+      :tipo==='Fuerza'?'Desarrollar fuerza progresivamente'
+      :tipo==='Tonificación'?'Mejorar condición muscular'
+      :'Mejorar condición física y técnica';
+    this.rutinaForm.descripcion=`Propuesta inicial para nivel ${nivel.toLowerCase()}, enfoque ${tipo.toLowerCase()}. El entrenador debe revisar condiciones personales, técnica y progresión antes de asignarla.`;
+    this.rutinaDetallesForm=ejercicios[tipo].map(ejercicio=>({
+      ejercicio,series,repeticiones,peso_recomendado:null,
+      descanso_segundos:60,observaciones:'Ajustar tiempo, carga y técnica con el entrenador.'
+    }));
+    this.error='';
+    this.ok('Propuesta preparada. Revisa los ejercicios antes de asignarla al socio.');
+  }
 
   guardarRutina(){
     if(!this.rutinaForm.id_cliente || !this.rutinaForm.id_entrenador){
