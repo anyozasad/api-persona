@@ -706,6 +706,17 @@ import { catchError, forkJoin, of } from 'rxjs';
                 </div>
                 <h4>{{semana.titulo}}</h4>
                 <p *ngFor="let detalle of semana.observaciones">{{detalle}}</p>
+                <details class="efsrt-week-activities" *ngIf="semana.actividades?.length">
+                  <summary>Ver las {{semana.actividades.length}} actividades de la bitácora</summary>
+                  <ol>
+                    <li *ngFor="let actividad of semana.actividades">
+                      <span>{{actividad.actividad}}</span>
+                      <small>Evidencia: {{actividad.evidencia}} ·
+                        {{actividad.estado==='programada_por_validar' ? 'Programada / no validada' : 'Requiere comprobación'}}
+                      </small>
+                    </li>
+                  </ol>
+                </details>
                 <button type="button" (click)="cambiarSegcion(semana.destino)">Revisar función</button>
               </article>
             </div>
@@ -4544,6 +4555,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         modulo.registros??'Sin tabla',
         Array.isArray(modulo.faltantes)?modulo.faltantes.join(' | '):''
       ]);
+    }
+    filas.push([],['ACTIVIDADES DE BITÁCORA','Semana','N°','Descripción','Evidencia exigida','Validación']);
+    for(const semana of revision.semanas){
+      for(const item of Array.isArray(semana.actividades)?semana.actividades:[]){
+        filas.push([
+          'Bitácora',semana.semana,item.numero,item.actividad,item.evidencia,
+          item.estado==='programada_por_validar'?'Programada / no validada':'Requiere comprobación'
+        ]);
+      }
     }
     filas.push([],['Alertas de datos','Cantidad','Detalle']);
     for(const alerta of Array.isArray(revision.alertas)?revision.alertas:[]){
