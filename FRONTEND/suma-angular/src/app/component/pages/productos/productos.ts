@@ -74,7 +74,7 @@ export class ProductosComponent implements OnInit {
         // Completar sus fotografías de forma automática una sola vez,
         // sin exigir al administrador seleccionar una por una.
         if (!this.fotosDemoIntentadas && this.productos.some(p =>
-          /^PROD-(?:00[1-9]|010)$/.test(String(p.codigo_producto)) &&
+          /^PROD-(?:00[1-9]|0010|010)$/.test(String(p.codigo_producto)) &&
           /^Producto Prueba (?:[1-9]|10)$/.test(String(p.nombre_producto)) &&
           !p.foto
         )) {
