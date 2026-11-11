@@ -132,6 +132,41 @@ class ConfiguracionSistemaFlowTest extends TestCase
             ->assertJsonPath('estado.mysql', true);
     }
 
+    public function test_no_guarda_horarios_incoherentes_ruc_invalido_ni_dias_repetidos(): void
+    {
+        $base = [
+            'nombre_gimnasio' => 'Mallqui Gym',
+            'hora_apertura' => '06:00',
+            'hora_cierre' => '21:30',
+            'dias_atencion' => ['Lunes','Martes','Miércoles'],
+            'dias_aviso_vencimiento' => 7,
+            'minutos_cancelacion_reserva' => 120,
+            'dias_anticipacion_reserva' => 7,
+            'stock_minimo_default' => 5,
+            'notificar_vencimientos' => true,
+            'notificar_stock_bajo' => true,
+            'notificar_pagos_pendientes' => true,
+        ];
+
+        $this->putJson('/api/configuracion', $base)->assertOk();
+        $this->putJson('/api/configuracion', array_merge($base, [
+            'hora_cierre'=>'05:30',
+        ]))->assertStatus(422)->assertJsonValidationErrors(['hora_cierre']);
+
+        $this->putJson('/api/configuracion', array_merge($base, [
+            'ruc'=>'NO-VALIDO',
+        ]))->assertStatus(422)->assertJsonValidationErrors(['ruc']);
+
+        $this->putJson('/api/configuracion', array_merge($base, [
+            'dias_atencion'=>['Lunes','Lunes'],
+        ]))->assertStatus(422)->assertJsonValidationErrors(['dias_atencion.1']);
+
+        $this->getJson('/api/configuracion')
+            ->assertOk()
+            ->assertJsonPath('configuracion.hora_cierre', '21:30:00')
+            ->assertJsonPath('configuracion.dias_atencion.1', 'Martes');
+    }
+
     public function test_informacion_publica_expone_solo_datos_necesarios_y_planes_activos(): void
     {
         DB::table('configuracion_sistema')->insert([
@@ -157,6 +192,9 @@ class ConfiguracionSistemaFlowTest extends TestCase
         $this->getJson('/api/informacion-gym')
             ->assertOk()
             ->assertJsonPath('nombre_gimnasio', 'Mallqui Gym')
+            ->assertJsonPath('hora_apertura', '06:00')
+            ->assertJsonPath('hora_cierre', '21:30')
+            ->assertJsonPath('dias_atencion.1', 'Martes')
             ->assertJsonPath('membresias.0.nombre', 'Mensualidad 1 mes');
     }
 }
