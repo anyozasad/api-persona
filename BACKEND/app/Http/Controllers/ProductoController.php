@@ -85,10 +85,18 @@ class ProductoController extends Controller
      *
      * No se aplica a productos reales, fotos existentes o categorías ausentes.
      */
+    /**
+     * Semana 05: asignar fotografías a los 10 registros iniciales de prueba
+     * y corregir las etiquetas equivocadas de la versión anterior.
+     *
+     * IMPORTANTE: no se modifica ninguna ficha real ni una fotografía elegida
+     * manualmente. Para reparar nombres viejos se exige que la foto siga
+     * coincidiendo byte a byte con el JPEG original que asignó la aplicación.
+     */
     public function completarFotosIniciales()
     {
         if (!Schema::hasTable('productos') || !Schema::hasTable('categorias')) {
-            return response()->json(['mensaje'=>'No se encuentran las tablas de productos y categorías.'],503);
+            return response()->json(['mensaje'=>'Faltan las tablas de productos o categorías.'], 503);
         }
 
         $legacy = $this->usaEsquemaOriginal();
@@ -104,63 +112,68 @@ class ProductoController extends Controller
             || !Schema::hasColumn('productos',$nombreCampo)
             || !Schema::hasColumn('productos',$categoriaCampo)
             || !Schema::hasColumn('categorias',$categoriaNombreCampo)) {
-            return response()->json(['mensaje'=>'No está preparada la estructura de fotografías en MySQL.'],503);
+            return response()->json(['mensaje'=>'La estructura de fotografías de MySQL está incompleta.'], 503);
         }
 
-        // Asegura columna MEDIUMTEXT en una instalación antigua de gym_system.
         if ($legacy) app(GymSystemAdminController::class);
 
-        $ejemplos = [
-            1 => ['Creatina', 'Suplementos', 'foto-12.jpg'],
-            2 => ['Shaker gris', 'Accesorios', 'foto-13.jpg'],
-            3 => ['BCAA', 'Suplementos', 'foto-16.jpg'],
-            4 => ['Shaker azul', 'Accesorios', 'foto-14.jpg'],
-            5 => ['Big M', 'Suplementos', 'foto-15.jpg'],
-            6 => ['Collagen Pro', 'Suplementos', 'foto-17.jpg'],
-            7 => ['NOXRAGE', 'Suplementos', 'foto-09.jpg'],
-            8 => ['Pro Mass XL', 'Suplementos', 'foto-33.jpg'],
-            9 => ['AN USA (cajas)', 'Suplementos', 'foto-11.jpg'],
-            10 => ['NOXRAGE (presentación alternativa)', 'Suplementos', 'foto-29.jpg'],
+        // Nombre de la etiqueta REAL, categoría, archivo y nombre incorrecto
+        // que pudo guardar una edición anterior. No inventar tamaños/sabores.
+        $catalogo = [
+            1 => ['Level Pro Creatine Monohydrate 250 g', 'Suplementos', 'foto-12.jpg', 'Creatina'],
+            2 => ['Shaker UN 20 años - Blanco', 'Accesorios', 'foto-13.jpg', 'Shaker gris'],
+            3 => ['Universe Nutrition BCAA 6000 - Fruit Punch', 'Suplementos', 'foto-16.jpg', 'BCAA'],
+            4 => ['HD Blueberry 135 ml - Bebida energética', 'Bebidas', 'foto-14.jpg', 'Shaker azul'],
+            5 => ['Universe Nutrition BIGM Vainilla 2 kg', 'Suplementos', 'foto-15.jpg', 'Big M'],
+            6 => ['Universe Nutrition Collagen Pro - Fruit Punch', 'Suplementos', 'foto-17.jpg', 'Collagen Pro'],
+            7 => ['Universe Nutrition NOXRAGE - Fruit Punch', 'Suplementos', 'foto-09.jpg', 'NOXRAGE'],
+            8 => ['AN Pro Mass XL - Sobre 60 g', 'Suplementos', 'foto-33.jpg', 'Pro Mass XL'],
+            9 => ['Correas para pesas AN USA - Azul', 'Accesorios', 'foto-11.jpg', 'AN USA (cajas)'],
+            10 => ['Universe Nutrition NOXRAGE - Citrus Punch', 'Suplementos', 'foto-29.jpg', 'NOXRAGE (presentación alternativa)'],
         ];
 
         $baseFotos = base_path('../FRONTEND/suma-angular/public/assets/mallqui/fotos-reales');
-        $guardadas = 0;
-        $omitidas = 0;
+        $actualizados = 0;
+        $omitidos = 0;
         $observaciones = [];
 
-        foreach ($ejemplos as $numero => [$nombreReal, $categoria, $archivo]) {
-            // El décimo producto de gym_system usa PROD-0010; instalaciones
-            // alternativas pueden usar PROD-010. Aceptar ambas variantes.
+        foreach ($catalogo as $numero => [$nombreCorrecto, $categoria, $archivo, $nombreAnterior]) {
             $codigos = array_unique([
                 'PROD-'.str_pad((string)$numero,3,'0',STR_PAD_LEFT),
                 'PROD-00'.$numero,
             ]);
-            $nombrePrueba = 'Producto Prueba '.$numero;
+            $nombreInicial = 'Producto Prueba '.$numero;
             $fila = DB::table('productos')
-                ->whereIn($codigoCampo,$codigos)
-                ->where($nombreCampo,$nombrePrueba)
-                ->where(function ($q) {
-                    $q->whereNull('foto')->orWhere('foto','');
-                })->first();
+                ->whereIn($codigoCampo, $codigos)
+                ->whereIn($nombreCampo, [$nombreInicial, $nombreAnterior])
+                ->first();
+
             if (!$fila) {
-                $omitidas++;
+                $omitidos++;
                 continue;
             }
-            $codigo = (string)$fila->{$codigoCampo};
 
-            $idCategoria = DB::table('categorias')
-                ->where($categoriaNombreCampo,$categoria)->value($categoriaIdCampo);
-            if (!$idCategoria) {
-                $observaciones[] = "No existe la categoría {$categoria} para {$codigo}.";
+            $codigo = (string)$fila->{$codigoCampo};
+            $id = $fila->{$idCampo};
+            $esInicial = $fila->{$nombreCampo} === $nombreInicial;
+            $fotoAnterior = trim((string)($fila->foto ?? ''));
+
+            // Solo se instala la foto cuando es un producto demo sin imagen.
+            // Las etiquetas previas se reparan únicamente con imagen idéntica.
+            if ($esInicial && $fotoAnterior !== '') {
+                $omitidos++;
+                continue;
+            }
+            if (!$esInicial && $fotoAnterior === '') {
+                $omitidos++;
                 continue;
             }
 
             $ruta = $baseFotos.DIRECTORY_SEPARATOR.$archivo;
             if (!is_file($ruta) || is_link($ruta) || filesize($ruta) > 2100000) {
-                $observaciones[] = "Falta la fotografía local de {$codigo}.";
+                $observaciones[] = "No se encontró la foto de {$codigo}.";
                 continue;
             }
-
             $contenido = file_get_contents($ruta);
             $info = $contenido === false ? false : @getimagesizefromstring($contenido);
             if (!$info || ($info['mime'] ?? '') !== 'image/jpeg') {
@@ -169,35 +182,55 @@ class ProductoController extends Controller
             }
             $foto = 'data:image/jpeg;base64,'.base64_encode($contenido);
             if (strlen($foto) > 2900000) {
-                $observaciones[] = "La fotografía de {$codigo} excede el tamaño permitido.";
+                $observaciones[] = "La fotografía de {$codigo} es demasiado grande.";
+                continue;
+            }
+            if (!$esInicial && !hash_equals(hash('sha256',$foto), hash('sha256',$fotoAnterior))) {
+                // Si el cliente cambió la foto, conservar su elección y nombre.
+                $omitidos++;
                 continue;
             }
 
-            // WHERE protege ante concurrencia o cambios efectuados por el usuario.
-            $actualizados = DB::table('productos')
-                ->where($idCampo,$fila->{$idCampo})
-                ->where($codigoCampo,$codigo)
-                ->where($nombreCampo,$nombrePrueba)
-                ->where(function ($q) {
+            $idCategoria = DB::table('categorias')
+                ->where($categoriaNombreCampo, $categoria)->value($categoriaIdCampo);
+            if (!$idCategoria) {
+                $observaciones[] = "Falta la categoría {$categoria} para {$codigo}.";
+                continue;
+            }
+
+            $query = DB::table('productos')
+                ->where($idCampo, $id)
+                ->where($codigoCampo, $codigo)
+                ->where($nombreCampo, $esInicial ? $nombreInicial : $nombreAnterior);
+
+            if ($esInicial) {
+                $query->where(function ($q) {
                     $q->whereNull('foto')->orWhere('foto','');
-                })
-                ->update([
-                    $nombreCampo => $nombreReal,
-                    $categoriaCampo => $idCategoria,
-                    'foto' => $foto,
-                ]);
-            if ($actualizados === 1) $guardadas++;
-            else $omitidas++;
+                });
+            } else {
+                // Previene sobrescribir cambios manuales concurrentes.
+                $query->where('foto', $foto);
+            }
+
+            $cambios = [
+                $nombreCampo => $nombreCorrecto,
+                $categoriaCampo => $idCategoria,
+            ];
+            if ($esInicial) $cambios['foto'] = $foto;
+            $escrituras = $query->update($cambios);
+
+            if ($escrituras === 1) $actualizados++;
+            else $omitidos++;
         }
 
         return response()->json([
-            'mensaje' => $guardadas
-                ? "{$guardadas} productos de prueba completados automáticamente con fotografías reales."
-                : 'No se encontraron registros de prueba sin fotografía para completar.',
-            'actualizados' => $guardadas,
-            'omitidos' => $omitidas,
-            'observaciones' => $observaciones,
-            'base_datos' => DB::connection()->getDatabaseName(),
+            'mensaje'=>$actualizados > 0
+                ? "{$actualizados} nombres y fotografías del catálogo de prueba corregidos."
+                : 'No hay fichas de prueba pendientes de corrección.',
+            'actualizados'=>$actualizados,
+            'omitidos'=>$omitidos,
+            'observaciones'=>$observaciones,
+            'base_datos'=>DB::connection()->getDatabaseName(),
         ]);
     }
 
