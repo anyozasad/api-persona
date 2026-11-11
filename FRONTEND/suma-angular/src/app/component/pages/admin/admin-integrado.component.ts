@@ -339,7 +339,7 @@ import { catchError, forkJoin, of } from 'rxjs';
                     <strong>S/ {{totalIngresoMesSeleccionado() | number:'1.2-2'}}</strong>
                     <span>{{nombreIngresoSeleccionado}} · Mes actual</span>
                   </div>
-                  <div class="mg-revenue-chart" *ngIf="ingresosMensualesDashboard().length; else sinDatosIngresos">
+                  <div class="mg-revenue-chart" *ngIf="fuenteKpiDisponible('ingresos') && ingresosMensualesDashboard().length; else sinDatosIngresos">
                     <svg viewBox="0 0 720 245" preserveAspectRatio="none" role="img" aria-label="Evolución de ingresos mensuales en soles">
                       <defs>
                         <linearGradient id="mgRealRevenueFill" x1="0" y1="0" x2="0" y2="1">
@@ -356,27 +356,27 @@ import { catchError, forkJoin, of } from 'rxjs';
                     </svg>
                     <div class="mg-revenue-labels"><span *ngFor="let mes of ingresosMensualesDashboard()">{{mes.mes}}</span></div>
                   </div>
-                  <ng-template #sinDatosIngresos><div class="mg-no-chart-data">Aún no hay datos mensuales disponibles.</div></ng-template>
+                  <ng-template #sinDatosIngresos><div class="mg-no-chart-data">No se pudieron comprobar ingresos mensuales. Revisa las tablas de pagos y ventas.</div></ng-template>
                   <footer><span><i></i>Ingresos calculados por el sistema</span><b>{{dashboard?.periodo?.mes || 'Mes actual'}}</b></footer>
                 </article>
 
                 <article class="mg-premium-card mg-attendance-card">
                   <header><div><span>ASISTENCIA</span><h3>Últimos 7 días</h3></div><i>↗</i></header>
-                  <div class="mg-attendance-total"><strong>{{dashboard?.tendencias?.asistencias_7_dias?.length ? totalActividadSemanal() : '—'}}</strong><span>asistencias registradas</span></div>
-                  <div class="mg-real-bars" *ngIf="dashboard?.tendencias?.asistencias_7_dias?.length; else faltanAsistenciasGrafica" role="img" aria-label="Cantidad de asistencias registradas cada día de los últimos siete días">
+                  <div class="mg-attendance-total"><strong>{{fuenteKpiDisponible('asistencias') && dashboard?.tendencias?.asistencias_7_dias?.length ? totalActividadSemanal() : '—'}}</strong><span>asistencias registradas</span></div>
+                  <div class="mg-real-bars" *ngIf="fuenteKpiDisponible('asistencias') && dashboard?.tendencias?.asistencias_7_dias?.length; else faltanAsistenciasGrafica" role="img" aria-label="Cantidad de asistencias registradas cada día de los últimos siete días">
                     <div class="mg-real-day" *ngFor="let d of diasActividadDashboard()">
                       <b>{{d.total ?? 0}}</b>
                       <div class="mg-real-track"><i [style.height.%]="alturaAsistenciaSemana(d.total)"></i></div>
                       <span>{{d.dia}}</span>
                     </div>
                   </div>
-                  <ng-template #faltanAsistenciasGrafica><div class="mg-no-chart-data">No hay una serie semanal disponible en MySQL.</div></ng-template>
+                  <ng-template #faltanAsistenciasGrafica><div class="mg-no-chart-data">La tabla de asistencias no está disponible o no se pudo consultar.</div></ng-template>
                   <footer>Registros de asistencia recuperados del servidor.</footer>
                 </article>
 
                 <article class="mg-premium-card mg-operations-card">
                   <header><div><span>MOVIMIENTO DE HOY</span><h3>Actividad operativa</h3></div><i>◉</i></header>
-                  <div class="mg-operations-visual" *ngIf="dashboard?.operacion || dashboard?.asistencias || dashboard?.reservas || dashboard?.ventas; else faltaOperacionGrafica">
+                  <div class="mg-operations-visual" *ngIf="fuenteKpiDisponible('asistencias') || fuenteKpiDisponible('reservas') || fuenteKpiDisponible('ingresos'); else faltaOperacionGrafica">
                     <div class="mg-operations-ring">
                       <svg viewBox="0 0 180 180" role="img" aria-label="Distribución entre asistencias, reservas y ventas de hoy">
                         <circle cx="90" cy="90" r="62" pathLength="100" class="mg-operations-track"/>
@@ -392,9 +392,9 @@ import { catchError, forkJoin, of } from 'rxjs';
                       <div><strong>{{totalActividadOperativa()}}</strong><span>movimientos</span></div>
                     </div>
                     <div class="mg-operations-breakdown">
-                      <div><span><i class="a"></i>Asistencias</span><b>{{dashboard?.asistencias?.hoy ?? 0}}</b></div>
-                      <div><span><i class="r"></i>Reservas</span><b>{{dashboard?.reservas?.hoy ?? 0}}</b></div>
-                      <div><span><i class="v"></i>Ventas</span><b>{{dashboard?.ventas?.hoy_cantidad ?? 0}}</b></div>
+                      <div><span><i class="a"></i>Asistencias</span><b>{{fuenteKpiDisponible('asistencias') ? (dashboard?.asistencias?.hoy ?? 0) : '—'}}</b></div>
+                      <div><span><i class="r"></i>Reservas</span><b>{{fuenteKpiDisponible('reservas') ? (dashboard?.reservas?.hoy ?? 0) : '—'}}</b></div>
+                      <div><span><i class="v"></i>Ventas</span><b>{{fuenteKpiDisponible('ingresos') ? (dashboard?.ventas?.hoy_cantidad ?? 0) : '—'}}</b></div>
                     </div>
                   </div>
                   <ng-template #faltaOperacionGrafica><div class="mg-no-chart-data">No hay información operativa recuperada.</div></ng-template>
