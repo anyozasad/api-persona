@@ -653,10 +653,16 @@ import { catchError, forkJoin, of } from 'rxjs';
             <h2>Comprobación EFSRT — Mallqui Gym</h2>
             <p>Verificación de la conexión MySQL, existencia de tablas y coherencia de los registros reales.</p>
           </div>
-          <button type="button" class="admin-primary"
-            (click)="cargarVerificacionEfsrt()" [disabled]="verificacionEfsrtCargando">
-            {{verificacionEfsrtCargando ? 'Comprobando...' : '↻ Comprobar de nuevo'}}
-          </button>
+          <div class="efsrt-export-actions">
+            <button type="button" class="admin-secondary"
+              (click)="descargarInformeEfsrt()" [disabled]="verificacionEfsrtCargando || !verificacionEfsrt?.semanas?.length">
+              Descargar revisión CSV
+            </button>
+            <button type="button" class="admin-primary"
+              (click)="cargarVerificacionEfsrt()" [disabled]="verificacionEfsrtCargando">
+              {{verificacionEfsrtCargando ? 'Comprobando...' : '↻ Comprobar de nuevo'}}
+            </button>
+          </div>
         </section>
         <p class="efsrt-notice warn" *ngIf="verificacionEfsrtError">{{verificacionEfsrtError}}</p>
         <p class="efsrt-notice" *ngIf="verificacionEfsrtCargando">Consultando datos reales del servidor...</p>
@@ -4452,6 +4458,71 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     }
     this.cargarDashboard();
     this.cargarSegcion(this.seccion);
+  }
+
+  /** Informe basado exclusivamente en la respuesta actual de MySQL.
+   *  No marca semanas como completadas ni reemplaza evidencia del instituto.
+   */
+  construirInformeEfsrtCsv():string {
+    const revision=this.verificacionEfsrt;
+    if(!revision || !Array.isArray(revision.semanas) || revision.semanas.length!==11) return '';
+
+    const celda=(valor:any):string=>{
+      let texto=String(valor??'').replace(/[\r\n]+/g,' ').trim();
+      // Evitar fórmulas de hoja de cálculo cuando se incluyen datos de MySQL.
+      if(/^[=+@\-\t]/.test(texto)) texto="'"+texto;
+      return '"'+texto.replace(/"/g,'""')+'"';
+    };
+    const filas:any[][]=[
+      ['MALLQUI GYM','REVISIÓN FUNCIONAL DE 11 SEMANAS'],
+      ['Fecha de consulta',revision.fecha_revision||''],
+      ['Base de datos',revision.base_datos||''],
+      ['Alcance','Estructura y alertas verificadas por API; pruebas presenciales pendientes'],
+      [],
+      ['Semana','Actividad','Estado','Pendientes u observaciones','Módulo'],
+      ...revision.semanas.map((semana:any)=>[
+        semana.semana,semana.titulo,
+        semana.estado==='pendiente'?'Pendiente':'Verificación manual',
+        Array.isArray(semana.observaciones)?semana.observaciones.join(' | '):'',
+        semana.destino
+      ]),
+      [],
+      ['Módulo','Estado de estructura','Registros','Tablas pendientes']
+    ];
+    for(const modulo of Array.isArray(revision.modulos)?revision.modulos:[]){
+      filas.push([
+        modulo.nombre,modulo.estado==='estructura_disponible'?'Disponible':'Incompleta',
+        modulo.registros??'Sin tabla',
+        Array.isArray(modulo.faltantes)?modulo.faltantes.join(' | '):''
+      ]);
+    }
+    filas.push([],['Alertas de datos','Cantidad','Detalle']);
+    for(const alerta of Array.isArray(revision.alertas)?revision.alertas:[]){
+      filas.push([alerta.tipo,alerta.cantidad,alerta.mensaje]);
+    }
+    filas.push([],['NOTA','Los resultados no certifican SUNAT, uso sin servidor, pruebas del equipo ni firmas.']);
+    return filas.map(fila=>fila.map(celda).join(';')).join('\r\n');
+  }
+
+  descargarInformeEfsrt():void {
+    const csv=this.construirInformeEfsrtCsv();
+    if(!csv){
+      this.error='Primero comprueba las 11 semanas con la base de datos conectada.';
+      return;
+    }
+    const enlace=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));
+    try {
+      const elemento=document.createElement('a');
+      elemento.href=enlace;
+      elemento.download='mallqui-gym-revision-11-semanas-'+new Date().toISOString().slice(0,10)+'.csv';
+      elemento.style.display='none';
+      document.body.appendChild(elemento);
+      elemento.click();
+      document.body.removeChild(elemento);
+      this.ok('Revisión de las 11 semanas exportada con datos reales.');
+    } finally {
+      setTimeout(()=>URL.revokeObjectURL(enlace),0);
+    }
   }
 
   cargarVerificacionEfsrt():void {
