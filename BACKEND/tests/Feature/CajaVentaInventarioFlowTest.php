@@ -271,6 +271,47 @@ class CajaVentaInventarioFlowTest extends TestCase
         ]);
     }
 
+    public function test_reconoce_caja_abierta_legacy_y_no_permita_duplicar_apertura(): void
+    {
+        $this->abrirCaja(100);
+        DB::table('cajas')->where('id_caja', 1)->update(['estado' => 'abierta']);
+
+        $this->getJson('/api/caja/actual')
+            ->assertOk()
+            ->assertJsonPath('caja_abierta', true)
+            ->assertJsonPath('caja.id_caja', 1);
+
+        $this->postJson('/api/caja/abrir', ['monto_inicial' => 50])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['caja']);
+
+        $this->assertDatabaseCount('cajas', 1);
+    }
+
+    public function test_no_registra_egresos_mayores_al_saldo_de_caja(): void
+    {
+        $this->abrirCaja(100);
+        $this->postJson('/api/caja/movimientos', [
+            'tipo' => 'Egreso',
+            'origen' => 'Gasto',
+            'descripcion' => 'Gasto de materiales',
+            'monto' => 130,
+        ])->assertStatus(422)->assertJsonValidationErrors(['monto']);
+        $this->assertDatabaseCount('movimientos_caja', 0);
+
+        $this->postJson('/api/caja/movimientos', [
+            'tipo' => 'Egreso',
+            'origen' => 'Gasto',
+            'descripcion' => 'Limpieza del gimnasio',
+            'monto' => 25,
+        ])->assertCreated();
+
+        $actual=$this->getJson('/api/caja/actual')->assertOk()->json();
+        $this->assertSame(75.0, (float) $actual['resumen']['monto_esperado']);
+        $this->assertSame(25.0, (float) $actual['resumen']['egresos']);
+        $this->assertDatabaseCount('movimientos_caja', 1);
+    }
+
     private function abrirCaja(float $monto = 100): void
     {
         $this->postJson('/api/caja/abrir', [
