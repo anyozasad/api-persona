@@ -167,6 +167,26 @@ class ConfiguracionSistemaFlowTest extends TestCase
             ->assertJsonPath('configuracion.dias_atencion.1', 'Martes');
     }
 
+    public function test_si_falta_tabla_de_configuracion_devuelve_diagnostico_sin_inventar_datos(): void
+    {
+        Schema::dropIfExists('configuracion_sistema');
+        $this->getJson('/api/configuracion')
+            ->assertStatus(503)
+            ->assertJsonPath('codigo', 'CONFIGURACION_TABLA_AUSENTE')
+            ->assertJsonPath('configuracion', null);
+    }
+
+    public function test_si_faltan_columnas_de_configuracion_indica_migracion_pendiente(): void
+    {
+        Schema::table('configuracion_sistema', function (Blueprint $tabla) {
+            $tabla->dropColumn('horario_detalle');
+        });
+        $this->getJson('/api/configuracion')
+            ->assertStatus(503)
+            ->assertJsonPath('codigo', 'CONFIGURACION_COLUMNAS_AUSENTES')
+            ->assertJsonPath('faltantes.0', 'horario_detalle');
+    }
+
     public function test_informacion_publica_expone_solo_datos_necesarios_y_planes_activos(): void
     {
         DB::table('configuracion_sistema')->insert([
