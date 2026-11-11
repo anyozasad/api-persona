@@ -489,3 +489,137 @@
 @media(prefers-reduced-motion:reduce){
   .admin-shell.admin-home-redesign .mg-efsrt-dashboard *{transition:none!important;animation:none!important}
 }
+
+/* CORRECCIÓN FUNCIONAL DE GASTOS Y CONFIGURACIÓN */
+/* Las alertas no deben ocupar todo el alto de una vista vacía. */
+.admin-shell.admin-home-redesign .operation-locked-state{
+  align-items:stretch!important;
+  grid-template-columns:minmax(0,1.35fr) minmax(240px,.65fr)!important;
+  gap:12px!important;
+}
+.admin-shell.admin-home-redesign .operation-locked-main,
+.admin-shell.admin-home-redesign .operation-locked-side{
+  min-height:0!important;
+  padding:20px 22px!important;
+  box-sizing:border-box!important;
+  background:#fff!important;
+  border:1px solid #e1e7df!important;
+  border-radius:11px!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign .operation-locked-main{
+  justify-content:flex-start!important;
+}
+.admin-shell.admin-home-redesign .operation-locked-icon{
+  width:34px!important;height:34px!important;margin-bottom:9px!important;
+  border-radius:9px!important;background:#edf8d5!important;color:#426127!important;
+  font-size:16px!important;
+}
+.admin-shell.admin-home-redesign .operation-locked-main h2{
+  margin:6px 0!important;font-size:19px!important;color:#27362a!important;
+}
+.admin-shell.admin-home-redesign .operation-locked-main p{
+  margin:0 0 12px!important;font-size:12px!important;
+  line-height:1.5!important;color:#647265!important;
+}
+.admin-shell.admin-home-redesign .operation-locked-side h3{
+  color:#243729!important;font-size:17px!important;
+}
+.admin-shell.admin-home-redesign .operation-locked-side>p{
+  margin:3px 0 10px!important;font-size:11px!important;line-height:1.4!important;
+}
+.admin-shell.admin-home-redesign .operation-locked-side>div{
+  padding:8px 0!important;
+}
+.admin-shell.admin-home-redesign .operation-locked-side>div small{
+  font-size:11px!important;
+}
+.admin-shell.admin-home-redesign .operation-locked-side>div b{
+  font-size:12px!important;
+}
+.admin-shell.admin-home-redesign .operation-locked-side .expense-no-close{
+  font-size:11px!important;color:#92662d!important;margin:10px 0 0!important;
+}
+.admin-shell.admin-home-redesign .expense-fetch-note{
+  min-height:125px!important;display:block!important;
+  border:1px solid #dfe6d9!important;
+}
+.admin-shell.admin-home-redesign .expense-history-card{
+  margin-top:12px!important;padding:17px!important;
+  border:1px solid #e1e7df!important;border-radius:12px!important;background:#fff!important;
+}
+.admin-shell.admin-home-redesign .expense-history-card .management-heading{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:12px!important;margin-bottom:10px!important;
+}
+.admin-shell.admin-home-redesign .expense-history-card .management-heading p{
+  font-size:11px!important;color:#788675!important;
+}
+/* MySQL no se etiqueta activo sin consultar su endpoint. */
+.admin-shell.admin-home-redesign .config-fetch-status{
+  display:flex!important;align-items:flex-start!important;
+  flex-direction:column!important;gap:9px!important;
+  padding:15px 18px!important;border:1px solid #dce6d5!important;
+  border-radius:10px!important;background:#f8fbf3!important;
+  font-size:12px!important;color:#4e6645!important;
+}
+.admin-shell.admin-home-redesign .config-fetch-status.warning{
+  border-color:#e8d8ae!important;background:#fffbf0!important;color:#70552d!important;
+}
+.admin-shell.admin-home-redesign .config-fetch-status button{
+  min-height:34px!important;
+}
+.admin-shell.admin-home-redesign .config-source-info{
+  display:flex!important;flex-wrap:wrap!important;justify-content:space-between!important;
+  gap:10px!important;margin:0!important;font-size:12px!important;
+  color:#586d50!important;line-height:1.5!important;
+}
+.admin-shell.admin-home-redesign .config-source-info span{
+  font-weight:650!important;color:#395735!important;
+}
+.admin-shell.admin-home-redesign .config-schedule-help{
+  font-size:12px!important;line-height:1.5!important;color:#647565!important;
+  margin:11px 0!important;
+}
+.admin-shell.admin-home-redesign .config-health{
+  color:#253927!important;
+  border:1px solid #e9dca9!important;
+  background:#fffaf0!important;
+}
+.admin-shell.admin-home-redesign .config-health.ok{
+  border-color:#d1e5b5!important;background:#f4faeb!important;
+}
+.admin-shell.admin-home-redesign .config-health b{
+  color:#29432d!important;font-size:12px!important;
+}
+.admin-shell.admin-home-redesign .config-health small{
+  color:#647666!important;font-size:10px!important;
+}
+.admin-shell.admin-home-redesign .config-health>span{
+  flex:none!important;
+}
+.admin-shell.admin-home-redesign .config-card-head h3{
+  font-size:15px!important;color:#253729!important;
+}
+.admin-shell.admin-home-redesign .config-card-head p{
+  font-size:11px!important;line-height:1.45!important;
+}
+.admin-shell.admin-home-redesign .config-card label{
+  font-size:11px!important;line-height:1.4!important;
+}
+.admin-shell.admin-home-redesign .config-card input:not([type=checkbox]),
+.admin-shell.admin-home-redesign .config-card textarea{
+  font-size:12px!important;line-height:1.5!important;
+}
+.admin-shell.admin-home-redesign .config-save-bar small{
+  font-size:11px!important;
+}
+@media(max-width:900px){
+  .admin-shell.admin-home-redesign .operation-locked-state{
+    grid-template-columns:1fr!important;
+  }
+}
+@media(max-width:600px){
+  .admin-shell.admin-home-redesign .expense-history-card{padding:12px!important}
+  .admin-shell.admin-home-redesign .config-health{max-width:100%!important}
+}
