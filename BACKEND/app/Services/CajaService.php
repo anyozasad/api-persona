@@ -9,7 +9,7 @@ class CajaService
 {
     public function cajaAbierta(): ?Caja
     {
-        return Caja::where('estado', 'Abierta')->orderByDesc('fecha_apertura')->first();
+        return Caja::whereRaw('LOWER(estado) = ?', ['abierta'])->orderByDesc('fecha_apertura')->first();
     }
 
     public function registrarMovimiento(
