@@ -395,6 +395,31 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.cargarDashboard).toHaveBeenCalled();
   });
 
+  it('no muestra cero falso cuando falta la tabla de reservas o asistencias en MySQL', () => {
+    component.dashboard={
+      fuente:{tablas_detectadas:['clientes','productos']},
+      clientes:{activos:5},reservas:{hoy:0},asistencias:{hoy:0},
+      ingresos:{total_mes:0}
+    };
+    expect(component.fuenteKpiDisponible('socios')).toBeTrue();
+    expect(component.fuenteKpiDisponible('reservas')).toBeFalse();
+    expect(component.fuenteKpiDisponible('asistencias')).toBeFalse();
+    expect(component.fuenteKpiDisponible('ingresos')).toBeFalse();
+
+    component.dashboard.fuente.tablas_detectadas.push('reservas','asistencias','ventas');
+    expect(component.fuenteKpiDisponible('reservas')).toBeTrue();
+    expect(component.fuenteKpiDisponible('asistencias')).toBeTrue();
+    expect(component.fuenteKpiDisponible('ingresos')).toBeTrue();
+  });
+
+  it('acepta tablas legacy sin fingir un error de conexión', () => {
+    component.dashboard={fuente:{tablas_detectadas:['socios','app_reservas','app_asistencias','app_pagos_membresia']}};
+    expect(component.fuenteKpiDisponible('socios')).toBeTrue();
+    expect(component.fuenteKpiDisponible('reservas')).toBeTrue();
+    expect(component.fuenteKpiDisponible('asistencias')).toBeTrue();
+    expect(component.fuenteKpiDisponible('ingresos')).toBeTrue();
+  });
+
   it('calcula alertas a partir del desglose cuando el total no esta disponible', () => {
     component.dashboard = {
       alertas: { total: null, rutinas_pendientes: 2, soporte_pendiente: 1 },
