@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Membresia;
-use App\Models\Categoria;
 use App\Models\ConfiguracionSistema;
 use Throwable;
 
@@ -108,13 +107,32 @@ class PrepararMallquiSistema extends Command
                 $this->info('OK: se creó una membresía inicial porque no existía ninguna.');
             }
 
-            if (Schema::hasTable('categorias') && DB::table('categorias')->count() === 0) {
-                Categoria::create([
-                    'nombre_categoria' => 'Bebidas',
-                    'descripcion' => 'Productos disponibles en recepción.',
-                    'estado' => 'Activo',
-                ]);
-                $this->info('OK: se creó una categoría inicial porque no existía ninguna.');
+            // Los artículos con fotografías reales incluyen suplementos,
+            // bebidas y accesorios. Asegurarlos sin duplicar ni modificar
+            // categorías existentes (soporte para esquema legacy gym_system).
+            if (Schema::hasTable('categorias')) {
+                $nombreColumna = Schema::hasColumn('categorias','nombre_categoria')
+                    ? 'nombre_categoria'
+                    : (Schema::hasColumn('categorias','nombre') ? 'nombre' : null);
+                if ($nombreColumna !== null) {
+                    foreach (['Bebidas','Suplementos','Accesorios'] as $nombre) {
+                        $existe = DB::table('categorias')
+                            ->whereRaw('LOWER('.$nombreColumna.') = ?', [mb_strtolower($nombre)])
+                            ->exists();
+                        if ($existe) continue;
+                        $registro = [$nombreColumna => $nombre];
+                        if (Schema::hasColumn('categorias','descripcion')) {
+                            $registro['descripcion'] = 'Categoría de productos del gimnasio.';
+                        }
+                        if (Schema::hasColumn('categorias','estado')) {
+                            $registro['estado'] = $nombreColumna === 'nombre' ? 'activo' : 'Activo';
+                        }
+                        DB::table('categorias')->insert($registro);
+                        $this->info('Categoría de productos preparada: '.$nombre);
+                    }
+                } else {
+                    $this->warn('Categorías sin columna de nombre compatible; revisa el esquema.');
+                }
             }
 
             if (Schema::hasTable('configuracion_sistema') && DB::table('configuracion_sistema')->count() === 0) {
