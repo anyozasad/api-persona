@@ -1022,13 +1022,92 @@ class GymSystemAdminController extends Controller
         }
     }
 
+    /**
+     * Importación de respaldos completos generados por Mallqui Gym.
+     * Un archivo mysqldump contiene numerosas instrucciones SQL: ejecutarlo
+     * mediante DB::unprepared($sql) puede fallar en silencio o dejarlo a medias.
+     * Se realiza primero una copia de seguridad verificable de la BD vigente.
+     */
     public function restaurar(Request $request)
     {
+        if (config('database.default') !== 'mysql') {
+            return response()->json(['mensaje'=>'La restauración requiere MySQL.'], 503);
+        }
+
         $request->validate(['backup_file'=>'required|file|max:10240']);
-        $f=$request->file('backup_file');abort_if(strtolower($f->getClientOriginalExtension())!=='sql',422,'Solo se permiten archivos .sql.');
-        $sql=file_get_contents($f->getRealPath());abort_if(trim((string)$sql)==='',422,'El archivo SQL está vacío.');
-        $this->db->unprepared('SET FOREIGN_KEY_CHECKS=0');try{$this->db->unprepared($sql);}finally{$this->db->unprepared('SET FOREIGN_KEY_CHECKS=1');}
-        return response()->json(['mensaje'=>'Base principal restaurada correctamente.']);
+        $archivo = $request->file('backup_file');
+        abort_unless(strtolower($archivo->getClientOriginalExtension()) === 'sql', 422,
+            'Selecciona un archivo SQL generado por Mallqui Gym.');
+
+        $ruta = $archivo->getRealPath();
+        $cabecera = is_string($ruta) && is_file($ruta) ? file_get_contents($ruta, false, null, 0, 300) : false;
+        if ($cabecera === false || !preg_match('/^(-- MySQL dump|-- Backup base principal)/', ltrim($cabecera))) {
+            return response()->json([
+                'mensaje'=>'El archivo no tiene el formato de una copia SQL de Mallqui Gym.',
+            ], 422);
+        }
+
+        try {
+            $respaldo = Artisan::call('backup:database', ['--keep'=>30]);
+            if ($respaldo !== 0) {
+                return response()->json([
+                    'mensaje'=>'Se canceló la restauración porque no se pudo respaldar la base actual. '.trim(Artisan::output()),
+                ], 503);
+            }
+
+            $configuracion = (array) config('database.connections.mysql', []);
+            $base = (string) ($configuracion['database'] ?? '');
+            if ($base === '') {
+                return response()->json(['mensaje'=>'No está configurada la base de datos.'], 503);
+            }
+
+            $ejecutable = trim((string) env('MYSQL_PATH', ''));
+            if ($ejecutable === '') {
+                $xampp = 'C:\\xampp\\mysql\\bin\\mysql.exe';
+                $ejecutable = PHP_OS_FAMILY === 'Windows' && is_file($xampp) ? $xampp : 'mysql';
+            }
+
+            $comando = [
+                $ejecutable,
+                '--host='.(string) ($configuracion['host'] ?? '127.0.0.1'),
+                '--port='.(string) ($configuracion['port'] ?? 3306),
+                '--user='.(string) ($configuracion['username'] ?? 'root'),
+                '--default-character-set=utf8mb4',
+                '--database='.$base,
+            ];
+            $entrada = fopen($ruta, 'rb');
+            if ($entrada === false) {
+                return response()->json(['mensaje'=>'No se pudo leer la copia SQL.'], 422);
+            }
+
+            try {
+                $proceso = new \Symfony\Component\Process\Process($comando);
+                $proceso->setEnv(array_merge($_ENV, [
+                    'MYSQL_PWD'=>(string) ($configuracion['password'] ?? ''),
+                ]));
+                $proceso->setInput($entrada);
+                $proceso->setTimeout(600);
+                $proceso->run();
+            } finally {
+                fclose($entrada);
+            }
+
+            if (!$proceso->isSuccessful()) {
+                return response()->json([
+                    'mensaje'=>'La restauración no terminó correctamente. Revisa los registros de MySQL; se conservó un respaldo previo para recuperar los datos.',
+                ], 500);
+            }
+
+            return response()->json([
+                'mensaje'=>'Base de datos restaurada desde el archivo SQL. Se conservó una copia anterior por seguridad.',
+                'base_datos'=>$base,
+            ]);
+        } catch (\Throwable $error) {
+            report($error);
+            return response()->json([
+                'mensaje'=>'La restauración no pudo completarse. Verifica mysql.exe o MYSQL_PATH y consulta el respaldo automático.',
+            ], 500);
+        }
     }
 
     public function limpiar()
