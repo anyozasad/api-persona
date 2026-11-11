@@ -7,7 +7,7 @@ La API reconoce tanto la estructura original de gym_system (id, codigo, categori
 - /api/productos: devuelve foto y datos reales de MySQL en ambos esquemas.
 - /api/productos/diagnostico-fotos: solo administrador; muestra nombre de base y fotos faltantes sin transferir las imágenes.
 - El inicio /admin muestra fotos disponibles en la sección Productos del gimnasio.
-- En Productos se identifican fotos ausentes o con referencias antiguas. El botón **Subir foto** de cada fila selecciona JPG/PNG/WEBP, optimiza y guarda únicamente la fotografía en MySQL, sin cambiar stock ni precio. El botón **Editar / cambiar foto** conserva el formulario completo para productos que ya tienen fotografía.
+- En Productos se identifican fotos ausentes o con referencias antiguas. El botón **Elegir foto** de cada fila abre la galería local o permite subir un archivo JPG/PNG/WEBP, optimiza y guarda únicamente la fotografía en MySQL, sin cambiar stock ni precio. **Editar / cambiar foto** conserva el formulario completo para productos que ya tienen fotografía.
 - El portal usa el mismo catálogo y fotografías de la base original o moderna.
 
 ## Carga directa desde el dashboard (semana 05)
@@ -21,6 +21,19 @@ La API reconoce tanto la estructura original de gym_system (id, codigo, categori
 Los registros `Producto Prueba 1` a `Producto Prueba 10` no contienen fotos automáticamente. Si en MySQL aparece `foto = NULL`, es necesario subir el archivo real o usar el importador de abajo. No es correcto asignar imágenes genéricas del gimnasio a productos desconocidos.
 
 **Seguridad:** la carga usa `PATCH /api/productos/{id}/foto`, disponible solamente para Administrador autenticado. No cambia otros campos del producto. Para comprobar las pruebas sin tocar datos reales se usa la base de datos de pruebas de GitHub Actions.
+
+## Fotos reales del ZIP de Mallqui Gym (revisión 11/11/2026)
+
+Se comparó el ZIP con las imágenes que ya están guardadas en `FRONTEND/suma-angular/public/assets/mallqui/fotos-reales/`: coinciden sus 34 tamaños de archivo y orden, de `foto-01.jpg` a `foto-34.jpg`.
+
+- Las fotos 09, 11–17, 29, 31 y 33 muestran suplementos y accesorios reales del gimnasio. El resto incluye entrenador, máquinas, gimnasio y fotos repetidas, por eso no deben asignarse automáticamente a productos.
+- En **Productos y stock**, al pulsar **Elegir foto** sobre un registro sin imagen, aparece una galería con esas once imágenes de productos. Selecciona solamente la que corresponda al artículo; también está disponible **Subir otra fotografía del producto**.
+- El sistema convierte la imagen seleccionada a un formato optimizado y usa `PATCH /api/productos/{id}/foto` para guardar **solo** la columna de foto en MySQL. Después de guardar, se ve la fotografía en la tabla y, al refrescar, en el dashboard.
+- Los diez registros `Producto Prueba 1–10` no indican a qué suplemento o accesorio corresponde cada código, por lo que no es correcto adjudicar automáticamente fotografías por posición. En la galería puedes abrir **Editar datos y categoría** para poner el nombre correcto sin borrar ni crear registros duplicados.
+- No depende de URLs externas y las fotografías permanecen disponibles sin Internet si Angular y Laravel están sirviendo los archivos locales. No constituye conexión sin servidor.
+- Las fotografías de WhatsApp tienen la calidad y resolución del archivo recibido; no se presentan como originales 4K.
+
+**La base MySQL de la computadora no se modifica con un `git pull`:** el repositorio contiene el código y los recursos, no los registros personales del equipo. Debes seleccionar la fotografía correcta por artículo y guardar para que se almacene en tu MySQL local.
 
 ## Si las fotos están en una carpeta y no en MySQL
 El sistema no puede recrear fotos que no existen. Primero respalda tu base de datos.
