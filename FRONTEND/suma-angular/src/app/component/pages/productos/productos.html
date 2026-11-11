@@ -269,7 +269,14 @@
                 </td>
                 <td><span class="estado-chip" [class.inactivo]="item.estado !== 'Activo'">{{ item.estado }}</span></td>
                 <td class="acciones-tabla">
-                  <button type="button" class="editar-btn" (click)="editar(item)">{{ fotoVisible(item.foto) ? 'Editar' : 'Editar / subir foto' }}</button>
+                  <input #archivoFotoFila type="file" hidden accept="image/jpeg,image/png,image/webp"
+                    [disabled]="fotoCargandoId !== null" (change)="seleccionarFotoDirecta($event, item)">
+                  <button type="button" class="editar-btn" [disabled]="fotoCargandoId !== null"
+                    [title]="fotoVisible(item.foto) ? 'Editar producto o cambiar su fotografía' : 'Seleccionar foto y guardarla directamente en MySQL'"
+                    (click)="fotoVisible(item.foto) ? editar(item) : archivoFotoFila.click()">{{
+                      fotoCargandoId === item.id_producto ? 'Guardando foto...' :
+                      (fotoVisible(item.foto) ? 'Editar / cambiar foto' : 'Subir foto')
+                    }}</button>
                   <button type="button" class="peligro" (click)="eliminar(item.id_producto!)">Desactivar</button>
                 </td>
               </tr>
