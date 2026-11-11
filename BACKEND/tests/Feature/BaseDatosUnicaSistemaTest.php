@@ -26,6 +26,23 @@ class BaseDatosUnicaSistemaTest extends TestCase
         $this->assertStringContainsString('NO fueron eliminadas', $switch);
     }
 
+    public function test_preparacion_de_mysql_exige_respaldo_previo_y_conserva_categorias_reales(): void
+    {
+        $inicio = (string) file_get_contents(base_path('../INICIAR_DASHBOARD.ps1'));
+        $preparacion = (string) file_get_contents(app_path('Console/Commands/PrepararMallquiSistema.php'));
+
+        $posRespaldo = strpos($inicio, "Ejecutar $php @('artisan','backup:database')");
+        $posPreparacion = strpos($inicio, "Ejecutar $php @('artisan','sistema:preparar')");
+        $this->assertNotFalse($posRespaldo);
+        $this->assertNotFalse($posPreparacion);
+        $this->assertLessThan($posPreparacion, $posRespaldo,
+            'Primero se confirma el respaldo, después se preparan tablas.');
+        $this->assertStringContainsString('Respaldo SQL no confirmado.', $inicio);
+        $this->assertStringContainsString('Suplementos', $preparacion);
+        $this->assertStringContainsString('Accesorios', $preparacion);
+        $this->assertStringContainsString('if ($existe) continue;', $preparacion);
+    }
+
     public function test_interfaz_conserva_rutas_normales_y_refleja_socios_legacy(): void
     {
         $adminApi = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/component/pages/admin/admin-api.service.ts'));
