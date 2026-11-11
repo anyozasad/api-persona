@@ -118,10 +118,27 @@ try {
 
     if ($Migrar) {
         if ($SoloVerificar) { Fallar 'No combines -Migrar y -SoloVerificar.' }
-        Avisar 'Las migraciones modifican la estructura de MySQL. Haz una copia de respaldo antes.'
-        $respuesta = Read-Host '¿Tienes respaldo y autorizas sistema:preparar (esquema y datos iniciales)? Escribe SI'
-        if ($respuesta -ne 'SI') { Fallar 'Migración cancelada; no se modificó la base.' }
+        Avisar 'La preparación puede modificar tablas y crear datos iniciales. Nunca elimina voluntariamente los registros.'
+        $respuesta = Read-Host '¿Autorizas crear primero un respaldo SQL y después preparar las tablas faltantes? Escribe SI'
+        if ($respuesta -ne 'SI') { Fallar 'Preparación cancelada; no se modificó la base.' }
+
+        # No permitir migraciones sobre la base del gimnasio si no se pudo
+        # guardar una copia SQL NUEVA y con contenido.
+        $inicioRespaldo = (Get-Date).ToUniversalTime()
+        Informar 'Creando respaldo preventivo completo de MySQL con mysqldump...'
+        Ejecutar $php @('artisan','backup:database') $backend
+        $carpetaRespaldos = Join-Path $backend 'storage\app\backups'
+        $nuevoRespaldo = Get-ChildItem -LiteralPath $carpetaRespaldos -Filter '*.sql' -File -ErrorAction SilentlyContinue |
+            Where-Object { $_.Length -gt 200 -and $_.LastWriteTimeUtc -ge $inicioRespaldo.AddSeconds(-2) } |
+            Sort-Object -Property LastWriteTimeUtc -Descending |
+            Select-Object -First 1
+        if ($null -eq $nuevoRespaldo) {
+            Fallar 'Respaldo SQL no confirmado. Preparación cancelada antes de alterar tablas.'
+        }
+        Informar ('Respaldo SQL verificado: ' + $nuevoRespaldo.FullName)
+        Informar 'Sincronizando únicamente el esquema pendiente de Mallqui Gym...'
         Ejecutar $php @('artisan','sistema:preparar') $backend
+        Informar 'La preparación se ejecutó. Conserva el respaldo SQL antes de evaluar las 11 semanas.'
     }
 
     if ($SoloVerificar) {
@@ -131,8 +148,11 @@ try {
             Avisar 'Laravel no responde en http://127.0.0.1:8000. La comprobación de MySQL requiere Laravel iniciado.'
         } elseif ($estado.database -eq $true -and $estado.operativo -eq $true) {
             Informar 'La API y las tablas obligatorias de MySQL están disponibles.'
+        } elseif ($estado.database -eq $true) {
+            Avisar ('MySQL está conectado, pero quedan ' + @($estado.faltantes).Count + ' requisitos de esquema pendientes.')
+            Avisar 'Revisa Configuración > Información del sistema > Diagnóstico avanzado.'
         } else {
-            Avisar 'La API responde, pero la base o sus tablas no están completas. Revisa MySQL y Sistema > Comprobación EFSRT.'
+            Avisar 'La API responde pero MySQL no está conectado. Enciende MySQL en XAMPP.'
         }
         return
     }
@@ -158,9 +178,12 @@ try {
     }
     if ($null -eq $estado) {
         Avisar 'Laravel no responde con la API Mallqui Gym. Comprueba la consola PHP y el puerto 8000.'
-    } elseif ($estado.database -ne $true -or $estado.operativo -ne $true) {
-        Avisar 'MySQL no está disponible o faltan tablas. Inicia MySQL desde XAMPP y revisa BACKEND/.env.'
-        Avisar 'Si faltan tablas, usa -Migrar con respaldo previo: ejecuta sistema:preparar.'
+    } elseif ($estado.database -ne $true) {
+        Avisar 'MySQL no está disponible. Enciende MySQL desde XAMPP y revisa BACKEND/.env.'
+    } elseif ($estado.operativo -ne $true) {
+        $cantidadFaltantes = @($estado.faltantes).Count
+        Avisar ("MySQL responde, pero el esquema requiere revisión (" + $cantidadFaltantes + " requisitos pendientes).")
+        Avisar 'Para crear respaldo automáticamente y preparar tablas, ejecuta este script con -Migrar.'
     } else {
         Informar 'Backend y base de datos detectados.'
     }
