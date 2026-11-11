@@ -154,13 +154,37 @@ import { catchError, forkJoin, of } from 'rxjs';
             <i aria-hidden="true">{{navGroups[grupo.id]?'⌃':'⌄'}}</i>
           </button>
           <div class="cf-nav-children mg-clear-submenu" *ngIf="navGroups[grupo.id]">
-            <button type="button" *ngFor="let item of grupo.items"
-              [class.active]="seccion===item.id && !item.accion"
-              (click)="navegarMenu(item)"
-              [attr.aria-current]="seccion===item.id && !item.accion ? 'page' : null">
-              <span aria-hidden="true">{{item.accion ? '＋' : '•'}}</span>
-              <span>{{item.nombre}}</span>
-            </button>
+            <ng-container *ngIf="grupo.id!=='apps'">
+              <button type="button" *ngFor="let item of grupo.items"
+                [class.active]="seccion===item.id && !item.accion"
+                (click)="navegarMenu(item)"
+                [attr.aria-current]="seccion===item.id && !item.accion ? 'page' : null">
+                <span aria-hidden="true">{{item.accion ? '＋' : '•'}}</span>
+                <span>{{item.nombre}}</span>
+              </button>
+            </ng-container>
+            <ng-container *ngIf="grupo.id==='apps'">
+              <div class="mg-optional-guide">Funciones agrupadas por área. Abre solo la que necesitas.</div>
+              <div class="mg-optional-category" *ngFor="let categoria of categoriasMenuOpcional">
+                <button type="button" class="mg-optional-category-head"
+                  [class.active]="grupoOpcionalAbierto===categoria.id"
+                  [attr.aria-expanded]="grupoOpcionalAbierto===categoria.id"
+                  (click)="grupoOpcionalAbierto=grupoOpcionalAbierto===categoria.id?'':categoria.id">
+                  <strong>{{categoria.nombre}}</strong>
+                  <span>{{grupoOpcionalAbierto===categoria.id?'⌃':'⌄'}}</span>
+                </button>
+                <div class="mg-optional-category-items" *ngIf="grupoOpcionalAbierto===categoria.id">
+                  <ng-container *ngFor="let item of grupo.items">
+                    <button type="button" *ngIf="categoria.items.includes(item.id)"
+                      [class.active]="seccion===item.id"
+                      [attr.aria-current]="seccion===item.id ? 'page' : null"
+                      (click)="navegarMenu(item)">
+                      <span aria-hidden="true">•</span><span>{{item.nombre}}</span>
+                    </button>
+                  </ng-container>
+                </div>
+              </div>
+            </ng-container>
           </div>
         </ng-container>
       </nav>
@@ -290,6 +314,116 @@ import { catchError, forkJoin, of } from 'rxjs';
             </div>
           </section>
 
+          <section class="mg-efsrt-optional">
+            <button type="button" class="mg-efsrt-optional-toggle"
+              [attr.aria-expanded]="mostrarGraficosDashboard"
+              (click)="mostrarGraficosDashboard=!mostrarGraficosDashboard">
+              <span>Gráficos y análisis de ingresos</span>
+              <span>{{mostrarGraficosDashboard ? 'Ocultar −' : 'Mostrar +'}}</span>
+            </button>
+            <ng-container *ngIf="mostrarGraficosDashboard">
+            <section class="mg-premium-analytics" aria-label="Gráficos de actividad e ingresos">
+              <div class="mg-premium-analytics-head">
+                <div><span>ANALÍTICA REAL</span><h2>Tendencias del gimnasio</h2><p>Gráficos construidos con información de la base de datos.</p></div>
+                <button type="button" (click)="cambiarSegcion('reportes-admin')">Ver reportes completos <span>↗</span></button>
+              </div>
+              <div class="mg-premium-analytics-grid">
+                <article class="mg-premium-card mg-revenue-card">
+                  <header><div><span>RENDIMIENTO FINANCIERO</span><h3>Ingresos de los últimos 6 meses</h3></div><i>S/</i></header>
+                  <div class="mg-mantis-chart-switch" role="group" aria-label="Tipo de ingresos">
+                    <button type="button" [class.active]="tipoIngresoDashboard==='total'" (click)="tipoIngresoDashboard='total'">Total</button>
+                    <button type="button" [class.active]="tipoIngresoDashboard==='membresias'" (click)="tipoIngresoDashboard='membresias'">Membresías</button>
+                    <button type="button" [class.active]="tipoIngresoDashboard==='ventas'" (click)="tipoIngresoDashboard='ventas'">Ventas</button>
+                  </div>
+                  <div class="mg-revenue-overview">
+                    <strong>S/ {{totalIngresoMesSeleccionado() | number:'1.2-2'}}</strong>
+                    <span>{{nombreIngresoSeleccionado}} · Mes actual</span>
+                  </div>
+                  <div class="mg-revenue-chart" *ngIf="ingresosMensualesDashboard().length; else sinDatosIngresos">
+                    <svg viewBox="0 0 720 245" preserveAspectRatio="none" role="img" aria-label="Evolución de ingresos mensuales en soles">
+                      <defs>
+                        <linearGradient id="mgRealRevenueFill" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0" stop-color="#f56e58" stop-opacity=".23"/>
+                          <stop offset="1" stop-color="#f56e58" stop-opacity=".015"/>
+                        </linearGradient>
+                      </defs>
+                      <path d="M50 57H687 M50 107H687 M50 157H687 M50 207H687" class="mg-revenue-grid"/>
+                      <text x="4" y="62">{{maxIngresoGrafico() | number:'1.0-0'}}</text>
+                      <text x="4" y="211">0</text>
+                      <path [attr.d]="areaIngresosDashboard()" fill="url(#mgRealRevenueFill)"/>
+                      <polyline [attr.points]="lineaIngresosDashboard()" class="mg-revenue-line"/>
+                      <circle *ngFor="let punto of puntosIngresosDashboard()" [attr.cx]="punto.x" [attr.cy]="punto.y" r="6" class="mg-revenue-dot"/>
+                    </svg>
+                    <div class="mg-revenue-labels"><span *ngFor="let mes of ingresosMensualesDashboard()">{{mes.mes}}</span></div>
+                  </div>
+                  <ng-template #sinDatosIngresos><div class="mg-no-chart-data">Aún no hay datos mensuales disponibles.</div></ng-template>
+                  <footer><span><i></i>Ingresos calculados por el sistema</span><b>{{dashboard?.periodo?.mes || 'Mes actual'}}</b></footer>
+                </article>
+
+                <article class="mg-premium-card mg-attendance-card">
+                  <header><div><span>ASISTENCIA</span><h3>Últimos 7 días</h3></div><i>↗</i></header>
+                  <div class="mg-attendance-total"><strong>{{dashboard?.tendencias?.asistencias_7_dias?.length ? totalActividadSemanal() : '—'}}</strong><span>asistencias registradas</span></div>
+                  <div class="mg-real-bars" *ngIf="dashboard?.tendencias?.asistencias_7_dias?.length; else faltanAsistenciasGrafica" role="img" aria-label="Cantidad de asistencias registradas cada día de los últimos siete días">
+                    <div class="mg-real-day" *ngFor="let d of diasActividadDashboard()">
+                      <b>{{d.total ?? 0}}</b>
+                      <div class="mg-real-track"><i [style.height.%]="alturaAsistenciaSemana(d.total)"></i></div>
+                      <span>{{d.dia}}</span>
+                    </div>
+                  </div>
+                  <ng-template #faltanAsistenciasGrafica><div class="mg-no-chart-data">No hay una serie semanal disponible en MySQL.</div></ng-template>
+                  <footer>Registros de asistencia recuperados del servidor.</footer>
+                </article>
+
+                <article class="mg-premium-card mg-operations-card">
+                  <header><div><span>MOVIMIENTO DE HOY</span><h3>Actividad operativa</h3></div><i>◉</i></header>
+                  <div class="mg-operations-visual" *ngIf="dashboard?.operacion || dashboard?.asistencias || dashboard?.reservas || dashboard?.ventas; else faltaOperacionGrafica">
+                    <div class="mg-operations-ring">
+                      <svg viewBox="0 0 180 180" role="img" aria-label="Distribución entre asistencias, reservas y ventas de hoy">
+                        <circle cx="90" cy="90" r="62" pathLength="100" class="mg-operations-track"/>
+                        <circle cx="90" cy="90" r="62" pathLength="100" class="mg-operations-att"
+                          [attr.stroke-dasharray]="porcentajeActividadOperativa('asistencias') + ' ' + (100-porcentajeActividadOperativa('asistencias'))"/>
+                        <circle cx="90" cy="90" r="62" pathLength="100" class="mg-operations-res"
+                          [attr.stroke-dasharray]="porcentajeActividadOperativa('reservas') + ' ' + (100-porcentajeActividadOperativa('reservas'))"
+                          [attr.stroke-dashoffset]="-porcentajeActividadOperativa('asistencias')"/>
+                        <circle cx="90" cy="90" r="62" pathLength="100" class="mg-operations-ven"
+                          [attr.stroke-dasharray]="porcentajeActividadOperativa('ventas') + ' ' + (100-porcentajeActividadOperativa('ventas'))"
+                          [attr.stroke-dashoffset]="-(porcentajeActividadOperativa('asistencias')+porcentajeActividadOperativa('reservas'))"/>
+                      </svg>
+                      <div><strong>{{totalActividadOperativa()}}</strong><span>movimientos</span></div>
+                    </div>
+                    <div class="mg-operations-breakdown">
+                      <div><span><i class="a"></i>Asistencias</span><b>{{dashboard?.asistencias?.hoy ?? 0}}</b></div>
+                      <div><span><i class="r"></i>Reservas</span><b>{{dashboard?.reservas?.hoy ?? 0}}</b></div>
+                      <div><span><i class="v"></i>Ventas</span><b>{{dashboard?.ventas?.hoy_cantidad ?? 0}}</b></div>
+                    </div>
+                  </div>
+                  <ng-template #faltaOperacionGrafica><div class="mg-no-chart-data">No hay información operativa recuperada.</div></ng-template>
+                  <footer *ngIf="dashboard && totalActividadOperativa() === 0">Todavía no hay movimientos registrados hoy.</footer>
+                  <footer *ngIf="totalActividadOperativa() > 0">Distribución calculada a partir de registros reales.</footer>
+                </article>
+              </div>
+            </section>
+              <section class="mg-advanced-tools-shell">
+                <div class="mg-advanced-tools-head">
+                  <div>
+                    <small>DATOS OPERATIVOS</small>
+                    <h3>Análisis avanzado</h3>
+                    <p>Consulta y exporta datos cuando necesites un reporte más completo.</p>
+                  </div>
+                  <button type="button" class="admin-secondary"
+                    [attr.aria-expanded]="herramientasAvanzadasAbiertas"
+                    (click)="herramientasAvanzadasAbiertas=!herramientasAvanzadasAbiertas">
+                    {{herramientasAvanzadasAbiertas ? 'Cerrar detalle' : 'Abrir detalle'}}
+                  </button>
+                </div>
+                <app-admin-dashboard-tools
+                  *ngIf="herramientasAvanzadasAbiertas"
+                  [dashboard]="dashboard"
+                  (irSeccion)="cambiarSeccion($event)">
+                </app-admin-dashboard-tools>
+              </section>
+            </ng-container>
+
           <section class="mg-efsrt-work">
             <div class="mg-efsrt-heading">
               <h3>Operaciones del día</h3>
@@ -389,114 +523,6 @@ import { catchError, forkJoin, of } from 'rxjs';
             <button type="button" (click)="cambiarSegcion('verificacion-efsrt')">Verificar sistema</button>
           </section>
 
-          <section class="mg-efsrt-optional">
-            <button type="button" class="mg-efsrt-optional-toggle"
-              [attr.aria-expanded]="mostrarGraficosDashboard"
-              (click)="mostrarGraficosDashboard=!mostrarGraficosDashboard">
-              <span>Gráficos y análisis de ingresos</span>
-              <span>{{mostrarGraficosDashboard ? 'Ocultar −' : 'Mostrar +'}}</span>
-            </button>
-            <ng-container *ngIf="mostrarGraficosDashboard">
-            <section class="mg-premium-analytics" aria-label="Gráficos de actividad e ingresos">
-              <div class="mg-premium-analytics-head">
-                <div><span>ANALÍTICA REAL</span><h2>Tendencias del gimnasio</h2><p>Gráficos construidos con información de la base de datos.</p></div>
-                <button type="button" (click)="cambiarSegcion('reportes-admin')">Ver reportes completos <span>↗</span></button>
-              </div>
-              <div class="mg-premium-analytics-grid">
-                <article class="mg-premium-card mg-revenue-card">
-                  <header><div><span>RENDIMIENTO FINANCIERO</span><h3>Ingresos de los últimos 6 meses</h3></div><i>S/</i></header>
-                  <div class="mg-mantis-chart-switch" role="group" aria-label="Tipo de ingresos">
-                    <button type="button" [class.active]="tipoIngresoDashboard==='total'" (click)="tipoIngresoDashboard='total'">Total</button>
-                    <button type="button" [class.active]="tipoIngresoDashboard==='membresias'" (click)="tipoIngresoDashboard='membresias'">Membresías</button>
-                    <button type="button" [class.active]="tipoIngresoDashboard==='ventas'" (click)="tipoIngresoDashboard='ventas'">Ventas</button>
-                  </div>
-                  <div class="mg-revenue-overview">
-                    <strong>S/ {{totalIngresoMesSeleccionado() | number:'1.2-2'}}</strong>
-                    <span>{{nombreIngresoSeleccionado}} · Mes actual</span>
-                  </div>
-                  <div class="mg-revenue-chart" *ngIf="ingresosMensualesDashboard().length; else sinDatosIngresos">
-                    <svg viewBox="0 0 720 245" preserveAspectRatio="none" role="img" aria-label="Evolución de ingresos mensuales en soles">
-                      <defs>
-                        <linearGradient id="mgRealRevenueFill" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0" stop-color="#f56e58" stop-opacity=".23"/>
-                          <stop offset="1" stop-color="#f56e58" stop-opacity=".015"/>
-                        </linearGradient>
-                      </defs>
-                      <path d="M50 57H687 M50 107H687 M50 157H687 M50 207H687" class="mg-revenue-grid"/>
-                      <text x="4" y="62">{{maxIngresoGrafico() | number:'1.0-0'}}</text>
-                      <text x="4" y="211">0</text>
-                      <path [attr.d]="areaIngresosDashboard()" fill="url(#mgRealRevenueFill)"/>
-                      <polyline [attr.points]="lineaIngresosDashboard()" class="mg-revenue-line"/>
-                      <circle *ngFor="let punto of puntosIngresosDashboard()" [attr.cx]="punto.x" [attr.cy]="punto.y" r="6" class="mg-revenue-dot"/>
-                    </svg>
-                    <div class="mg-revenue-labels"><span *ngFor="let mes of ingresosMensualesDashboard()">{{mes.mes}}</span></div>
-                  </div>
-                  <ng-template #sinDatosIngresos><div class="mg-no-chart-data">Aún no hay datos mensuales disponibles.</div></ng-template>
-                  <footer><span><i></i>Ingresos calculados por el sistema</span><b>{{dashboard?.periodo?.mes || 'Mes actual'}}</b></footer>
-                </article>
-
-                <article class="mg-premium-card mg-attendance-card">
-                  <header><div><span>ASISTENCIA</span><h3>Últimos 7 días</h3></div><i>↗</i></header>
-                  <div class="mg-attendance-total"><strong>{{totalActividadSemanal()}}</strong><span>asistencias registradas</span></div>
-                  <div class="mg-real-bars" role="img" aria-label="Cantidad de asistencias registradas cada día de los últimos siete días">
-                    <div class="mg-real-day" *ngFor="let d of diasActividadDashboard()">
-                      <b>{{d.total ?? 0}}</b>
-                      <div class="mg-real-track"><i [style.height.%]="alturaAsistenciaSemana(d.total)"></i></div>
-                      <span>{{d.dia}}</span>
-                    </div>
-                  </div>
-                  <footer>Datos reales, sin estimaciones ni valores simulados.</footer>
-                </article>
-
-                <article class="mg-premium-card mg-operations-card">
-                  <header><div><span>MOVIMIENTO DE HOY</span><h3>Actividad operativa</h3></div><i>◉</i></header>
-                  <div class="mg-operations-visual">
-                    <div class="mg-operations-ring">
-                      <svg viewBox="0 0 180 180" role="img" aria-label="Distribución entre asistencias, reservas y ventas de hoy">
-                        <circle cx="90" cy="90" r="62" pathLength="100" class="mg-operations-track"/>
-                        <circle cx="90" cy="90" r="62" pathLength="100" class="mg-operations-att"
-                          [attr.stroke-dasharray]="porcentajeActividadOperativa('asistencias') + ' ' + (100-porcentajeActividadOperativa('asistencias'))"/>
-                        <circle cx="90" cy="90" r="62" pathLength="100" class="mg-operations-res"
-                          [attr.stroke-dasharray]="porcentajeActividadOperativa('reservas') + ' ' + (100-porcentajeActividadOperativa('reservas'))"
-                          [attr.stroke-dashoffset]="-porcentajeActividadOperativa('asistencias')"/>
-                        <circle cx="90" cy="90" r="62" pathLength="100" class="mg-operations-ven"
-                          [attr.stroke-dasharray]="porcentajeActividadOperativa('ventas') + ' ' + (100-porcentajeActividadOperativa('ventas'))"
-                          [attr.stroke-dashoffset]="-(porcentajeActividadOperativa('asistencias')+porcentajeActividadOperativa('reservas'))"/>
-                      </svg>
-                      <div><strong>{{totalActividadOperativa()}}</strong><span>movimientos</span></div>
-                    </div>
-                    <div class="mg-operations-breakdown">
-                      <div><span><i class="a"></i>Asistencias</span><b>{{dashboard?.asistencias?.hoy ?? 0}}</b></div>
-                      <div><span><i class="r"></i>Reservas</span><b>{{dashboard?.reservas?.hoy ?? 0}}</b></div>
-                      <div><span><i class="v"></i>Ventas</span><b>{{dashboard?.ventas?.hoy_cantidad ?? 0}}</b></div>
-                    </div>
-                  </div>
-                  <footer *ngIf="totalActividadOperativa() === 0">Todavía no hay movimientos registrados hoy.</footer>
-                  <footer *ngIf="totalActividadOperativa() > 0">Distribución calculada a partir de registros reales.</footer>
-                </article>
-              </div>
-            </section>
-              <section class="mg-advanced-tools-shell">
-                <div class="mg-advanced-tools-head">
-                  <div>
-                    <small>DATOS OPERATIVOS</small>
-                    <h3>Análisis avanzado</h3>
-                    <p>Consulta y exporta datos cuando necesites un reporte más completo.</p>
-                  </div>
-                  <button type="button" class="admin-secondary"
-                    [attr.aria-expanded]="herramientasAvanzadasAbiertas"
-                    (click)="herramientasAvanzadasAbiertas=!herramientasAvanzadasAbiertas">
-                    {{herramientasAvanzadasAbiertas ? 'Cerrar detalle' : 'Abrir detalle'}}
-                  </button>
-                </div>
-                <app-admin-dashboard-tools
-                  *ngIf="herramientasAvanzadasAbiertas"
-                  [dashboard]="dashboard"
-                  (irSeccion)="cambiarSeccion($event)">
-                </app-admin-dashboard-tools>
-              </section>
-            </ng-container>
-          </section>
         </section>
       </ng-container>
 
@@ -3038,8 +3064,17 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     ]}
   ];
 
-  mostrarGraficosDashboard = false;
+  // El panel muestra tendencias reales sin obligar a abrir opciones ocultas.
+  mostrarGraficosDashboard = true;
   navGroups:any = {overview:true,apps:false,members:false,payments:false,trainers:false,training:false,diet:false,equipment:false,events:false,ui:false,operations:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
+  readonly categoriasMenuOpcional: Array<{id:string;nombre:string;items:string[]}> = [
+    {id:'personas',nombre:'Socios y actividades',items:['planes','documentos-socio','progreso-fisico','clases','nutricion']},
+    {id:'inventario',nombre:'Inventario y finanzas',items:['inventario','categorias','proveedores','historial-ventas','kardex','gastos','ingresos','facturas','salarios']},
+    {id:'contacto',nombre:'Atención y comunidad',items:['soporte','comunicacion','opiniones','equipos','eventos','galeria','noticias']},
+    {id:'herramientas',nombre:'Herramientas avanzadas',items:['aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui']}
+  ];
+  grupoOpcionalAbierto = '';
+
   private autoRefreshId: any = null;
 
   diasSemana = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
@@ -3277,6 +3312,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     const grupo=this.menuPrincipal.find(g=>g.items.some(i=>i.id===seccion && !i.accion));
     Object.keys(this.navGroups).forEach(id=>this.navGroups[id]=false);
     if(grupo)this.navGroups[grupo.id]=true;
+    if(grupo?.id==='apps'){
+      this.grupoOpcionalAbierto=this.categoriasMenuOpcional.find(g=>g.items.includes(seccion))?.id||'';
+    }else{
+      this.grupoOpcionalAbierto='';
+    }
   }
 
   toggleNavGroup(group:string):void{
