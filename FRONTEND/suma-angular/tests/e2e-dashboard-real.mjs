@@ -174,6 +174,8 @@ try {
     await hijos.getByRole('button',{name:/Configuración/}).click();
     const configuracion=page.locator('.config-page');
     await configuracion.waitFor({timeout:15000});
+    // Los controles se muestran únicamente después de validar la respuesta MySQL.
+    await configuracion.getByRole('button',{name:'Usuarios y permisos'}).waitFor({timeout:25000});
     for(const herramienta of [
       'Usuarios y permisos','Historial de actividad',
       'Gestionar respaldos','Diagnóstico avanzado'
