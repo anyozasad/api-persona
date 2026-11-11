@@ -278,6 +278,7 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
 
     Route::apiResource('/categorias', CategoriaController::class);
     Route::get('/productos/diagnostico-fotos', [ProductoController::class, 'diagnosticoFotos']);
+    Route::post('/productos/completar-fotos-iniciales', [ProductoController::class, 'completarFotosIniciales']);
     Route::patch('/productos/{id}/foto', [ProductoController::class, 'actualizarFoto']);
     Route::apiResource('/productos', ProductoController::class);
     Route::get('/kardex', [KardexController::class, 'index']);
