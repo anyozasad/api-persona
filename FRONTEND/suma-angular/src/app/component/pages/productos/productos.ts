@@ -248,6 +248,12 @@ export class ProductosComponent implements OnInit {
     if (this.fotoCargandoId === null) this.galeriaProducto = null;
   }
 
+  editarDesdeGaleria(item: Producto): void {
+    if (this.fotoCargandoId !== null) return;
+    this.galeriaProducto = null;
+    this.editar(item);
+  }
+
   /**
    * El archivo ya existe en public/assets/mallqui/fotos-reales, igual al ZIP
    * original enviado. Se lee localmente y se almacena en productos.foto.
