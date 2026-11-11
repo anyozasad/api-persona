@@ -280,13 +280,12 @@ try {
     await fila.waitFor({timeout:25000});
     assert.equal(await fila.locator('img.producto-foto').count(),0);
 
-    const png=Buffer.from(
-      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jWl8AAAAASUVORK5CYII=',
-      'base64'
-    );
-    await fila.locator('input[type=file]').setInputFiles({
-      name:'foto-fila.png',mimeType:'image/png',buffer:png
-    });
+    await fila.getByRole('button',{name:'Elegir foto'}).click();
+    const galeria=page.locator('.foto-catalogo-dialog');
+    await galeria.waitFor({timeout:15000});
+    assert.equal(await galeria.locator('.foto-catalogo-imagenes button').count(),11,
+      'La galería debe usar once fotos reales de los productos aportados.');
+    await galeria.getByRole('button',{name:/Usar fotografía de Creatina/}).click();
     await page.locator('app-productos .mensaje-ok').waitFor({timeout:25000});
     await page.reload({waitUntil:'domcontentloaded'});
     fila=page.locator('app-productos .tabla-productos tr').filter({hasText:codigoProductoFoto}).first();
