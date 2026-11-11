@@ -129,6 +129,9 @@ export class AdminApiService {
   eliminarCategoria(id: number): Observable<any> { return this.http.delete(`/api/categorias/${id}`); }
 
   productos(): Observable<any[]> { return this.http.get<any[]>('/api/productos'); }
+  completarFotosIniciales(): Observable<{mensaje:string;actualizados:number;omitidos:number;observaciones:string[];base_datos:string}> {
+    return this.http.post<{mensaje:string;actualizados:number;omitidos:number;observaciones:string[];base_datos:string}>('/api/productos/completar-fotos-iniciales', {});
+  }
   producto(id: number): Observable<any> { return this.http.get(`/api/productos/${id}`); }
   crearProducto(datos: any): Observable<any> { return this.http.post('/api/productos', datos); }
   actualizarProducto(id: number, datos: any): Observable<any> { return this.http.put(`/api/productos/${id}`, datos); }
