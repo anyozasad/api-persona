@@ -46,6 +46,7 @@ export class ProductosComponent implements OnInit {
   ];
 
   private imagenSolicitud = 0;
+  private fotosDemoIntentadas = false;
   producto: Producto = this.productoVacio();
 
   constructor(
@@ -68,11 +69,41 @@ export class ProductosComponent implements OnInit {
         this.productos = Array.isArray(d) ? d : [];
         this.cargando = false;
         this.cargarDiagnosticoFotos();
+
+        // Los diez registros iniciales provienen de datos de prueba.
+        // Completar sus fotografías de forma automática una sola vez,
+        // sin exigir al administrador seleccionar una por una.
+        if (!this.fotosDemoIntentadas && this.productos.some(p =>
+          /^PROD-(?:00[1-9]|010)$/.test(String(p.codigo_producto)) &&
+          /^Producto Prueba (?:[1-9]|10)$/.test(String(p.nombre_producto)) &&
+          !p.foto
+        )) {
+          this.fotosDemoIntentadas = true;
+          this.completarFotosDemo();
+        }
       },
       error: e => {
         this.cargando = false;
         this.diagnosticoFotos = null;
         this.error = this.mensajeError(e, 'No se pudieron obtener los productos. Comprueba la conexión con Laravel y la base MySQL.');
+      }
+    });
+  }
+
+  private completarFotosDemo(): void {
+    this.productoService.completarFotosIniciales().subscribe({
+      next: resultado => {
+        if (resultado.actualizados > 0) {
+          this.mensaje = resultado.mensaje;
+          this.listar(false); // Solicita a MySQL las fotografías ya guardadas.
+        } else if (resultado.observaciones?.length) {
+          this.error = 'No se pudieron asignar todas las fotos: ' +
+            resultado.observaciones.join(' ');
+        }
+      },
+      error: e => {
+        this.error = this.mensajeError(e,
+          'No se pudieron colocar las fotografías automáticamente en MySQL. Revisa la conexión con Laravel.');
       }
     });
   }
