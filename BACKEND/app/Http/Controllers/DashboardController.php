@@ -30,7 +30,7 @@ class DashboardController extends Controller
             'socios' => $this->tabla(['clientes', 'socios', 'app_clientes', 'app_socios']),
             'planes' => $this->tabla(['membresias', 'planes', 'app_membresias', 'app_planes']),
             'suscripciones' => $this->tabla(['cliente_membresia', 'suscripciones', 'app_cliente_membresia', 'app_suscripciones']),
-            'pagos' => $this->tabla(['pagos_membresia', 'app_pagos_membresia']),
+            'pagos' => $this->tabla(['pagos_membresia', 'pagos', 'app_pagos_membresia', 'app_pagos']),
             'asistencias' => $this->tabla(['asistencias', 'app_asistencias']),
             'ventas' => $this->tabla(['ventas', 'app_ventas']),
             'detalle_ventas' => $this->tabla(['detalle_venta', 'detalle_ventas', 'app_detalle_venta', 'app_detalle_ventas']),
