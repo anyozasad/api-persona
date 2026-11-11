@@ -103,6 +103,14 @@ try {
     assert.equal(await semanas.filter({hasText:'Semana 11'}).count(),1);
     const revision=await page.locator('.efsrt-weekly').innerText();
     assert.match(revision,/Pendiente|Verificar en equipo/);
+    const [archivoDescargado]=await Promise.all([
+      page.waitForEvent('download',{timeout:25000}),
+      page.getByRole('button',{name:'Descargar revisión CSV'}).click()
+    ]);
+    assert.match(archivoDescargado.suggestedFilename(),/mallqui-gym-revision-11-semanas/);
+    const archivoCsv=await fs.readFile(await archivoDescargado.path(),'utf8');
+    assert.match(archivoCsv,/Semana";"Actividad";"Estado/);
+    assert.match(archivoCsv,/Verificación manual|Pendiente/);
     await page.screenshot({
       path:'evidencias-dashboard/18_Revision_11_Semanas_EFSRT.png',
       fullPage:true,animations:'disabled'
