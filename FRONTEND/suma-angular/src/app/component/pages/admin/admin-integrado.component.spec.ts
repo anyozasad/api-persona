@@ -622,20 +622,20 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.error).toContain('Abre Caja');
   });
 
-  it('conserva el dashboard expandido y la paleta Mallqui blanco negro verde lima', () => {
-    expect(component.navGroups.overview).toBeTrue();
+  it('conserva la paleta Mallqui blanco negro verde lima y el menú sin saturar', () => {
+    expect(component.navGroups['members']).toBeFalse();
     expect(component.acentoDashboard).toBe('verde');
     expect(component.modoDashboard).toBe('claro');
   });
 
-  it('convierte un grupo del menu colapsado en un submenu accesible', () => {
+  it('convierte un grupo del menú colapsado en un submenú accesible', () => {
     component.sidebarCerrado = true;
-    component.navGroups.overview = false;
+    component.navGroups['members'] = false;
 
-    component.toggleNavGroup('overview');
+    component.toggleNavGroup('members');
 
     expect(component.sidebarCerrado).toBeFalse();
-    expect(component.navGroups.overview).toBeTrue();
+    expect(component.navGroups['members']).toBeTrue();
   });
 
   it('calcula las minigraficas de KPI solo con series reales', () => {
