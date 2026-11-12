@@ -148,44 +148,48 @@ try {
     await paso('Ruta '+ruta+' abre módulo propio',()=>pantalla(ruta,contenido,nombre));
   }
 
-  await paso('Menú simplificado sin categorías repetidas',async()=>{
+  await paso('Menú administrativo organizado: todas las funciones en áreas reales',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
     await menu.waitFor({timeout:20000});
+
     const grupos=menu.locator('.cf-nav-group-head');
-    assert.equal(await grupos.count(),4,'Gestión tiene tres grupos y otras herramientas uno; Administración usa enlaces directos.');
+    assert.equal(await grupos.count(),7,'El sistema tiene siete áreas del gimnasio.');
     assert.equal(await menu.locator('.mg-direct-home').count(),2,
-      'Inicio debe tener Panel principal y Matricular socio.');
+      'Inicio contiene Panel principal y Matricular socio.');
+    assert.equal(await menu.getByText('Todas las funciones',{exact:true}).count(),0,
+      'No debe existir el botón de catálogo genérico.');
+
     const titulos=(await grupos.locator('span:nth-child(2)').allTextContents()).map(x=>x.trim());
     assert.deepEqual(titulos,[
-      'Socios y membresías','Entrenamientos','Ventas e inventario',
-      'Más funciones (opcional)'
-    ]);
-    const administracion=(await menu.locator('.mg-direct-admin').allTextContents())
-      .map(x=>x.replace(/^[^A-Za-zÁÉÍÓÚÜÑa-záéíóúüñ]+/u,'').trim());
-    assert.deepEqual(administracion,[
-      'Reportes','Reporte de asistencia','Usuarios y permisos','Configuración'
+      'Socios y membresías','Clases y entrenamiento','Productos e inventario',
+      'Ventas y caja','Atención al socio','Administración','Organización interna'
     ]);
     const secciones=(await menu.locator('.mg-nav-caption').allTextContents()).map(x=>x.trim());
-    assert.deepEqual(secciones,[
-      'INICIO','GESTIÓN DEL GIMNASIO','ADMINISTRACIÓN','OTRAS HERRAMIENTAS'
-    ]);
+    assert.deepEqual(secciones,['INICIO','GESTIÓN DEL GIMNASIO']);
+
+    await menu.getByRole('button',{name:'Abrir Productos e inventario'}).click();
+    await menu.getByRole('button',{name:'Productos y fotos'}).waitFor({timeout:15000});
+    await menu.getByRole('button',{name:'Productos y fotos'}).click();
+    await page.locator('.productos-page').waitFor({timeout:20000});
+    assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Productos');
+
     await page.screenshot({path:'evidencias-dashboard/13_Menu_simplificado.png',fullPage:true});
   });
 
-  await paso('Administración sigue el orden de reportes, usuarios y configuración',async()=>{
+  await paso('Administración conserva reportes, usuarios, auditoría, configuración y respaldo',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
-    const enlaces=menu.locator('.mg-direct-admin');
-    await enlaces.first().waitFor({timeout:12000});
-    assert.equal(await enlaces.count(),4);
-    const orden=(await enlaces.locator('span:nth-child(2)').allTextContents()).map(x=>x.trim());
-    assert.deepEqual(orden,['Reportes','Reporte de asistencia','Usuarios y permisos','Configuración'],
-      'En Administración deben ir Reportes, Usuarios y Configuración sin un submenú redundante.');
-    await enlaces.getByText('Configuración',{exact:true}).click();
+    await menu.getByRole('button',{name:'Abrir Administración'}).click();
+    const opciones=menu.locator('.cf-nav-children button');
+    const nombres=(await opciones.allTextContents()).map(x=>x.replace(/^[^A-Za-zÁÉÍÓÚÜÑa-záéíóúüñ]+/u,'').trim());
+    assert.deepEqual(nombres,[
+      'Reportes generales','Reporte de asistencia','Usuarios y permisos',
+      'Auditoría','Configuración','Respaldo y mantenimiento','Verificación del sistema'
+    ]);
+    await opciones.getByText('Configuración',{exact:true}).click();
     const configuracion=page.locator('.config-page');
     await configuracion.waitFor({timeout:15000});
-    // Los controles se muestran únicamente después de validar la respuesta MySQL.
     await configuracion.getByRole('button',{name:'Usuarios y permisos'}).waitFor({timeout:25000});
     for(const herramienta of [
       'Usuarios y permisos','Historial de actividad',
