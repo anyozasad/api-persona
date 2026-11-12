@@ -153,6 +153,17 @@ import { catchError, forkJoin, of } from 'rxjs';
         <ng-container *ngFor="let grupo of menuPrincipal">
           <span class="mg-nav-caption" *ngIf="grupo.id==='menu'">ADMINISTRACIÓN</span>
           <span class="mg-nav-caption" *ngIf="grupo.id==='apps'">OTRAS HERRAMIENTAS</span>
+          <ng-container *ngIf="grupo.id==='menu'; else bloquesGestionGym">
+            <button type="button" *ngFor="let item of grupo.items"
+              class="mg-direct-admin"
+              [class.active]="seccion===item.id"
+              [attr.aria-current]="seccion===item.id ? 'page' : null"
+              (click)="navegarMenu(item)">
+              <span class="admin-main-nav-icon" aria-hidden="true">{{item.id==='reportes-admin'?'↗':item.id==='reporte-asistencias'?'▥':item.id==='usuarios'?'♙':'⚙'}}</span>
+              <span>{{item.nombre}}</span>
+            </button>
+          </ng-container>
+          <ng-template #bloquesGestionGym>
           <button type="button" class="cf-nav-group-head mg-admin-group"
             [class.active]="navGroups[grupo.id]"
             [attr.aria-expanded]="!!navGroups[grupo.id]"
@@ -194,6 +205,7 @@ import { catchError, forkJoin, of } from 'rxjs';
               </div>
             </ng-container>
           </div>
+          </ng-template>
         </ng-container>
       </nav>
 
