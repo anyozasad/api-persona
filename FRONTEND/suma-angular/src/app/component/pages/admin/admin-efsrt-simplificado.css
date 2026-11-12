@@ -716,3 +716,34 @@
     grid-template-columns:1fr!important;
   }
 }
+
+/* Orden TEC-SGI: administración directa y acción principal visible.
+   Conserva la paleta de Mallqui Gym; no introduce estilos del instituto. */
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-direct-admin{
+  display:flex!important;align-items:center!important;gap:10px!important;
+  width:100%!important;min-height:40px!important;
+  margin:2px 0!important;padding:9px 12px!important;
+  text-align:left!important;border:0!important;border-radius:9px!important;
+  background:transparent!important;color:#c7d2c9!important;
+  font-size:12.5px!important;font-weight:650!important;
+  cursor:pointer!important;transition:background .15s ease,color .15s ease!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-direct-admin:hover,
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-direct-admin.active{
+  background:#2e4329!important;color:#c7f35b!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-direct-admin .admin-main-nav-icon{
+  flex:0 0 18px!important;text-align:center!important;font-size:16px!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-action-registrar{
+  margin:2px 0 8px!important;
+  color:#c7f35b!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-action-registrar:hover{
+  background:#2c4028!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-nav-caption{
+  display:block!important;margin:14px 0 7px!important;
+  font-size:10px!important;font-weight:750!important;
+  letter-spacing:.1em!important;
+}
