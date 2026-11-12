@@ -11,7 +11,7 @@ type NombreTabla = 'clientes' | 'productos' | 'reservas';
   selector: 'app-admin-applications',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  styleUrls: ['./admin-applications.css'],
+  styleUrls: ['./styles/admin-applications.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
   <main class="mg-app-center" aria-label="Centro de aplicaciones Mallqui Gym">
