@@ -5,6 +5,9 @@
       <h2>Gestión de Productos</h2>
       <p>Administra los productos, precios y stock del gimnasio desde un solo lugar.</p>
     </div>
+    <button type="button" class="productos-nuevo-boton" (click)="mostrarFormularioNuevo()"
+      [attr.aria-expanded]="formularioVisible && !editando"
+      aria-label="Abrir formulario para agregar producto">＋ Nuevo producto</button>
     <div class="inventario-status">
       <span class="status-dot"></span>
       <div>
@@ -80,7 +83,7 @@
   @if (mensaje) { <div class="mensaje-ok"><span>✓</span>{{ mensaje }}</div> }
   @if (error) { <div class="mensaje-error"><span>!</span>{{ error }}</div> }
 
-  <section class="producto-card producto-form-card">
+  <section class="producto-card producto-form-card" *ngIf="formularioVisible">
     <div class="card-heading">
       <div>
         <span class="card-kicker">{{ editando ? 'EDICIÓN' : 'NUEVO REGISTRO' }}</span>
@@ -194,9 +197,7 @@
       </label>
 
       <div class="acciones-form span-2">
-        @if (editando) {
-          <button class="boton-secundario" type="button" (click)="limpiarFormulario()">Cancelar</button>
-        }
+        <button class="boton-secundario" type="button" (click)="limpiarFormulario()">Cancelar</button>
         <button class="boton-principal" type="submit" [disabled]="procesandoImagen || guardando">
           <span>{{ editando ? '✓' : '+' }}</span>
           {{ guardando ? 'Guardando en MySQL...' : (procesandoImagen ? 'Preparando fotografía...' : (editando ? 'Guardar cambios' : 'Registrar producto')) }}
