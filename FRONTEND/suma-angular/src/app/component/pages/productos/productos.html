@@ -283,8 +283,19 @@
                 <td colspan="7">
                   <div class="empty-productos">
                     <span>▦</span>
-                    <b>No encontramos productos</b>
-                    <p>{{ busqueda ? 'Prueba con otro término de búsqueda.' : 'Registra tu primer producto para comenzar.' }}</p>
+                    @if (error) {
+                      <b>No se pudo cargar el inventario</b>
+                      <p>{{ error }}</p>
+                    } @else if (busqueda) {
+                      <b>No hay resultados para esta búsqueda</b>
+                      <p>Prueba con otro nombre o código.</p>
+                    } @else {
+                      <b>No hay productos en la base conectada</b>
+                      <p>Base consultada: {{ diagnosticoFotos?.base_datos || 'pendiente de verificar' }}.
+                        Si registraste productos en otra laptop, necesitas recuperar su base MySQL;
+                        actualizar GitHub no transfiere registros.</p>
+                    }
+                    <button type="button" class="boton-secundario" (click)="listar()">Volver a consultar MySQL</button>
                   </div>
                 </td>
               </tr>
