@@ -16,7 +16,7 @@ import { catchError, forkJoin, of } from 'rxjs';
   selector: 'app-admin-integrado',
   standalone: true,
   imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminGymSuiteComponent, AdminApplicationsComponent, AdminDashboardToolsComponent],
-  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './styles/admin-live.css', '../crossfit-final.css', './styles/admin-dashboard-polish.css', './styles/admin-dashboard-premium.css', './styles/admin-mantis-interactions.css', './styles/admin-dashboard-refined.css', './styles/admin-mantis-reference.css', './styles/admin-efsrt-validation.css', './styles/admin-mallqui-original-palette.css', './styles/admin-claridad.css', './styles/admin-efsrt-simplificado.css'],
+  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './styles/admin-live.css', '../crossfit-final.css', './styles/admin-dashboard-polish.css', './styles/admin-dashboard-premium.css', './styles/admin-mantis-interactions.css', './styles/admin-dashboard-refined.css', './styles/admin-mantis-reference.css', './styles/admin-efsrt-validation.css', './styles/admin-mallqui-original-palette.css', './styles/admin-claridad.css', './styles/admin-efsrt-simplificado.css', './styles/admin-navegacion-clara.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
   <div class="admin-shell admin-home-redesign" [class.admin-sidebar-collapsed]="sidebarCerrado" [class.mg-mantis-collapsed]="sidebarCerrado" [class.mg-mantis-dark]="modoDashboard==='oscuro'" [class.mg-mantis-compact]="densidadDashboard==='compacta'" [class.mg-mantis-blue]="acentoDashboard==='azul'" [class.mg-mantis-green]="acentoDashboard==='verde'" [class.mg-mantis-coral]="acentoDashboard==='coral'">
@@ -137,80 +137,48 @@ import { catchError, forkJoin, of } from 'rxjs';
       </button>
 
       <nav class="admin-main-nav crossfit-sidebar-nav mg-clear-navigation" aria-label="Navegación del gimnasio">
-        <span class="mg-nav-caption">INICIO</span>
+        <span class="mg-nav-caption">EMPEZAR AQUÍ</span>
         <button type="button" class="mg-direct-home" [class.active]="seccion==='dashboard'"
+          [attr.aria-current]="seccion==='dashboard' ? 'page' : null"
           (click)="cambiarSegcion('dashboard')">
-          <span class="admin-main-nav-icon" aria-hidden="true">⌂</span>
-          <span>Panel principal</span>
+          <span class="admin-main-nav-icon" aria-hidden="true">⌂</span><span>Inicio</span>
         </button>
         <button type="button" class="mg-direct-home mg-action-registrar"
-          (click)="abrirNuevoSocioDesdeDashboard()"
-          aria-label="Matricular socio nuevo">
-          <span class="admin-main-nav-icon" aria-hidden="true">＋</span>
-          <span>Matricular socio</span>
+          (click)="abrirNuevoSocioDesdeDashboard()" aria-label="Registrar un socio nuevo">
+          <span class="admin-main-nav-icon" aria-hidden="true">＋</span><span>Nuevo socio</span>
         </button>
-        <span class="mg-nav-caption">GESTIÓN DEL GIMNASIO</span>
+        <span class="mg-nav-caption mg-nav-section-separator">ÁREAS DEL GIMNASIO</span>
         <ng-container *ngFor="let grupo of menuPrincipal">
-          <span class="mg-nav-caption" *ngIf="grupo.id==='menu'">ADMINISTRACIÓN</span>
-          <span class="mg-nav-caption" *ngIf="grupo.id==='apps'">OTRAS HERRAMIENTAS</span>
-          <ng-container *ngIf="grupo.id==='menu'; else bloquesGestionGym">
-            <button type="button" *ngFor="let item of grupo.items"
-              class="mg-direct-admin"
-              [class.active]="seccion===item.id"
-              [attr.aria-current]="seccion===item.id ? 'page' : null"
-              (click)="navegarMenu(item)">
-              <span class="admin-main-nav-icon" aria-hidden="true">{{item.id==='reportes-admin'?'↗':item.id==='reporte-asistencias'?'▥':item.id==='usuarios'?'♙':'⚙'}}</span>
-              <span>{{item.nombre}}</span>
+          <ng-container *ngIf="grupo.id!=='apps'">
+            <button type="button" class="cf-nav-group-head mg-admin-group"
+              [class.active]="!!navGroups[grupo.id]"
+              [attr.aria-expanded]="!!navGroups[grupo.id]"
+              (click)="toggleNavGroup(grupo.id)">
+              <span class="admin-main-nav-icon" aria-hidden="true">{{grupo.icono}}</span>
+              <span>{{grupo.titulo}}</span>
+              <i aria-hidden="true">{{navGroups[grupo.id]?'⌃':'⌄'}}</i>
             </button>
-          </ng-container>
-          <ng-template #bloquesGestionGym>
-          <button type="button" class="cf-nav-group-head mg-admin-group"
-            [class.active]="navGroups[grupo.id]"
-            [attr.aria-expanded]="!!navGroups[grupo.id]"
-            (click)="toggleNavGroup(grupo.id)">
-            <span class="admin-main-nav-icon" aria-hidden="true">{{grupo.icono}}</span>
-            <span>{{grupo.titulo}}</span>
-            <i aria-hidden="true">{{navGroups[grupo.id]?'⌃':'⌄'}}</i>
-          </button>
-          <div class="cf-nav-children mg-clear-submenu" *ngIf="navGroups[grupo.id]">
-            <ng-container *ngIf="grupo.id!=='apps'">
+            <div class="cf-nav-children mg-clear-submenu" *ngIf="navGroups[grupo.id]">
               <button type="button" *ngFor="let item of grupo.items"
                 [class.active]="seccion===item.id && !item.accion"
-                (click)="navegarMenu(item)"
-                [attr.aria-current]="seccion===item.id && !item.accion ? 'page' : null">
-                <span aria-hidden="true">{{item.accion ? '＋' : '•'}}</span>
-                <span>{{item.nombre}}</span>
+                [attr.aria-current]="seccion===item.id && !item.accion ? 'page' : null"
+                (click)="navegarMenu(item)">
+                <span aria-hidden="true">•</span><span>{{item.nombre}}</span>
               </button>
-            </ng-container>
-            <ng-container *ngIf="grupo.id==='apps'">
-              <div class="mg-optional-guide">Funciones agrupadas por área. Abre solo la que necesitas.</div>
-              <div class="mg-optional-category" *ngFor="let categoria of categoriasMenuOpcional">
-                <button type="button" class="mg-optional-category-head"
-                  [class.active]="grupoOpcionalAbierto===categoria.id"
-                  [attr.aria-expanded]="grupoOpcionalAbierto===categoria.id"
-                  (click)="grupoOpcionalAbierto=grupoOpcionalAbierto===categoria.id?'':categoria.id">
-                  <strong>{{categoria.nombre}}</strong>
-                  <span>{{grupoOpcionalAbierto===categoria.id?'⌃':'⌄'}}</span>
-                </button>
-                <div class="mg-optional-category-items" *ngIf="grupoOpcionalAbierto===categoria.id">
-                  <ng-container *ngFor="let item of grupo.items">
-                    <button type="button" *ngIf="categoria.items.includes(item.id)"
-                      [class.active]="seccion===item.id"
-                      [attr.aria-current]="seccion===item.id ? 'page' : null"
-                      (click)="navegarMenu(item)">
-                      <span aria-hidden="true">•</span><span>{{item.nombre}}</span>
-                    </button>
-                  </ng-container>
-                </div>
-              </div>
-            </ng-container>
-          </div>
-          </ng-template>
+            </div>
+          </ng-container>
         </ng-container>
+        <span class="mg-nav-caption mg-nav-section-separator">MÁS OPCIONES</span>
+        <button type="button" class="mg-direct-home mg-catalogo-acceso"
+          [class.active]="seccion==='catalogo' || esModuloAdicionalActivo"
+          [attr.aria-current]="seccion==='catalogo' ? 'page' : null"
+          (click)="cambiarSegcion('catalogo')">
+          <span class="admin-main-nav-icon" aria-hidden="true">⊞</span><span>Todas las funciones</span>
+        </button>
       </nav>
 
       <div class="mg-sidebar-bottom">
-        <span class="mg-sidebar-tip">Elige una categoría y después el módulo que necesitas.</span>
+        <span class="mg-sidebar-tip">Abre un área para ver sus opciones. Las otras están en “Todas las funciones”.</span>
         <button type="button" (click)="cerrarSesion()">
           <span>↪</span><b>Cerrar sesión</b>
         </button>
@@ -266,6 +234,28 @@ import { catchError, forkJoin, of } from 'rxjs';
 
 
 
+      <ng-container *ngIf="seccion==='catalogo'">
+        <section class="mg-catalogo-funciones" aria-label="Todas las funciones administrativas">
+          <header class="mg-catalogo-intro">
+            <h2>Encuentra lo que necesitas</h2>
+            <p>Las tareas diarias están en el menú lateral. Aquí están las otras herramientas del gimnasio, agrupadas por área.</p>
+          </header>
+          <div class="mg-catalogo-categorias">
+            <section *ngFor="let categoria of categoriasMenuOpcional" class="mg-catalogo-categoria">
+              <h3>{{categoria.nombre}}</h3>
+              <div class="mg-catalogo-enlaces">
+                <ng-container *ngFor="let item of menuPrincipal[4].items">
+                  <button *ngIf="categoria.items.includes(item.id)" type="button"
+                    (click)="navegarMenu(item)">
+                    <span>{{item.nombre}}</span><span aria-hidden="true">›</span>
+                  </button>
+                </ng-container>
+              </div>
+            </section>
+          </div>
+        </section>
+      </ng-container>
+
       <ng-container *ngIf="seccion==='dashboard'">
         <section class="mg-dashboard mg-efsrt-dashboard" aria-label="Panel de control de Mallqui Gym">
           <header class="mg-efsrt-hero">
@@ -283,6 +273,33 @@ import { catchError, forkJoin, of } from 'rxjs';
               </button>
             </div>
           </header>
+
+          <section class="mg-efsrt-work">
+            <div class="mg-efsrt-heading">
+              <h3>¿Qué necesitas hacer hoy?</h3>
+              <p>Selecciona una tarea para abrir directamente el módulo.</p>
+            </div>
+            <div class="mg-efsrt-actions">
+              <button type="button" (click)="abrirNuevoSocioDesdeDashboard()">
+                <span aria-hidden="true">♙</span><strong>Matricular socio</strong><small>Nuevo registro</small>
+              </button>
+              <button type="button" (click)="cambiarSegcion('reservas')">
+                <span aria-hidden="true">◫</span><strong>Reservas</strong><small>Gestionar sesiones</small>
+              </button>
+              <button type="button" (click)="cambiarSegcion('asistencias')">
+                <span aria-hidden="true">✓</span><strong>Asistencia</strong><small>Entrada y salida</small>
+              </button>
+              <button type="button" (click)="cambiarSegcion('rutinas')">
+                <span aria-hidden="true">✦</span><strong>Rutinas</strong><small>Plan de entrenamiento</small>
+              </button>
+              <button type="button" (click)="cambiarSegcion('productos')">
+                <span aria-hidden="true">▦</span><strong>Productos</strong><small>Fotos y stock</small>
+              </button>
+              <button type="button" (click)="cambiarSegcion('pagos')">
+                <span aria-hidden="true">S/</span><strong>Pagos</strong><small>Cobros y membresías</small>
+              </button>
+            </div>
+          </section>
 
           <section class="mg-efsrt-kpis" aria-label="Indicadores obtenidos de MySQL">
             <article>
@@ -332,6 +349,69 @@ import { catchError, forkJoin, of } from 'rxjs';
                 <span class="mg-efsrt-pulse-action" aria-hidden="true">›</span>
               </button>
             </div>
+          </section>
+
+          <div class="mg-efsrt-grid">
+            <section class="mg-efsrt-panel mg-efsrt-renewals" [class.warning]="totalMembresiasPorVencerDashboard > 0">
+              <div class="mg-efsrt-heading"><h3>Vencimientos de membresías</h3><p>Alertas para el administrador.</p></div>
+              <strong class="mg-efsrt-renewal-count">{{totalMembresiasPorVencerDashboard}}</strong>
+              <p *ngIf="!totalMembresiasPorVencerDashboard">
+                {{dashboard ? 'No hay vencimientos durante los próximos siete días.' : 'Actualiza el panel para comprobar las membresías.'}}
+              </p>
+              <div class="mg-efsrt-renewal-rows" *ngIf="totalMembresiasPorVencerDashboard">
+                <p *ngFor="let registro of membresiasPorVencerDashboard.slice(0,3)">
+                  <b>{{nombreCliente(registro.cliente)}}</b>
+                  <span>{{registro.fecha_fin}} · {{registro.membresia?.nombre || 'Membresía'}}</span>
+                </p>
+              </div>
+              <button type="button" (click)="cambiarSegcion('renovaciones')">Revisar vencimientos</button>
+            </section>
+
+            <section class="mg-efsrt-panel mg-efsrt-bookings">
+              <div class="mg-efsrt-heading"><h3>Próximas reservas</h3><p>Sesiones registradas para hoy.</p></div>
+              <div *ngIf="reservasHoyDashboard().length; else sinAgendaEfsrt">
+                <p *ngFor="let reserva of reservasHoyDashboard().slice(0,4)">
+                  <strong>{{reserva.clase?.hora_inicio || '—'}}</strong>
+                  <span>{{nombreCliente(reserva.cliente) || 'Socio'}} · {{reserva.clase?.nombre || 'Sesión'}}</span>
+                </p>
+              </div>
+              <ng-template #sinAgendaEfsrt><p class="mg-efsrt-empty">No hay reservas registradas para hoy.</p></ng-template>
+            </section>
+          </div>
+
+          <section class="mg-catalog-preview mg-efsrt-product-preview" aria-label="Productos y fotografías reales de MySQL">
+            <header>
+              <div>
+                <span>INVENTARIO</span>
+                <h2>Productos del gimnasio</h2>
+                <p>Fotos, precios y existencias guardados en MySQL.</p>
+              </div>
+              <button type="button" (click)="cambiarSegcion('productos')">Gestionar productos</button>
+            </header>
+            <div class="mg-catalog-summary" *ngIf="productos.length">
+              <span><strong>{{productos.length}}</strong> productos</span>
+              <span><strong>{{productosConImagenDashboard}}</strong> con foto</span>
+              <span *ngIf="productosConImagenDashboard < productos.length" class="mg-catalog-missing">
+                <strong>{{productos.length - productosConImagenDashboard}}</strong> sin fotografía
+              </span>
+            </div>
+            <div class="mg-catalog-cards" *ngIf="productos.length; else sinProductosEfsrt">
+              <article *ngFor="let p of productosDestacadosDashboard" class="mg-catalog-product">
+                <div class="mg-catalog-product-photo">
+                  <img *ngIf="fotoProductoDisponibleDashboard(p.foto)" [src]="p.foto"
+                    [alt]="'Foto de ' + p.nombre_producto">
+                  <span *ngIf="!fotoProductoDisponibleDashboard(p.foto)" class="mg-catalog-no-photo">
+                    <i>▧</i><small>Foto pendiente</small>
+                  </span>
+                </div>
+                <strong>{{p.nombre_producto}}</strong>
+                <small>{{p.codigo_producto || 'Sin código'}} · Stock {{p.stock ?? 0}}</small>
+                <b>S/ {{p.precio_venta ?? 0 | number:'1.2-2'}}</b>
+              </article>
+            </div>
+            <ng-template #sinProductosEfsrt>
+              <p class="mg-efsrt-empty">No hay productos cargados desde MySQL. Registra productos y sus fotos desde Inventario.</p>
+            </ng-template>
           </section>
 
           <section class="mg-efsrt-optional">
@@ -443,96 +523,6 @@ import { catchError, forkJoin, of } from 'rxjs';
                 </app-admin-dashboard-tools>
               </section>
             </ng-container>
-          </section>
-
-          <section class="mg-efsrt-work">
-            <div class="mg-efsrt-heading">
-              <h3>Operaciones del día</h3>
-              <p>Registra movimientos reales desde los módulos del gimnasio.</p>
-            </div>
-            <div class="mg-efsrt-actions">
-              <button type="button" (click)="abrirNuevoSocioDesdeDashboard()">
-                <span aria-hidden="true">♙</span><strong>Matricular socio</strong><small>Nuevo registro</small>
-              </button>
-              <button type="button" (click)="cambiarSegcion('reservas')">
-                <span aria-hidden="true">◫</span><strong>Reservas</strong><small>Gestionar sesiones</small>
-              </button>
-              <button type="button" (click)="cambiarSegcion('asistencias')">
-                <span aria-hidden="true">✓</span><strong>Asistencia</strong><small>Entrada y salida</small>
-              </button>
-              <button type="button" (click)="cambiarSegcion('rutinas')">
-                <span aria-hidden="true">✦</span><strong>Rutinas</strong><small>Plan de entrenamiento</small>
-              </button>
-              <button type="button" (click)="cambiarSegcion('productos')">
-                <span aria-hidden="true">▦</span><strong>Productos</strong><small>Fotos y stock</small>
-              </button>
-              <button type="button" (click)="cambiarSegcion('pagos')">
-                <span aria-hidden="true">S/</span><strong>Pagos</strong><small>Cobros y membresías</small>
-              </button>
-            </div>
-          </section>
-
-          <div class="mg-efsrt-grid">
-            <section class="mg-efsrt-panel mg-efsrt-renewals" [class.warning]="totalMembresiasPorVencerDashboard > 0">
-              <div class="mg-efsrt-heading"><h3>Vencimientos de membresías</h3><p>Alertas para el administrador.</p></div>
-              <strong class="mg-efsrt-renewal-count">{{totalMembresiasPorVencerDashboard}}</strong>
-              <p *ngIf="!totalMembresiasPorVencerDashboard">
-                {{dashboard ? 'No hay vencimientos durante los próximos siete días.' : 'Actualiza el panel para comprobar las membresías.'}}
-              </p>
-              <div class="mg-efsrt-renewal-rows" *ngIf="totalMembresiasPorVencerDashboard">
-                <p *ngFor="let registro of membresiasPorVencerDashboard.slice(0,3)">
-                  <b>{{nombreCliente(registro.cliente)}}</b>
-                  <span>{{registro.fecha_fin}} · {{registro.membresia?.nombre || 'Membresía'}}</span>
-                </p>
-              </div>
-              <button type="button" (click)="cambiarSegcion('renovaciones')">Revisar vencimientos</button>
-            </section>
-
-            <section class="mg-efsrt-panel mg-efsrt-bookings">
-              <div class="mg-efsrt-heading"><h3>Próximas reservas</h3><p>Sesiones registradas para hoy.</p></div>
-              <div *ngIf="reservasHoyDashboard().length; else sinAgendaEfsrt">
-                <p *ngFor="let reserva of reservasHoyDashboard().slice(0,4)">
-                  <strong>{{reserva.clase?.hora_inicio || '—'}}</strong>
-                  <span>{{nombreCliente(reserva.cliente) || 'Socio'}} · {{reserva.clase?.nombre || 'Sesión'}}</span>
-                </p>
-              </div>
-              <ng-template #sinAgendaEfsrt><p class="mg-efsrt-empty">No hay reservas registradas para hoy.</p></ng-template>
-            </section>
-          </div>
-
-          <section class="mg-catalog-preview mg-efsrt-product-preview" aria-label="Productos y fotografías reales de MySQL">
-            <header>
-              <div>
-                <span>INVENTARIO</span>
-                <h2>Productos del gimnasio</h2>
-                <p>Fotos, precios y existencias guardados en MySQL.</p>
-              </div>
-              <button type="button" (click)="cambiarSegcion('productos')">Gestionar productos</button>
-            </header>
-            <div class="mg-catalog-summary" *ngIf="productos.length">
-              <span><strong>{{productos.length}}</strong> productos</span>
-              <span><strong>{{productosConImagenDashboard}}</strong> con foto</span>
-              <span *ngIf="productosConImagenDashboard < productos.length" class="mg-catalog-missing">
-                <strong>{{productos.length - productosConImagenDashboard}}</strong> sin fotografía
-              </span>
-            </div>
-            <div class="mg-catalog-cards" *ngIf="productos.length; else sinProductosEfsrt">
-              <article *ngFor="let p of productosDestacadosDashboard" class="mg-catalog-product">
-                <div class="mg-catalog-product-photo">
-                  <img *ngIf="fotoProductoDisponibleDashboard(p.foto)" [src]="p.foto"
-                    [alt]="'Foto de ' + p.nombre_producto">
-                  <span *ngIf="!fotoProductoDisponibleDashboard(p.foto)" class="mg-catalog-no-photo">
-                    <i>▧</i><small>Foto pendiente</small>
-                  </span>
-                </div>
-                <strong>{{p.nombre_producto}}</strong>
-                <small>{{p.codigo_producto || 'Sin código'}} · Stock {{p.stock ?? 0}}</small>
-                <b>S/ {{p.precio_venta ?? 0 | number:'1.2-2'}}</b>
-              </article>
-            </div>
-            <ng-template #sinProductosEfsrt>
-              <p class="mg-efsrt-empty">No hay productos cargados desde MySQL. Registra productos y sus fotos desde Inventario.</p>
-            </ng-template>
           </section>
 
           <section class="mg-efsrt-data-status" [class.problem]="!sistemaSincronizado">
@@ -2977,6 +2967,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   titulos: Record<string,[string,string]> = {
     'verificacion-efsrt':['Comprobación EFSRT','Estructura y coherencia de datos reales'],
     dashboard:['Panel Administrador','Datos reales del gimnasio'],
+    catalogo:['Todas las funciones','Encuentra los módulos complementarios del gimnasio'],
     aplicaciones:['Aplicaciones','Accesos y módulos del gimnasio'],
     'calendario-admin':['Calendario operativo','Eventos y reservas reales'],
     'tareas-admin':['Tablero de tareas','Tareas y pendientes del equipo'],
@@ -3024,7 +3015,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   nutricionPreview: any[] = [];
   suiteModules = ['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   modulosConVistaPropia = [
-    'dashboard','aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui','clientes','membresias','pagos','entrenador','clases','asistencias','seguimiento','progreso-fisico','renovaciones','documentos-socio','mantenimiento-sistema',
+    'dashboard','catalogo','aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui','clientes','membresias','pagos','entrenador','clases','asistencias','seguimiento','progreso-fisico','renovaciones','documentos-socio','mantenimiento-sistema',
     'rutinas','reservas','caja','ventas','historial-ventas','gastos','inventario','productos','kardex',
     'proveedores','compras','categorias','reportes-admin','reporte-asistencias','usuarios',
     'auditoria','configuracion','opiniones'
@@ -3037,21 +3028,21 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     id:string; titulo:string; icono:string;
     items:Array<{id:string;nombre:string;accion?:'nuevoSocio'}>
   }> = [
-    {id:'members',titulo:'Socios y membresías',icono:'♙',items:[
-      {id:'clientes',nombre:'Socios y matrícula'},
+    {id:'members',titulo:'Socios y pagos',icono:'♙',items:[
+      {id:'clientes',nombre:'Socios'},
       {id:'membresias',nombre:'Membresías'},
       {id:'pagos',nombre:'Pagos'},
       {id:'renovaciones',nombre:'Vencimientos'}
     ]},
-    {id:'training',titulo:'Entrenamientos',icono:'✦',items:[
+    {id:'training',titulo:'Entrenamiento',icono:'✦',items:[
       {id:'reservas',nombre:'Reservas'},
       {id:'asistencias',nombre:'Asistencia'},
       {id:'rutinas',nombre:'Rutinas'},
       {id:'seguimiento',nombre:'Seguimiento'},
       {id:'entrenador',nombre:'Entrenador'}
     ]},
-    {id:'operations',titulo:'Ventas e inventario',icono:'▦',items:[
-      {id:'productos',nombre:'Productos y stock'},
+    {id:'operations',titulo:'Productos y ventas',icono:'▦',items:[
+      {id:'productos',nombre:'Productos'},
       {id:'ventas',nombre:'Ventas'},
       {id:'compras',nombre:'Compras'},
       {id:'caja',nombre:'Caja'}
@@ -3059,7 +3050,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     {id:'menu',titulo:'Administración',icono:'⚙',items:[
       {id:'reportes-admin',nombre:'Reportes'},
       {id:'reporte-asistencias',nombre:'Reporte de asistencia'},
-      {id:'usuarios',nombre:'Usuarios y permisos'},
+      {id:'usuarios',nombre:'Usuarios'},
       {id:'configuracion',nombre:'Configuración'}
     ]},
     {id:'apps',titulo:'Más funciones (opcional)',icono:'⊞',items:[
@@ -3094,7 +3085,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   // El panel muestra tendencias reales sin obligar a abrir opciones ocultas.
   mostrarGraficosDashboard = true;
-  navGroups:any = {overview:true,apps:false,members:false,payments:false,trainers:false,training:false,diet:false,equipment:false,events:false,ui:false,operations:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
+  navGroups: Record<string, boolean> = {members:false, training:false, operations:false, menu:false};
   readonly categoriasMenuOpcional: Array<{id:string;nombre:string;items:string[]}> = [
     {id:'personas',nombre:'Socios y actividades',items:['planes','documentos-socio','progreso-fisico','clases','nutricion']},
     {id:'inventario',nombre:'Inventario y finanzas',items:['inventario','categorias','proveedores','historial-ventas','kardex','gastos','ingresos','facturas','salarios']},
@@ -3102,6 +3093,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     {id:'herramientas',nombre:'Herramientas avanzadas',items:['aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui']}
   ];
   grupoOpcionalAbierto = '';
+
+  get esModuloAdicionalActivo(): boolean {
+    return this.menuPrincipal.some(grupo =>
+      grupo.id === 'apps' && grupo.items.some(item => item.id === this.seccion));
+  }
 
   private autoRefreshId: any = null;
 
@@ -3335,16 +3331,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.cambiarSegcion(item.id);
   }
 
-  /** Mantiene visible solamente el grupo que contiene la función elegida. */
+  /** Muestra únicamente los accesos del área seleccionada. */
   private activarGrupoDeSeccion(seccion:string):void{
-    const grupo=this.menuPrincipal.find(g=>g.items.some(i=>i.id===seccion && !i.accion));
+    const grupo=this.menuPrincipal.find(g=>g.id!=='apps' && g.items.some(i=>i.id===seccion && !i.accion));
     Object.keys(this.navGroups).forEach(id=>this.navGroups[id]=false);
     if(grupo)this.navGroups[grupo.id]=true;
-    if(grupo?.id==='apps'){
-      this.grupoOpcionalAbierto=this.categoriasMenuOpcional.find(g=>g.items.includes(seccion))?.id||'';
-    }else{
-      this.grupoOpcionalAbierto='';
-    }
   }
 
   toggleNavGroup(group:string):void{
