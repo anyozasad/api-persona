@@ -17,6 +17,31 @@ describe('Semana 05 EFSRT - fotografía del producto', () => {
     component = new ProductosComponent(productosApi as any, {} as any, {} as any, {} as any);
   });
 
+  it('muestra el inventario por defecto y abre el formulario solo cuando se solicita', () => {
+    expect(component.formularioVisible).toBeFalse();
+
+    spyOn(window, 'scrollTo').and.stub();
+    component.mostrarFormularioNuevo();
+    expect(component.formularioVisible).toBeTrue();
+    expect(component.editando).toBeFalse();
+
+    component.limpiarFormulario();
+    expect(component.formularioVisible).toBeFalse();
+
+    const producto: Producto = {
+      id_producto: 18, id_categoria: 1, codigo_producto: 'GYM-18',
+      nombre_producto: 'Shaker', foto: null, precio_compra: 8,
+      precio_venta: 20, stock: 3, stock_minimo: 1,
+      unidad_medida: 'Unidad', estado: 'Activo'
+    };
+    component.editar(producto);
+    expect(component.formularioVisible).toBeTrue();
+    expect(component.editando).toBeTrue();
+    expect(component.producto.id_producto).toBe(18);
+    component.limpiarFormulario();
+    expect(component.formularioVisible).toBeFalse();
+  });
+
   it('muestra solo fotos de productos y permite asignarlas de forma explícita', () => {
     const nombres=component.fotosProductosMallqui.map(f => f.descripcion);
     const archivos=component.fotosProductosMallqui.map(f => f.archivo);
