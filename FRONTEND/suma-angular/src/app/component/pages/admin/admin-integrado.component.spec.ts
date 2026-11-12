@@ -177,17 +177,43 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
 
   it('respeta el orden TEC-SGI: gestión del gimnasio y luego administración', () => {
     expect(component.menuPrincipal.map(grupo => grupo.titulo)).toEqual([
-      'Socios y membresías','Entrenamientos','Ventas e inventario',
+      'Socios y pagos','Entrenamiento','Productos y ventas',
       'Administración','Más funciones (opcional)'
     ]);
     const administracion=component.menuPrincipal.find(g => g.id==='menu');
     expect(administracion?.items.map(i=>i.nombre)).toEqual([
-      'Reportes','Reporte de asistencia','Usuarios y permisos','Configuración'
+      'Reportes','Reporte de asistencia','Usuarios','Configuración'
     ]);
     const todos=component.menuPrincipal.flatMap(g=>g.items.map(i=>i.id));
     expect(new Set(todos).size).toBe(todos.length);
     for(const id of ['usuarios','auditoria','mantenimiento-sistema','verificacion-efsrt']){
       expect((component as any).normalizarSegcion(id)).toBe(id);
+    }
+  });
+
+  it('agrupa la navegación diaria y mantiene los módulos secundarios accesibles', () => {
+    expect(component.navGroups.members).toBeFalse();
+    expect(component.navGroups.training).toBeFalse();
+    expect(component.navGroups.operations).toBeFalse();
+    expect(component.navGroups.menu).toBeFalse();
+
+    (component as any).activarGrupoDeSeccion('productos');
+    expect(component.navGroups.operations).toBeTrue();
+    expect(component.navGroups.members).toBeFalse();
+
+    (component as any).activarGrupoDeSeccion('usuarios');
+    expect(component.navGroups.menu).toBeTrue();
+    expect(component.navGroups.operations).toBeFalse();
+
+    component.seccion = 'galeria';
+    expect(component.esModuloAdicionalActivo).toBeTrue();
+    component.seccion = 'catalogo';
+    expect(component.esModuloAdicionalActivo).toBeFalse();
+
+    const opcionales = component.menuPrincipal.find(grupo => grupo.id === 'apps')?.items ?? [];
+    const agrupados = component.categoriasMenuOpcional.flatMap(categoria => categoria.items);
+    for (const item of opcionales) {
+      expect(agrupados).toContain(item.id);
     }
   });
 
