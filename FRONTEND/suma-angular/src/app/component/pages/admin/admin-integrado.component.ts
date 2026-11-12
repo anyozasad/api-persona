@@ -3085,7 +3085,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   // El panel muestra tendencias reales sin obligar a abrir opciones ocultas.
   mostrarGraficosDashboard = true;
-  navGroups: Record<string, boolean> = {members:false, training:false, operations:false, menu:false};
+  navGroups:any = {overview:true,apps:false,members:false,payments:false,trainers:false,training:false,diet:false,equipment:false,events:false,ui:false,operations:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
   readonly categoriasMenuOpcional: Array<{id:string;nombre:string;items:string[]}> = [
     {id:'personas',nombre:'Socios y actividades',items:['planes','documentos-socio','progreso-fisico','clases','nutricion']},
     {id:'inventario',nombre:'Inventario y finanzas',items:['inventario','categorias','proveedores','historial-ventas','kardex','gastos','ingresos','facturas','salarios']},
@@ -4424,6 +4424,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         // Al regresar desde socios, pagos o inventario no conservar listas
         // desactualizadas: sincronizar el resumen y los módulos relacionados.
         this.actualizarDashboardCompleto();
+        break;
+      case 'catalogo':
+        // Catálogo local de accesos: no modifica registros ni hace solicitudes adicionales.
         break;
       case 'aplicaciones':
       case 'calendario-admin':
