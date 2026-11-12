@@ -1198,3 +1198,26 @@ tbody tr.stock-row-alert{background:#fffdf6!important}
   .productos-page .foto-catalogo-dialog{padding:12px}
   .productos-page .foto-catalogo-imagenes{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* Primera pantalla: catálogo visible y formulario bajo demanda. */
+.productos-page .productos-nuevo-boton {
+  flex:0 0 auto;
+  min-height:44px;
+  padding:0 18px;
+  border:0;
+  border-radius:10px;
+  background:#b5e457;
+  color:#22311d;
+  font:inherit;
+  font-size:13px;
+  font-weight:750;
+  cursor:pointer;
+  box-shadow:0 3px 12px rgba(88,119,37,.12);
+}
+.productos-page .productos-nuevo-boton:hover {background:#c9f45a}
+.productos-page .productos-nuevo-boton:focus-visible {outline:3px solid #3f6a12;outline-offset:2px}
+@media(max-width:950px) {
+  .productos-page .inventario-intro {flex-wrap:wrap}
+  .productos-page .productos-nuevo-boton {order:2}
+  .productos-page .inventario-status {order:3}
+}
