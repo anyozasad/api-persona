@@ -92,7 +92,8 @@ try {
     }
 
     $clave = [regex]::Match($envTexto, '(?m)^\s*APP_KEY\s*=\s*(.*)$')
-    if (-not $clave.Success -or [string]::IsNullOrWhiteSpace($clave.Groups[1].Value.Trim('"', [char]39, ' '))) {
+    $claveActual = if ($clave.Success) { $clave.Groups[1].Value.Trim().Trim('"').Trim("'") } else { '' }
+    if ([string]::IsNullOrWhiteSpace($claveActual)) {
         Write-Host 'Generando APP_KEY porque no existe...'
         & $php @phpArgs artisan key:generate --force
         if ($LASTEXITCODE -ne 0) { Fallar 'No se pudo generar APP_KEY.' }
@@ -146,10 +147,27 @@ try {
         Fallar 'No se puede leer la ruta de autenticacion.'
     }
     Write-Host ''
-    Write-Host 'Configuracion y esquema verificados. Si habia un servidor Laravel abierto, detenlo con Ctrl+C.' -ForegroundColor Green
-    Write-Host 'En esta carpeta inicia Laravel con el mismo PHP seleccionado:' -ForegroundColor Cyan
-    Write-Host ('& "' + $php + '" ' + ($phpArgs -join ' ') + ' artisan serve')
-    Write-Host 'Luego abre http://localhost:4200/login. Si el login aun devuelve 500, revisa BACKEND/storage/logs.'
+    Write-Host 'Configuracion y esquema verificados.' -ForegroundColor Green
+    $servidorOcupado = $false
+    $tcp = New-Object System.Net.Sockets.TcpClient
+    try {
+        $pendiente = $tcp.BeginConnect('127.0.0.1', 8000, $null, $null)
+        if ($pendiente.AsyncWaitHandle.WaitOne(350)) {
+            $tcp.EndConnect($pendiente)
+            $servidorOcupado = $true
+        }
+        $pendiente.AsyncWaitHandle.Close()
+    } catch { } finally {
+        $tcp.Close()
+    }
+    if ($servidorOcupado) {
+        Write-Host 'El puerto 8000 ya esta ocupado. Deten el Laravel anterior con Ctrl+C y ejecuta de nuevo este script.' -ForegroundColor Yellow
+    } else {
+        Write-Host 'Iniciando Laravel con PHP compatible en http://127.0.0.1:8000' -ForegroundColor Green
+        Write-Host 'Mantén esta ventana abierta. Para detener el servidor usa Ctrl+C.'
+        & $php @phpArgs artisan serve --host=127.0.0.1 --port=8000
+    }
+    Write-Host 'Si el login aun devuelve error 500, revisa BACKEND/storage/logs; el error concreto dependera de la base local.'
 } finally {
     Pop-Location
 }
