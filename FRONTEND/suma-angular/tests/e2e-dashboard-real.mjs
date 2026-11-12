@@ -156,8 +156,8 @@ try {
     assert.equal(await grupos.count(),5,'El menú debe organizar las funciones en cinco grupos.');
     assert.equal(await menu.locator('.mg-direct-home').count(),2,
       'Inicio debe tener Panel principal y Matricular socio.');
-    const titulos=(await grupos.allTextContents()).map(x=>x.trim());
-    assert.deepEqual(titulos.map(x=>x.replace(/[⌃⌄]/g,'').trim()),[
+    const titulos=(await grupos.locator('span:nth-child(2)').allTextContents()).map(x=>x.trim());
+    assert.deepEqual(titulos,[
       'Socios y membresías','Entrenamientos','Ventas e inventario',
       'Administración','Más funciones (opcional)'
     ]);
