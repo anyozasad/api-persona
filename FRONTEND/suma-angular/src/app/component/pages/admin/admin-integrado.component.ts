@@ -143,8 +143,16 @@ import { catchError, forkJoin, of } from 'rxjs';
           <span class="admin-main-nav-icon" aria-hidden="true">⌂</span>
           <span>Panel principal</span>
         </button>
-        <span class="mg-nav-caption">ADMINISTRACIÓN</span>
+        <button type="button" class="mg-direct-home mg-action-registrar"
+          (click)="abrirNuevoSocioDesdeDashboard()"
+          aria-label="Matricular socio nuevo">
+          <span class="admin-main-nav-icon" aria-hidden="true">＋</span>
+          <span>Matricular socio</span>
+        </button>
+        <span class="mg-nav-caption">GESTIÓN DEL GIMNASIO</span>
         <ng-container *ngFor="let grupo of menuPrincipal">
+          <span class="mg-nav-caption" *ngIf="grupo.id==='menu'">ADMINISTRACIÓN</span>
+          <span class="mg-nav-caption" *ngIf="grupo.id==='apps'">OTRAS HERRAMIENTAS</span>
           <button type="button" class="cf-nav-group-head mg-admin-group"
             [class.active]="navGroups[grupo.id]"
             [attr.aria-expanded]="!!navGroups[grupo.id]"
@@ -3009,9 +3017,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     'proveedores','compras','categorias','reportes-admin','reporte-asistencias','usuarios',
     'auditoria','configuracion','opiniones'
   ];
-  /** Menú único, organizado por tarea; no repite funciones en tres secciones. */
-  // Navegación EFSRT: cinco áreas esenciales, más herramientas opcionales.
-  // Cada función aparece una sola vez; no se elimina ningún módulo existente.
+  /** Orden de navegación según TEC-SGI-2026, adaptado al gimnasio:
+   * Inicio -> acción principal -> gestión operativa -> administración
+   * -> extras opcionales. Conserva cada ruta funcional una sola vez.
+   */
   readonly menuPrincipal: Array<{
     id:string; titulo:string; icono:string;
     items:Array<{id:string;nombre:string;accion?:'nuevoSocio'}>
@@ -3035,11 +3044,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       {id:'compras',nombre:'Compras'},
       {id:'caja',nombre:'Caja'}
     ]},
-    {id:'payments',titulo:'Reportes',icono:'↗',items:[
-      {id:'reportes-admin',nombre:'Reportes del gimnasio'},
-      {id:'reporte-asistencias',nombre:'Reporte de asistencia'}
-    ]},
     {id:'menu',titulo:'Administración',icono:'⚙',items:[
+      {id:'reportes-admin',nombre:'Reportes'},
+      {id:'reporte-asistencias',nombre:'Reporte de asistencia'},
+      {id:'usuarios',nombre:'Usuarios y permisos'},
       {id:'configuracion',nombre:'Configuración'}
     ]},
     {id:'apps',titulo:'Más funciones (opcional)',icono:'⊞',items:[
