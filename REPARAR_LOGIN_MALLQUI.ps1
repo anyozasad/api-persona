@@ -1,7 +1,8 @@
 # Reparacion local del inicio de sesion de Mallqui Gym (Windows PowerShell 5.1+).
 # No elimina registros, no restablece contrasenas y no modifica el frontend.
 param(
-    [switch]$RepararEsquema
+    [switch]$RepararEsquema,
+    [switch]$RestablecerAdmin
 )
 
 $ErrorActionPreference = 'Stop'
@@ -147,7 +148,16 @@ try {
         Fallar 'El diagnostico de acceso detecto problemas. Revisa las lineas ERROR anteriores.'
     }
 
-    Titulo '8. Comprobando ruta de login'
+    if ($RestablecerAdmin) {
+        Titulo '8. Estableciendo una clave nueva para la cuenta admin'
+        Write-Host 'La contraseña se escribe de forma oculta. No la compartas ni la incluyas en capturas.' -ForegroundColor Yellow
+        & $php @phpArgs artisan admin:clave
+        if ($LASTEXITCODE -ne 0) {
+            Fallar 'No se pudo actualizar la cuenta admin. Verifica que exista y tenga rol Administrador.'
+        }
+    }
+
+    Titulo '9. Comprobando ruta de login'
     & $php @phpArgs artisan route:list --path=api/auth/login
     if ($LASTEXITCODE -ne 0) {
         Fallar 'No se puede leer la ruta de autenticacion.'
