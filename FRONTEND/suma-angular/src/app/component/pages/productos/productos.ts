@@ -21,6 +21,7 @@ export class ProductosComponent implements OnInit {
   errorDiagnostico = '';
   categorias: Categoria[] = [];
   editando = false;
+  formularioVisible = false;
   cargando = false;
   mensaje = '';
   error = '';
@@ -182,12 +183,19 @@ export class ProductosComponent implements OnInit {
     });
   }
 
+  mostrarFormularioNuevo(): void {
+    this.limpiarFormulario();
+    this.formularioVisible = true;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   editar(p: Producto): void {
     // Anular lecturas de imágenes anteriores para no asignarlas a otro producto.
     this.imagenSolicitud++;
     this.procesandoImagen = false;
     this.producto = { ...p };
     this.editando = true;
+    this.formularioVisible = true;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -538,6 +546,7 @@ export class ProductosComponent implements OnInit {
     this.producto = this.productoVacio();
     this.producto.id_categoria = cat;
     this.editando = false;
+    this.formularioVisible = false;
   }
 
   private productoVacio(): Producto {
