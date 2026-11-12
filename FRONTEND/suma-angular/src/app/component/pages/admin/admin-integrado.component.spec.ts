@@ -175,45 +175,56 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.estadoConfiguracionTexto).toBe('Conexión sin verificar');
   });
 
-  it('respeta el orden TEC-SGI: gestión del gimnasio y luego administración', () => {
+  it('muestra requisitos funcionales por áreas sin un botón Todas las funciones', () => {
     expect(component.menuPrincipal.map(grupo => grupo.titulo)).toEqual([
-      'Socios y pagos','Entrenamiento','Productos y ventas',
-      'Administración','Más funciones (opcional)'
+      'Socios y membresías','Clases y entrenamiento','Productos e inventario',
+      'Ventas y caja','Atención al socio','Administración','Organización interna'
     ]);
-    const administracion=component.menuPrincipal.find(g => g.id==='menu');
-    expect(administracion?.items.map(i=>i.nombre)).toEqual([
-      'Reportes','Reporte de asistencia','Usuarios','Configuración'
-    ]);
-    const todos=component.menuPrincipal.flatMap(g=>g.items.map(i=>i.id));
+    const todos = component.menuPrincipal.flatMap(grupo => grupo.items.map(item => item.id));
+    expect(todos.length).toBe(46);
     expect(new Set(todos).size).toBe(todos.length);
-    for(const id of ['usuarios','auditoria','mantenimiento-sistema','verificacion-efsrt']){
+
+    for (const id of [
+      'clientes','membresias','planes','pagos','renovaciones',
+      'reservas','asistencias','clases','rutinas','seguimiento',
+      'productos','categorias','proveedores','compras','inventario','kardex',
+      'ventas','historial-ventas','caja','gastos','soporte','comunicacion',
+      'reportes-admin','reporte-asistencias','usuarios','auditoria','configuracion',
+      'mantenimiento-sistema','verificacion-efsrt'
+    ]) {
+      expect(todos).toContain(id);
       expect((component as any).normalizarSegcion(id)).toBe(id);
     }
+    expect((component as any).normalizarSegcion('catalogo')).toBe('dashboard');
+    expect(component.menuPrincipal.some(grupo => grupo.id === 'apps')).toBeFalse();
   });
 
-  it('agrupa la navegación diaria y mantiene los módulos secundarios accesibles', () => {
-    expect(component.navGroups.members).toBeFalse();
-    expect(component.navGroups.training).toBeFalse();
-    expect(component.navGroups.operations).toBeFalse();
-    expect(component.navGroups.menu).toBeFalse();
+  it('abre el área correspondiente y mantiene un solo grupo desplegado', () => {
+    const ver = (id: string, grupo: string) => {
+      (component as any).activarGrupoDeSeccion(id);
+      expect(component.navGroups[grupo]).toBeTrue();
+      expect(component.menuPrincipal.filter(g => component.navGroups[g.id]).length).toBe(1);
+    };
+    ver('clientes','members');
+    ver('reservas','training');
+    ver('productos','operations');
+    ver('ventas','finance');
+    ver('soporte','communication');
+    ver('usuarios','menu');
+    ver('calendario-admin','tools');
+  });
 
-    (component as any).activarGrupoDeSeccion('productos');
-    expect(component.navGroups.operations).toBeTrue();
-    expect(component.navGroups.members).toBeFalse();
+  it('cada acceso a un requisito funcional abre su pantalla real, sin menú intermedio', () => {
+    spyOn(window,'scrollTo').and.stub();
+    const cargar = spyOn(component as any,'cargarSegcion').and.stub();
 
-    (component as any).activarGrupoDeSeccion('usuarios');
-    expect(component.navGroups.menu).toBeTrue();
-    expect(component.navGroups.operations).toBeFalse();
-
-    component.seccion = 'galeria';
-    expect(component.esModuloAdicionalActivo).toBeTrue();
-    component.seccion = 'catalogo';
-    expect(component.esModuloAdicionalActivo).toBeFalse();
-
-    const opcionales = component.menuPrincipal.find(grupo => grupo.id === 'apps')?.items ?? [];
-    const agrupados = component.categoriasMenuOpcional.flatMap(categoria => categoria.items);
-    for (const item of opcionales) {
-      expect(agrupados).toContain(item.id);
+    for (const grupo of component.menuPrincipal) {
+      for (const item of grupo.items) {
+        component.navegarMenu(item);
+        expect(component.seccion).toBe(item.id);
+        expect(component.navGroups[grupo.id]).toBeTrue();
+        expect(cargar).toHaveBeenCalledWith(item.id);
+      }
     }
   });
 
