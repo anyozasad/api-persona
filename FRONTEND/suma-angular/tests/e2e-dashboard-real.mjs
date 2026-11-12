@@ -286,16 +286,16 @@ try {
     }
   });
 
-  await paso('Menú adicional agrupado y sin lista interminable',async()=>{
+  await paso('Los módulos complementarios siguen disponibles en su área sin botón genérico',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
-    await menu.locator('.cf-nav-group-head').filter({hasText:'Más funciones'}).click();
-    assert.equal(await menu.locator('.mg-optional-category-head').count(),4);
-    assert.equal(await menu.locator('.mg-optional-category-items').count(),0,
-      'Las opciones adicionales deben estar cerradas inicialmente.');
-    await menu.getByRole('button',{name:'Inventario y finanzas'}).click();
-    assert.equal(await menu.locator('.mg-optional-category-items').count(),1);
-    assert.equal(await menu.getByRole('button',{name:'Gastos',exact:true}).count(),1);
+    assert.equal(await menu.getByText('Todas las funciones',{exact:true}).count(),0);
+    assert.equal(await menu.locator('.mg-optional-category-head').count(),0);
+    await menu.getByRole('button',{name:'Abrir Ventas y caja'}).click();
+    await menu.getByRole('button',{name:'Gastos',exact:true}).waitFor({timeout:10000});
+    assert.equal(await menu.getByRole('button',{name:'Historial de ventas'}).count(),1);
+    await menu.getByRole('button',{name:'Gastos',exact:true}).click();
+    assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Gastos');
     await page.screenshot({path:'evidencias-dashboard/35_Menu_adicional_agrupado.png',
       fullPage:true,animations:'disabled'});
   });
