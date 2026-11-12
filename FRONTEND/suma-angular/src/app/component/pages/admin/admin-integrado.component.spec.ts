@@ -175,13 +175,20 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.estadoConfiguracionTexto).toBe('Conexión sin verificar');
   });
 
-  it('muestra solo Configuración en Administración y conserva herramientas internas', () => {
-    const administracion = component.menuPrincipal.find(grupo => grupo.titulo === 'Administración');
-    expect(administracion?.items.map(item => item.nombre)).toEqual(['Configuración']);
-
-    // Sus destinos siguen siendo accesibles mediante el enrutamiento del panel.
-    const modulos = ['usuarios','auditoria','mantenimiento-sistema','verificacion-efsrt'];
-    modulos.forEach(id => expect((component as any).normalizarSegcion(id)).toBe(id));
+  it('respeta el orden TEC-SGI: gestión del gimnasio y luego administración', () => {
+    expect(component.menuPrincipal.map(grupo => grupo.titulo)).toEqual([
+      'Socios y membresías','Entrenamientos','Ventas e inventario',
+      'Administración','Más funciones (opcional)'
+    ]);
+    const administracion=component.menuPrincipal.find(g => g.id==='menu');
+    expect(administracion?.items.map(i=>i.nombre)).toEqual([
+      'Reportes','Reporte de asistencia','Usuarios y permisos','Configuración'
+    ]);
+    const todos=component.menuPrincipal.flatMap(g=>g.items.map(i=>i.id));
+    expect(new Set(todos).size).toBe(todos.length);
+    for(const id of ['usuarios','auditoria','mantenimiento-sistema','verificacion-efsrt']){
+      expect((component as any).normalizarSegcion(id)).toBe(id);
+    }
   });
 
   it('abre la comprobación EFSRT sin desviarla al inicio', () => {
