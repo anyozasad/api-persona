@@ -424,6 +424,10 @@ try {
   let codigoProductoFoto = '';
   await paso('Crear producto con foto desde el formulario y verificar persistencia',async()=>{
     await page.goto(base+'/productos',{waitUntil:'domcontentloaded'});
+    await page.locator('app-productos .tabla-productos').waitFor({timeout:30000});
+    assert.equal(await page.locator('app-productos form.producto-form').count(),0,
+      'El inventario se muestra primero y no un formulario largo.');
+    await page.getByRole('button',{name:'Abrir formulario para agregar producto'}).click();
     const form=page.locator('app-productos form.producto-form').first();
     await form.waitFor({timeout:30000});
     const codigo='E2E-'+Date.now();
