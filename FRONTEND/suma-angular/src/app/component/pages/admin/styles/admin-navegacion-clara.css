@@ -1,0 +1,122 @@
+
+/* Navegacion clara: una sola lista de tareas por area y un catalogo para extras.
+   Conserva la paleta original de Mallqui Gym (oscuro, blanco y lima). */
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-nav-caption {
+  display:block;
+  margin:14px 16px 8px;
+  font-size:10px;
+  font-weight:750;
+  letter-spacing:.09em;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-nav-section-separator {
+  margin-top:21px;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation button {
+  min-height:42px;
+  text-align:left;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation button:focus-visible,
+.admin-shell.admin-home-redesign .mg-catalogo-funciones button:focus-visible {
+  outline:3px solid #b6e95c;
+  outline-offset:2px;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-clear-submenu {
+  margin-top:1px;
+  margin-bottom:9px;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-clear-submenu button {
+  min-height:41px;
+  font-size:12px;
+  line-height:1.35;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-catalogo-acceso {
+  border:1px solid rgba(182,233,92,.22);
+  border-radius:10px;
+  margin:5px 8px 8px;
+  width:calc(100% - 16px);
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-catalogo-acceso.active {
+  background:#334422;
+  color:#c9f45a;
+}
+.admin-shell.admin-home-redesign .mg-catalogo-funciones {
+  padding:6px 0 24px;
+  max-width:1150px;
+  margin:0 auto;
+}
+.admin-shell.admin-home-redesign .mg-catalogo-intro {
+  background:#fff;
+  border:1px solid #e5e9df;
+  border-radius:14px;
+  padding:22px 24px;
+  margin-bottom:17px;
+}
+.admin-shell.admin-home-redesign .mg-catalogo-intro h2 {
+  font-size:22px;
+  line-height:1.3;
+  margin:0 0 5px;
+  color:#20271d;
+}
+.admin-shell.admin-home-redesign .mg-catalogo-intro p {
+  margin:0;
+  color:#60705f;
+  line-height:1.6;
+  font-size:13px;
+}
+.admin-shell.admin-home-redesign .mg-catalogo-categorias {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+.admin-shell.admin-home-redesign .mg-catalogo-categoria {
+  padding:18px;
+  background:#fff;
+  border:1px solid #e3e8dd;
+  border-radius:13px;
+}
+.admin-shell.admin-home-redesign .mg-catalogo-categoria h3 {
+  color:#242b23;
+  font-size:15px;
+  margin:0 0 13px;
+  font-weight:750;
+}
+.admin-shell.admin-home-redesign .mg-catalogo-enlaces {
+  display:grid;
+  gap:5px;
+}
+.admin-shell.admin-home-redesign .mg-catalogo-enlaces button {
+  border:0;
+  border-radius:8px;
+  background:#f7f9f5;
+  padding:10px 12px;
+  color:#34412e;
+  font:inherit;
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:9px;
+  cursor:pointer;
+  text-align:left;
+  min-height:40px;
+}
+.admin-shell.admin-home-redesign .mg-catalogo-enlaces button:hover {
+  background:#e9f4d3;
+  color:#1e2b15;
+}
+.admin-shell.admin-home-redesign .mg-catalogo-enlaces button span:last-child {
+  font-size:19px;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-work {
+  margin-top:8px;
+  margin-bottom:16px;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-work .mg-efsrt-heading h3 {
+  font-size:19px;
+  color:#263321;
+}
+@media(max-width:900px){
+  .admin-shell.admin-home-redesign .mg-catalogo-categorias{grid-template-columns:1fr}
+}
