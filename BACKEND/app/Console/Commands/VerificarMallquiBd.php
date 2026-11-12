@@ -41,6 +41,21 @@ class VerificarMallquiBd extends Command
             }
         }
 
+        // Los usuarios con id_usuario NULL pueden validar la contraseña,
+        // pero fallan al generar su sesión con Sanctum.
+        if (Schema::hasTable('usuarios') && Schema::hasColumn('usuarios', 'id_usuario')) {
+            try {
+                $sinIdentificador = (int) DB::table('usuarios')->whereNull('id_usuario')->count();
+                if ($sinIdentificador > 0) {
+                    $this->error("FALTA identificador en {$sinIdentificador} usuario(s): id_usuario es NULL");
+                    $errores++;
+                }
+            } catch (Throwable $e) {
+                $this->error('No se pudo validar los identificadores de usuarios.');
+                $errores++;
+            }
+        }
+
         $this->newLine();
         $this->info('Verificando vistas...');
 
@@ -182,7 +197,7 @@ class VerificarMallquiBd extends Command
             ],
             'personal_access_tokens' => [
                 'id', 'tokenable_type', 'tokenable_id', 'name', 'token', 'abilities',
-                'last_used_at', 'expires_at',
+                'last_used_at', 'expires_at', 'created_at', 'updated_at',
             ],
         ];
     }
