@@ -57,10 +57,10 @@ DB_PASSWORD=
 
 No publiques `BACKEND/.env` ni contraseñas. No ejecutes `migrate:fresh` o `db:wipe` en una base con datos.
 
-**Primera preparación de dependencias** (se ejecuta una vez o cuando cambien paquetes):
+**Primera preparación de dependencias** (desde la raíz del repositorio, una vez o cuando cambien paquetes):
 
 ```powershell
-cd C:\Users\ADMIN\Pictures\api-persona\BACKEND
+cd BACKEND
 composer install
 cd ..\FRONTEND\suma-angular
 npm ci
@@ -68,10 +68,9 @@ npm ci
 
 Si Composer utiliza PHP 8.0, selecciona el PHP 8.3 para la instalación de dependencias o configura primero la variable de entorno PATH.
 
-**Abrir los servicios** desde la raíz:
+**Abrir los servicios** desde la carpeta principal del proyecto (sin usar rutas absolutas):
 
 ```powershell
-cd C:\Users\ADMIN\Pictures\api-persona
 powershell -ExecutionPolicy Bypass -File .\REPARAR_LOGIN_MALLQUI.ps1
 ```
 
@@ -80,7 +79,7 @@ El script comprueba la conexión y arranca Laravel en el puerto **8000** cuando 
 En otra ventana PowerShell:
 
 ```powershell
-cd C:\Users\ADMIN\Pictures\api-persona\FRONTEND\suma-angular
+cd FRONTEND\suma-angular
 npm start
 ```
 
@@ -115,7 +114,7 @@ Las carpetas de Laravel `app`, `routes`, `database` y `tests` viven en `BACKEND/
 ## Actualizar sin perder cambios
 
 ```powershell
-cd C:\Users\ADMIN\Pictures\api-persona
+cd api-persona
 git status
 git pull origin main
 ```
