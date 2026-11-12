@@ -137,48 +137,43 @@ import { catchError, forkJoin, of } from 'rxjs';
       </button>
 
       <nav class="admin-main-nav crossfit-sidebar-nav mg-clear-navigation" aria-label="Navegación del gimnasio">
-        <span class="mg-nav-caption">EMPEZAR AQUÍ</span>
+        <span class="mg-nav-caption">INICIO</span>
         <button type="button" class="mg-direct-home" [class.active]="seccion==='dashboard'"
           [attr.aria-current]="seccion==='dashboard' ? 'page' : null"
           (click)="cambiarSegcion('dashboard')">
-          <span class="admin-main-nav-icon" aria-hidden="true">⌂</span><span>Inicio</span>
+          <span class="admin-main-nav-icon" aria-hidden="true">⌂</span>
+          <span>Panel principal</span>
         </button>
         <button type="button" class="mg-direct-home mg-action-registrar"
           (click)="abrirNuevoSocioDesdeDashboard()" aria-label="Registrar un socio nuevo">
-          <span class="admin-main-nav-icon" aria-hidden="true">＋</span><span>Nuevo socio</span>
+          <span class="admin-main-nav-icon" aria-hidden="true">＋</span>
+          <span>Matricular socio</span>
         </button>
-        <span class="mg-nav-caption mg-nav-section-separator">ÁREAS DEL GIMNASIO</span>
+        <span class="mg-nav-caption mg-nav-section-separator">GESTIÓN DEL GIMNASIO</span>
         <ng-container *ngFor="let grupo of menuPrincipal">
-          <ng-container *ngIf="grupo.id!=='apps'">
-            <button type="button" class="cf-nav-group-head mg-admin-group"
-              [class.active]="!!navGroups[grupo.id]"
-              [attr.aria-expanded]="!!navGroups[grupo.id]"
-              (click)="toggleNavGroup(grupo.id)">
-              <span class="admin-main-nav-icon" aria-hidden="true">{{grupo.icono}}</span>
-              <span>{{grupo.titulo}}</span>
-              <i aria-hidden="true">{{navGroups[grupo.id]?'⌃':'⌄'}}</i>
+          <button type="button" class="cf-nav-group-head mg-admin-group"
+            [class.active]="!!navGroups[grupo.id]"
+            [attr.aria-expanded]="!!navGroups[grupo.id]"
+            [attr.aria-label]="'Abrir ' + grupo.titulo"
+            (click)="toggleNavGroup(grupo.id)">
+            <span class="admin-main-nav-icon" aria-hidden="true">{{grupo.icono}}</span>
+            <span>{{grupo.titulo}}</span>
+            <i aria-hidden="true">{{navGroups[grupo.id]?'⌃':'⌄'}}</i>
+          </button>
+          <div class="cf-nav-children mg-clear-submenu" *ngIf="navGroups[grupo.id]">
+            <button type="button" *ngFor="let item of grupo.items"
+              [class.active]="seccion===item.id"
+              [attr.aria-current]="seccion===item.id ? 'page' : null"
+              (click)="navegarMenu(item)">
+              <span aria-hidden="true">•</span>
+              <span>{{item.nombre}}</span>
             </button>
-            <div class="cf-nav-children mg-clear-submenu" *ngIf="navGroups[grupo.id]">
-              <button type="button" *ngFor="let item of grupo.items"
-                [class.active]="seccion===item.id && !item.accion"
-                [attr.aria-current]="seccion===item.id && !item.accion ? 'page' : null"
-                (click)="navegarMenu(item)">
-                <span aria-hidden="true">•</span><span>{{item.nombre}}</span>
-              </button>
-            </div>
-          </ng-container>
+          </div>
         </ng-container>
-        <span class="mg-nav-caption mg-nav-section-separator">MÁS OPCIONES</span>
-        <button type="button" class="mg-direct-home mg-catalogo-acceso"
-          [class.active]="seccion==='catalogo' || esModuloAdicionalActivo"
-          [attr.aria-current]="seccion==='catalogo' ? 'page' : null"
-          (click)="cambiarSegcion('catalogo')">
-          <span class="admin-main-nav-icon" aria-hidden="true">⊞</span><span>Todas las funciones</span>
-        </button>
       </nav>
 
       <div class="mg-sidebar-bottom">
-        <span class="mg-sidebar-tip">Abre un área para ver sus opciones. Las otras están en “Todas las funciones”.</span>
+        <span class="mg-sidebar-tip">Selecciona un área para ver sus módulos. Cada opción abre su función correspondiente.</span>
         <button type="button" (click)="cerrarSesion()">
           <span>↪</span><b>Cerrar sesión</b>
         </button>
@@ -233,28 +228,6 @@ import { catchError, forkJoin, of } from 'rxjs';
       </section>
 
 
-
-      <ng-container *ngIf="seccion==='catalogo'">
-        <section class="mg-catalogo-funciones" aria-label="Todas las funciones administrativas">
-          <header class="mg-catalogo-intro">
-            <h2>Encuentra lo que necesitas</h2>
-            <p>Las tareas diarias están en el menú lateral. Aquí están las otras herramientas del gimnasio, agrupadas por área.</p>
-          </header>
-          <div class="mg-catalogo-categorias">
-            <section *ngFor="let categoria of categoriasMenuOpcional" class="mg-catalogo-categoria">
-              <h3>{{categoria.nombre}}</h3>
-              <div class="mg-catalogo-enlaces">
-                <ng-container *ngFor="let item of menuPrincipal[4].items">
-                  <button *ngIf="categoria.items.includes(item.id)" type="button"
-                    (click)="navegarMenu(item)">
-                    <span>{{item.nombre}}</span><span aria-hidden="true">›</span>
-                  </button>
-                </ng-container>
-              </div>
-            </section>
-          </div>
-        </section>
-      </ng-container>
 
       <ng-container *ngIf="seccion==='dashboard'">
         <section class="mg-dashboard mg-efsrt-dashboard" aria-label="Panel de control de Mallqui Gym">
@@ -2967,7 +2940,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   titulos: Record<string,[string,string]> = {
     'verificacion-efsrt':['Comprobación EFSRT','Estructura y coherencia de datos reales'],
     dashboard:['Panel Administrador','Datos reales del gimnasio'],
-    catalogo:['Todas las funciones','Encuentra los módulos complementarios del gimnasio'],
     aplicaciones:['Aplicaciones','Accesos y módulos del gimnasio'],
     'calendario-admin':['Calendario operativo','Eventos y reservas reales'],
     'tareas-admin':['Tablero de tareas','Tareas y pendientes del equipo'],
@@ -3015,90 +2987,81 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   nutricionPreview: any[] = [];
   suiteModules = ['nutricion','equipos','eventos','galeria','noticias','salarios','ingresos','facturas'];
   modulosConVistaPropia = [
-    'dashboard','catalogo','aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui','clientes','membresias','pagos','entrenador','clases','asistencias','seguimiento','progreso-fisico','renovaciones','documentos-socio','mantenimiento-sistema',
+    'dashboard','aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui','clientes','membresias','pagos','entrenador','clases','asistencias','seguimiento','progreso-fisico','renovaciones','documentos-socio','mantenimiento-sistema',
     'rutinas','reservas','caja','ventas','historial-ventas','gastos','inventario','productos','kardex',
     'proveedores','compras','categorias','reportes-admin','reporte-asistencias','usuarios',
     'auditoria','configuracion','opiniones'
   ];
-  /** Orden de navegación según TEC-SGI-2026, adaptado al gimnasio:
-   * Inicio -> acción principal -> gestión operativa -> administración
-   * -> extras opcionales. Conserva cada ruta funcional una sola vez.
-   */
+  /** Menu único: cada módulo aparece en su área de trabajo, sin enlaces genéricos. */
   readonly menuPrincipal: Array<{
     id:string; titulo:string; icono:string;
     items:Array<{id:string;nombre:string;accion?:'nuevoSocio'}>
   }> = [
-    {id:'members',titulo:'Socios y pagos',icono:'♙',items:[
+    {id:'members',titulo:'Socios y membresías',icono:'♙',items:[
       {id:'clientes',nombre:'Socios'},
       {id:'membresias',nombre:'Membresías'},
+      {id:'planes',nombre:'Planes y tarifas'},
       {id:'pagos',nombre:'Pagos'},
-      {id:'renovaciones',nombre:'Vencimientos'}
+      {id:'renovaciones',nombre:'Vencimientos'},
+      {id:'documentos-socio',nombre:'Carnets y constancias'},
+      {id:'progreso-fisico',nombre:'Progreso físico'}
     ]},
-    {id:'training',titulo:'Entrenamiento',icono:'✦',items:[
+    {id:'training',titulo:'Clases y entrenamiento',icono:'✦',items:[
       {id:'reservas',nombre:'Reservas'},
       {id:'asistencias',nombre:'Asistencia'},
+      {id:'clases',nombre:'Clases y horarios'},
       {id:'rutinas',nombre:'Rutinas'},
       {id:'seguimiento',nombre:'Seguimiento'},
-      {id:'entrenador',nombre:'Entrenador'}
+      {id:'entrenador',nombre:'Entrenador'},
+      {id:'nutricion',nombre:'Nutrición'}
     ]},
-    {id:'operations',titulo:'Productos y ventas',icono:'▦',items:[
-      {id:'productos',nombre:'Productos'},
-      {id:'ventas',nombre:'Ventas'},
-      {id:'compras',nombre:'Compras'},
-      {id:'caja',nombre:'Caja'}
-    ]},
-    {id:'menu',titulo:'Administración',icono:'⚙',items:[
-      {id:'reportes-admin',nombre:'Reportes'},
-      {id:'reporte-asistencias',nombre:'Reporte de asistencia'},
-      {id:'usuarios',nombre:'Usuarios'},
-      {id:'configuracion',nombre:'Configuración'}
-    ]},
-    {id:'apps',titulo:'Más funciones (opcional)',icono:'⊞',items:[
-      {id:'planes',nombre:'Planes y tarifas'},
-      {id:'documentos-socio',nombre:'Documentos del socio'},
-      {id:'progreso-fisico',nombre:'Progreso físico'},
-      {id:'clases',nombre:'Clases'},
-      {id:'nutricion',nombre:'Nutrición'},
-      {id:'inventario',nombre:'Ajustes de inventario'},
+    {id:'operations',titulo:'Productos e inventario',icono:'▦',items:[
+      {id:'productos',nombre:'Productos y fotos'},
       {id:'categorias',nombre:'Categorías'},
       {id:'proveedores',nombre:'Proveedores'},
+      {id:'compras',nombre:'Compras'},
+      {id:'inventario',nombre:'Control de inventario'},
+      {id:'kardex',nombre:'Movimientos de stock'},
+      {id:'equipos',nombre:'Equipos'}
+    ]},
+    {id:'finance',titulo:'Ventas y caja',icono:'S/',items:[
+      {id:'ventas',nombre:'Registrar venta'},
       {id:'historial-ventas',nombre:'Historial de ventas'},
-      {id:'kardex',nombre:'Kardex'},
+      {id:'caja',nombre:'Apertura y cierre de caja'},
       {id:'gastos',nombre:'Gastos'},
-      {id:'ingresos',nombre:'Ingresos'},
-      {id:'facturas',nombre:'Facturación interna'},
-      {id:'salarios',nombre:'Salarios'},
-      {id:'soporte',nombre:'Soporte'},
-      {id:'comunicacion',nombre:'Notificaciones a socios'},
+      {id:'ingresos',nombre:'Otros ingresos'},
+      {id:'facturas',nombre:'Comprobantes internos'},
+      {id:'salarios',nombre:'Salarios'}
+    ]},
+    {id:'communication',titulo:'Atención al socio',icono:'✉',items:[
+      {id:'soporte',nombre:'Consultas y soporte'},
+      {id:'comunicacion',nombre:'Notificaciones'},
       {id:'opiniones',nombre:'Opiniones'},
-      {id:'aplicaciones',nombre:'Aplicaciones'},
-      {id:'calendario-admin',nombre:'Calendario'},
-      {id:'tareas-admin',nombre:'Tareas'},
-      {id:'tablas-admin',nombre:'Tablas'},
-      {id:'componentes-ui',nombre:'Componentes'},
-      {id:'equipos',nombre:'Equipos'},
       {id:'eventos',nombre:'Eventos'},
       {id:'galeria',nombre:'Galería'},
-      {id:'noticias',nombre:'Noticias'}
+      {id:'noticias',nombre:'Novedades'}
+    ]},
+    {id:'menu',titulo:'Administración',icono:'⚙',items:[
+      {id:'reportes-admin',nombre:'Reportes generales'},
+      {id:'reporte-asistencias',nombre:'Reporte de asistencia'},
+      {id:'usuarios',nombre:'Usuarios y permisos'},
+      {id:'auditoria',nombre:'Auditoría'},
+      {id:'configuracion',nombre:'Configuración'},
+      {id:'mantenimiento-sistema',nombre:'Respaldo y mantenimiento'},
+      {id:'verificacion-efsrt',nombre:'Verificación del sistema'}
+    ]},
+    {id:'tools',titulo:'Organización interna',icono:'▤',items:[
+      {id:'calendario-admin',nombre:'Calendario'},
+      {id:'tareas-admin',nombre:'Tareas'},
+      {id:'tablas-admin',nombre:'Tablas avanzadas'},
+      {id:'aplicaciones',nombre:'Aplicaciones'},
+      {id:'componentes-ui',nombre:'Componentes UI'}
     ]}
   ];
 
   // El panel muestra tendencias reales sin obligar a abrir opciones ocultas.
   mostrarGraficosDashboard = true;
-  navGroups:any = {overview:true,apps:false,members:false,payments:false,trainers:false,training:false,diet:false,equipment:false,events:false,ui:false,operations:false,jquery:false,forms:false,graphs:false,auth:false,menu:false};
-  readonly categoriasMenuOpcional: Array<{id:string;nombre:string;items:string[]}> = [
-    {id:'personas',nombre:'Socios y actividades',items:['planes','documentos-socio','progreso-fisico','clases','nutricion']},
-    {id:'inventario',nombre:'Inventario y finanzas',items:['inventario','categorias','proveedores','historial-ventas','kardex','gastos','ingresos','facturas','salarios']},
-    {id:'contacto',nombre:'Atención y comunidad',items:['soporte','comunicacion','opiniones','equipos','eventos','galeria','noticias']},
-    {id:'herramientas',nombre:'Herramientas avanzadas',items:['aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui']}
-  ];
-  grupoOpcionalAbierto = '';
-
-  get esModuloAdicionalActivo(): boolean {
-    return this.menuPrincipal.some(grupo =>
-      grupo.id === 'apps' && grupo.items.some(item => item.id === this.seccion));
-  }
-
+  navGroups: Record<string, boolean> = {members:false,training:false,operations:false,finance:false,communication:false,menu:false,tools:false};
   private autoRefreshId: any = null;
 
   diasSemana = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
@@ -3333,7 +3296,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   /** Muestra únicamente los accesos del área seleccionada. */
   private activarGrupoDeSeccion(seccion:string):void{
-    const grupo=this.menuPrincipal.find(g=>g.id!=='apps' && g.items.some(i=>i.id===seccion && !i.accion));
+    const grupo=this.menuPrincipal.find(g=>g.items.some(i=>i.id===seccion && !i.accion));
     Object.keys(this.navGroups).forEach(id=>this.navGroups[id]=false);
     if(grupo)this.navGroups[grupo.id]=true;
   }
@@ -3403,6 +3366,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   private normalizarSegcion(id:string):string{
+    if(id==='catalogo') return 'dashboard';
     if(id==='reportes' || id==='reportes-legacy') return 'reportes-admin';
     if(id==='pagos-admin' || id==='pagos-legacy') return 'pagos';
     if(id==='entrenador-admin' || id==='entrenador-legacy') return 'entrenador';
@@ -4424,9 +4388,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         // Al regresar desde socios, pagos o inventario no conservar listas
         // desactualizadas: sincronizar el resumen y los módulos relacionados.
         this.actualizarDashboardCompleto();
-        break;
-      case 'catalogo':
-        // Catálogo local de accesos: no modifica registros ni hace solicitudes adicionales.
         break;
       case 'aplicaciones':
       case 'calendario-admin':
