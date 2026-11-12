@@ -6,8 +6,8 @@ Revisión técnica: 10 de noviembre de 2026. Las semanas 10 y 11 incluyen activi
 ## Cómo usar el dashboard sin perderse
 
 En /admin se muestran seis acciones compactas de trabajo diario: Matricular socio, Reservas, Asistencia, Rutinas, Productos y Pagos.
-El menú lateral está ordenado en cinco áreas: Socios y membresías, Entrenamientos, Ventas e inventario, Reportes y Administración.
-Las funciones adicionales siguen accesibles en Más funciones (opcional), inicialmente cerrada.
+El menú lateral está ordenado en siete áreas desplegables, sin accesos repetidos: Socios y membresías, Clases y entrenamiento, Productos e inventario, Ventas y caja, Atención al socio, Administración y Organización interna.
+El acceso genérico «Todas las funciones» y el submenú anterior «Más funciones (opcional)» fueron retirados: cada opción figura directamente bajo su área. Consulta también `docs/COMPROBACION_REQUISITOS_FUNCIONALES.md`.
 Se eliminaron las pestañas duplicadas de cada módulo y los enlaces de apariencia/exportación que recargaban innecesariamente la cabecera.
 Los gráficos mantienen cálculos reales de la API, pero se abren únicamente desde Gráficos y análisis de ingresos. En móvil hay cinco accesos rápidos.
 
