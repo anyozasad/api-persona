@@ -22,25 +22,31 @@ Configura en `.env`:
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=mallqui_gym
+DB_DATABASE=gym_system
 DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-## Crear la base de datos del proyecto
+## Base de datos y entorno Windows
 
-El repositorio incluye comandos Artisan que generan las migraciones del sistema.
+El archivo `.env.example` utiliza `DB_DATABASE=gym_system`. Revisa los datos de tu base existente antes de ejecutar migraciones. No uses `migrate:fresh` ni `db:wipe` en una base con registros del gimnasio.
 
-```bash
-php artisan db:generar
-php artisan migrate
+En Windows puedes usar el reparador de la raíz, que selecciona PHP 8.2+ y verifica la conexión:
+
+```powershell
+cd ..
+powershell -ExecutionPolicy Bypass -File .\REPARAR_LOGIN_MALLQUI.ps1
 ```
 
-Si trabajas con una base existente, revisa también:
+Para completar tablas pendientes, utiliza la opción `-RepararEsquema` solo después de comprobar que el script haya creado un respaldo SQL. Sin esa opción el diagnóstico es la opción recomendada.
+
+También puedes comprobar manualmente con PHP compatible:
 
 ```bash
-php artisan db:sincronizar
+php artisan db:verificar
+php artisan auth:diagnosticar --usuario=admin
 ```
+
 
 ## Crear administrador
 
@@ -55,6 +61,8 @@ El comando solicita usuario, nombre, correo, DNI y contraseña.
 ```bash
 php artisan serve
 ```
+
+**Atención:** En Windows, asegúrate de que `php -v` corresponde a PHP 8.2 o superior; XAMPP puede colocar PHP 8.0 primero en el PATH.
 
 Por defecto:
 
