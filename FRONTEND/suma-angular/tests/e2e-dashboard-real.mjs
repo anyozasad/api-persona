@@ -153,25 +153,32 @@ try {
     const menu=page.locator('.mg-clear-navigation');
     await menu.waitFor({timeout:20000});
     const grupos=menu.locator('.cf-nav-group-head');
-    assert.equal(await grupos.count(),6,'El menú debe presentar seis grupos claros.');
-    assert.equal(await menu.locator('.mg-direct-home').count(),1);
-    const titulo=await grupos.allTextContents();
-    assert.ok(titulo.some(t=>t.includes('Socios y membresías')));
-    assert.ok(titulo.some(t=>t.includes('Entrenamientos')));
-    assert.ok(titulo.some(t=>t.includes('Ventas e inventario')));
+    assert.equal(await grupos.count(),5,'El menú debe organizar las funciones en cinco grupos.');
+    assert.equal(await menu.locator('.mg-direct-home').count(),2,
+      'Inicio debe tener Panel principal y Matricular socio.');
+    const titulos=(await grupos.allTextContents()).map(x=>x.trim());
+    assert.deepEqual(titulos.map(x=>x.replace(/[⌃⌄]/g,'').trim()),[
+      'Socios y membresías','Entrenamientos','Ventas e inventario',
+      'Administración','Más funciones (opcional)'
+    ]);
+    const secciones=(await menu.locator('.mg-nav-caption').allTextContents()).map(x=>x.trim());
+    assert.deepEqual(secciones,[
+      'INICIO','GESTIÓN DEL GIMNASIO','ADMINISTRACIÓN','OTRAS HERRAMIENTAS'
+    ]);
     await page.screenshot({path:'evidencias-dashboard/13_Menu_simplificado.png',fullPage:true});
   });
 
-  await paso('Administración muestra solo Configuración y conserva funciones internas',async()=>{
+  await paso('Administración sigue el orden de reportes, usuarios y configuración',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
     const administracion=menu.locator('.cf-nav-group-head').filter({hasText:'Administración'});
     await administracion.click();
-    const hijos=menu.locator('.cf-nav-children').filter({hasText:'Configuración'});
+    const hijos=menu.locator('.cf-nav-children').filter({hasText:'Usuarios y permisos'});
     await hijos.waitFor({timeout:12000});
-    assert.equal(await hijos.locator('button').count(),1,
-      'En Administración debe existir solo la entrada Configuración.');
-    await hijos.getByRole('button',{name:/Configuración/}).click();
+    const orden=(await hijos.locator('button').allTextContents()).map(x=>x.replace(/[•＋]/g,'').trim());
+    assert.deepEqual(orden,['Reportes','Reporte de asistencia','Usuarios y permisos','Configuración'],
+      'En Administración deben ir primero Reportes, luego Usuarios y Configuración.');
+    await hijos.getByRole('button',{name:'Configuración',exact:true}).click();
     const configuracion=page.locator('.config-page');
     await configuracion.waitFor({timeout:15000});
     // Los controles se muestran únicamente después de validar la respuesta MySQL.
