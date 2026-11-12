@@ -153,13 +153,18 @@ try {
     const menu=page.locator('.mg-clear-navigation');
     await menu.waitFor({timeout:20000});
     const grupos=menu.locator('.cf-nav-group-head');
-    assert.equal(await grupos.count(),5,'El menú debe organizar las funciones en cinco grupos.');
+    assert.equal(await grupos.count(),4,'Gestión tiene tres grupos y otras herramientas uno; Administración usa enlaces directos.');
     assert.equal(await menu.locator('.mg-direct-home').count(),2,
       'Inicio debe tener Panel principal y Matricular socio.');
     const titulos=(await grupos.locator('span:nth-child(2)').allTextContents()).map(x=>x.trim());
     assert.deepEqual(titulos,[
       'Socios y membresías','Entrenamientos','Ventas e inventario',
-      'Administración','Más funciones (opcional)'
+      'Más funciones (opcional)'
+    ]);
+    const administracion=(await menu.locator('.mg-direct-admin').allTextContents())
+      .map(x=>x.replace(/^[^A-Za-zÁÉÍÓÚÜÑa-záéíóúüñ]+/u,'').trim());
+    assert.deepEqual(administracion,[
+      'Reportes','Reporte de asistencia','Usuarios y permisos','Configuración'
     ]);
     const secciones=(await menu.locator('.mg-nav-caption').allTextContents()).map(x=>x.trim());
     assert.deepEqual(secciones,[
@@ -171,14 +176,13 @@ try {
   await paso('Administración sigue el orden de reportes, usuarios y configuración',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
-    const administracion=menu.locator('.cf-nav-group-head').filter({hasText:'Administración'});
-    await administracion.click();
-    const hijos=menu.locator('.cf-nav-children').filter({hasText:'Usuarios y permisos'});
-    await hijos.waitFor({timeout:12000});
-    const orden=(await hijos.locator('button').allTextContents()).map(x=>x.replace(/[•＋]/g,'').trim());
+    const enlaces=menu.locator('.mg-direct-admin');
+    await enlaces.first().waitFor({timeout:12000});
+    assert.equal(await enlaces.count(),4);
+    const orden=(await enlaces.locator('span:nth-child(2)').allTextContents()).map(x=>x.trim());
     assert.deepEqual(orden,['Reportes','Reporte de asistencia','Usuarios y permisos','Configuración'],
-      'En Administración deben ir primero Reportes, luego Usuarios y Configuración.');
-    await hijos.getByRole('button',{name:'Configuración',exact:true}).click();
+      'En Administración deben ir Reportes, Usuarios y Configuración sin un submenú redundante.');
+    await enlaces.getByText('Configuración',{exact:true}).click();
     const configuracion=page.locator('.config-page');
     await configuracion.waitFor({timeout:15000});
     // Los controles se muestran únicamente después de validar la respuesta MySQL.
