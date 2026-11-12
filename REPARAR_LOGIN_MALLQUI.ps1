@@ -141,7 +141,13 @@ try {
         }
     }
 
-    Titulo '7. Comprobando ruta de login'
+    Titulo '7. Comprobando usuario Administrador y sesiones de Laravel'
+    & $php @phpArgs artisan auth:diagnosticar --usuario=admin
+    if ($LASTEXITCODE -ne 0) {
+        Fallar 'El diagnostico de acceso detecto problemas. Revisa las lineas ERROR anteriores.'
+    }
+
+    Titulo '8. Comprobando ruta de login'
     & $php @phpArgs artisan route:list --path=api/auth/login
     if ($LASTEXITCODE -ne 0) {
         Fallar 'No se puede leer la ruta de autenticacion.'
