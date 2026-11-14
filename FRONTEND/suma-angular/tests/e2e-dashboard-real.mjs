@@ -59,24 +59,27 @@ try {
     await page.screenshot({path:'evidencias-dashboard/Inicio_Dashboard.png',fullPage:true});
   });
 
-  await paso('Panel muestra indicadores operativos y accesos compactos, no solo una plantilla',async()=>{
+  await paso('Panel inicia con indicadores y gráficos sin controles duplicados',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     await page.locator('.mg-efsrt-kpis').waitFor({timeout:25000});
-    const prioridades=page.locator('.mg-efsrt-pulse-items button');
-    assert.equal(await prioridades.count(),3);
-    const textos=await page.locator('.mg-efsrt-pulse').innerText();
-    assert.match(textos,/Membresías por vencer/);
-    assert.match(textos,/Productos con stock bajo/);
-    assert.match(textos,/Pagos pendientes/);
-    const accesos=page.locator('.mg-efsrt-actions button');
-    assert.equal(await accesos.count(),6);
-    const primero=await accesos.first().boundingBox();
-    const ultimo=await accesos.last().boundingBox();
-    assert.ok(primero && ultimo,'Los accesos deben ser visibles.');
-    assert.ok(Math.abs(primero.y-ultimo.y)<10,'Los seis accesos deben quedar en una sola fila en escritorio.');
+    assert.equal(await page.locator('.mg-efsrt-kpis article').count(),4,
+      'El inicio debe conservar cuatro indicadores reales.');
+    assert.equal(await page.locator('.mg-efsrt-actions button').count(),0,
+      'Los accesos rápidos no deben duplicar el menú lateral.');
+    assert.equal(await page.locator('.mg-efsrt-work').count(),0,
+      'La sección antigua de seis botones debe desaparecer.');
+    const alertas=page.locator('.mg-efsrt-pulse');
+    if(await alertas.count() > 0) {
+      const prioridades=page.locator('.mg-efsrt-pulse-items button');
+      assert.equal(await prioridades.count(),3,
+        'Si hay alertas, las tres categorías deben conservarse.');
+    }
+    await page.locator('.mg-premium-analytics-grid .mg-premium-card').first()
+      .waitFor({timeout:20000});
+    assert.equal(await page.locator('.mg-premium-analytics-grid .mg-premium-card').count(),3,
+      'Los tres gráficos del gimnasio deben aparecer después de los KPI.');
     const encabezado=await page.locator('.mg-efsrt-hero').boundingBox();
     assert.ok(encabezado && encabezado.height<165,'El encabezado no debe ocultar la información útil.');
-
     await page.screenshot({
       path:'evidencias-dashboard/20_Panel_operativo_compacto.png',
       fullPage:true,animations:'disabled'
@@ -300,20 +303,22 @@ try {
       fullPage:true,animations:'disabled'});
   });
 
-  await paso('Inicio EFSRT tiene exactamente seis acciones y no duplica pestañas',async()=>{
+  await paso('Inicio EFSRT conserva indicadores y tres gráficos sin acciones duplicadas',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const inicio=page.locator('.mg-efsrt-dashboard');
     await inicio.waitFor({timeout:15000});
-    const acciones=inicio.locator('.mg-efsrt-actions>button');
-    assert.equal(await acciones.count(),6,'Debe haber seis accesos principales, no una pantalla saturada de botones.');
+    assert.equal(await inicio.locator('.mg-efsrt-actions>button').count(),0,
+      'El inicio no debe duplicar los accesos del menú lateral.');
+    assert.equal(await inicio.locator('.mg-efsrt-kpis article').count(),4,
+      'Los cuatro indicadores de MySQL se conservan en el resumen.');
+    assert.equal(await inicio.locator('.mg-efsrt-work').count(),0,
+      'El bloque antiguo de seis accesos no puede reaparecer.');
     assert.equal(await page.locator('.mg-module-tabs').count(),0,'Las pestañas antiguas repiten el menú.');
     await inicio.locator('.mg-premium-analytics').waitFor({timeout:12000});
     assert.equal(await inicio.locator('.mg-premium-analytics-grid .mg-premium-card').count(),3,
       'Inicio debe mostrar tres gráficos alimentados por MySQL.');
-    const nombres=await acciones.allTextContents();
-    for(const esperado of ['Matricular socio','Reservas','Asistencia','Rutinas','Productos','Pagos']){
-      assert.ok(nombres.some(x=>x.includes(esperado)),'Acceso faltante: '+esperado);
-    }
+    assert.equal(await page.locator('.mg-clear-navigation .cf-nav-group-head').count(),7,
+      'Las siete áreas del gimnasio siguen disponibles en el menú.');
     await page.screenshot({
       path:'evidencias-dashboard/17_Inicio_EFSRT_Simplificado.png',
       fullPage:true,animations:'disabled'

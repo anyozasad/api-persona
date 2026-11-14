@@ -120,3 +120,97 @@
 @media(max-width:900px){
   .admin-shell.admin-home-redesign .mg-catalogo-categorias{grid-template-columns:1fr}
 }
+
+
+/* UX 2026-11-14: navegación legible y analítica compacta, sin módulos duplicados */
+/* Nombres completos: el usuario no debe adivinar "Clases y entrenami..." */
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-clear-navigation .cf-nav-group-head {
+  height:auto!important;
+  min-height:46px!important;
+  padding-block:10px!important;
+  align-items:center!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-clear-navigation .cf-nav-group-head > span:nth-child(2),
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-clear-navigation .mg-direct-home > span:last-child,
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-clear-navigation .cf-nav-children button > span:last-child {
+  flex:1 1 auto!important;
+  min-width:0!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  overflow-wrap:break-word!important;
+  line-height:1.35!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-clear-navigation .cf-nav-group-head > i {
+  flex:none!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .cf-nav-children button {
+  height:auto!important;
+  min-height:39px!important;
+}
+
+/* Resumen primero, gráficos a continuación: ningún bloque vacío ocupa una pantalla entera. */
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard > .mg-efsrt-optional {
+  margin:0 0 18px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-analytics {
+  padding:13px 15px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-analytics-head {
+  align-items:center!important;
+  margin-bottom:11px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-analytics-head h2 {
+  font-size:18px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-analytics-grid {
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:11px!important;
+  align-items:stretch!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-card {
+  padding:14px!important;
+  min-height:255px!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-revenue-card {
+  grid-row:auto!important;
+  min-height:255px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-revenue-overview {
+  margin:12px 0 7px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-revenue-overview strong {
+  font-size:25px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-revenue-chart {
+  flex:0 0 auto!important;
+  margin:4px 0 10px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-revenue-chart svg {
+  height:139px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-no-chart-data {
+  min-height:72px!important;
+  padding:14px 6px!important;
+  font-size:12px!important;
+  line-height:1.45!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-card > footer {
+  margin-top:auto!important;
+  padding-top:9px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-analytics-head > button {
+  min-height:34px!important;
+  font-size:11px!important;
+}
+@media(max-width:1199px){
+  .admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-analytics-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:990px){
+  .admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-analytics-grid {
+    grid-template-columns:1fr!important;
+  }
+}

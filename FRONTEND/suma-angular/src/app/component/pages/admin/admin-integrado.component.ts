@@ -241,38 +241,8 @@ import { catchError, forkJoin, of } from 'rxjs';
               <span class="mg-efsrt-connection" [class.problem]="!sistemaSincronizado">
                 {{sistemaSincronizado ? '● Sistema conectado' : (estadoOperativoDashboard?.database ? '● Esquema pendiente' : '● Revisar conexión')}}
               </span>
-              <button type="button" (click)="actualizarDashboardCompleto()" [disabled]="actualizandoDatos">
-                {{actualizandoDatos ? 'Actualizando...' : '↻ Actualizar'}}
-              </button>
             </div>
           </header>
-
-          <section class="mg-efsrt-work">
-            <div class="mg-efsrt-heading">
-              <h3>¿Qué necesitas hacer hoy?</h3>
-              <p>Selecciona una tarea para abrir directamente el módulo.</p>
-            </div>
-            <div class="mg-efsrt-actions">
-              <button type="button" (click)="abrirNuevoSocioDesdeDashboard()">
-                <span aria-hidden="true">♙</span><strong>Matricular socio</strong><small>Nuevo registro</small>
-              </button>
-              <button type="button" (click)="cambiarSegcion('reservas')">
-                <span aria-hidden="true">◫</span><strong>Reservas</strong><small>Gestionar sesiones</small>
-              </button>
-              <button type="button" (click)="cambiarSegcion('asistencias')">
-                <span aria-hidden="true">✓</span><strong>Asistencia</strong><small>Entrada y salida</small>
-              </button>
-              <button type="button" (click)="cambiarSegcion('rutinas')">
-                <span aria-hidden="true">✦</span><strong>Rutinas</strong><small>Plan de entrenamiento</small>
-              </button>
-              <button type="button" (click)="cambiarSegcion('productos')">
-                <span aria-hidden="true">▦</span><strong>Productos</strong><small>Fotos y stock</small>
-              </button>
-              <button type="button" (click)="cambiarSegcion('pagos')">
-                <span aria-hidden="true">S/</span><strong>Pagos</strong><small>Cobros y membresías</small>
-              </button>
-            </div>
-          </section>
 
           <section class="mg-efsrt-kpis" aria-label="Indicadores obtenidos de MySQL">
             <article>
@@ -297,7 +267,7 @@ import { catchError, forkJoin, of } from 'rxjs';
             </article>
           </section>
 
-          <section class="mg-efsrt-pulse" aria-label="Pendientes de la operación del gimnasio">
+          <section class="mg-efsrt-pulse" *ngIf="(dashboard?.membresias?.por_vencer_7_dias ?? 0)>0 || (dashboard?.inventario?.productos_stock_bajo ?? 0)>0 || (dashboard?.membresias?.pagos_pendientes ?? 0)>0" aria-label="Pendientes de la operación del gimnasio">
             <div class="mg-efsrt-pulse-intro">
               <strong>Estado de la operación</strong>
               <small>{{sistemaSincronizado ? 'Pendientes calculados desde MySQL' : 'Datos parciales: verifica la conexión y las tablas pendientes'}}</small>
@@ -322,69 +292,6 @@ import { catchError, forkJoin, of } from 'rxjs';
                 <span class="mg-efsrt-pulse-action" aria-hidden="true">›</span>
               </button>
             </div>
-          </section>
-
-          <div class="mg-efsrt-grid">
-            <section class="mg-efsrt-panel mg-efsrt-renewals" [class.warning]="totalMembresiasPorVencerDashboard > 0">
-              <div class="mg-efsrt-heading"><h3>Vencimientos de membresías</h3><p>Alertas para el administrador.</p></div>
-              <strong class="mg-efsrt-renewal-count">{{totalMembresiasPorVencerDashboard}}</strong>
-              <p *ngIf="!totalMembresiasPorVencerDashboard">
-                {{dashboard ? 'No hay vencimientos durante los próximos siete días.' : 'Actualiza el panel para comprobar las membresías.'}}
-              </p>
-              <div class="mg-efsrt-renewal-rows" *ngIf="totalMembresiasPorVencerDashboard">
-                <p *ngFor="let registro of membresiasPorVencerDashboard.slice(0,3)">
-                  <b>{{nombreCliente(registro.cliente)}}</b>
-                  <span>{{registro.fecha_fin}} · {{registro.membresia?.nombre || 'Membresía'}}</span>
-                </p>
-              </div>
-              <button type="button" (click)="cambiarSegcion('renovaciones')">Revisar vencimientos</button>
-            </section>
-
-            <section class="mg-efsrt-panel mg-efsrt-bookings">
-              <div class="mg-efsrt-heading"><h3>Próximas reservas</h3><p>Sesiones registradas para hoy.</p></div>
-              <div *ngIf="reservasHoyDashboard().length; else sinAgendaEfsrt">
-                <p *ngFor="let reserva of reservasHoyDashboard().slice(0,4)">
-                  <strong>{{reserva.clase?.hora_inicio || '—'}}</strong>
-                  <span>{{nombreCliente(reserva.cliente) || 'Socio'}} · {{reserva.clase?.nombre || 'Sesión'}}</span>
-                </p>
-              </div>
-              <ng-template #sinAgendaEfsrt><p class="mg-efsrt-empty">No hay reservas registradas para hoy.</p></ng-template>
-            </section>
-          </div>
-
-          <section class="mg-catalog-preview mg-efsrt-product-preview" aria-label="Productos y fotografías reales de MySQL">
-            <header>
-              <div>
-                <span>INVENTARIO</span>
-                <h2>Productos del gimnasio</h2>
-                <p>Fotos, precios y existencias guardados en MySQL.</p>
-              </div>
-              <button type="button" (click)="cambiarSegcion('productos')">Gestionar productos</button>
-            </header>
-            <div class="mg-catalog-summary" *ngIf="productos.length">
-              <span><strong>{{productos.length}}</strong> productos</span>
-              <span><strong>{{productosConImagenDashboard}}</strong> con foto</span>
-              <span *ngIf="productosConImagenDashboard < productos.length" class="mg-catalog-missing">
-                <strong>{{productos.length - productosConImagenDashboard}}</strong> sin fotografía
-              </span>
-            </div>
-            <div class="mg-catalog-cards" *ngIf="productos.length; else sinProductosEfsrt">
-              <article *ngFor="let p of productosDestacadosDashboard" class="mg-catalog-product">
-                <div class="mg-catalog-product-photo">
-                  <img *ngIf="fotoProductoDisponibleDashboard(p.foto)" [src]="p.foto"
-                    [alt]="'Foto de ' + p.nombre_producto">
-                  <span *ngIf="!fotoProductoDisponibleDashboard(p.foto)" class="mg-catalog-no-photo">
-                    <i>▧</i><small>Foto pendiente</small>
-                  </span>
-                </div>
-                <strong>{{p.nombre_producto}}</strong>
-                <small>{{p.codigo_producto || 'Sin código'}} · Stock {{p.stock ?? 0}}</small>
-                <b>S/ {{p.precio_venta ?? 0 | number:'1.2-2'}}</b>
-              </article>
-            </div>
-            <ng-template #sinProductosEfsrt>
-              <p class="mg-efsrt-empty">No hay productos cargados desde MySQL. Registra productos y sus fotos desde Inventario.</p>
-            </ng-template>
           </section>
 
           <section class="mg-efsrt-optional">
@@ -496,6 +403,69 @@ import { catchError, forkJoin, of } from 'rxjs';
                 </app-admin-dashboard-tools>
               </section>
             </ng-container>
+          </section>
+
+          <div class="mg-efsrt-grid" *ngIf="totalMembresiasPorVencerDashboard > 0 || reservasHoyDashboard().length > 0">
+            <section class="mg-efsrt-panel mg-efsrt-renewals" *ngIf="totalMembresiasPorVencerDashboard > 0" [class.warning]="totalMembresiasPorVencerDashboard > 0">
+              <div class="mg-efsrt-heading"><h3>Vencimientos de membresías</h3><p>Alertas para el administrador.</p></div>
+              <strong class="mg-efsrt-renewal-count">{{totalMembresiasPorVencerDashboard}}</strong>
+              <p *ngIf="!totalMembresiasPorVencerDashboard">
+                {{dashboard ? 'No hay vencimientos durante los próximos siete días.' : 'Actualiza el panel para comprobar las membresías.'}}
+              </p>
+              <div class="mg-efsrt-renewal-rows" *ngIf="totalMembresiasPorVencerDashboard">
+                <p *ngFor="let registro of membresiasPorVencerDashboard.slice(0,3)">
+                  <b>{{nombreCliente(registro.cliente)}}</b>
+                  <span>{{registro.fecha_fin}} · {{registro.membresia?.nombre || 'Membresía'}}</span>
+                </p>
+              </div>
+              <button type="button" (click)="cambiarSegcion('renovaciones')">Revisar vencimientos</button>
+            </section>
+
+            <section class="mg-efsrt-panel mg-efsrt-bookings" *ngIf="reservasHoyDashboard().length > 0">
+              <div class="mg-efsrt-heading"><h3>Próximas reservas</h3><p>Sesiones registradas para hoy.</p></div>
+              <div *ngIf="reservasHoyDashboard().length; else sinAgendaEfsrt">
+                <p *ngFor="let reserva of reservasHoyDashboard().slice(0,4)">
+                  <strong>{{reserva.clase?.hora_inicio || '—'}}</strong>
+                  <span>{{nombreCliente(reserva.cliente) || 'Socio'}} · {{reserva.clase?.nombre || 'Sesión'}}</span>
+                </p>
+              </div>
+              <ng-template #sinAgendaEfsrt><p class="mg-efsrt-empty">No hay reservas registradas para hoy.</p></ng-template>
+            </section>
+          </div>
+
+          <section class="mg-catalog-preview mg-efsrt-product-preview" aria-label="Productos y fotografías reales de MySQL">
+            <header>
+              <div>
+                <span>INVENTARIO</span>
+                <h2>Productos del gimnasio</h2>
+                <p>Fotos, precios y existencias guardados en MySQL.</p>
+              </div>
+              <button type="button" (click)="cambiarSegcion('productos')">Gestionar productos</button>
+            </header>
+            <div class="mg-catalog-summary" *ngIf="productos.length">
+              <span><strong>{{productos.length}}</strong> productos</span>
+              <span><strong>{{productosConImagenDashboard}}</strong> con foto</span>
+              <span *ngIf="productosConImagenDashboard < productos.length" class="mg-catalog-missing">
+                <strong>{{productos.length - productosConImagenDashboard}}</strong> sin fotografía
+              </span>
+            </div>
+            <div class="mg-catalog-cards" *ngIf="productos.length; else sinProductosEfsrt">
+              <article *ngFor="let p of productosDestacadosDashboard" class="mg-catalog-product">
+                <div class="mg-catalog-product-photo">
+                  <img *ngIf="fotoProductoDisponibleDashboard(p.foto)" [src]="p.foto"
+                    [alt]="'Foto de ' + p.nombre_producto">
+                  <span *ngIf="!fotoProductoDisponibleDashboard(p.foto)" class="mg-catalog-no-photo">
+                    <i>▧</i><small>Foto pendiente</small>
+                  </span>
+                </div>
+                <strong>{{p.nombre_producto}}</strong>
+                <small>{{p.codigo_producto || 'Sin código'}} · Stock {{p.stock ?? 0}}</small>
+                <b>S/ {{p.precio_venta ?? 0 | number:'1.2-2'}}</b>
+              </article>
+            </div>
+            <ng-template #sinProductosEfsrt>
+              <p class="mg-efsrt-empty">No hay productos cargados desde MySQL. Registra productos y sus fotos desde Inventario.</p>
+            </ng-template>
           </section>
 
           <section class="mg-efsrt-data-status" [class.problem]="!sistemaSincronizado">
