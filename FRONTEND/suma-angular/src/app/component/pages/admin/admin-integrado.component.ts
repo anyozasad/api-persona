@@ -684,7 +684,7 @@ import { catchError, forkJoin, of } from 'rxjs';
             <label class="efsrt-week-selector">
               <span>Seleccionar semana que deseas revisar</span>
               <select [(ngModel)]="semanaEfsrtSeleccionada" aria-label="Seleccionar semana EFSRT">
-                <option *ngFor="let semana of revision.semanas" [ngValue]="semana.semana">
+                <option *ngFor="let semana of revision.semanas" [value]="semana.semana">
                   Semana {{semana.semana < 10 ? '0' + semana.semana : semana.semana}} — {{semana.titulo}}
                 </option>
               </select>
