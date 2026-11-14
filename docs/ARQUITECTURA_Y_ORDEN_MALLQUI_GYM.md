@@ -7,8 +7,8 @@
 1. Conservar dos raíces claras `BACKEND/` y `FRONTEND/suma-angular/`: unificarlas como si fueran una sola aplicación Laravel rompería herramientas y despliegue.
 2. Agrupar los 11 estilos específicos del administrador bajo `FRONTEND/suma-angular/src/app/component/pages/admin/styles/`. Cambiar solamente las referencias `styleUrls` y preservar su orden original.
 3. Mantener `BACKEND/database/`, `BACKEND/routes/`, `BACKEND/app/`, `FRONTEND/suma-angular/src/app/core/` y `models/` como separaciones funcionales.
-4. Conservar `.tmp/mallqui-original.part*.b64`: cinco workflows de imágenes dependen de ellos. No son ficheros de ejecución del portal.
-5. Conservar scripts de entrada y reparación en la raíz para no romper los comandos usados en Windows.
+4. Mantener las fotografías finales en `FRONTEND/suma-angular/public/assets/`; los fragmentos temporales de imágenes y flujos que hacían `git push` automático ya no pertenecen a la versión activa del repositorio.
+5. Guardar las herramientas opcionales de diagnóstico en `scripts/` y utilizar `php artisan serve` y `npm start` como comandos de ejecución.
 
 ## Problemas pendientes que requieren refactor funcional, no solo carpetas
 

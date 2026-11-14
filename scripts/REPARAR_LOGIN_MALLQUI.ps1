@@ -6,7 +6,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$raiz = Split-Path -Parent $MyInvocation.MyCommand.Path
+$raiz = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $backend = Join-Path $raiz 'BACKEND'
 
 function Titulo([string]$mensaje) {
