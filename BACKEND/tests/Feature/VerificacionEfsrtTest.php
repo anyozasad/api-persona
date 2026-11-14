@@ -170,6 +170,48 @@ class VerificacionEfsrtTest extends TestCase
         $this->assertSame(1, $alertas->firstWhere('tipo','stock_negativo')['cantidad']);
     }
 
+    public function test_semana_nueve_detecta_reserva_sin_socio_y_semana_once_solicita_revision(): void
+    {
+        DB::table('reservas')->insert([
+            'id_reserva'=>9,'id_cliente'=>999,'id_clase'=>1,
+            'fecha_clase'=>'2026-12-07','estado'=>'Reservada',
+        ]);
+
+        $resultado=app(VerificacionEfsrtController::class)->index()->getData(true);
+        $alerta=collect($resultado['alertas'])->firstWhere('tipo','reservas_sin_socio');
+        $this->assertNotNull($alerta);
+        $this->assertSame(1,$alerta['cantidad']);
+        $this->assertSame('reservas',$alerta['destino']);
+
+        foreach ([9,11] as $numero) {
+            $semana=collect($resultado['semanas'])->firstWhere('semana',$numero);
+            $this->assertSame('pendiente',$semana['estado']);
+            $this->assertStringContainsString('socios inexistentes',implode(' ',$semana['observaciones']));
+        }
+    }
+
+    public function test_detecta_productos_sin_nombre_y_precio_invalido_sin_modificar_registros(): void
+    {
+        Schema::table('productos', function (Blueprint $tabla) {
+            $tabla->string('nombre_producto')->nullable();
+            $tabla->decimal('precio_venta',10,2)->nullable();
+        });
+        DB::table('productos')->insert([
+            'id_producto'=>16,'stock'=>3,'nombre_producto'=>'','precio_venta'=>-8,
+        ]);
+
+        $resultado=app(VerificacionEfsrtController::class)->index()->getData(true);
+        $alertas=collect($resultado['alertas']);
+        $this->assertSame(1,$alertas->firstWhere('tipo','productos_sin_nombre')['cantidad']);
+        $this->assertSame(1,$alertas->firstWhere('tipo','productos_precio_invalido')['cantidad']);
+        $semana5=collect($resultado['semanas'])->firstWhere('semana',5);
+        $semana11=collect($resultado['semanas'])->firstWhere('semana',11);
+        $this->assertStringContainsString('sin nombre',implode(' ',$semana5['observaciones']));
+        $this->assertStringContainsString('precio de venta negativo',implode(' ',$semana11['observaciones']));
+        $this->assertSame(3,DB::table('productos')->where('id_producto',16)->value('stock'),
+            'El diagnóstico nunca debe cambiar el inventario.');
+    }
+
     public function test_cliente_autenticado_no_puede_leer_el_diagnostico_privado(): void
     {
         $cliente = new \App\Models\Usuario([
