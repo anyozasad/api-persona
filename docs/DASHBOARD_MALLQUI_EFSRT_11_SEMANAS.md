@@ -5,11 +5,11 @@ Revisión técnica: 10 de noviembre de 2026. Las semanas 10 y 11 incluyen activi
 
 ## Cómo usar el dashboard sin perderse
 
-En /admin se muestran seis acciones compactas de trabajo diario: Matricular socio, Reservas, Asistencia, Rutinas, Productos y Pagos.
+En /admin se muestran cuatro indicadores y tres gráficos reales; las funciones de matrícula, reservas, asistencia, rutinas, productos y pagos se abren desde su área correspondiente sin seis botones repetidos.
 El menú lateral está ordenado en siete áreas desplegables, sin accesos repetidos: Socios y membresías, Clases y entrenamiento, Productos e inventario, Ventas y caja, Atención al socio, Administración y Organización interna.
 El acceso genérico «Todas las funciones» y el submenú anterior «Más funciones (opcional)» fueron retirados: cada opción figura directamente bajo su área. Consulta también `docs/COMPROBACION_REQUISITOS_FUNCIONALES.md`.
 Se eliminaron las pestañas duplicadas de cada módulo y los enlaces de apariencia/exportación que recargaban innecesariamente la cabecera.
-Los gráficos mantienen cálculos reales de la API, pero se abren únicamente desde Gráficos y análisis de ingresos. En móvil hay cinco accesos rápidos.
+Los gráficos mantienen cálculos reales de la API y están disponibles inicialmente en la sección de analítica, que puede plegarse. En móvil hay cinco accesos rápidos.
 
 ## Correspondencia con la bitácora (cinco actividades por semana)
 
@@ -21,11 +21,11 @@ Los gráficos mantienen cálculos reales de la API, pero se abren únicamente de
 | 04 | Estructura dashboard; socios, reservas, pagos, productos, entrenador y reportes; alta/lista; edición/cancelación; persistencia en BD | Matricular socio, Reservas, Pagos, Productos, Entrenador, Reportes | Flujos Laravel/MySQL y navegador CI; no eliminar historial de reservas ni ventas por error |
 | 05 | Reservas asociadas a socios; estados; productos, precio y stock; fotografía; pagos conciliados con BD | Reservas, Productos y stock, Pagos, Verificación EFSRT | Se prueba foto guardada y recuperada en MySQL; si foto no existe hay aviso, no imagen inventada |
 | 06 | Asistencia; seguimiento; rutinas por nivel/tipo; entrenador; corregir repetidos y faltantes | Asistencia, Seguimiento, Rutinas, Entrenador, Verificación EFSRT | Pruebas CRUD y consultas de datos; revisar tipos/niveles y el único entrenador local |
-| 07 | Unificar visual; tarjetas, botones y espaciado; quitar repetidos; login acorde a portada; navegación correcta | Nuevo inicio EFSRT, menú lateral agrupado, estilos admin-efsrt-simplificado.css, /login | Prueba de seis acciones únicas, cinco móviles y ausencia de pestañas redundantes |
+| 07 | Unificar visual; tarjetas, botones y espaciado; quitar repetidos; login acorde a portada; navegación correcta | Nuevo inicio EFSRT, menú lateral agrupado, estilos admin-efsrt-simplificado.css, /login | Prueba de siete áreas con opciones frecuentes y adicionales, cinco accesos móviles y ausencia de pestañas redundantes |
 | 08 | Detectar fotos borrosas; assets locales offline; fotos de entrenador, productos y gimnasio; portada nítida; pruebas usuario-dashboard-BD | FRONTEND/suma-angular/public/assets, Productos, portal, /admin | Fotos locales disponibles; fotos reales de productos son datos de MySQL. Revisar cada imagen en equipo real |
 | 09 | Sincronizar reservas usuario-dashboard; comparar socios/productos/pagos/BD; duplicados; alertas de vencimiento; asistencia/seguimiento/rutinas | Reservas, Productos, Pagos, Vencimientos, Asistencia, Seguimiento, Rutinas, Verificación EFSRT | Verificar conexión, integridad y flujo cruzado. Actividad fechada 11/11 todavía no acreditada |
 | 10 | Pagos de extremo a extremo; boleta electrónica; uso offline; permisos; pruebas finales | Pagos, comprobantes internos, Usuarios y permisos, assets locales y pruebas E2E | PENDIENTE: boleta electrónica autorizada SUNAT; una constancia interna no sustituye CPE; pruebas locales y firmas futuras |
-| 11 | Probar login/registro/navegación; módulos; duplicados y vacíos; últimos retoques; evidencias y respaldo | Login, los cinco grupos del menú, Verificación EFSRT, Respaldos, GitHub Actions | Tests de navegador/MySQL y capturas automáticas; backup SQL real y firmas aún deben verificarse al terminar el periodo |
+| 11 | Probar login/registro/navegación; módulos; duplicados y vacíos; últimos retoques; evidencias y respaldo | Login, las siete áreas del menú, Verificación EFSRT, Respaldos, GitHub Actions | Tests de navegador/MySQL y capturas automáticas; backup SQL real y firmas aún deben verificarse al terminar el periodo |
 
 ## Corrección técnica del 11 de noviembre de 2026
 
@@ -87,7 +87,7 @@ La rutina pedirá escribir `SI`. Si no puede generar la copia SQL preventiva, no
 3. Los productos del inicio mostrarán fotos únicamente cuando exista la fotografía en productos.foto; un producto sin foto se rotulará como pendiente.
 4. El botón Verificación EFSRT consulta tablas y alertas de MySQL, pero no certifica pruebas que no se ejecutaron.
 5. Los formularios respetarán los permisos y conservarán el diseño blanco/negro/verde de Mallqui Gym.
-6. Los seis accesos principales deben ser visibles sin abrir menús; el resto permanecerá dentro de grupos plegados.
+6. Inicio no debe duplicar seis accesos. Las acciones principales están visibles dentro de su grupo y las secundarias se muestran con «Más opciones», sin perder ninguna función.
 7. No ejecutar migrate:fresh, importar dumps destructivos ni borrar la base de datos local para fabricar evidencias.
 
 ## Archivos técnicos
@@ -102,3 +102,8 @@ La rutina pedirá escribir `SI`. Si no puede generar la copia SQL preventiva, no
 - Recuperación de fotos: docs/FOTOS_PRODUCTOS_DASHBOARD_MYSQL.md
 
 Los checks de CI se hacen con MySQL temporal y datos ficticios. La instalación Windows/XAMPP del alumno requiere revisión adicional con el profesor.
+## Revisión de coherencia EFSRT — 14/11/2026
+
+La pantalla «Verificación del sistema» conserva las 11 semanas y sus 55 actividades, pero enseña una sola semana seleccionada para reducir botones repetidos. El resumen distingue estructuras disponibles de semanas con observaciones. La revisión detecta relaciones huérfanas entre reservas, clases, socios, membresías, rutinas y asistencia cuando las tablas existen, y campos incoherentes en productos o pagos. El sistema solo **informa** de las incidencias; no modifica datos ni inventa resultados de las pruebas.
+
+La prueba de navegador verifica que las fotos de portada se sirvan desde los assets locales incluso bloqueando imágenes externas. No equivale a que la aplicación funcione sin Laravel y MySQL. La boleta electrónica de SUNAT requiere integración y autorización, y las actividades presenciales del 16 al 21 de noviembre y las firmas de la bitácora siguen pendientes de su comprobación.
