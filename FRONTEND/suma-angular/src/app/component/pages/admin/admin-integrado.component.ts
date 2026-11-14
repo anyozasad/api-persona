@@ -681,8 +681,16 @@ import { catchError, forkJoin, of } from 'rxjs';
                 <p>Los pendientes se calculan con datos reales. Tener un módulo visible no significa haber aprobado sus pruebas.</p></div>
               <strong>{{revision.semanas_pendientes}} con observaciones</strong>
             </div>
+            <label class="efsrt-week-selector">
+              <span>Seleccionar semana que deseas revisar</span>
+              <select [(ngModel)]="semanaEfsrtSeleccionada" aria-label="Seleccionar semana EFSRT">
+                <option *ngFor="let semana of revision.semanas" [ngValue]="semana.semana">
+                  Semana {{semana.semana < 10 ? '0' + semana.semana : semana.semana}} — {{semana.titulo}}
+                </option>
+              </select>
+            </label>
             <div class="efsrt-weekly-grid">
-              <article *ngFor="let semana of revision.semanas" class="efsrt-week-card">
+              <article *ngIf="semanaEfsrtActual as semana" class="efsrt-week-card">
                 <div class="efsrt-week-top">
                   <b>Semana {{semana.semana < 10 ? '0' + semana.semana : semana.semana}}</b>
                   <span [class.pending]="semana.estado==='pendiente'">{{
@@ -2907,6 +2915,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   comprobanteDatos:any = null;
   backupRestaurarArchivo:File|null = null;
   verificacionEfsrt:any = null;
+  semanaEfsrtSeleccionada = 1;
+  get semanaEfsrtActual(): any {
+    return this.verificacionEfsrt?.semanas?.find(
+      (semana:any)=>Number(semana.semana)===Number(this.semanaEfsrtSeleccionada)
+    ) || this.verificacionEfsrt?.semanas?.[0] || null;
+  }
   verificacionEfsrtCargando = false;
   verificacionEfsrtError = '';
   private fotosDemoInicioIntentadas = false;
@@ -4754,6 +4768,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       next:(resultado:any)=>{
         this.verificacionEfsrtCargando=false;
         this.verificacionEfsrt=resultado;
+        // Prioriza el primer requisito realmente pendiente, sin marcarlo aprobado.
+        const semanas=Array.isArray(resultado?.semanas) ? resultado.semanas : [];
+        this.semanaEfsrtSeleccionada=Number(
+          semanas.find((semana:any)=>semana.estado==='pendiente')?.semana
+            ?? semanas[0]?.semana ?? 1
+        );
       },
       error:(e:any)=>{
         this.verificacionEfsrtCargando=false;
