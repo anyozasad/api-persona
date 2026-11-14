@@ -295,6 +295,14 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.verificacionEfsrt.modulos[0].estado).toBe('estructura_incompleta');
   });
 
+  it('no muestra sistema verificado si todavía hay semanas con observaciones', () => {
+    component.seccion='verificacion-efsrt';
+    component.verificacionEfsrt={semanas_pendientes:3};
+    expect(component.estadoModuloActual).toContain('3 semanas con observaciones');
+    component.verificacionEfsrt={semanas_pendientes:0};
+    expect(component.estadoModuloActual).toContain('Validación de evidencias pendiente');
+  });
+
   it('muestra una sola semana EFSRT a la vez y prioriza las observaciones pendientes', () => {
     api.verificacionEfsrt.and.returnValue(of({
       semanas:[
