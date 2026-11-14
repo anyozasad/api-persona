@@ -204,7 +204,7 @@
   min-height:34px!important;
   font-size:11px!important;
 }
-@media(max-width:1450px){
+@media(max-width:1199px){
   .admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-analytics-grid {
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
