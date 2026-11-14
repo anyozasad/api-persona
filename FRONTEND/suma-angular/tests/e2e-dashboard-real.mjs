@@ -59,24 +59,27 @@ try {
     await page.screenshot({path:'evidencias-dashboard/Inicio_Dashboard.png',fullPage:true});
   });
 
-  await paso('Panel muestra indicadores operativos y accesos compactos, no solo una plantilla',async()=>{
+  await paso('Panel inicia con indicadores y gráficos sin controles duplicados',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     await page.locator('.mg-efsrt-kpis').waitFor({timeout:25000});
-    const prioridades=page.locator('.mg-efsrt-pulse-items button');
-    assert.equal(await prioridades.count(),3);
-    const textos=await page.locator('.mg-efsrt-pulse').innerText();
-    assert.match(textos,/Membresías por vencer/);
-    assert.match(textos,/Productos con stock bajo/);
-    assert.match(textos,/Pagos pendientes/);
-    const accesos=page.locator('.mg-efsrt-actions button');
-    assert.equal(await accesos.count(),6);
-    const primero=await accesos.first().boundingBox();
-    const ultimo=await accesos.last().boundingBox();
-    assert.ok(primero && ultimo,'Los accesos deben ser visibles.');
-    assert.ok(Math.abs(primero.y-ultimo.y)<10,'Los seis accesos deben quedar en una sola fila en escritorio.');
+    assert.equal(await page.locator('.mg-efsrt-kpis article').count(),4,
+      'El inicio debe conservar cuatro indicadores reales.');
+    assert.equal(await page.locator('.mg-efsrt-actions button').count(),0,
+      'Los accesos rápidos no deben duplicar el menú lateral.');
+    assert.equal(await page.locator('.mg-efsrt-work').count(),0,
+      'La sección antigua de seis botones debe desaparecer.');
+    const alertas=page.locator('.mg-efsrt-pulse');
+    if(await alertas.count() > 0) {
+      const prioridades=page.locator('.mg-efsrt-pulse-items button');
+      assert.equal(await prioridades.count(),3,
+        'Si hay alertas, las tres categorías deben conservarse.');
+    }
+    await page.locator('.mg-premium-analytics-grid .mg-premium-card').first()
+      .waitFor({timeout:20000});
+    assert.equal(await page.locator('.mg-premium-analytics-grid .mg-premium-card').count(),3,
+      'Los tres gráficos del gimnasio deben aparecer después de los KPI.');
     const encabezado=await page.locator('.mg-efsrt-hero').boundingBox();
     assert.ok(encabezado && encabezado.height<165,'El encabezado no debe ocultar la información útil.');
-
     await page.screenshot({
       path:'evidencias-dashboard/20_Panel_operativo_compacto.png',
       fullPage:true,animations:'disabled'
