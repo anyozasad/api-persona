@@ -33,11 +33,9 @@ api-persona/
 │       ├── tests/                    Navegador / E2E
 │       ├── proxy.conf.json          Reenvío de /api a Laravel
 │       └── package.json
-├── docs/                             Bitácora, auditoría técnica y evidencias
-├── .github/workflows/                Pruebas CI y flujos de mantenimiento de imágenes
-├── .tmp/                             Fragmentos utilizados por flujos de imágenes; NO borrar
-├── INICIAR_DASHBOARD.ps1             Inicio y comprobación de servicios
-└── REPARAR_LOGIN_MALLQUI.ps1         Diagnóstico y reparación controlada del login
+├── docs/                             Bitácora, requisitos y evidencias EFSRT
+├── scripts/                          Utilidades opcionales de soporte Windows
+└── .github/workflows/                Pruebas automáticas Angular, Laravel y navegador
 ```
 
 ## Puesta en marcha en Windows (PowerShell)
@@ -68,13 +66,14 @@ npm ci
 
 Si Composer utiliza PHP 8.0, selecciona el PHP 8.3 para la instalación de dependencias o configura primero la variable de entorno PATH.
 
-**Abrir los servicios** desde la carpeta principal del proyecto (sin usar rutas absolutas):
+**Iniciar Laravel** desde la raíz del repositorio, con PHP 8.2+ y MySQL configurado:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\REPARAR_LOGIN_MALLQUI.ps1
+cd BACKEND
+php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-El script comprueba la conexión y arranca Laravel en el puerto **8000** cuando el esquema está correcto. La opción `-RepararEsquema` cambia el esquema y exige respaldo SQL: utilízala solo cuando debas completar tablas y ya hayas revisado su impacto.
+Los scripts de asistencia para Windows se guardan opcionalmente en `scripts/`. No son necesarios para iniciar la aplicación. No ejecutes reparaciones ni migraciones destructivas sin respaldo de MySQL.
 
 En otra ventana PowerShell:
 
@@ -103,7 +102,7 @@ Las carpetas de Laravel `app`, `routes`, `database` y `tests` viven en `BACKEND/
 
 ## Dónde revisar cada problema
 
-- Login, usuarios o tokens: `BACKEND/app/Http/Controllers/AuthController.php`, `BACKEND/app/Models/Usuario.php`, `REPARAR_LOGIN_MALLQUI.ps1`
+- Login, usuarios o tokens: `BACKEND/app/Http/Controllers/AuthController.php`, `BACKEND/app/Models/Usuario.php`, `scripts/REPARAR_LOGIN_MALLQUI.ps1`
 - Fallos 500: `BACKEND/storage/logs/`
 - Endpoints o permisos: `BACKEND/routes/api.php`, `BACKEND/app/Http/Middleware/`
 - Menú, pantallas o rutas: `FRONTEND/suma-angular/src/app/app.routes.ts`

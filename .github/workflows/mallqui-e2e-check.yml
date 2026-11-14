@@ -37,7 +37,7 @@ jobs:
         run: |
           $tokens = $null
           $errores = $null
-          [System.Management.Automation.Language.Parser]::ParseFile('INICIAR_DASHBOARD.ps1', [ref]$tokens, [ref]$errores) | Out-Null
+          [System.Management.Automation.Language.Parser]::ParseFile('scripts/INICIAR_DASHBOARD.ps1', [ref]$tokens, [ref]$errores) | Out-Null
           if ($errores.Count -gt 0) {
             $errores | ForEach-Object { Write-Error $_.Message }
             exit 1

@@ -1,5 +1,5 @@
 # Mallqui Gym | Inicio y diagnóstico en Windows (PowerShell 5.1+).
-# Uso: powershell -ExecutionPolicy Bypass -File .\INICIAR_DASHBOARD.ps1
+# Uso: powershell -ExecutionPolicy Bypass -File .\scripts\INICIAR_DASHBOARD.ps1
 # Primera instalación: agregar -Preparar (instala composer/npm y crea .env si no existe).
 # Esquema y datos mínimos: -Migrar ejecuta sistema:preparar SOLO con respaldo confirmado.
 # Diagnóstico: agregar -SoloVerificar (no instala, migra ni inicia servicios).
@@ -11,7 +11,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$raiz = Split-Path -Parent $MyInvocation.MyCommand.Path
+$raiz = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $backend = Join-Path $raiz 'BACKEND'
 $frontend = Join-Path $raiz 'FRONTEND\suma-angular'
 

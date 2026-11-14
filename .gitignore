@@ -1,0 +1,6 @@
+# Mallqui Gym: temporales y secretos locales
+/.tmp/
+/BACKEND/.env
+/BACKEND/vendor/
+/FRONTEND/suma-angular/node_modules/
+/FRONTEND/suma-angular/dist/
