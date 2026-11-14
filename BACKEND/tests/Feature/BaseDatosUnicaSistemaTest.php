@@ -28,7 +28,7 @@ class BaseDatosUnicaSistemaTest extends TestCase
 
     public function test_preparacion_de_mysql_exige_respaldo_previo_y_conserva_categorias_reales(): void
     {
-        $inicio = (string) file_get_contents(base_path('../INICIAR_DASHBOARD.ps1'));
+        $inicio = (string) file_get_contents(base_path('../scripts/INICIAR_DASHBOARD.ps1'));
         $preparacion = (string) file_get_contents(app_path('Console/Commands/PrepararMallquiSistema.php'));
 
         $posRespaldo = strpos($inicio, "Ejecutar \$php @('artisan','backup:database')");
