@@ -199,6 +199,48 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.menuPrincipal.some(grupo => grupo.id === 'apps')).toBeFalse();
   });
 
+
+  it('muestra pocas opciones por área y conserva las 46 funciones reales', () => {
+    const grupos=component.menuPrincipal;
+    expect(grupos).toHaveSize(7);
+    for(const grupo of grupos){
+      expect(component.opcionesVisiblesGrupo(grupo).length).toBeLessThanOrEqual(4);
+      expect(component.opcionesVisiblesGrupo(grupo).length).toBeGreaterThanOrEqual(2);
+      const extras=component.cantidadOpcionesSecundarias(grupo);
+      expect(extras).toBe(grupo.items.length-component.opcionesVisiblesGrupo(grupo).length);
+      component.alternarOpcionesMenu(grupo.id);
+      expect(component.opcionesVisiblesGrupo(grupo).map(x=>x.id).sort())
+        .toEqual(grupo.items.map(x=>x.id).sort());
+      component.alternarOpcionesMenu(grupo.id);
+    }
+    const todos=grupos.flatMap(grupo=>grupo.items.map(item=>item.id));
+    expect(new Set(todos).size).toBe(46);
+  });
+
+  it('identifica y despliega una función secundaria al acceder por búsqueda o desde un enlace', () => {
+    spyOn(window,'scrollTo').and.stub();
+    spyOn(component as any,'cargarSegcion').and.stub();
+    component.cambiarSegcion('proveedores');
+    expect(component.navGroups['operations']).toBeTrue();
+    expect(component.masOpcionesMenu['operations']).toBeTrue();
+    const grupo=component.menuPrincipal.find(g=>g.id==='operations')!;
+    expect(component.opcionesVisiblesGrupo(grupo).some(i=>i.id==='proveedores')).toBeTrue();
+    expect(component.descripcionOpcionMenu('productos')).toContain('fotografías');
+    component.cambiarSegcion('clientes');
+    expect(component.navGroups['members']).toBeTrue();
+    expect(component.masOpcionesMenu['members']).toBeFalse();
+  });
+
+  it('al actualizar la sección abierta consulta también los datos de ese módulo', () => {
+    spyOn(component,'cargarDashboard').and.stub();
+    const cargar=spyOn(component as any,'cargarSegcion').and.stub();
+    component.seccion='productos';
+    component.actualizandoDatos=false;
+    component.actualizarSegcionActual(true);
+    expect(cargar).toHaveBeenCalledWith('productos');
+    expect(component.cargarDashboard).toHaveBeenCalled();
+  });
+
   it('abre el área correspondiente y mantiene un solo grupo desplegado', () => {
     const ver = (id: string, grupo: string) => {
       (component as any).activarGrupoDeSeccion(id);

@@ -51,8 +51,8 @@ import { catchError, forkJoin, of } from 'rxjs';
       </div>
 
       <div class="mg-mantis-top-actions">
-        <button type="button" class="mg-mantis-icon-button" (click)="actualizarDashboardCompleto()"
-          [disabled]="actualizandoDatos" aria-label="Actualizar información" title="Actualizar información">↻</button>
+        <button type="button" class="mg-mantis-icon-button" (click)="actualizarSegcionActual()"
+          [disabled]="actualizandoDatos" aria-label="Actualizar módulo actual" title="Actualizar el módulo que estás viendo">↻</button>
         <button type="button" class="mg-mantis-icon-button mg-mantis-bell"
           (click)="alternarAlertasMantis()" [attr.aria-expanded]="avisosAbiertos"
           aria-label="Notificaciones y pendientes" title="Notificaciones">
@@ -144,11 +144,6 @@ import { catchError, forkJoin, of } from 'rxjs';
           <span class="admin-main-nav-icon" aria-hidden="true">⌂</span>
           <span>Panel principal</span>
         </button>
-        <button type="button" class="mg-direct-home mg-action-registrar"
-          (click)="abrirNuevoSocioDesdeDashboard()" aria-label="Registrar un socio nuevo">
-          <span class="admin-main-nav-icon" aria-hidden="true">＋</span>
-          <span>Matricular socio</span>
-        </button>
         <span class="mg-nav-caption mg-nav-section-separator">GESTIÓN DEL GIMNASIO</span>
         <ng-container *ngFor="let grupo of menuPrincipal">
           <button type="button" class="cf-nav-group-head mg-admin-group"
@@ -161,12 +156,25 @@ import { catchError, forkJoin, of } from 'rxjs';
             <i aria-hidden="true">{{navGroups[grupo.id]?'⌃':'⌄'}}</i>
           </button>
           <div class="cf-nav-children mg-clear-submenu" *ngIf="navGroups[grupo.id]">
-            <button type="button" *ngFor="let item of grupo.items"
+            <button type="button" *ngFor="let item of opcionesVisiblesGrupo(grupo)"
               [class.active]="seccion===item.id"
               [attr.aria-current]="seccion===item.id ? 'page' : null"
+              [attr.aria-label]="item.nombre"
+              [attr.title]="descripcionOpcionMenu(item.id)"
               (click)="navegarMenu(item)">
               <span aria-hidden="true">•</span>
-              <span>{{item.nombre}}</span>
+              <span class="mg-nav-action-copy">
+                <strong>{{item.nombre}}</strong>
+                <small>{{descripcionOpcionMenu(item.id)}}</small>
+              </span>
+            </button>
+            <button type="button" class="mg-nav-show-more"
+              *ngIf="cantidadOpcionesSecundarias(grupo)>0"
+              [attr.aria-expanded]="!!masOpcionesMenu[grupo.id]"
+              [attr.aria-label]="masOpcionesMenu[grupo.id] ? 'Mostrar menos opciones de ' + grupo.titulo : 'Mostrar más opciones de ' + grupo.titulo"
+              (click)="alternarOpcionesMenu(grupo.id)">
+              <span aria-hidden="true">{{masOpcionesMenu[grupo.id] ? '−' : '⋯'}}</span>
+              <span>{{masOpcionesMenu[grupo.id] ? 'Mostrar menos' : 'Más opciones (' + cantidadOpcionesSecundarias(grupo) + ')'}}</span>
             </button>
           </div>
         </ng-container>
@@ -220,9 +228,6 @@ import { catchError, forkJoin, of } from 'rxjs';
             (click)="cambiarSegcion(['usuarios','auditoria','mantenimiento-sistema','verificacion-efsrt'].includes(seccion) ? 'configuracion' : 'dashboard')"
             [attr.aria-label]="['usuarios','auditoria','mantenimiento-sistema','verificacion-efsrt'].includes(seccion) ? 'Volver a configuración' : 'Volver al panel principal'">
             {{['usuarios','auditoria','mantenimiento-sistema','verificacion-efsrt'].includes(seccion) ? '← Configuración' : '← Inicio'}}
-          </button>
-          <button type="button" (click)="actualizarSegcionActual()" [disabled]="actualizandoDatos">
-            {{actualizandoDatos ? 'Actualizando...' : '↻ Actualizar'}}
           </button>
         </div>
       </section>
@@ -3029,6 +3034,72 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     ]}
   ];
 
+
+  /** Funciones frecuentes visibles al entrar a cada área; el resto sigue disponible sin duplicarse. */
+  readonly opcionesFrecuentesMenu: Record<string,string[]> = {
+    members:['clientes','membresias','pagos','renovaciones'],
+    training:['reservas','asistencias','clases','rutinas'],
+    operations:['productos','inventario','compras','kardex'],
+    finance:['ventas','historial-ventas','caja','gastos'],
+    communication:['soporte','comunicacion','opiniones'],
+    menu:['reportes-admin','usuarios','configuracion','verificacion-efsrt'],
+    tools:['calendario-admin','tareas-admin']
+  };
+  masOpcionesMenu: Record<string,boolean> = {
+    members:false,training:false,operations:false,finance:false,
+    communication:false,menu:false,tools:false
+  };
+
+  opcionesVisiblesGrupo(grupo:{id:string;items:Array<{id:string;nombre:string;accion?:'nuevoSocio'}>}):
+      Array<{id:string;nombre:string;accion?:'nuevoSocio'}> {
+    const frecuentes=this.opcionesFrecuentesMenu[grupo.id] ?? [];
+    const principales=grupo.items.filter(item=>frecuentes.includes(item.id));
+    return this.masOpcionesMenu[grupo.id]
+      ? [...principales,...grupo.items.filter(item=>!frecuentes.includes(item.id))]
+      : principales;
+  }
+
+  cantidadOpcionesSecundarias(grupo:{id:string;items:Array<{id:string}>}):number {
+    const frecuentes=this.opcionesFrecuentesMenu[grupo.id] ?? [];
+    return grupo.items.filter(item=>!frecuentes.includes(item.id)).length;
+  }
+
+  alternarOpcionesMenu(grupoId:string):void {
+    if(!Object.prototype.hasOwnProperty.call(this.masOpcionesMenu,grupoId))return;
+    this.masOpcionesMenu[grupoId]=!this.masOpcionesMenu[grupoId];
+  }
+
+  descripcionOpcionMenu(id:string):string {
+    const acciones:Record<string,string>={
+      clientes:'Registrar, buscar y editar socios',
+      membresias:'Asignar planes y revisar vigencias',
+      pagos:'Registrar y confirmar cobros',
+      renovaciones:'Revisar próximos vencimientos',
+      reservas:'Crear, editar y cancelar reservas',
+      asistencias:'Registrar entradas y salidas',
+      clases:'Horarios, entrenadores y cupos',
+      rutinas:'Asignar ejercicios y entrenamientos',
+      productos:'Registrar productos y fotografías',
+      inventario:'Consultar existencias reales',
+      compras:'Ingresar compras y actualizar stock',
+      kardex:'Revisar movimientos de almacén',
+      ventas:'Registrar venta y descontar stock',
+      'historial-ventas':'Consultar las ventas registradas',
+      caja:'Abrir, registrar y cerrar caja',
+      gastos:'Registrar egresos de caja',
+      soporte:'Responder consultas de socios',
+      comunicacion:'Gestionar avisos y mensajes',
+      opiniones:'Revisar comentarios de socios',
+      'reportes-admin':'Consultar indicadores y reportes',
+      usuarios:'Administrar cuentas y permisos',
+      configuracion:'Guardar ajustes del gimnasio',
+      'verificacion-efsrt':'Revisar requisitos y pendientes',
+      'calendario-admin':'Ver eventos y reservas del día',
+      'tareas-admin':'Organizar pendientes del equipo'
+    };
+    return acciones[id] || this.titulos[id]?.[1] || 'Abrir gestión';
+  }
+
   // El panel muestra tendencias reales sin obligar a abrir opciones ocultas.
   mostrarGraficosDashboard = true;
   navGroups: Record<string, boolean> = {members:false,training:false,operations:false,finance:false,communication:false,menu:false,tools:false};
@@ -3264,14 +3335,18 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.cambiarSegcion(item.id);
   }
 
-  /** Muestra únicamente los accesos del área seleccionada. */
+  /** Mantiene visible la opción activa incluso si pertenece a opciones avanzadas. */
   private activarGrupoDeSeccion(seccion:string):void{
     const grupo=this.menuPrincipal.find(g=>g.items.some(i=>i.id===seccion && !i.accion));
     Object.keys(this.navGroups).forEach(id=>this.navGroups[id]=false);
-    if(grupo)this.navGroups[grupo.id]=true;
+    if(grupo){
+      this.navGroups[grupo.id]=true;
+      this.masOpcionesMenu[grupo.id]=!this.opcionesFrecuentesMenu[grupo.id]?.includes(seccion);
+    }
   }
 
   toggleNavGroup(group:string):void{
+    if(!Object.prototype.hasOwnProperty.call(this.navGroups,group))return;
     if(this.sidebarCerrado){
       this.sidebarCerrado=false;
       try{localStorage.setItem('mallqui_admin_sidebar_closed','0');}catch{}
@@ -3279,6 +3354,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     const abrir=!this.navGroups[group];
     Object.keys(this.navGroups).forEach(id=>this.navGroups[id]=false);
     this.navGroups[group]=abrir;
+    if(abrir){
+      const activa=this.menuPrincipal.find(g=>g.id===group)?.items.some(i=>i.id===this.seccion);
+      this.masOpcionesMenu[group]=Boolean(activa && !this.opcionesFrecuentesMenu[group]?.includes(this.seccion));
+    }
   }
 
   toggleSidebar(): void {

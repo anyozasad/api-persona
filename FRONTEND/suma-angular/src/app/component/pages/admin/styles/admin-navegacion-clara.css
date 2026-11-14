@@ -214,3 +214,66 @@
     grid-template-columns:1fr!important;
   }
 }
+
+
+/* Menú progresivo: se muestran primero tareas reales y las demás aparecen al pedirlas. */
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-clear-submenu button:not(.mg-nav-show-more) {
+  min-height:55px!important;
+  height:auto!important;
+  align-items:center!important;
+  padding:8px 10px!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-nav-action-copy {
+  display:flex!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  gap:2px!important;
+  white-space:normal!important;
+  text-align:left!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-nav-action-copy strong {
+  display:block!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+  color:inherit!important;
+  white-space:normal!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-nav-action-copy small {
+  display:block!important;
+  width:100%!important;
+  font-size:10px!important;
+  font-weight:450!important;
+  line-height:1.4!important;
+  color:#a6b4ad!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .cf-nav-children button.active .mg-nav-action-copy small {
+  color:#d5f1a4!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-clear-submenu .mg-nav-show-more {
+  display:flex!important;
+  align-items:center!important;
+  gap:9px!important;
+  width:100%!important;
+  margin:3px 0 4px!important;
+  min-height:39px!important;
+  padding:8px 10px!important;
+  border:1px dashed rgba(201,244,90,.25)!important;
+  border-radius:9px!important;
+  background:rgba(201,244,90,.055)!important;
+  color:#d0d8cc!important;
+  font-size:11px!important;
+  font-weight:650!important;
+  cursor:pointer!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-clear-submenu .mg-nav-show-more:hover {
+  background:rgba(201,244,90,.12)!important;
+  color:#c9f45a!important;
+}
+.admin-shell.admin-home-redesign .mg-clear-navigation .mg-clear-submenu .mg-nav-show-more>span:first-child {
+  color:#c9f45a!important;
+}

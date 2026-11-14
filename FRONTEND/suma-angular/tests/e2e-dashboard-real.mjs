@@ -158,8 +158,8 @@ try {
 
     const grupos=menu.locator('.cf-nav-group-head');
     assert.equal(await grupos.count(),7,'El sistema tiene siete áreas del gimnasio.');
-    assert.equal(await menu.locator('.mg-direct-home').count(),2,
-      'Inicio contiene Panel principal y Matricular socio.');
+    assert.equal(await menu.locator('.mg-direct-home').count(),1,
+      'Inicio debe mostrar solo Panel principal; la matrícula está dentro de Socios.');
     assert.equal(await menu.getByText('Todas las funciones',{exact:true}).count(),0,
       'No debe existir el botón de catálogo genérico.');
 
@@ -176,6 +176,13 @@ try {
     await menu.getByRole('button',{name:'Productos y fotos'}).click();
     await page.locator('.productos-page').waitFor({timeout:20000});
     assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Productos');
+    const refresco=page.waitForResponse(r=>r.url().includes('/api/productos') && r.status()===200,{timeout:20000});
+    await page.getByRole('button',{name:'Actualizar módulo actual'}).click();
+    await refresco;
+    assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Productos',
+      'Actualizar no debe sacarme del módulo ni recargar solo el panel.');
+    assert.equal(await page.locator('.mg-module-shell-actions button').count(),1,
+      'No debe duplicarse el botón de actualizar dentro del módulo.');
 
     await page.screenshot({path:'evidencias-dashboard/13_Menu_simplificado.png',fullPage:true});
   });
@@ -184,13 +191,16 @@ try {
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
     await menu.getByRole('button',{name:'Abrir Administración'}).click();
-    const opciones=menu.locator('.cf-nav-children button');
-    const nombres=(await opciones.allTextContents()).map(x=>x.replace(/^[^A-Za-zÁÉÍÓÚÜÑa-záéíóúüñ]+/u,'').trim());
-    assert.deepEqual(nombres,[
-      'Reportes generales','Reporte de asistencia','Usuarios y permisos',
-      'Auditoría','Configuración','Respaldo y mantenimiento','Verificación del sistema'
-    ]);
-    await opciones.getByText('Configuración',{exact:true}).click();
+    const opciones=menu.locator('.cf-nav-children button:not(.mg-nav-show-more)');
+    assert.deepEqual(await opciones.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label'))),[
+      'Reportes generales','Usuarios y permisos','Configuración','Verificación del sistema'
+    ],'Solo aparecen las funciones más utilizadas.');
+    await menu.getByRole('button',{name:'Mostrar más opciones de Administración'}).click();
+    assert.deepEqual(await opciones.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label'))),[
+      'Reportes generales','Usuarios y permisos','Configuración','Verificación del sistema',
+      'Reporte de asistencia','Auditoría','Respaldo y mantenimiento'
+    ],'Las funciones restantes siguen accesibles sin duplicarse.');
+    await menu.getByRole('button',{name:'Configuración',exact:true}).click();
     const configuracion=page.locator('.config-page');
     await configuracion.waitFor({timeout:15000});
     await configuracion.getByRole('button',{name:'Usuarios y permisos'}).waitFor({timeout:25000});
@@ -205,6 +215,43 @@ try {
       path:'evidencias-dashboard/21_Configuracion_sin_modulos_duplicados.png',
       fullPage:true,animations:'disabled'
     });
+  });
+
+
+  await paso('Cada área abre funciones frecuentes y complementarias reales',async()=>{
+    const grupos=[
+      {area:'Socios y membresías',frecuente:'Socios',adicional:'Planes y tarifas',total:7},
+      {area:'Clases y entrenamiento',frecuente:'Reservas',adicional:'Seguimiento',total:7},
+      {area:'Productos e inventario',frecuente:'Productos y fotos',adicional:'Proveedores',total:7},
+      {area:'Ventas y caja',frecuente:'Registrar venta',adicional:'Comprobantes internos',total:7},
+      {area:'Atención al socio',frecuente:'Consultas y soporte',adicional:'Eventos',total:6},
+      {area:'Administración',frecuente:'Configuración',adicional:'Auditoría',total:7},
+      {area:'Organización interna',frecuente:'Calendario',adicional:'Tablas avanzadas',total:5}
+    ];
+    for(const grupo of grupos){
+      await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+      const menu=page.locator('.mg-clear-navigation');
+      await menu.getByRole('button',{name:'Abrir '+grupo.area}).click();
+      const elementos=menu.locator('.cf-nav-children button:not(.mg-nav-show-more)');
+      const cantidad=await elementos.count();
+      assert.ok(cantidad>=2 && cantidad<=4,
+        grupo.area+': demasiados botones abiertos inicialmente: '+cantidad);
+      assert.equal(await menu.getByRole('button',{name:grupo.adicional,exact:true}).count(),0,
+        'La acción secundaria debe estar plegada, no eliminada.');
+      await menu.getByRole('button',{name:grupo.frecuente,exact:true}).click();
+      assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio',
+        'La acción frecuente debe abrir un módulo.');
+      const desplegar=menu.getByRole('button',{name:'Mostrar más opciones de '+grupo.area});
+      await desplegar.click();
+      assert.equal(await elementos.count(),grupo.total,
+        'Las funciones complementarias siguen disponibles: '+grupo.area);
+      await menu.getByRole('button',{name:grupo.adicional,exact:true}).click();
+      assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio',
+        'La acción complementaria debe abrir su módulo.');
+      assert.equal(
+        await menu.getByRole('button',{name:grupo.adicional,exact:true}).getAttribute('aria-current'),
+        'page','El menú debe identificar el módulo abierto.');
+    }
   });
 
   await paso('Gastos no inventa cierres ni permite egresos sin caja verificada',async()=>{
