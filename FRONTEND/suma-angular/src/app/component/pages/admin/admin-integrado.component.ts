@@ -672,7 +672,7 @@ import { catchError, forkJoin, of } from 'rxjs';
             <article><span>Conexión</span><strong>MySQL</strong><small>{{revision.conexion}}</small></article>
             <article><span>Módulos revisados</span><strong>{{revision.total_modulos}}</strong><small>Revisión de estructura</small></article>
             <article><span>Estructura disponible</span><strong>{{revision.modulos_con_estructura}}</strong><small>Sin tablas faltantes</small></article>
-            <article><span>Problemas detectados</span><strong>{{revision.faltantes + revision.alertas.length}}</strong><small>Tablas faltantes y alertas</small></article>
+            <article><span>Semanas con observaciones</span><strong>{{revision.semanas_pendientes}}</strong><small>Requieren revisión o evidencia</small></article>
           </section>
           <p class="efsrt-notice">{{revision.nota}} Fecha de la consulta: {{revision.fecha_revision}}. Base: {{revision.base_datos}}.</p>
           <section class="efsrt-weekly" *ngIf="revision.semanas?.length" aria-label="Revisión de las 11 semanas EFSRT">
@@ -681,8 +681,16 @@ import { catchError, forkJoin, of } from 'rxjs';
                 <p>Los pendientes se calculan con datos reales. Tener un módulo visible no significa haber aprobado sus pruebas.</p></div>
               <strong>{{revision.semanas_pendientes}} con observaciones</strong>
             </div>
+            <label class="efsrt-week-selector">
+              <span>Seleccionar semana que deseas revisar</span>
+              <select [(ngModel)]="semanaEfsrtSeleccionada" aria-label="Seleccionar semana EFSRT">
+                <option *ngFor="let semana of revision.semanas" [value]="semana.semana">
+                  Semana {{semana.semana < 10 ? '0' + semana.semana : semana.semana}} — {{semana.titulo}}
+                </option>
+              </select>
+            </label>
             <div class="efsrt-weekly-grid">
-              <article *ngFor="let semana of revision.semanas" class="efsrt-week-card">
+              <article *ngIf="semanaEfsrtActual as semana" class="efsrt-week-card">
                 <div class="efsrt-week-top">
                   <b>Semana {{semana.semana < 10 ? '0' + semana.semana : semana.semana}}</b>
                   <span [class.pending]="semana.estado==='pendiente'">{{
@@ -708,23 +716,26 @@ import { catchError, forkJoin, of } from 'rxjs';
           </section>
           <div class="efsrt-table-wrap">
             <table class="efsrt-table">
-              <thead><tr><th>Área del proyecto</th><th>Estructura</th><th>Registros</th><th>Faltantes</th><th>Acción</th></tr></thead>
+              <thead><tr><th>Área del proyecto</th><th>Estructura</th><th>Registros</th><th>Faltantes</th></tr></thead>
               <tbody>
                 <tr *ngFor="let modulo of revision.modulos">
-                  <td><b>{{modulo.nombre}}</b></td>
+                  <td><button type="button" class="efsrt-module-link"
+                       (click)="cambiarSegcion(modulo.destino)"
+                       [attr.aria-label]="'Abrir ' + modulo.nombre"
+                       [title]="'Ir al módulo ' + modulo.nombre">{{modulo.nombre}}</button></td>
                   <td><span class="efsrt-status" [class.missing]="modulo.estado!=='estructura_disponible'">
                     {{modulo.estado==='estructura_disponible' ? 'Disponible' : 'Incompleta'}}
                   </span></td>
                   <td>{{modulo.registros===null ? 'Sin tabla' : modulo.registros}}</td>
                   <td>{{modulo.faltantes.length ? modulo.faltantes.join(', ') : 'Ninguna'}}</td>
-                  <td><button type="button" (click)="cambiarSegcion(modulo.destino)">Abrir módulo</button></td>
+                  
                 </tr>
               </tbody>
             </table>
           </div>
           <section class="efsrt-issues">
             <h3>Coherencia de la base de datos</h3>
-            <p *ngIf="!revision.alertas.length" class="efsrt-noproblems">No se detectaron duplicados, pagos sin membresía ni stock negativo en los controles aplicados.</p>
+            <p *ngIf="!revision.alertas.length" class="efsrt-noproblems">No se detectaron anomalías en los controles de integridad aplicados. Revisa también el funcionamiento de los módulos con datos reales.</p>
             <article *ngFor="let alerta of revision.alertas">
               <p><b>{{alerta.cantidad}}</b> · {{alerta.mensaje}}</p>
               <button type="button" (click)="cambiarSegcion(alerta.destino)">Revisar datos ›</button>
@@ -2907,6 +2918,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   comprobanteDatos:any = null;
   backupRestaurarArchivo:File|null = null;
   verificacionEfsrt:any = null;
+  semanaEfsrtSeleccionada = 1;
+  get semanaEfsrtActual(): any {
+    return this.verificacionEfsrt?.semanas?.find(
+      (semana:any)=>Number(semana.semana)===Number(this.semanaEfsrtSeleccionada)
+    ) || this.verificacionEfsrt?.semanas?.[0] || null;
+  }
   verificacionEfsrtCargando = false;
   verificacionEfsrtError = '';
   private fotosDemoInicioIntentadas = false;
@@ -3382,6 +3399,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   get estadoModuloActual():string{
+    if(this.seccion==='verificacion-efsrt'){
+      if(this.verificacionEfsrtCargando)return 'Comprobando requisitos';
+      if(this.verificacionEfsrtError)return 'Conexión sin verificar';
+      if(this.verificacionEfsrt?.semanas_pendientes>0)
+        return this.verificacionEfsrt.semanas_pendientes+' semanas con observaciones';
+      return this.verificacionEfsrt
+        ? 'Validación de evidencias pendiente'
+        : 'Revisión pendiente';
+    }
     if(this.seccion==='configuracion')return this.estadoConfiguracionTexto;
     if(['caja','gastos'].includes(this.seccion))return this.cajaCargando?'Consultando caja':this.cajaError?'Caja sin verificar':this.caja?.caja_abierta?'Caja abierta':'Caja sin apertura activa';
     if(['inventario','productos','kardex'].includes(this.seccion)) return (this.dashboard?.inventario?.productos_stock_bajo||0)+' alertas de stock';
@@ -4754,6 +4780,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       next:(resultado:any)=>{
         this.verificacionEfsrtCargando=false;
         this.verificacionEfsrt=resultado;
+        // Prioriza el primer requisito realmente pendiente, sin marcarlo aprobado.
+        const semanas=Array.isArray(resultado?.semanas) ? resultado.semanas : [];
+        this.semanaEfsrtSeleccionada=Number(
+          semanas.find((semana:any)=>semana.estado==='pendiente')?.semana
+            ?? semanas[0]?.semana ?? 1
+        );
       },
       error:(e:any)=>{
         this.verificacionEfsrtCargando=false;

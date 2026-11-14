@@ -14,7 +14,7 @@ El botón genérico **“Todas las funciones” fue retirado**. Los módulos se 
 6. Administración
 7. Organización interna
 
-Los seis accesos operativos de Inicio (matricular, reservas, asistencia, rutinas, productos y pagos) siguen presentes. El menú no altera `DB_DATABASE`, los permisos de Laravel ni las fotografías.
+Inicio muestra cuatro indicadores y tres gráficos con datos de MySQL, sin seis botones repetidos. Cada una de las siete áreas expone las funciones más utilizadas y permite abrir las complementarias con «Más opciones». El menú no altera `DB_DATABASE`, los permisos de Laravel ni las fotografías.
 
 ## Requisitos y cómo comprobarlos
 
@@ -57,3 +57,10 @@ La validación final exige abrir la instalación con **la base de datos donde es
 7. **Administración**: consultar reportes, permisos, auditoría, diagnóstico y respaldo.
 
 No ejecutar comandos destructivos sobre la base existente ni crear registros ficticios para simular el inventario del negocio.
+
+## Revisión técnica adicional de noviembre de 2026
+
+- La revisión EFSRT conserva las 55 actividades de las once semanas y muestra una semana seleccionada a la vez.
+- Se detectan reservas/asistencias/rutinas sin socio relacionado, reservas sin clase, membresías sin socio, productos con nombre vacío o precio negativo y pagos con importe no válido, siempre que existan las columnas pertinentes.
+- La portada se prueba en navegador con fotografías externas bloqueadas para comprobar los recursos locales del proyecto.
+- Las actividades futuras, la boleta electrónica SUNAT, la base MySQL de cada computadora y las firmas del supervisor requieren evidencia real; las pruebas en CI no sustituyen estos requisitos.

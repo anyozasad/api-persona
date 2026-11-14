@@ -144,3 +144,83 @@
   display:block!important;margin-top:3px!important;
   color:#667865!important;font-size:10px!important;
 }
+
+
+/* Revisión de las 11 semanas: una actividad seleccionada a la vez, sin 11 botones. */
+.admin-home-redesign .efsrt-weekly .efsrt-week-selector {
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  margin:0 0 14px;
+  max-width:620px;
+  color:#243b2c;
+  font-size:12px;
+  font-weight:700;
+}
+.admin-home-redesign .efsrt-week-selector select {
+  width:100%;
+  min-height:44px;
+  padding:10px 13px;
+  font:inherit;
+  background:#fff;
+  color:#263425;
+  border:1px solid #c7d1c4;
+  border-radius:9px;
+  cursor:pointer;
+}
+.admin-home-redesign .efsrt-week-selector select:focus-visible {
+  outline:3px solid #b6e95c;
+  outline-offset:2px;
+}
+.admin-home-redesign .efsrt-weekly .efsrt-weekly-grid {
+  grid-template-columns:minmax(0,1fr);
+}
+.admin-home-redesign .efsrt-weekly .efsrt-week-card {
+  width:100%;
+  max-width:none;
+  border-color:#dce6d7;
+  padding:18px;
+}
+.admin-home-redesign .efsrt-weekly .efsrt-week-card button {
+  color:#294d21;
+  border-color:#c7dea9;
+  background:#f2f9e7;
+}
+.admin-home-redesign.mg-mantis-dark .efsrt-week-selector {
+  color:#f1f7ed;
+}
+.admin-home-redesign.mg-mantis-dark .efsrt-week-selector select {
+  color:#f2f6f0;
+  background:#203029;
+  border-color:#4c5d4e;
+}
+
+
+/* Los nombres de los módulos son los accesos: no repetir diez botones "Abrir módulo". */
+.admin-home-redesign .efsrt-table button.efsrt-module-link {
+  display:inline;
+  max-width:100%;
+  padding:2px 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:#295123;
+  white-space:normal;
+  text-align:left;
+  font-size:12px;
+  font-weight:730;
+  line-height:1.35;
+  cursor:pointer;
+}
+.admin-home-redesign .efsrt-table button.efsrt-module-link:hover {
+  color:#517a24;
+  text-decoration:underline;
+  border:0;
+}
+.admin-home-redesign .efsrt-table button.efsrt-module-link:focus-visible {
+  outline:3px solid #b6e95c;
+  outline-offset:2px;
+}
+.admin-home-redesign.mg-mantis-dark .efsrt-table button.efsrt-module-link {
+  color:#d0f39d;
+}

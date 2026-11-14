@@ -96,21 +96,68 @@ try {
       'No están todas las tablas necesarias: '+JSON.stringify(data.faltantes));
   });
 
+  await paso('Semanas 08 y 10: portada usa imágenes locales aun bloqueando fotos externas',async()=>{
+    const solicitudesExternas=[];
+    await page.route('**/*',async ruta=>{
+      const url=new URL(ruta.request().url());
+      if(!['localhost','127.0.0.1'].includes(url.hostname)
+        && /\.(?:png|jpe?g|webp|gif|svg)$/i.test(url.pathname)) {
+        solicitudesExternas.push(url.href);
+        return ruta.abort();
+      }
+      return ruta.continue();
+    });
+    try {
+      await page.goto(base+'/',{waitUntil:'domcontentloaded'});
+      const fotos=page.locator('.mq-hero-bg');
+      await fotos.first().waitFor({timeout:20000});
+      assert.equal(await fotos.count(),3,'La portada debe conservar las tres fotografías del gimnasio.');
+      const rutas=await fotos.evaluateAll(imagenes=>imagenes.map(img=>img.getAttribute('src')||''));
+      assert.ok(rutas.every(src=>src.startsWith('/assets/mallqui/')),
+        'Las imágenes principales deben ser recursos locales, no URLs externas.');
+      await fotos.first().evaluate(imagen=>new Promise((resolve,reject)=>{
+        if(imagen.complete) return imagen.naturalWidth>0
+          ? resolve(true):reject(new Error('Foto de portada local dañada o ausente'));
+        imagen.addEventListener('load',()=>resolve(true),{once:true});
+        imagen.addEventListener('error',()=>reject(new Error('No cargó la portada local')),{once:true});
+      }));
+      assert.equal(solicitudesExternas.length,0,
+        'La portada no debe solicitar imágenes alojadas en Internet.');
+    } finally {
+      await page.unroute('**/*');
+    }
+  });
+
   await paso('EFSRT lista exactamente once semanas y sus pendientes reales',async()=>{
     await page.goto(base+'/verificacion-efsrt',{waitUntil:'domcontentloaded'});
     const semanas=page.locator('.efsrt-week-card');
     await semanas.first().waitFor({timeout:25000});
-    assert.equal(await semanas.count(),11,'La comprobación debe incluir las 11 semanas del documento.');
-    assert.equal(await page.locator('.efsrt-week-activities').count(),11,
-      'Cada semana necesita desglose de las cinco actividades de la bitácora.');
-    const semanaCinco=semanas.filter({hasText:'Semana 05'});
-    await semanaCinco.locator('.efsrt-week-activities summary').click();
-    assert.equal(await semanaCinco.locator('.efsrt-week-activities li').count(),5,
-      'La semana 05 debe comprobar sus cinco actividades, incluida la foto del producto.');
-    assert.match(await semanaCinco.locator('.efsrt-week-activities').innerText(),/Imagen de producto/);
-    assert.equal(await semanas.filter({hasText:'Semana 05'}).count(),1);
-    assert.equal(await semanas.filter({hasText:'Semana 10'}).count(),1);
-    assert.equal(await semanas.filter({hasText:'Semana 11'}).count(),1);
+    const selector=page.getByRole('combobox',{name:'Seleccionar semana EFSRT'});
+    assert.equal(await selector.locator('option').count(),11,
+      'Las once semanas permanecen disponibles sin once tarjetas repetidas.');
+    assert.equal(await semanas.count(),1,
+      'El administrador debe ver solamente la semana que está revisando.');
+    for(const numero of [5,9,10,11]){
+      await selector.selectOption(String(numero));
+      const semana=semanas.first();
+      assert.match(await semana.locator('.efsrt-week-top').innerText(),
+        new RegExp('Semana '+String(numero).padStart(2,'0')));
+      await semana.locator('.efsrt-week-activities summary').click();
+      assert.equal(await semana.locator('.efsrt-week-activities li').count(),5,
+        'Semana '+numero+' debe conservar sus cinco actividades EFSRT.');
+      if(numero===5){
+        assert.match(await semana.locator('.efsrt-week-activities').innerText(),/Imagen de producto/);
+      }
+      if(numero===10){
+        assert.match(await semana.innerText(),/SUNAT/);
+      }
+    }
+    assert.equal(await page.locator('.efsrt-table button.efsrt-module-link').count(),10,
+      'Las diez áreas deben seguir accesibles por su nombre.');
+    assert.equal(await page.locator('.efsrt-table button').filter({hasText:'Abrir módulo'}).count(),0,
+      'La revisión no debe saturar la pantalla con botones genéricos.');
+    assert.match(await page.locator('.efsrt-summary').innerText(),/Semanas con observaciones/,
+      'El resumen debe indicar semanas pendientes, no afirmar que no existen problemas.');
     const revision=await page.locator('.efsrt-weekly').innerText();
     assert.match(revision,/Pendiente|Verificar en equipo/);
     const [archivoDescargado]=await Promise.all([
