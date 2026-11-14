@@ -100,17 +100,26 @@ try {
     await page.goto(base+'/verificacion-efsrt',{waitUntil:'domcontentloaded'});
     const semanas=page.locator('.efsrt-week-card');
     await semanas.first().waitFor({timeout:25000});
-    assert.equal(await semanas.count(),11,'La comprobación debe incluir las 11 semanas del documento.');
-    assert.equal(await page.locator('.efsrt-week-activities').count(),11,
-      'Cada semana necesita desglose de las cinco actividades de la bitácora.');
-    const semanaCinco=semanas.filter({hasText:'Semana 05'});
-    await semanaCinco.locator('.efsrt-week-activities summary').click();
-    assert.equal(await semanaCinco.locator('.efsrt-week-activities li').count(),5,
-      'La semana 05 debe comprobar sus cinco actividades, incluida la foto del producto.');
-    assert.match(await semanaCinco.locator('.efsrt-week-activities').innerText(),/Imagen de producto/);
-    assert.equal(await semanas.filter({hasText:'Semana 05'}).count(),1);
-    assert.equal(await semanas.filter({hasText:'Semana 10'}).count(),1);
-    assert.equal(await semanas.filter({hasText:'Semana 11'}).count(),1);
+    const selector=page.getByRole('combobox',{name:'Seleccionar semana EFSRT'});
+    assert.equal(await selector.locator('option').count(),11,
+      'Las once semanas permanecen disponibles sin once tarjetas repetidas.');
+    assert.equal(await semanas.count(),1,
+      'El administrador debe ver solamente la semana que está revisando.');
+    for(const numero of [5,9,10,11]){
+      await selector.selectOption(String(numero));
+      const semana=semanas.first();
+      assert.match(await semana.locator('.efsrt-week-top').innerText(),
+        new RegExp('Semana '+String(numero).padStart(2,'0')));
+      await semana.locator('.efsrt-week-activities summary').click();
+      assert.equal(await semana.locator('.efsrt-week-activities li').count(),5,
+        'Semana '+numero+' debe conservar sus cinco actividades EFSRT.');
+      if(numero===5){
+        assert.match(await semana.locator('.efsrt-week-activities').innerText(),/Imagen de producto/);
+      }
+      if(numero===10){
+        assert.match(await semana.innerText(),/SUNAT/);
+      }
+    }
     const revision=await page.locator('.efsrt-weekly').innerText();
     assert.match(revision,/Pendiente|Verificar en equipo/);
     const [archivoDescargado]=await Promise.all([
