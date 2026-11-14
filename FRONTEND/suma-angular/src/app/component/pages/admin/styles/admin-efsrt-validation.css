@@ -194,3 +194,33 @@
   background:#203029;
   border-color:#4c5d4e;
 }
+
+
+/* Los nombres de los módulos son los accesos: no repetir diez botones "Abrir módulo". */
+.admin-home-redesign .efsrt-table button.efsrt-module-link {
+  display:inline;
+  max-width:100%;
+  padding:2px 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:#295123;
+  white-space:normal;
+  text-align:left;
+  font-size:12px;
+  font-weight:730;
+  line-height:1.35;
+  cursor:pointer;
+}
+.admin-home-redesign .efsrt-table button.efsrt-module-link:hover {
+  color:#517a24;
+  text-decoration:underline;
+  border:0;
+}
+.admin-home-redesign .efsrt-table button.efsrt-module-link:focus-visible {
+  outline:3px solid #b6e95c;
+  outline-offset:2px;
+}
+.admin-home-redesign.mg-mantis-dark .efsrt-table button.efsrt-module-link {
+  color:#d0f39d;
+}
