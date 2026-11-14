@@ -96,6 +96,38 @@ try {
       'No están todas las tablas necesarias: '+JSON.stringify(data.faltantes));
   });
 
+  await paso('Semanas 08 y 10: portada usa imágenes locales aun bloqueando fotos externas',async()=>{
+    const solicitudesExternas=[];
+    await page.route('**/*',async ruta=>{
+      const url=new URL(ruta.request().url());
+      if(!['localhost','127.0.0.1'].includes(url.hostname)
+        && /\.(?:png|jpe?g|webp|gif|svg)$/i.test(url.pathname)) {
+        solicitudesExternas.push(url.href);
+        return ruta.abort();
+      }
+      return ruta.continue();
+    });
+    try {
+      await page.goto(base+'/',{waitUntil:'domcontentloaded'});
+      const fotos=page.locator('.mq-hero-bg');
+      await fotos.first().waitFor({timeout:20000});
+      assert.equal(await fotos.count(),3,'La portada debe conservar las tres fotografías del gimnasio.');
+      const rutas=await fotos.evaluateAll(imagenes=>imagenes.map(img=>img.getAttribute('src')||''));
+      assert.ok(rutas.every(src=>src.startsWith('/assets/mallqui/')),
+        'Las imágenes principales deben ser recursos locales, no URLs externas.');
+      await fotos.first().evaluate(imagen=>new Promise((resolve,reject)=>{
+        if(imagen.complete) return imagen.naturalWidth>0
+          ? resolve(true):reject(new Error('Foto de portada local dañada o ausente'));
+        imagen.addEventListener('load',()=>resolve(true),{once:true});
+        imagen.addEventListener('error',()=>reject(new Error('No cargó la portada local')),{once:true});
+      }));
+      assert.equal(solicitudesExternas.length,0,
+        'La portada no debe solicitar imágenes alojadas en Internet.');
+    } finally {
+      await page.unroute('**/*');
+    }
+  });
+
   await paso('EFSRT lista exactamente once semanas y sus pendientes reales',async()=>{
     await page.goto(base+'/verificacion-efsrt',{waitUntil:'domcontentloaded'});
     const semanas=page.locator('.efsrt-week-card');
