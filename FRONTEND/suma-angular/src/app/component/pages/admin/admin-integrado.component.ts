@@ -735,7 +735,7 @@ import { catchError, forkJoin, of } from 'rxjs';
           </div>
           <section class="efsrt-issues">
             <h3>Coherencia de la base de datos</h3>
-            <p *ngIf="!revision.alertas.length" class="efsrt-noproblems">No se detectaron duplicados, pagos sin membresía ni stock negativo en los controles aplicados.</p>
+            <p *ngIf="!revision.alertas.length" class="efsrt-noproblems">No se detectaron anomalías en los controles de integridad aplicados. Revisa también el funcionamiento de los módulos con datos reales.</p>
             <article *ngFor="let alerta of revision.alertas">
               <p><b>{{alerta.cantidad}}</b> · {{alerta.mensaje}}</p>
               <button type="button" (click)="cambiarSegcion(alerta.destino)">Revisar datos ›</button>
