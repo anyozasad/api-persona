@@ -118,6 +118,56 @@ class VerificacionEfsrtController extends Controller
                 }
             }
 
+            // Semana 09/11: detectar registros huérfanos que no puede revelar
+            // una simple comprobación de que existen las tablas.
+            // Solo se consulta cuando ambas tablas y columnas están presentes.
+            foreach ([
+                ['reservas','id_cliente','clientes','id_cliente',
+                    'reservas_sin_socio','Hay reservas vinculadas a socios inexistentes.','reservas'],
+                ['reservas','id_clase','clases','id_clase',
+                    'reservas_sin_clase','Hay reservas vinculadas a clases inexistentes.','reservas'],
+                ['asistencias','id_cliente','clientes','id_cliente',
+                    'asistencias_sin_socio','Hay asistencias sin un socio válido.','asistencias'],
+                ['rutinas','id_cliente','clientes','id_cliente',
+                    'rutinas_sin_socio','Hay rutinas asignadas a socios inexistentes.','rutinas'],
+                ['cliente_membresia','id_cliente','clientes','id_cliente',
+                    'membresias_sin_socio','Hay membresías asignadas a socios inexistentes.','membresias'],
+            ] as [$origen,$colOrigen,$destino,$colDestino,$tipo,$mensaje,$modulo]) {
+                $cantidad = $this->contarSinReferencia($origen,$colOrigen,$destino,$colDestino);
+                if ($cantidad !== null && $cantidad > 0) {
+                    $alertas[] = ['tipo'=>$tipo,'cantidad'=>$cantidad,
+                        'mensaje'=>$mensaje,'destino'=>$modulo];
+                }
+            }
+
+            // Detectar campos obligatorios en blanco y cantidades financieras
+            // inválidas. Un stock 0 es válido; un precio de venta negativo no.
+            if ($this->columnas('productos',['nombre_producto'])) {
+                $sinNombre = DB::table('productos')
+                    ->where(function ($consulta) {
+                        $consulta->whereNull('nombre_producto')
+                            ->orWhere('nombre_producto','');
+                    })->count();
+                if ($sinNombre > 0) {
+                    $alertas[] = ['tipo'=>'productos_sin_nombre','cantidad'=>$sinNombre,
+                        'mensaje'=>'Hay productos sin nombre registrado.','destino'=>'productos'];
+                }
+            }
+            if ($this->columnas('productos',['precio_venta'])) {
+                $precioInvalido = DB::table('productos')->where('precio_venta','<',0)->count();
+                if ($precioInvalido > 0) {
+                    $alertas[] = ['tipo'=>'productos_precio_invalido','cantidad'=>$precioInvalido,
+                        'mensaje'=>'Hay productos con precio de venta negativo.','destino'=>'productos'];
+                }
+            }
+            if ($this->columnas('pagos_membresia',['monto'])) {
+                $montoInvalido = DB::table('pagos_membresia')->where('monto','<=',0)->count();
+                if ($montoInvalido > 0) {
+                    $alertas[] = ['tipo'=>'pagos_monto_invalido','cantidad'=>$montoInvalido,
+                        'mensaje'=>'Hay pagos con importes cero o negativos.','destino'=>'pagos'];
+                }
+            }
+
             // Una instalación con productos llamados "Producto Prueba N"
             // todavía muestra datos de demostración, aunque tenga fotos.
             // Advertirlo sin cambiar automáticamente precios ni historiales.
@@ -302,17 +352,19 @@ class VerificacionEfsrtController extends Controller
                 }
             }
 
-            if ($numero === 5) {
+            if (in_array($numero,[5,6,9,11],true)) {
+                $tipos = match ($numero) {
+                    5 => ['productos_prueba','productos_sin_nombre','productos_precio_invalido'],
+                    6 => ['asistencias_sin_socio','rutinas_sin_socio'],
+                    9,11 => [
+                        'duplicados_clientes','reservas_duplicadas','pagos_huerfanos',
+                        'stock_negativo','reservas_sin_socio','reservas_sin_clase',
+                        'asistencias_sin_socio','rutinas_sin_socio','membresias_sin_socio',
+                        'productos_sin_nombre','productos_precio_invalido','pagos_monto_invalido'
+                    ],
+                };
                 foreach ($alertas as $alerta) {
-                    if ($alerta['tipo'] === 'productos_prueba') {
-                        $observaciones[] = $alerta['mensaje'];
-                    }
-                }
-            }
-
-            if ($numero === 9) {
-                foreach ($alertas as $alerta) {
-                    if (in_array($alerta['tipo'], ['duplicados_clientes','reservas_duplicadas','pagos_huerfanos','stock_negativo'], true)) {
+                    if (in_array($alerta['tipo'],$tipos,true)) {
                         $observaciones[] = $alerta['mensaje'];
                     }
                 }
@@ -351,6 +403,24 @@ class VerificacionEfsrtController extends Controller
             ];
         }
         return $resultado;
+    }
+
+    /**
+     * Cuenta registros que señalan a una entidad que ya no existe.
+     * Nunca escribe en la BD ni supone que una tabla heredada tiene el mismo esquema.
+     */
+    private function contarSinReferencia(
+        string $tablaOrigen,string $columnaOrigen,string $tablaDestino,string $columnaDestino
+    ): ?int {
+        if (!$this->columnas($tablaOrigen,[$columnaOrigen])
+            || !$this->columnas($tablaDestino,[$columnaDestino])) {
+            return null;
+        }
+        return (int) DB::table($tablaOrigen.' as origen')
+            ->leftJoin($tablaDestino.' as destino',
+                'origen.'.$columnaOrigen,'=','destino.'.$columnaDestino)
+            ->whereNull('destino.'.$columnaDestino)
+            ->count();
     }
 
     /** Antes de consultar, comprobar tablas y columnas de esquemas existentes. */
