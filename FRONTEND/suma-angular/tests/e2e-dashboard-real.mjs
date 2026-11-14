@@ -152,6 +152,12 @@ try {
         assert.match(await semana.innerText(),/SUNAT/);
       }
     }
+    assert.equal(await page.locator('.efsrt-table button.efsrt-module-link').count(),10,
+      'Las diez áreas deben seguir accesibles por su nombre.');
+    assert.equal(await page.locator('.efsrt-table button').filter({hasText:'Abrir módulo'}).count(),0,
+      'La revisión no debe saturar la pantalla con botones genéricos.');
+    assert.match(await page.locator('.efsrt-summary').innerText(),/Semanas con observaciones/,
+      'El resumen debe indicar semanas pendientes, no afirmar que no existen problemas.');
     const revision=await page.locator('.efsrt-weekly').innerText();
     assert.match(revision,/Pendiente|Verificar en equipo/);
     const [archivoDescargado]=await Promise.all([
