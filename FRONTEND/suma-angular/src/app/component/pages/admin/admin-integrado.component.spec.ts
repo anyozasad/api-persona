@@ -19,7 +19,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       'estadoOperativo', 'dashboard', 'clientes', 'membresiasDisponibles',
       'clienteMembresias', 'pagos', 'productos', 'reservas', 'rutinas',
       'asistencias', 'entrenadores', 'clases', 'cajaActual', 'historialCaja', 'movimientoCaja',
-      'configuracion', 'guardarConfiguracion', 'estadoSistema',
+      'configuracion', 'guardarConfiguracion', 'estadoSistema', 'restaurarGym',
       'registrarAccesoCodigo', 'cambiarEstadoReserva', 'confirmarPagoPendiente',
       'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin', 'comprobantePago', 'verificacionEfsrt', 'completarFotosIniciales'
     ]);
@@ -229,6 +229,21 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     component.cambiarSegcion('clientes');
     expect(component.navGroups['members']).toBeTrue();
     expect(component.masOpcionesMenu['members']).toBeFalse();
+  });
+
+  it('después de restaurar MySQL vuelve a consultar socios, fotos, inventario y pagos', () => {
+    const archivo=new File(['-- MySQL dump 10.13'],'copia_mallqui.sql',{type:'text/plain'});
+    spyOn(window,'confirm').and.returnValue(true);
+    spyOn(component,'actualizarDashboardCompleto').and.stub();
+    spyOn(component as any,'ok').and.stub();
+    api.restaurarGym.and.returnValue(of({mensaje:'Backup restaurado'}));
+    component.backupRestaurarArchivo=archivo;
+
+    component.restaurarBackupSistema();
+
+    expect(api.restaurarGym).toHaveBeenCalledOnceWith(archivo);
+    expect(component.actualizarDashboardCompleto).toHaveBeenCalledOnceWith();
+    expect(component.backupRestaurarArchivo).toBeNull();
   });
 
   it('no da por actualizada una pantalla antes de recibir respuesta real del servidor', () => {
