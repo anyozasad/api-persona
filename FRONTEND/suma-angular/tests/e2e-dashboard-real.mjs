@@ -637,6 +637,34 @@ try {
     });
   });
 
+  await paso('Semana 11: respaldo SQL real conserva el producto y su fotografía',async()=>{
+    await page.goto(base+'/mantenimiento-sistema',{waitUntil:'domcontentloaded'});
+    const guardar=page.getByRole('button',{name:'Descargar backup'});
+    await guardar.waitFor({timeout:20000});
+    const [descarga]=await Promise.all([
+      page.waitForEvent('download',{timeout:60000}),
+      guardar.click()
+    ]);
+    assert.match(descarga.suggestedFilename(),/backup-mallqui-gym-.*\.sql$/i);
+    const ruta=await descarga.path();
+    assert.ok(ruta,'El servidor debe entregar un archivo SQL real.');
+    const sql=await fs.readFile(ruta,'utf8');
+    assert.ok(sql.length>100,'El respaldo no debe estar vacío.');
+    assert.match(sql,/INSERT INTO `productos`/i,'Faltan productos en el respaldo.');
+    assert.ok(sql.includes(codigoProductoFoto),'El producto recién creado no quedó en el respaldo.');
+    assert.match(sql,/data:image\/(?:png|jpeg|webp);base64,/i,
+      'El respaldo debe conservar también la fotografía guardada en MySQL.');
+    await page.goto(base+'/verificacion-efsrt',{waitUntil:'domcontentloaded'});
+    await page.getByRole('combobox',{name:'Seleccionar semana EFSRT'}).selectOption('11');
+    assert.doesNotMatch(await page.locator('.efsrt-week-card').innerText(),
+      /No existe todavía un respaldo SQL verificado/i,
+      'El diagnóstico debe reconocer el respaldo recién generado.');
+    await page.screenshot({
+      path:'evidencias-dashboard/32_Respaldo_SQL_y_revision_semana11.png',
+      fullPage:true,animations:'disabled'
+    });
+  });
+
   const movil=await browser.newContext({viewport:{width:390,height:844},locale:'es-PE'});
   const mobile=await movil.newPage();
   // Reutilizar solo la sesión admin de prueba.
