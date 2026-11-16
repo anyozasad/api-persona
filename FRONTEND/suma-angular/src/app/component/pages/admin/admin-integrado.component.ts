@@ -659,10 +659,7 @@ import { catchError, forkJoin, of } from 'rxjs';
               (click)="descargarInformeEfsrt()" [disabled]="verificacionEfsrtCargando || !verificacionEfsrt?.semanas?.length">
               Descargar revisión CSV
             </button>
-            <button type="button" class="admin-primary"
-              (click)="cargarVerificacionEfsrt()" [disabled]="verificacionEfsrtCargando">
-              {{verificacionEfsrtCargando ? 'Comprobando...' : '↻ Comprobar de nuevo'}}
-            </button>
+
           </div>
         </section>
         <p class="efsrt-notice warn" *ngIf="verificacionEfsrtError">{{verificacionEfsrtError}}</p>
@@ -776,7 +773,7 @@ import { catchError, forkJoin, of } from 'rxjs';
               <h2>Estado general de cada socio</h2>
               <p>Consulta membresía, asistencias y rutinas usando los datos reales registrados en el sistema.</p>
             </div>
-            <button type="button" (click)="cargarSeguimiento()">↻ Actualizar</button>
+
           </header>
 
           <section class="mg-follow-kpis">
@@ -888,9 +885,7 @@ import { catchError, forkJoin, of } from 'rxjs';
                 <option value="Inactivo">Solo inactivos</option>
               </select>
 
-              <button type="button" class="clients-v3-refresh" (click)="cargarClientes()">
-                ↻ Actualizar
-              </button>
+
             </div>
 
             <div class="clients-v3-table-wrap">
@@ -1534,7 +1529,7 @@ import { catchError, forkJoin, of } from 'rxjs';
         <section class="admin-list-card">
           <div class="management-heading">
             <div><h2>Historial de ventas</h2><p>{{ventas.length}} operaciones registradas.</p></div>
-            <button class="admin-secondary" type="button" (click)="cargarVentas()">↻ Actualizar</button>
+
           </div>
           <div class="table-wrap">
             <table class="management-table">
@@ -1734,7 +1729,7 @@ import { catchError, forkJoin, of } from 'rxjs';
           <article class="admin-list-card wide-card">
             <div class="management-heading">
               <div><h2>Kardex de inventario</h2><p>{{kardex.length}} movimientos registrados. Cada movimiento conserva su origen y saldo.</p></div>
-              <button type="button" class="admin-secondary" (click)="cargarKardex()">↻ Actualizar</button>
+
             </div>
             <div class="table-wrap">
               <table class="management-table">
@@ -1764,7 +1759,7 @@ import { catchError, forkJoin, of } from 'rxjs';
           <article><span>◷</span><p>Hasta</p><h2>{{reporteAsistencias?.hasta || '-'}}</h2></article>
         </section>
         <section class="admin-list-card">
-          <div class="management-heading"><div><h2>Asistencias por día</h2><p>Reporte calculado directamente desde MySQL.</p></div><button type="button" class="admin-secondary" (click)="cargarReportes()">↻ Actualizar</button></div>
+          <div class="management-heading"><div><h2>Asistencias por día</h2><p>Reporte calculado directamente desde MySQL.</p></div></div>
           <div class="table-wrap">
             <table class="management-table">
               <thead><tr><th>Fecha</th><th>Total de asistencias</th></tr></thead>
@@ -2041,7 +2036,6 @@ import { catchError, forkJoin, of } from 'rxjs';
           <div class="management-heading">
             <div><h2>Datos reales para reportes</h2><p>Información calculada por Laravel desde MySQL.</p></div>
             <div class="report-actions">
-              <button class="admin-secondary" type="button" (click)="cargarReportes()">Actualizar reporte</button>
               <button class="admin-primary" type="button" (click)="exportarReporteCsv()">Exportar CSV</button>
             </div>
           </div>
@@ -2354,7 +2348,7 @@ import { catchError, forkJoin, of } from 'rxjs';
               <h2>Opiniones recibidas desde el portal</h2>
               <p>Lo que el cliente envía desde “Tu opinión” aparece aquí. Al marcarlo como revisado, el cliente recibe un aviso.</p>
             </div>
-            <button type="button" class="admin-secondary" (click)="cargarOpiniones()">↻ Actualizar</button>
+
           </header>
 
           <section class="feedback-admin-kpis">
@@ -4434,8 +4428,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   actualizarSegcionActual(silencioso = false): void {
     if (this.actualizandoDatos) return;
 
-    // Inicio necesita validar dashboard + API + esquema + módulos relacionados.
-    // Así el auto-refresco no conserva un estado ACTIVO obsoleto.
+    // La barra superior es el único control de refresco. Nunca afirmar que
+    // se actualizó solo porque transcurrieron 900 ms.
     if (this.seccion === 'dashboard') {
       this.actualizarDashboardCompleto();
       return;
@@ -4445,16 +4439,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       this.actualizandoDatos = true;
       this.error = '';
     }
-
-    this.cargarDashboard();
     this.cargarSegcion(this.seccion);
-
-    if (!silencioso) {
-      setTimeout(() => {
-        this.actualizandoDatos = false;
-        this.ultimaActualizacion = new Date().toLocaleTimeString('es-PE');
-      }, 900);
-    }
+    this.cargarDashboard(silencioso ? undefined : () => {
+      this.actualizandoDatos = false;
+    });
   }
 
   private cargarSegcion(id: string): void {
@@ -4795,7 +4783,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     });
   }
 
-  cargarDashboard(){
+  cargarDashboard(alFinalizar?: () => void):void {
     if(!this.dashboard)this.dashboardCargando=true;
     this.api.dashboard().subscribe({
       next:r=>{
@@ -4804,12 +4792,14 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.dashboardError='';
         this.ultimaActualizacionTs=Date.now();
         this.ultimaActualizacion=new Date(this.ultimaActualizacionTs).toLocaleTimeString('es-PE');
+        alFinalizar?.();
       },
       error:e=>{
         this.dashboardCargando=false;
         this.dashboardError=e?.error?.mensaje ?? e?.error?.message ?? 'No se pudo conectar con el resumen administrativo.';
         this.dashboard=null;
         this.mostrarError(e);
+        alFinalizar?.();
       }
     });
   }
