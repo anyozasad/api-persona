@@ -281,7 +281,12 @@ try {
     await resultados.waitFor({timeout:15000});
     assert.match(await resultados.innerText(),/Productos y fotos/);
     await resultados.getByRole('option',{name:/Productos y fotos/}).click();
-    await page.locator('.productos-page').waitFor({timeout:15000});
+    const vista=await page.locator('.mg-current-topbar h1').innerText();
+    console.log('DIAGNOSTICO BUSCADOR FOTO: vista='+vista+', url='+page.url()+
+      ', búsqueda='+await buscador.inputValue()+
+      ', desplegable='+await resultados.count()+
+      ', errores='+JSON.stringify(incidencias.slice(-3)));
+    await page.locator('.productos-page').waitFor({timeout:4000});
     assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Productos');
     await buscador.fill('abrir caja');
     await resultados.waitFor({timeout:15000});
