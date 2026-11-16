@@ -298,7 +298,6 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
   it('el inicio no repite botones de módulos: conserva gráficos y fotografías en vista', () => {
     const template=(AdminIntegradoComponent as any).ɵcmp.template;
     expect(template).toBeTruthy();
-    const fuente=String.raw`<ng-container *ngIf="seccion==='dashboard'">`;
     // La verificación del diseño exhaustivo se ejecuta también en Chromium.
     expect(component.accesosPrincipalesAdmin).toHaveSize(4);
     expect(component.menuPrincipal.flatMap(g=>g.items)).toHaveSize(46);
