@@ -1,4 +1,4 @@
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { AdminIntegradoComponent } from './admin-integrado.component';
 
 describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
@@ -19,7 +19,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       'estadoOperativo', 'dashboard', 'clientes', 'membresiasDisponibles',
       'clienteMembresias', 'pagos', 'productos', 'reservas', 'rutinas',
       'asistencias', 'entrenadores', 'clases', 'cajaActual', 'historialCaja', 'movimientoCaja',
-      'configuracion', 'guardarConfiguracion', 'estadoSistema',
+      'configuracion', 'guardarConfiguracion', 'estadoSistema', 'restaurarGym',
       'registrarAccesoCodigo', 'cambiarEstadoReserva', 'confirmarPagoPendiente',
       'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin', 'comprobantePago', 'verificacionEfsrt', 'completarFotosIniciales'
     ]);
@@ -229,6 +229,53 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     component.cambiarSegcion('clientes');
     expect(component.navGroups['members']).toBeTrue();
     expect(component.masOpcionesMenu['members']).toBeFalse();
+  });
+
+  it('después de restaurar MySQL vuelve a consultar socios, fotos, inventario y pagos', () => {
+    const archivo=new File(['-- MySQL dump 10.13'],'copia_mallqui.sql',{type:'text/plain'});
+    spyOn(window,'confirm').and.returnValue(true);
+    spyOn(component,'actualizarDashboardCompleto').and.stub();
+    spyOn(component as any,'ok').and.stub();
+    api.restaurarGym.and.returnValue(of({mensaje:'Backup restaurado'}));
+    component.backupRestaurarArchivo=archivo;
+
+    component.restaurarBackupSistema();
+
+    expect(api.restaurarGym).toHaveBeenCalledOnceWith(archivo);
+    expect(component.actualizarDashboardCompleto).toHaveBeenCalledOnceWith();
+    expect(component.backupRestaurarArchivo).toBeNull();
+  });
+
+  it('no da por actualizada una pantalla antes de recibir respuesta real del servidor', () => {
+    const lenta = new Subject<any>();
+    api.dashboard.and.returnValue(lenta.asObservable());
+    const cargar=spyOn(component as any,'cargarSegcion').and.stub();
+    component.seccion='productos';
+    component.actualizandoDatos=false;
+    component.actualizarSegcionActual();
+    expect(cargar).toHaveBeenCalledWith('productos');
+    expect(component.actualizandoDatos).toBeTrue();
+    expect(component.ultimaActualizacionTs).toBeFalsy();
+    lenta.next({ingresos:{total_mes:100},clientes:{activos:1}});
+    lenta.complete();
+    expect(component.actualizandoDatos).toBeFalse();
+    expect(component.dashboard?.ingresos?.total_mes).toBe(100);
+    expect(component.ultimaActualizacionTs).toBeGreaterThan(0);
+  });
+
+  it('libera el control de actualizar y avisa del error si falla MySQL', () => {
+    const lenta=new Subject<any>();
+    api.dashboard.and.returnValue(lenta.asObservable());
+    spyOn(component as any,'cargarSegcion').and.stub();
+    spyOn(component as any,'mostrarError').and.stub();
+    component.seccion='clientes';
+    component.actualizandoDatos=false;
+    component.actualizarSegcionActual();
+    expect(component.actualizandoDatos).toBeTrue();
+    lenta.error({error:{mensaje:'No hay conexión MySQL'}});
+    expect(component.actualizandoDatos).toBeFalse();
+    expect(component.dashboardError).toContain('No hay conexión MySQL');
+    expect(component.dashboard).toBeNull();
   });
 
   it('al actualizar la sección abierta consulta también los datos de ese módulo', () => {
