@@ -248,6 +248,7 @@ try {
     await menu.getByRole('button',{name:'Configuración',exact:true}).click();
     const configuracion=page.locator('.config-page');
     await configuracion.waitFor({timeout:15000});
+    await configuracion.getByRole('button',{name:'Usuarios y permisos'}).waitFor({timeout:25000});
     for(const herramienta of [
       'Usuarios y permisos','Historial de actividad',
       'Gestionar respaldos','Diagnóstico avanzado'
