@@ -198,7 +198,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect((component as any).normalizarSegcion('catalogo')).toBe('dashboard');
     expect(component.menuPrincipal.some(grupo => grupo.id === 'apps')).toBeFalse();
     expect(component.accesosPrincipalesAdmin.map(item=>item.id)).toEqual([
-      'clientes','reservas','asistencias','productos','pagos','reportes-admin'
+      'clientes','reservas','productos','pagos'
     ]);
     expect(component.mostrarGestionAvanzada).toBeFalse();
   });
@@ -208,7 +208,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     const grupos=component.menuPrincipal;
     expect(grupos).toHaveSize(7);
     for(const grupo of grupos){
-      expect(component.opcionesVisiblesGrupo(grupo).length).toBeLessThanOrEqual(4);
+      expect(component.opcionesVisiblesGrupo(grupo).length).toBe(2);
       expect(component.opcionesVisiblesGrupo(grupo).length).toBeGreaterThanOrEqual(2);
       const extras=component.cantidadOpcionesSecundarias(grupo);
       const secundarios=grupo.items.filter(item=>!component.accesosPrincipalesAdmin.some(principal=>principal.id===item.id));
@@ -295,6 +295,16 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.cargarDashboard).toHaveBeenCalled();
   });
 
+  it('el inicio no repite botones de módulos: conserva gráficos y fotografías en vista', () => {
+    const template=(AdminIntegradoComponent as any).ɵcmp.template;
+    expect(template).toBeTruthy();
+    // La verificación del diseño exhaustivo se ejecuta también en Chromium.
+    expect(component.accesosPrincipalesAdmin).toHaveSize(4);
+    expect(component.menuPrincipal.flatMap(g=>g.items)).toHaveSize(46);
+    expect(component.menuPrincipal.flatMap(g=>g.items).some(i=>i.id==='asistencias')).toBeTrue();
+    expect(component.menuPrincipal.flatMap(g=>g.items).some(i=>i.id==='reportes-admin')).toBeTrue();
+  });
+
   it('acceso frecuente no abre submenús; funciones secundarias abren solo su área', () => {
     for(const principal of component.accesosPrincipalesAdmin){
       (component as any).activarGrupoDeSeccion(principal.id);
@@ -308,7 +318,8 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       expect(component.menuPrincipal.filter(g=>component.navGroups[g.id]).length).toBe(1);
     };
     ver('membresias','members');
-    ver('clases','training');
+    ver('asistencias','training');
+    ver('reportes-admin','menu');
     ver('inventario','operations');
     ver('ventas','finance');
     ver('soporte','communication');

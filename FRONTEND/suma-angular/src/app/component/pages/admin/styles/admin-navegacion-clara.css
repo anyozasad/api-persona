@@ -387,3 +387,88 @@
     min-height:46px;
   }
 }
+
+
+/* Vista operativa: cuatro accesos directos. El dashboard es un resumen, no otro menú. */
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary {
+  min-height:48px!important;
+  padding:7px 11px!important;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary small {
+  display:none!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-efsrt-pulse-items .mg-pulse-item {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height:60px;
+  min-width:0;
+  padding:10px 12px;
+  background:#fafbf8;
+  border:1px solid #e3e8df;
+  border-radius:9px;
+  cursor:default;
+  text-align:left;
+  color:#284026;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-efsrt-pulse-items .mg-pulse-item strong {
+  font-size:23px;
+  font-weight:800;
+  min-width:22px;
+  color:#a66a24;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-efsrt-pulse-items .mg-pulse-item span {
+  font-size:12px;
+  font-weight:700;
+  line-height:1.3;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-efsrt-pulse-items .mg-pulse-item small {
+  display:block;
+  margin-top:3px;
+  color:#718071;
+  font-size:10px;
+  font-weight:400;
+}
+.admin-shell.admin-home-redesign .mg-operational-help {
+  margin:8px 0 0;
+  font-size:12px;
+  line-height:1.5;
+  color:#a05227;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-analytics-head > div {
+  max-width:100%;
+}
+
+
+/* Análisis avanzado trasladado del Inicio a la pantalla de Reportes. */
+.admin-shell.admin-home-redesign .mg-current-workspace > .mg-advanced-tools-shell {
+  border:1px solid #e3e9df;
+  border-radius:14px;
+  padding:18px;
+  margin:16px 0;
+  background:#fff;
+  color:#2d3d2d;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace > .mg-advanced-tools-shell .mg-advanced-tools-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-bottom:12px;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace > .mg-advanced-tools-shell .mg-advanced-tools-head small {
+  color:#5a7b42;
+  letter-spacing:.06em;
+  font-size:11px;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace > .mg-advanced-tools-shell .mg-advanced-tools-head h3 {
+  margin:3px 0 4px;
+  font-size:18px;
+  color:#223520;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace > .mg-advanced-tools-shell .mg-advanced-tools-head p {
+  margin:0;
+  color:#6a786b;
+  font-size:12px;
+}

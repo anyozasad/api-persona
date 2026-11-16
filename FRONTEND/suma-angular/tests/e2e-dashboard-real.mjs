@@ -70,9 +70,11 @@ try {
       'La sección antigua de seis botones debe desaparecer.');
     const alertas=page.locator('.mg-efsrt-pulse');
     if(await alertas.count() > 0) {
-      const prioridades=page.locator('.mg-efsrt-pulse-items button');
-      assert.equal(await prioridades.count(),3,
-        'Si hay alertas, las tres categorías deben conservarse.');
+      const prioridades=page.locator('.mg-efsrt-pulse-items .mg-pulse-item');
+      assert.ok(await prioridades.count()>0 && await prioridades.count()<=3,
+        'Mostrar solo alertas con cantidades reales.');
+      assert.equal(await page.locator('.mg-efsrt-pulse-items button').count(),0,
+        'Las alertas no deben ser otra barra con botones repetidos.');
     }
     await page.locator('.mg-premium-analytics-grid .mg-premium-card').first()
       .waitFor({timeout:20000});
@@ -198,16 +200,16 @@ try {
     await paso('Ruta '+ruta+' abre módulo propio',()=>pantalla(ruta,contenido,nombre));
   }
 
-  await paso('Menú TEC-SGI adaptado: seis funciones directas y módulos extra ocultos',async()=>{
+  await paso('Menú por tareas: cuatro funciones directas y módulos completos agrupados',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
     await menu.waitFor({timeout:20000});
     assert.equal(await menu.locator('.mg-direct-home').count(),1);
-    assert.equal(await menu.locator('.mg-nav-primary').count(),6,
+    assert.equal(await menu.locator('.mg-nav-primary').count(),4,
       'La pantalla inicial no debe mostrar siete grupos ni decenas de botones.');
     assert.deepEqual(await menu.locator('.mg-nav-primary').evaluateAll(nodes=>
       nodes.map(node=>node.getAttribute('aria-label'))),[
-      'Socios','Reservas','Asistencia','Productos','Pagos','Reportes'
+      'Socios','Reservas','Productos','Pagos'
     ]);
     assert.equal(await menu.locator('.cf-nav-group-head').count(),0,
       'Los módulos secundarios permanecen plegados.');
@@ -225,25 +227,25 @@ try {
     assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Productos');
     assert.equal(await page.locator('.mg-module-shell-actions button').count(),1,
       'Un solo control de actualización por módulo.');
-    await page.screenshot({path:'evidencias-dashboard/13_Menu_seis_tareas_directas.png',fullPage:true});
+    await page.screenshot({path:'evidencias-dashboard/13_Menu_cuatro_tareas_directas.png',fullPage:true});
   });
 
   await paso('Administración conserva reportes, usuarios, auditoría, configuración y respaldo',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
-    assert.equal(await menu.getByRole('button',{name:'Reportes',exact:true}).count(),1);
+    assert.equal(await menu.getByRole('button',{name:'Reportes',exact:true}).count(),0);
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
     assert.equal(await menu.locator('.cf-nav-group-head').count(),7,
       'Los siete grupos permanecen disponibles solo cuando se solicitan.');
     await menu.getByRole('button',{name:'Abrir Administración'}).click();
     const opciones=menu.locator('.cf-nav-children button:not(.mg-nav-show-more)');
     assert.deepEqual(await opciones.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label'))),[
-      'Usuarios y permisos','Configuración'
+      'Reportes generales','Usuarios y permisos'
     ]);
     await menu.getByRole('button',{name:'Mostrar más opciones de Administración'}).click();
     assert.deepEqual(await opciones.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label'))),[
-      'Usuarios y permisos','Configuración','Reporte de asistencia','Auditoría',
-      'Respaldo y mantenimiento','Verificación del sistema'
+      'Reportes generales','Usuarios y permisos','Reporte de asistencia','Auditoría',
+      'Configuración','Respaldo y mantenimiento','Verificación del sistema'
     ]);
     await menu.getByRole('button',{name:'Configuración',exact:true}).click();
     const configuracion=page.locator('.config-page');
@@ -258,14 +260,14 @@ try {
       fullPage:true,animations:'disabled'});
   });
 
-  await paso('Siete áreas avanzadas conservan módulos sin duplicar los seis accesos rápidos',async()=>{
+  await paso('Siete áreas avanzadas conservan todas las funciones sin repetir cuatro accesos',async()=>{
     const grupos=[
       {area:'Socios y membresías',frecuente:'Membresías',adicional:'Planes y tarifas',total:5},
-      {area:'Clases y entrenamiento',frecuente:'Clases y horarios',adicional:'Seguimiento',total:5},
+      {area:'Clases y entrenamiento',frecuente:'Asistencia',adicional:'Seguimiento',total:6},
       {area:'Productos e inventario',frecuente:'Control de inventario',adicional:'Proveedores',total:6},
       {area:'Ventas y caja',frecuente:'Registrar venta',adicional:'Comprobantes internos',total:7},
       {area:'Atención al socio',frecuente:'Consultas y soporte',adicional:'Eventos',total:6},
-      {area:'Administración',frecuente:'Configuración',adicional:'Auditoría',total:6},
+      {area:'Administración',frecuente:'Reportes generales',adicional:'Auditoría',total:7},
       {area:'Organización interna',frecuente:'Calendario',adicional:'Tablas avanzadas',total:5}
     ];
     for(const grupo of grupos){
@@ -399,7 +401,7 @@ try {
     await inicio.locator('.mg-premium-analytics').waitFor({timeout:12000});
     assert.equal(await inicio.locator('.mg-premium-analytics-grid .mg-premium-card').count(),3,
       'Inicio debe mostrar tres gráficos alimentados por MySQL.');
-    assert.equal(await page.locator('.mg-clear-navigation .mg-nav-primary').count(),6);
+    assert.equal(await page.locator('.mg-clear-navigation .mg-nav-primary').count(),4);
     assert.equal(await page.locator('.mg-clear-navigation .cf-nav-group-head').count(),0);
     const inmediatamenteDespues=await inicio.locator('.mg-efsrt-charts-first').evaluate(
       el=>el.previousElementSibling?.classList.contains('mg-efsrt-kpis')===true);
@@ -416,6 +418,14 @@ try {
     assert.equal(await inicio.locator('.mg-efsrt-optional-toggle').count(),0,
       'La analítica visible no necesita otro botón para descubrirla.');
     assert.equal(await inicio.locator('.mg-premium-analytics-grid .mg-premium-card').count(),3);
+    assert.equal(await inicio.locator('button').count(),0,
+      'Inicio es un resumen operativo, no debe tener controles duplicados.');
+    await page.goto(base+'/reportes',{waitUntil:'domcontentloaded'});
+    const herramientas=page.locator('.mg-advanced-tools-shell');
+    await herramientas.waitFor({timeout:15000});
+    await herramientas.getByRole('button',{name:'Abrir detalle'}).click();
+    assert.equal(await herramientas.locator('app-admin-dashboard-tools').count(),1,
+      'Las funciones de análisis avanzado no se borran, se trasladan a Reportes.');
   });
 
   await paso('Formulario de socios en la página, sin oscurecer ni duplicar scroll',async()=>{
