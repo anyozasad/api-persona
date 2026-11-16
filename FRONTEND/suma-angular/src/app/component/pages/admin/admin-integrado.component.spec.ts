@@ -204,22 +204,40 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
   });
 
 
-  it('muestra pocas opciones por área y conserva las 46 funciones reales', () => {
+  it('todos los 46 módulos se encuentran en su área con una sola expansión', () => {
     const grupos=component.menuPrincipal;
     expect(grupos).toHaveSize(7);
-    for(const grupo of grupos){
-      expect(component.opcionesVisiblesGrupo(grupo).length).toBe(2);
-      expect(component.opcionesVisiblesGrupo(grupo).length).toBeGreaterThanOrEqual(2);
-      const extras=component.cantidadOpcionesSecundarias(grupo);
-      const secundarios=grupo.items.filter(item=>!component.accesosPrincipalesAdmin.some(principal=>principal.id===item.id));
-      expect(extras).toBe(secundarios.length-component.opcionesVisiblesGrupo(grupo).length);
-      component.alternarOpcionesMenu(grupo.id);
-      expect(component.opcionesVisiblesGrupo(grupo).map(x=>x.id).sort())
-        .toEqual(secundarios.map(x=>x.id).sort());
-      component.alternarOpcionesMenu(grupo.id);
-    }
     const todos=grupos.flatMap(grupo=>grupo.items.map(item=>item.id));
     expect(new Set(todos).size).toBe(46);
+    for(const grupo of grupos){
+      const secundarios=grupo.items.filter(item=>
+        !component.accesosPrincipalesAdmin.some(principal=>principal.id===item.id));
+      expect(component.opcionesVisiblesGrupo(grupo).map(x=>x.id).sort())
+        .toEqual(secundarios.map(x=>x.id).sort());
+    }
+  });
+
+  it('buscar por tareas lleva al módulo correcto sin abrir tres niveles del menú', () => {
+    for(const [frase,esperado] of [
+      ['matricular socio','clientes'],
+      ['subir foto','productos'],
+      ['abrir caja','caja'],
+      ['asistencia','asistencias'],
+      ['reportes','reportes-admin'],
+      ['respaldo','mantenimiento-sistema']
+    ]){
+      component.busquedaAdmin=frase;
+      expect(component.accesosRapidosDashboard[0]?.id).toBe(esperado);
+    }
+    component.busquedaAdmin='algo inexistente';
+    expect(component.accesosRapidosDashboard).toEqual([]);
+    spyOn(window,'scrollTo').and.stub();
+    const cargar=spyOn(component as any,'cargarSegcion').and.stub();
+    component.busquedaAdmin='abrir caja';
+    component.buscarEnPanel();
+    expect(component.seccion).toBe('caja');
+    expect(cargar).toHaveBeenCalledWith('caja');
+    expect(component.busquedaAdmin).toBe('');
   });
 
   it('identifica y despliega una función secundaria al acceder por búsqueda o desde un enlace', () => {
@@ -228,14 +246,12 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     component.cambiarSegcion('proveedores');
     expect(component.mostrarGestionAvanzada).toBeTrue();
     expect(component.navGroups['operations']).toBeTrue();
-    expect(component.masOpcionesMenu['operations']).toBeTrue();
     const grupo=component.menuPrincipal.find(g=>g.id==='operations')!;
     expect(component.opcionesVisiblesGrupo(grupo).some(i=>i.id==='proveedores')).toBeTrue();
     expect(component.descripcionOpcionMenu('productos')).toContain('fotografías');
     component.cambiarSegcion('clientes');
     expect(component.mostrarGestionAvanzada).toBeFalse();
     expect(component.navGroups['members']).toBeFalse();
-    expect(component.masOpcionesMenu['members']).toBeFalse();
   });
 
   it('después de restaurar MySQL vuelve a consultar socios, fotos, inventario y pagos', () => {
