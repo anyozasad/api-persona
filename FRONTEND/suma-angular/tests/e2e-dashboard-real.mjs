@@ -200,6 +200,37 @@ try {
     await paso('Ruta '+ruta+' abre módulo propio',()=>pantalla(ruta,contenido,nombre));
   }
 
+  await paso('El dashboard muestra causa exacta de MySQL desconectado',async()=>{
+    await page.route('**/api/estado-sistema',async ruta=>{
+      await ruta.fulfill({
+        status:200,contentType:'application/json',
+        body:JSON.stringify({
+          api:true,database:false,operativo:false,
+          base_datos:'gym_system',faltantes:[],
+          mensaje:'MySQL no disponible para esta prueba de diagnóstico'
+        })
+      });
+    });
+    try{
+      await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+      const aviso=page.locator('.mg-operational-diagnostic');
+      await aviso.waitFor({timeout:25000});
+      await assert.doesNotReject(async()=>{
+        const texto=await aviso.innerText();
+        assert.match(texto,/MySQL sin conexión/);
+        assert.match(texto,/Enciende MySQL en XAMPP/);
+        assert.match(texto,/gym_system/);
+        assert.doesNotMatch(texto,/Laravel no responde/);
+      });
+      await page.screenshot({
+        path:'evidencias-dashboard/37_Diagnostico_MySQL_claro.png',
+        fullPage:true,animations:'disabled'
+      });
+    }finally{
+      await page.unroute('**/api/estado-sistema');
+    }
+  });
+
   await paso('Menú por tareas: cuatro funciones directas y módulos completos agrupados',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
