@@ -10,7 +10,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
 import { AdminGymSuiteComponent } from './admin-gym-suite.component';
 import { AdminApplicationsComponent } from './admin-applications.component';
 import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component';
-import { catchError, forkJoin, of } from 'rxjs';
+import { catchError, forkJoin, of, timeout } from 'rxjs';
 
 @Component({
   selector: 'app-admin-integrado',
@@ -136,7 +136,7 @@ import { catchError, forkJoin, of } from 'rxjs';
         <span><strong>Mallqui</strong><b>Gym</b></span>
       </button>
 
-      <nav class="admin-main-nav crossfit-sidebar-nav mg-clear-navigation" aria-label="Navegación del gimnasio">
+      <nav class="admin-main-nav crossfit-sidebar-nav mg-clear-navigation mg-tec-order" aria-label="Navegación principal del gimnasio">
         <span class="mg-nav-caption">INICIO</span>
         <button type="button" class="mg-direct-home" [class.active]="seccion==='dashboard'"
           [attr.aria-current]="seccion==='dashboard' ? 'page' : null"
@@ -144,40 +144,63 @@ import { catchError, forkJoin, of } from 'rxjs';
           <span class="admin-main-nav-icon" aria-hidden="true">⌂</span>
           <span>Panel principal</span>
         </button>
-        <span class="mg-nav-caption mg-nav-section-separator">GESTIÓN DEL GIMNASIO</span>
-        <ng-container *ngFor="let grupo of menuPrincipal">
-          <button type="button" class="cf-nav-group-head mg-admin-group"
-            [class.active]="!!navGroups[grupo.id]"
-            [attr.aria-expanded]="!!navGroups[grupo.id]"
-            [attr.aria-label]="'Abrir ' + grupo.titulo"
-            (click)="toggleNavGroup(grupo.id)">
-            <span class="admin-main-nav-icon" aria-hidden="true">{{grupo.icono}}</span>
-            <span>{{grupo.titulo}}</span>
-            <i aria-hidden="true">{{navGroups[grupo.id]?'⌃':'⌄'}}</i>
-          </button>
-          <div class="cf-nav-children mg-clear-submenu" *ngIf="navGroups[grupo.id]">
-            <button type="button" *ngFor="let item of opcionesVisiblesGrupo(grupo)"
-              [class.active]="seccion===item.id"
-              [attr.aria-current]="seccion===item.id ? 'page' : null"
-              [attr.aria-label]="item.nombre"
-              [attr.title]="descripcionOpcionMenu(item.id)"
-              (click)="navegarMenu(item)">
-              <span aria-hidden="true">•</span>
-              <span class="mg-nav-action-copy">
-                <strong>{{item.nombre}}</strong>
-                <small>{{descripcionOpcionMenu(item.id)}}</small>
-              </span>
+
+        <span class="mg-nav-caption mg-nav-section-separator">OPERACIÓN DIARIA</span>
+        <button type="button" class="mg-nav-primary" *ngFor="let item of accesosPrincipalesAdmin"
+          [class.active]="seccion===item.id"
+          [attr.aria-current]="seccion===item.id ? 'page' : null"
+          [attr.aria-label]="item.nombre"
+          [attr.title]="item.ayuda"
+          (click)="navegarMenu(item)">
+          <span class="admin-main-nav-icon" aria-hidden="true">{{item.icono}}</span>
+          <span class="mg-nav-action-copy"><strong>{{item.nombre}}</strong><small>{{item.ayuda}}</small></span>
+        </button>
+
+        <span class="mg-nav-caption mg-nav-section-separator">GESTIÓN Y SISTEMA</span>
+        <button type="button" class="mg-nav-advanced-toggle"
+          [class.active]="mostrarGestionAvanzada"
+          [attr.aria-expanded]="mostrarGestionAvanzada"
+          aria-label="Mostrar módulos complementarios"
+          (click)="alternarGestionAvanzada()">
+          <span class="admin-main-nav-icon" aria-hidden="true">▤</span>
+          <span>{{mostrarGestionAvanzada ? 'Ocultar módulos' : 'Más módulos'}}</span>
+          <i aria-hidden="true">{{mostrarGestionAvanzada ? '⌃' : '⌄'}}</i>
+        </button>
+        <div class="mg-nav-advanced-content" *ngIf="mostrarGestionAvanzada">
+          <ng-container *ngFor="let grupo of menuPrincipal">
+            <button type="button" class="cf-nav-group-head mg-admin-group"
+              [class.active]="!!navGroups[grupo.id]"
+              [attr.aria-expanded]="!!navGroups[grupo.id]"
+              [attr.aria-label]="'Abrir ' + grupo.titulo"
+              (click)="toggleNavGroup(grupo.id)">
+              <span class="admin-main-nav-icon" aria-hidden="true">{{grupo.icono}}</span>
+              <span>{{grupo.titulo}}</span>
+              <i aria-hidden="true">{{navGroups[grupo.id]?'⌃':'⌄'}}</i>
             </button>
-            <button type="button" class="mg-nav-show-more"
-              *ngIf="cantidadOpcionesSecundarias(grupo)>0"
-              [attr.aria-expanded]="!!masOpcionesMenu[grupo.id]"
-              [attr.aria-label]="masOpcionesMenu[grupo.id] ? 'Mostrar menos opciones de ' + grupo.titulo : 'Mostrar más opciones de ' + grupo.titulo"
-              (click)="alternarOpcionesMenu(grupo.id)">
-              <span aria-hidden="true">{{masOpcionesMenu[grupo.id] ? '−' : '⋯'}}</span>
-              <span>{{masOpcionesMenu[grupo.id] ? 'Mostrar menos' : 'Más opciones (' + cantidadOpcionesSecundarias(grupo) + ')'}}</span>
-            </button>
-          </div>
-        </ng-container>
+            <div class="cf-nav-children mg-clear-submenu" *ngIf="navGroups[grupo.id]">
+              <button type="button" *ngFor="let item of opcionesVisiblesGrupo(grupo)"
+                [class.active]="seccion===item.id"
+                [attr.aria-current]="seccion===item.id ? 'page' : null"
+                [attr.aria-label]="item.nombre"
+                [attr.title]="descripcionOpcionMenu(item.id)"
+                (click)="navegarMenu(item)">
+                <span aria-hidden="true">•</span>
+                <span class="mg-nav-action-copy">
+                  <strong>{{item.nombre}}</strong>
+                  <small>{{descripcionOpcionMenu(item.id)}}</small>
+                </span>
+              </button>
+              <button type="button" class="mg-nav-show-more"
+                *ngIf="cantidadOpcionesSecundarias(grupo)>0"
+                [attr.aria-expanded]="!!masOpcionesMenu[grupo.id]"
+                [attr.aria-label]="masOpcionesMenu[grupo.id] ? 'Mostrar menos opciones de ' + grupo.titulo : 'Mostrar más opciones de ' + grupo.titulo"
+                (click)="alternarOpcionesMenu(grupo.id)">
+                <span aria-hidden="true">{{masOpcionesMenu[grupo.id] ? '−' : '⋯'}}</span>
+                <span>{{masOpcionesMenu[grupo.id] ? 'Mostrar menos' : 'Más opciones (' + cantidadOpcionesSecundarias(grupo) + ')'}}</span>
+              </button>
+            </div>
+          </ng-container>
+        </div>
       </nav>
 
       <div class="mg-sidebar-bottom">
@@ -272,41 +295,7 @@ import { catchError, forkJoin, of } from 'rxjs';
             </article>
           </section>
 
-          <section class="mg-efsrt-pulse" *ngIf="(dashboard?.membresias?.por_vencer_7_dias ?? 0)>0 || (dashboard?.inventario?.productos_stock_bajo ?? 0)>0 || (dashboard?.membresias?.pagos_pendientes ?? 0)>0" aria-label="Pendientes de la operación del gimnasio">
-            <div class="mg-efsrt-pulse-intro">
-              <strong>Estado de la operación</strong>
-              <small>{{sistemaSincronizado ? 'Pendientes calculados desde MySQL' : 'Datos parciales: verifica la conexión y las tablas pendientes'}}</small>
-            </div>
-            <div class="mg-efsrt-pulse-items">
-              <button type="button" (click)="cambiarSegcion('renovaciones')"
-                [class.has-pending]="(dashboard?.membresias?.por_vencer_7_dias ?? 0)>0">
-                <strong>{{dashboard?.membresias?.por_vencer_7_dias ?? '—'}}</strong>
-                <span>Membresías por vencer<small>Próximos 7 días</small></span>
-                <span class="mg-efsrt-pulse-action" aria-hidden="true">›</span>
-              </button>
-              <button type="button" (click)="cambiarSegcion('inventario')"
-                [class.has-pending]="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0">
-                <strong>{{dashboard?.inventario?.productos_stock_bajo ?? '—'}}</strong>
-                <span>Productos con stock bajo<small>Revisar inventario</small></span>
-                <span class="mg-efsrt-pulse-action" aria-hidden="true">›</span>
-              </button>
-              <button type="button" (click)="cambiarSegcion('pagos')"
-                [class.has-pending]="(dashboard?.membresias?.pagos_pendientes ?? 0)>0">
-                <strong>{{dashboard?.membresias?.pagos_pendientes ?? '—'}}</strong>
-                <span>Pagos pendientes<small>Revisar cobros</small></span>
-                <span class="mg-efsrt-pulse-action" aria-hidden="true">›</span>
-              </button>
-            </div>
-          </section>
-
-          <section class="mg-efsrt-optional">
-            <button type="button" class="mg-efsrt-optional-toggle"
-              [attr.aria-expanded]="mostrarGraficosDashboard"
-              (click)="mostrarGraficosDashboard=!mostrarGraficosDashboard">
-              <span>Gráficos y análisis de ingresos</span>
-              <span>{{mostrarGraficosDashboard ? 'Ocultar −' : 'Mostrar +'}}</span>
-            </button>
-            <ng-container *ngIf="mostrarGraficosDashboard">
+          <section class="mg-efsrt-optional mg-efsrt-charts-first">
             <section class="mg-premium-analytics" aria-label="Gráficos de actividad e ingresos">
               <div class="mg-premium-analytics-head">
                 <div><span>ANALÍTICA REAL</span><h2>Tendencias del gimnasio</h2><p>Gráficos construidos con información de la base de datos.</p></div>
@@ -407,7 +396,33 @@ import { catchError, forkJoin, of } from 'rxjs';
                   (irSeccion)="cambiarSeccion($event)">
                 </app-admin-dashboard-tools>
               </section>
-            </ng-container>
+          </section>
+
+          <section class="mg-efsrt-pulse" *ngIf="(dashboard?.membresias?.por_vencer_7_dias ?? 0)>0 || (dashboard?.inventario?.productos_stock_bajo ?? 0)>0 || (dashboard?.membresias?.pagos_pendientes ?? 0)>0" aria-label="Pendientes de la operación del gimnasio">
+            <div class="mg-efsrt-pulse-intro">
+              <strong>Estado de la operación</strong>
+              <small>{{sistemaSincronizado ? 'Pendientes calculados desde MySQL' : 'Datos parciales: verifica la conexión y las tablas pendientes'}}</small>
+            </div>
+            <div class="mg-efsrt-pulse-items">
+              <button type="button" (click)="cambiarSegcion('renovaciones')"
+                [class.has-pending]="(dashboard?.membresias?.por_vencer_7_dias ?? 0)>0">
+                <strong>{{dashboard?.membresias?.por_vencer_7_dias ?? '—'}}</strong>
+                <span>Membresías por vencer<small>Próximos 7 días</small></span>
+                <span class="mg-efsrt-pulse-action" aria-hidden="true">›</span>
+              </button>
+              <button type="button" (click)="cambiarSegcion('inventario')"
+                [class.has-pending]="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0">
+                <strong>{{dashboard?.inventario?.productos_stock_bajo ?? '—'}}</strong>
+                <span>Productos con stock bajo<small>Revisar inventario</small></span>
+                <span class="mg-efsrt-pulse-action" aria-hidden="true">›</span>
+              </button>
+              <button type="button" (click)="cambiarSegcion('pagos')"
+                [class.has-pending]="(dashboard?.membresias?.pagos_pendientes ?? 0)>0">
+                <strong>{{dashboard?.membresias?.pagos_pendientes ?? '—'}}</strong>
+                <span>Pagos pendientes<small>Revisar cobros</small></span>
+                <span class="mg-efsrt-pulse-action" aria-hidden="true">›</span>
+              </button>
+            </div>
           </section>
 
           <div class="mg-efsrt-grid" *ngIf="totalMembresiasPorVencerDashboard > 0 || reservasHoyDashboard().length > 0">
@@ -2978,6 +2993,17 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     'proveedores','compras','categorias','reportes-admin','reporte-asistencias','usuarios',
     'auditoria','configuracion','opiniones'
   ];
+  /** Como TEC-SGI: accesos directos por tarea, sin siete secciones desplegadas al entrar. */
+  readonly accesosPrincipalesAdmin: Array<{id:string;nombre:string;icono:string;ayuda:string}> = [
+    {id:'clientes',nombre:'Socios',icono:'♙',ayuda:'Registrar y administrar socios'},
+    {id:'reservas',nombre:'Reservas',icono:'◫',ayuda:'Programar y controlar sesiones'},
+    {id:'asistencias',nombre:'Asistencia',icono:'✓',ayuda:'Entradas y salidas de socios'},
+    {id:'productos',nombre:'Productos',icono:'▦',ayuda:'Fotos, precios y existencias'},
+    {id:'pagos',nombre:'Pagos',icono:'S/',ayuda:'Membresías y cobros'},
+    {id:'reportes-admin',nombre:'Reportes',icono:'▤',ayuda:'Ingresos, socios y asistencia'}
+  ];
+  mostrarGestionAvanzada = false;
+
   /** Menu único: cada módulo aparece en su área de trabajo, sin enlaces genéricos. */
   readonly menuPrincipal: Array<{
     id:string; titulo:string; icono:string;
@@ -3048,12 +3074,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   /** Funciones frecuentes visibles al entrar a cada área; el resto sigue disponible sin duplicarse. */
   readonly opcionesFrecuentesMenu: Record<string,string[]> = {
-    members:['clientes','membresias','pagos','renovaciones'],
-    training:['reservas','asistencias','clases','rutinas'],
-    operations:['productos','inventario','compras','kardex'],
-    finance:['ventas','historial-ventas','caja','gastos'],
-    communication:['soporte','comunicacion','opiniones'],
-    menu:['reportes-admin','usuarios','configuracion','verificacion-efsrt'],
+    members:['membresias','renovaciones'],
+    training:['clases','rutinas'],
+    operations:['inventario','compras'],
+    finance:['ventas','caja'],
+    communication:['soporte','comunicacion'],
+    menu:['usuarios','configuracion'],
     tools:['calendario-admin','tareas-admin']
   };
   masOpcionesMenu: Record<string,boolean> = {
@@ -3064,15 +3090,17 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   opcionesVisiblesGrupo(grupo:{id:string;items:Array<{id:string;nombre:string;accion?:'nuevoSocio'}>}):
       Array<{id:string;nombre:string;accion?:'nuevoSocio'}> {
     const frecuentes=this.opcionesFrecuentesMenu[grupo.id] ?? [];
-    const principales=grupo.items.filter(item=>frecuentes.includes(item.id));
+    const restantes=grupo.items.filter(item=>!this.accesosPrincipalesAdmin.some(principal=>principal.id===item.id));
+    const principales=restantes.filter(item=>frecuentes.includes(item.id));
     return this.masOpcionesMenu[grupo.id]
-      ? [...principales,...grupo.items.filter(item=>!frecuentes.includes(item.id))]
+      ? [...principales,...restantes.filter(item=>!frecuentes.includes(item.id))]
       : principales;
   }
 
   cantidadOpcionesSecundarias(grupo:{id:string;items:Array<{id:string}>}):number {
     const frecuentes=this.opcionesFrecuentesMenu[grupo.id] ?? [];
-    return grupo.items.filter(item=>!frecuentes.includes(item.id)).length;
+    return grupo.items.filter(item=>!frecuentes.includes(item.id)
+      && !this.accesosPrincipalesAdmin.some(principal=>principal.id===item.id)).length;
   }
 
   alternarOpcionesMenu(grupoId:string):void {
@@ -3346,13 +3374,25 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.cambiarSegcion(item.id);
   }
 
-  /** Mantiene visible la opción activa incluso si pertenece a opciones avanzadas. */
+  /** El enlace activo nunca obliga a desplegar las siete áreas del menú. */
   private activarGrupoDeSeccion(seccion:string):void{
-    const grupo=this.menuPrincipal.find(g=>g.items.some(i=>i.id===seccion && !i.accion));
     Object.keys(this.navGroups).forEach(id=>this.navGroups[id]=false);
+    if(seccion==='dashboard' || this.accesosPrincipalesAdmin.some(item=>item.id===seccion)){
+      this.mostrarGestionAvanzada=false;
+      return;
+    }
+    const grupo=this.menuPrincipal.find(g=>g.items.some(i=>i.id===seccion && !i.accion));
     if(grupo){
+      this.mostrarGestionAvanzada=true;
       this.navGroups[grupo.id]=true;
       this.masOpcionesMenu[grupo.id]=!this.opcionesFrecuentesMenu[grupo.id]?.includes(seccion);
+    }
+  }
+
+  alternarGestionAvanzada():void{
+    this.mostrarGestionAvanzada=!this.mostrarGestionAvanzada;
+    if(!this.mostrarGestionAvanzada){
+      Object.keys(this.navGroups).forEach(id=>this.navGroups[id]=false);
     }
   }
 
@@ -3362,6 +3402,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       this.sidebarCerrado=false;
       try{localStorage.setItem('mallqui_admin_sidebar_closed','0');}catch{}
     }
+    this.mostrarGestionAvanzada=true;
     const abrir=!this.navGroups[group];
     Object.keys(this.navGroups).forEach(id=>this.navGroups[id]=false);
     this.navGroups[group]=abrir;
@@ -4009,7 +4050,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     const errores:string[]=[];
 
     const seguro=(nombre:string, observable:any, fallback:any)=>
-      observable.pipe(catchError((e:any)=>{
+      observable.pipe(timeout(12000),catchError((e:any)=>{
         errores.push(nombre);
         if(nombre==='dashboard'){
           this.dashboardError=e?.error?.mensaje ?? e?.error?.message ?? 'No se pudo cargar el resumen administrativo.';
