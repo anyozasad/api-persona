@@ -1,4 +1,4 @@
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { AdminIntegradoComponent } from './admin-integrado.component';
 
 describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
@@ -229,6 +229,38 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     component.cambiarSegcion('clientes');
     expect(component.navGroups['members']).toBeTrue();
     expect(component.masOpcionesMenu['members']).toBeFalse();
+  });
+
+  it('no da por actualizada una pantalla antes de recibir respuesta real del servidor', () => {
+    const lenta = new Subject<any>();
+    api.dashboard.and.returnValue(lenta.asObservable());
+    const cargar=spyOn(component as any,'cargarSegcion').and.stub();
+    component.seccion='productos';
+    component.actualizandoDatos=false;
+    component.actualizarSegcionActual();
+    expect(cargar).toHaveBeenCalledWith('productos');
+    expect(component.actualizandoDatos).toBeTrue();
+    expect(component.ultimaActualizacionTs).toBeFalsy();
+    lenta.next({ingresos:{total_mes:100},clientes:{activos:1}});
+    lenta.complete();
+    expect(component.actualizandoDatos).toBeFalse();
+    expect(component.dashboard?.ingresos?.total_mes).toBe(100);
+    expect(component.ultimaActualizacionTs).toBeGreaterThan(0);
+  });
+
+  it('libera el control de actualizar y avisa del error si falla MySQL', () => {
+    const lenta=new Subject<any>();
+    api.dashboard.and.returnValue(lenta.asObservable());
+    spyOn(component as any,'cargarSegcion').and.stub();
+    spyOn(component as any,'mostrarError').and.stub();
+    component.seccion='clientes';
+    component.actualizandoDatos=false;
+    component.actualizarSegcionActual();
+    expect(component.actualizandoDatos).toBeTrue();
+    lenta.error({error:{mensaje:'No hay conexión MySQL'}});
+    expect(component.actualizandoDatos).toBeFalse();
+    expect(component.dashboardError).toContain('No hay conexión MySQL');
+    expect(component.dashboard).toBeNull();
   });
 
   it('al actualizar la sección abierta consulta también los datos de ese módulo', () => {
