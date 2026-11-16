@@ -42,7 +42,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
         </label>
         <div *ngIf="busquedaAbierta && busquedaAdmin.trim().length > 0" class="mg-mantis-search-results" role="listbox" aria-label="Módulos disponibles">
           <div class="mg-mantis-dropdown-title">ELIGE LA FUNCIÓN · ACCESO DIRECTO</div>
-          <button type="button" *ngFor="let modulo of accesosRapidosDashboard" (click)="irAAccesoRapido(modulo.id)"
+          <button type="button" *ngFor="let modulo of accesosRapidosDashboard; trackBy: trackByAccesoRapido" (click)="irAAccesoRapido(modulo.id)"
             role="option" [attr.aria-selected]="seccion===modulo.id">
             <span>↗</span><strong>{{modulo.nombre}}</strong><small>{{modulo.area}} · {{modulo.ayuda}}</small>
           </button>
@@ -3586,6 +3586,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       mes:String(item?.mes||'Mes'),
       total:Math.max(0,Number(item?.[this.tipoIngresoDashboard])||0)
     }));
+  }
+
+  /** Mantiene el botón en el DOM al perder foco el buscador, evitando perder el clic. */
+  trackByAccesoRapido(_index:number,modulo:{id:string}):string{
+    return modulo.id;
   }
 
   /** Búsqueda sin acentos y por acción. No muestra apartados de plantilla. */
