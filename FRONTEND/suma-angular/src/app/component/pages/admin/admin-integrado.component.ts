@@ -379,25 +379,19 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
               <strong>Estado de la operación</strong>
               <small>{{sistemaSincronizado ? 'Pendientes calculados desde MySQL' : 'Datos parciales: verifica la conexión y las tablas pendientes'}}</small>
             </div>
-            <div class="mg-efsrt-pulse-items">
-              <button type="button" (click)="cambiarSegcion('renovaciones')"
-                [class.has-pending]="(dashboard?.membresias?.por_vencer_7_dias ?? 0)>0">
-                <strong>{{dashboard?.membresias?.por_vencer_7_dias ?? '—'}}</strong>
-                <span>Membresías por vencer<small>Próximos 7 días</small></span>
-                <span class="mg-efsrt-pulse-action" aria-hidden="true">›</span>
-              </button>
-              <button type="button" (click)="cambiarSegcion('inventario')"
-                [class.has-pending]="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0">
-                <strong>{{dashboard?.inventario?.productos_stock_bajo ?? '—'}}</strong>
-                <span>Productos con stock bajo<small>Revisar inventario</small></span>
-                <span class="mg-efsrt-pulse-action" aria-hidden="true">›</span>
-              </button>
-              <button type="button" (click)="cambiarSegcion('pagos')"
-                [class.has-pending]="(dashboard?.membresias?.pagos_pendientes ?? 0)>0">
-                <strong>{{dashboard?.membresias?.pagos_pendientes ?? '—'}}</strong>
-                <span>Pagos pendientes<small>Revisar cobros</small></span>
-                <span class="mg-efsrt-pulse-action" aria-hidden="true">›</span>
-              </button>
+            <div class="mg-efsrt-pulse-items" aria-label="Alertas calculadas por MySQL">
+              <div class="mg-pulse-item" *ngIf="(dashboard?.membresias?.por_vencer_7_dias ?? 0)>0">
+                <strong>{{dashboard?.membresias?.por_vencer_7_dias}}</strong>
+                <span>Membresías por vencer<small>Revisar en Gestión y sistema → Socios</small></span>
+              </div>
+              <div class="mg-pulse-item" *ngIf="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0">
+                <strong>{{dashboard?.inventario?.productos_stock_bajo}}</strong>
+                <span>Productos con stock bajo<small>Revisar en Gestión y sistema → Inventario</small></span>
+              </div>
+              <div class="mg-pulse-item" *ngIf="(dashboard?.membresias?.pagos_pendientes ?? 0)>0">
+                <strong>{{dashboard?.membresias?.pagos_pendientes}}</strong>
+                <span>Pagos pendientes<small>Revisar en Pagos</small></span>
+              </div>
             </div>
           </section>
 
