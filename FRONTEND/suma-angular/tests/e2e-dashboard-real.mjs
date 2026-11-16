@@ -309,7 +309,7 @@ try {
       'Nunca esconder funciones en un tercer nivel.');
 
     assert.deepEqual(await opciones.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label'))),[
-      'Reportes generales','Usuarios y permisos','Reporte de asistencia','Auditoría',
+      'Reportes generales','Reporte de asistencia','Usuarios y permisos','Auditoría',
       'Configuración','Respaldo y mantenimiento','Verificación del sistema'
     ]);
     await menu.getByRole('button',{name:'Configuración',exact:true}).click();
