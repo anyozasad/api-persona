@@ -197,6 +197,10 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     }
     expect((component as any).normalizarSegcion('catalogo')).toBe('dashboard');
     expect(component.menuPrincipal.some(grupo => grupo.id === 'apps')).toBeFalse();
+    expect(component.accesosPrincipalesAdmin.map(item=>item.id)).toEqual([
+      'clientes','reservas','asistencias','productos','pagos','reportes-admin'
+    ]);
+    expect(component.mostrarGestionAvanzada).toBeFalse();
   });
 
 
@@ -207,10 +211,11 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       expect(component.opcionesVisiblesGrupo(grupo).length).toBeLessThanOrEqual(4);
       expect(component.opcionesVisiblesGrupo(grupo).length).toBeGreaterThanOrEqual(2);
       const extras=component.cantidadOpcionesSecundarias(grupo);
-      expect(extras).toBe(grupo.items.length-component.opcionesVisiblesGrupo(grupo).length);
+      const secundarios=grupo.items.filter(item=>!component.accesosPrincipalesAdmin.some(principal=>principal.id===item.id));
+      expect(extras).toBe(secundarios.length-component.opcionesVisiblesGrupo(grupo).length);
       component.alternarOpcionesMenu(grupo.id);
       expect(component.opcionesVisiblesGrupo(grupo).map(x=>x.id).sort())
-        .toEqual(grupo.items.map(x=>x.id).sort());
+        .toEqual(secundarios.map(x=>x.id).sort());
       component.alternarOpcionesMenu(grupo.id);
     }
     const todos=grupos.flatMap(grupo=>grupo.items.map(item=>item.id));
@@ -221,13 +226,15 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     spyOn(window,'scrollTo').and.stub();
     spyOn(component as any,'cargarSegcion').and.stub();
     component.cambiarSegcion('proveedores');
+    expect(component.mostrarGestionAvanzada).toBeTrue();
     expect(component.navGroups['operations']).toBeTrue();
     expect(component.masOpcionesMenu['operations']).toBeTrue();
     const grupo=component.menuPrincipal.find(g=>g.id==='operations')!;
     expect(component.opcionesVisiblesGrupo(grupo).some(i=>i.id==='proveedores')).toBeTrue();
     expect(component.descripcionOpcionMenu('productos')).toContain('fotografías');
     component.cambiarSegcion('clientes');
-    expect(component.navGroups['members']).toBeTrue();
+    expect(component.mostrarGestionAvanzada).toBeFalse();
+    expect(component.navGroups['members']).toBeFalse();
     expect(component.masOpcionesMenu['members']).toBeFalse();
   });
 
@@ -288,19 +295,28 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.cargarDashboard).toHaveBeenCalled();
   });
 
-  it('abre el área correspondiente y mantiene un solo grupo desplegado', () => {
-    const ver = (id: string, grupo: string) => {
+  it('acceso frecuente no abre submenús; funciones secundarias abren solo su área', () => {
+    for(const principal of component.accesosPrincipalesAdmin){
+      (component as any).activarGrupoDeSeccion(principal.id);
+      expect(component.mostrarGestionAvanzada).toBeFalse();
+      expect(Object.values(component.navGroups).some(Boolean)).toBeFalse();
+    }
+    const ver=(id:string,grupo:string)=>{
       (component as any).activarGrupoDeSeccion(id);
+      expect(component.mostrarGestionAvanzada).toBeTrue();
       expect(component.navGroups[grupo]).toBeTrue();
-      expect(component.menuPrincipal.filter(g => component.navGroups[g.id]).length).toBe(1);
+      expect(component.menuPrincipal.filter(g=>component.navGroups[g.id]).length).toBe(1);
     };
-    ver('clientes','members');
-    ver('reservas','training');
-    ver('productos','operations');
+    ver('membresias','members');
+    ver('clases','training');
+    ver('inventario','operations');
     ver('ventas','finance');
     ver('soporte','communication');
     ver('usuarios','menu');
     ver('calendario-admin','tools');
+    component.alternarGestionAvanzada();
+    expect(component.mostrarGestionAvanzada).toBeFalse();
+    expect(Object.values(component.navGroups).some(Boolean)).toBeFalse();
   });
 
   it('cada acceso a un requisito funcional abre su pantalla real, sin menú intermedio', () => {
@@ -311,7 +327,12 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       for (const item of grupo.items) {
         component.navegarMenu(item);
         expect(component.seccion).toBe(item.id);
-        expect(component.navGroups[grupo.id]).toBeTrue();
+        if(component.accesosPrincipalesAdmin.some(principal=>principal.id===item.id)){
+          expect(component.mostrarGestionAvanzada).toBeFalse();
+        }else{
+          expect(component.mostrarGestionAvanzada).toBeTrue();
+          expect(component.navGroups[grupo.id]).toBeTrue();
+        }
         expect(cargar).toHaveBeenCalledWith(item.id);
       }
     }
