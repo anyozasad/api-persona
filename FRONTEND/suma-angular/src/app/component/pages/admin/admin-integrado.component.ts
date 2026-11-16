@@ -273,7 +273,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           </header>
 
           <section class="mg-efsrt-data-status problem mg-operational-diagnostic"
-                   *ngIf="!actualizandoDatos && !sistemaSincronizado"
+                   *ngIf="estadoOperativoDashboard && !sistemaSincronizado"
                    aria-live="polite" aria-label="Diagnóstico de conexión y datos reales">
             <div>
               <strong>{{estadoConexionDashboard}}</strong>
