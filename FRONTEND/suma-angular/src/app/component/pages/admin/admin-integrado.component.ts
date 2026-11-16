@@ -234,7 +234,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
 
       <div class="mg-current-workspace">
       <nav class="mg-mantis-breadcrumb" aria-label="Ruta del panel">
-        <button type="button" (click)="cambiarSegcion('dashboard')">Mallqui Gym</button>
+        <span>Mallqui Gym</span>
         <span>›</span>
         <span>{{seccion==='dashboard' ? 'Dashboard / Principal' : tituloActual}}</span>
       </nav>
@@ -299,16 +299,10 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
             <section class="mg-premium-analytics" aria-label="Gráficos de actividad e ingresos">
               <div class="mg-premium-analytics-head">
                 <div><span>ANALÍTICA REAL</span><h2>Tendencias del gimnasio</h2><p>Gráficos construidos con información de la base de datos.</p></div>
-                <button type="button" (click)="cambiarSegcion('reportes-admin')">Ver reportes completos <span>↗</span></button>
               </div>
               <div class="mg-premium-analytics-grid">
                 <article class="mg-premium-card mg-revenue-card">
                   <header><div><span>RENDIMIENTO FINANCIERO</span><h3>Ingresos de los últimos 6 meses</h3></div><i>S/</i></header>
-                  <div class="mg-mantis-chart-switch" role="group" aria-label="Tipo de ingresos">
-                    <button type="button" [class.active]="tipoIngresoDashboard==='total'" (click)="tipoIngresoDashboard='total'">Total</button>
-                    <button type="button" [class.active]="tipoIngresoDashboard==='membresias'" (click)="tipoIngresoDashboard='membresias'">Membresías</button>
-                    <button type="button" [class.active]="tipoIngresoDashboard==='ventas'" (click)="tipoIngresoDashboard='ventas'">Ventas</button>
-                  </div>
                   <div class="mg-revenue-overview">
                     <strong>S/ {{totalIngresoMesSeleccionado() | number:'1.2-2'}}</strong>
                     <span>{{nombreIngresoSeleccionado}} · Mes actual</span>
@@ -377,25 +371,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                 </article>
               </div>
             </section>
-              <section class="mg-advanced-tools-shell">
-                <div class="mg-advanced-tools-head">
-                  <div>
-                    <small>DATOS OPERATIVOS</small>
-                    <h3>Análisis avanzado</h3>
-                    <p>Consulta y exporta datos cuando necesites un reporte más completo.</p>
-                  </div>
-                  <button type="button" class="admin-secondary"
-                    [attr.aria-expanded]="herramientasAvanzadasAbiertas"
-                    (click)="herramientasAvanzadasAbiertas=!herramientasAvanzadasAbiertas">
-                    {{herramientasAvanzadasAbiertas ? 'Cerrar detalle' : 'Abrir detalle'}}
-                  </button>
-                </div>
-                <app-admin-dashboard-tools
-                  *ngIf="herramientasAvanzadasAbiertas"
-                  [dashboard]="dashboard"
-                  (irSeccion)="cambiarSeccion($event)">
-                </app-admin-dashboard-tools>
-              </section>
+
           </section>
 
           <section class="mg-efsrt-pulse" *ngIf="(dashboard?.membresias?.por_vencer_7_dias ?? 0)>0 || (dashboard?.inventario?.productos_stock_bajo ?? 0)>0 || (dashboard?.membresias?.pagos_pendientes ?? 0)>0" aria-label="Pendientes de la operación del gimnasio">
@@ -438,7 +414,6 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                   <span>{{registro.fecha_fin}} · {{registro.membresia?.nombre || 'Membresía'}}</span>
                 </p>
               </div>
-              <button type="button" (click)="cambiarSegcion('renovaciones')">Revisar vencimientos</button>
             </section>
 
             <section class="mg-efsrt-panel mg-efsrt-bookings" *ngIf="reservasHoyDashboard().length > 0">
@@ -460,7 +435,6 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                 <h2>Productos del gimnasio</h2>
                 <p>Fotos, precios y existencias guardados en MySQL.</p>
               </div>
-              <button type="button" (click)="cambiarSegcion('productos')">Gestionar productos</button>
             </header>
             <div class="mg-catalog-summary" *ngIf="productos.length">
               <span><strong>{{productos.length}}</strong> productos</span>
@@ -492,9 +466,9 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
             <div>
               <strong>{{sistemaSincronizado ? 'Datos sincronizados con Laravel y MySQL' : 'Hay módulos con estructura de datos pendiente'}}</strong>
               <p>{{mensajeSincronizacion}}</p>
+              <p *ngIf="!sistemaSincronizado" class="mg-operational-help">Comprueba XAMPP/MySQL, la API Laravel y la base configurada. Git actualiza el código, pero no copia socios ni fotos de otra computadora.</p>
               <small>Base MySQL: {{dashboard?.fuente?.base_datos || 'No identificada'}} · Socios: {{clientes.length}} · Productos: {{productos.length}} · Pagos: {{pagos.length}} · Reservas: {{reservas.length}}</small>
             </div>
-            <button type="button" (click)="cambiarSegcion('verificacion-efsrt')">Verificar sistema</button>
           </section>
 
         </section>
@@ -2066,6 +2040,25 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
             </table>
           </div>
         </article>
+              <section class="mg-advanced-tools-shell">
+                <div class="mg-advanced-tools-head">
+                  <div>
+                    <small>DATOS OPERATIVOS</small>
+                    <h3>Análisis avanzado</h3>
+                    <p>Consulta y exporta datos cuando necesites un reporte más completo.</p>
+                  </div>
+                  <button type="button" class="admin-secondary"
+                    [attr.aria-expanded]="herramientasAvanzadasAbiertas"
+                    (click)="herramientasAvanzadasAbiertas=!herramientasAvanzadasAbiertas">
+                    {{herramientasAvanzadasAbiertas ? 'Cerrar detalle' : 'Abrir detalle'}}
+                  </button>
+                </div>
+                <app-admin-dashboard-tools
+                  *ngIf="herramientasAvanzadasAbiertas"
+                  [dashboard]="dashboard"
+                  (irSeccion)="cambiarSeccion($event)">
+                </app-admin-dashboard-tools>
+              </section>
         <article class="report-panel">
           <div class="management-heading"><div><h2>Próximos vencimientos</h2><p>Socios que requieren seguimiento para renovar su membresía.</p></div><button type="button" class="admin-secondary" (click)="cambiarSegcion('membresias')">Gestionar membresías</button></div>
           <div class="table-wrap">
@@ -2997,10 +2990,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   readonly accesosPrincipalesAdmin: Array<{id:string;nombre:string;icono:string;ayuda:string}> = [
     {id:'clientes',nombre:'Socios',icono:'♙',ayuda:'Registrar y administrar socios'},
     {id:'reservas',nombre:'Reservas',icono:'◫',ayuda:'Programar y controlar sesiones'},
-    {id:'asistencias',nombre:'Asistencia',icono:'✓',ayuda:'Entradas y salidas de socios'},
     {id:'productos',nombre:'Productos',icono:'▦',ayuda:'Fotos, precios y existencias'},
-    {id:'pagos',nombre:'Pagos',icono:'S/',ayuda:'Membresías y cobros'},
-    {id:'reportes-admin',nombre:'Reportes',icono:'▤',ayuda:'Ingresos, socios y asistencia'}
+    {id:'pagos',nombre:'Pagos',icono:'S/',ayuda:'Membresías y cobros'}
   ];
   mostrarGestionAvanzada = false;
 
@@ -3075,11 +3066,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   /** Funciones frecuentes visibles al entrar a cada área; el resto sigue disponible sin duplicarse. */
   readonly opcionesFrecuentesMenu: Record<string,string[]> = {
     members:['membresias','renovaciones'],
-    training:['clases','rutinas'],
+    training:['asistencias','clases'],
     operations:['inventario','compras'],
     finance:['ventas','caja'],
     communication:['soporte','comunicacion'],
-    menu:['usuarios','configuracion'],
+    menu:['reportes-admin','usuarios'],
     tools:['calendario-admin','tareas-admin']
   };
   masOpcionesMenu: Record<string,boolean> = {
