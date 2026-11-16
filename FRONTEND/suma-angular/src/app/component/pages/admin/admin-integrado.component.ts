@@ -477,7 +477,7 @@ import { catchError, forkJoin, of } from 'rxjs';
             <div>
               <strong>{{sistemaSincronizado ? 'Datos sincronizados con Laravel y MySQL' : 'Hay módulos con estructura de datos pendiente'}}</strong>
               <p>{{mensajeSincronizacion}}</p>
-              <small>Socios: {{clientes.length}} · Productos: {{productos.length}} · Pagos: {{pagos.length}} · Reservas: {{reservas.length}}</small>
+              <small>Base MySQL: {{dashboard?.fuente?.base_datos || 'No identificada'}} · Socios: {{clientes.length}} · Productos: {{productos.length}} · Pagos: {{pagos.length}} · Reservas: {{reservas.length}}</small>
             </div>
             <button type="button" (click)="cambiarSegcion('verificacion-efsrt')">Verificar sistema</button>
           </section>
@@ -4372,7 +4372,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(!this.backupRestaurarArchivo) return;
     if(!confirm('Esta acción restaurará la base de datos usando el archivo seleccionado. ¿Continuar?')) return;
     this.api.restaurarGym(this.backupRestaurarArchivo).subscribe({
-      next:(r:any)=>{this.ok(r?.mensaje||'Backup restaurado.');this.backupRestaurarArchivo=null;this.cargarDashboard();},
+      next:(r:any)=>{
+        this.backupRestaurarArchivo=null;
+        this.ok(r?.mensaje||'Backup restaurado. Recargando socios, productos, fotos, reservas y pagos.');
+        // Una copia SQL reemplaza todas las tablas, no solo los KPI del inicio.
+        // Evitar mostrar los productos de la instalación anterior por caché de Angular.
+        this.actualizarDashboardCompleto();
+      },
       error:e=>this.mostrarError(e)
     });
   }
