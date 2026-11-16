@@ -20,7 +20,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
   encapsulation: ViewEncapsulation.None,
   template: `
   <div class="admin-shell admin-home-redesign" [class.admin-sidebar-collapsed]="sidebarCerrado" [class.mg-mantis-collapsed]="sidebarCerrado" [class.mg-mantis-dark]="modoDashboard==='oscuro'" [class.mg-mantis-compact]="densidadDashboard==='compacta'" [class.mg-mantis-blue]="acentoDashboard==='azul'" [class.mg-mantis-green]="acentoDashboard==='verde'" [class.mg-mantis-coral]="acentoDashboard==='coral'">
-    <header class="mg-current-topbar">
+    <header class="mg-current-topbar" [class.mg-dropdown-active]="busquedaAbierta || avisosAbiertos || perfilAbiertoMantis">
       <div class="mg-mantis-identity">
         <button type="button" class="mg-mantis-icon-button mg-mantis-nav-toggle" (click)="toggleSidebar()"
           [attr.aria-label]="sidebarCerrado ? 'Expandir menú' : 'Contraer menú'" [attr.title]="sidebarCerrado ? 'Expandir menú' : 'Contraer menú'">☰</button>
