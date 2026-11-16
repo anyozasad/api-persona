@@ -506,3 +506,11 @@
 .admin-shell.admin-home-redesign .mg-tec-order .mg-clear-submenu {
   padding-bottom:9px!important;
 }
+
+
+/* El fondo transparente para cerrar desplegables estaba por encima del
+   encabezado y capturaba clics destinados a los resultados de búsqueda. */
+.admin-shell.admin-home-redesign>.mg-current-topbar.mg-dropdown-active {
+  position:fixed!important;
+  z-index:3600!important;
+}
