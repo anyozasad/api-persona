@@ -201,7 +201,9 @@ try {
   }
 
   await paso('El dashboard muestra causa exacta de MySQL desconectado',async()=>{
-    await page.route('**/api/estado-sistema',async ruta=>{
+    let solicitudesSimuladas=0;
+    await page.route('**/api/estado-sistema**',async ruta=>{
+      solicitudesSimuladas++;
       await ruta.fulfill({
         status:200,contentType:'application/json',
         body:JSON.stringify({
@@ -213,8 +215,18 @@ try {
     });
     try{
       await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+      await page.locator('.mg-efsrt-dashboard').waitFor({timeout:12000});
       const aviso=page.locator('.mg-operational-diagnostic');
-      await aviso.waitFor({timeout:25000});
+      try {
+        await aviso.waitFor({timeout:15000});
+      } catch(e) {
+        const estado=await page.locator('.mg-efsrt-connection').allTextContents();
+        const cuerpo=(await page.locator('body').innerText()).slice(0,1300);
+        throw new Error('Diagnóstico no visible. solicitudesSimuladas='+solicitudesSimuladas+
+          ', url='+page.url()+', etiqueta='+JSON.stringify(estado)+
+          ', pantalla='+cuerpo+'; '+String(e));
+      }
+      assert.ok(solicitudesSimuladas>0,'La prueba debe interceptar la API del estado real.');
       await assert.doesNotReject(async()=>{
         const texto=await aviso.innerText();
         assert.match(texto,/MySQL sin conexión/);
@@ -227,7 +239,7 @@ try {
         fullPage:true,animations:'disabled'
       });
     }finally{
-      await page.unroute('**/api/estado-sistema');
+      await page.unroute('**/api/estado-sistema**');
     }
   });
 
