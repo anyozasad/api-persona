@@ -513,6 +513,42 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.dashboard?.ingresos?.total_mes).toBe(120);
   });
 
+  it('explica el fallo real sin confundir MySQL con errores de módulos', () => {
+    component.estadoOperativoDashboard=null;
+    component.dashboard=null;
+    component.actualizandoDatos=true;
+    expect(component.estadoConexionDashboard).toBe('Comprobando conexión');
+    component.actualizandoDatos=false;
+    expect(component.estadoConexionDashboard).toBe('Laravel no responde');
+    expect(component.mensajeSincronizacion).toContain('php artisan serve');
+
+    component.estadoOperativoDashboard={api:true,database:false,operativo:false,faltantes:[]};
+    expect(component.estadoConexionDashboard).toBe('MySQL sin conexión');
+    expect(component.mensajeSincronizacion).toContain('XAMPP');
+
+    component.estadoOperativoDashboard={api:true,database:true,operativo:false,
+      base_datos:'gym_system',faltantes:['reservas','productos.foto']};
+    expect(component.estadoConexionDashboard).toBe('Esquema MySQL incompleto');
+    expect(component.mensajeSincronizacion).toContain('productos.foto');
+    expect(component.mensajeSincronizacion).toContain('Respalda');
+
+    component.estadoOperativoDashboard={api:true,database:true,operativo:true,faltantes:[]};
+    component.dashboard=null;
+    component.dashboardError='Fallo en indicadores';
+    expect(component.estadoConexionDashboard).toBe('Indicadores no disponibles');
+    expect(component.mensajeSincronizacion).toContain('Fallo en indicadores');
+
+    component.dashboard={ingresos:{total_mes:100}};
+    component.dashboardError='';
+    component.erroresSincronizacion=['reservas'];
+    expect(component.estadoConexionDashboard).toBe('Módulos con errores');
+    expect(component.mensajeSincronizacion).toContain('reservas');
+    expect(component.mensajeSincronizacion).not.toContain('MySQL no');
+
+    component.erroresSincronizacion=[];
+    expect(component.estadoConexionDashboard).toBe('Sistema conectado');
+  });
+
   it('no presenta datos antiguos como actualizados cuando falla el resumen', () => {
     component.dashboard = { ingresos: { total_mes: 99999 } };
     api.dashboard.and.returnValue(

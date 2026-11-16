@@ -267,10 +267,21 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
             </div>
             <div class="mg-efsrt-hero-aside">
               <span class="mg-efsrt-connection" [class.problem]="!sistemaSincronizado">
-                {{sistemaSincronizado ? '● Sistema conectado' : (estadoOperativoDashboard?.database ? '● Esquema pendiente' : '● Revisar conexión')}}
+                ● {{estadoConexionDashboard}}
               </span>
             </div>
           </header>
+
+          <section class="mg-efsrt-data-status problem mg-operational-diagnostic"
+                   *ngIf="estadoOperativoDashboard && !sistemaSincronizado"
+                   aria-live="polite" aria-label="Diagnóstico de conexión y datos reales">
+            <div>
+              <strong>{{estadoConexionDashboard}}</strong>
+              <p>{{mensajeSincronizacion}}</p>
+              <small>Base: {{estadoOperativoDashboard?.base_datos || dashboard?.fuente?.base_datos || 'sin identificar'}}
+                · Socios: {{clientes.length}} · Productos: {{productos.length}} · Pagos: {{pagos.length}}</small>
+            </div>
+          </section>
 
           <section class="mg-efsrt-kpis" aria-label="Indicadores obtenidos de MySQL">
             <article>
@@ -454,15 +465,6 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
             <ng-template #sinProductosEfsrt>
               <p class="mg-efsrt-empty">No hay productos cargados desde MySQL. Registra productos y sus fotos desde Inventario.</p>
             </ng-template>
-          </section>
-
-          <section class="mg-efsrt-data-status" [class.problem]="!sistemaSincronizado">
-            <div>
-              <strong>{{sistemaSincronizado ? 'Datos sincronizados con Laravel y MySQL' : 'Hay módulos con estructura de datos pendiente'}}</strong>
-              <p>{{mensajeSincronizacion}}</p>
-              <p *ngIf="!sistemaSincronizado" class="mg-operational-help">Comprueba XAMPP/MySQL, la API Laravel y la base configurada. Git actualiza el código, pero no copia socios ni fotos de otra computadora.</p>
-              <small>Base MySQL: {{dashboard?.fuente?.base_datos || 'No identificada'}} · Socios: {{clientes.length}} · Productos: {{productos.length}} · Pagos: {{pagos.length}} · Reservas: {{reservas.length}}</small>
-            </div>
           </section>
 
         </section>
@@ -4015,14 +4017,34 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       && this.ultimaActualizacionTs>0;
   }
 
+  /** Estado verdadero de la instalación; no confunde fallos de módulos con MySQL desconectado. */
+  get estadoConexionDashboard(): string {
+    if (this.actualizandoDatos && !this.estadoOperativoDashboard) return 'Comprobando conexión';
+    if (!this.estadoOperativoDashboard?.api) return 'Laravel no responde';
+    if (!this.estadoOperativoDashboard?.database) return 'MySQL sin conexión';
+    if (!this.estadoOperativoDashboard?.operativo) return 'Esquema MySQL incompleto';
+    if (this.dashboardError || !this.dashboard) return 'Indicadores no disponibles';
+    if (this.erroresSincronizacion.length) return 'Módulos con errores';
+    return 'Sistema conectado';
+  }
+
   get mensajeSincronizacion(): string {
-    const faltantes=Array.isArray(this.estadoOperativoDashboard?.faltantes)
-      ? this.estadoOperativoDashboard.faltantes
-      : [];
-    if(faltantes.length) return 'Faltan '+faltantes.length+' requisitos de tablas o columnas en MySQL. Haz respaldo antes de ejecutar sistema:preparar.';
-    if(this.erroresSincronizacion.length) return 'Falló: '+this.erroresSincronizacion.join(', ');
-    if(this.sistemaSincronizado) return 'API, dashboard y base de datos sincronizados';
-    return 'Revisar conexión y esquema funcional';
+    const estado=this.estadoOperativoDashboard;
+    const faltantes=Array.isArray(estado?.faltantes) ? estado.faltantes : [];
+    if (this.actualizandoDatos && !estado) return 'Consultando Laravel y MySQL. No se muestran cifras hasta recibir respuesta.';
+    if (!estado?.api) return 'No hay respuesta válida de Laravel. Comprueba que php artisan serve esté iniciado en 127.0.0.1:8000 y vuelve a cargar la página.';
+    if (!estado?.database) return 'Laravel responde, pero MySQL no. Enciende MySQL en XAMPP y revisa BACKEND/.env y el puerto 3306; conserva tus registros.';
+    if (!estado?.operativo) {
+      const muestra=faltantes.slice(0,3).join(', ');
+      return 'Laravel y MySQL responden, pero faltan '+faltantes.length
+        +' tablas o columnas'+(muestra ? ': '+muestra : '')
+        +'. Respalda la base antes de ejecutar php artisan sistema:preparar.';
+    }
+    if (this.dashboardError || !this.dashboard) return 'Laravel y MySQL responden, pero falló el resumen: '
+      +(this.dashboardError || 'revisa el registro de errores de Laravel en BACKEND/storage/logs.');
+    if (this.erroresSincronizacion.length) return 'Los datos principales responden. Fallaron estos módulos: '
+      +this.erroresSincronizacion.join(', ')+'. Revisa sus rutas y permisos; no se han eliminado registros.';
+    return 'Datos reales disponibles desde Laravel y MySQL. Los datos del instituto solo estarán aquí si se importó su base.';
   }
 
   actualizarDashboardCompleto(): void {
