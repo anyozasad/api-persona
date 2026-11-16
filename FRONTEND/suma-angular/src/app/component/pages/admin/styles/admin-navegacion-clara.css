@@ -438,3 +438,37 @@
 .admin-shell.admin-home-redesign .mg-efsrt-dashboard .mg-premium-analytics-head > div {
   max-width:100%;
 }
+
+
+/* Análisis avanzado trasladado del Inicio a la pantalla de Reportes. */
+.admin-shell.admin-home-redesign .mg-current-workspace > .mg-advanced-tools-shell {
+  border:1px solid #e3e9df;
+  border-radius:14px;
+  padding:18px;
+  margin:16px 0;
+  background:#fff;
+  color:#2d3d2d;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace > .mg-advanced-tools-shell .mg-advanced-tools-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-bottom:12px;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace > .mg-advanced-tools-shell .mg-advanced-tools-head small {
+  color:#5a7b42;
+  letter-spacing:.06em;
+  font-size:11px;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace > .mg-advanced-tools-shell .mg-advanced-tools-head h3 {
+  margin:3px 0 4px;
+  font-size:18px;
+  color:#223520;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace > .mg-advanced-tools-shell .mg-advanced-tools-head p {
+  margin:0;
+  color:#6a786b;
+  font-size:12px;
+}
