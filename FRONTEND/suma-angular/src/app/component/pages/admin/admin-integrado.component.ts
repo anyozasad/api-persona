@@ -20,7 +20,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
   encapsulation: ViewEncapsulation.None,
   template: `
   <div class="admin-shell admin-home-redesign" [class.admin-sidebar-collapsed]="sidebarCerrado" [class.mg-mantis-collapsed]="sidebarCerrado" [class.mg-mantis-dark]="modoDashboard==='oscuro'" [class.mg-mantis-compact]="densidadDashboard==='compacta'" [class.mg-mantis-blue]="acentoDashboard==='azul'" [class.mg-mantis-green]="acentoDashboard==='verde'" [class.mg-mantis-coral]="acentoDashboard==='coral'">
-    <header class="mg-current-topbar">
+    <header class="mg-current-topbar" [class.mg-dropdown-active]="busquedaAbierta || avisosAbiertos || perfilAbiertoMantis">
       <div class="mg-mantis-identity">
         <button type="button" class="mg-mantis-icon-button mg-mantis-nav-toggle" (click)="toggleSidebar()"
           [attr.aria-label]="sidebarCerrado ? 'Expandir menú' : 'Contraer menú'" [attr.title]="sidebarCerrado ? 'Expandir menú' : 'Contraer menú'">☰</button>
@@ -41,12 +41,12 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           <kbd>↵</kbd>
         </label>
         <div *ngIf="busquedaAbierta && busquedaAdmin.trim().length > 0" class="mg-mantis-search-results" role="listbox" aria-label="Módulos disponibles">
-          <div class="mg-mantis-dropdown-title">ACCESO RÁPIDO</div>
-          <button type="button" *ngFor="let modulo of accesosRapidosDashboard" (click)="irAAccesoRapido(modulo.id)"
+          <div class="mg-mantis-dropdown-title">ELIGE LA FUNCIÓN · ACCESO DIRECTO</div>
+          <button type="button" *ngFor="let modulo of accesosRapidosDashboard; trackBy: trackByAccesoRapido" (click)="irAAccesoRapido(modulo.id)"
             role="option" [attr.aria-selected]="seccion===modulo.id">
-            <span>↗</span><strong>{{modulo.nombre}}</strong><small>Abrir módulo</small>
+            <span>↗</span><strong>{{modulo.nombre}}</strong><small>{{modulo.area}} · {{modulo.ayuda}}</small>
           </button>
-          <p *ngIf="!accesosRapidosDashboard.length">No hay coincidencias. Prueba con socios, pagos, inventario o reservas.</p>
+          <p *ngIf="!accesosRapidosDashboard.length">No encontré esa función. Prueba con registrar socio, asistencia, fotos o caja.</p>
         </div>
       </div>
 
@@ -190,14 +190,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                   <small>{{descripcionOpcionMenu(item.id)}}</small>
                 </span>
               </button>
-              <button type="button" class="mg-nav-show-more"
-                *ngIf="cantidadOpcionesSecundarias(grupo)>0"
-                [attr.aria-expanded]="!!masOpcionesMenu[grupo.id]"
-                [attr.aria-label]="masOpcionesMenu[grupo.id] ? 'Mostrar menos opciones de ' + grupo.titulo : 'Mostrar más opciones de ' + grupo.titulo"
-                (click)="alternarOpcionesMenu(grupo.id)">
-                <span aria-hidden="true">{{masOpcionesMenu[grupo.id] ? '−' : '⋯'}}</span>
-                <span>{{masOpcionesMenu[grupo.id] ? 'Mostrar menos' : 'Más opciones (' + cantidadOpcionesSecundarias(grupo) + ')'}}</span>
-              </button>
+
             </div>
           </ng-container>
         </div>
@@ -3059,40 +3052,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ];
 
 
-  /** Funciones frecuentes visibles al entrar a cada área; el resto sigue disponible sin duplicarse. */
-  readonly opcionesFrecuentesMenu: Record<string,string[]> = {
-    members:['membresias','renovaciones'],
-    training:['asistencias','clases'],
-    operations:['inventario','compras'],
-    finance:['ventas','caja'],
-    communication:['soporte','comunicacion'],
-    menu:['reportes-admin','usuarios'],
-    tools:['calendario-admin','tareas-admin']
-  };
-  masOpcionesMenu: Record<string,boolean> = {
-    members:false,training:false,operations:false,finance:false,
-    communication:false,menu:false,tools:false
-  };
-
+  /** Un solo nivel de expansión: ningún módulo queda escondido tras “Más opciones”. */
   opcionesVisiblesGrupo(grupo:{id:string;items:Array<{id:string;nombre:string;accion?:'nuevoSocio'}>}):
       Array<{id:string;nombre:string;accion?:'nuevoSocio'}> {
-    const frecuentes=this.opcionesFrecuentesMenu[grupo.id] ?? [];
-    const restantes=grupo.items.filter(item=>!this.accesosPrincipalesAdmin.some(principal=>principal.id===item.id));
-    const principales=restantes.filter(item=>frecuentes.includes(item.id));
-    return this.masOpcionesMenu[grupo.id]
-      ? [...principales,...restantes.filter(item=>!frecuentes.includes(item.id))]
-      : principales;
-  }
-
-  cantidadOpcionesSecundarias(grupo:{id:string;items:Array<{id:string}>}):number {
-    const frecuentes=this.opcionesFrecuentesMenu[grupo.id] ?? [];
-    return grupo.items.filter(item=>!frecuentes.includes(item.id)
-      && !this.accesosPrincipalesAdmin.some(principal=>principal.id===item.id)).length;
-  }
-
-  alternarOpcionesMenu(grupoId:string):void {
-    if(!Object.prototype.hasOwnProperty.call(this.masOpcionesMenu,grupoId))return;
-    this.masOpcionesMenu[grupoId]=!this.masOpcionesMenu[grupoId];
+    return grupo.items.filter(item=>
+      !this.accesosPrincipalesAdmin.some(principal=>principal.id===item.id));
   }
 
   descripcionOpcionMenu(id:string):string {
@@ -3247,110 +3211,16 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
 
+  /** El Enter abre exactamente el mismo resultado que aparece en las sugerencias. */
   buscarEnPanel(): void {
-    const q=String(this.busquedaAdmin||'')
-      .trim()
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g,'');
-
-    if(!q){
-      this.ok('Escribe qué módulo necesitas abrir');
-      return;
-    }
-
-    const destinos:Array<{claves:string[],seccion:string}>=[
-      {claves:['historial venta','historial ventas'],seccion:'historial-ventas'},
-      {claves:['reporte asistencia','reporte asistencias'],seccion:'reporte-asistencias'},
-      {claves:['matricular','matricula','nuevo socio','registrar socio'],seccion:'clientes'},
-      {claves:['seguimiento','seguimiento socio','seguimiento socios'],seccion:'seguimiento'},
-      {claves:['socio','socios','cliente','clientes','miembro','miembros'],seccion:'clientes'},
-      {claves:['membresia','membresias'],seccion:'membresias'},
-      {claves:['pago','pagos'],seccion:'pagos'},
-      {claves:['asistencia','asistencias','entrada','salida','control de acceso'],seccion:'asistencias'},
-      {claves:['tarifa','tarifas','plan','planes'],seccion:'planes'},
-      {claves:['clase','clases'],seccion:'clases'},
-      {claves:['reserva','reservas','agenda'],seccion:'reservas'},
-      {claves:['rutina','rutinas'],seccion:'rutinas'},
-      {claves:['nutricion','alimentacion','alimentación'],seccion:'nutricion'},
-      {claves:['entrenador','entrenadores'],seccion:'entrenador'},
-      {claves:['trainer profile','perfil entrenador'],seccion:'entrenador'},
-      {claves:['sports components','componentes deportivos','fitness widgets'],seccion:'seguimiento'},
-      {claves:['caja','apertura','cierre'],seccion:'caja'},
-      {claves:['venta','ventas','punto de venta'],seccion:'ventas'},
-      {claves:['gasto','gastos','egreso','egresos'],seccion:'gastos'},
-      {claves:['compra','compras'],seccion:'compras'},
-      {claves:['proveedor','proveedores'],seccion:'proveedores'},
-      {claves:['kardex','movimiento inventario'],seccion:'kardex'},
-      {claves:['categoria','categorias'],seccion:'categorias'},
-      {claves:['producto','productos','inventario','stock'],seccion:'productos'},
-      {claves:['soporte','consulta','consultas'],seccion:'soporte'},
-      {claves:['opinion','opiniones','comentario'],seccion:'opiniones'},
-      {claves:['notificacion','notificaciones','comunicacion','avisos'],seccion:'comunicacion'},
-      {claves:['reporte','reportes','indicadores'],seccion:'reportes'},
-      {claves:['usuario','usuarios','cuenta interna'],seccion:'usuarios'},
-      {claves:['auditoria','auditoria','logs','registro actividad'],seccion:'auditoria'},
-      {claves:['nutricion','dieta','alimentacion','plan alimentacion'],seccion:'nutricion'},
-      {claves:['equipo','equipos','maquina','maquinas','mantenimiento'],seccion:'equipos'},
-      {claves:['evento','eventos','actividad'],seccion:'eventos'},
-      {claves:['galeria','foto','fotos','imagen'],seccion:'galeria'},
-      {claves:['noticia','noticias','novedad','novedades','promocion'],seccion:'noticias'},
-      {claves:['salario','salarios','sueldo','sueldos'],seccion:'salarios'},
-      {claves:['ingreso','ingresos'],seccion:'ingresos'},
-      {claves:['factura','facturas','comprobante'],seccion:'facturas'},
-      {claves:['members list','lista socios','lista miembros'],seccion:'clientes'},
-      {claves:['add member','agregar socio','nuevo socio'],seccion:'clientes'},
-      {claves:['edit member','editar socio','editar miembro'],seccion:'clientes'},
-      {claves:['invoices list','lista facturas'],seccion:'facturas'},
-      {claves:['add invoice','agregar factura','nueva factura'],seccion:'facturas'},
-      {claves:['edit invoice','editar factura'],seccion:'facturas'},
-      {claves:['tables','tabla','tablas'],seccion:'tablas-admin'},
-      {claves:['data table','datatable','filtros tabla'],seccion:'tablas-admin'},
-      {claves:['graph','graphs','graficos','gráficos'],seccion:'reportes-admin'},
-      {claves:['apex','apex charts'],seccion:'reportes-admin'},
-      {claves:['morris','morris charts'],seccion:'reportes-admin'},
-      {claves:['mapa','maps','vector maps'],seccion:'dashboard'},
-      {claves:['accordion','accordions'],seccion:'dashboard'},
-      {claves:['carousel','carrusel'],seccion:'dashboard'},
-      {claves:['modal','modals'],seccion:'dashboard'},
-      {claves:['popover','popovers'],seccion:'dashboard'},
-      {claves:['tabs','pestañas'],seccion:'dashboard'},
-      {claves:['tooltip','tooltips'],seccion:'dashboard'},
-      {claves:['forms','formularios'],seccion:'configuracion'},
-      {claves:['inputs','form inputs'],seccion:'configuracion'},
-      {claves:['checkbox','radio'],seccion:'configuracion'},
-      {claves:['archivo','file input','upload'],seccion:'mantenimiento-sistema'},
-      {claves:['validacion','validaciones'],seccion:'configuracion'},
-      {claves:['fecha hora','date time'],seccion:'configuracion'},
-      {claves:['input mask','mascaras'],seccion:'configuracion'},
-      {claves:['tags','etiquetas'],seccion:'configuracion'},
-      {claves:['alerts','alertas'],seccion:'comunicacion'},
-      {claves:['avatars','avatares'],seccion:'usuarios'},
-      {claves:['badges','insignias'],seccion:'usuarios'},
-      {claves:['buttons','botones'],seccion:'configuracion'},
-      {claves:['cards','tarjetas'],seccion:'dashboard'},
-      {claves:['dropdown','desplegable'],seccion:'configuracion'},
-      {claves:['progress','progreso'],seccion:'seguimiento'},
-      {claves:['icons','iconos'],seccion:'configuracion'},
-      {claves:['account settings','cuenta'],seccion:'configuracion'},
-      {claves:['my profile','perfil'],seccion:'configuracion'},
-      {claves:['contact','contacto'],seccion:'soporte'},
-      {claves:['typography','tipografia'],seccion:'configuracion'},
-      {claves:['login signup','autenticacion'],seccion:'configuracion'},
-      {claves:['404','page not found'],seccion:'dashboard'},
-      {claves:['maintenance','mantenimiento'],seccion:'mantenimiento-sistema'},
-      {claves:['configuracion','sistema','ajustes'],seccion:'configuracion'},
-      {claves:['dashboard','inicio','panel'],seccion:'dashboard'}
-    ];
-
-    const encontrado=destinos.find(x=>x.claves.some(k=>q.includes(k)));
+    const encontrado=this.accesosRapidosDashboard[0];
     if(encontrado){
-      this.cambiarSegcion(encontrado.seccion);
-      this.busquedaAdmin='';
+      this.irAAccesoRapido(encontrado.id);
       return;
     }
-
-    this.error='No encontré esa función. Prueba con socios, reservas, caja, ventas, inventario, reportes o sistema.';
+    this.error=this.busquedaAdmin.trim()
+      ? 'No encontré esa función. Busca por nombre o actividad, por ejemplo: registrar socio, foto o caja.'
+      : 'Escribe la función que necesitas: socio, reserva, pago, foto o reporte.';
   }
 
   navegarMenu(item:{id:string;nombre:string;accion?:'nuevoSocio'}):void{
@@ -3372,7 +3242,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(grupo){
       this.mostrarGestionAvanzada=true;
       this.navGroups[grupo.id]=true;
-      this.masOpcionesMenu[grupo.id]=!this.opcionesFrecuentesMenu[grupo.id]?.includes(seccion);
     }
   }
 
@@ -3393,10 +3262,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     const abrir=!this.navGroups[group];
     Object.keys(this.navGroups).forEach(id=>this.navGroups[id]=false);
     this.navGroups[group]=abrir;
-    if(abrir){
-      const activa=this.menuPrincipal.find(g=>g.id===group)?.items.some(i=>i.id===this.seccion);
-      this.masOpcionesMenu[group]=Boolean(activa && !this.opcionesFrecuentesMenu[group]?.includes(this.seccion));
-    }
   }
 
   toggleSidebar(): void {
@@ -3723,13 +3588,48 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     }));
   }
 
-  get accesosRapidosDashboard():Array<{id:string,nombre:string}>{
-    const query=this.busquedaAdmin.trim().toLocaleLowerCase('es-PE');
-    if (!query) return [];
-    return Object.entries(this.titulos)
-      .filter(([id,info])=>id.toLowerCase().includes(query) || info[0].toLocaleLowerCase('es-PE').includes(query))
-      .slice(0,5)
-      .map(([id,info])=>({id,nombre:info[0]}));
+  /** Mantiene el botón en el DOM al perder foco el buscador, evitando perder el clic. */
+  trackByAccesoRapido(_index:number,modulo:{id:string}):string{
+    return modulo.id;
+  }
+
+  /** Búsqueda sin acentos y por acción. No muestra apartados de plantilla. */
+  private textoBusqueda(valor:string):string{
+    return String(valor||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+  }
+
+  get accesosRapidosDashboard():Array<{id:string,nombre:string,area:string,ayuda:string}>{
+    const query=this.textoBusqueda(this.busquedaAdmin);
+    if(!query)return [];
+    const sinonimos:Record<string,string>={
+      clientes:'matricular socio registrar socio nuevo socio registrar cliente',
+      reservas:'agendar reservar sesion reservar clase',
+      membresias:'asignar plan renovar membresia vigencia',
+      asistencias:'marcar entrada salida asistencia registrar ingreso gimnasio',
+      productos:'subir foto imagen foto producto fotografias alta producto',
+      inventario:'existencias stock stock bajo',
+      compras:'ingresar compra stock proveedor',
+      pagos:'registrar pago cobrar confirmar pago',
+      caja:'abrir caja cerrar caja apertura cierre',
+      ventas:'vender producto emitir comprobante interno',
+      'reportes-admin':'grafico graficos indicadores ingresos mensuales reportes',
+      'verificacion-efsrt':'requisitos semanas sprints avances cumplimiento',
+      'mantenimiento-sistema':'backup respaldo base de datos'
+    };
+    const items=this.menuPrincipal.flatMap(grupo=>grupo.items.map(item=>{
+      const ayuda=this.descripcionOpcionMenu(item.id);
+      const nombre=item.nombre;
+      const prueba=this.textoBusqueda([nombre,grupo.titulo,ayuda,item.id,sinonimos[item.id]||''].join(' '));
+      const exacto=this.textoBusqueda(nombre);
+      const alias=this.textoBusqueda(sinonimos[item.id]||'');
+      const relevancia=exacto===query?0
+        :exacto.startsWith(query)?1
+        :alias.includes(query)?2
+        :this.textoBusqueda(ayuda).includes(query)?3:4;
+      return {id:item.id,nombre,area:grupo.titulo,ayuda,prueba,relevancia};
+    })).filter(item=>item.prueba.includes(query));
+    items.sort((a,b)=>a.relevancia-b.relevancia || a.nombre.localeCompare(b.nombre,'es'));
+    return items.slice(0,8).map(({id,nombre,area,ayuda})=>({id,nombre,area,ayuda}));
   }
 
   get alertasRapidasDashboard():Array<{id:string,nombre:string,cantidad:number,icono:string}>{

@@ -273,6 +273,29 @@ try {
     await page.screenshot({path:'evidencias-dashboard/13_Menu_cuatro_tareas_directas.png',fullPage:true});
   });
 
+  await paso('Buscar función por actividad abre el módulo sin navegar submenús',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const buscador=page.getByRole('textbox',{name:'Buscar módulo del panel'});
+    await buscador.fill('subir foto');
+    const resultados=page.locator('.mg-mantis-search-results');
+    await resultados.waitFor({timeout:15000});
+    assert.match(await resultados.innerText(),/Productos y fotos/);
+    const opcion=resultados.getByRole('option',{name:/Productos y fotos/});
+    await opcion.click();
+    await page.locator('.productos-page').waitFor({timeout:15000});
+    assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Productos');
+    await buscador.fill('abrir caja');
+    await resultados.waitFor({timeout:15000});
+    assert.match(await resultados.innerText(),/Apertura y cierre de caja/);
+    await buscador.press('Enter');
+    assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Caja');
+    assert.equal(await buscador.inputValue(),'');
+    await page.screenshot({
+      path:'evidencias-dashboard/38_Buscar_modulos_por_actividad.png',
+      fullPage:true,animations:'disabled'
+    });
+  });
+
   await paso('Administración conserva reportes, usuarios, auditoría, configuración y respaldo',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
@@ -281,13 +304,12 @@ try {
     assert.equal(await menu.locator('.cf-nav-group-head').count(),7,
       'Los siete grupos permanecen disponibles solo cuando se solicitan.');
     await menu.getByRole('button',{name:'Abrir Administración'}).click();
-    const opciones=menu.locator('.cf-nav-children button:not(.mg-nav-show-more)');
+    const opciones=menu.locator('.cf-nav-children button');
+    assert.equal(await menu.locator('.mg-nav-show-more').count(),0,
+      'Nunca esconder funciones en un tercer nivel.');
+
     assert.deepEqual(await opciones.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label'))),[
-      'Reportes generales','Usuarios y permisos'
-    ]);
-    await menu.getByRole('button',{name:'Mostrar más opciones de Administración'}).click();
-    assert.deepEqual(await opciones.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label'))),[
-      'Reportes generales','Usuarios y permisos','Reporte de asistencia','Auditoría',
+      'Reportes generales','Reporte de asistencia','Usuarios y permisos','Auditoría',
       'Configuración','Respaldo y mantenimiento','Verificación del sistema'
     ]);
     await menu.getByRole('button',{name:'Configuración',exact:true}).click();
@@ -318,14 +340,13 @@ try {
       const menu=page.locator('.mg-clear-navigation');
       await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
       await menu.getByRole('button',{name:'Abrir '+grupo.area}).click();
-      const elementos=menu.locator('.cf-nav-children button:not(.mg-nav-show-more)');
-      assert.equal(await elementos.count(),2,grupo.area+': debe mostrar solo dos herramientas.');
-      assert.equal(await menu.getByRole('button',{name:grupo.adicional,exact:true}).count(),0);
+      const elementos=menu.locator('.cf-nav-children button');
+      assert.equal(await elementos.count(),grupo.total,
+        'Todas las funciones del área deben aparecer al abrirla.');
+      assert.equal(await menu.locator('.mg-nav-show-more').count(),0);
       await menu.getByRole('button',{name:grupo.frecuente,exact:true}).click();
       assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio');
-      await menu.getByRole('button',{name:'Mostrar más opciones de '+grupo.area}).click();
-      assert.equal(await elementos.count(),grupo.total,
-        'No se deben perder funciones al plegar el menú '+grupo.area);
+
       await menu.getByRole('button',{name:grupo.adicional,exact:true}).click();
       assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio');
       assert.equal(await menu.getByRole('button',{name:grupo.adicional,exact:true}).getAttribute('aria-current'),'page');
@@ -421,7 +442,6 @@ try {
     assert.equal(await menu.locator('.mg-optional-category-head').count(),0);
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
     await menu.getByRole('button',{name:'Abrir Ventas y caja'}).click();
-    await menu.getByRole('button',{name:'Mostrar más opciones de Ventas y caja'}).click();
     await menu.getByRole('button',{name:'Gastos',exact:true}).waitFor({timeout:10000});
     assert.equal(await menu.getByRole('button',{name:'Historial de ventas'}).count(),1);
     await menu.getByRole('button',{name:'Gastos',exact:true}).click();

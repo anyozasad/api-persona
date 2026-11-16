@@ -472,3 +472,45 @@
   color:#6a786b;
   font-size:12px;
 }
+
+
+/* Resultados de búsqueda legibles: nombre arriba y tarea/área abajo.
+   El texto de ayuda no debe comprimir el nombre del módulo en el encabezado. */
+.admin-shell.admin-home-redesign .mg-mantis-search-results>button {
+  display:grid!important;
+  grid-template-columns:25px minmax(0,1fr)!important;
+  grid-template-rows:auto auto!important;
+  min-height:53px!important;
+  column-gap:10px!important;
+  row-gap:2px!important;
+  align-items:center!important;
+}
+.admin-shell.admin-home-redesign .mg-mantis-search-results>button>span {
+  grid-column:1!important;
+  grid-row:1 / span 2!important;
+}
+.admin-shell.admin-home-redesign .mg-mantis-search-results>button>strong {
+  grid-column:2!important;
+  grid-row:1!important;
+  min-width:0!important;
+  white-space:normal!important;
+}
+.admin-shell.admin-home-redesign .mg-mantis-search-results>button>small {
+  grid-column:2!important;
+  grid-row:2!important;
+  display:block!important;
+  white-space:normal!important;
+  line-height:1.25!important;
+}
+/* Cada área ya enseña todas sus funciones; no existe un tercer desplegable. */
+.admin-shell.admin-home-redesign .mg-tec-order .mg-clear-submenu {
+  padding-bottom:9px!important;
+}
+
+
+/* El fondo transparente para cerrar desplegables estaba por encima del
+   encabezado y capturaba clics destinados a los resultados de búsqueda. */
+.admin-shell.admin-home-redesign>.mg-current-topbar.mg-dropdown-active {
+  position:fixed!important;
+  z-index:3600!important;
+}
