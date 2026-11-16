@@ -198,55 +198,53 @@ try {
     await paso('Ruta '+ruta+' abre módulo propio',()=>pantalla(ruta,contenido,nombre));
   }
 
-  await paso('Menú administrativo organizado: todas las funciones en áreas reales',async()=>{
+  await paso('Menú TEC-SGI adaptado: seis funciones directas y módulos extra ocultos',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
     await menu.waitFor({timeout:20000});
-
-    const grupos=menu.locator('.cf-nav-group-head');
-    assert.equal(await grupos.count(),7,'El sistema tiene siete áreas del gimnasio.');
-    assert.equal(await menu.locator('.mg-direct-home').count(),1,
-      'Inicio debe mostrar solo Panel principal; la matrícula está dentro de Socios.');
-    assert.equal(await menu.getByText('Todas las funciones',{exact:true}).count(),0,
-      'No debe existir el botón de catálogo genérico.');
-
-    const titulos=(await grupos.locator('span:nth-child(2)').allTextContents()).map(x=>x.trim());
-    assert.deepEqual(titulos,[
-      'Socios y membresías','Clases y entrenamiento','Productos e inventario',
-      'Ventas y caja','Atención al socio','Administración','Organización interna'
+    assert.equal(await menu.locator('.mg-direct-home').count(),1);
+    assert.equal(await menu.locator('.mg-nav-primary').count(),6,
+      'La pantalla inicial no debe mostrar siete grupos ni decenas de botones.');
+    assert.deepEqual(await menu.locator('.mg-nav-primary').evaluateAll(nodes=>
+      nodes.map(node=>node.getAttribute('aria-label'))),[
+      'Socios','Reservas','Asistencia','Productos','Pagos','Reportes'
     ]);
-    const secciones=(await menu.locator('.mg-nav-caption').allTextContents()).map(x=>x.trim());
-    assert.deepEqual(secciones,['INICIO','GESTIÓN DEL GIMNASIO']);
-
-    await menu.getByRole('button',{name:'Abrir Productos e inventario'}).click();
-    await menu.getByRole('button',{name:'Productos y fotos'}).waitFor({timeout:15000});
-    await menu.getByRole('button',{name:'Productos y fotos'}).click();
+    assert.equal(await menu.locator('.cf-nav-group-head').count(),0,
+      'Los módulos secundarios permanecen plegados.');
+    assert.deepEqual(await menu.locator('.mg-nav-caption').allTextContents(),
+      ['INICIO','OPERACIÓN DIARIA','GESTIÓN Y SISTEMA']);
+    assert.equal(await menu.getByText('Todas las funciones',{exact:true}).count(),0);
+    const primario=menu.getByRole('button',{name:'Productos',exact:true});
+    await primario.click();
     await page.locator('.productos-page').waitFor({timeout:20000});
     assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Productos');
+    assert.equal(await primario.getAttribute('aria-current'),'page');
     const refresco=page.waitForResponse(r=>r.url().includes('/api/productos') && r.status()===200,{timeout:20000});
     await page.getByRole('button',{name:'Actualizar módulo actual'}).click();
     await refresco;
-    assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Productos',
-      'Actualizar no debe sacarme del módulo ni recargar solo el panel.');
+    assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Productos');
     assert.equal(await page.locator('.mg-module-shell-actions button').count(),1,
-      'No debe duplicarse el botón de actualizar dentro del módulo.');
-
-    await page.screenshot({path:'evidencias-dashboard/13_Menu_simplificado.png',fullPage:true});
+      'Un solo control de actualización por módulo.');
+    await page.screenshot({path:'evidencias-dashboard/13_Menu_seis_tareas_directas.png',fullPage:true});
   });
 
   await paso('Administración conserva reportes, usuarios, auditoría, configuración y respaldo',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
+    assert.equal(await menu.getByRole('button',{name:'Reportes',exact:true}).count(),1);
+    await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+    assert.equal(await menu.locator('.cf-nav-group-head').count(),7,
+      'Los siete grupos permanecen disponibles solo cuando se solicitan.');
     await menu.getByRole('button',{name:'Abrir Administración'}).click();
     const opciones=menu.locator('.cf-nav-children button:not(.mg-nav-show-more)');
     assert.deepEqual(await opciones.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label'))),[
-      'Reportes generales','Usuarios y permisos','Configuración','Verificación del sistema'
-    ],'Solo aparecen las funciones más utilizadas.');
+      'Usuarios y permisos','Configuración'
+    ]);
     await menu.getByRole('button',{name:'Mostrar más opciones de Administración'}).click();
     assert.deepEqual(await opciones.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label'))),[
-      'Reportes generales','Usuarios y permisos','Configuración','Verificación del sistema',
-      'Reporte de asistencia','Auditoría','Respaldo y mantenimiento'
-    ],'Las funciones restantes siguen accesibles sin duplicarse.');
+      'Usuarios y permisos','Configuración','Reporte de asistencia','Auditoría',
+      'Respaldo y mantenimiento','Verificación del sistema'
+    ]);
     await menu.getByRole('button',{name:'Configuración',exact:true}).click();
     const configuracion=page.locator('.config-page');
     await configuracion.waitFor({timeout:15000});
@@ -254,50 +252,38 @@ try {
     for(const herramienta of [
       'Usuarios y permisos','Historial de actividad',
       'Gestionar respaldos','Diagnóstico avanzado'
-    ]){
-      assert.equal(await configuracion.getByRole('button',{name:herramienta}).count(),1,
-        'Debe conservarse la herramienta: '+herramienta);
-    }
-    await page.screenshot({
-      path:'evidencias-dashboard/21_Configuracion_sin_modulos_duplicados.png',
-      fullPage:true,animations:'disabled'
-    });
+    ])assert.equal(await configuracion.getByRole('button',{name:herramienta}).count(),1,
+      'Falta herramienta funcional: '+herramienta);
+    await page.screenshot({path:'evidencias-dashboard/21_Configuracion_sin_modulos_duplicados.png',
+      fullPage:true,animations:'disabled'});
   });
 
-
-  await paso('Cada área abre funciones frecuentes y complementarias reales',async()=>{
+  await paso('Siete áreas avanzadas conservan módulos sin duplicar los seis accesos rápidos',async()=>{
     const grupos=[
-      {area:'Socios y membresías',frecuente:'Socios',adicional:'Planes y tarifas',total:7},
-      {area:'Clases y entrenamiento',frecuente:'Reservas',adicional:'Seguimiento',total:7},
-      {area:'Productos e inventario',frecuente:'Productos y fotos',adicional:'Proveedores',total:7},
+      {area:'Socios y membresías',frecuente:'Membresías',adicional:'Planes y tarifas',total:5},
+      {area:'Clases y entrenamiento',frecuente:'Clases y horarios',adicional:'Seguimiento',total:5},
+      {area:'Productos e inventario',frecuente:'Control de inventario',adicional:'Proveedores',total:6},
       {area:'Ventas y caja',frecuente:'Registrar venta',adicional:'Comprobantes internos',total:7},
       {area:'Atención al socio',frecuente:'Consultas y soporte',adicional:'Eventos',total:6},
-      {area:'Administración',frecuente:'Configuración',adicional:'Auditoría',total:7},
+      {area:'Administración',frecuente:'Configuración',adicional:'Auditoría',total:6},
       {area:'Organización interna',frecuente:'Calendario',adicional:'Tablas avanzadas',total:5}
     ];
     for(const grupo of grupos){
       await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
       const menu=page.locator('.mg-clear-navigation');
+      await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
       await menu.getByRole('button',{name:'Abrir '+grupo.area}).click();
       const elementos=menu.locator('.cf-nav-children button:not(.mg-nav-show-more)');
-      const cantidad=await elementos.count();
-      assert.ok(cantidad>=2 && cantidad<=4,
-        grupo.area+': demasiados botones abiertos inicialmente: '+cantidad);
-      assert.equal(await menu.getByRole('button',{name:grupo.adicional,exact:true}).count(),0,
-        'La acción secundaria debe estar plegada, no eliminada.');
+      assert.equal(await elementos.count(),2,grupo.area+': debe mostrar solo dos herramientas.');
+      assert.equal(await menu.getByRole('button',{name:grupo.adicional,exact:true}).count(),0);
       await menu.getByRole('button',{name:grupo.frecuente,exact:true}).click();
-      assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio',
-        'La acción frecuente debe abrir un módulo.');
-      const desplegar=menu.getByRole('button',{name:'Mostrar más opciones de '+grupo.area});
-      await desplegar.click();
+      assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio');
+      await menu.getByRole('button',{name:'Mostrar más opciones de '+grupo.area}).click();
       assert.equal(await elementos.count(),grupo.total,
-        'Las funciones complementarias siguen disponibles: '+grupo.area);
+        'No se deben perder funciones al plegar el menú '+grupo.area);
       await menu.getByRole('button',{name:grupo.adicional,exact:true}).click();
-      assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio',
-        'La acción complementaria debe abrir su módulo.');
-      assert.equal(
-        await menu.getByRole('button',{name:grupo.adicional,exact:true}).getAttribute('aria-current'),
-        'page','El menú debe identificar el módulo abierto.');
+      assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio');
+      assert.equal(await menu.getByRole('button',{name:grupo.adicional,exact:true}).getAttribute('aria-current'),'page');
     }
   });
 
@@ -388,7 +374,9 @@ try {
     const menu=page.locator('.mg-clear-navigation');
     assert.equal(await menu.getByText('Todas las funciones',{exact:true}).count(),0);
     assert.equal(await menu.locator('.mg-optional-category-head').count(),0);
+    await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
     await menu.getByRole('button',{name:'Abrir Ventas y caja'}).click();
+    await menu.getByRole('button',{name:'Mostrar más opciones de Ventas y caja'}).click();
     await menu.getByRole('button',{name:'Gastos',exact:true}).waitFor({timeout:10000});
     assert.equal(await menu.getByRole('button',{name:'Historial de ventas'}).count(),1);
     await menu.getByRole('button',{name:'Gastos',exact:true}).click();
@@ -411,8 +399,12 @@ try {
     await inicio.locator('.mg-premium-analytics').waitFor({timeout:12000});
     assert.equal(await inicio.locator('.mg-premium-analytics-grid .mg-premium-card').count(),3,
       'Inicio debe mostrar tres gráficos alimentados por MySQL.');
-    assert.equal(await page.locator('.mg-clear-navigation .cf-nav-group-head').count(),7,
-      'Las siete áreas del gimnasio siguen disponibles en el menú.');
+    assert.equal(await page.locator('.mg-clear-navigation .mg-nav-primary').count(),6);
+    assert.equal(await page.locator('.mg-clear-navigation .cf-nav-group-head').count(),0);
+    const inmediatamenteDespues=await inicio.locator('.mg-efsrt-charts-first').evaluate(
+      el=>el.previousElementSibling?.classList.contains('mg-efsrt-kpis')===true);
+    assert.equal(inmediatamenteDespues,true,
+      'Los gráficos deben ir inmediatamente después de los cuatro indicadores.');
     await page.screenshot({
       path:'evidencias-dashboard/17_Inicio_EFSRT_Simplificado.png',
       fullPage:true,animations:'disabled'
@@ -421,10 +413,8 @@ try {
     assert.ok(analisis.includes('Ingresos'),'Los gráficos deben mostrar ingresos reales.');
     await page.screenshot({path:'evidencias-dashboard/33_Graficos_visibles_en_el_inicio.png',
       fullPage:true,animations:'disabled'});
-    await inicio.getByRole('button',{name:/Gráficos y análisis de ingresos/}).click();
-    assert.equal(await inicio.locator('.mg-premium-analytics').count(),0,
-      'Se puede ocultar el análisis para despejar la pantalla.');
-    await inicio.getByRole('button',{name:/Gráficos y análisis de ingresos/}).click();
+    assert.equal(await inicio.locator('.mg-efsrt-optional-toggle').count(),0,
+      'La analítica visible no necesita otro botón para descubrirla.');
     assert.equal(await inicio.locator('.mg-premium-analytics-grid .mg-premium-card').count(),3);
   });
 

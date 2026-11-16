@@ -277,3 +277,113 @@
 .admin-shell.admin-home-redesign .mg-clear-navigation .mg-clear-submenu .mg-nav-show-more>span:first-child {
   color:#c9f45a!important;
 }
+
+
+/* Mallqui Gym: navegación por tareas, basada en la jerarquía de TEC-SGI.
+   Solo Inicio + 6 accesos de operación quedan visibles de forma predeterminada.
+   Los módulos restantes conservan sus rutas dentro de "Más módulos". */
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary,
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-advanced-toggle {
+  width:calc(100% - 16px);
+  margin:3px 8px;
+  padding:9px 11px;
+  border:0;
+  border-radius:9px;
+  color:#dce6dd;
+  background:transparent;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-align:left;
+  cursor:pointer;
+  font-size:13px;
+  line-height:1.35;
+  transition:background-color .16s ease, color .16s ease;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary {
+  min-height:52px;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary .admin-main-nav-icon,
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-advanced-toggle .admin-main-nav-icon {
+  flex:0 0 22px;
+  font-size:17px;
+  text-align:center;
+  color:#b9c8c1;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary .mg-nav-action-copy {
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  align-items:flex-start;
+  gap:2px;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary strong {
+  font-size:13px;
+  line-height:1.4;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary small {
+  font-size:11px;
+  font-weight:400;
+  color:#a2b4a6;
+  white-space:normal;
+  text-align:left;
+  line-height:1.3;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary:hover,
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-advanced-toggle:hover {
+  color:#f2fce8;
+  background:#27382b;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary.active {
+  color:#c5fa69;
+  background:#304127;
+  font-weight:650;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary.active .admin-main-nav-icon,
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary.active small {
+  color:#c5fa69;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-advanced-toggle {
+  min-height:45px;
+  border:1px solid rgba(204,231,197,.13);
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-advanced-toggle > span:nth-child(2) {
+  flex:1;
+  font-weight:650;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-advanced-content {
+  padding:2px 0 10px;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-advanced-content .cf-nav-group-head {
+  margin-left:12px;
+  width:calc(100% - 24px);
+  padding-block:8px!important;
+  min-height:41px!important;
+  font-size:12px;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-advanced-content .mg-clear-submenu {
+  margin-left:7px;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary:focus-visible,
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-advanced-toggle:focus-visible {
+  outline:2px solid #c5fa69;
+  outline-offset:2px;
+}
+
+/* Los tres gráficos se muestran a continuación de los KPI; no hay que buscar
+   un panel plegado al fondo ni pulsar un control de demostración. */
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard > .mg-efsrt-charts-first {
+  display:block!important;
+  margin:13px 0 15px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard > .mg-efsrt-charts-first .mg-premium-analytics {
+  padding:14px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-dashboard > .mg-efsrt-charts-first .mg-premium-analytics-grid {
+  gap:12px!important;
+}
+@media (max-width:900px) {
+  .admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary {
+    min-height:46px;
+  }
+}
