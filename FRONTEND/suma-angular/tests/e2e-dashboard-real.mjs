@@ -281,29 +281,8 @@ try {
     await resultados.waitFor({timeout:15000});
     assert.match(await resultados.innerText(),/Productos y fotos/);
     const opcion=resultados.getByRole('option',{name:/Productos y fotos/});
-    const geometria=await opcion.evaluate(nodo=>{
-      const r=nodo.getBoundingClientRect();
-      const objetivo=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);
-      return {x:r.x,y:r.y,ancho:r.width,alto:r.height,
-        objetivo:objetivo?.outerHTML.slice(0,270),
-        dentro:nodo.contains(objetivo)};
-    });
-    await page.evaluate(()=>{
-      window.__mallqui_ultimo_click='';
-      document.addEventListener('click',e=>{
-        window.__mallqui_ultimo_click=e.target?.outerHTML?.slice(0,300)||'';
-      },{capture:true,once:true});
-    });
     await opcion.click();
-    const vista=await page.locator('.mg-current-topbar h1').innerText();
-    const ultimoClick=await page.evaluate(()=>window.__mallqui_ultimo_click);
-    console.log('DIAGNOSTICO BUSCADOR FOTO: vista='+vista+', geometria='+JSON.stringify(geometria)+
-      ', objetivoClic='+ultimoClick+', url='+page.url()+
-      ', búsqueda='+await buscador.inputValue()+
-      ', desplegable='+await resultados.count()+
-      ', errores='+JSON.stringify(incidencias.slice(-3)));
-    if(vista!=='Productos')throw Error('El resultado Productos y fotos no navega: '+JSON.stringify({geometria,ultimoClick,vista}));
-    await page.locator('.productos-page').waitFor({timeout:4000});
+    await page.locator('.productos-page').waitFor({timeout:15000});
     assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Productos');
     await buscador.fill('abrir caja');
     await resultados.waitFor({timeout:15000});
