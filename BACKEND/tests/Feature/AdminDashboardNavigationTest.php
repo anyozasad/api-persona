@@ -47,7 +47,10 @@ class AdminDashboardNavigationTest extends TestCase
         $this->assertStringContainsString('admin-efsrt-simplificado.css', $source);
         $this->assertStringNotContainsString('Todas las funciones', $source);
         $this->assertStringNotContainsString("id:'apps'", $source);
-        $this->assertStringContainsString('GESTIÓN DEL GIMNASIO', $source);
+        $this->assertStringContainsString('OPERACIÓN DIARIA', $source);
+        $this->assertStringContainsString('GESTIÓN Y SISTEMA', $source);
+        $this->assertStringContainsString('mg-nav-primary', $source);
+        $this->assertStringContainsString('mostrarGestionAvanzada', $source);
         $this->assertStringContainsString("id:'verificacion-efsrt'", $source);
         $this->assertStringContainsString('mostrarGraficosDashboard', $source);
         $this->assertStringNotContainsString('class="mg-module-tabs"', $source);
