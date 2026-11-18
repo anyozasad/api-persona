@@ -6,7 +6,7 @@ Revisión técnica: 10 de noviembre de 2026. Las semanas 10 y 11 incluyen activi
 ## Cómo usar el dashboard sin perderse
 
 En /admin se muestran cuatro indicadores y tres gráficos reales; las funciones de matrícula, reservas, asistencia, rutinas, productos y pagos se abren desde su área correspondiente sin seis botones repetidos.
-El menú lateral está ordenado en siete áreas desplegables, sin accesos repetidos: Socios y membresías, Clases y entrenamiento, Productos e inventario, Ventas y caja, Atención al socio, Administración y Organización interna.
+El menú lateral utiliza un único selector bajo «Más módulos», organizado en siete áreas sin botones repetidos: Socios y membresías, Clases y entrenamiento, Productos e inventario, Ventas y caja, Atención al socio, Administración y Organización interna.
 El acceso genérico «Todas las funciones» y el submenú anterior «Más funciones (opcional)» fueron retirados: cada opción figura directamente bajo su área. Consulta también `docs/COMPROBACION_REQUISITOS_FUNCIONALES.md`.
 Se eliminaron las pestañas duplicadas de cada módulo y los enlaces de apariencia/exportación que recargaban innecesariamente la cabecera.
 Los gráficos mantienen cálculos reales de la API y están disponibles inicialmente en la sección de analítica, que puede plegarse. En móvil hay cinco accesos rápidos.
