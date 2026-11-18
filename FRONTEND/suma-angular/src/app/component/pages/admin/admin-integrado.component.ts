@@ -26,6 +26,9 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           [attr.aria-label]="sidebarCerrado ? 'Expandir menú' : 'Contraer menú'" [attr.title]="sidebarCerrado ? 'Expandir menú' : 'Contraer menú'">☰</button>
         <div class="mg-top-greeting">
           <h1>{{seccion==='dashboard' ? 'Inicio' : tituloActual}}</h1>
+          <button *ngIf="seccion!=='dashboard'" type="button"
+            class="mg-back-to-dashboard" (click)="cambiarSegcion('dashboard')"
+            aria-label="Volver al panel principal">← Volver al inicio</button>
           <span>{{fechaDashboard}}</span>
         </div>
       </div>
@@ -4469,6 +4472,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     }
     this.seccion = destino;
     this.error = '';
+    this.busquedaAdmin = '';
+    this.busquedaAbierta = false;
+    this.cerrarMenusMantis();
     this.activarGrupoDeSeccion(destino);
     this.cargarSegcion(destino);
     window.scrollTo({top:0, behavior:'smooth'});
