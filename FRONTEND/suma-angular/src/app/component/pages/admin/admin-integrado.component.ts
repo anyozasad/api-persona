@@ -26,9 +26,6 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           [attr.aria-label]="sidebarCerrado ? 'Expandir menú' : 'Contraer menú'" [attr.title]="sidebarCerrado ? 'Expandir menú' : 'Contraer menú'">☰</button>
         <div class="mg-top-greeting">
           <h1>{{seccion==='dashboard' ? 'Inicio' : tituloActual}}</h1>
-          <button *ngIf="seccion!=='dashboard'" type="button"
-            class="mg-back-to-dashboard" (click)="cambiarSegcion('dashboard')"
-            aria-label="Volver al panel principal">← Volver al inicio</button>
           <span>{{fechaDashboard}}</span>
         </div>
       </div>
@@ -169,40 +166,17 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           <span>{{mostrarGestionAvanzada ? 'Ocultar módulos' : 'Más módulos'}}</span>
           <i aria-hidden="true">{{mostrarGestionAvanzada ? '⌃' : '⌄'}}</i>
         </button>
-        <div class="mg-nav-advanced-content" *ngIf="mostrarGestionAvanzada">
-          <ng-container *ngFor="let grupo of menuPrincipal">
-            <button type="button" class="cf-nav-group-head mg-admin-group"
-              [class.active]="!!navGroups[grupo.id]"
-              [attr.aria-expanded]="!!navGroups[grupo.id]"
-              [attr.aria-label]="'Abrir ' + grupo.titulo"
-              (click)="toggleNavGroup(grupo.id)">
-              <span class="admin-main-nav-icon" aria-hidden="true">{{grupo.icono}}</span>
-              <span>{{grupo.titulo}}</span>
-              <i aria-hidden="true">{{navGroups[grupo.id]?'⌃':'⌄'}}</i>
-            </button>
-            <div class="cf-nav-children mg-clear-submenu" *ngIf="navGroups[grupo.id]">
-              <button type="button" *ngFor="let item of opcionesVisiblesGrupo(grupo)"
-                [class.active]="seccion===item.id"
-                [attr.aria-current]="seccion===item.id ? 'page' : null"
-                [attr.aria-label]="item.nombre"
-                [attr.title]="descripcionOpcionMenu(item.id)"
-                (click)="navegarMenu(item)">
-                <span aria-hidden="true">•</span>
-                <span class="mg-nav-action-copy">
-                  <strong>{{item.nombre}}</strong>
-                  <small>{{descripcionOpcionMenu(item.id)}}</small>
-                </span>
-              </button>
-              <button type="button" class="mg-nav-show-more"
-                *ngIf="cantidadOpcionesSecundarias(grupo)>0"
-                [attr.aria-expanded]="!!masOpcionesMenu[grupo.id]"
-                [attr.aria-label]="masOpcionesMenu[grupo.id] ? 'Mostrar menos opciones de ' + grupo.titulo : 'Mostrar más opciones de ' + grupo.titulo"
-                (click)="alternarOpcionesMenu(grupo.id)">
-                <span aria-hidden="true">{{masOpcionesMenu[grupo.id] ? '−' : '⋯'}}</span>
-                <span>{{masOpcionesMenu[grupo.id] ? 'Mostrar menos' : 'Más opciones (' + cantidadOpcionesSecundarias(grupo) + ')'}}</span>
-              </button>
-            </div>
-          </ng-container>
+        <div class="mg-nav-advanced-content mg-nav-picker" *ngIf="mostrarGestionAvanzada">
+          <label for="mg-modulo-selector">Selecciona un módulo</label>
+          <select id="mg-modulo-selector" [value]="moduloSecundarioSeleccionado"
+            (change)="seleccionarModuloSecundario($event)" aria-label="Abrir módulo adicional">
+            <option value="" disabled>Elige una función...</option>
+            <optgroup *ngFor="let grupo of menuPrincipal" [label]="grupo.titulo">
+              <option *ngFor="let item of opcionesSelectorGrupo(grupo)"
+                [value]="item.id">{{item.nombre}}</option>
+            </optgroup>
+          </select>
+          <small>Busca arriba cualquier módulo por su nombre si prefieres.</small>
         </div>
       </nav>
 
@@ -213,16 +187,6 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
         </button>
       </div>
     </aside>
-
-    <button
-      type="button"
-      class="admin-sidebar-toggle"
-      [class.is-collapsed]="sidebarCerrado"
-      (click)="toggleSidebar()"
-      [attr.aria-label]="sidebarCerrado ? 'Abrir menú lateral' : 'Cerrar menú lateral'"
-      [attr.title]="sidebarCerrado ? 'Abrir menú' : 'Cerrar menú'">
-      {{sidebarCerrado ? '›' : '‹'}}
-    </button>
 
     <main class="mg-current-content">
       
@@ -3077,6 +3041,26 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     communication:false,menu:false,tools:false
   };
 
+  /** Las funciones secundarias se mantienen disponibles en un solo selector, no en decenas de botones. */
+  opcionesSelectorGrupo(grupo:{id:string;items:Array<{id:string;nombre:string;accion?:'nuevoSocio'}>}):
+      Array<{id:string;nombre:string;accion?:'nuevoSocio'}> {
+    return grupo.items.filter(item=>!this.accesosPrincipalesAdmin.some(principal=>principal.id===item.id));
+  }
+
+  get moduloSecundarioSeleccionado():string {
+    const esDirecto=this.accesosPrincipalesAdmin.some(item=>item.id===this.seccion);
+    if(esDirecto) return '';
+    return this.menuPrincipal.some(grupo=>grupo.items.some(item=>item.id===this.seccion))
+      ? this.seccion : '';
+  }
+
+  seleccionarModuloSecundario(event:Event):void {
+    const destino=(event.target as HTMLSelectElement | null)?.value ?? '';
+    const encontrado=this.menuPrincipal.some(grupo=>this.opcionesSelectorGrupo(grupo).some(item=>item.id===destino));
+    if(!encontrado) return;
+    this.cambiarSegcion(destino);
+  }
+
   opcionesVisiblesGrupo(grupo:{id:string;items:Array<{id:string;nombre:string;accion?:'nuevoSocio'}>}):
       Array<{id:string;nombre:string;accion?:'nuevoSocio'}> {
     const frecuentes=this.opcionesFrecuentesMenu[grupo.id] ?? [];
@@ -3286,7 +3270,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       {claves:['proveedor','proveedores'],seccion:'proveedores'},
       {claves:['kardex','movimiento inventario'],seccion:'kardex'},
       {claves:['categoria','categorias'],seccion:'categorias'},
-      {claves:['producto','productos','inventario','stock'],seccion:'productos'},
+      {claves:['inventario','stock','existencias'],seccion:'inventario'},
+      {claves:['producto','productos','fotos de productos','foto de producto'],seccion:'productos'},
       {claves:['soporte','consulta','consultas'],seccion:'soporte'},
       {claves:['opinion','opiniones','comentario'],seccion:'opiniones'},
       {claves:['notificacion','notificaciones','comunicacion','avisos'],seccion:'comunicacion'},
