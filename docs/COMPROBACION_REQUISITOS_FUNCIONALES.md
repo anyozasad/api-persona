@@ -4,7 +4,7 @@ Revisión de código y pruebas de la rama `main`. El proyecto utiliza Angular 20
 
 ## Navegación administrativa
 
-La vista inicial conserva **cuatro accesos directos** —Socios, Reservas, Productos y Pagos— además de Inicio. El resto está bajo «Más módulos», en siete áreas desplegables sin repetir los cuatro accesos directos:
+La vista inicial conserva **cuatro accesos directos** —Socios, Reservas, Productos y Pagos— además de Inicio. El resto está bajo «Más módulos», en un único selector agrupado en siete áreas, sin botones repetidos ni submenús adicionales:
 
 1. Socios y membresías
 2. Clases y entrenamiento
@@ -74,7 +74,7 @@ Para declarar un requisito **terminado** se necesita: operación real en la inte
 
 ## Criterio de UX verificado
 
-- La barra lateral de inicio no debe mostrar más de cuatro tareas principales y «Más módulos».
+- La barra lateral de inicio muestra cuatro tareas principales y «Más módulos», con un selector de las funciones secundarias.
 - Las alertas del Inicio informan, pero no actúan como un segundo menú.
 - El Inicio conserva los cuatro KPI, tres gráficas y vista de fotos reales sin botones repetidos.
 - Los reportes completos y su análisis avanzado permanecen disponibles en Reportes.
