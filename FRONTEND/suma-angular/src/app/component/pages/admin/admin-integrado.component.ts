@@ -3331,7 +3331,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       {claves:['dashboard','inicio','panel'],seccion:'dashboard'}
     ];
 
-    const encontrado=destinos.find(x=>x.claves.some(k=>q.includes(k)));
+    // Coincidencia por palabras completas: "inventario" contiene "venta" como
+    // fragmento, pero no debe llevar al módulo de Ventas.
+    const encontrado=destinos.find(x=>x.claves.some(clave=>{
+      const normalizada=clave.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      return (' '+q+' ').includes(' '+normalizada+' ');
+    }));
     if(encontrado){
       this.cambiarSegcion(encontrado.seccion);
       this.busquedaAdmin='';
