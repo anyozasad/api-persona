@@ -238,6 +238,43 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.masOpcionesMenu['members']).toBeFalse();
   });
 
+  it('selector sencillo conserva las funciones sin duplicar los accesos principales', () => {
+    const grupo=component.menuPrincipal.find(g=>g.id==='operations')!;
+    const visibles=component.opcionesSelectorGrupo(grupo).map(item=>item.id);
+    expect(visibles).toContain('inventario');
+    expect(visibles).toContain('proveedores');
+    expect(visibles).not.toContain('productos');
+
+    spyOn(window,'scrollTo').and.stub();
+    const cargar=spyOn(component as any,'cargarSegcion').and.stub();
+    const selector=document.createElement('select');
+    selector.add(new Option('Control de inventario','inventario'));
+    selector.addEventListener('change',evento=>component.seleccionarModuloSecundario(evento));
+    selector.value='inventario';
+    selector.dispatchEvent(new Event('change'));
+
+    expect(component.seccion).toBe('inventario');
+    expect(component.moduloSecundarioSeleccionado).toBe('inventario');
+    expect(cargar).toHaveBeenCalledOnceWith('inventario');
+
+    const inexistente=document.createElement('select');
+    inexistente.add(new Option('Módulo inexistente','no-existe'));
+    inexistente.addEventListener('change',evento=>component.seleccionarModuloSecundario(evento));
+    inexistente.dispatchEvent(new Event('change'));
+    expect(component.seccion).toBe('inventario');
+    expect(cargar).toHaveBeenCalledTimes(1);
+  });
+
+  it('buscar inventario abre inventario y no la ficha de productos', () => {
+    spyOn(window,'scrollTo').and.stub();
+    const cargar=spyOn(component as any,'cargarSegcion').and.stub();
+    component.busquedaAdmin='inventario';
+    component.buscarEnPanel();
+    expect(component.seccion).toBe('inventario');
+    expect(cargar).toHaveBeenCalledOnceWith('inventario');
+    expect(component.busquedaAdmin).toBe('');
+  });
+
   it('después de restaurar MySQL vuelve a consultar socios, fotos, inventario y pagos', () => {
     const archivo=new File(['-- MySQL dump 10.13'],'copia_mallqui.sql',{type:'text/plain'});
     spyOn(window,'confirm').and.returnValue(true);
