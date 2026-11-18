@@ -198,7 +198,14 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect((component as any).normalizarSegcion('catalogo')).toBe('dashboard');
     expect(component.menuPrincipal.some(grupo => grupo.id === 'apps')).toBeFalse();
     expect(component.accesosPrincipalesAdmin.map(item=>item.id)).toEqual([
-      'clientes','reservas','productos','pagos'
+      'clientes','reservas','asistencias','productos','ventas','pagos'
+    ]);
+    expect(component.accesosAdministracionAdmin.map(item=>item.id)).toEqual([
+      'reportes-admin','configuracion'
+    ]);
+    expect(component.accesosDirectosAdmin.map(item=>item.id)).toEqual([
+      'clientes','reservas','asistencias','productos','ventas','pagos',
+      'reportes-admin','configuracion'
     ]);
     expect(component.mostrarGestionAvanzada).toBeFalse();
   });
@@ -211,7 +218,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       expect(component.opcionesVisiblesGrupo(grupo).length).toBe(2);
       expect(component.opcionesVisiblesGrupo(grupo).length).toBeGreaterThanOrEqual(2);
       const extras=component.cantidadOpcionesSecundarias(grupo);
-      const secundarios=grupo.items.filter(item=>!component.accesosPrincipalesAdmin.some(principal=>principal.id===item.id));
+      const secundarios=grupo.items.filter(item=>!component.accesosDirectosAdmin.some(principal=>principal.id===item.id));
       expect(extras).toBe(secundarios.length-component.opcionesVisiblesGrupo(grupo).length);
       component.alternarOpcionesMenu(grupo.id);
       expect(component.opcionesVisiblesGrupo(grupo).map(x=>x.id).sort())
@@ -275,6 +282,18 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.busquedaAdmin).toBe('');
   });
 
+  it('usa enlaces operativos y administrativos directos sin duplicarlos en el selector', () => {
+    expect(component.accesosDirectosAdmin).toHaveSize(8);
+    for(const directo of component.accesosDirectosAdmin){
+      const grupo=component.menuPrincipal.find(g=>g.items.some(i=>i.id===directo.id))!;
+      expect(grupo).toBeTruthy();
+      expect(component.opcionesSelectorGrupo(grupo).some(i=>i.id===directo.id)).toBeFalse();
+      (component as any).activarGrupoDeSeccion(directo.id);
+      expect(component.mostrarGestionAvanzada).toBeFalse();
+    }
+    expect(component.menuPrincipal.flatMap(g=>component.opcionesSelectorGrupo(g))).toHaveSize(38);
+  });
+
   it('después de restaurar MySQL vuelve a consultar socios, fotos, inventario y pagos', () => {
     const archivo=new File(['-- MySQL dump 10.13'],'copia_mallqui.sql',{type:'text/plain'});
     spyOn(window,'confirm').and.returnValue(true);
@@ -336,14 +355,15 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     const template=(AdminIntegradoComponent as any).ɵcmp.template;
     expect(template).toBeTruthy();
     // La verificación del diseño exhaustivo se ejecuta también en Chromium.
-    expect(component.accesosPrincipalesAdmin).toHaveSize(4);
+    expect(component.accesosPrincipalesAdmin).toHaveSize(6);
+    expect(component.accesosAdministracionAdmin).toHaveSize(2);
     expect(component.menuPrincipal.flatMap(g=>g.items)).toHaveSize(46);
     expect(component.menuPrincipal.flatMap(g=>g.items).some(i=>i.id==='asistencias')).toBeTrue();
     expect(component.menuPrincipal.flatMap(g=>g.items).some(i=>i.id==='reportes-admin')).toBeTrue();
   });
 
   it('acceso frecuente no abre submenús; funciones secundarias abren solo su área', () => {
-    for(const principal of component.accesosPrincipalesAdmin){
+    for(const principal of component.accesosDirectosAdmin){
       (component as any).activarGrupoDeSeccion(principal.id);
       expect(component.mostrarGestionAvanzada).toBeFalse();
       expect(Object.values(component.navGroups).some(Boolean)).toBeFalse();
@@ -355,10 +375,9 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       expect(component.menuPrincipal.filter(g=>component.navGroups[g.id]).length).toBe(1);
     };
     ver('membresias','members');
-    ver('asistencias','training');
-    ver('reportes-admin','menu');
+    ver('clases','training');
     ver('inventario','operations');
-    ver('ventas','finance');
+    ver('caja','finance');
     ver('soporte','communication');
     ver('usuarios','menu');
     ver('calendario-admin','tools');
@@ -375,7 +394,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       for (const item of grupo.items) {
         component.navegarMenu(item);
         expect(component.seccion).toBe(item.id);
-        if(component.accesosPrincipalesAdmin.some(principal=>principal.id===item.id)){
+        if(component.accesosDirectosAdmin.some(principal=>principal.id===item.id)){
           expect(component.mostrarGestionAvanzada).toBeFalse();
         }else{
           expect(component.mostrarGestionAvanzada).toBeTrue();
