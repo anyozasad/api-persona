@@ -78,3 +78,9 @@ Para declarar un requisito **terminado** se necesita: operación real en la inte
 - Las alertas del Inicio informan, pero no actúan como un segundo menú.
 - El Inicio conserva los cuatro KPI, tres gráficas y vista de fotos reales sin botones repetidos.
 - Los reportes completos y su análisis avanzado permanecen disponibles en Reportes.
+
+## Navegación actual alineada con TEC-SGI (18/11/2026)
+
+La referencia `MarcosZumaran/TEC-SGI-2026` usa accesos directos en el lateral divididos por área. Mallqui Gym adapta **el orden**, no los módulos de incidencias: **Inicio → Operación diaria (Socios, Reservas, Asistencia, Productos, Ventas, Pagos) → Administración (Reportes, Configuración) → Otras funciones**. Las otras 38 funciones siguen en un selector agrupado por siete áreas, sin duplicar enlaces directos. El perfil del usuario aparece al pie del menú; cerrar sesión permanece en el menú superior de la cuenta. La paleta del gimnasio y las rutas originales no se sustituyen por las de TEC-SGI.
+
+Esto es una corrección de navegación, no evidencia de que las 150 entradas del portal sean 150 sprints aceptados ni de que cada flujo haya sido ejecutado contra el MySQL privado del gimnasio.
