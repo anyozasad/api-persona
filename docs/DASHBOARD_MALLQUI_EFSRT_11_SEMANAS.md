@@ -107,3 +107,9 @@ Los checks de CI se hacen con MySQL temporal y datos ficticios. La instalación 
 La pantalla «Verificación del sistema» conserva las 11 semanas y sus 55 actividades, pero enseña una sola semana seleccionada para reducir botones repetidos. El resumen distingue estructuras disponibles de semanas con observaciones. La revisión detecta relaciones huérfanas entre reservas, clases, socios, membresías, rutinas y asistencia cuando las tablas existen, y campos incoherentes en productos o pagos. El sistema solo **informa** de las incidencias; no modifica datos ni inventa resultados de las pruebas.
 
 La prueba de navegador verifica que las fotos de portada se sirvan desde los assets locales incluso bloqueando imágenes externas. No equivale a que la aplicación funcione sin Laravel y MySQL. La boleta electrónica de SUNAT requiere integración y autorización, y las actividades presenciales del 16 al 21 de noviembre y las firmas de la bitácora siguen pendientes de su comprobación.
+
+## Navegación actual alineada con TEC-SGI (18/11/2026)
+
+La referencia `MarcosZumaran/TEC-SGI-2026` usa accesos directos en el lateral divididos por área. Mallqui Gym adapta **el orden**, no los módulos de incidencias: **Inicio → Operación diaria (Socios, Reservas, Asistencia, Productos, Ventas, Pagos) → Administración (Reportes, Configuración) → Otras funciones**. Las otras 38 funciones siguen en un selector agrupado por siete áreas, sin duplicar enlaces directos. El perfil del usuario aparece al pie del menú; cerrar sesión permanece en el menú superior de la cuenta. La paleta del gimnasio y las rutas originales no se sustituyen por las de TEC-SGI.
+
+Esto es una corrección de navegación, no evidencia de que las 150 entradas del portal sean 150 sprints aceptados ni de que cada flujo haya sido ejecutado contra el MySQL privado del gimnasio.
