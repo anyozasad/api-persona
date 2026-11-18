@@ -243,21 +243,21 @@ try {
     }
   });
 
-  await paso('Menú por tareas: cuatro funciones directas y módulos completos agrupados',async()=>{
+  await paso('Menú TEC-SGI: tareas directas y administración separada',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
     await menu.waitFor({timeout:20000});
     assert.equal(await menu.locator('.mg-direct-home').count(),1);
-    assert.equal(await menu.locator('.mg-nav-primary').count(),4,
+    assert.equal(await menu.locator('.mg-nav-primary').count(),8,
       'La pantalla inicial no debe mostrar siete grupos ni decenas de botones.');
     assert.deepEqual(await menu.locator('.mg-nav-primary').evaluateAll(nodes=>
       nodes.map(node=>node.getAttribute('aria-label'))),[
-      'Socios','Reservas','Productos','Pagos'
+      'Socios','Reservas','Asistencia','Productos','Ventas','Pagos','Reportes','Configuración'
     ]);
     assert.equal(await menu.locator('.cf-nav-group-head').count(),0,
       'Los módulos secundarios permanecen plegados.');
     assert.deepEqual(await menu.locator('.mg-nav-caption').allTextContents(),
-      ['INICIO','OPERACIÓN DIARIA','GESTIÓN Y SISTEMA']);
+      ['INICIO','OPERACIÓN DIARIA','ADMINISTRACIÓN','OTRAS FUNCIONES']);
     assert.equal(await menu.getByText('Todas las funciones',{exact:true}).count(),0);
     const primario=menu.getByRole('button',{name:'Productos',exact:true});
     await primario.click();
@@ -276,15 +276,15 @@ try {
   await paso('Administración conserva reportes, usuarios, auditoría, configuración y respaldo',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
-    assert.equal(await menu.getByRole('button',{name:'Reportes',exact:true}).count(),0);
+    assert.equal(await menu.getByRole('button',{name:'Reportes',exact:true}).count(),1);
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
     const selector=menu.locator('#mg-modulo-selector');
     await selector.waitFor({timeout:10000});
     assert.equal(await selector.locator('optgroup').count(),7,
       'Las siete áreas siguen disponibles dentro de un único selector.');
-    assert.equal(await selector.locator('option[value="configuracion"]').count(),1,
-      'La configuración debe ser accesible sin más submenús.');
-    await selector.selectOption('configuracion');
+    assert.equal(await selector.locator('option[value="configuracion"]').count(),0,
+      'Configuración tiene acceso directo, no debe repetirse en el selector.');
+    await menu.getByRole('button',{name:'Configuración',exact:true}).click();
     const configuracion=page.locator('.config-page');
     await configuracion.waitFor({timeout:15000});
     await configuracion.getByRole('button',{name:'Usuarios y permisos'}).waitFor({timeout:25000});
@@ -297,14 +297,14 @@ try {
       fullPage:true,animations:'disabled'});
   });
 
-  await paso('Siete áreas avanzadas conservan todas las funciones sin repetir cuatro accesos',async()=>{
+  await paso('Siete áreas avanzadas conservan funciones sin repetir los ocho accesos directos',async()=>{
     const grupos=[
       {area:'Socios y membresías',frecuente:'Membresías',adicional:'Planes y tarifas',total:5},
-      {area:'Clases y entrenamiento',frecuente:'Asistencia',adicional:'Seguimiento',total:6},
+      {area:'Clases y entrenamiento',frecuente:'Clases y horarios',adicional:'Seguimiento',total:5},
       {area:'Productos e inventario',frecuente:'Control de inventario',adicional:'Proveedores',total:6},
-      {area:'Ventas y caja',frecuente:'Registrar venta',adicional:'Comprobantes internos',total:7},
+      {area:'Ventas y caja',frecuente:'Apertura y cierre de caja',adicional:'Comprobantes internos',total:6},
       {area:'Atención al socio',frecuente:'Consultas y soporte',adicional:'Eventos',total:6},
-      {area:'Administración',frecuente:'Reportes generales',adicional:'Auditoría',total:7},
+      {area:'Administración',frecuente:'Usuarios y permisos',adicional:'Auditoría',total:5},
       {area:'Organización interna',frecuente:'Calendario',adicional:'Tablas avanzadas',total:5}
     ];
     for(const grupo of grupos){
@@ -436,7 +436,7 @@ try {
     await inicio.locator('.mg-premium-analytics').waitFor({timeout:12000});
     assert.equal(await inicio.locator('.mg-premium-analytics-grid .mg-premium-card').count(),3,
       'Inicio debe mostrar tres gráficos alimentados por MySQL.');
-    assert.equal(await page.locator('.mg-clear-navigation .mg-nav-primary').count(),4);
+    assert.equal(await page.locator('.mg-clear-navigation .mg-nav-primary').count(),8);
     assert.equal(await page.locator('.mg-clear-navigation .cf-nav-group-head').count(),0);
     const inmediatamenteDespues=await inicio.locator('.mg-efsrt-charts-first').evaluate(
       el=>el.previousElementSibling?.classList.contains('mg-efsrt-kpis')===true);
