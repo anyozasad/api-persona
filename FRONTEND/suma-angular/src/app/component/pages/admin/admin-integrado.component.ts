@@ -156,7 +156,17 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           <span class="mg-nav-action-copy"><strong>{{item.nombre}}</strong><small>{{item.ayuda}}</small></span>
         </button>
 
-        <span class="mg-nav-caption mg-nav-section-separator">GESTIÓN Y SISTEMA</span>
+        <span class="mg-nav-caption mg-nav-section-separator">ADMINISTRACIÓN</span>
+        <button type="button" class="mg-nav-primary mg-nav-administration" *ngFor="let item of accesosAdministracionAdmin"
+          [class.active]="seccion===item.id"
+          [attr.aria-current]="seccion===item.id ? 'page' : null"
+          [attr.aria-label]="item.nombre"
+          [attr.title]="item.ayuda"
+          (click)="navegarMenu(item)">
+          <span class="admin-main-nav-icon" aria-hidden="true">{{item.icono}}</span>
+          <span class="mg-nav-action-copy"><strong>{{item.nombre}}</strong><small>{{item.ayuda}}</small></span>
+        </button>
+        <span class="mg-nav-caption mg-nav-section-separator">OTRAS FUNCIONES</span>
         <button type="button" class="mg-nav-advanced-toggle"
           [class.active]="mostrarGestionAvanzada"
           [attr.aria-expanded]="mostrarGestionAvanzada"
@@ -180,11 +190,12 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
         </div>
       </nav>
 
-      <div class="mg-sidebar-bottom">
-        <span class="mg-sidebar-tip">Selecciona un área para ver sus módulos. Cada opción abre su función correspondiente.</span>
-        <button type="button" (click)="cerrarSesion()">
-          <span>↪</span><b>Cerrar sesión</b>
-        </button>
+      <div class="mg-sidebar-bottom mg-sidebar-account" aria-label="Sesión de administrador">
+        <span class="mg-sidebar-account-avatar">{{(auth.usuario?.nombre_usuario || 'A').charAt(0).toUpperCase()}}</span>
+        <span class="mg-sidebar-account-copy">
+          <strong>{{auth.usuario?.nombre_usuario || 'Administrador'}}</strong>
+          <small>{{auth.usuario?.rol || 'Administrador'}}</small>
+        </span>
       </div>
     </aside>
 
@@ -2949,13 +2960,21 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     'proveedores','compras','categorias','reportes-admin','reporte-asistencias','usuarios',
     'auditoria','configuracion','opiniones'
   ];
-  /** Como TEC-SGI: accesos directos por tarea, sin siete secciones desplegadas al entrar. */
+  /** Orden TEC-SGI adaptado al gimnasio: entrada directa a las tareas diarias. */
   readonly accesosPrincipalesAdmin: Array<{id:string;nombre:string;icono:string;ayuda:string}> = [
     {id:'clientes',nombre:'Socios',icono:'♙',ayuda:'Registrar y administrar socios'},
     {id:'reservas',nombre:'Reservas',icono:'◫',ayuda:'Programar y controlar sesiones'},
+    {id:'asistencias',nombre:'Asistencia',icono:'✓',ayuda:'Registrar entradas y salidas'},
     {id:'productos',nombre:'Productos',icono:'▦',ayuda:'Fotos, precios y existencias'},
+    {id:'ventas',nombre:'Ventas',icono:'▤',ayuda:'Venta y actualización del stock'},
     {id:'pagos',nombre:'Pagos',icono:'S/',ayuda:'Membresías y cobros'}
   ];
+  /** Enlace directo a gestión del negocio y ajustes, como la referencia. */
+  readonly accesosAdministracionAdmin: Array<{id:string;nombre:string;icono:string;ayuda:string}> = [
+    {id:'reportes-admin',nombre:'Reportes',icono:'▥',ayuda:'Indicadores y análisis'},
+    {id:'configuracion',nombre:'Configuración',icono:'⚙',ayuda:'Datos, permisos y sistema'}
+  ];
+  readonly accesosDirectosAdmin=[...this.accesosPrincipalesAdmin,...this.accesosAdministracionAdmin];
   mostrarGestionAvanzada = false;
 
   /** Menu único: cada módulo aparece en su área de trabajo, sin enlaces genéricos. */
@@ -3029,11 +3048,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   /** Funciones frecuentes visibles al entrar a cada área; el resto sigue disponible sin duplicarse. */
   readonly opcionesFrecuentesMenu: Record<string,string[]> = {
     members:['membresias','renovaciones'],
-    training:['asistencias','clases'],
+    training:['clases','rutinas'],
     operations:['inventario','compras'],
-    finance:['ventas','caja'],
+    finance:['caja','gastos'],
     communication:['soporte','comunicacion'],
-    menu:['reportes-admin','usuarios'],
+    menu:['usuarios','auditoria'],
     tools:['calendario-admin','tareas-admin']
   };
   masOpcionesMenu: Record<string,boolean> = {
@@ -3044,11 +3063,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   /** Las funciones secundarias se mantienen disponibles en un solo selector, no en decenas de botones. */
   opcionesSelectorGrupo(grupo:{id:string;items:Array<{id:string;nombre:string;accion?:'nuevoSocio'}>}):
       Array<{id:string;nombre:string;accion?:'nuevoSocio'}> {
-    return grupo.items.filter(item=>!this.accesosPrincipalesAdmin.some(principal=>principal.id===item.id));
+    return grupo.items.filter(item=>!this.accesosDirectosAdmin.some(directo=>directo.id===item.id));
   }
 
   get moduloSecundarioSeleccionado():string {
-    const esDirecto=this.accesosPrincipalesAdmin.some(item=>item.id===this.seccion);
+    const esDirecto=this.accesosDirectosAdmin.some(item=>item.id===this.seccion);
     if(esDirecto) return '';
     return this.menuPrincipal.some(grupo=>grupo.items.some(item=>item.id===this.seccion))
       ? this.seccion : '';
@@ -3064,7 +3083,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   opcionesVisiblesGrupo(grupo:{id:string;items:Array<{id:string;nombre:string;accion?:'nuevoSocio'}>}):
       Array<{id:string;nombre:string;accion?:'nuevoSocio'}> {
     const frecuentes=this.opcionesFrecuentesMenu[grupo.id] ?? [];
-    const restantes=grupo.items.filter(item=>!this.accesosPrincipalesAdmin.some(principal=>principal.id===item.id));
+    const restantes=grupo.items.filter(item=>!this.accesosDirectosAdmin.some(directo=>directo.id===item.id));
     const principales=restantes.filter(item=>frecuentes.includes(item.id));
     return this.masOpcionesMenu[grupo.id]
       ? [...principales,...restantes.filter(item=>!frecuentes.includes(item.id))]
@@ -3074,7 +3093,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   cantidadOpcionesSecundarias(grupo:{id:string;items:Array<{id:string}>}):number {
     const frecuentes=this.opcionesFrecuentesMenu[grupo.id] ?? [];
     return grupo.items.filter(item=>!frecuentes.includes(item.id)
-      && !this.accesosPrincipalesAdmin.some(principal=>principal.id===item.id)).length;
+      && !this.accesosDirectosAdmin.some(directo=>directo.id===item.id)).length;
   }
 
   alternarOpcionesMenu(grupoId:string):void {
@@ -3357,7 +3376,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   /** El enlace activo nunca obliga a desplegar las siete áreas del menú. */
   private activarGrupoDeSeccion(seccion:string):void{
     Object.keys(this.navGroups).forEach(id=>this.navGroups[id]=false);
-    if(seccion==='dashboard' || this.accesosPrincipalesAdmin.some(item=>item.id===seccion)){
+    if(seccion==='dashboard' || this.accesosDirectosAdmin.some(item=>item.id===seccion)){
       this.mostrarGestionAvanzada=false;
       return;
     }
