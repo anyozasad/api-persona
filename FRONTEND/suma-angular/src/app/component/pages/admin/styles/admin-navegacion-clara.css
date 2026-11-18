@@ -484,7 +484,9 @@
   border-radius:8px;
   background:#f7faf5;
   color:#335c30;
-  font:600 12px/1.4 inherit;
+  font-weight:600;
+  font-size:12px;
+  line-height:1.4;
   cursor:pointer;
 }
 .admin-shell.admin-home-redesign .mg-back-to-dashboard:hover,
