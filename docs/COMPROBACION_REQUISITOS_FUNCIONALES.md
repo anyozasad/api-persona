@@ -4,7 +4,7 @@ Revisión de código y pruebas de la rama `main`. El proyecto utiliza Angular 20
 
 ## Navegación administrativa
 
-La vista inicial conserva **cuatro accesos directos** —Socios, Reservas, Productos y Pagos— además de Inicio. El resto está bajo «Más módulos», en un único selector agrupado en siete áreas, sin botones repetidos ni submenús adicionales:
+La vista inicial muestra enlaces directos ordenados como TEC-SGI: **Inicio; Operación diaria** (Socios, Reservas, Asistencia, Productos, Ventas, Pagos); y **Administración** (Reportes, Configuración). Las otras 38 funciones quedan bajo «Más módulos», en un único selector agrupado en siete áreas, sin enlaces repetidos:
 
 1. Socios y membresías
 2. Clases y entrenamiento
@@ -14,7 +14,7 @@ La vista inicial conserva **cuatro accesos directos** —Socios, Reservas, Produ
 6. Administración
 7. Organización interna
 
-Inicio muestra cuatro indicadores, tres gráficos alimentados por MySQL, alertas informativas y fotos de productos. No contiene botones de acción duplicados. Las 20 herramientas avanzadas de analítica se abren en Reportes; Asistencia y Reportes siguen accesibles desde las áreas secundarias, sin eliminar sus rutas. El menú no altera `DB_DATABASE`, los permisos ni las fotografías.
+Inicio muestra cuatro indicadores, tres gráficos alimentados por MySQL, alertas informativas y fotos de productos. No contiene botones de acción duplicados. Las 20 herramientas avanzadas de analítica se abren en Reportes; Asistencia y Reportes tienen enlaces directos en el lateral y conservan sus rutas. El menú no altera `DB_DATABASE`, los permisos ni las fotografías.
 
 ## Requisitos y cómo comprobarlos
 
@@ -74,7 +74,7 @@ Para declarar un requisito **terminado** se necesita: operación real en la inte
 
 ## Criterio de UX verificado
 
-- La barra lateral de inicio muestra cuatro tareas principales y «Más módulos», con un selector de las funciones secundarias.
+- La barra lateral muestra seis tareas operativas, dos enlaces de administración y «Más módulos» para funciones secundarias, siguiendo la jerarquía de TEC-SGI.
 - Las alertas del Inicio informan, pero no actúan como un segundo menú.
 - El Inicio conserva los cuatro KPI, tres gráficas y vista de fotos reales sin botones repetidos.
 - Los reportes completos y su análisis avanzado permanecen disponibles en Reportes.
