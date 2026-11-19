@@ -79,6 +79,40 @@ describe('Mallqui Gym: módulos administrativos con datos reales',()=>{
     expect(c.modalAbierto).toBeFalse();
   });
 
+  it('Galería filtra por categoría guardada, no por palabras sueltas en la descripción',()=>{
+    c.modulo='galeria';
+    c.records=[
+      {id:1,titulo:'Clase de yoga',subtitulo:'Foto del entrenamiento',datos:{categoria:'Entrenamiento'}},
+      {id:2,titulo:'Competencia',subtitulo:'Equipo y socios del evento',datos:{categoria:'Eventos'}},
+      {id:3,titulo:'Foto sin etiqueta antigua',subtitulo:'Imagen de socios',datos:{detalle:'De archivo'}},
+    ];
+    c.filtrarGaleria('Eventos');
+    expect(c.galeriaVisible.map(x=>x.id)).toEqual([2]);
+    c.filtrarGaleria('Entrenamiento');
+    expect(c.galeriaVisible.map(x=>x.id)).toEqual([1]);
+    c.filtrarGaleria('Socios');
+    expect(c.galeriaVisible.map(x=>x.id)).toEqual([3]);
+    c.filtrarGaleria('Todos');
+    expect(c.galeriaVisible).toHaveSize(3);
+  });
+
+  it('Galería impide crear una foto sin categoría y guarda la categoría con su imagen',()=>{
+    c.modulo='galeria';
+    api.crearGymRegistro=jasmine.createSpy('crearGymRegistro').and.returnValue(of({id:8}));
+    c.nuevoRegistro();
+    c.form.titulo='Foto del evento';
+    c.form.imagen_url='/uploads/admin-gym/imagen.png';
+    c.guardar();
+    expect(api.crearGymRegistro).not.toHaveBeenCalled();
+    expect(c.error).toContain('categoría');
+    expect(c.modalAbierto).toBeTrue();
+    c.form.categoria='Eventos';
+    c.guardar();
+    expect(api.crearGymRegistro).toHaveBeenCalledTimes(1);
+    expect(api.crearGymRegistro.calls.mostRecent().args[1].datos.categoria).toBe('Eventos');
+    expect(c.modalAbierto).toBeFalse();
+  });
+
   it('salarios se filtran por meses reales, no opciones fijas de 2026',()=>{
     c.modulo='salarios';
     c.records=[
