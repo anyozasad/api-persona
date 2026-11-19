@@ -59,9 +59,33 @@ function LeerApi([string]$ruta) {
     return $null
 }
 function ObtenerEstadoBackend {
-    $contenido = LeerApi 'http://127.0.0.1:8000/api/estado-sistema'
-    if (-not $contenido) { return $null }
-    try { return ConvertFrom-Json -InputObject $contenido } catch { return $null }
+    # Leer también el JSON de HTTP 503: Mallqui Gym devuelve ese estado cuando
+    # MySQL está apagado. No confundir ese error con un proyecto diferente.
+    $respuesta = $null
+    try {
+        $solicitud = [System.Net.WebRequest]::Create('http://127.0.0.1:8000/api/estado-sistema')
+        $solicitud.Timeout = 3000
+        try {
+            $respuesta = $solicitud.GetResponse()
+        } catch [System.Net.WebException] {
+            $respuesta = $_.Exception.Response
+        }
+        if ($null -eq $respuesta) { return $null }
+        $flujo = $respuesta.GetResponseStream()
+        if ($null -eq $flujo) { return $null }
+        $lector = New-Object System.IO.StreamReader($flujo)
+        try {
+            $contenido = $lector.ReadToEnd()
+        } finally {
+            $lector.Dispose()
+        }
+        if (-not $contenido) { return $null }
+        return ConvertFrom-Json -InputObject $contenido
+    } catch {
+        return $null
+    } finally {
+        if ($null -ne $respuesta) { $respuesta.Close() }
+    }
 }
 function VerificarServidorMallqui([object]$estado) {
     if ($null -ne $estado -and $estado.sistema -ne 'Mallqui Gym') {
