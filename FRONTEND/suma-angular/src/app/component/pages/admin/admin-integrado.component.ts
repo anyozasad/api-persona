@@ -189,8 +189,8 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
         </button>
         <div class="mg-nav-advanced-content mg-nav-picker" *ngIf="mostrarGestionAvanzada">
           <label for="mg-modulo-selector">Selecciona un módulo</label>
-          <select id="mg-modulo-selector" [value]="moduloSecundarioSeleccionado"
-            (change)="seleccionarModuloSecundario($event)" aria-label="Abrir módulo adicional">
+          <select id="mg-modulo-selector" [ngModel]="moduloSecundarioSeleccionado"
+            (ngModelChange)="seleccionarModuloSecundarioId($event)" aria-label="Abrir módulo adicional">
             <option value="" disabled>Elige una función...</option>
             <optgroup *ngFor="let grupo of menuPrincipal" [label]="grupo.titulo">
               <option *ngFor="let item of opcionesSelectorGrupo(grupo)"
@@ -3077,7 +3077,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   seleccionarModuloSecundario(event:Event):void {
-    const destino=(event.target as HTMLSelectElement | null)?.value ?? '';
+    this.seleccionarModuloSecundarioId((event.target as HTMLSelectElement | null)?.value ?? '');
+  }
+
+  seleccionarModuloSecundarioId(destino:string):void {
     const encontrado=this.menuPrincipal.some(grupo=>this.opcionesSelectorGrupo(grupo).some(item=>item.id===destino));
     if(!encontrado) return;
     this.cambiarSegcion(destino);
