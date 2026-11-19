@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnDestroy, OnInit, Optional, ViewEncapsulation } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit, Optional, ViewChild, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -2846,6 +2846,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
   `]
 })
 export class AdminIntegradoComponent implements OnInit, OnDestroy {
+  @ViewChild(AdminApplicationsComponent) panelAplicaciones?: AdminApplicationsComponent;
   @Input() seccionInicial = 'dashboard';
   seccion = 'dashboard';
   toast = '';
@@ -4563,6 +4564,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if (this.seccion === 'dashboard') {
       this.actualizarDashboardCompleto();
       return;
+    }
+    // La barra superior es la única acción Actualizar. Refrescar también el
+    // módulo hijo: Calendario y Tareas dependen de una segunda consulta propia.
+    if (['aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui'].includes(this.seccion)) {
+      this.panelAplicaciones?.refrescar(false);
     }
 
     if (!silencioso) {
