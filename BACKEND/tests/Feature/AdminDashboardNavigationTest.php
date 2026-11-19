@@ -47,7 +47,8 @@ class AdminDashboardNavigationTest extends TestCase
         $this->assertStringContainsString('admin-efsrt-simplificado.css', $source);
         $this->assertStringNotContainsString('Todas las funciones', $source);
         $this->assertStringNotContainsString("id:'apps'", $source);
-        $this->assertStringContainsString('OPERACIÓN DIARIA', $source);
+        $this->assertStringContainsString('SOCIOS Y SESIONES', $source);
+        $this->assertStringContainsString('VENTAS E INVENTARIO', $source);
         $this->assertStringContainsString('ADMINISTRACIÓN', $source);
         $this->assertStringContainsString('OTRAS FUNCIONES', $source);
         $this->assertStringContainsString('accesosAdministracionAdmin', $source);
