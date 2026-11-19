@@ -225,7 +225,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
       </nav>
 
       <div class="mg-current-workspace">
-      <section class="mg-module-shell-head" *ngIf="seccion!=='dashboard'">
+      <section class="mg-module-shell-head" *ngIf="seccion!=='dashboard' && !['aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui'].includes(seccion)">
         <div class="mg-module-shell-copy">
           <p>{{subtituloActual}}</p>
         </div>
@@ -248,6 +248,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
               <span class="mg-efsrt-eyebrow">MALLQUI GYM · ADMINISTRACIÓN</span>
               <h2>Panel principal</h2>
               <p>Empieza por Socios y Reservas. Para registrar entradas, busca «Asistencia» arriba; para cobrar, abre Pagos.</p>
+              <p *ngIf="dashboardCargando" class="mg-dashboard-loading-note" role="status">Consultando indicadores, gráficos y productos en MySQL...</p>
             </div>
             <div class="mg-efsrt-hero-aside">
               <span class="mg-efsrt-connection" [class.problem]="!sistemaSincronizado">
@@ -271,22 +272,22 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
             <article>
               <span>Socios activos</span>
               <strong>{{fuenteKpiDisponible('socios') ? (dashboard?.clientes?.activos ?? clientesActivos ?? 0) : '—'}}</strong>
-              <small>{{fuenteKpiDisponible('socios') ? 'Miembros registrados' : 'Datos de socios no disponibles'}}</small>
+              <small>{{dashboardCargando ? 'Consultando MySQL...' : (fuenteKpiDisponible('socios') ? 'Miembros registrados' : 'Datos de socios no disponibles')}}</small>
             </article>
             <article>
               <span>Reservas de hoy</span>
               <strong>{{fuenteKpiDisponible('reservas') ? (dashboard?.reservas?.hoy ?? reservasHoyDashboard().length) : '—'}}</strong>
-              <small>{{fuenteKpiDisponible('reservas') ? 'Sesiones programadas' : 'Falta habilitar las reservas en MySQL'}}</small>
+              <small>{{dashboardCargando ? 'Consultando MySQL...' : (fuenteKpiDisponible('reservas') ? 'Sesiones programadas' : 'Falta habilitar las reservas en MySQL')}}</small>
             </article>
             <article>
               <span>Asistencias de hoy</span>
               <strong>{{fuenteKpiDisponible('asistencias') ? (dashboard?.asistencias?.hoy ?? 0) : '—'}}</strong>
-              <small>{{fuenteKpiDisponible('asistencias') ? 'Ingresos al gimnasio' : 'Falta habilitar la asistencia en MySQL'}}</small>
+              <small>{{dashboardCargando ? 'Consultando MySQL...' : (fuenteKpiDisponible('asistencias') ? 'Ingresos al gimnasio' : 'Falta habilitar la asistencia en MySQL')}}</small>
             </article>
             <article>
               <span>Ingresos del mes</span>
               <strong>{{fuenteKpiDisponible('ingresos') ? 'S/ ' + ((dashboard?.ingresos?.total_mes ?? 0) | number:'1.2-2') : '—'}}</strong>
-              <small>{{fuenteKpiDisponible('ingresos') ? 'Pagos y ventas' : 'Faltan tablas de pagos y ventas'}}</small>
+              <small>{{dashboardCargando ? 'Consultando MySQL...' : (fuenteKpiDisponible('ingresos') ? 'Pagos y ventas' : 'Faltan tablas de pagos y ventas')}}</small>
             </article>
           </section>
 
@@ -299,7 +300,8 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                 <article class="mg-premium-card mg-revenue-card">
                   <header><div><span>RENDIMIENTO FINANCIERO</span><h3>Ingresos de los últimos 6 meses</h3></div><i>S/</i></header>
                   <div class="mg-revenue-overview">
-                    <strong>S/ {{totalIngresoMesSeleccionado() | number:'1.2-2'}}</strong>
+                    <strong *ngIf="!dashboardCargando">S/ {{totalIngresoMesSeleccionado() | number:'1.2-2'}}</strong>
+                    <strong *ngIf="dashboardCargando">—</strong>
                     <span>{{nombreIngresoSeleccionado}} · Mes actual</span>
                   </div>
                   <div class="mg-revenue-chart" *ngIf="fuenteKpiDisponible('ingresos') && ingresosMensualesDashboard().length; else sinDatosIngresos">
@@ -319,7 +321,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                     </svg>
                     <div class="mg-revenue-labels"><span *ngFor="let mes of ingresosMensualesDashboard()">{{mes.mes}}</span></div>
                   </div>
-                  <ng-template #sinDatosIngresos><div class="mg-no-chart-data">No se pudieron comprobar ingresos mensuales. Revisa las tablas de pagos y ventas.</div></ng-template>
+                  <ng-template #sinDatosIngresos><div class="mg-no-chart-data">{{dashboardCargando ? 'Consultando ingresos mensuales de MySQL...' : 'No se pudieron comprobar ingresos mensuales. Revisa las tablas de pagos y ventas.'}}</div></ng-template>
                   <footer><span><i></i>Ingresos calculados por el sistema</span><b>{{dashboard?.periodo?.mes || 'Mes actual'}}</b></footer>
                 </article>
 
@@ -333,7 +335,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                       <span>{{d.dia}}</span>
                     </div>
                   </div>
-                  <ng-template #faltanAsistenciasGrafica><div class="mg-no-chart-data">La tabla de asistencias no está disponible o no se pudo consultar.</div></ng-template>
+                  <ng-template #faltanAsistenciasGrafica><div class="mg-no-chart-data">{{dashboardCargando ? 'Consultando asistencias de los últimos siete días...' : 'La tabla de asistencias no está disponible o no se pudo consultar.'}}</div></ng-template>
                   <footer>Registros de asistencia recuperados del servidor.</footer>
                 </article>
 
@@ -360,7 +362,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                       <div><span><i class="v"></i>Ventas</span><b>{{fuenteKpiDisponible('ingresos') ? (dashboard?.ventas?.hoy_cantidad ?? 0) : '—'}}</b></div>
                     </div>
                   </div>
-                  <ng-template #faltaOperacionGrafica><div class="mg-no-chart-data">No hay información operativa recuperada.</div></ng-template>
+                  <ng-template #faltaOperacionGrafica><div class="mg-no-chart-data">{{dashboardCargando ? 'Consultando la operación diaria...' : 'No hay información operativa recuperada.'}}</div></ng-template>
                   <footer *ngIf="dashboard && totalActividadOperativa() === 0">Todavía no hay movimientos registrados hoy.</footer>
                   <footer *ngIf="totalActividadOperativa() > 0">Distribución calculada a partir de registros reales.</footer>
                 </article>
@@ -447,7 +449,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
               </article>
             </div>
             <ng-template #sinProductosEfsrt>
-              <p class="mg-efsrt-empty">No hay productos cargados desde MySQL. Abre Productos para registrar artículos y fotografías.</p>
+              <p class="mg-efsrt-empty">{{dashboardCargando ? 'Consultando productos y fotografías de MySQL...' : 'No hay productos cargados desde MySQL. Abre Productos para registrar artículos y fotografías.'}}</p>
             </ng-template>
           </section>
 
