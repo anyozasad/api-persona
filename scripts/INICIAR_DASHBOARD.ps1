@@ -93,8 +93,11 @@ function VerificarServidorMallqui([object]$estado) {
     }
 }
 function VerificarFrontendMallqui([string]$html) {
-    if ($html -and $html -notmatch '(?is)<title>\s*Mallqui Gym\s*</title>') {
-        Fallar 'El puerto 4200 está ocupado por otra aplicación Angular. Deten ese proyecto antes de iniciar Mallqui Gym; no se abrirá un dashboard equivocado.'
+    # Además del título, exigir la marca de la copia actual del frontend.
+    if ($html -and ($html -notmatch '(?is)<title>\s*Mallqui Gym\s*</title>' -or
+                    $html -notmatch 'mallqui-repositorio' -or
+                    $html -notmatch 'anyozasad/api-persona')) {
+        Fallar 'El puerto 4200 muestra otro proyecto o una copia antigua de Mallqui Gym. Deten el servidor Angular que ocupa 4200 y vuelve a ejecutar este iniciador desde la carpeta api-persona actualizada.'
     }
 }
 
