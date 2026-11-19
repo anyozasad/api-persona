@@ -450,15 +450,20 @@ try {
   await paso('Si falla MySQL no muestra tablas vacías como si fueran datos reales',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
-    await page.route('**/api/admin-gym-registros/equipos',ruta=>ruta.abort('failed'));
+    let peticionesFallidas=0;
+    await page.route('**/api/admin-gym-registros/equipos*',ruta=>{
+      peticionesFallidas++;
+      return ruta.fulfill({status:200,contentType:'application/json',body:'respuesta-json-incorrecta'});
+    });
     try {
       await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
       await menu.locator('#mg-modulo-selector').selectOption('equipos');
       const zona=page.locator('app-admin-gym-suite');
       await zona.locator('.mg-suite-network-error').waitFor({timeout:15000});
+      assert.ok(peticionesFallidas>=1,'La falla simulada debe interceptar la consulta real del módulo.');
       assert.equal(await zona.locator('.cf-suite-complete').count(),0,
         'Una consulta fallida no puede aparecer como lista vacía de equipos.');
-      await page.unroute('**/api/admin-gym-registros/equipos');
+      await page.unroute('**/api/admin-gym-registros/equipos*');
       const respuesta=page.waitForResponse(r=>r.url().includes('/api/admin-gym-registros/equipos')
         && r.request().method()==='GET',{timeout:25000});
       await zona.getByRole('button',{name:'Reintentar carga'}).click();
@@ -466,7 +471,7 @@ try {
       await zona.locator('.cf-suite-complete').waitFor({timeout:15000});
       assert.equal(await zona.locator('.mg-suite-network-error').count(),0);
     } finally {
-      await page.unroute('**/api/admin-gym-registros/equipos');
+      await page.unroute('**/api/admin-gym-registros/equipos*');
     }
   });
 
