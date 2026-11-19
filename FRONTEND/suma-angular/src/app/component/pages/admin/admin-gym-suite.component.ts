@@ -37,11 +37,11 @@ interface GymModuleConfig {
       <div *ngIf="loading && modulo!=='ingresos'" class="mg-suite-network-state" role="status" aria-live="polite">
         Consultando {{config.title}} en la base de datos...
       </div>
-      <div *ngIf="error && modulo!=='ingresos'" class="mg-suite-network-state mg-suite-network-error" role="alert">
-        <span>{{error}}</span>
+      <div *ngIf="errorCarga && modulo!=='ingresos'" class="mg-suite-network-state mg-suite-network-error" role="alert">
+        <span>{{errorCarga}}</span>
         <button type="button" (click)="cargar()">Reintentar carga</button>
       </div>
-      <ng-container *ngIf="modulo==='ingresos' || (!loading && !error)" [ngSwitch]="modulo">
+      <ng-container *ngIf="modulo==='ingresos' || (!loading && !errorCarga)" [ngSwitch]="modulo">
         <section class="cf-suite-complete" *ngSwitchCase="'equipos'">
           <header class="cf-suite-page-head"><div><h1>Equipos</h1><p>Inventario, disponibilidad y mantenimiento de equipos</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Equipo</button></header>
           <div class="cf-suite-kpis">
@@ -187,18 +187,23 @@ interface GymModuleConfig {
         </section>
 
         <section class="gym-suite-panel" *ngSwitchDefault>
+          <header class="cf-suite-page-head gym-suite-default-head">
+            <div><h1>{{config.title}}</h1><p>{{config.subtitle}}</p></div>
+            <button type="button" class="primary" (click)="nuevoRegistro()">＋ Nuevo plan</button>
+          </header>
           <div class="gym-suite-toolbar">
             <label class="gym-suite-search"><span>⌕</span><input [(ngModel)]="busqueda" (input)="filtrarLocal()" placeholder="Buscar..."></label>
             <select [(ngModel)]="estadoFiltro" (change)="filtrarLocal()"><option value="">Todos los estados</option><option *ngFor="let estado of config.states" [value]="estado">{{estado}}</option></select>
           </div>
           <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>{{config.primaryLabel}}</th><th>{{config.secondaryLabel}}</th><th>Estado</th><th></th></tr></thead><tbody>
-            <tr *ngFor="let item of filtered"><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || '—'}}</td><td>{{item.estado}}</td><td><button (click)="editar(item)">Editar</button></td></tr>
+            <tr *ngFor="let item of filtered"><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || '—'}}</td><td>{{item.estado}}</td><td><button type="button" (click)="editar(item)">Editar</button></td></tr>
+            <tr *ngIf="!filtered.length"><td colspan="4">No hay planes que coincidan con el filtro. Usa «Nuevo plan» para registrar el primero.</td></tr>
           </tbody></table></div>
         </section>
       </ng-container>
 
       <div class="gym-suite-toast success" *ngIf="toast">{{toast}}</div>
-      <div class="gym-suite-toast error" *ngIf="error && modulo==='ingresos'">{{error}}</div>
+      <div class="gym-suite-toast error" role="alert" *ngIf="error">{{error}}</div>
 
       <div class="gym-suite-modal-backdrop" *ngIf="modalAbierto" (click)="cerrarModal()"></div>
       <section class="gym-suite-modal" *ngIf="modalAbierto">
@@ -520,6 +525,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   editandoId: number | null = null;
   toast = '';
   error = '';
+  errorCarga = '';
   filtroGaleria = 'Todos';
   periodoSalarios = '';
   ingresoCargando = false;
@@ -667,6 +673,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
       this.form = this.formVacio();
       this.toast = '';
       this.error = '';
+      this.errorCarga = '';
       this.busqueda = '';
       this.estadoFiltro = '';
       this.periodoSalarios = '';
@@ -740,6 +747,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
     this.filtered=[];
     this.loading=true;
     this.error='';
+    this.errorCarga='';
     // El reporte contable no depende de que los registros manuales estén disponibles.
     if(moduloSolicitado==='ingresos')this.cargarReporteIngresos();
     this.api.gymRegistros(moduloSolicitado).subscribe({
@@ -754,7 +762,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
         this.loading=false;
         this.records=[];
         this.filtered=[];
-        this.error=moduloSolicitado==='ingresos'
+        this.errorCarga=moduloSolicitado==='ingresos'
           ? 'No se pudieron cargar los registros manuales de ingresos.'
           : e?.error?.message || 'No se pudo cargar este módulo. Comprueba la conexión y la base de datos.';
         // Mantener visible el fallo de carga hasta que el usuario reintente:
@@ -845,6 +853,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   }
 
   nuevoRegistro(): void {
+    this.error = '';
     this.editandoId = null;
     this.form = this.formVacio();
     this.form.estado = this.config.states[0];
@@ -852,6 +861,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   }
 
   editar(item: any): void {
+    this.error = '';
     this.editandoId = Number(item.id);
     this.form = {
       titulo: item?.titulo || '',
@@ -867,6 +877,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
 
   cerrarModal(): void {
     if (this.saving) return;
+    this.error = '';
     this.modalAbierto = false;
     this.editandoId = null;
   }
