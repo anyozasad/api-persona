@@ -470,6 +470,50 @@ try {
     }
   });
 
+  await paso('Galería guarda una imagen local y la muestra tras recargar la base',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const menu=page.locator('.mg-clear-navigation');
+    await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+    await menu.locator('#mg-modulo-selector').selectOption('galeria');
+    const zona=page.locator('app-admin-gym-suite');
+    await zona.getByRole('button',{name:/Subir Imagen/}).first().waitFor({timeout:15000});
+    await zona.getByRole('button',{name:/Subir Imagen/}).first().click();
+    const modal=zona.locator('.gym-suite-modal');
+    await modal.locator('input[name="titulo"]').fill('Foto local temporal E2E');
+    const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLhHAAAAABJRU5ErkJggg==','base64');
+    const subida=page.waitForResponse(r=>r.url().includes('/api/admin-gym-registros/galeria/imagen')
+      && r.request().method()==='POST',{timeout:25000});
+    await modal.locator('input[type="file"]').setInputFiles({
+      name:'foto-galeria-e2e.png',mimeType:'image/png',buffer:png
+    });
+    const subidaR=await subida;
+    assert.equal(subidaR.status(),201,'Laravel debe conservar la imagen en uploads locales.');
+    const archivo=await subidaR.json();
+    assert.match(archivo.imagen_url,/^\/uploads\/admin-gym\//);
+    await modal.locator('img').waitFor({timeout:15000});
+    const creando=page.waitForResponse(r=>r.url().endsWith('/api/admin-gym-registros/galeria')
+      && r.request().method()==='POST',{timeout:20000});
+    await modal.getByRole('button',{name:'Crear',exact:true}).click();
+    assert.equal((await creando).status(),201);
+    await page.reload({waitUntil:'domcontentloaded'});
+    const gallery=page.locator('app-admin-gym-suite');
+    const foto=gallery.locator('.cf-suite-gallery article').filter({hasText:'Foto local temporal E2E'});
+    await foto.waitFor({timeout:20000});
+    const imagen=foto.locator('img');
+    assert.equal(await imagen.getAttribute('src'),archivo.imagen_url,
+      'La URL guardada debe seguir siendo local después de recargar.');
+    assert.equal(await imagen.evaluate(img=>img.complete && img.naturalWidth>0),true,
+      'La imagen local debe cargar sin servicio externo.');
+    await foto.getByRole('button',{name:'Editar imagen'}).click();
+    page.once('dialog',dialog=>dialog.accept());
+    const eliminando=page.waitForResponse(r=>r.url().includes('/api/admin-gym-registros/galeria/')
+      && r.request().method()==='DELETE',{timeout:20000});
+    await gallery.getByRole('button',{name:'Eliminar registro'}).click();
+    assert.equal((await eliminando).status(),200);
+    assert.equal(await gallery.locator('.cf-suite-gallery article')
+      .filter({hasText:'Foto local temporal E2E'}).count(),0);
+  });
+
   await paso('Ingresos abre datos confirmados de MySQL y exporta el informe correcto',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
