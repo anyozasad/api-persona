@@ -46,7 +46,7 @@ interface GymModuleConfig {
           <section class="cf-suite-equipment-grid">
             <article *ngFor="let item of records">
               <div class="cf-suite-equipment-art"><img [src]="item.imagen_url || 'assets/mallqui/mallqui-cover.webp'" [alt]="item.titulo || 'Equipo Mallqui Gym'"></div>
-              <div><h3>{{item.titulo}}</h3><b>{{item.count || item.monto || 1}}</b><p>{{item.subtitulo || 'Equipo de gimnasio'}}</p><span class="status-select">{{item.estado || 'Disponibles'}}</span></div>
+              <div><h3>{{item.titulo}}</h3><b>{{item.estado || 'Estado sin registrar'}}</b><p>{{item.subtitulo || 'Equipo de gimnasio'}}</p><span class="status-select">{{item.estado || 'Disponibles'}}</span></div>
             </article>
             <div class="cf-suite-empty" *ngIf="!records.length"><b>Sin equipos registrados</b><span>Agrega el primer equipo para comenzar el control.</span><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Equipo</button></div>
           </section>
@@ -61,14 +61,14 @@ interface GymModuleConfig {
         <section class="cf-suite-complete" *ngSwitchCase="'eventos'">
           <header class="cf-suite-page-head"><div><h1>Eventos del Gimnasio</h1><p>Próximos eventos, talleres y actividades de socios</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Evento</button></header>
           <div class="cf-suite-kpis">
-            <article><small>Próximos Eventos</small><b>{{records.length}}</b><span>Este mes</span></article>
+            <article><small>Eventos registrados</small><b>{{records.length}}</b><span>Historial del módulo</span></article>
             <article><small>Programados</small><b>{{contarEstados(['Programado','En curso'])}}</b><span>Eventos activos</span></article>
             <article><small>Este Mes</small><b>{{esteMes}}</b><span>Eventos del periodo</span></article>
             <article><small>Finalizados</small><b>{{contarEstados(['Finalizado'])}}</b><span>Registros cerrados</span></article>
           </div>
           <section class="cf-suite-events">
             <article *ngFor="let item of records; let i=index">
-              <div class="cf-suite-event-date"><b>{{item.day || (15+i)}}</b><small></small></div>
+              <div class="cf-suite-event-date"><b>{{diaEvento(item)}}</b><small></small></div>
               <div class="cf-suite-event-main"><span>{{item.estado || 'Cupos limitados'}}</span><h3>{{item.titulo}}</h3><p>{{item.fecha || 'Martes'}} · {{item.subtitulo || 'Mallqui Gym'}}</p></div>
               <div class="cf-suite-event-meta"><b>{{item.estado || 'Programado'}}</b><small>{{item.datos?.detalle || item.subtitulo || 'Sin detalle adicional'}}</small></div>
               <button class="cf-suite-link" (click)="editar(item)">Detalles</button>
@@ -95,18 +95,18 @@ interface GymModuleConfig {
           <header class="cf-suite-page-head"><div><h1>Noticias y Novedades</h1><p>Noticias, anuncios y artículos recientes del gimnasio</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Noticia</button></header>
           <section class="cf-news-featured" *ngIf="records[0] as destacada"><img [src]="destacada.imagen_url || 'assets/mallqui/mallqui-cover.webp'" alt="Noticia destacada"><div><span>NOVEDAD DESTACADA</span><h2>{{destacada.titulo}}</h2><p>{{destacada.subtitulo || destacada.datos?.detalle || 'Noticia de Mallqui Gym'}}</p><button type="button" (click)="editar(destacada)">Ver detalle</button></div></section>
           <section class="cf-suite-news">
-            <article *ngFor="let item of records"><img [src]="item.imagen_url || 'assets/mallqui/mallqui-cover.webp'" [alt]="item.titulo"><div><h3>{{item.titulo}}</h3><small>Publicado el - {{item.fecha || '30/06/2026'}}</small><p>{{item.subtitulo || item.detalle || 'Últimas noticias y novedades de Mallqui Gym.'}}</p><div class="cf-news-actions"><button type="button" (click)="editar(item)">Ver Detalle</button><button type="button" (click)="editar(item)">Editar</button></div></div></article>
+            <article *ngFor="let item of records"><img [src]="item.imagen_url || 'assets/mallqui/mallqui-cover.webp'" [alt]="item.titulo"><div><h3>{{item.titulo}}</h3><small>Publicado el - {{item.fecha || 'Sin fecha registrada'}}</small><p>{{item.subtitulo || item.detalle || 'Últimas noticias y novedades de Mallqui Gym.'}}</p><div class="cf-news-actions"><button type="button" (click)="editar(item)">Ver Detalle</button><button type="button" (click)="editar(item)">Editar</button></div></div></article>
           </section>
           <section class="cf-suite-card"><header><div><h2>Categorías de Noticias</h2><p>Distribución de contenido</p></div></header><div class="cf-news-categories"><span><b>{{records.length}}</b>Total</span><span><b>{{contarEstados(['Publicado'])}}</b>Publicadas</span><span><b>{{contarEstados(['Programado'])}}</b>Programadas</span><span><b>{{contarEstados(['Borrador'])}}</b>Borradores</span></div></section>
         </section>
 
         <section class="cf-suite-complete" *ngSwitchCase="'salarios'">
-          <header class="cf-suite-page-head"><div><h1>Lista de Salarios</h1><p>Resumen de planilla y registros salariales</p></div><div><select><option>Octubre 2026</option><option>Septiembre 2026</option></select><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Salario</button></div></header>
+          <header class="cf-suite-page-head"><div><h1>Lista de Salarios</h1><p>Resumen de planilla y registros salariales</p></div><div><label>Periodo <select aria-label="Filtrar salarios por mes" [(ngModel)]="periodoSalarios" (ngModelChange)="filtrarLocal()"><option value="">Todos los meses</option><option *ngFor="let periodo of periodosSalarios" [value]="periodo.valor">{{periodo.etiqueta}}</option></select></label><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Salario</button></div></header>
           <div class="cf-suite-kpis">
             <article><small>Empleados</small><b>{{filtered.length}}</b><span>Registros de planilla</span></article>
-            <article><small>Planilla Total</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>Periodo actual</span></article>
-            <article><small>Pagado</small><b>{{contarEstados(['Pagado'])}}</b><span>Pagos completados</span></article>
-            <article><small>Pendiente</small><b>{{contarEstados(['Pendiente'])}}</b><span>Pendiente de pago</span></article>
+            <article><small>Planilla Total</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>{{periodoSalarios ? etiquetaPeriodoSalarios : 'Todos los meses'}}</span></article>
+            <article><small>Pagado</small><b>{{contarEstadosFiltrados(['Pagado'])}}</b><span>Pagos completados</span></article>
+            <article><small>Pendiente</small><b>{{contarEstadosFiltrados(['Pendiente'])}}</b><span>Pendiente de pago</span></article>
           </div>
           <section class="cf-suite-card">
             <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>ID</th><th>Colaborador</th><th>Cargo / periodo</th><th>Fecha de pago</th><th>Salario</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
@@ -114,21 +114,23 @@ interface GymModuleConfig {
               <tr *ngIf="!filtered.length"><td colspan="7">Aún no hay registros de salarios.</td></tr>
             </tbody></table></div>
           </section>
-          <section class="cf-suite-card"><header><div><h2>Resumen de Planilla</h2><p>Resumen del mes actual</p></div></header><div class="cf-payroll-notes"><div><b>{{filtered.length}}</b><small>Registros de planilla</small></div><div><b>{{contarEstados(['Pagado'])}}</b><small>Pagos completados</small></div><div><b>{{contarEstados(['Pendiente','Observado'])}}</b><small>Pendientes / observados</small></div><div><b>S/ {{totalMonto | number:'1.2-2'}}</b><small>Total registrado</small></div></div></section>
+          <section class="cf-suite-card"><header><div><h2>Resumen de Planilla</h2><p>{{periodoSalarios ? etiquetaPeriodoSalarios : 'Todos los periodos registrados'}}</p></div></header><div class="cf-payroll-notes"><div><b>{{filtered.length}}</b><small>Registros de planilla</small></div><div><b>{{contarEstadosFiltrados(['Pagado'])}}</b><small>Pagos completados</small></div><div><b>{{contarEstadosFiltrados(['Pendiente','Observado'])}}</b><small>Pendientes / observados</small></div><div><b>S/ {{totalMonto | number:'1.2-2'}}</b><small>Total registrado</small></div></div></section>
         </section>
 
         <section class="cf-suite-complete" *ngSwitchCase="'ingresos'">
           <header class="cf-suite-page-head">
             <div><h1>Ingresos</h1><p>Resumen financiero construido con pagos de membresía y ventas reales.</p></div>
-            <div><button type="button" (click)="exportCsv()">Exportar</button><button type="button" class="primary" (click)="cargarReporteIngresos()">↻ Actualizar</button></div>
+            <div><button type="button" [disabled]="!ingresoReporte || ingresoCargando" (click)="exportCsv()">Exportar ingresos reales</button><button type="button" class="primary" [disabled]="ingresoCargando" (click)="cargarReporteIngresos()">↻ Actualizar</button></div>
           </header>
-          <div class="cf-suite-income-cards">
+          <p *ngIf="ingresoCargando" role="status">Consultando pagos y ventas confirmadas...</p>
+          <p *ngIf="ingresoError" role="alert" class="gym-suite-toast error">{{ingresoError}}</p>
+          <div class="cf-suite-income-cards" *ngIf="ingresoReporte">
             <article><small>Ingresos del Mes</small><b>S/ {{ingresoReporte?.total_ingresos || 0 | number:'1.2-2'}}</b><span>{{ingresoReporte?.desde}} — {{ingresoReporte?.hasta}}</span></article>
             <article><small>Membresías del Mes</small><b>S/ {{ingresoReporte?.membresias || 0 | number:'1.2-2'}}</b><span>Pagos completados</span></article>
             <article><small>Ventas del Mes</small><b>S/ {{ingresoReporte?.ventas_productos || 0 | number:'1.2-2'}}</b><span>Productos vendidos</span></article>
             <article><small>Total Anual</small><b>S/ {{ingresoReporte?.total_anual || 0 | number:'1.2-2'}}</b><span>Año {{ingresoReporte?.anio || fechaAnioActual}}</span></article>
           </div>
-          <section class="cf-suite-income-visuals">
+          <section class="cf-suite-income-visuals" *ngIf="ingresoReporte">
             <article class="cf-suite-card">
               <header><div><h2>Ingresos por Mes</h2><p>Datos reales del año {{ingresoReporte?.anio || fechaAnioActual}}</p></div></header>
               <div class="cf-income-bars real"><i *ngFor="let row of ingresoMeses" [style.height.%]="alturaIngreso(row.total)" [title]="'S/ '+(row.total || 0)"></i></div>
@@ -144,7 +146,7 @@ interface GymModuleConfig {
               </div>
             </article>
           </section>
-          <section class="cf-suite-card">
+          <section class="cf-suite-card" *ngIf="ingresoReporte">
             <header><div><h2>Detalle Mensual</h2><p>Comparación de membresías, productos y total por mes.</p></div></header>
             <div class="gym-suite-table-wrap"><table class="gym-suite-table">
               <thead><tr><th>Mes</th><th>Membresías</th><th>Ventas</th><th>Total</th></tr></thead>
@@ -152,7 +154,7 @@ interface GymModuleConfig {
             </table></div>
           </section>
           <section class="cf-suite-card">
-            <header><div><h2>Otros Ingresos Administrativos</h2><p>Registros manuales adicionales del módulo.</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Registrar Ingreso</button></header>
+            <header><div><h2>Otros Ingresos Administrativos</h2><p>Registros manuales separados: no se suman a los ingresos confirmados por la API.</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Registrar Ingreso</button></header>
             <div class="gym-suite-table-wrap"><table class="gym-suite-table">
               <thead><tr><th>Concepto</th><th>Origen</th><th>Fecha</th><th>Estado</th><th>Monto</th><th>Acción</th></tr></thead>
               <tbody><tr *ngFor="let item of filtered"><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || '—'}}</td><td>{{item.fecha || '—'}}</td><td>{{item.estado}}</td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><button class="cf-suite-link" (click)="editar(item)">Editar</button></td></tr><tr *ngIf="!filtered.length"><td colspan="6">No hay otros ingresos administrativos registrados.</td></tr></tbody>
@@ -160,21 +162,21 @@ interface GymModuleConfig {
           </section>
         </section>
         <section class="cf-suite-complete" *ngSwitchCase="'facturas'">
-          <header class="cf-suite-page-head"><div><h1>Facturas</h1><p>Administra facturas de socios y estados de pago</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Crear Factura</button></header>
+          <header class="cf-suite-page-head"><div><h1>Comprobantes internos</h1><p>Registros administrativos, no comprobantes electrónicos SUNAT</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Crear Factura</button></header>
           <div class="cf-suite-kpis">
             <article><small>Total de Facturas</small><b>{{filtered.length}}</b><span>Registros actuales</span></article>
-            <article><small>Pagadas</small><b>{{contarEstados(['Pagada'])}}</b><span>Completadas</span></article>
-            <article><small>Pendientes</small><b>{{contarEstados(['Pendiente','Emitida'])}}</b><span>Por cobrar</span></article>
+            <article><small>Pagadas</small><b>{{contarEstadosFiltrados(['Pagada'])}}</b><span>Completadas</span></article>
+            <article><small>Pendientes</small><b>{{contarEstadosFiltrados(['Pendiente','Emitida'])}}</b><span>Por cobrar</span></article>
             <article><small>Monto Total</small><b>S/ {{totalMonto | number:'1.2-2'}}</b><span>Valor facturado</span></article>
           </div>
           <section class="cf-suite-card">
             <div class="cf-suite-invoice-note"><span>Consulta facturas administrativas y filtra las que tienen pagos pendientes.</span><div><button type="button" (click)="estadoFiltro='Pendiente';filtrarLocal()">Ver pendientes</button><button type="button" (click)="estadoFiltro='';filtrarLocal()">Ver todas</button></div></div>
-            <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>N.º de Factura</th><th>Socio del Gimnasio</th><th>Concepto</th><th>Fecha</th><th>Estado</th><th>Monto</th><th>Acción</th></tr></thead><tbody>
-              <tr *ngFor="let item of filtered"><td>#INV-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || '—'}}</td><td>{{item.fecha || '—'}}</td><td><span class="status-select">{{item.estado}}</span></td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><button type="button" class="cf-suite-link" (click)="editar(item)">Editar</button></td></tr>
+            <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>N.º interno</th><th>Socio del Gimnasio</th><th>Concepto</th><th>Fecha</th><th>Estado</th><th>Monto</th><th>Acción</th></tr></thead><tbody>
+              <tr *ngFor="let item of filtered"><td>#INT-{{item.id}}</td><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || '—'}}</td><td>{{item.fecha || '—'}}</td><td><span class="status-select">{{item.estado}}</span></td><td>S/ {{item.monto || 0 | number:'1.2-2'}}</td><td><button type="button" class="cf-suite-link" (click)="editar(item)">Editar</button></td></tr>
               <tr *ngIf="!filtered.length"><td colspan="7">No hay facturas con ese filtro.</td></tr>
             </tbody></table></div>
           </section>
-          <section class="cf-suite-card"><header><div><h2>Estado de Pagos</h2><p>Progreso de cobranza</p></div></header><div class="cf-payment-status-grid"><div><b>{{tasaCobranza}}%</b><small>Tasa de Cobranza</small></div><div><b>{{contarEstados(['Pendiente','Emitida'])}}</b><small>Pendientes</small></div><div><b>{{filtered.length}}</b><small>Procesadas</small></div><div><b>S/ {{totalPagadoFacturas | number:'1.2-2'}}</b><small>Cobrado</small></div></div></section>
+          <section class="cf-suite-card"><header><div><h2>Estado de Pagos</h2><p>Progreso de cobranza</p></div></header><div class="cf-payment-status-grid"><div><b>{{tasaCobranza}}%</b><small>Tasa de Cobranza</small></div><div><b>{{contarEstadosFiltrados(['Pendiente','Emitida'])}}</b><small>Pendientes</small></div><div><b>{{filtered.length}}</b><small>Procesadas</small></div><div><b>S/ {{totalPagadoFacturas | number:'1.2-2'}}</b><small>Cobrado</small></div></div></section>
         </section>
 
         <section class="gym-suite-panel" *ngSwitchDefault>
@@ -505,6 +507,9 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   toast = '';
   error = '';
   filtroGaleria = 'Todos';
+  periodoSalarios = '';
+  ingresoCargando = false;
+  ingresoError = '';
   ingresoReporte:any = null;
   mesesCortos = ['E','F','M','A','M','J','J','A','S','O','N','D'];
   mesesLargos = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -638,6 +643,8 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
     if (changes['modulo'] && !changes['modulo'].firstChange) {
       this.busqueda = '';
       this.estadoFiltro = '';
+      this.periodoSalarios = '';
+      this.ingresoReporte = null;
       this.cargar();
     }
   }
@@ -659,6 +666,36 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
     return this.filtered.reduce((s, r) => s + Number(r?.monto || 0), 0);
   }
 
+  /** Periodos existentes en MySQL; nunca meses inventados o fijos. */
+  periodoDeRegistro(item:any):string {
+    const raw=String(item?.fecha || item?.created_at || '');
+    const match=/^(\d{4})-(\d{2})-\d{2}/.exec(raw);
+    if(!match)return '';
+    const mes=Number(match[2]);
+    return mes>=1 && mes<=12 ? match[1]+'-'+match[2] : '';
+  }
+
+  get periodosSalarios():Array<{valor:string,etiqueta:string}> {
+    return [...new Set(this.records.map(r=>this.periodoDeRegistro(r)).filter(Boolean))]
+      .sort((a,b)=>b.localeCompare(a))
+      .map(valor=>({valor,etiqueta:this.mesesLargos[Number(valor.slice(5,7))-1]+' '+valor.slice(0,4)}));
+  }
+
+  get etiquetaPeriodoSalarios():string {
+    return this.periodosSalarios.find(p=>p.valor===this.periodoSalarios)?.etiqueta || 'Periodo seleccionado';
+  }
+
+  diaEvento(item:any):string {
+    const fecha=String(item?.fecha || '');
+    const match=/^\d{4}-\d{2}-(\d{2})/.exec(fecha);
+    return match ? match[1] : '—';
+  }
+
+  contarEstadosFiltrados(estados:string[]):number {
+    const aceptados=estados.map(x=>x.toLowerCase());
+    return this.filtered.filter(r=>aceptados.includes(String(r?.estado||'').toLowerCase())).length;
+  }
+
   get esteMes(): number {
     const now = new Date();
     return this.records.filter(r => {
@@ -670,13 +707,14 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   }
 
   cargar(): void {
+    // El reporte contable no depende de que los registros manuales estén disponibles.
+    if(this.modulo==='ingresos')this.cargarReporteIngresos();
     this.loading = true;
     this.error = '';
     this.api.gymRegistros(this.modulo).subscribe({
       next: (data: any[]) => {
         this.records = Array.isArray(data) ? data : [];
         this.filtrarLocal();
-        if (this.modulo === 'ingresos') this.cargarReporteIngresos();
         this.loading = false;
       },
       error: (e: any) => {
@@ -697,15 +735,26 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   }
 
   cargarReporteIngresos(): void {
+    this.ingresoCargando=true;
+    this.ingresoError='';
     this.api.reporteIngresos().subscribe({
-      next:(r:any)=>this.ingresoReporte=r||null,
-      error:()=>this.ingresoReporte=null
+      next:(r:any)=>{
+        this.ingresoReporte=r && Array.isArray(r.por_mes) ? r : null;
+        this.ingresoCargando=false;
+        if(!this.ingresoReporte)this.ingresoError='El servidor no entregó un reporte financiero válido.';
+      },
+      error:()=>{
+        this.ingresoReporte=null;
+        this.ingresoCargando=false;
+        this.ingresoError='No se pudieron consultar los ingresos reales. Verifica la conexión con MySQL.';
+      }
     });
   }
 
   get ingresoMeses(): any[] {
     const base=Array.isArray(this.ingresoReporte?.por_mes) ? this.ingresoReporte.por_mes : [];
-    return Array.from({length:12},(_,i)=>base[i] || {mes:i+1,membresias:0,ventas_productos:0,total:0});
+    return Array.from({length:12},(_,i)=>base.find((r:any)=>Number(r?.mes)===i+1)
+      || {mes:i+1,membresias:0,ventas_productos:0,total:0});
   }
 
   alturaIngreso(total:any): number {
@@ -734,14 +783,16 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
 
   get tasaCobranza(): number {
     if(!this.filtered.length) return 0;
-    return Math.round((this.contarEstados(['Pagada'])/this.filtered.length)*100);
+    return Math.round((this.contarEstadosFiltrados(['Pagada'])/this.filtered.length)*100);
   }
   filtrarLocal(): void {
     const q = this.busqueda.trim().toLowerCase();
     const estado = this.estadoFiltro;
     this.filtered = this.records.filter(item => {
       const texto = [item?.titulo,item?.subtitulo,item?.estado,item?.fecha].filter(Boolean).join(' ').toLowerCase();
-      return (!q || texto.includes(q)) && (!estado || item?.estado === estado);
+      const periodoCorrecto=this.modulo!=='salarios' || !this.periodoSalarios
+        || this.periodoDeRegistro(item)===this.periodoSalarios;
+      return periodoCorrecto && (!q || texto.includes(q)) && (!estado || item?.estado === estado);
     });
   }
 
@@ -886,29 +937,51 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
     });
   }
 
+  /** Exporta el informe financiero de MySQL, no la lista de notas manuales. */
   exportCsv(): void {
-    const rows = [
+    if(this.modulo==='ingresos'){
+      if(!this.ingresoReporte){
+        this.error='No se puede exportar un reporte sin datos confirmados del servidor.';
+        return;
+      }
+      const anio=Number(this.ingresoReporte.anio||this.fechaAnioActual);
+      const rows:any[][]=[
+        ['Periodo','Membresías confirmadas (S/)','Ventas no anuladas (S/)','Total (S/)'],
+        ...this.ingresoMeses.map((r,i)=>[
+          this.mesesLargos[i]+' '+anio,
+          Number(r?.membresias||0).toFixed(2),
+          Number(r?.ventas_productos||0).toFixed(2),
+          Number(r?.total||0).toFixed(2)
+        ]),
+        ['TOTAL AÑO',Number(this.ingresoReporte.membresias_anual||0).toFixed(2),
+          Number(this.ingresoReporte.ventas_productos_anual||0).toFixed(2),
+          Number(this.ingresoReporte.total_anual||0).toFixed(2)]
+      ];
+      this.descargarCsvFilas(rows,'mallqui-ingresos-confirmados');
+      return;
+    }
+    const rows:any[][]=[
       [this.config.primaryLabel,this.config.secondaryLabel,this.config.dateLabel,this.config.amountLabel,'Estado'],
-      ...this.filtered.map(r => [
-        r?.titulo || '',
-        r?.subtitulo || '',
-        r?.fecha || '',
-        r?.monto || '',
-        r?.estado || ''
-      ])
+      ...this.filtered.map(r=>[r?.titulo||'',r?.subtitulo||'',r?.fecha||'',r?.monto??'',r?.estado||''])
     ];
-    const csv = rows
-      .map(row => row.map(v => '"' + String(v ?? '').replace(/"/g,'""') + '"').join(','))
-      .join('\n');
-    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `mallqui-${this.modulo}-${new Date().toISOString().slice(0,10)}.csv`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 0);
+    this.descargarCsvFilas(rows,'mallqui-'+this.modulo);
   }
 
+  private descargarCsvFilas(rows:any[][],nombre:string):void {
+    const csv=rows.map(row=>row.map(valor=>{
+      let texto=String(valor??'');
+      // Evita que Excel ejecute fórmulas introducidas en campos de usuarios.
+      if(/^[=+@\-\t\r]/.test(texto))texto="'"+texto;
+      return '"'+texto.replace(/"/g,'""')+'"';
+    }).join(',')).join('\n');
+    const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const enlace=document.createElement('a');
+    enlace.href=url;
+    enlace.download=nombre+'-'+new Date().toISOString().slice(0,10)+'.csv';
+    enlace.click();
+    setTimeout(()=>URL.revokeObjectURL(url),0);
+  }
 
   get galeriaVisible(): any[] {
     const base = this.records;
