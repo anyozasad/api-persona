@@ -628,3 +628,17 @@
     margin:6px 8px 12px;
   }
 }
+
+/* Indicadores honestos: distinguir espera de ausencia real de datos. */
+.admin-shell.admin-home-redesign .mg-dashboard .mg-dashboard-loading-note {
+  display:inline-flex;
+  align-items:center;
+  padding:7px 10px;
+  margin:11px 0 0;
+  border:1px solid rgba(207,244,164,.35);
+  border-radius:8px;
+  background:rgba(255,255,255,.09);
+  color:#f3f9ea;
+  font-size:12px;
+  line-height:1.4;
+}
