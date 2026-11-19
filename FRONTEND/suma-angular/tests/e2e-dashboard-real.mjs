@@ -257,7 +257,7 @@ try {
     assert.equal(await menu.locator('.cf-nav-group-head').count(),0,
       'Los módulos secundarios permanecen plegados.');
     assert.deepEqual(await menu.locator('.mg-nav-caption').allTextContents(),
-      ['INICIO','OPERACIÓN DIARIA','ADMINISTRACIÓN','OTRAS FUNCIONES']);
+      ['INICIO','SOCIOS Y SESIONES','VENTAS E INVENTARIO','ADMINISTRACIÓN','OTRAS FUNCIONES']);
     assert.equal(await menu.getByText('Todas las funciones',{exact:true}).count(),0);
     const primario=menu.getByRole('button',{name:'Productos',exact:true});
     await primario.click();
@@ -271,6 +271,22 @@ try {
     assert.equal(await page.locator('.mg-module-shell-actions button').count(),1,
       'Un solo control de actualización por módulo.');
     await page.screenshot({path:'evidencias-dashboard/13_Menu_cuatro_tareas_directas.png',fullPage:true});
+  });
+
+  await paso('Búsqueda sencilla lleva a la pantalla correcta sin abrir submenús',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const buscador=page.getByRole('textbox',{name:'Buscar módulo del panel'});
+    await buscador.fill('inventario');
+    const resultados=page.locator('.mg-mantis-search-results');
+    await resultados.waitFor({timeout:10000});
+    assert.equal(await resultados.getByRole('option').first().innerText().then(t=>/inventario/i.test(t)),true,
+      'Inventario debe aparecer antes que Ventas cuando se escribe inventario.');
+    await buscador.press('Enter');
+    assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Inventario');
+    assert.equal(await page.locator('.mg-nav-advanced-content').count(),0,
+      'La búsqueda no debe abrir menús laterales adicionales.');
+    assert.equal(await page.locator('.mg-mantis-breadcrumb').count(),0,
+      'No debe repetirse la ruta del módulo en varias cabeceras.');
   });
 
   await paso('Administración conserva reportes, usuarios, auditoría, configuración y respaldo',async()=>{
@@ -316,11 +332,17 @@ try {
         'Faltan funciones del grupo '+grupo.area);
       await selector.selectOption({label:grupo.frecuente});
       assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio');
-      await selector.selectOption({label:grupo.adicional});
+      assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
+        'El selector debe cerrarse al abrir una pantalla.');
+      await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+      await menu.locator('#mg-modulo-selector').selectOption({label:grupo.adicional});
       assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio');
-      const seleccionado=await selector.locator('option:checked').innerText();
+      assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
+        'Una pantalla abierta no debe quedar tapada por la lista de módulos.');
+      await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+      const seleccionado=await menu.locator('#mg-modulo-selector option:checked').innerText();
       assert.equal(seleccionado.trim(),grupo.adicional,
-        'El selector debe reflejar el módulo activo.');
+        'El selector debe recordar qué módulo está activo.');
     }
   });
 
@@ -417,7 +439,10 @@ try {
     assert.equal(await selector.locator('option[value="gastos"]').count(),1);
     await selector.selectOption('gastos');
     assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Gastos');
-    assert.equal(await selector.inputValue(),'gastos');
+    assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
+      'Al entrar en Gastos la lista debe ocultarse.');
+    await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+    assert.equal(await menu.locator('#mg-modulo-selector').inputValue(),'gastos');
     await page.screenshot({path:'evidencias-dashboard/35_Menu_adicional_agrupado.png',
       fullPage:true,animations:'disabled'});
   });
