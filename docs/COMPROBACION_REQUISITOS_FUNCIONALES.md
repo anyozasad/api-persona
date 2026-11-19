@@ -84,3 +84,19 @@ Para declarar un requisito **terminado** se necesita: operación real en la inte
 La referencia `MarcosZumaran/TEC-SGI-2026` usa accesos directos en el lateral divididos por área. Mallqui Gym adapta **el orden**, no los módulos de incidencias: **Inicio → Operación diaria (Socios, Reservas, Asistencia, Productos, Ventas, Pagos) → Administración (Reportes, Configuración) → Otras funciones**. Las otras 38 funciones siguen en un selector agrupado por siete áreas, sin duplicar enlaces directos. El perfil del usuario aparece al pie del menú; cerrar sesión permanece en el menú superior de la cuenta. La paleta del gimnasio y las rutas originales no se sustituyen por las de TEC-SGI.
 
 Esto es una corrección de navegación, no evidencia de que las 150 entradas del portal sean 150 sprints aceptados ni de que cada flujo haya sido ejecutado contra el MySQL privado del gimnasio.
+
+## Correcciones operativas del dashboard — 19/11/2026
+
+Se actualizó directamente la rama `main` del proyecto Angular 20 + Laravel 12:
+
+- **Ingresos:** la pantalla carga `GET /api/reportes/ingresos` independientemente de la consulta de registros administrativos; cuando MySQL falla se muestra un error y no se presenta la falta de información como cero confirmado. El CSV descarga los 12 meses, ingresos por membresías y ventas, y total anual calculados por la API.
+- **Salarios:** el selector de periodo solo incluye meses encontrados en los registros guardados; tabla, montos y conteos se recalculan al cambiar el filtro.
+- **Equipos:** el listado de mantenimiento incluye únicamente filas cuyo estado es `Mantenimiento`, sin tratar otros equipos como si estuvieran averiados.
+- **Eventos y noticias:** no se inventan días, meses ni estados cuando el registro carece de fecha o estado.
+- **Edición y eliminación:** el formulario de registros administrativos habilita eliminación únicamente en modo edición, solicita confirmación y actualiza la tabla tras respuesta satisfactoria del servidor.
+- **Cambio de módulos:** las respuestas de peticiones anteriores no pueden sobrescribir la pantalla actual cuando el usuario cambia de módulo rápidamente.
+- **Comprobantes internos:** no se presentan como emisión electrónica SUNAT.
+
+Pruebas añadidas: `admin-gym-suite.component.spec.ts` para filtros, exportación, estados, errores, actualización y eliminación; `tests/e2e-dashboard-real.mjs` para exportar ingresos y registrar/eliminar un salario usando una **base MySQL temporal de GitHub Actions**. Los resultados válidos son los de cada ejecución del flujo `Mallqui Gym - Dashboard real navegador y MySQL`, no únicamente que el código de prueba exista.
+
+**Alcance pendiente:** las pruebas automáticas no sustituyen la comprobación con `BACKEND/.env` y las fotografías/productos existentes en el XAMPP real; no se acredita la emisión SUNAT ni que las 150 entradas estructurales del portal sean 150 sprints completados. Se debe conservar el respaldo SQL antes de migraciones y no ejecutar `migrate:fresh` sobre datos reales.
