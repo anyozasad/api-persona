@@ -46,14 +46,14 @@ interface GymModuleConfig {
           <section class="cf-suite-equipment-grid">
             <article *ngFor="let item of records">
               <div class="cf-suite-equipment-art"><img [src]="item.imagen_url || 'assets/mallqui/mallqui-cover.webp'" [alt]="item.titulo || 'Equipo Mallqui Gym'"></div>
-              <div><h3>{{item.titulo}}</h3><b>{{item.estado || 'Estado sin registrar'}}</b><p>{{item.subtitulo || 'Equipo de gimnasio'}}</p><span class="status-select">{{item.estado || 'Disponibles'}}</span></div>
+              <div><h3>{{item.titulo}}</h3><p>{{item.subtitulo || 'Equipo de gimnasio'}}</p><span class="status-select">{{item.estado || 'Sin estado'}}</span><button type="button" class="cf-suite-link" (click)="editar(item)">Editar equipo</button></div>
             </article>
             <div class="cf-suite-empty" *ngIf="!records.length"><b>Sin equipos registrados</b><span>Agrega el primer equipo para comenzar el control.</span><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Equipo</button></div>
           </section>
           <section class="cf-suite-card">
-            <header><div><h2>Equipos Mantenimiento</h2><p>Programación reciente de mantenimiento</p></div><button type="button" (click)="nuevoRegistro()">Programar Mantenimiento</button></header>
+            <header><div><h2>Equipos en mantenimiento</h2><p>Solo registros con estado Mantenimiento</p></div></header>
             <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>Equipos</th><th>Categoría</th><th>Último Servicio</th><th>Próximo Servicio</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
-              <tr *ngFor="let item of equiposMantenimiento"><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Sin categoría'}}</td><td>{{item.datos?.ultimo_servicio || 'No registrado'}}</td><td>{{item.fecha || 'No programado'}}</td><td><span class="status-select">{{item.estado || 'Operativo'}}</span></td><td><button class="cf-suite-link" (click)="editar(item)">Ver</button></td></tr>
+              <tr *ngFor="let item of equiposMantenimiento"><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Sin categoría'}}</td><td>{{item.datos?.ultimo_servicio || 'No registrado'}}</td><td>{{item.fecha || 'No programado'}}</td><td><span class="status-select">{{item.estado || 'Operativo'}}</span></td><td><button type="button" class="cf-suite-link" (click)="editar(item)">Editar</button></td></tr>
             </tbody></table><p *ngIf="!equiposMantenimiento.length" class="cf-suite-empty-inline">No hay equipos registrados en mantenimiento.</p></div>
           </section>
         </section>
@@ -71,7 +71,7 @@ interface GymModuleConfig {
               <div class="cf-suite-event-date"><b>{{diaEvento(item)}}</b><small></small></div>
               <div class="cf-suite-event-main"><span>{{item.estado || 'Estado no registrado'}}</span><h3>{{item.titulo}}</h3><p>{{item.fecha || 'Sin fecha registrada'}} · {{item.subtitulo || 'Mallqui Gym'}}</p></div>
               <div class="cf-suite-event-meta"><b>{{item.estado || 'Sin estado'}}</b><small>{{item.datos?.detalle || item.subtitulo || 'Sin detalle adicional'}}</small></div>
-              <button class="cf-suite-link" (click)="editar(item)">Detalles</button>
+              <button type="button" class="cf-suite-link" (click)="editar(item)">Editar</button>
             </article>
             <div class="cf-suite-empty" *ngIf="!records.length"><b>Sin eventos registrados</b><span>Crea el primer evento, taller o campaña.</span><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Evento</button></div>
           </section>
@@ -85,7 +85,7 @@ interface GymModuleConfig {
           <header class="cf-suite-page-head"><div><h1>Galería</h1><p>Galería del gimnasio, clases y eventos destacados</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Subir Imagen</button></header>
           <div class="cf-suite-gallery-filter"><button [class.active]="filtroGaleria==='Todos'" (click)="filtrarGaleria('Todos')">Todos</button><button [class.active]="filtroGaleria==='Entrenamiento'" (click)="filtrarGaleria('Entrenamiento')">Entrenamiento</button><button [class.active]="filtroGaleria==='Eventos'" (click)="filtrarGaleria('Eventos')">Eventos</button><button [class.active]="filtroGaleria==='Socios'" (click)="filtrarGaleria('Socios')">Socios</button><button [class.active]="filtroGaleria==='Equipos'" (click)="filtrarGaleria('Equipos')">Equipos</button></div>
           <section class="cf-suite-gallery">
-            <article *ngFor="let item of galeriaVisible"><img [src]="item.imagen_url || 'assets/mallqui/mallqui-cover.webp'" [alt]="item.titulo"><div><b>{{item.titulo}}</b><span>{{item.estado || 'Publicado'}}</span></div></article>
+            <article *ngFor="let item of galeriaVisible"><img [src]="item.imagen_url || 'assets/mallqui/mallqui-cover.webp'" [alt]="item.titulo"><div><b>{{item.titulo}}</b><span>{{item.estado || 'Sin estado'}}</span><button type="button" class="cf-suite-link" (click)="editar(item)">Editar imagen</button></div></article>
             <div class="cf-suite-empty" *ngIf="!galeriaVisible.length"><b>Sin imágenes registradas</b><span>Sube contenido real del gimnasio para completar la galería.</span><button type="button" class="primary" (click)="nuevoRegistro()">＋ Subir Imagen</button></div>
           </section>
           <div class="cf-suite-kpis compact"><article><small>Registros</small><b>{{records.length}}</b><span>Elementos de galería</span></article><article><small>Publicados</small><b>{{contarEstados(['Publicado'])}}</b><span>Contenido visible</span></article><article><small>Este Mes</small><b>{{esteMes}}</b><span>Nuevas cargas</span></article><article><small>Borradores</small><b>{{contarEstados(['Borrador'])}}</b><span>Pendientes de publicar</span></article></div>
@@ -93,9 +93,9 @@ interface GymModuleConfig {
 
         <section class="cf-suite-complete" *ngSwitchCase="'noticias'">
           <header class="cf-suite-page-head"><div><h1>Noticias y Novedades</h1><p>Noticias, anuncios y artículos recientes del gimnasio</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Noticia</button></header>
-          <section class="cf-news-featured" *ngIf="records[0] as destacada"><img [src]="destacada.imagen_url || 'assets/mallqui/mallqui-cover.webp'" alt="Noticia destacada"><div><span>NOVEDAD DESTACADA</span><h2>{{destacada.titulo}}</h2><p>{{destacada.subtitulo || destacada.datos?.detalle || 'Noticia de Mallqui Gym'}}</p><button type="button" (click)="editar(destacada)">Ver detalle</button></div></section>
+          <section class="cf-news-featured" *ngIf="records[0] as destacada"><img [src]="destacada.imagen_url || 'assets/mallqui/mallqui-cover.webp'" alt="Noticia destacada"><div><span>NOVEDAD DESTACADA</span><h2>{{destacada.titulo}}</h2><p>{{destacada.subtitulo || destacada.datos?.detalle || 'Noticia de Mallqui Gym'}}</p><button type="button" (click)="editar(destacada)">Editar noticia</button></div></section>
           <section class="cf-suite-news">
-            <article *ngFor="let item of records"><img [src]="item.imagen_url || 'assets/mallqui/mallqui-cover.webp'" [alt]="item.titulo"><div><h3>{{item.titulo}}</h3><small>Publicado el - {{item.fecha || 'Sin fecha registrada'}}</small><p>{{item.subtitulo || item.detalle || 'Últimas noticias y novedades de Mallqui Gym.'}}</p><div class="cf-news-actions"><button type="button" (click)="editar(item)">Ver Detalle</button><button type="button" (click)="editar(item)">Editar</button></div></div></article>
+            <article *ngFor="let item of records"><img [src]="item.imagen_url || 'assets/mallqui/mallqui-cover.webp'" [alt]="item.titulo"><div><h3>{{item.titulo}}</h3><small>Publicado el - {{item.fecha || 'Sin fecha registrada'}}</small><p>{{item.subtitulo || item.detalle || 'Últimas noticias y novedades de Mallqui Gym.'}}</p><div class="cf-news-actions"><button type="button" (click)="editar(item)">Editar</button></div></div></article>
           </section>
           <section class="cf-suite-card"><header><div><h2>Categorías de Noticias</h2><p>Distribución de contenido</p></div></header><div class="cf-news-categories"><span><b>{{records.length}}</b>Total</span><span><b>{{contarEstados(['Publicado'])}}</b>Publicadas</span><span><b>{{contarEstados(['Programado'])}}</b>Programadas</span><span><b>{{contarEstados(['Borrador'])}}</b>Borradores</span></div></section>
         </section>
@@ -211,7 +211,11 @@ interface GymModuleConfig {
             </label>
             <label class="span-2">Detalle / observación<textarea name="detalle" [(ngModel)]="form.detalle" rows="4"></textarea></label>
           </div>
-          <footer><button type="button" class="secondary" (click)="cerrarModal()">Cancelar</button><button type="submit" class="primary" [disabled]="saving || subiendoImagen || gymForm.invalid">{{saving ? 'Guardando...' : (editandoId ? 'Guardar Cambios' : 'Crear')}}</button></footer>
+          <footer>
+            <button *ngIf="editandoId !== null" type="button" class="secondary" [disabled]="saving || subiendoImagen" (click)="eliminarRegistroActual()">Eliminar registro</button>
+            <button type="button" class="secondary" (click)="cerrarModal()">Cancelar</button>
+            <button type="submit" class="primary" [disabled]="saving || subiendoImagen || gymForm.invalid">{{saving ? 'Guardando...' : (editandoId ? 'Guardar Cambios' : 'Crear')}}</button>
+          </footer>
         </form>
       </section>
     </section>
@@ -941,15 +945,25 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
     });
   }
 
+  eliminarRegistroActual():void {
+    if(this.editandoId===null || this.saving || this.subiendoImagen)return;
+    const registro=this.records.find(item=>Number(item?.id)===this.editandoId);
+    if(registro)this.eliminar(registro);
+  }
+
   eliminar(item: any): void {
-    if (!item?.id) return;
+    if (!item?.id || this.saving) return;
     const nombre = item?.titulo || 'este registro';
     if (!confirm(`¿Eliminar "${nombre}"?`)) return;
 
     this.api.eliminarGymRegistro(this.modulo, Number(item.id)).subscribe({
       next: () => {
         this.toast = 'Registro eliminado.';
-        this.records = this.records.filter(r => r.id !== item.id);
+        this.records = this.records.filter(r => Number(r.id) !== Number(item.id));
+        if(this.editandoId!==null && Number(item.id)===this.editandoId){
+          this.modalAbierto=false;
+          this.editandoId=null;
+        }
         this.filtrarLocal();
         this.limpiarMensaje('toast');
       },
