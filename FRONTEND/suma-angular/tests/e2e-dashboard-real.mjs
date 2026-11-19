@@ -523,6 +523,58 @@ try {
       .filter({hasText:'Foto local temporal E2E'}).count(),0);
   });
 
+  await paso('Nutrición crea, edita y elimina planes; error de guardado mantiene el formulario',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const menu=page.locator('.mg-clear-navigation');
+    await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+    await menu.locator('#mg-modulo-selector').selectOption('nutricion');
+    const zona=page.locator('app-admin-gym-suite');
+    await zona.getByRole('button',{name:/Nuevo plan/}).waitFor({timeout:15000});
+    await zona.getByRole('button',{name:/Nuevo plan/}).click();
+    const modal=zona.locator('.gym-suite-modal');
+    await modal.locator('input[name="titulo"]').fill('Plan temporal de nutrición');
+    await modal.locator('input[name="subtitulo"]').fill('Seguimiento de socio en base temporal');
+    await modal.locator('input[name="fecha"]').fill('2026-11-19');
+    await page.route('**/api/admin-gym-registros/nutricion',ruta=>{
+      if(ruta.request().method()==='POST')return ruta.fulfill({
+        status:422,contentType:'application/json',
+        body:JSON.stringify({message:'Error de validación simulado',errors:{titulo:['Revisar nombre']}})
+      });
+      return ruta.continue();
+    });
+    await modal.getByRole('button',{name:'Crear',exact:true}).click();
+    await zona.getByRole('alert').filter({hasText:'Error de validación simulado'})
+      .waitFor({timeout:10000});
+    assert.equal(await modal.isVisible(),true,
+      'El formulario no puede ocultarse después de un error al guardar.');
+    assert.equal(await zona.locator('.mg-suite-network-error').count(),0,
+      'Un error de formulario no debe confundirse con caída de MySQL.');
+    await page.unroute('**/api/admin-gym-registros/nutricion');
+
+    const crear=page.waitForResponse(r=>r.url().endsWith('/api/admin-gym-registros/nutricion')
+      && r.request().method()==='POST',{timeout:20000});
+    await modal.getByRole('button',{name:'Crear',exact:true}).click();
+    assert.equal((await crear).status(),201);
+    const fila=zona.locator('.gym-suite-table tbody tr').filter({hasText:'Plan temporal de nutrición'});
+    await fila.waitFor({timeout:15000});
+    await fila.getByRole('button',{name:'Editar'}).click();
+    await modal.locator('input[name="titulo"]').fill('Plan nutricional corregido');
+    const editar=page.waitForResponse(r=>r.url().includes('/api/admin-gym-registros/nutricion/')
+      && r.request().method()==='PUT',{timeout:20000});
+    await modal.getByRole('button',{name:'Guardar Cambios'}).click();
+    assert.equal((await editar).status(),200);
+    const actualizada=zona.locator('.gym-suite-table tbody tr').filter({hasText:'Plan nutricional corregido'});
+    await actualizada.waitFor({timeout:15000});
+    await actualizada.getByRole('button',{name:'Editar'}).click();
+    page.once('dialog',dialog=>dialog.accept());
+    const eliminar=page.waitForResponse(r=>r.url().includes('/api/admin-gym-registros/nutricion/')
+      && r.request().method()==='DELETE',{timeout:20000});
+    await modal.getByRole('button',{name:'Eliminar registro'}).click();
+    assert.equal((await eliminar).status(),200);
+    assert.equal(await zona.locator('.gym-suite-table tbody tr')
+      .filter({hasText:'Plan nutricional corregido'}).count(),0);
+  });
+
   await paso('Ingresos abre datos confirmados de MySQL y exporta el informe correcto',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
