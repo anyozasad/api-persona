@@ -295,7 +295,7 @@ try {
       'El módulo no debe repetir los botones Inicio y Actualizar.');
     assert.equal(await apps.locator('.mg-app-grid .mg-app-tile').count(),6,
       'Solo mostrar seis tareas complementarias al entrar.');
-    const buscar=apps.getByRole('textbox',{name:'Buscar aplicaciones'});
+    const buscar=apps.getByRole('searchbox',{name:'Buscar aplicaciones'});
     await buscar.fill('nutrición');
     assert.equal(await apps.locator('.mg-app-grid .mg-app-tile').count(),1,
       'Buscar una función debe permitir encontrar un módulo que no es frecuente.');
