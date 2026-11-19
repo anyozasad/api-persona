@@ -59,4 +59,18 @@ class BaseDatosUnicaSistemaTest extends TestCase
         $this->assertStringContainsString("table('socios')", $clienteMirror);
         $this->assertStringContainsString("'prefix' => ''", $clienteMirror);
     }
+    public function test_el_iniciador_verifica_el_proyecto_y_no_acepta_otro_dashboard_en_los_puertos(): void
+    {
+        $response = $this->getJson('/api/estado-sistema');
+        $this->assertContains($response->status(), [200, 503]);
+        $response->assertJsonPath('sistema', 'Mallqui Gym');
+
+        $inicio = (string) file_get_contents(base_path('../scripts/INICIAR_DASHBOARD.ps1'));
+        $this->assertStringContainsString('function VerificarServidorMallqui', $inicio);
+        $this->assertStringContainsString('function VerificarFrontendMallqui', $inicio);
+        $this->assertStringContainsString("VerificarServidorMallqui \$estadoServidor", $inicio);
+        $this->assertStringContainsString("VerificarFrontendMallqui \$paginaYaAbierta", $inicio);
+        $this->assertStringContainsString('PHP_VERSION_ID', $inicio);
+    }
+
 }
