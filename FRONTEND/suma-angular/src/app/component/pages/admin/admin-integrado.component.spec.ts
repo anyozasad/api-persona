@@ -348,6 +348,23 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     }
   });
 
+  it('el botón superior Actualizar también refresca Calendario y Tareas sin duplicar otro botón',()=>{
+    const refrescar=jasmine.createSpy('refrescar');
+    component.panelAplicaciones={refrescar} as any;
+    spyOn(component as any,'cargarSegcion').and.stub();
+    spyOn(component as any,'cargarDashboard').and.stub();
+    component.seccion='calendario-admin';
+    component.actualizarSegcionActual();
+    expect(refrescar).toHaveBeenCalledOnceWith(false);
+    expect((component as any).cargarSegcion).toHaveBeenCalledWith('calendario-admin');
+    component.actualizandoDatos=false;
+    refrescar.calls.reset();
+    component.seccion='tareas-admin';
+    component.actualizarSegcionActual();
+    expect(refrescar).toHaveBeenCalledOnceWith(false);
+    expect((component as any).cargarSegcion).toHaveBeenCalledWith('tareas-admin');
+  });
+
   it('después de restaurar MySQL vuelve a consultar socios, fotos, inventario y pagos', () => {
     const archivo=new File(['-- MySQL dump 10.13'],'copia_mallqui.sql',{type:'text/plain'});
     spyOn(window,'confirm').and.returnValue(true);
