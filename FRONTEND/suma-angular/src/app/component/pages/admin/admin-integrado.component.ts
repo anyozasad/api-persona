@@ -230,7 +230,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           <p>{{subtituloActual}}</p>
         </div>
         <div class="mg-module-shell-actions">
-          <span class="mg-module-state">{{estadoModuloActual}}</span>
+          <span class="mg-module-state" *ngIf="['configuracion','caja','gastos','verificacion-efsrt','inventario','productos','kardex'].includes(seccion)">{{estadoModuloActual}}</span>
           <button type="button" class="mg-back-home"
             (click)="cambiarSegcion(['usuarios','auditoria','mantenimiento-sistema','verificacion-efsrt'].includes(seccion) ? 'configuracion' : 'dashboard')"
             [attr.aria-label]="['usuarios','auditoria','mantenimiento-sistema','verificacion-efsrt'].includes(seccion) ? 'Volver a configuración' : 'Volver al panel principal'">
@@ -3460,7 +3460,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     }
     if(this.seccion==='configuracion')return this.estadoConfiguracionTexto;
     if(['caja','gastos'].includes(this.seccion))return this.cajaCargando?'Consultando caja':this.cajaError?'Caja sin verificar':this.caja?.caja_abierta?'Caja abierta':'Caja sin apertura activa';
-    if(['inventario','productos','kardex'].includes(this.seccion)) return (this.dashboard?.inventario?.productos_stock_bajo||0)+' alertas de stock';
+    if(['inventario','productos','kardex'].includes(this.seccion)) {
+      const cantidad=this.dashboard?.inventario?.productos_stock_bajo;
+      return typeof cantidad==='number' ? cantidad+' alertas de stock' : 'Stock sin verificar';
+    }
     if(['pagos','ventas','ingresos','facturas','salarios','gastos'].includes(this.seccion)) return 'Control financiero';
     if(['clientes','membresias','asistencias','entrenador','clases','reservas','planes'].includes(this.seccion)) return 'Gestión activa';
     return this.estadoOperativoDashboard?.operativo===true?'Sistema verificado'
