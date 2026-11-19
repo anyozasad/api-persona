@@ -485,6 +485,7 @@ try {
     await zona.getByRole('button',{name:/Subir Imagen/}).first().click();
     const modal=zona.locator('.gym-suite-modal');
     await modal.locator('input[name="titulo"]').fill('Foto local temporal E2E');
+    await modal.locator('select[name="categoria"]').selectOption('Eventos');
     const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC','base64');
     const subida=page.waitForResponse(r=>r.url().includes('/api/admin-gym-registros/galeria/imagen')
       && r.request().method()==='POST',{timeout:25000});
@@ -513,6 +514,14 @@ try {
       'La URL guardada debe seguir siendo local después de recargar.');
     assert.equal(await imagen.evaluate(img=>img.complete && img.naturalWidth>0),true,
       'La imagen local debe cargar sin servicio externo.');
+    const filtros=gallery.locator('.cf-suite-gallery-filter');
+    await filtros.getByRole('button',{name:'Eventos'}).click();
+    assert.equal(await gallery.locator('.cf-suite-gallery article').filter({hasText:'Foto local temporal E2E'}).count(),1,
+      'La foto guardada en Eventos debe aparecer al activar esa categoría.');
+    await filtros.getByRole('button',{name:'Entrenamiento'}).click();
+    assert.equal(await gallery.locator('.cf-suite-gallery article').filter({hasText:'Foto local temporal E2E'}).count(),0,
+      'Una foto de Eventos no debe confundirse con Entrenamiento.');
+    await filtros.getByRole('button',{name:'Todos'}).click();
     await foto.getByRole('button',{name:'Editar imagen'}).click();
     page.once('dialog',dialog=>dialog.accept());
     const eliminando=page.waitForResponse(r=>r.url().includes('/api/admin-gym-registros/galeria/')
