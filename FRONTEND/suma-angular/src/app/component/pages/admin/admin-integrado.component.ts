@@ -3214,7 +3214,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.seccion = this.normalizarSegcion(this.route?.snapshot?.data?.['seccion'] || this.seccionInicial || 'dashboard');
     this.activarGrupoDeSeccion(this.seccion);
     try{
-      this.sidebarCerrado = localStorage.getItem('mallqui_admin_sidebar_closed') === '1';
+      // Mostrar siempre nombres y módulos al entrar: el menú colapsado confundía al usuario.
+      this.sidebarCerrado = false;
+      localStorage.setItem('mallqui_admin_sidebar_closed','0');
       this.autoRefreshActivo = localStorage.getItem('mallqui_admin_auto_refresh') !== '0';
       const tema=localStorage.getItem('mallqui_mantis_tema');
       const color=localStorage.getItem('mallqui_mantis_color');
