@@ -597,3 +597,34 @@
     justify-content:space-between;
   }
 }
+
+/* Navegación enfocada: cinco acciones y un solo selector de funciones restantes. */
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-brand {
+  cursor:default!important;
+  user-select:none;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-current-extra {
+  margin:6px 9px 14px;
+  padding:10px 12px;
+  border-radius:10px;
+  border-left:3px solid #b9eb65;
+  background:rgba(255,255,255,.09);
+  color:#f1f6ed;
+  line-height:1.45;
+  font-size:12px;
+  overflow-wrap:anywhere;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-current-extra strong {
+  display:block;
+  font-weight:700;
+  font-size:13px;
+  color:#ffffff;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary small {
+  line-height:1.25;
+}
+@media (max-width:700px) {
+  .admin-shell.admin-home-redesign .mg-tec-order .mg-nav-current-extra {
+    margin:6px 8px 12px;
+  }
+}
