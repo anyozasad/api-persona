@@ -35,6 +35,28 @@ describe('Centro de aplicaciones Mantis - funciones reales de Mallqui Gym', () =
     component.busquedaApp='';
     expect(component.aplicacionesFiltradas.every(a=>a.grupo==='Comercio')).toBeTrue();
     component.grupoApp='';
+    expect(component.aplicacionesFiltradas.map(a=>a.id)).toEqual([
+      'renovaciones','rutinas','ventas','inventario','soporte','calendario-admin'
+    ]);
+    component.mostrarTodasAplicaciones=true;
+    expect(component.aplicacionesFiltradas.length).toBe(44);
+    component.mostrarTodasAplicaciones=false;
+    component.busquedaApp='configuración';
+    expect(component.aplicacionesFiltradas.map(a=>a.id)).toEqual(['configuracion']);
+    component.busquedaApp='';
+    expect(component.aplicacionesFiltradas.length).toBe(6);
+  });
+
+  it('no muestra los 44 botones antes de que el usuario busque o expanda el directorio',()=>{
+    expect(component.mostrarTodasAplicaciones).toBeFalse();
+    expect(component.aplicacionesFiltradas.length).toBe(6);
+    expect(component.aplicacionesFiltradas.some(a=>a.id==='dashboard')).toBeFalse();
+    expect(component.aplicacionesFiltradas.some(a=>a.id==='clientes')).toBeFalse();
+    expect(component.aplicacionesFiltradas.some(a=>a.id==='reservas')).toBeFalse();
+    component.grupoApp='Sistema';
+    expect(component.aplicacionesFiltradas.every(a=>a.grupo==='Sistema')).toBeTrue();
+    component.grupoApp='';
+    component.mostrarTodasAplicaciones=true;
     expect(component.aplicacionesFiltradas.length).toBe(44);
   });
 
