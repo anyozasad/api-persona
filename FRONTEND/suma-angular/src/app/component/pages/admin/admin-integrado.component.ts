@@ -248,7 +248,6 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
               <span class="mg-efsrt-eyebrow">MALLQUI GYM · ADMINISTRACIÓN</span>
               <h2>Panel principal</h2>
               <p>Empieza por Socios y Reservas. Para registrar entradas, busca «Asistencia» arriba; para cobrar, abre Pagos.</p>
-              <p *ngIf="dashboardCargando" class="mg-dashboard-loading-note" role="status">Consultando indicadores, gráficos y productos en MySQL...</p>
             </div>
             <div class="mg-efsrt-hero-aside">
               <span class="mg-efsrt-connection" [class.problem]="!sistemaSincronizado">
