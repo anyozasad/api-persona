@@ -490,7 +490,7 @@ try {
     await modal.getByRole('button',{name:'Crear',exact:true}).click();
     assert.equal((await creando).status(),201);
     const periodo=planilla.getByRole('combobox',{name:'Filtrar salarios por mes'});
-    await periodo.locator('option[value="'+mes+'"]').waitFor({timeout:20000});
+    await periodo.locator('option[value="'+mes+'"]').waitFor({state:'attached',timeout:20000});
     await periodo.selectOption(mes);
     const fila=planilla.locator('.gym-suite-table tbody tr').filter({hasText:nombre});
     await fila.waitFor({timeout:15000});
