@@ -289,6 +289,8 @@ try {
     await menu.locator('#mg-modulo-selector').selectOption('aplicaciones');
     const apps=page.locator('app-admin-applications');
     await apps.waitFor({timeout:15000});
+    assert.equal(await page.locator('.mg-module-shell-head').count(),0,
+      'Aplicaciones no necesita otra cabecera con estado y botón Inicio.');
     assert.equal(await apps.locator('.mg-app-overview').count(),0,
       'No repetir indicadores del dashboard dentro del directorio de módulos.');
     assert.equal(await apps.locator('.mg-app-tabs').count(),0,
@@ -700,6 +702,7 @@ try {
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const inicio=page.locator('.mg-efsrt-dashboard');
     await inicio.waitFor({timeout:15000});
+    await inicio.locator('.mg-dashboard-loading-note').waitFor({state:'hidden',timeout:25000});
     assert.equal(await inicio.locator('.mg-efsrt-actions>button').count(),0,
       'El inicio no debe duplicar los accesos del menú lateral.');
     assert.equal(await inicio.locator('.mg-efsrt-kpis article').count(),4,
