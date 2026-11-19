@@ -71,6 +71,9 @@ class BaseDatosUnicaSistemaTest extends TestCase
         $this->assertStringContainsString("VerificarServidorMallqui \$estadoServidor", $inicio);
         $this->assertStringContainsString("VerificarFrontendMallqui \$paginaYaAbierta", $inicio);
         $this->assertStringContainsString('PHP_VERSION_ID', $inicio);
+        $this->assertStringContainsString('mallqui-repositorio', $inicio);
+        $html = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/index.html'));
+        $this->assertStringContainsString('<meta name="mallqui-repositorio" content="anyozasad/api-persona">', $html);
     }
 
 }
