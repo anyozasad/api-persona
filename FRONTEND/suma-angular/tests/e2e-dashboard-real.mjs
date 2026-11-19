@@ -447,6 +447,65 @@ try {
       fullPage:true,animations:'disabled'});
   });
 
+  await paso('Ingresos abre datos confirmados de MySQL y exporta el informe correcto',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const menu=page.locator('.mg-clear-navigation');
+    await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+    const respuesta=page.waitForResponse(r=>r.url().includes('/api/reportes/ingresos') && r.request().method()==='GET',{timeout:25000});
+    await menu.locator('#mg-modulo-selector').selectOption('ingresos');
+    const estado=await respuesta;
+    assert.equal(estado.status(),200,'La API de ingresos debe responder desde MySQL.');
+    const reporte=await estado.json();
+    await page.locator('.cf-suite-income-cards').waitFor({timeout:20000});
+    assert.equal(await page.locator('.gym-suite [role="alert"]').count(),0,
+      'El informe financiero no debe presentar errores de datos.');
+    const boton=page.getByRole('button',{name:'Exportar ingresos reales'});
+    assert.equal(await boton.isDisabled(),false);
+    const descargando=page.waitForEvent('download',{timeout:12000});
+    await boton.click();
+    const descarga=await descargando;
+    assert.match(descarga.suggestedFilename(),/mallqui-ingresos-confirmados-\d{4}-\d{2}-\d{2}\.csv/,
+      'El botón exporta el informe financiero, no los registros manuales.');
+    assert.equal(Array.isArray(reporte.por_mes),true);
+  });
+
+  await paso('Salarios permite crear, filtrar por fecha real y eliminar confirmando',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const menu=page.locator('.mg-clear-navigation');
+    await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+    await menu.locator('#mg-modulo-selector').selectOption('salarios');
+    const planilla=page.locator('app-admin-gym-suite');
+    await planilla.getByRole('button',{name:/Agregar Salario/}).waitFor({timeout:20000});
+    const nombre='Nómina temporal de prueba E2E';
+    const fecha=new Date().toISOString().slice(0,10);
+    const mes=fecha.slice(0,7);
+    await planilla.getByRole('button',{name:/Agregar Salario/}).click();
+    const modal=planilla.locator('.gym-suite-modal');
+    await modal.locator('input[name="titulo"]').fill(nombre);
+    await modal.locator('input[name="subtitulo"]').fill('Prueba en base temporal');
+    await modal.locator('input[name="fecha"]').fill(fecha);
+    await modal.locator('input[name="monto"]').fill('135.50');
+    const creando=page.waitForResponse(r=>r.url().endsWith('/api/admin-gym-registros/salarios')
+      && r.request().method()==='POST',{timeout:20000});
+    await modal.getByRole('button',{name:'Crear',exact:true}).click();
+    assert.equal((await creando).status(),201);
+    const periodo=planilla.getByRole('combobox',{name:'Filtrar salarios por mes'});
+    await periodo.locator('option[value="'+mes+'"]').waitFor({timeout:20000});
+    await periodo.selectOption(mes);
+    const fila=planilla.locator('.gym-suite-table tbody tr').filter({hasText:nombre});
+    await fila.waitFor({timeout:15000});
+    assert.match(await fila.innerText(),/135[.,]50/);
+    await fila.getByRole('button',{name:'Editar'}).click();
+    page.once('dialog',dialog=>dialog.accept());
+    const eliminando=page.waitForResponse(r=>r.url().includes('/api/admin-gym-registros/salarios/')
+      && r.request().method()==='DELETE',{timeout:20000});
+    await planilla.getByRole('button',{name:'Eliminar registro'}).click();
+    assert.equal((await eliminando).status(),200);
+    assert.equal(await planilla.locator('.gym-suite-table tbody tr').filter({hasText:nombre}).count(),0);
+    await page.screenshot({path:'evidencias-dashboard/38_Salarios_filtro_y_CRUD_real.png',
+      fullPage:true,animations:'disabled'});
+  });
+
   await paso('Inicio EFSRT conserva indicadores y tres gráficos sin acciones duplicadas',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const inicio=page.locator('.mg-efsrt-dashboard');
