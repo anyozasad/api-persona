@@ -702,7 +702,10 @@ try {
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const inicio=page.locator('.mg-efsrt-dashboard');
     await inicio.waitFor({timeout:15000});
-    await inicio.locator('.mg-dashboard-loading-note').waitFor({state:'hidden',timeout:25000});
+    await page.waitForFunction(()=>{
+      const conexion=document.querySelector('.mg-efsrt-connection');
+      return Boolean(conexion && !conexion.textContent?.includes('Comprobando conexión'));
+    },null,{timeout:25000});
     assert.equal(await inicio.locator('.mg-efsrt-actions>button').count(),0,
       'El inicio no debe duplicar los accesos del menú lateral.');
     assert.equal(await inicio.locator('.mg-efsrt-kpis article').count(),4,
