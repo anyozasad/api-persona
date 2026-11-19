@@ -36,7 +36,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           <input type="text" [(ngModel)]="busquedaAdmin"
             (input)="abrirBuscadorMantis()"
             (keydown.enter)="buscarEnPanel(); cerrarMenusMantis()"
-            placeholder="Buscar módulos y funciones..." aria-label="Buscar módulo del panel"
+            placeholder="¿Qué necesitas hacer? Ej.: inventario" aria-label="Buscar módulo del panel"
             autocomplete="off">
           <kbd>↵</kbd>
         </label>
@@ -145,8 +145,19 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           <span>Panel principal</span>
         </button>
 
-        <span class="mg-nav-caption mg-nav-section-separator">OPERACIÓN DIARIA</span>
-        <button type="button" class="mg-nav-primary" *ngFor="let item of accesosPrincipalesAdmin"
+        <span class="mg-nav-caption mg-nav-section-separator">SOCIOS Y SESIONES</span>
+        <button type="button" class="mg-nav-primary" *ngFor="let item of accesosPrincipalesAdmin.slice(0,3)"
+          [class.active]="seccion===item.id"
+          [attr.aria-current]="seccion===item.id ? 'page' : null"
+          [attr.aria-label]="item.nombre"
+          [attr.title]="item.ayuda"
+          (click)="navegarMenu(item)">
+          <span class="admin-main-nav-icon" aria-hidden="true">{{item.icono}}</span>
+          <span class="mg-nav-action-copy"><strong>{{item.nombre}}</strong><small>{{item.ayuda}}</small></span>
+        </button>
+
+        <span class="mg-nav-caption mg-nav-section-separator">VENTAS E INVENTARIO</span>
+        <button type="button" class="mg-nav-primary" *ngFor="let item of accesosPrincipalesAdmin.slice(3)"
           [class.active]="seccion===item.id"
           [attr.aria-current]="seccion===item.id ? 'page' : null"
           [attr.aria-label]="item.nombre"
@@ -173,7 +184,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           aria-label="Mostrar módulos complementarios"
           (click)="alternarGestionAvanzada()">
           <span class="admin-main-nav-icon" aria-hidden="true">▤</span>
-          <span>{{mostrarGestionAvanzada ? 'Ocultar módulos' : 'Más módulos'}}</span>
+          <span>{{mostrarGestionAvanzada ? 'Ocultar funciones' : 'Otras funciones'}}</span>
           <i aria-hidden="true">{{mostrarGestionAvanzada ? '⌃' : '⌄'}}</i>
         </button>
         <div class="mg-nav-advanced-content mg-nav-picker" *ngIf="mostrarGestionAvanzada">
@@ -186,7 +197,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                 [value]="item.id">{{item.nombre}}</option>
             </optgroup>
           </select>
-          <small>Busca arriba cualquier módulo por su nombre si prefieres.</small>
+          <small>Elige una función. La pantalla se abrirá directamente.</small>
         </div>
       </nav>
 
@@ -211,16 +222,8 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
       </nav>
 
       <div class="mg-current-workspace">
-      <nav class="mg-mantis-breadcrumb" aria-label="Ruta del panel">
-        <span>Mallqui Gym</span>
-        <span>›</span>
-        <span>{{seccion==='dashboard' ? 'Dashboard / Principal' : tituloActual}}</span>
-      </nav>
-
       <section class="mg-module-shell-head" *ngIf="seccion!=='dashboard'">
         <div class="mg-module-shell-copy">
-          <span>{{etiquetaModuloActual}}</span>
-          <h2>{{tituloActual}}</h2>
           <p>{{subtituloActual}}</p>
         </div>
         <div class="mg-module-shell-actions">
@@ -241,7 +244,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
             <div>
               <span class="mg-efsrt-eyebrow">MALLQUI GYM · ADMINISTRACIÓN</span>
               <h2>Panel principal</h2>
-              <p>Control diario de socios, reservas, asistencia e inventario.</p>
+              <p>Empieza por Socios → Reservas → Asistencia. Para cobrar abre Pagos y para consultar resultados entra en Reportes.</p>
             </div>
             <div class="mg-efsrt-hero-aside">
               <span class="mg-efsrt-connection" [class.problem]="!sistemaSincronizado">
@@ -3078,6 +3081,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     const encontrado=this.menuPrincipal.some(grupo=>this.opcionesSelectorGrupo(grupo).some(item=>item.id===destino));
     if(!encontrado) return;
     this.cambiarSegcion(destino);
+    this.mostrarGestionAvanzada=false;
   }
 
   opcionesVisiblesGrupo(grupo:{id:string;items:Array<{id:string;nombre:string;accion?:'nuevoSocio'}>}):
@@ -3254,6 +3258,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
 
   buscarEnPanel(): void {
+    const primerResultado=this.accesosRapidosDashboard[0];
+    if(primerResultado){
+      this.irAAccesoRapido(primerResultado.id);
+      return;
+    }
     const q=String(this.busquedaAdmin||'')
       .trim()
       .toLowerCase()
@@ -3373,19 +3382,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.cambiarSegcion(item.id);
   }
 
-  /** El enlace activo nunca obliga a desplegar las siete áreas del menú. */
-  private activarGrupoDeSeccion(seccion:string):void{
+  /** La pantalla elegida se identifica en la cabecera; el selector nunca queda abierto encima del trabajo. */
+  private activarGrupoDeSeccion(_seccion:string):void{
+    this.mostrarGestionAvanzada=false;
     Object.keys(this.navGroups).forEach(id=>this.navGroups[id]=false);
-    if(seccion==='dashboard' || this.accesosDirectosAdmin.some(item=>item.id===seccion)){
-      this.mostrarGestionAvanzada=false;
-      return;
-    }
-    const grupo=this.menuPrincipal.find(g=>g.items.some(i=>i.id===seccion && !i.accion));
-    if(grupo){
-      this.mostrarGestionAvanzada=true;
-      this.navGroups[grupo.id]=true;
-      this.masOpcionesMenu[grupo.id]=!this.opcionesFrecuentesMenu[grupo.id]?.includes(seccion);
-    }
+    Object.keys(this.masOpcionesMenu).forEach(id=>this.masOpcionesMenu[id]=false);
   }
 
   alternarGestionAvanzada():void{
@@ -3735,13 +3736,51 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     }));
   }
 
+  /** El buscador y la tecla Enter comparten una misma lista de destinos reales. */
+  private textoBusqueda(texto:string):string{
+    return String(texto||'').toLocaleLowerCase('es-PE')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().replace(/\s+/g,' ');
+  }
+
   get accesosRapidosDashboard():Array<{id:string,nombre:string}>{
-    const query=this.busquedaAdmin.trim().toLocaleLowerCase('es-PE');
-    if (!query) return [];
-    return Object.entries(this.titulos)
-      .filter(([id,info])=>id.toLowerCase().includes(query) || info[0].toLocaleLowerCase('es-PE').includes(query))
-      .slice(0,5)
-      .map(([id,info])=>({id,nombre:info[0]}));
+    const q=this.textoBusqueda(this.busquedaAdmin);
+    if(!q) return [];
+    const alias:Record<string,string[]> = {
+      clientes:['socio','socios','cliente','matricular','nuevo socio','registrar socio'],
+      asistencias:['asistencia','entrada','salida','control de acceso'],
+      reservas:['reservar','agenda','sesion','sesiones'],
+      pagos:['cobrar','cobro','mensualidad','pago'],
+      productos:['fotografia producto','foto producto'],
+      inventario:['stock','existencias','almacen'],
+      ventas:['vender','venta','punto de venta'],
+      'reportes-admin':['reporte','reportes','estadistica','graficos'],
+      configuracion:['ajustes','sistema'],
+      membresias:['membresia','membresias','planes contratados'],
+      renovaciones:['vencimientos','renovar'],
+      rutinas:['entrenamiento','ejercicios']
+    };
+    const modulos=[...this.accesosDirectosAdmin,
+      ...this.menuPrincipal.flatMap(grupo=>grupo.items)];
+    const vistos=new Set<string>();
+    return modulos
+      .filter(item=>{if(vistos.has(item.id))return false; vistos.add(item.id);return true;})
+      .map(item=>{
+        const nombre=this.textoBusqueda(item.nombre);
+        const id=this.textoBusqueda(item.id.replace(/-/g,' '));
+        const claves=(alias[item.id]||[]).map(x=>this.textoBusqueda(x));
+        let nivel=99;
+        if(id===q || nombre===q || claves.some(x=>x===q))nivel=0;
+        else if(nombre.startsWith(q)||id.startsWith(q))nivel=1;
+        else if(nombre.split(' ').some(x=>x.startsWith(q)))nivel=2;
+        else if(claves.some(x=>x.startsWith(q)))nivel=3;
+        else if(nombre.includes(q)||id.includes(q))nivel=4;
+        else if(claves.some(x=>x.includes(q)))nivel=5;
+        return {id:item.id,nombre:item.nombre,nivel};
+      })
+      .filter(item=>item.nivel<99)
+      .sort((a,b)=>a.nivel-b.nivel || a.nombre.localeCompare(b.nombre,'es'))
+      .slice(0,6)
+      .map(({id,nombre})=>({id,nombre}));
   }
 
   get alertasRapidasDashboard():Array<{id:string,nombre:string,cantidad:number,icono:string}>{
