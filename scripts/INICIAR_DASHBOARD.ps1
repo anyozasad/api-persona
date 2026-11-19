@@ -63,6 +63,16 @@ function ObtenerEstadoBackend {
     if (-not $contenido) { return $null }
     try { return ConvertFrom-Json -InputObject $contenido } catch { return $null }
 }
+function VerificarServidorMallqui([object]$estado) {
+    if ($null -ne $estado -and $estado.sistema -ne 'Mallqui Gym') {
+        Fallar 'El puerto 8000 responde, pero NO es la API de Mallqui Gym actual. Deten el otro servidor Laravel que usa el puerto 8000 antes de abrir este proyecto.'
+    }
+}
+function VerificarFrontendMallqui([string]$html) {
+    if ($html -and $html -notmatch '(?is)<title>\s*Mallqui Gym\s*</title>') {
+        Fallar 'El puerto 4200 está ocupado por otra aplicación Angular. Deten ese proyecto antes de iniciar Mallqui Gym; no se abrirá un dashboard equivocado.'
+    }
+}
 
 try {
     if (-not (Test-Path (Join-Path $backend 'artisan') -PathType Leaf) -or
@@ -76,6 +86,13 @@ try {
 
     if (-not $php) { Fallar 'No encuentro PHP. Abre XAMPP o instala PHP 8.2+ y revisa C:\xampp\php\php.exe.' }
     if (-not $npm) { Fallar 'No encuentro npm. Instala Node.js 22 y vuelve a ejecutar este archivo.' }
+    $versionPhp = & $php -r 'echo PHP_VERSION_ID;'
+    if ($LASTEXITCODE -ne 0 -or -not [int]::TryParse([string]$versionPhp, [ref]([int]$null))) {
+        Fallar 'No se pudo comprobar la versión del PHP ejecutable.'
+    }
+    if ([int]$versionPhp -lt 80200) {
+        Fallar ("PHP " + (& $php -r 'echo PHP_VERSION;') + ' es incompatible con Laravel 12. Configura PHP 8.2 o superior antes de iniciar el dashboard.')
+    }
     Informar ("PHP: " + $php)
     Informar ("npm: " + $npm)
 
@@ -144,6 +161,9 @@ try {
     if ($SoloVerificar) {
         Informar 'Archivos, PHP, npm y dependencias presentes.'
         $estado = ObtenerEstadoBackend
+        VerificarServidorMallqui $estado
+        $htmlAngular = LeerApi 'http://127.0.0.1:4200/'
+        VerificarFrontendMallqui $htmlAngular
         if ($null -eq $estado) {
             Avisar 'Laravel no responde en http://127.0.0.1:8000. La comprobación de MySQL requiere Laravel iniciado.'
         } elseif ($estado.database -eq $true -and $estado.operativo -eq $true) {
@@ -157,17 +177,25 @@ try {
         return
     }
 
-    Informar 'Iniciando Laravel y Angular sin modificar la interfaz Mantis...'
-    if (-not (LeerApi 'http://127.0.0.1:8000/up')) {
+    Informar 'Iniciando Laravel y Angular sin modificar el diseño actual...'
+    $laravelYaAbierto = LeerApi 'http://127.0.0.1:8000/up'
+    if (-not $laravelYaAbierto) {
         Start-Process -FilePath $php -ArgumentList @('artisan','serve','--host=127.0.0.1','--port=8000') -WorkingDirectory $backend
     } else {
-        Informar 'Laravel ya está iniciado en el puerto 8000.'
+        $estadoServidor = ObtenerEstadoBackend
+        if ($null -eq $estadoServidor) {
+            Fallar 'El puerto 8000 tiene un servidor activo, pero no responde como Mallqui Gym. No se iniciará sobre un backend equivocado.'
+        }
+        VerificarServidorMallqui $estadoServidor
+        Informar 'La API correcta de Mallqui Gym ya está iniciada en el puerto 8000.'
     }
 
-    if (-not (LeerApi 'http://127.0.0.1:4200/')) {
+    $paginaYaAbierta = LeerApi 'http://127.0.0.1:4200/'
+    VerificarFrontendMallqui $paginaYaAbierta
+    if (-not $paginaYaAbierta) {
         Start-Process -FilePath $npm -ArgumentList @('start','--','--host','127.0.0.1','--port','4200') -WorkingDirectory $frontend
     } else {
-        Informar 'Angular ya está iniciado en el puerto 4200.'
+        Informar 'El frontend correcto de Mallqui Gym ya está iniciado en el puerto 4200.'
     }
 
     $estado = $null
@@ -176,6 +204,7 @@ try {
         if ($null -ne $estado) { break }
         Start-Sleep -Seconds 1
     }
+    VerificarServidorMallqui $estado
     if ($null -eq $estado) {
         Avisar 'Laravel no responde con la API Mallqui Gym. Comprueba la consola PHP y el puerto 8000.'
     } elseif ($estado.database -ne $true) {
@@ -190,7 +219,9 @@ try {
 
     $angularDisponible = $false
     for ($intento=0; $intento -lt 45; $intento++) {
-        if (LeerApi 'http://127.0.0.1:4200/') {
+        $htmlAngular = LeerApi 'http://127.0.0.1:4200/'
+        VerificarFrontendMallqui $htmlAngular
+        if ($htmlAngular) {
             $angularDisponible = $true
             break
         }
