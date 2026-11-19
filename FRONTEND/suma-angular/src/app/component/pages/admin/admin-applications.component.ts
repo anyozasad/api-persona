@@ -17,20 +17,12 @@ type NombreTabla = 'clientes' | 'productos' | 'reservas';
   <main class="mg-app-center" aria-label="Centro de aplicaciones Mallqui Gym">
     <header class="mg-app-header">
       <div>
-        <span class="mg-app-kicker">MALLQUI GYM / APLICACIONES</span>
-        <h1>{{tituloVista}}</h1>
+        <span class="mg-app-kicker">MALLQUI GYM · GESTIÓN</span>
         <p>{{subtituloVista}}</p>
       </div>
-      <div class="mg-app-header-actions">
-        <button type="button" (click)="navegar.emit('dashboard')">⌂ Inicio</button>
-        <button type="button" class="mg-app-primary" (click)="refrescar()" [disabled]="cargandoActual">↻ Actualizar</button>
-      </div>
     </header>
-    <nav class="mg-app-tabs" aria-label="Secciones de aplicaciones">
-      <button type="button" *ngFor="let item of vistas" [class.active]="modulo===item.id" (click)="abrirVista(item.id)">
-        <span>{{item.icono}}</span>{{item.nombre}}
-      </button>
-    </nav>
+    <!-- La barra superior y el menú principal ya permiten volver y actualizar;
+         no duplicar sus botones ni mostrar otras cinco pestañas. -->
 
     <ng-container *ngIf="modulo==='aplicaciones'">
       <div class="mg-app-overview">
@@ -40,7 +32,7 @@ type NombreTabla = 'clientes' | 'productos' | 'reservas';
         <article><span>▤</span><strong>{{productos.length}}</strong><small>Productos disponibles</small></article>
       </div>
       <div class="mg-app-section-caption">
-        <div><h2>Aplicaciones del gimnasio</h2><p>Abre los módulos reales de tu sistema. No son páginas de muestra.</p></div>
+        <div><h2>{{mostrarTodasAplicaciones || grupoApp || busquedaApp ? 'Buscar una función' : '¿Qué necesitas hacer?'}}</h2><p>{{mostrarTodasAplicaciones || grupoApp || busquedaApp ? 'Busca por nombre o filtra por área. Los módulos mantienen sus datos y permisos.' : 'Seis tareas complementarias. Para Socios, Reservas, Productos, Pagos y Reportes usa el menú lateral.'}}</p></div>
         <label class="mg-app-find">
           <select [(ngModel)]="grupoApp" aria-label="Filtrar módulos por categoría">
             <option value="">Todos los módulos</option>
@@ -58,8 +50,15 @@ type NombreTabla = 'clientes' | 'productos' | 'reservas';
           <i>{{app.icono}}</i><span><strong>{{app.nombre}}</strong><small>{{app.descripcion}}</small></span><b>↗</b>
         </button>
       </div>
-      <div class="mg-app-empty" *ngIf="!aplicacionesFiltradas.length">No hay aplicaciones con ese nombre.</div>
-      <p class="mg-app-info">Los registros y permisos son los del backend Laravel. Algunas aplicaciones necesitan configurar primero sus tablas en MySQL.</p>
+      <div class="mg-app-empty" *ngIf="!aplicacionesFiltradas.length">No se encontraron módulos. Cambia el filtro o el nombre de búsqueda.</div>
+      <div class="mg-app-directory-actions" *ngIf="!grupoApp && !busquedaApp.trim()">
+        <button type="button" class="mg-app-directory-toggle" (click)="mostrarTodasAplicaciones=!mostrarTodasAplicaciones"
+          [attr.aria-expanded]="mostrarTodasAplicaciones"
+          aria-label="Mostrar u ocultar el directorio completo de módulos">
+          {{mostrarTodasAplicaciones ? 'Mostrar solo seis tareas frecuentes' : 'Ver todos los '+aplicaciones.length+' módulos'}}
+        </button>
+      </div>
+      <p class="mg-app-info">Los módulos consultan los registros reales del servidor. Si falta una tabla de MySQL, revisa Configuración y Diagnóstico.</p>
     </ng-container>
 
     <ng-container *ngIf="modulo==='calendario-admin'">
@@ -279,6 +278,9 @@ export class AdminApplicationsComponent implements OnInit, OnChanges {
   ];
   grupoApp = '';
   busquedaApp = '';
+  mostrarTodasAplicaciones = false;
+  /** Opciones distintas de los cinco accesos habituales del menú lateral. */
+  readonly aplicacionesSugeridas=['renovaciones','rutinas','ventas','inventario','soporte','calendario-admin'];
 
   hoyISO = this.formatearFecha(new Date());
   fechaSeleccionada = this.hoyISO;
@@ -340,10 +342,14 @@ export class AdminApplicationsComponent implements OnInit, OnChanges {
   get cargandoActual():boolean{return this.cargandoEventos||this.cargandoTareas;}
   get aplicacionesFiltradas(){
     const q=this.busquedaApp.trim().toLocaleLowerCase('es-PE');
-    return this.aplicaciones.filter(a=>
+    const resultado=this.aplicaciones.filter(a=>
       (!this.grupoApp || a.grupo===this.grupoApp) &&
       (!q || (a.nombre+' '+a.descripcion+' '+a.grupo).toLocaleLowerCase('es-PE').includes(q))
     );
+    if(q || this.grupoApp || this.mostrarTodasAplicaciones)return resultado;
+    // Mostrar seis tareas, sin ocultar las otras 38 cuando el usuario las busca.
+    return this.aplicacionesSugeridas.map(id=>resultado.find(a=>a.id===id))
+      .filter((a):a is typeof resultado[number]=>Boolean(a));
   }
   abrirVista(id:VistaApps):void { this.navegar.emit(id); }
 
