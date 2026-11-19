@@ -282,6 +282,44 @@ try {
     await page.screenshot({path:'evidencias-dashboard/13_Menu_cuatro_tareas_directas.png',fullPage:true});
   });
 
+  await paso('Centro de aplicaciones tiene seis tareas y 44 módulos accesibles sin duplicar pestañas',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const menu=page.locator('.mg-clear-navigation');
+    await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+    await menu.locator('#mg-modulo-selector').selectOption('aplicaciones');
+    const apps=page.locator('app-admin-applications');
+    await apps.waitFor({timeout:15000});
+    assert.equal(await apps.locator('.mg-app-tabs').count(),0,
+      'No debe aparecer una segunda barra de navegación con cinco pestañas.');
+    assert.equal(await apps.locator('.mg-app-header-actions').count(),0,
+      'El módulo no debe repetir los botones Inicio y Actualizar.');
+    assert.equal(await apps.locator('.mg-app-grid .mg-app-tile').count(),6,
+      'Solo mostrar seis tareas complementarias al entrar.');
+    const buscar=apps.getByRole('textbox',{name:'Buscar aplicaciones'});
+    await buscar.fill('nutrición');
+    assert.equal(await apps.locator('.mg-app-grid .mg-app-tile').count(),1,
+      'Buscar una función debe permitir encontrar un módulo que no es frecuente.');
+    await buscar.fill('');
+    await apps.locator('.mg-app-directory-toggle').click();
+    assert.equal(await apps.locator('.mg-app-grid .mg-app-tile').count(),44,
+      'El directorio completo conserva los 44 destinos al expandirse.');
+    await apps.locator('.mg-app-directory-toggle').click();
+    assert.equal(await apps.locator('.mg-app-grid .mg-app-tile').count(),6);
+  });
+
+  await paso('Actualizar global recarga las tareas reales del servidor',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const menu=page.locator('.mg-clear-navigation');
+    await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+    await menu.locator('#mg-modulo-selector').selectOption('tareas-admin');
+    await page.locator('app-admin-applications .mg-app-kanban').waitFor({timeout:15000});
+    const respuesta=page.waitForResponse(r=>r.url().includes('/api/admin-gym-registros/tareas')
+      && r.request().method()==='GET',{timeout:25000});
+    await page.getByRole('button',{name:'Actualizar módulo actual'}).click();
+    assert.equal((await respuesta).status(),200);
+    assert.equal(await page.locator('app-admin-applications .mg-app-header-actions').count(),0);
+  });
+
   await paso('Búsqueda sencilla lleva a la pantalla correcta sin abrir submenús',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const buscador=page.getByRole('textbox',{name:'Buscar módulo del panel'});
