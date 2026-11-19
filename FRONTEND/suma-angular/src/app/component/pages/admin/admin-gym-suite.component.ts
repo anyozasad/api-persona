@@ -34,7 +34,14 @@ interface GymModuleConfig {
   imports: [CommonModule, FormsModule],
   template: `
     <section class="gym-suite mg-suite-current" *ngIf="config">
-      <ng-container [ngSwitch]="modulo">
+      <div *ngIf="loading && modulo!=='ingresos'" class="mg-suite-network-state" role="status" aria-live="polite">
+        Consultando {{config.title}} en la base de datos...
+      </div>
+      <div *ngIf="error && modulo!=='ingresos'" class="mg-suite-network-state mg-suite-network-error" role="alert">
+        <span>{{error}}</span>
+        <button type="button" (click)="cargar()">Reintentar carga</button>
+      </div>
+      <ng-container *ngIf="modulo==='ingresos' || (!loading && !error)" [ngSwitch]="modulo">
         <section class="cf-suite-complete" *ngSwitchCase="'equipos'">
           <header class="cf-suite-page-head"><div><h1>Equipos</h1><p>Inventario, disponibilidad y mantenimiento de equipos</p></div><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Equipo</button></header>
           <div class="cf-suite-kpis">
@@ -191,7 +198,7 @@ interface GymModuleConfig {
       </ng-container>
 
       <div class="gym-suite-toast success" *ngIf="toast">{{toast}}</div>
-      <div class="gym-suite-toast error" *ngIf="error">{{error}}</div>
+      <div class="gym-suite-toast error" *ngIf="error && modulo==='ingresos'">{{error}}</div>
 
       <div class="gym-suite-modal-backdrop" *ngIf="modalAbierto" (click)="cerrarModal()"></div>
       <section class="gym-suite-modal" *ngIf="modalAbierto">
@@ -223,6 +230,9 @@ interface GymModuleConfig {
   styles: [`
     :host{display:block}
     .gym-suite{display:grid;gap:16px;color:#243247}
+    .mg-suite-network-state{padding:18px 20px;border:1px solid #d5e3d2;border-radius:12px;background:#f8fbf7;color:#2c452b;font-size:14px;line-height:1.5}
+    .mg-suite-network-error{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-color:#eac3be;background:#fff6f4;color:#802e26}
+    .mg-suite-network-error button{padding:9px 12px;border:1px solid #ad6c62;border-radius:8px;background:#fff;color:#792e26;cursor:pointer}
     .gym-suite-hero{min-height:116px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:22px 24px;border:1px solid #e3e8ef;border-radius:16px;background:linear-gradient(135deg,#fff 0%,#fbfcfe 100%);box-shadow:0 6px 18px rgba(16,24,40,.035)}
     .gym-suite-heading{display:flex;align-items:center;gap:15px}
     .gym-suite-icon{width:52px;height:52px;display:grid;place-items:center;border-radius:14px;background:#fff0ed;color:#d94d37;font-size:20px;font-weight:900}
@@ -747,7 +757,8 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
         this.error=moduloSolicitado==='ingresos'
           ? 'No se pudieron cargar los registros manuales de ingresos.'
           : e?.error?.message || 'No se pudo cargar este módulo. Comprueba la conexión y la base de datos.';
-        this.limpiarMensaje('error');
+        // Mantener visible el fallo de carga hasta que el usuario reintente:
+        // nunca confundir una consulta fallida con una lista sin registros.
       }
     });
   }
