@@ -422,6 +422,16 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.cargarDashboard).toHaveBeenCalled();
   });
 
+  it('no inventa cero alertas de stock cuando el resumen MySQL aún no está disponible',()=>{
+    component.seccion='productos';
+    component.dashboard=null;
+    expect(component.estadoModuloActual).toBe('Stock sin verificar');
+    component.dashboard={inventario:{productos_stock_bajo:0}};
+    expect(component.estadoModuloActual).toBe('0 alertas de stock');
+    component.dashboard={inventario:{productos_stock_bajo:3}};
+    expect(component.estadoModuloActual).toBe('3 alertas de stock');
+  });
+
   it('el inicio no repite botones de módulos: conserva gráficos y fotografías en vista', () => {
     const template=(AdminIntegradoComponent as any).ɵcmp.template;
     expect(template).toBeTruthy();
