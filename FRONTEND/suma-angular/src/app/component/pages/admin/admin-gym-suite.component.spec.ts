@@ -24,6 +24,61 @@ describe('Mallqui Gym: módulos administrativos con datos reales',()=>{
     c=new AdminGymSuiteComponent(api);
   });
 
+  it('un fallo al guardar Nutrición conserva la tabla y el formulario abierto',()=>{
+    c.modulo='nutricion';
+    c.records=[{id:3,titulo:'Plan existente',estado:'Activo'}];
+    c.filtrarLocal();
+    c.nuevoRegistro();
+    c.form.titulo='Nuevo plan alimenticio';
+    api.crearGymRegistro=jasmine.createSpy('crearGymRegistro')
+      .and.returnValue(throwError(()=>({error:{message:'Error de validación en la API'}})));
+    c.guardar();
+    expect(c.error).toContain('Error de validación');
+    expect(c.errorCarga).toBe('');
+    expect(c.modalAbierto).toBeTrue();
+    expect(c.saving).toBeFalse();
+    expect(c.filtered.map(r=>r.titulo)).toEqual(['Plan existente']);
+  });
+
+  it('si falla la lectura de MySQL permite reintentar sin perder el mensaje',()=>{
+    c.modulo='nutricion';
+    api.gymRegistros.and.returnValues(
+      throwError(()=>({error:{message:'No responde MySQL'}})),
+      of([{id:5,titulo:'Plan recuperado',estado:'Activo'}])
+    );
+    c.cargar();
+    expect(c.loading).toBeFalse();
+    expect(c.errorCarga).toContain('MySQL');
+    expect(c.records).toEqual([]);
+    c.cargar();
+    expect(c.errorCarga).toBe('');
+    expect(c.records[0].titulo).toBe('Plan recuperado');
+  });
+
+  it('Nutrición permite crear y editar planes mediante la API real del módulo',()=>{
+    c.modulo='nutricion';
+    api.crearGymRegistro=jasmine.createSpy('crearGymRegistro').and.returnValue(of({id:5}));
+    api.actualizarGymRegistro=jasmine.createSpy('actualizarGymRegistro').and.returnValue(of({id:5}));
+    api.gymRegistros.and.returnValues(
+      of([{id:5,titulo:'Plan inicial',estado:'Activo',fecha:'2026-11-19'}]),
+      of([{id:5,titulo:'Plan actualizado',estado:'Activo',fecha:'2026-11-19'}])
+    );
+    c.nuevoRegistro();
+    c.form.titulo='Plan inicial';
+    c.form.fecha='2026-11-19';
+    c.guardar();
+    expect(api.crearGymRegistro).toHaveBeenCalledTimes(1);
+    expect(api.crearGymRegistro.calls.mostRecent().args[0]).toBe('nutricion');
+    expect(c.records[0].titulo).toBe('Plan inicial');
+    c.editar(c.records[0]);
+    c.form.titulo='Plan actualizado';
+    c.guardar();
+    expect(api.actualizarGymRegistro).toHaveBeenCalledTimes(1);
+    expect(api.actualizarGymRegistro.calls.mostRecent().args[0]).toBe('nutricion');
+    expect(c.records[0].titulo).toBe('Plan actualizado');
+    expect(c.modalAbierto).toBeFalse();
+  });
+
   it('salarios se filtran por meses reales, no opciones fijas de 2026',()=>{
     c.modulo='salarios';
     c.records=[
@@ -123,7 +178,8 @@ describe('Mallqui Gym: módulos administrativos con datos reales',()=>{
     c.cargar();
     expect(c.records).toEqual([]);
     expect(c.filtered).toEqual([]);
-    expect(c.error).toContain('No se pudo cargar');
+    expect(c.errorCarga).toContain('No se pudo cargar');
+    expect(c.error).toBe('');
   });
 
   it('sólo el equipo en mantenimiento aparece en la tabla de mantenimiento',()=>{
