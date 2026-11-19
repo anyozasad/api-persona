@@ -228,6 +228,42 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(new Set(todos).size).toBe(46);
   });
 
+  it('recupera un módulo al recargar /admin y registra la navegación en la URL',()=>{
+    const route={
+      snapshot:{
+        data:{},
+        routeConfig:{path:'admin'},
+        queryParamMap:{get:(campo:string)=>campo==='modulo'?'galeria':null}
+      }
+    } as any;
+    const router={navigate:jasmine.createSpy('navigate').and.returnValue(Promise.resolve(true))} as any;
+    const c=new AdminIntegradoComponent(
+      {usuario:{nombre_usuario:'admin',rol:'Administrador'}} as any,api,router,route
+    );
+    spyOn(c,'actualizarDashboardCompleto').and.stub();
+    spyOn(c as any,'cargarSegcion').and.stub();
+    spyOn(window,'scrollTo').and.stub();
+    try{
+      c.ngOnInit();
+      expect(c.seccion).toBe('galeria');
+      c.cambiarSegcion('pagos');
+      expect(c.seccion).toBe('pagos');
+      expect(router.navigate).toHaveBeenCalledWith([],{
+        relativeTo:route,
+        queryParams:{modulo:'pagos'},
+        queryParamsHandling:'merge',
+        replaceUrl:true
+      });
+      c.cambiarSegcion('dashboard');
+      expect(router.navigate).toHaveBeenCalledWith([],{
+        relativeTo:route,
+        queryParams:{modulo:null},
+        queryParamsHandling:'merge',
+        replaceUrl:true
+      });
+    }finally{c.ngOnDestroy();}
+  });
+
   it('abre la función secundaria y cierra el selector para no tapar la pantalla', () => {
     spyOn(window,'scrollTo').and.stub();
     spyOn(component as any,'cargarSegcion').and.stub();
