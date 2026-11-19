@@ -496,6 +496,10 @@ try {
     await modal.getByRole('button',{name:'Crear',exact:true}).click();
     assert.equal((await creando).status(),201);
     await page.reload({waitUntil:'domcontentloaded'});
+    // Cambiar de sección no modifica /admin; tras recargar se debe volver a abrir Galería.
+    const menuRecargado=page.locator('.mg-clear-navigation');
+    await menuRecargado.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+    await menuRecargado.locator('#mg-modulo-selector').selectOption('galeria');
     const gallery=page.locator('app-admin-gym-suite');
     const foto=gallery.locator('.cf-suite-gallery article').filter({hasText:'Foto local temporal E2E'});
     await foto.waitFor({timeout:20000});
