@@ -90,7 +90,8 @@ type NombreTabla = 'clientes' | 'productos' | 'reservas';
             <i [class.booking]="item.tipo==='Reserva'">{{item.tipo==='Reserva' ? '◷' : '✦'}}</i>
             <div><b>{{item.titulo}}</b><small>{{item.tipo}} · {{item.detalle}}</small></div>
           </div>
-          <div class="mg-app-empty" *ngIf="!actividadesDia.length">No hay reservas ni eventos registrados para este día.</div>
+          <div class="mg-app-empty" *ngIf="!actividadesDia.length && !cargandoEventos && !errorEventos">No hay reservas ni eventos registrados para este día.</div>
+          <p *ngIf="cargandoEventos" class="mg-app-loading" role="status">Consultando eventos en MySQL...</p>
           <button type="button" class="mg-app-primary" (click)="navegar.emit('reservas')">Gestionar reservas ↗</button>
           <button type="button" (click)="navegar.emit('eventos')">Administrar eventos ↗</button>
           <p *ngIf="errorEventos" class="mg-app-error">{{errorEventos}}</p>
@@ -289,6 +290,8 @@ export class AdminApplicationsComponent implements OnInit, OnChanges {
   eventos: any[] = [];
   errorEventos = '';
   cargandoEventos = false;
+  private lecturaEventosId = 0;
+  private lecturaTareasId = 0;
 
   tareas: any[] = [];
   errorTareas = '';
@@ -360,10 +363,20 @@ export class AdminApplicationsComponent implements OnInit, OnChanges {
     if(recargarPanel)this.refrescarDatos.emit();
   }
   cargarEventos():void {
-    this.cargandoEventos=true;this.errorEventos='';
+    const peticion=++this.lecturaEventosId;
+    this.cargandoEventos=true;this.errorEventos='';this.eventos=[];
     this.api.gymRegistros('eventos').subscribe({
-      next:(rows:any[])=>{this.eventos=Array.isArray(rows)?rows:[];this.cargandoEventos=false;},
-      error:()=>{this.eventos=[];this.cargandoEventos=false;this.errorEventos='No se pudieron consultar los eventos del servidor.';}
+      next:(rows:any[])=>{
+        if(peticion!==this.lecturaEventosId)return;
+        this.eventos=Array.isArray(rows)?rows:[];
+        this.cargandoEventos=false;
+      },
+      error:()=>{
+        if(peticion!==this.lecturaEventosId)return;
+        this.eventos=[];
+        this.cargandoEventos=false;
+        this.errorEventos='No se pudieron consultar los eventos del servidor.';
+      }
     });
   }
   private formatearFecha(fecha:Date):string{
@@ -432,12 +445,19 @@ export class AdminApplicationsComponent implements OnInit, OnChanges {
     return {titulo:'',subtitulo:'',detalle:'',estado:'Por hacer' as EstadoTarea,prioridad:'Normal',fecha:''};
   }
   cargarTareas():void {
-    this.cargandoTareas=true;this.errorTareas='';
+    const peticion=++this.lecturaTareasId;
+    this.cargandoTareas=true;this.errorTareas='';this.tareas=[];
     this.api.gymRegistros('tareas').subscribe({
-      next:(rows:any[])=>{this.tareas=Array.isArray(rows)?rows:[];this.cargandoTareas=false;},
+      next:(rows:any[])=>{
+        if(peticion!==this.lecturaTareasId)return;
+        this.tareas=Array.isArray(rows)?rows:[];
+        this.cargandoTareas=false;
+      },
       error:(e:any)=>{
+        if(peticion!==this.lecturaTareasId)return;
+        this.tareas=[];
         this.errorTareas=e?.status===404
-          ? 'El módulo de tareas todavía no está habilitado en Laravel. Actualiza y ejecuta la migración.'
+          ? 'El módulo de tareas todavía no está habilitado en Laravel. Revisa las migraciones.'
           : 'No se pudieron cargar las tareas desde MySQL. Revisa la conexión y las migraciones.';
         this.cargandoTareas=false;
       }
