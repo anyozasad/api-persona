@@ -101,6 +101,7 @@ Route::get('/estado-sistema', function () {
         }
 
         return response()->json([
+            'sistema' => 'Mallqui Gym',
             'api' => true,
             'database' => true,
             'operativo' => count($faltantes) === 0,
@@ -114,6 +115,7 @@ Route::get('/estado-sistema', function () {
         ]);
     } catch (\Throwable $e) {
         return response()->json([
+            'sistema' => 'Mallqui Gym',
             'api' => true,
             'database' => false,
             'operativo' => false,
