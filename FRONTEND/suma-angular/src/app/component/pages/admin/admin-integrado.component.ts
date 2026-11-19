@@ -131,10 +131,10 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
       </aside>
     </div>
     <aside class="mg-current-sidebar">
-      <button type="button" class="mg-brand" (click)="cambiarSegcion('dashboard')" aria-label="Ir al inicio">
+      <div class="mg-brand" aria-label="Mallqui Gym, panel de administración">
         <span class="mg-brand-icon">M</span>
         <span><strong>Mallqui</strong><b>Gym</b></span>
-      </button>
+      </div>
 
       <nav class="admin-main-nav crossfit-sidebar-nav mg-clear-navigation mg-tec-order" aria-label="Navegación principal del gimnasio">
         <span class="mg-nav-caption">INICIO</span>
@@ -142,11 +142,11 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           [attr.aria-current]="seccion==='dashboard' ? 'page' : null"
           (click)="cambiarSegcion('dashboard')">
           <span class="admin-main-nav-icon" aria-hidden="true">⌂</span>
-          <span>Panel principal</span>
+          <span>Inicio</span>
         </button>
 
         <span class="mg-nav-caption mg-nav-section-separator">SOCIOS Y SESIONES</span>
-        <button type="button" class="mg-nav-primary" *ngFor="let item of accesosPrincipalesAdmin.slice(0,3)"
+        <button type="button" class="mg-nav-primary" *ngFor="let item of accesosPrincipalesAdmin.slice(0,2)"
           [class.active]="seccion===item.id"
           [attr.aria-current]="seccion===item.id ? 'page' : null"
           [attr.aria-label]="item.nombre"
@@ -156,8 +156,8 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           <span class="mg-nav-action-copy"><strong>{{item.nombre}}</strong><small>{{item.ayuda}}</small></span>
         </button>
 
-        <span class="mg-nav-caption mg-nav-section-separator">VENTAS E INVENTARIO</span>
-        <button type="button" class="mg-nav-primary" *ngFor="let item of accesosPrincipalesAdmin.slice(3)"
+        <span class="mg-nav-caption mg-nav-section-separator">PRODUCTOS Y COBROS</span>
+        <button type="button" class="mg-nav-primary" *ngFor="let item of accesosPrincipalesAdmin.slice(2)"
           [class.active]="seccion===item.id"
           [attr.aria-current]="seccion===item.id ? 'page' : null"
           [attr.aria-label]="item.nombre"
@@ -167,7 +167,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           <span class="mg-nav-action-copy"><strong>{{item.nombre}}</strong><small>{{item.ayuda}}</small></span>
         </button>
 
-        <span class="mg-nav-caption mg-nav-section-separator">ADMINISTRACIÓN</span>
+        <span class="mg-nav-caption mg-nav-section-separator">RESULTADOS</span>
         <button type="button" class="mg-nav-primary mg-nav-administration" *ngFor="let item of accesosAdministracionAdmin"
           [class.active]="seccion===item.id"
           [attr.aria-current]="seccion===item.id ? 'page' : null"
@@ -177,14 +177,14 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           <span class="admin-main-nav-icon" aria-hidden="true">{{item.icono}}</span>
           <span class="mg-nav-action-copy"><strong>{{item.nombre}}</strong><small>{{item.ayuda}}</small></span>
         </button>
-        <span class="mg-nav-caption mg-nav-section-separator">OTRAS FUNCIONES</span>
+        <span class="mg-nav-caption mg-nav-section-separator">GESTIÓN COMPLETA</span>
         <button type="button" class="mg-nav-advanced-toggle"
-          [class.active]="mostrarGestionAvanzada"
+          [class.active]="mostrarGestionAvanzada || (seccion!=='dashboard' && !accesosDirectosAdmin.some(item=>item.id===seccion))"
           [attr.aria-expanded]="mostrarGestionAvanzada"
           aria-label="Mostrar módulos complementarios"
           (click)="alternarGestionAvanzada()">
           <span class="admin-main-nav-icon" aria-hidden="true">▤</span>
-          <span>{{mostrarGestionAvanzada ? 'Ocultar funciones' : 'Otras funciones'}}</span>
+          <span>{{mostrarGestionAvanzada ? 'Cerrar lista' : 'Otras funciones'}}</span>
           <i aria-hidden="true">{{mostrarGestionAvanzada ? '⌃' : '⌄'}}</i>
         </button>
         <div class="mg-nav-advanced-content mg-nav-picker" *ngIf="mostrarGestionAvanzada">
@@ -197,8 +197,11 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                 [value]="item.id">{{item.nombre}}</option>
             </optgroup>
           </select>
-          <small>Elige una función. La pantalla se abrirá directamente.</small>
+          <small>Elige una función y se abrirá su pantalla. También puedes buscar su nombre arriba.</small>
         </div>
+        <p class="mg-nav-current-extra" *ngIf="!mostrarGestionAvanzada && seccion!=='dashboard' && !accesosDirectosAdmin.some(item=>item.id===seccion)">
+          Estás en: <strong>{{tituloActual}}</strong>
+        </p>
       </nav>
 
       <div class="mg-sidebar-bottom mg-sidebar-account" aria-label="Sesión de administrador">
@@ -374,11 +377,11 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
             <div class="mg-efsrt-pulse-items" aria-label="Alertas calculadas por MySQL">
               <div class="mg-pulse-item" *ngIf="(dashboard?.membresias?.por_vencer_7_dias ?? 0)>0">
                 <strong>{{dashboard?.membresias?.por_vencer_7_dias}}</strong>
-                <span>Membresías por vencer<small>Revisar en Gestión y sistema → Socios</small></span>
+                <span>Membresías por vencer<small>Busca «Vencimientos» para gestionarlas.</small></span>
               </div>
               <div class="mg-pulse-item" *ngIf="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0">
                 <strong>{{dashboard?.inventario?.productos_stock_bajo}}</strong>
-                <span>Productos con stock bajo<small>Revisar en Gestión y sistema → Inventario</small></span>
+                <span>Productos con stock bajo<small>Busca «Inventario» o abre Otras funciones.</small></span>
               </div>
               <div class="mg-pulse-item" *ngIf="(dashboard?.membresias?.pagos_pendientes ?? 0)>0">
                 <strong>{{dashboard?.membresias?.pagos_pendientes}}</strong>
@@ -2963,19 +2966,16 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     'proveedores','compras','categorias','reportes-admin','reporte-asistencias','usuarios',
     'auditoria','configuracion','opiniones'
   ];
-  /** Orden TEC-SGI adaptado al gimnasio: entrada directa a las tareas diarias. */
+  /** Solo las cuatro tareas habituales quedan visibles; las otras funciones
+   * permanecen por área en el selector o en la búsqueda global. */
   readonly accesosPrincipalesAdmin: Array<{id:string;nombre:string;icono:string;ayuda:string}> = [
     {id:'clientes',nombre:'Socios',icono:'♙',ayuda:'Registrar y administrar socios'},
     {id:'reservas',nombre:'Reservas',icono:'◫',ayuda:'Programar y controlar sesiones'},
-    {id:'asistencias',nombre:'Asistencia',icono:'✓',ayuda:'Registrar entradas y salidas'},
     {id:'productos',nombre:'Productos',icono:'▦',ayuda:'Fotos, precios y existencias'},
-    {id:'ventas',nombre:'Ventas',icono:'▤',ayuda:'Venta y actualización del stock'},
     {id:'pagos',nombre:'Pagos',icono:'S/',ayuda:'Membresías y cobros'}
   ];
-  /** Enlace directo a gestión del negocio y ajustes, como la referencia. */
   readonly accesosAdministracionAdmin: Array<{id:string;nombre:string;icono:string;ayuda:string}> = [
-    {id:'reportes-admin',nombre:'Reportes',icono:'▥',ayuda:'Indicadores y análisis'},
-    {id:'configuracion',nombre:'Configuración',icono:'⚙',ayuda:'Datos, permisos y sistema'}
+    {id:'reportes-admin',nombre:'Reportes',icono:'▥',ayuda:'Indicadores y análisis'}
   ];
   readonly accesosDirectosAdmin=[...this.accesosPrincipalesAdmin,...this.accesosAdministracionAdmin];
   mostrarGestionAvanzada = false;
