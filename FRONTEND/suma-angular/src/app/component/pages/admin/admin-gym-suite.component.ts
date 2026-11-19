@@ -53,8 +53,8 @@ interface GymModuleConfig {
           <section class="cf-suite-card">
             <header><div><h2>Equipos Mantenimiento</h2><p>Programación reciente de mantenimiento</p></div><button type="button" (click)="nuevoRegistro()">Programar Mantenimiento</button></header>
             <div class="gym-suite-table-wrap"><table class="gym-suite-table"><thead><tr><th>Equipos</th><th>Categoría</th><th>Último Servicio</th><th>Próximo Servicio</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
-              <tr *ngFor="let item of records.slice(0,6)"><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Sin categoría'}}</td><td>{{item.datos?.ultimo_servicio || 'No registrado'}}</td><td>{{item.fecha || 'No programado'}}</td><td><span class="status-select">{{item.estado || 'Operativo'}}</span></td><td><button class="cf-suite-link" (click)="editar(item)">Ver</button></td></tr>
-            </tbody></table></div>
+              <tr *ngFor="let item of equiposMantenimiento"><td><b>{{item.titulo}}</b></td><td>{{item.subtitulo || 'Sin categoría'}}</td><td>{{item.datos?.ultimo_servicio || 'No registrado'}}</td><td>{{item.fecha || 'No programado'}}</td><td><span class="status-select">{{item.estado || 'Operativo'}}</span></td><td><button class="cf-suite-link" (click)="editar(item)">Ver</button></td></tr>
+            </tbody></table><p *ngIf="!equiposMantenimiento.length" class="cf-suite-empty-inline">No hay equipos registrados en mantenimiento.</p></div>
           </section>
         </section>
 
@@ -69,8 +69,8 @@ interface GymModuleConfig {
           <section class="cf-suite-events">
             <article *ngFor="let item of records; let i=index">
               <div class="cf-suite-event-date"><b>{{diaEvento(item)}}</b><small></small></div>
-              <div class="cf-suite-event-main"><span>{{item.estado || 'Cupos limitados'}}</span><h3>{{item.titulo}}</h3><p>{{item.fecha || 'Martes'}} · {{item.subtitulo || 'Mallqui Gym'}}</p></div>
-              <div class="cf-suite-event-meta"><b>{{item.estado || 'Programado'}}</b><small>{{item.datos?.detalle || item.subtitulo || 'Sin detalle adicional'}}</small></div>
+              <div class="cf-suite-event-main"><span>{{item.estado || 'Estado no registrado'}}</span><h3>{{item.titulo}}</h3><p>{{item.fecha || 'Sin fecha registrada'}} · {{item.subtitulo || 'Mallqui Gym'}}</p></div>
+              <div class="cf-suite-event-meta"><b>{{item.estado || 'Sin estado'}}</b><small>{{item.datos?.detalle || item.subtitulo || 'Sin detalle adicional'}}</small></div>
               <button class="cf-suite-link" (click)="editar(item)">Detalles</button>
             </article>
             <div class="cf-suite-empty" *ngIf="!records.length"><b>Sin eventos registrados</b><span>Crea el primer evento, taller o campaña.</span><button type="button" class="primary" (click)="nuevoRegistro()">＋ Agregar Evento</button></div>
@@ -510,6 +510,8 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   periodoSalarios = '';
   ingresoCargando = false;
   ingresoError = '';
+  private cargaRegistrosId = 0;
+  private cargaReporteId = 0;
   ingresoReporte:any = null;
   mesesCortos = ['E','F','M','A','M','J','J','A','S','O','N','D'];
   mesesLargos = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -707,19 +709,30 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   }
 
   cargar(): void {
+    // Descartar respuestas antiguas al cambiar de módulo evita mezclar registros.
+    const moduloSolicitado=this.modulo;
+    const peticion=++this.cargaRegistrosId;
+    this.records=[];
+    this.filtered=[];
+    this.loading=true;
+    this.error='';
     // El reporte contable no depende de que los registros manuales estén disponibles.
-    if(this.modulo==='ingresos')this.cargarReporteIngresos();
-    this.loading = true;
-    this.error = '';
-    this.api.gymRegistros(this.modulo).subscribe({
-      next: (data: any[]) => {
-        this.records = Array.isArray(data) ? data : [];
+    if(moduloSolicitado==='ingresos')this.cargarReporteIngresos();
+    this.api.gymRegistros(moduloSolicitado).subscribe({
+      next:(data:any[])=>{
+        if(peticion!==this.cargaRegistrosId || this.modulo!==moduloSolicitado)return;
+        this.records=Array.isArray(data)?data:[];
         this.filtrarLocal();
-        this.loading = false;
+        this.loading=false;
       },
-      error: (e: any) => {
-        this.loading = false;
-        this.error = e?.error?.message || 'No se pudo cargar este módulo. Ejecuta las migraciones del backend.';
+      error:(e:any)=>{
+        if(peticion!==this.cargaRegistrosId || this.modulo!==moduloSolicitado)return;
+        this.loading=false;
+        this.records=[];
+        this.filtered=[];
+        this.error=moduloSolicitado==='ingresos'
+          ? 'No se pudieron cargar los registros manuales de ingresos.'
+          : e?.error?.message || 'No se pudo cargar este módulo. Comprueba la conexión y la base de datos.';
         this.limpiarMensaje('error');
       }
     });
@@ -730,20 +743,30 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
     return this.records.filter((r:any)=>aceptados.includes(String(r?.estado||'').toLowerCase())).length;
   }
 
+  get equiposMantenimiento():any[] {
+    return this.records.filter(item=>String(item?.estado||'').toLowerCase()==='mantenimiento')
+      .slice(0,6);
+  }
+
   get categoriasReales(): number {
     return new Set(this.records.map((r:any)=>String(r?.subtitulo||'').trim()).filter(Boolean)).size;
   }
 
   cargarReporteIngresos(): void {
+    if(this.modulo!=='ingresos')return;
+    const peticion=++this.cargaReporteId;
     this.ingresoCargando=true;
     this.ingresoError='';
+    this.ingresoReporte=null;
     this.api.reporteIngresos().subscribe({
       next:(r:any)=>{
+        if(peticion!==this.cargaReporteId || this.modulo!=='ingresos')return;
         this.ingresoReporte=r && Array.isArray(r.por_mes) ? r : null;
         this.ingresoCargando=false;
         if(!this.ingresoReporte)this.ingresoError='El servidor no entregó un reporte financiero válido.';
       },
       error:()=>{
+        if(peticion!==this.cargaReporteId || this.modulo!=='ingresos')return;
         this.ingresoReporte=null;
         this.ingresoCargando=false;
         this.ingresoError='No se pudieron consultar los ingresos reales. Verifica la conexión con MySQL.';
