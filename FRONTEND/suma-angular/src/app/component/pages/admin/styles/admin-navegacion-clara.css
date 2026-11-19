@@ -553,3 +553,47 @@
   font-size:11px;
   color:#afbdb3;
 }
+
+/* Guía visual: un título por pantalla y ruta secundaria sin ruido. */
+.admin-shell.admin-home-redesign .mg-current-workspace > .mg-module-shell-head {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:10px 16px!important;
+  margin-bottom:14px!important;
+  border-radius:10px!important;
+}
+.admin-shell.admin-home-redesign .mg-module-shell-head .mg-module-shell-copy p {
+  margin:0!important;
+  font-size:13px!important;
+  line-height:1.45;
+}
+.admin-shell.admin-home-redesign .mg-module-shell-head .mg-module-state {
+  font-size:11px;
+  white-space:normal;
+}
+.admin-shell.admin-home-redesign .mg-module-shell-head .mg-back-home {
+  white-space:nowrap;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-section-separator {
+  margin-top:10px!important;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary {
+  min-height:43px!important;
+}
+@media (min-width:1024px) {
+  .admin-shell.admin-home-redesign .mg-mantis-nav-toggle {
+    display:none!important;
+  }
+}
+@media (max-width:700px) {
+  .admin-shell.admin-home-redesign .mg-current-workspace > .mg-module-shell-head {
+    flex-wrap:wrap;
+    padding:10px 12px!important;
+  }
+  .admin-shell.admin-home-redesign .mg-module-shell-head .mg-module-shell-actions {
+    width:100%;
+    justify-content:space-between;
+  }
+}
