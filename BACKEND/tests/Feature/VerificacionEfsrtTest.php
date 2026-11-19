@@ -212,6 +212,59 @@ class VerificacionEfsrtTest extends TestCase
             'El diagnóstico nunca debe cambiar el inventario.');
     }
 
+    public function test_semana_once_detecta_dni_duplicado_con_espacios_y_campos_incompletos(): void
+    {
+        // El diagnóstico debe revisar el dato real sin corregirlo a escondidas.
+        DB::table('clientes')->insert([
+            ['id_cliente'=>1,'dni'=>'70123456'],
+            ['id_cliente'=>2,'dni'=>' 70123456 '],
+            ['id_cliente'=>3,'dni'=>'   '],
+            ['id_cliente'=>4,'dni'=>''],
+        ]);
+
+        Schema::table('productos', function (Blueprint $tabla) {
+            $tabla->string('nombre_producto')->nullable();
+            $tabla->decimal('precio_venta',10,2)->nullable();
+        });
+        DB::table('productos')->insert([
+            'id_producto'=>7,
+            'stock'=>0, // Cero stock es válido, no debe generar alerta.
+            'nombre_producto'=>'   ',
+            'precio_venta'=>null,
+        ]);
+
+        $resultado = app(VerificacionEfsrtController::class)->index()->getData(true);
+        $alertas = collect($resultado['alertas']);
+
+        $this->assertSame(1, $alertas->firstWhere('tipo','duplicados_clientes')['cantidad']);
+        $this->assertSame(2, $alertas->firstWhere('tipo','clientes_sin_dni')['cantidad']);
+        $this->assertSame(1, $alertas->firstWhere('tipo','productos_sin_nombre')['cantidad']);
+        $this->assertSame(1, $alertas->firstWhere('tipo','productos_precio_invalido')['cantidad']);
+        $this->assertNull($alertas->firstWhere('tipo','stock_negativo'));
+
+        $semana11 = collect($resultado['semanas'])->firstWhere('semana',11);
+        $this->assertSame('pendiente', $semana11['estado']);
+        $this->assertStringContainsString('DNI vacío', implode(' ', $semana11['observaciones']));
+        $this->assertStringContainsString('sin nombre', implode(' ', $semana11['observaciones']));
+
+        $this->assertSame(' 70123456 ', DB::table('clientes')->where('id_cliente',2)->value('dni'));
+        $this->assertSame('   ', DB::table('productos')->where('id_producto',7)->value('nombre_producto'));
+    }
+
+    public function test_semana_once_no_confunde_dni_en_blanco_con_documentos_repetidos(): void
+    {
+        DB::table('clientes')->insert([
+            ['id_cliente'=>11,'dni'=>' '],
+            ['id_cliente'=>12,'dni'=>''],
+        ]);
+
+        $resultado = app(VerificacionEfsrtController::class)->index()->getData(true);
+        $alertas = collect($resultado['alertas']);
+
+        $this->assertNull($alertas->firstWhere('tipo','duplicados_clientes'));
+        $this->assertSame(2, $alertas->firstWhere('tipo','clientes_sin_dni')['cantidad']);
+    }
+
     public function test_cliente_autenticado_no_puede_leer_el_diagnostico_privado(): void
     {
         $cliente = new \App\Models\Usuario([
