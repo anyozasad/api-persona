@@ -1,4 +1,5 @@
 import { of, Subject, throwError } from 'rxjs';
+import { SimpleChange } from '@angular/core';
 import { AdminGymSuiteComponent } from './admin-gym-suite.component';
 
 describe('Mallqui Gym: módulos administrativos con datos reales',()=>{
@@ -175,6 +176,78 @@ describe('Mallqui Gym: módulos administrativos con datos reales',()=>{
     expect(api.eliminarGymRegistro).not.toHaveBeenCalled();
     expect(c.records).toHaveSize(1);
     expect(c.modalAbierto).toBeTrue();
+  });
+
+  it('cambiar de módulo cierra el formulario anterior y descarta respuestas tardías de guardado',()=>{
+    const pendiente=new Subject<any>();
+    api.crearGymRegistro=jasmine.createSpy('crearGymRegistro').and.returnValue(pendiente.asObservable());
+    c.modulo='equipos';
+    c.nuevoRegistro();
+    c.form.titulo='Caminadora';
+    c.guardar();
+    expect(api.crearGymRegistro).toHaveBeenCalledTimes(1);
+    expect(c.saving).toBeTrue();
+    c.modulo='galeria';
+    c.ngOnChanges({modulo:new SimpleChange('equipos','galeria',false)});
+    expect(c.modalAbierto).toBeFalse();
+    expect(c.editandoId).toBeNull();
+    expect(c.saving).toBeFalse();
+    expect(c.form.titulo).toBe('');
+    pendiente.next({id:11,titulo:'Caminadora'});
+    expect(c.modalAbierto).toBeFalse();
+    expect(c.records).toEqual([]);
+    expect(c.toast).toBe('');
+    expect(api.gymRegistros).toHaveBeenCalledWith('galeria');
+  });
+
+  it('doble clic en guardar registra una sola petición de la misma operación',()=>{
+    const pendiente=new Subject<any>();
+    api.crearGymRegistro=jasmine.createSpy('crearGymRegistro').and.returnValue(pendiente.asObservable());
+    c.modulo='noticias';
+    c.nuevoRegistro();
+    c.form.titulo='Comunicado del gimnasio';
+    c.guardar();
+    c.guardar();
+    expect(api.crearGymRegistro).toHaveBeenCalledTimes(1);
+    pendiente.next({id:15});
+    expect(c.saving).toBeFalse();
+    expect(c.modalAbierto).toBeFalse();
+  });
+
+  it('doble clic en eliminar envía una sola petición y espera al servidor',()=>{
+    const pendiente=new Subject<any>();
+    api.eliminarGymRegistro=jasmine.createSpy('eliminarGymRegistro').and.returnValue(pendiente.asObservable());
+    spyOn(window,'confirm').and.returnValue(true);
+    c.modulo='equipos';
+    c.records=[{id:9,titulo:'Cinta de prueba'}];
+    c.filtrarLocal();
+    c.editar(c.records[0]);
+    c.eliminarRegistroActual();
+    c.eliminarRegistroActual();
+    expect(api.eliminarGymRegistro).toHaveBeenCalledTimes(1);
+    expect(c.saving).toBeTrue();
+    expect(c.records).toHaveSize(1);
+    pendiente.next({ok:true});
+    expect(c.saving).toBeFalse();
+    expect(c.records).toHaveSize(0);
+    expect(c.modalAbierto).toBeFalse();
+  });
+
+  it('respuesta de imagen anterior no altera el formulario de un nuevo módulo',()=>{
+    const pendiente=new Subject<any>();
+    api.subirImagenGymRegistro=jasmine.createSpy('subirImagenGymRegistro').and.returnValue(pendiente.asObservable());
+    c.modulo='galeria';
+    c.nuevoRegistro();
+    const imagen=new File(['imagen válida'],'imagen.png',{type:'image/png'});
+    const entrada=document.createElement('input');
+    Object.defineProperty(entrada,'files',{value:[imagen]});
+    c.seleccionarImagenLocal({target:entrada} as unknown as Event);
+    c.modulo='noticias';
+    c.ngOnChanges({modulo:new SimpleChange('galeria','noticias',false)});
+    c.nuevoRegistro();
+    pendiente.next({imagen_url:'/uploads/admin-gym/foto-antigua.png'});
+    expect(c.form.imagen_url).toBe('');
+    expect(c.subiendoImagen).toBeFalse();
   });
 
   it('facturas calculan cobranza sobre el filtro actual',()=>{
