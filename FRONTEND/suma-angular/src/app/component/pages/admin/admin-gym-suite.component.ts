@@ -516,6 +516,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   ingresoError = '';
   private cargaRegistrosId = 0;
   private cargaReporteId = 0;
+  private versionModulo = 0;
   ingresoReporte:any = null;
   mesesCortos = ['E','F','M','A','M','J','J','A','S','O','N','D'];
   mesesLargos = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -647,6 +648,15 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['modulo'] && !changes['modulo'].firstChange) {
+      // No reutilizar el modal ni las respuestas pendientes de otro módulo.
+      this.versionModulo++;
+      this.modalAbierto = false;
+      this.editandoId = null;
+      this.saving = false;
+      this.subiendoImagen = false;
+      this.form = this.formVacio();
+      this.toast = '';
+      this.error = '';
       this.busqueda = '';
       this.estadoFiltro = '';
       this.periodoSalarios = '';
@@ -851,6 +861,9 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   }
 
   seleccionarImagenLocal(event: Event): void {
+    if(this.subiendoImagen || !this.modalAbierto)return;
+    const moduloSolicitado=this.modulo;
+    const version=this.versionModulo;
     const input = event.target as HTMLInputElement;
     const archivo = input.files?.[0];
     if (!archivo) return;
@@ -870,14 +883,16 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
     }
 
     this.subiendoImagen = true;
-    this.api.subirImagenGymRegistro(this.modulo, archivo).subscribe({
+    this.api.subirImagenGymRegistro(moduloSolicitado, archivo).subscribe({
       next: (r:any) => {
+        if(this.modulo!==moduloSolicitado || this.versionModulo!==version)return;
         this.form.imagen_url = String(r?.imagen_url || '');
         this.subiendoImagen = false;
         this.toast = 'Imagen local guardada correctamente.';
         this.limpiarMensaje('toast');
       },
       error: (e:any) => {
+        if(this.modulo!==moduloSolicitado || this.versionModulo!==version)return;
         this.subiendoImagen = false;
         this.error = e?.error?.message || 'No se pudo guardar la imagen local.';
         this.limpiarMensaje('error');
@@ -886,6 +901,10 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   }
 
   guardar(): void {
+    if(this.saving || this.subiendoImagen || !this.modalAbierto)return;
+    const moduloSolicitado=this.modulo;
+    const version=this.versionModulo;
+    const idEditando=this.editandoId;
     const titulo = String(this.form?.titulo || '').trim();
     if (!titulo) {
       this.error = 'Completa el campo principal.';
@@ -908,20 +927,22 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
     };
 
     this.saving = true;
-    const req = this.editandoId
-      ? this.api.actualizarGymRegistro(this.modulo, this.editandoId, payload)
-      : this.api.crearGymRegistro(this.modulo, payload);
+    const req = idEditando !== null
+      ? this.api.actualizarGymRegistro(moduloSolicitado, idEditando, payload)
+      : this.api.crearGymRegistro(moduloSolicitado, payload);
 
     req.subscribe({
       next: () => {
+        if(this.modulo!==moduloSolicitado || this.versionModulo!==version)return;
         this.saving = false;
         this.modalAbierto = false;
-        this.toast = this.editandoId ? 'Registro actualizado correctamente.' : 'Registro creado correctamente.';
+        this.toast = idEditando !== null ? 'Registro actualizado correctamente.' : 'Registro creado correctamente.';
         this.editandoId = null;
         this.cargar();
         this.limpiarMensaje('toast');
       },
       error: (e: any) => {
+        if(this.modulo!==moduloSolicitado || this.versionModulo!==version)return;
         this.saving = false;
         this.error = e?.error?.message || 'No se pudo guardar el registro.';
         this.limpiarMensaje('error');
@@ -952,12 +973,17 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   }
 
   eliminar(item: any): void {
-    if (!item?.id || this.saving) return;
+    if (!item?.id || this.saving || this.subiendoImagen) return;
     const nombre = item?.titulo || 'este registro';
     if (!confirm(`¿Eliminar "${nombre}"?`)) return;
 
-    this.api.eliminarGymRegistro(this.modulo, Number(item.id)).subscribe({
+    const moduloSolicitado=this.modulo;
+    const version=this.versionModulo;
+    this.saving=true;
+    this.api.eliminarGymRegistro(moduloSolicitado, Number(item.id)).subscribe({
       next: () => {
+        if(this.modulo!==moduloSolicitado || this.versionModulo!==version)return;
+        this.saving=false;
         this.toast = 'Registro eliminado.';
         this.records = this.records.filter(r => Number(r.id) !== Number(item.id));
         if(this.editandoId!==null && Number(item.id)===this.editandoId){
@@ -968,6 +994,8 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
         this.limpiarMensaje('toast');
       },
       error: () => {
+        if(this.modulo!==moduloSolicitado || this.versionModulo!==version)return;
+        this.saving=false;
         this.error = 'No se pudo eliminar el registro.';
         this.limpiarMensaje('error');
       }
