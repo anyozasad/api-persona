@@ -93,7 +93,7 @@ interface GymModuleConfig {
           <div class="cf-suite-gallery-filter"><button [class.active]="filtroGaleria==='Todos'" (click)="filtrarGaleria('Todos')">Todos</button><button [class.active]="filtroGaleria==='Entrenamiento'" (click)="filtrarGaleria('Entrenamiento')">Entrenamiento</button><button [class.active]="filtroGaleria==='Eventos'" (click)="filtrarGaleria('Eventos')">Eventos</button><button [class.active]="filtroGaleria==='Socios'" (click)="filtrarGaleria('Socios')">Socios</button><button [class.active]="filtroGaleria==='Equipos'" (click)="filtrarGaleria('Equipos')">Equipos</button></div>
           <section class="cf-suite-gallery">
             <article *ngFor="let item of galeriaVisible"><img [src]="item.imagen_url || 'assets/mallqui/mallqui-cover.webp'" [alt]="item.titulo"><div><b>{{item.titulo}}</b><span>{{item.estado || 'Sin estado'}}</span><button type="button" class="cf-suite-link" (click)="editar(item)">Editar imagen</button></div></article>
-            <div class="cf-suite-empty" *ngIf="!galeriaVisible.length"><b>Sin imágenes registradas</b><span>Sube contenido real del gimnasio para completar la galería.</span><button type="button" class="primary" (click)="nuevoRegistro()">＋ Subir Imagen</button></div>
+            <div class="cf-suite-empty" *ngIf="!galeriaVisible.length"><b>{{filtroGaleria==='Todos' ? 'Sin imágenes registradas' : 'Sin imágenes de '+filtroGaleria}}</b><span>{{filtroGaleria==='Todos' ? 'Sube contenido real del gimnasio.' : 'No hay fotografías guardadas en esta categoría. Puedes asignarla al crear o editar una foto.'}}</span><button type="button" class="primary" (click)="nuevoRegistro()">＋ Subir Imagen</button></div>
           </section>
           <div class="cf-suite-kpis compact"><article><small>Registros</small><b>{{records.length}}</b><span>Elementos de galería</span></article><article><small>Publicados</small><b>{{contarEstados(['Publicado'])}}</b><span>Contenido visible</span></article><article><small>Este Mes</small><b>{{esteMes}}</b><span>Nuevas cargas</span></article><article><small>Borradores</small><b>{{contarEstados(['Borrador'])}}</b><span>Pendientes de publicar</span></article></div>
         </section>
@@ -220,6 +220,12 @@ interface GymModuleConfig {
               <input type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" (change)="seleccionarImagenLocal($event)">
               <small>{{subiendoImagen ? 'Guardando imagen...' : 'JPG, PNG o WEBP · máximo 5 MB · se guarda dentro del proyecto'}}</small>
               <img *ngIf="form.imagen_url" [src]="form.imagen_url" alt="Vista previa de imagen local">
+            </label>
+            <label *ngIf="modulo==='galeria'" class="span-2">Categoría de la fotografía *
+              <select name="categoria" [(ngModel)]="form.categoria" required>
+                <option value="" disabled>Seleccionar categoría</option>
+                <option *ngFor="let categoria of categoriasGaleria" [value]="categoria">{{categoria}}</option>
+              </select>
             </label>
             <label class="span-2">Detalle / observación<textarea name="detalle" [(ngModel)]="form.detalle" rows="4"></textarea></label>
           </div>
@@ -527,6 +533,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   error = '';
   errorCarga = '';
   filtroGaleria = 'Todos';
+  readonly categoriasGaleria=['Entrenamiento','Eventos','Socios','Equipos'];
   periodoSalarios = '';
   ingresoCargando = false;
   ingresoError = '';
@@ -677,6 +684,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
       this.busqueda = '';
       this.estadoFiltro = '';
       this.periodoSalarios = '';
+      this.filtroGaleria = 'Todos';
       this.ingresoReporte = null;
       this.cargar();
     }
@@ -870,6 +878,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
       fecha: item?.fecha || '',
       monto: item?.monto ?? null,
       imagen_url: item?.imagen_url || '',
+      categoria: item?.datos?.categoria || '',
       detalle: item?.datos?.detalle || ''
     };
     this.modalAbierto = true;
@@ -934,6 +943,11 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
       return;
     }
 
+    if(moduloSolicitado==='galeria' && !this.categoriasGaleria.includes(this.form?.categoria)){
+      this.error='Selecciona una categoría para la fotografía.';
+      this.limpiarMensaje('error');
+      return;
+    }
     const payload = {
       titulo,
       subtitulo: String(this.form?.subtitulo || '').trim() || null,
@@ -944,7 +958,8 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
         : null,
       imagen_url: this.config.showImage ? (String(this.form?.imagen_url || '').trim() || null) : null,
       datos: {
-        detalle: String(this.form?.detalle || '').trim()
+        detalle: String(this.form?.detalle || '').trim(),
+        ...(moduloSolicitado==='galeria' ? {categoria:String(this.form?.categoria || '').trim()} : {})
       }
     };
 
@@ -1071,11 +1086,13 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
   }
 
   get galeriaVisible(): any[] {
-    const base = this.records;
-    if (this.filtroGaleria === 'Todos') return base;
-    return base.filter((item:any) => {
-      const texto = [item?.titulo,item?.subtitulo,item?.datos?.detalle,item?.categoria].filter(Boolean).join(' ').toLowerCase();
-      return texto.includes(this.filtroGaleria.toLowerCase());
+    if(this.filtroGaleria==='Todos')return this.records;
+    const filtro=this.filtroGaleria.toLocaleLowerCase('es-PE');
+    return this.records.filter((item:any)=>{
+      const guardada=String(item?.datos?.categoria || item?.categoria || '').trim().toLocaleLowerCase('es-PE');
+      if(guardada)return guardada===filtro;
+      // Compatibilidad con fotografías antiguas sin una categoría asignada.
+      return String(item?.subtitulo || '').toLocaleLowerCase('es-PE').includes(filtro);
     });
   }
 
@@ -1097,6 +1114,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
       fecha: '',
       monto: null,
       imagen_url: '',
+      categoria: '',
       detalle: ''
     };
   }
