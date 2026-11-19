@@ -6,6 +6,7 @@ on:
     paths:
       - 'FRONTEND/suma-angular/**'
       - 'BACKEND/**'
+      - 'scripts/INICIAR_DASHBOARD.ps1'
       - '.github/workflows/mallqui-e2e-check.yml'
   pull_request:
     branches: [main]
