@@ -247,7 +247,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
             <div>
               <span class="mg-efsrt-eyebrow">MALLQUI GYM · ADMINISTRACIÓN</span>
               <h2>Panel principal</h2>
-              <p>Empieza por Socios → Reservas → Asistencia. Para cobrar abre Pagos y para consultar resultados entra en Reportes.</p>
+              <p>Empieza por Socios y Reservas. Para registrar entradas, busca «Asistencia» arriba; para cobrar, abre Pagos.</p>
             </div>
             <div class="mg-efsrt-hero-aside">
               <span class="mg-efsrt-connection" [class.problem]="!sistemaSincronizado">
@@ -447,7 +447,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
               </article>
             </div>
             <ng-template #sinProductosEfsrt>
-              <p class="mg-efsrt-empty">No hay productos cargados desde MySQL. Registra productos y sus fotos desde Inventario.</p>
+              <p class="mg-efsrt-empty">No hay productos cargados desde MySQL. Abre Productos para registrar artículos y fotografías.</p>
             </ng-template>
           </section>
 
