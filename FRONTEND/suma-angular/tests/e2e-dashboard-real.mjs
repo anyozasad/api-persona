@@ -447,6 +447,29 @@ try {
       fullPage:true,animations:'disabled'});
   });
 
+  await paso('Si falla MySQL no muestra tablas vacías como si fueran datos reales',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const menu=page.locator('.mg-clear-navigation');
+    await page.route('**/api/admin-gym-registros/equipos',ruta=>ruta.abort('failed'));
+    try {
+      await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+      await menu.locator('#mg-modulo-selector').selectOption('equipos');
+      const zona=page.locator('app-admin-gym-suite');
+      await zona.locator('.mg-suite-network-error').waitFor({timeout:15000});
+      assert.equal(await zona.locator('.cf-suite-complete').count(),0,
+        'Una consulta fallida no puede aparecer como lista vacía de equipos.');
+      await page.unroute('**/api/admin-gym-registros/equipos');
+      const respuesta=page.waitForResponse(r=>r.url().includes('/api/admin-gym-registros/equipos')
+        && r.request().method()==='GET',{timeout:25000});
+      await zona.getByRole('button',{name:'Reintentar carga'}).click();
+      assert.equal((await respuesta).status(),200);
+      await zona.locator('.cf-suite-complete').waitFor({timeout:15000});
+      assert.equal(await zona.locator('.mg-suite-network-error').count(),0);
+    } finally {
+      await page.unroute('**/api/admin-gym-registros/equipos');
+    }
+  });
+
   await paso('Ingresos abre datos confirmados de MySQL y exporta el informe correcto',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
