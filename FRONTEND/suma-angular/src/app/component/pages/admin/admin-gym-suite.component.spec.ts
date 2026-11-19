@@ -147,6 +147,36 @@ describe('Mallqui Gym: módulos administrativos con datos reales',()=>{
     expect(c.ingresoCargando).toBeFalse();
   });
 
+  it('permite eliminar un registro real desde su edición tras confirmar',()=>{
+    c.modulo='equipos';
+    c.records=[{id:4,titulo:'Equipo antiguo',estado:'Operativo'}];
+    c.filtrarLocal();
+    c.editar(c.records[0]);
+    api.eliminarGymRegistro=jasmine.createSpy('eliminarGymRegistro').and.returnValue(of({ok:true}));
+    spyOn(window,'confirm').and.returnValue(true);
+    c.eliminarRegistroActual();
+    expect(api.eliminarGymRegistro).toHaveBeenCalledOnceWith('equipos',4);
+    expect(c.records).toEqual([]);
+    expect(c.filtered).toEqual([]);
+    expect(c.modalAbierto).toBeFalse();
+    expect(c.editandoId).toBeNull();
+  });
+
+  it('no elimina ningún registro si el administrador cancela o no está editando',()=>{
+    c.modulo='galeria';
+    c.records=[{id:7,titulo:'Foto conservada',estado:'Publicado'}];
+    api.eliminarGymRegistro=jasmine.createSpy('eliminarGymRegistro').and.returnValue(of({ok:true}));
+    const confirmacion=spyOn(window,'confirm').and.returnValue(false);
+    c.eliminarRegistroActual();
+    expect(api.eliminarGymRegistro).not.toHaveBeenCalled();
+    c.editar(c.records[0]);
+    c.eliminarRegistroActual();
+    expect(confirmacion).toHaveBeenCalledTimes(1);
+    expect(api.eliminarGymRegistro).not.toHaveBeenCalled();
+    expect(c.records).toHaveSize(1);
+    expect(c.modalAbierto).toBeTrue();
+  });
+
   it('facturas calculan cobranza sobre el filtro actual',()=>{
     c.modulo='facturas';
     c.records=[
