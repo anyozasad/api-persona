@@ -297,6 +297,10 @@ try {
       'El módulo no debe repetir los botones Inicio y Actualizar.');
     assert.equal(await apps.locator('.mg-app-grid .mg-app-tile').count(),6,
       'Solo mostrar seis tareas complementarias al entrar.');
+    await page.screenshot({
+      path:'evidencias-dashboard/39_Centro_aplicaciones_seis_tareas.png',
+      fullPage:true,animations:'disabled'
+    });
     const buscar=apps.getByRole('searchbox',{name:'Buscar aplicaciones'});
     await buscar.fill('nutrición');
     assert.equal(await apps.locator('.mg-app-grid .mg-app-tile').count(),1,
