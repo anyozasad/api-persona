@@ -78,11 +78,23 @@ class VerificacionEfsrtController extends Controller
 
             $alertas = [];
             if ($this->columnas('clientes', ['dni'])) {
+                // Normalizar espacios permite detectar documentos iguales importados
+                // con distinto formato, sin contar documentos en blanco como repetidos.
                 $duplicados = DB::table('clientes')->whereNotNull('dni')
-                    ->groupBy('dni')->havingRaw('COUNT(*) > 1')->get(['dni'])->count();
+                    ->whereRaw("TRIM(dni) <> ''")
+                    ->selectRaw('TRIM(dni) AS documento')
+                    ->groupByRaw('TRIM(dni)')
+                    ->havingRaw('COUNT(*) > 1')->get()->count();
                 if ($duplicados > 0) {
                     $alertas[] = ['tipo'=>'duplicados_clientes','cantidad'=>$duplicados,
-                        'mensaje'=>'Hay documentos DNI repetidos en clientes.','destino'=>'clientes'];
+                        'mensaje'=>'Hay documentos DNI repetidos en clientes (incluidos espacios sobrantes).',
+                        'destino'=>'clientes'];
+                }
+                $sinDni = DB::table('clientes')->whereNull('dni')
+                    ->orWhereRaw("TRIM(dni) = ''")->count();
+                if ($sinDni > 0) {
+                    $alertas[] = ['tipo'=>'clientes_sin_dni','cantidad'=>$sinDni,
+                        'mensaje'=>'Hay socios con DNI vacío o sin registrar.','destino'=>'clientes'];
                 }
             }
 
@@ -142,29 +154,32 @@ class VerificacionEfsrtController extends Controller
 
             // Detectar campos obligatorios en blanco y cantidades financieras
             // inválidas. Un stock 0 es válido; un precio de venta negativo no.
-            if ($this->columnas('productos',['nombre_producto'])) {
+            $columnaNombre = $this->columnas('productos',['nombre_producto'])
+                ? 'nombre_producto'
+                : ($this->columnas('productos',['nombre']) ? 'nombre' : null);
+            if ($columnaNombre !== null) {
                 $sinNombre = DB::table('productos')
-                    ->where(function ($consulta) {
-                        $consulta->whereNull('nombre_producto')
-                            ->orWhere('nombre_producto','');
-                    })->count();
+                    ->whereNull($columnaNombre)
+                    ->orWhereRaw("TRIM({$columnaNombre}) = ''")->count();
                 if ($sinNombre > 0) {
                     $alertas[] = ['tipo'=>'productos_sin_nombre','cantidad'=>$sinNombre,
                         'mensaje'=>'Hay productos sin nombre registrado.','destino'=>'productos'];
                 }
             }
             if ($this->columnas('productos',['precio_venta'])) {
-                $precioInvalido = DB::table('productos')->where('precio_venta','<',0)->count();
+                $precioInvalido = DB::table('productos')
+                    ->whereNull('precio_venta')->orWhere('precio_venta','<',0)->count();
                 if ($precioInvalido > 0) {
                     $alertas[] = ['tipo'=>'productos_precio_invalido','cantidad'=>$precioInvalido,
-                        'mensaje'=>'Hay productos con precio de venta negativo.','destino'=>'productos'];
+                        'mensaje'=>'Hay productos con precio de venta negativo o sin registrar.','destino'=>'productos'];
                 }
             }
             if ($this->columnas('pagos_membresia',['monto'])) {
-                $montoInvalido = DB::table('pagos_membresia')->where('monto','<=',0)->count();
+                $montoInvalido = DB::table('pagos_membresia')
+                    ->whereNull('monto')->orWhere('monto','<=',0)->count();
                 if ($montoInvalido > 0) {
                     $alertas[] = ['tipo'=>'pagos_monto_invalido','cantidad'=>$montoInvalido,
-                        'mensaje'=>'Hay pagos con importes cero o negativos.','destino'=>'pagos'];
+                        'mensaje'=>'Hay pagos con importes vacíos, cero o negativos.','destino'=>'pagos'];
                 }
             }
 
@@ -357,10 +372,10 @@ class VerificacionEfsrtController extends Controller
                     5 => ['productos_prueba','productos_sin_nombre','productos_precio_invalido'],
                     6 => ['asistencias_sin_socio','rutinas_sin_socio'],
                     9,11 => [
-                        'duplicados_clientes','reservas_duplicadas','pagos_huerfanos',
+                        'duplicados_clientes','clientes_sin_dni','reservas_duplicadas','pagos_huerfanos',
                         'stock_negativo','reservas_sin_socio','reservas_sin_clase',
                         'asistencias_sin_socio','rutinas_sin_socio','membresias_sin_socio',
-                        'productos_sin_nombre','productos_precio_invalido','pagos_monto_invalido'
+                        'productos_sin_nombre','productos_precio_invalido','pagos_monto_invalido','productos_prueba'
                     ],
                 };
                 foreach ($alertas as $alerta) {
@@ -376,9 +391,12 @@ class VerificacionEfsrtController extends Controller
 
             if ($numero === 11) {
                 $directorio = storage_path('app/backups');
-                $respaldos = is_dir($directorio) ? glob($directorio.DIRECTORY_SEPARATOR.'*.sql') : [];
-                if (!$respaldos) {
-                    $observaciones[] = 'No existe todavía un respaldo SQL verificado en storage/app/backups.';
+                $respaldos = is_dir($directorio) ? (glob($directorio.DIRECTORY_SEPARATOR.'*.sql') ?: []) : [];
+                $respaldosLegibles = array_filter($respaldos, fn ($archivo) =>
+                    is_file($archivo) && is_readable($archivo) && filesize($archivo) > 0
+                );
+                if (!$respaldosLegibles) {
+                    $observaciones[] = 'No se encontró un respaldo SQL legible y no vacío en storage/app/backups.';
                 }
             }
 
