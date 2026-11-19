@@ -419,3 +419,29 @@
   background:#2b3d52!important;border-color:#41546c!important;color:#e5f0fc!important;
 }
 .admin-shell.admin-home-redesign.mg-mantis-dark .mg-app-center .mg-app-tile small{color:#adc0d2!important}
+/* UX: directorio bajo demanda y sin segunda barra de navegación */
+.admin-shell.admin-home-redesign .mg-app-center > .mg-app-header {
+  margin-bottom:16px;
+  padding:0 2px;
+}
+.admin-shell.admin-home-redesign .mg-app-center > .mg-app-header p {
+  margin-top:4px;
+  font-size:13px;
+  line-height:1.5;
+}
+.admin-shell.admin-home-redesign .mg-app-directory-actions {
+  display:flex;
+  justify-content:center;
+  margin-top:20px;
+}
+.admin-shell.admin-home-redesign .mg-app-directory-actions .mg-app-directory-toggle {
+  width:min(100%,340px);
+  min-height:43px;
+  font-size:13px;
+  font-weight:700;
+}
+@media (min-width:1100px) {
+  .admin-shell.admin-home-redesign .mg-app-grid {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+}
