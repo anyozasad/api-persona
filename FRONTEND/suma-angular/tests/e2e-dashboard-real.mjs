@@ -289,6 +289,8 @@ try {
     await menu.locator('#mg-modulo-selector').selectOption('aplicaciones');
     const apps=page.locator('app-admin-applications');
     await apps.waitFor({timeout:15000});
+    assert.equal(await apps.locator('.mg-app-overview').count(),0,
+      'No repetir indicadores del dashboard dentro del directorio de módulos.');
     assert.equal(await apps.locator('.mg-app-tabs').count(),0,
       'No debe aparecer una segunda barra de navegación con cinco pestañas.');
     assert.equal(await apps.locator('.mg-app-header-actions').count(),0,
