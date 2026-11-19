@@ -266,6 +266,12 @@ try {
     await page.locator('.productos-page').waitFor({timeout:20000});
     assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Productos');
     assert.equal(await primario.getAttribute('aria-current'),'page');
+    assert.equal(new URL(page.url()).searchParams.get('modulo'),'productos',
+      'La URL debe recordar el módulo que el administrador abrió.');
+    await page.reload({waitUntil:'domcontentloaded'});
+    await page.locator('.productos-page').waitFor({timeout:20000});
+    assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Productos',
+      'Al recargar se conserva Productos en vez de devolver al inicio.');
     const refresco=page.waitForResponse(r=>r.url().includes('/api/productos') && r.status()===200,{timeout:20000});
     await page.getByRole('button',{name:'Actualizar módulo actual'}).click();
     await refresco;
