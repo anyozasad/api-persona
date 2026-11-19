@@ -87,10 +87,11 @@ try {
     if (-not $php) { Fallar 'No encuentro PHP. Abre XAMPP o instala PHP 8.2+ y revisa C:\xampp\php\php.exe.' }
     if (-not $npm) { Fallar 'No encuentro npm. Instala Node.js 22 y vuelve a ejecutar este archivo.' }
     $versionPhp = & $php -r 'echo PHP_VERSION_ID;'
-    if ($LASTEXITCODE -ne 0 -or -not [int]::TryParse([string]$versionPhp, [ref]([int]$null))) {
+    $idVersionPhp = 0
+    if ($LASTEXITCODE -ne 0 -or -not [int]::TryParse([string]$versionPhp, [ref]$idVersionPhp)) {
         Fallar 'No se pudo comprobar la versión del PHP ejecutable.'
     }
-    if ([int]$versionPhp -lt 80200) {
+    if ($idVersionPhp -lt 80200) {
         Fallar ("PHP " + (& $php -r 'echo PHP_VERSION;') + ' es incompatible con Laravel 12. Configura PHP 8.2 o superior antes de iniciar el dashboard.')
     }
     Informar ("PHP: " + $php)
