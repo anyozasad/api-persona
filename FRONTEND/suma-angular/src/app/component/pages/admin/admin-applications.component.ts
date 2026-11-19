@@ -25,12 +25,6 @@ type NombreTabla = 'clientes' | 'productos' | 'reservas';
          no duplicar sus botones ni mostrar otras cinco pestañas. -->
 
     <ng-container *ngIf="modulo==='aplicaciones'">
-      <div class="mg-app-overview">
-        <article><span>◈</span><strong>{{aplicaciones.length}}</strong><small>Accesos funcionales</small></article>
-        <article><span>▣</span><strong>{{clientes.length}}</strong><small>Socios cargados</small></article>
-        <article><span>◷</span><strong>{{reservas.length}}</strong><small>Reservas registradas</small></article>
-        <article><span>▤</span><strong>{{productos.length}}</strong><small>Productos disponibles</small></article>
-      </div>
       <div class="mg-app-section-caption">
         <div><h2>{{mostrarTodasAplicaciones || grupoApp || busquedaApp ? 'Buscar una función' : '¿Qué necesitas hacer?'}}</h2><p>{{mostrarTodasAplicaciones || grupoApp || busquedaApp ? 'Busca por nombre o filtra por área. Los módulos mantienen sus datos y permisos.' : 'Seis tareas complementarias. Para Socios, Reservas, Productos, Pagos y Reportes usa el menú lateral.'}}</p></div>
         <label class="mg-app-find">
