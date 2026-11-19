@@ -1,4 +1,4 @@
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { AdminGymSuiteComponent } from './admin-gym-suite.component';
 
 describe('Mallqui Gym: módulos administrativos con datos reales',()=>{
@@ -96,6 +96,55 @@ describe('Mallqui Gym: módulos administrativos con datos reales',()=>{
     expect(c.diaEvento({fecha:'2026-11-19'})).toBe('19');
     expect(c.diaEvento({titulo:'Pendiente'})).toBe('—');
     expect(c.diaEvento({fecha:'2026-14-01'})).toBe('01');
+  });
+
+  it('no mezcla socios o equipos de una pantalla anterior al cambiar de módulo',()=>{
+    const primera=new Subject<any[]>();
+    const segunda=new Subject<any[]>();
+    api.gymRegistros.and.returnValues(primera.asObservable(),segunda.asObservable());
+    c.modulo='equipos';
+    c.cargar();
+    c.modulo='eventos';
+    c.cargar();
+    segunda.next([{id:7,titulo:'Torneo de barrio',estado:'Programado'}]);
+    primera.next([{id:1,titulo:'Bicicleta fija',estado:'Operativo'}]);
+    expect(c.records).toHaveSize(1);
+    expect(c.records[0].titulo).toBe('Torneo de barrio');
+    expect(c.filtered).toHaveSize(1);
+    expect(c.loading).toBeFalse();
+  });
+
+  it('no mantiene registros antiguos cuando falla la carga de otro módulo',()=>{
+    c.modulo='equipos';
+    c.records=[{id:3,titulo:'Equipo de la página anterior'}];
+    api.gymRegistros.and.returnValue(throwError(()=>new Error('Error del servidor')));
+    c.modulo='eventos';
+    c.cargar();
+    expect(c.records).toEqual([]);
+    expect(c.filtered).toEqual([]);
+    expect(c.error).toContain('No se pudo cargar');
+  });
+
+  it('sólo el equipo en mantenimiento aparece en la tabla de mantenimiento',()=>{
+    c.records=[
+      {titulo:'Máquina en servicio',estado:'Operativo'},
+      {titulo:'Máquina dañada',estado:'Mantenimiento'},
+      {titulo:'Máquina dada de baja',estado:'Baja'}
+    ];
+    expect(c.equiposMantenimiento.map(item=>item.titulo)).toEqual(['Máquina dañada']);
+  });
+
+  it('descarta reportes antiguos cuando una actualización más reciente terminó primero',()=>{
+    c.modulo='ingresos';
+    const primera=new Subject<any>();
+    const segunda=new Subject<any>();
+    api.reporteIngresos.and.returnValues(primera.asObservable(),segunda.asObservable());
+    c.cargarReporteIngresos();
+    c.cargarReporteIngresos();
+    segunda.next(reporte);
+    primera.next({...reporte,total_anual:9999});
+    expect(c.ingresoReporte.total_anual).toBe(400);
+    expect(c.ingresoCargando).toBeFalse();
   });
 
   it('facturas calculan cobranza sobre el filtro actual',()=>{
