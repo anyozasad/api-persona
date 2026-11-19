@@ -266,6 +266,7 @@ try {
     await page.locator('.productos-page').waitFor({timeout:20000});
     assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Productos');
     assert.equal(await primario.getAttribute('aria-current'),'page');
+    await page.waitForURL(url=>new URL(url).searchParams.get('modulo')==='productos',{timeout:10000});
     assert.equal(new URL(page.url()).searchParams.get('modulo'),'productos',
       'La URL debe recordar el módulo que el administrador abrió.');
     await page.reload({waitUntil:'domcontentloaded'});
