@@ -3219,7 +3219,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Las rutas directas /productos, /pagos, /reservas, etc. deben abrir su módulo,
     // no volver al resumen por defecto.
-    this.seccion = this.normalizarSegcion(this.route?.snapshot?.data?.['seccion'] || this.seccionInicial || 'dashboard');
+    // Mantener la ubicación después de F5 sin usar rutas ocultas ni guardar datos privados.
+    const moduloEnUrl=this.route?.snapshot?.queryParamMap?.get('modulo');
+    this.seccion = this.normalizarSegcion(this.route?.snapshot?.data?.['seccion'] || moduloEnUrl || this.seccionInicial || 'dashboard');
     this.activarGrupoDeSeccion(this.seccion);
     try{
       // Mostrar siempre nombres y módulos al entrar: el menú colapsado confundía al usuario.
@@ -4529,6 +4531,16 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       this.cancelarEdicionCliente();
     }
     this.seccion = destino;
+    // La ruta /admin conserva el módulo en la URL para restaurarlo al recargar.
+    // Las rutas directas (/productos, /reservas, etc.) mantienen su ruta propia.
+    if(this.route?.snapshot?.routeConfig?.path==='admin'){
+      void this.router.navigate([],{
+        relativeTo:this.route,
+        queryParams:{modulo:destino==='dashboard'?null:destino},
+        queryParamsHandling:'merge',
+        replaceUrl:true
+      });
+    }
     this.error = '';
     this.busquedaAdmin = '';
     this.busquedaAbierta = false;
