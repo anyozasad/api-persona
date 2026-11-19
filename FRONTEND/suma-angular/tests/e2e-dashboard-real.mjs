@@ -485,7 +485,7 @@ try {
     await zona.getByRole('button',{name:/Subir Imagen/}).first().click();
     const modal=zona.locator('.gym-suite-modal');
     await modal.locator('input[name="titulo"]').fill('Foto local temporal E2E');
-    const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLhHAAAAABJRU5ErkJggg==','base64');
+    const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC','base64');
     const subida=page.waitForResponse(r=>r.url().includes('/api/admin-gym-registros/galeria/imagen')
       && r.request().method()==='POST',{timeout:25000});
     await modal.locator('input[type="file"]').setInputFiles({
