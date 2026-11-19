@@ -179,7 +179,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
         </button>
         <span class="mg-nav-caption mg-nav-section-separator">GESTIÓN COMPLETA</span>
         <button type="button" class="mg-nav-advanced-toggle"
-          [class.active]="mostrarGestionAvanzada || (seccion!=='dashboard' && !accesosDirectosAdmin.some(item=>item.id===seccion))"
+          [class.active]="mostrarGestionAvanzada || moduloComplementarioActivo"
           [attr.aria-expanded]="mostrarGestionAvanzada"
           aria-label="Mostrar módulos complementarios"
           (click)="alternarGestionAvanzada()">
@@ -199,7 +199,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           </select>
           <small>Elige una función y se abrirá su pantalla. También puedes buscar su nombre arriba.</small>
         </div>
-        <p class="mg-nav-current-extra" *ngIf="!mostrarGestionAvanzada && seccion!=='dashboard' && !accesosDirectosAdmin.some(item=>item.id===seccion)">
+        <p class="mg-nav-current-extra" *ngIf="!mostrarGestionAvanzada && moduloComplementarioActivo">
           Estás en: <strong>{{tituloActual}}</strong>
         </p>
       </nav>
@@ -3067,6 +3067,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   opcionesSelectorGrupo(grupo:{id:string;items:Array<{id:string;nombre:string;accion?:'nuevoSocio'}>}):
       Array<{id:string;nombre:string;accion?:'nuevoSocio'}> {
     return grupo.items.filter(item=>!this.accesosDirectosAdmin.some(directo=>directo.id===item.id));
+  }
+
+  get moduloComplementarioActivo():boolean {
+    return this.seccion!=='dashboard'
+      && !this.accesosDirectosAdmin.some(item=>item.id===this.seccion);
   }
 
   get moduloSecundarioSeleccionado():string {
