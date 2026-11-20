@@ -925,3 +925,33 @@
   font-size:14px!important;
   min-height:44px;
 }
+
+/* El botón Registrar cliente debe explicar qué dato impide continuar. */
+.admin-shell.admin-home-redesign .client-editor-validation-note {
+  margin:12px 0;
+  padding:13px 16px;
+  background:#f6f8f3;
+  border:1px solid #dce5d6;
+  border-left:4px solid #a4cd58;
+  border-radius:10px;
+  color:#2b3c29;
+  line-height:1.45;
+  font-size:14px;
+}
+.admin-shell.admin-home-redesign .client-editor-validation-note strong {
+  display:block;
+  margin-bottom:5px;
+  font-size:14px;
+  font-weight:700;
+}
+.admin-shell.admin-home-redesign .client-editor-validation-note ul {
+  margin:7px 0 0;
+  padding-left:20px;
+}
+.admin-shell.admin-home-redesign .client-editor-validation-note li + li {
+  margin-top:5px;
+}
+.admin-shell.admin-home-redesign .client-editor-footer button.save:disabled {
+  opacity:.65;
+  cursor:not-allowed;
+}
