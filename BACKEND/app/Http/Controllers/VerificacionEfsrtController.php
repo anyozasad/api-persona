@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\PortalClienteFunctionVerifier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -207,6 +208,9 @@ class VerificacionEfsrtController extends Controller
 
             $faltantesTotales = collect($modulos)->sum(fn ($modulo) => count($modulo['faltantes']));
             $semanas = $this->evaluarSemanas($alertas);
+            // El catálogo de 150 incluye verificaciones de rutas/archivos.
+            // No confundir sus resultados con 150 pruebas de aceptación.
+            $funcionesPortal = app(PortalClienteFunctionVerifier::class)->verifyAll();
 
             return response()->json([
                 'fecha_revision' => now()->toDateTimeString(),
@@ -220,6 +224,12 @@ class VerificacionEfsrtController extends Controller
                 'alertas' => $alertas,
                 'semanas' => $semanas,
                 'semanas_pendientes' => collect($semanas)->where('estado', 'pendiente')->count(),
+                'funciones_portal' => [
+                    'definidas' => $funcionesPortal['total'],
+                    'estructura_verificada' => $funcionesPortal['passed'],
+                    'estructura_pendiente' => $funcionesPortal['failed'],
+                    'alcance' => 'Solo comprobación de rutas y archivos. No equivale a 150 sprints ejecutados ni a validación contra MySQL local.',
+                ],
                 'nota' => 'Diagnóstico de estructuras y coherencia de registros. '
                     .'No reemplaza las pruebas funcionales con usuario, dashboard y MySQL. '
                     .'La emisión SUNAT requiere integración y autorización independientes.',
