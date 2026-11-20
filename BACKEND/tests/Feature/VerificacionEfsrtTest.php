@@ -79,6 +79,20 @@ class VerificacionEfsrtTest extends TestCase
         $this->assertStringContainsString('SUNAT', implode(' ', $semana10['observaciones']));
     }
 
+    public function test_informe_diferencia_las_150_funciones_de_los_sprints_verificados(): void
+    {
+        $datos = app(VerificacionEfsrtController::class)->index()->getData(true);
+        $this->assertSame(150, $datos['funciones_portal']['definidas']);
+        $this->assertSame(
+            150,
+            $datos['funciones_portal']['estructura_verificada'] + $datos['funciones_portal']['estructura_pendiente']
+        );
+        $this->assertStringContainsString('No equivale', $datos['funciones_portal']['alcance']);
+        $this->assertSame(55, array_sum(array_map(
+            fn ($semana) => count($semana['actividades']), $datos['semanas']
+        )));
+    }
+
     public function test_cada_semana_revisa_cinco_actividades_de_la_bitacora_oficial(): void
     {
         $datos=app(VerificacionEfsrtController::class)->index()->getData(true);
