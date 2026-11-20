@@ -695,3 +695,93 @@
     min-height:48px!important;
   }
 }
+
+/* UX 2026: jerarquía visual y lectura clara sin alterar rutas ni datos. */
+.admin-shell.admin-home-redesign .mg-current-workspace {
+  min-width:0;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-hero {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:18px;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-hero h2 {
+  font-size:clamp(26px,2.6vw,36px)!important;
+  line-height:1.2!important;
+  letter-spacing:-.025em;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-hero p {
+  max-width:66ch;
+  color:#58645c;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-kpis {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-kpis article {
+  min-width:0;
+  padding:20px!important;
+  border-radius:14px!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-kpis article strong {
+  font-size:clamp(26px,2.3vw,34px)!important;
+  line-height:1.2!important;
+  font-variant-numeric:tabular-nums;
+}
+.admin-shell.admin-home-redesign .mg-premium-analytics-grid {
+  gap:16px!important;
+}
+.admin-shell.admin-home-redesign .mg-premium-card {
+  min-width:0;
+  border-radius:14px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace button,
+.admin-shell.admin-home-redesign .mg-tec-order button,
+.admin-shell.admin-home-redesign .mg-tec-order select {
+  cursor:pointer;
+}
+.admin-shell.admin-home-redesign button:focus-visible,
+.admin-shell.admin-home-redesign a:focus-visible,
+.admin-shell.admin-home-redesign input:focus-visible,
+.admin-shell.admin-home-redesign select:focus-visible,
+.admin-shell.admin-home-redesign textarea:focus-visible {
+  outline:3px solid #a9d955!important;
+  outline-offset:3px;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary,
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-advanced-toggle {
+  transition:background-color .15s ease,transform .15s ease;
+}
+@media (hover:hover) {
+  .admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary:hover,
+  .admin-shell.admin-home-redesign .mg-tec-order .mg-nav-advanced-toggle:hover {
+    transform:translateX(2px);
+  }
+}
+@media(max-width:1200px) {
+  .admin-shell.admin-home-redesign .mg-efsrt-kpis {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+@media(max-width:650px) {
+  .admin-shell.admin-home-redesign .mg-efsrt-kpis {
+    grid-template-columns:minmax(0,1fr);
+    gap:12px;
+  }
+  .admin-shell.admin-home-redesign .mg-efsrt-hero h2 {
+    font-size:27px!important;
+  }
+  .admin-shell.admin-home-redesign .mg-efsrt-kpis article {
+    padding:16px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary,
+  .admin-shell.admin-home-redesign .mg-tec-order .mg-nav-advanced-toggle {
+    transition:none!important;
+    transform:none!important;
+  }
+}
