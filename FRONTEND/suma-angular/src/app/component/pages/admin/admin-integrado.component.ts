@@ -6313,8 +6313,16 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   mostrarError(e:any){
     if(e?.status===401){this.auth.limpiarSesion();this.router.navigate(['/login']);return;}
     if(Number(e?.status)>=500){
-      this.error=e?.error?.codigo==='BD_SOCIOS_PENDIENTE'
-        ? String(e?.error?.mensaje||'El esquema de MySQL debe actualizarse de forma segura, con un respaldo previo.')
+      const codigo=String(e?.error?.codigo||'');
+      const erroresDiagnosticados=[
+        'BD_SOCIOS_PENDIENTE','BD_REGISTRO_INCOMPLETA','BD_REGISTRO_NO_DISPONIBLE',
+        'TABLA_MODULO_AUSENTE','COLUMNAS_PLANES_AUSENTES',
+        'MYSQL_PLANES_NO_DISPONIBLE','PLANES_CONSULTA_FALLIDA',
+        'CONFIGURACION_TABLA_AUSENTE','CONFIGURACION_COLUMNAS_AUSENTES',
+        'CONFIGURACION_CONSULTA_FALLIDA'
+      ];
+      this.error=erroresDiagnosticados.includes(codigo) && typeof e?.error?.mensaje==='string'
+        ? String(e.error.mensaje)
         : 'Laravel devolvió un error '+Number(e?.status)+'. Comprueba las tablas y migraciones de MySQL; el detalle del fallo está en BACKEND/storage/logs/laravel.log.';
       return;
     }
