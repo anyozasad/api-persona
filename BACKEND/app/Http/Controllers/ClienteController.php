@@ -41,6 +41,45 @@ class ClienteController extends Controller
 
     public function store(Request $request)
     {
+        // Validar el esquema ANTES de las reglas unique. En instalaciones XAMPP
+        // antiguas una columna ausente en usuarios/clientes provoca un error 500
+        // incluso antes de intentar guardar. Responder con una solución clara.
+        try {
+            $schema = DB::connection()->getSchemaBuilder();
+            $requeridas = [
+                'clientes' => ['id_cliente', 'dni', 'nombres', 'apellidos', 'correo', 'fecha_registro', 'estado'],
+                'usuarios' => ['id_usuario', 'nombre_usuario', 'contrasena', 'nombres', 'apellidos', 'dni', 'correo', 'rol', 'estado', 'id_cliente', 'fecha_registro'],
+                'personal_access_tokens' => ['id', 'tokenable_type', 'tokenable_id', 'name', 'token'],
+            ];
+            $faltantes = [];
+            foreach ($requeridas as $tabla => $columnas) {
+                if (!$schema->hasTable($tabla)) {
+                    $faltantes[] = 'tabla:'.$tabla;
+                    continue;
+                }
+                foreach ($columnas as $columna) {
+                    if (!$schema->hasColumn($tabla, $columna)) {
+                        $faltantes[] = $tabla.'.'.$columna;
+                    }
+                }
+            }
+            if ($faltantes !== []) {
+                return response()->json([
+                    'codigo' => 'BD_REGISTRO_INCOMPLETA',
+                    'mensaje' => 'Faltan tablas o columnas para registrar socios y darles acceso. Desde la raíz del proyecto ejecuta scripts/INICIAR_DASHBOARD.ps1 con -Migrar (crea un respaldo SQL antes de preparar la base).',
+                    'faltantes' => $faltantes,
+                ], 503);
+            }
+        } catch (\Throwable $e) {
+            Log::error('No se pudo comprobar el esquema del registro de socios.', [
+                'error' => $e->getMessage(),
+            ]);
+            return response()->json([
+                'codigo' => 'BD_REGISTRO_NO_DISPONIBLE',
+                'mensaje' => 'No se pudo conectar con la base de datos del gimnasio. Comprueba MySQL en XAMPP y DB_DATABASE en BACKEND/.env.',
+            ], 503);
+        }
+
         $datos = $request->validate([
             'dni' => 'required|string|max:15|unique:clientes,dni',
             'nombres' => 'required|string|max:100',
