@@ -61,53 +61,37 @@ describe('Semana 05 EFSRT - fotografía del producto', () => {
     expect(productosApi.actualizar).not.toHaveBeenCalled();
   });
 
-  it('completa automáticamente las fotos al abrir el inventario de prueba', () => {
+  it('consultar productos de prueba no modifica nombres, categorías, fotos ni stock', () => {
     const ejemplo: Producto = {
       id_producto: 10, id_categoria: 1, codigo_producto:'PROD-0010',
-      nombre_producto:'Producto Prueba 10',
-      precio_compra: 4, precio_venta: 20, stock: 5,
-      stock_minimo: 1, unidad_medida:'Unidad', estado:'Activo',foto:null
+      nombre_producto:'Producto Prueba 10', precio_compra:4, precio_venta:20,
+      stock:5, stock_minimo:1, unidad_medida:'Unidad', estado:'Activo', foto:null
     };
-    const completado: Producto = {
-      ...ejemplo, nombre_producto:'Universe Nutrition NOXRAGE - Citrus Punch',
-      foto:'data:image/jpeg;base64,AA=='
-    };
-    productosApi.listar.and.returnValues(of([ejemplo]),of([completado]));
-    productosApi.completarFotosIniciales.and.returnValue(of({
-      mensaje:'1 producto completado automáticamente',actualizados:1,
-      omitidos:0,observaciones:[],base_datos:'gym_system'
-    }));
+    productosApi.listar.and.returnValue(of([ejemplo]));
 
     component.listar();
-    expect(productosApi.completarFotosIniciales).toHaveBeenCalledTimes(1);
-    expect(productosApi.listar).toHaveBeenCalledTimes(2);
-    expect(component.productos[0].foto).toBe(completado.foto);
-    expect(component.mensaje).toContain('completado automáticamente');
+
+    expect(productosApi.listar).toHaveBeenCalledTimes(1);
+    expect(productosApi.completarFotosIniciales).not.toHaveBeenCalled();
+    expect(component.productos[0]).toEqual(ejemplo);
+    expect(component.productos[0].nombre_producto).toBe('Producto Prueba 10');
+    expect(component.productos[0].foto).toBeNull();
   });
 
-  it('corrige los nombres de prueba ya autocompletados en versiones anteriores', () => {
+  it('no altera al abrir productos que tenían nombres históricos o fotos existentes', () => {
     const anterior: Producto = {
-      id_producto: 4, id_categoria: 2, codigo_producto:'PROD-004',
+      id_producto:4, id_categoria:2, codigo_producto:'PROD-004',
       nombre_producto:'Shaker azul', precio_compra:10, precio_venta:34,
-      stock:86, stock_minimo:1, unidad_medida:'Unidad',estado:'Activo',
+      stock:86, stock_minimo:1, unidad_medida:'Unidad', estado:'Activo',
       foto:'data:image/jpeg;base64,AA=='
     };
-    const corregido: Producto = {
-      ...anterior, id_categoria:1,
-      nombre_producto:'HD Blueberry 135 ml - Bebida energética'
-    };
-    productosApi.listar.and.returnValues(of([anterior]), of([corregido]));
-    productosApi.completarFotosIniciales.and.returnValue(of({
-      mensaje:'1 nombre corregido', actualizados:1, omitidos:9,
-      observaciones:[], base_datos:'gym_system'
-    }));
+    productosApi.listar.and.returnValue(of([anterior]));
 
     component.listar();
 
-    expect(productosApi.completarFotosIniciales).toHaveBeenCalledTimes(1);
-    expect(component.productos[0].nombre_producto).toBe(corregido.nombre_producto);
-    expect(component.productos[0].stock).toBe(86);
-    expect(component.productos[0].precio_venta).toBe(34);
+    expect(productosApi.completarFotosIniciales).not.toHaveBeenCalled();
+    expect(productosApi.listar).toHaveBeenCalledTimes(1);
+    expect(component.productos[0]).toEqual(anterior);
   });
 
   it('impide guardar el producto antes de que termine de procesarse la imagen', () => {

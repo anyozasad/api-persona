@@ -47,7 +47,6 @@ export class ProductosComponent implements OnInit {
   ];
 
   private imagenSolicitud = 0;
-  private fotosDemoIntentadas = false;
   producto: Producto = this.productoVacio();
 
   constructor(
@@ -71,50 +70,14 @@ export class ProductosComponent implements OnInit {
         this.cargando = false;
         this.cargarDiagnosticoFotos();
 
-        // Corregir tanto productos ficticios sin imagen como los nombres
-        // equivocados que asignó una versión previa de la aplicación.
-        // La API compara la foto original y protege los cambios manuales.
-        const nombresAnteriores = new Set([
-          'Creatina', 'Shaker gris', 'BCAA', 'Shaker azul', 'Big M',
-          'Collagen Pro', 'NOXRAGE', 'Pro Mass XL', 'AN USA (cajas)',
-          'NOXRAGE (presentación alternativa)'
-        ]);
-        if (!this.fotosDemoIntentadas && this.productos.some(p => {
-          const codigo = String(p.codigo_producto ?? '');
-          const nombre = String(p.nombre_producto ?? '');
-          const esDemo = /^PROD-(?:00[1-9]|0010|010)$/.test(codigo);
-          const sinFoto = !this.fotoVisible(p.foto);
-          return esDemo && (
-            /^Producto Prueba (?:[1-9]|10)$/.test(nombre) ||
-            (nombresAnteriores.has(nombre) && !sinFoto)
-          );
-        })) {
-          this.fotosDemoIntentadas = true;
-          this.completarFotosDemo();
-        }
+        // Consultar inventario y fotos debe ser de solo lectura.
+        // Una coincidencia con productos de prueba no autoriza editar nombres,
+        // categorías ni imágenes sin una acción explícita del administrador.
       },
       error: e => {
         this.cargando = false;
         this.diagnosticoFotos = null;
         this.error = this.mensajeError(e, 'No se pudieron obtener los productos. Comprueba la conexión con Laravel y la base MySQL.');
-      }
-    });
-  }
-
-  private completarFotosDemo(): void {
-    this.productoService.completarFotosIniciales().subscribe({
-      next: resultado => {
-        if (resultado.actualizados > 0) {
-          this.mensaje = resultado.mensaje;
-          this.listar(false); // Solicita a MySQL las fotografías ya guardadas.
-        } else if (resultado.observaciones?.length) {
-          this.error = 'No se pudieron asignar todas las fotos: ' +
-            resultado.observaciones.join(' ');
-        }
-      },
-      error: e => {
-        this.error = this.mensajeError(e,
-          'No se pudieron colocar las fotografías automáticamente en MySQL. Revisa la conexión con Laravel.');
       }
     });
   }

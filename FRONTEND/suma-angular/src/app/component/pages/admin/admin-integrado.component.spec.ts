@@ -496,6 +496,13 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.verificacionEfsrt.modulos[0].estado).toBe('estructura_incompleta');
   });
 
+  it('usa fecha del calendario local y no adelanta un día los formularios nocturnos', () => {
+    const casiMedianoche = new Date(2026, 10, 20, 23, 45);
+    expect(component.fechaLocalHoy(casiMedianoche)).toBe('2026-11-20');
+    const madrugada = new Date(2026, 10, 21, 0, 15);
+    expect(component.fechaLocalHoy(madrugada)).toBe('2026-11-21');
+  });
+
   it('no muestra sistema verificado si todavía hay semanas con observaciones', () => {
     component.seccion='verificacion-efsrt';
     component.verificacionEfsrt={semanas_pendientes:3};
@@ -589,37 +596,34 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.actualizandoDatos).toBeFalse();
   });
 
-  it('desde Inicio corrige automáticamente productos ficticios con fotos y nombres pendientes', () => {
-    const anterior={id_producto:10,codigo_producto:'PROD-0010',
-      nombre_producto:'Producto Prueba 10',foto:'data:image/webp;base64,AA==',
-      stock:69,precio_venta:29};
-    const corregido={...anterior,
-      nombre_producto:'Universe Nutrition NOXRAGE - Fruit Punch'};
-    api.productos.and.returnValues(of([anterior]),of([corregido]));
-    api.completarFotosIniciales.and.returnValue(of({
-      mensaje:'Fotografía reconocida',actualizados:1,
-      omitidos:9,observaciones:[],base_datos:'gym_system'
-    }));
-
-    component.actualizarDashboardCompleto();
-
-    expect(api.completarFotosIniciales).toHaveBeenCalledTimes(1);
-    expect(api.productos).toHaveBeenCalledTimes(2);
-    expect(component.productos[0].nombre_producto).toBe(corregido.nombre_producto);
-    expect(component.productos[0].foto).toBe(anterior.foto);
-    expect(component.productos[0].stock).toBe(69);
-  });
-
-  it('no llama a la reparación para registros de productos reales', () => {
-    api.productos.and.returnValue(of([{
-      id_producto:7,codigo_producto:'NUT-007',
-      nombre_producto:'Suplemento personalizado',foto:null,
-      stock:10,precio_venta:45
-    }]));
+  it('Inicio consulta productos de prueba sin alterar datos de MySQL automáticamente', () => {
+    const anterior={
+      id_producto:10, codigo_producto:'PROD-0010',
+      nombre_producto:'Producto Prueba 10',
+      foto:'data:image/webp;base64,AA==',
+      stock:69, precio_venta:29
+    };
+    api.productos.and.returnValue(of([anterior]));
 
     component.actualizarDashboardCompleto();
 
     expect(api.completarFotosIniciales).not.toHaveBeenCalled();
+    expect(api.productos).toHaveBeenCalledTimes(1);
+    expect(component.productos[0]).toEqual(anterior);
+  });
+
+  it('Inicio no intenta cambiar fotos pendientes de productos reales', () => {
+    const producto={
+      id_producto:7,codigo_producto:'NUT-007',
+      nombre_producto:'Suplemento personalizado',foto:null,
+      stock:10,precio_venta:45
+    };
+    api.productos.and.returnValue(of([producto]));
+
+    component.actualizarDashboardCompleto();
+
+    expect(api.completarFotosIniciales).not.toHaveBeenCalled();
+    expect(component.productos[0]).toEqual(producto);
   });
 
   it('sincroniza los datos del dashboard con las APIs operativas', () => {
