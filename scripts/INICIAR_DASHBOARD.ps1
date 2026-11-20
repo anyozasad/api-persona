@@ -7,7 +7,8 @@
 param(
     [switch]$Preparar,
     [switch]$Migrar,
-    [switch]$SoloVerificar
+    [switch]$SoloVerificar,
+    [switch]$RepararClientes
 )
 
 $ErrorActionPreference = 'Stop'
@@ -123,6 +124,31 @@ try {
     }
     Informar ("PHP: " + $php)
     Informar ("npm: " + $npm)
+
+    # Ruta corta para el error exacto "Faltan en MySQL: tabla:clientes".
+    # No invoca las migraciones de todos los módulos; respaldo y creación
+    # segura se gestionan dentro del comando Laravel.
+    if ($RepararClientes) {
+        if ($Migrar -or $SoloVerificar) {
+            Fallar 'Usa -RepararClientes por separado, sin -Migrar ni -SoloVerificar.'
+        }
+        if (-not (Test-Path (Join-Path $backend '.env') -PathType Leaf) -or
+            -not (Test-Path (Join-Path $backend 'vendor\\autoload.php') -PathType Leaf)) {
+            Fallar 'Faltan .env o vendor del backend. Primero completa la instalación de Laravel.'
+        }
+        Informar 'Verificando y reparando exclusivamente la tabla clientes de MySQL...'
+        Ejecutar $php @('artisan','db:asegurar-clientes') $backend
+        Ejecutar $php @('artisan','optimize:clear') $backend
+        $estado = ObtenerEstadoBackend
+        if ($null -ne $estado -and $estado.sistema -eq 'Mallqui Gym') {
+            $faltantes = @($estado.faltantes | Where-Object { $_ -eq 'tabla:clientes' })
+            if ($faltantes.Count -gt 0) {
+                Fallar 'La API de puerto 8000 sigue sin reconocer la tabla clientes. Comprueba que Laravel usa la misma DB_DATABASE y reinicia el backend.'
+            }
+        }
+        Informar 'Revisión de clientes completada. Verifica el registro en el dashboard.'
+        return
+    }
 
     $nuevoEnv = $false
     $archivoEnv = Join-Path $backend '.env'
