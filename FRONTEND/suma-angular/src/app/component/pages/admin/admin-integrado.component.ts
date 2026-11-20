@@ -6339,6 +6339,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       this.error=erroresDiagnosticados.includes(codigo) && typeof e?.error?.mensaje==='string'
         ? String(e.error.mensaje)
         : 'Laravel devolvió un error '+Number(e?.status)+'. Comprueba las tablas y migraciones de MySQL; el detalle del fallo está en BACKEND/storage/logs/laravel.log.';
+      const faltantes=Array.isArray(e?.error?.faltantes)
+        ? e.error.faltantes.filter((x:any)=>typeof x==='string').slice(0,12) : [];
+      if(faltantes.length){
+        this.error+=' Faltan en MySQL: '+faltantes.join(', ')+'.';
+      }
       return;
     }
     if(e?.status===0){
