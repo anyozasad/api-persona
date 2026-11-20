@@ -1029,7 +1029,8 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
               <div class="client-editor-error" *ngIf="clienteRegistroError" role="alert" aria-live="assertive">
                 <strong>No se pudo guardar el socio</strong>
                 <p>{{clienteRegistroError}}</p>
-                <small>Corrige el dato indicado y vuelve a registrar. El formulario mantiene la información escrita.</small>
+                <small *ngIf="clienteRegistroFalloServidor">El error viene del servidor, no de los datos escritos. No vuelvas a enviar el formulario hasta revisar el diagnóstico de Laravel.</small>
+                <small *ngIf="!clienteRegistroFalloServidor">Corrige el dato indicado y vuelve a registrar. El formulario mantiene la información escrita.</small>
               </div>
               <div class="client-editor-validation-note" *ngIf="clienteNgForm.invalid && validacionesPendientesCliente.length" role="status" aria-live="polite">
                 <strong>Para habilitar «{{clienteEditandoId ? 'Guardar cambios' : 'Registrar cliente'}}», revisa:</strong>
@@ -2892,6 +2893,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   toast = '';
   error = '';
   clienteRegistroError = '';
+  clienteRegistroFalloServidor = false;
   ultimoAccesoCliente = '';
   dashboard: any = null;
   herramientasAvanzadasAbiertas = false;
@@ -5205,6 +5207,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.clienteForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:true,nombre_usuario:'',contrasena:''};
     this.error='';
     this.clienteRegistroError='';
+    this.clienteRegistroFalloServidor=false;
     this.ultimoAccesoCliente='';
     this.clienteFormularioAbierto=true;
   }
@@ -5225,6 +5228,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     datos.nombre_usuario=String(datos.nombre_usuario||'').trim();
     const crearAccesoSolicitado=!this.clienteEditandoId && Boolean(datos.crear_acceso);
     this.clienteRegistroError='';
+    this.clienteRegistroFalloServidor=false;
     if(this.clienteEditandoId){
       delete datos.crear_acceso;
       delete datos.nombre_usuario;
@@ -5264,6 +5268,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       error:e=>{
         this.guardandoCliente=false;
         this.mostrarError(e);
+        this.clienteRegistroFalloServidor=Number(e?.status)===0 || Number(e?.status)>=500;
         this.clienteRegistroError = this.error || 'No se pudo registrar el socio. Revisa la conexión con Laravel.';
       }
     });
@@ -5290,6 +5295,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.clienteEditandoId=0;
     this.clienteFormularioAbierto=false;
     this.clienteRegistroError='';
+    this.clienteRegistroFalloServidor=false;
     this.guardandoCliente=false;
     this.clienteForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:false,nombre_usuario:'',contrasena:''};
   }
@@ -6326,7 +6332,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       const erroresDiagnosticados=[
         'BD_SOCIOS_PENDIENTE','BD_REGISTRO_INCOMPLETA','BD_REGISTRO_NO_DISPONIBLE',
         'TABLA_MODULO_AUSENTE','COLUMNAS_PLANES_AUSENTES',
-        'MYSQL_PLANES_NO_DISPONIBLE','PLANES_CONSULTA_FALLIDA',
+        'MYSQL_PLANES_NO_DISPONIBLE','PLANES_CONSULTA_FALLIDA','REGISTRO_SOCIO_ERROR_INTERNO',
         'CONFIGURACION_TABLA_AUSENTE','CONFIGURACION_COLUMNAS_AUSENTES',
         'CONFIGURACION_CONSULTA_FALLIDA'
       ];
