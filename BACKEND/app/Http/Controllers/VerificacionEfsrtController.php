@@ -228,6 +228,8 @@ class VerificacionEfsrtController extends Controller
                     'definidas' => $funcionesPortal['total'],
                     'estructura_verificada' => $funcionesPortal['passed'],
                     'estructura_pendiente' => $funcionesPortal['failed'],
+                    'rutas_api' => $funcionesPortal['route_checks'],
+                    'referencias_interfaz' => $funcionesPortal['file_checks'],
                     'alcance' => 'Solo comprobación de rutas y archivos. No equivale a 150 sprints ejecutados ni a validación contra MySQL local.',
                 ],
                 'nota' => 'Diagnóstico de estructuras y coherencia de registros. '
