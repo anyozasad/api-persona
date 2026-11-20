@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Cliente;
+use App\Models\Usuario;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -75,6 +77,44 @@ class ClienteLegacyRegistroTest extends TestCase
                 'nombres' => 'Socio',
                 'apellidos' => 'Antiguo',
             ], $conexionTest);
+
+            // Verificar también el caso que fallaba en XAMPP al activar
+            // "Crear cuenta": tabla usuarios antigua con password obligatorio.
+            Schema::create('usuarios', function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->string('username', 80);
+                $table->string('password', 255);
+                $table->string('email', 150);
+                $table->string('name', 200);
+            });
+            $migrationUsuarioId = require database_path('migrations/2026_11_07_230000_ensure_usuarios_identity.php');
+            $migrationUsuarioId->up();
+            $migrationUsuarioAuth = require database_path('migrations/2026_11_07_231000_ensure_usuarios_auth_fields.php');
+            $migrationUsuarioAuth->up();
+
+            $cuenta = Usuario::create([
+                'id_cliente' => $nuevo->id_cliente,
+                'nombre_usuario' => 'socio.legacy',
+                'contrasena' => Hash::make('PruebaSegura123!'),
+                'nombres' => 'Socio',
+                'apellidos' => 'Nuevo',
+                'dni' => '77889912',
+                'correo' => 'nuevo@example.test',
+                'rol' => 'Cliente',
+                'estado' => 'Activo',
+                'fecha_registro' => now(),
+            ]);
+            $this->assertGreaterThan(0, (int) $cuenta->id_usuario);
+            $this->assertTrue(Hash::check('PruebaSegura123!', $cuenta->contrasena));
+            $this->assertDatabaseHas('usuarios', [
+                'id_cliente' => $nuevo->id_cliente,
+                'nombre_usuario' => 'socio.legacy',
+                'username' => 'socio.legacy',
+                'email' => 'nuevo@example.test',
+                'rol' => 'Cliente',
+            ], $conexionTest);
+            $passwordAntiguo = DB::table('usuarios')->where('nombre_usuario', 'socio.legacy')->value('password');
+            $this->assertTrue(Hash::check('PruebaSegura123!', (string) $passwordAntiguo));
         } finally {
             DB::setDefaultConnection($original);
             DB::disconnect($conexionTest);
