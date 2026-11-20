@@ -826,3 +826,102 @@
   outline:3px solid #9ed43d;
   outline-offset:2px;
 }
+
+/* Respuesta visible para registro y acceso de socios: sin mensajes ocultos. */
+.admin-shell.admin-home-redesign .mg-action-feedback {
+  margin:0 0 16px;
+  padding:14px 18px;
+  border:1px solid #d8e8cd;
+  border-left:4px solid #99d23a;
+  border-radius:11px;
+  background:#f5fbf0;
+  color:#23421d;
+  font-size:14px;
+  line-height:1.5;
+}
+.admin-shell.admin-home-redesign .mg-action-feedback.error,
+.admin-shell.admin-home-redesign .client-editor-error {
+  background:#fff5f2;
+  color:#8c2b20;
+  border:1px solid #f2c5bb;
+  border-left:4px solid #d65a4d;
+}
+.admin-shell.admin-home-redesign .client-editor-error {
+  display:block;
+  padding:13px 16px;
+  margin:14px 0 10px;
+  border-radius:10px;
+  font-size:14px;
+  line-height:1.5;
+}
+.admin-shell.admin-home-redesign .client-editor-error strong {
+  font-size:15px;
+  font-weight:750;
+}
+.admin-shell.admin-home-redesign .client-editor-error p {
+  margin:5px 0;
+}
+.admin-shell.admin-home-redesign .client-editor-error small,
+.admin-shell.admin-home-redesign .client-editor-help {
+  display:block;
+  font-size:13px;
+  line-height:1.55;
+}
+.admin-shell.admin-home-redesign .client-editor-help {
+  margin:0 0 12px;
+  color:#59675a;
+}
+.admin-shell.admin-home-redesign .mg-new-client-access {
+  padding:18px 20px;
+  margin-bottom:18px;
+  border:1px solid #cce3b4;
+  border-left:4px solid #99d23a;
+  background:#f5fbf0;
+  border-radius:12px;
+  color:#253b20;
+  font-size:14px;
+  line-height:1.6;
+}
+.admin-shell.admin-home-redesign .mg-new-client-access strong {
+  font-size:16px;
+}
+.admin-shell.admin-home-redesign .mg-new-client-access p {
+  margin:8px 0;
+}
+.admin-shell.admin-home-redesign .mg-new-client-access button {
+  margin-top:8px;
+  padding:9px 16px;
+  border:1px solid #8ab62f;
+  border-radius:8px;
+  background:white;
+  color:#264118;
+  cursor:pointer;
+  font-size:14px;
+}
+
+/* El interruptor de acceso usa verde al activarse (no rojo de error). */
+.admin-shell.admin-home-redesign .client-editor-switch>input:checked + .switch-ui {
+  background:#a7d83f!important;
+}
+.admin-shell.admin-home-redesign .client-editor-switch>input:focus-visible + .switch-ui {
+  outline:3px solid #83bc27;
+  outline-offset:3px;
+}
+.admin-shell.admin-home-redesign .client-editor-switch b {
+  font-size:14px!important;
+  color:#253527;
+}
+.admin-shell.admin-home-redesign .client-editor-switch small {
+  font-size:12px!important;
+  line-height:1.45;
+  color:#526353;
+}
+.admin-shell.admin-home-redesign .client-editor-form label {
+  font-size:14px!important;
+  line-height:1.45;
+}
+.admin-shell.admin-home-redesign .client-editor-form input,
+.admin-shell.admin-home-redesign .client-editor-form select {
+  font-size:14px!important;
+  min-height:44px;
+}
