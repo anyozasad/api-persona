@@ -133,7 +133,7 @@ try {
             Fallar 'Usa -RepararClientes por separado, sin -Migrar ni -SoloVerificar.'
         }
         if (-not (Test-Path (Join-Path $backend '.env') -PathType Leaf) -or
-            -not (Test-Path (Join-Path $backend 'vendor\\autoload.php') -PathType Leaf)) {
+            -not (Test-Path (Join-Path $backend 'vendor\autoload.php') -PathType Leaf)) {
             Fallar 'Faltan .env o vendor del backend. Primero completa la instalación de Laravel.'
         }
         Informar 'Verificando y reparando exclusivamente la tabla clientes de MySQL...'
