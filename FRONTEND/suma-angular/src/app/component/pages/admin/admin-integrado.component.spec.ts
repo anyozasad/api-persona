@@ -21,7 +21,8 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       'asistencias', 'entrenadores', 'clases', 'cajaActual', 'historialCaja', 'movimientoCaja',
       'configuracion', 'guardarConfiguracion', 'estadoSistema', 'restaurarGym',
       'registrarAccesoCodigo', 'cambiarEstadoReserva', 'confirmarPagoPendiente',
-      'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin', 'comprobantePago', 'verificacionEfsrt', 'completarFotosIniciales'
+      'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin', 'comprobantePago', 'verificacionEfsrt', 'completarFotosIniciales',
+      'crearCliente', 'actualizarCliente'
     ]);
 
     api.estadoOperativo.and.returnValue(of({
@@ -60,6 +61,49 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     const auth = { usuario: { nombre_usuario: 'admin', rol: 'Administrador' } } as any;
     const router = { navigate: jasmine.createSpy('navigate') } as any;
     component = new AdminIntegradoComponent(auth, api, router);
+  });
+
+  it('muestra el error de validación al registrar cliente y conserva lo escrito', () => {
+    api.crearCliente.and.returnValue(throwError(()=>({
+      status:422,
+      error:{errors:{correo:['Este correo ya tiene una cuenta de acceso.']}}
+    })));
+    component.nuevoCliente();
+    component.clienteForm={
+      dni:'80443322',nombres:'Socio',apellidos:'De Prueba',
+      telefono:'',correo:'repetido@ejemplo.test',direccion:'',estado:'Activo',
+      crear_acceso:true,nombre_usuario:'usuario.socio',contrasena:'ClaveTest123!'
+    };
+
+    component.guardarCliente();
+
+    expect(api.crearCliente).toHaveBeenCalled();
+    expect(component.guardandoCliente).toBeFalse();
+    expect(component.clienteFormularioAbierto).toBeTrue();
+    expect(component.clienteRegistroError).toContain('Este correo ya tiene una cuenta');
+    expect(component.clienteForm.dni).toBe('80443322');
+  });
+
+  it('registra cuenta de acceso del socio y conserva el usuario para comprobar el portal', () => {
+    api.crearCliente.and.returnValue(of({cliente:{id_cliente:45},mensaje:'Cliente registrado correctamente.'}));
+    spyOn(component,'cambiarSegcion').and.stub();
+    spyOn(component,'cargarClientes').and.stub();
+    spyOn(component,'cargarDashboard').and.stub();
+    component.nuevoCliente();
+    component.clienteForm={
+      dni:'80443321',nombres:'Socio',apellidos:'Portal',
+      telefono:'',correo:' SOCIO@EJEMPLO.TEST ',direccion:'',estado:'Activo',
+      crear_acceso:true,nombre_usuario:' portal.socio ',contrasena:'ClaveTest123!'
+    };
+
+    component.guardarCliente();
+
+    expect(api.crearCliente).toHaveBeenCalledWith(jasmine.objectContaining({
+      dni:'80443321',correo:'socio@ejemplo.test',nombre_usuario:'portal.socio',crear_acceso:true
+    }));
+    expect(component.ultimoAccesoCliente).toBe('portal.socio');
+    expect(component.clienteFormularioAbierto).toBeFalse();
+    expect(component.cambiarSegcion).toHaveBeenCalledWith('membresias');
   });
 
   it('solo permite comprobantes de pagos completados, no pendientes', () => {
