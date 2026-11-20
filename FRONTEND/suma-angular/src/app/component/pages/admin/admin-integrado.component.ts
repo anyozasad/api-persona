@@ -3318,8 +3318,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       this.sidebarCerrado = false;
       this.autoRefreshActivo = true;
     }
-    this.actualizarDashboardCompleto();
-    if (this.seccion !== 'dashboard') this.cargarSegcion(this.seccion);
+    // Una apertura directa de Planes y Precios solo consulta tarifas;
+    // el refresco general lanza muchas peticiones ajenas y puede sobrescribir
+    // el resultado correcto con el fallback [] de una petición fallida.
+    if (this.seccion === 'planes') {
+      this.cargarSegcion(this.seccion);
+    } else {
+      this.actualizarDashboardCompleto();
+      if (this.seccion !== 'dashboard') this.cargarSegcion(this.seccion);
+    }
 
     // Refresco inteligente: no interrumpe formularios ni trabaja cuando la pestaña está oculta.
     this.autoRefreshId = setInterval(() => {
@@ -4222,8 +4229,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         // Nunca conservar cifras antiguas tras una respuesta fallida del resumen.
         this.dashboard=r.dashboard || null;
         this.clientes=Array.isArray(r.clientes)?r.clientes:[];
-        this.planesMembresia=Array.isArray(r.planes)?r.planes:[];
-        this.membresiasDisponibles=this.planesMembresia.filter((x:any)=>String(x?.estado||'').toLowerCase()==='activo');
+        if (this.seccion !== 'planes') {
+          this.planesMembresia=Array.isArray(r.planes)?r.planes:[];
+          this.membresiasDisponibles=this.planesMembresia.filter((x:any)=>String(x?.estado||'').toLowerCase()==='activo');
+        }
         this.membresiasCliente=Array.isArray(r.membresias)?r.membresias:[];
         this.pagos=Array.isArray(r.pagos)?r.pagos:[];
         this.productos=Array.isArray(r.productos)?r.productos:[];
@@ -4246,7 +4255,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.ultimaActualizacionTs=Date.now();
         this.ultimaActualizacion=new Date(this.ultimaActualizacionTs).toLocaleTimeString('es-PE');
 
-        if(errores.length){
+        if(errores.length && this.seccion !== 'planes'){
           this.error='No se pudieron sincronizar: '+errores.join(', ')+'.';
         }
         // Inicio muestra datos de MySQL sin iniciar reparaciones automáticas
