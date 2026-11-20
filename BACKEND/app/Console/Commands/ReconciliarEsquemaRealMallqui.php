@@ -70,7 +70,11 @@ class ReconciliarEsquemaRealMallqui extends Command
         '2026_10_02_160000_complete_training_sessions_and_memberships.php',
         '2026_10_15_123000_complete_portal_functionality_fields.php',
         '2026_11_07_171000_add_progress_and_whatsapp_to_core_schema.php',
+        '2026_11_07_230000_ensure_usuarios_identity.php',
+        '2026_11_07_231000_ensure_usuarios_auth_fields.php',
+        '2026_11_07_232000_expand_usuarios_rol.php',
         '2026_11_07_233000_ensure_sanctum_tokens_table.php',
+        '2026_11_12_120000_repair_legacy_auth_tokens_and_user_ids.php',
         '2026_11_08_100000_ensure_admin_gym_records_for_applications.php',
         '2026_11_12_110000_complete_legacy_reservas_without_losing_rows.php',
     ];
