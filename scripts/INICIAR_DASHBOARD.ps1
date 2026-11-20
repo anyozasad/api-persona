@@ -140,12 +140,20 @@ try {
         Ejecutar $php @('artisan','db:asegurar-clientes') $backend
         Ejecutar $php @('artisan','optimize:clear') $backend
         $estado = ObtenerEstadoBackend
-        if ($null -ne $estado -and $estado.sistema -eq 'Mallqui Gym') {
-            $faltantes = @($estado.faltantes | Where-Object { $_ -eq 'tabla:clientes' })
-            if ($faltantes.Count -gt 0) {
-                Fallar 'La API de puerto 8000 sigue sin reconocer la tabla clientes. Comprueba que Laravel usa la misma DB_DATABASE y reinicia el backend.'
-            }
+        if ($null -eq $estado) {
+            Avisar 'La tabla clientes se reparó mediante CLI, pero el Laravel del puerto 8000 no respondió. Inicia el backend y comprueba su base de datos.'
+            return
         }
+        VerificarServidorMallqui $estado
+        if ($estado.database -ne $true) {
+            Fallar 'Laravel del puerto 8000 no se conecta a MySQL. Comprueba DB_DATABASE del backend que está ejecutándose.'
+        }
+        $faltantes = @($estado.faltantes | Where-Object { $_ -eq 'tabla:clientes' })
+        if ($faltantes.Count -gt 0) {
+            Avisar ('Base de datos del servidor activo: ' + $estado.base_datos)
+            Fallar 'La API de puerto 8000 sigue sin reconocer la tabla clientes. El Laravel activo puede usar otra DB_DATABASE o una copia distinta del proyecto.'
+        }
+        Informar ('La API Mallqui Gym reconoce la tabla clientes en: ' + $estado.base_datos)
         Informar 'Revisión de clientes completada. Verifica el registro en el dashboard.'
         return
     }
