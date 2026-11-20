@@ -56,7 +56,11 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
         <button type="button" class="mg-mantis-icon-button mg-mantis-bell"
           (click)="alternarAlertasMantis()" [attr.aria-expanded]="avisosAbiertos"
           aria-label="Notificaciones y pendientes" title="Notificaciones">
-          ♧ <i *ngIf="totalAlertasDashboard()>0"></i>
+          <svg class="mg-notification-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+            <path d="M10 21h4"/>
+          </svg>
+          <i *ngIf="totalAlertasDashboard()>0"></i>
         </button>
         <button type="button" class="mg-mantis-profile-button"
           (click)="alternarPerfilMantis()" [attr.aria-expanded]="perfilAbiertoMantis"
@@ -132,7 +136,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
     </div>
     <aside class="mg-current-sidebar">
       <div class="mg-brand" aria-label="Mallqui Gym, panel de administración">
-        <span class="mg-brand-icon">M</span>
+        <img class="mg-brand-logo" src="/assets/mallqui-logo.svg" alt="" width="44" height="44">
         <span><strong>Mallqui</strong><b>Gym</b></span>
       </div>
 
