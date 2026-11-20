@@ -85,6 +85,36 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.planesError.length).toBeGreaterThan(0);
   });
 
+  it('Membresías mantiene diferencia entre MySQL caído y cero contratos reales', () => {
+    api.membresiasDisponibles.and.returnValue(of([
+      { id_membresia: 3, nombre: 'Mensual', duracion_meses: 1, precio: 80, estado: 'Activo' }
+    ]));
+    api.clienteMembresias.and.returnValue(throwError(() => ({
+      status: 503,
+      error: {
+        codigo: 'ESQUEMA_MEMBRESIAS_INCOMPLETO',
+        mensaje: 'Falta la tabla cliente_membresia.',
+        faltantes: ['tabla:cliente_membresia']
+      }
+    })));
+    component.cargarMembresias();
+    expect(component.membresiasCargando).toBeFalse();
+    expect(component.membresiasError).toContain('cliente_membresia');
+    expect(component.membresiasDisponibles.length).toBe(1);
+  });
+
+  it('Membresías consulta los contratos reales y no muestra errores con lista válida', () => {
+    const contratos=[{
+      id_cliente_membresia: 7, id_cliente: 2, id_membresia: 3,
+      fecha_inicio: '2026-11-20', fecha_fin: '2026-12-19', estado: 'Activo'
+    }];
+    api.clienteMembresias.and.returnValue(of(contratos));
+    component.cargarMembresias();
+    expect(component.membresiasCliente).toEqual(contratos);
+    expect(component.membresiasCargando).toBeFalse();
+    expect(component.membresiasError).toBe('');
+  });
+
   it('habilita la creación de cuenta para un socio nuevo sin ocultar los campos de acceso', () => {
     component.nuevoCliente();
     expect(component.clienteForm.crear_acceso).toBeTrue();
