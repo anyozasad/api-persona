@@ -146,7 +146,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
         </button>
 
         <span class="mg-nav-caption mg-nav-section-separator">SOCIOS Y SESIONES</span>
-        <button type="button" class="mg-nav-primary" *ngFor="let item of accesosPrincipalesAdmin.slice(0,2)"
+        <button type="button" class="mg-nav-primary" *ngFor="let item of accesosPrincipalesAdmin.slice(0,3)"
           [class.active]="seccion===item.id"
           [attr.aria-current]="seccion===item.id ? 'page' : null"
           [attr.aria-label]="item.nombre"
@@ -157,7 +157,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
         </button>
 
         <span class="mg-nav-caption mg-nav-section-separator">PRODUCTOS Y COBROS</span>
-        <button type="button" class="mg-nav-primary" *ngFor="let item of accesosPrincipalesAdmin.slice(2)"
+        <button type="button" class="mg-nav-primary" *ngFor="let item of accesosPrincipalesAdmin.slice(3)"
           [class.active]="seccion===item.id"
           [attr.aria-current]="seccion===item.id ? 'page' : null"
           [attr.aria-label]="item.nombre"
@@ -247,7 +247,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
             <div>
               <span class="mg-efsrt-eyebrow">MALLQUI GYM · ADMINISTRACIÓN</span>
               <h2>Panel principal</h2>
-              <p>Empieza por Socios y Reservas. Para registrar entradas, busca «Asistencia» arriba; para cobrar, abre Pagos.</p>
+              <p>Empieza por Socios y Reservas. Asistencia, Productos, Ventas y Pagos están directamente en el menú lateral.</p>
             </div>
             <div class="mg-efsrt-hero-aside">
               <span class="mg-efsrt-connection" [class.problem]="!sistemaSincronizado">
@@ -2968,16 +2968,19 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     'proveedores','compras','categorias','reportes-admin','reporte-asistencias','usuarios',
     'auditoria','configuracion','opiniones'
   ];
-  /** Solo las cuatro tareas habituales quedan visibles; las otras funciones
-   * permanecen por área en el selector o en la búsqueda global. */
+  /** Seis operaciones cotidianas y dos herramientas de administración a la vista.
+   * El resto permanece en un selector único, sin duplicar accesos. */
   readonly accesosPrincipalesAdmin: Array<{id:string;nombre:string;icono:string;ayuda:string}> = [
     {id:'clientes',nombre:'Socios',icono:'♙',ayuda:'Registrar y administrar socios'},
     {id:'reservas',nombre:'Reservas',icono:'◫',ayuda:'Programar y controlar sesiones'},
+    {id:'asistencias',nombre:'Asistencia',icono:'✓',ayuda:'Control de entradas y salidas'},
     {id:'productos',nombre:'Productos',icono:'▦',ayuda:'Fotos, precios y existencias'},
+    {id:'ventas',nombre:'Ventas',icono:'▤',ayuda:'Registrar ventas y descontar stock'},
     {id:'pagos',nombre:'Pagos',icono:'S/',ayuda:'Membresías y cobros'}
   ];
   readonly accesosAdministracionAdmin: Array<{id:string;nombre:string;icono:string;ayuda:string}> = [
-    {id:'reportes-admin',nombre:'Reportes',icono:'▥',ayuda:'Indicadores y análisis'}
+    {id:'reportes-admin',nombre:'Reportes',icono:'▥',ayuda:'Indicadores y análisis'},
+    {id:'configuracion',nombre:'Configuración',icono:'⚙',ayuda:'Usuarios, respaldo y diagnóstico'}
   ];
   readonly accesosDirectosAdmin=[...this.accesosPrincipalesAdmin,...this.accesosAdministracionAdmin];
   mostrarGestionAvanzada = false;
