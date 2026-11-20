@@ -65,14 +65,14 @@ class ReconciliarEsquemaRealMallqui extends Command
         '2026_09_25_140000_create_metas_cliente_table.php',
         '2026_09_25_150000_create_clases_favoritas_table.php',
         '2026_09_25_150100_create_opiniones_cliente_table.php',
+        '2026_11_20_180000_recuperar_modulos_dashboard_existentes.php',
+        '2026_11_20_145000_reparar_clientes_legacy_para_acceso.php',
         '2026_10_02_160000_complete_training_sessions_and_memberships.php',
         '2026_10_15_123000_complete_portal_functionality_fields.php',
         '2026_11_07_171000_add_progress_and_whatsapp_to_core_schema.php',
         '2026_11_07_233000_ensure_sanctum_tokens_table.php',
         '2026_11_08_100000_ensure_admin_gym_records_for_applications.php',
         '2026_11_12_110000_complete_legacy_reservas_without_losing_rows.php',
-        '2026_11_20_145000_reparar_clientes_legacy_para_acceso.php',
-        '2026_11_20_180000_recuperar_modulos_dashboard_existentes.php',
     ];
 
     public function handle(): int
