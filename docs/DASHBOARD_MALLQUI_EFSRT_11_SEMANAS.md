@@ -73,7 +73,7 @@ git pull origin main
 Después, **solo si dispones de acceso al MySQL correcto y autorizas las migraciones**, desde la raíz del proyecto:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\INICIAR_DASHBOARD.ps1 -Migrar
+powershell -ExecutionPolicy Bypass -File .\scripts\INICIAR_DASHBOARD.ps1 -Migrar
 ```
 
 La rutina pedirá escribir `SI`. Si no puede generar la copia SQL preventiva, no ejecutará migraciones. Guarda y verifica la copia antes de entregar el trabajo.
