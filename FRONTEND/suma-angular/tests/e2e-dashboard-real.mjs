@@ -33,6 +33,19 @@ try {
     pasos.push({nombre,resultado:'OK',fecha:new Date().toISOString()});
     console.log('OK: '+nombre);
   }
+  /** Navegación por dos pasos: no abre una lista de decenas de módulos. */
+  async function elegirModulo(menu,id){
+    const areas=await menu.locator('#mg-area-selector option').evaluateAll(opciones=>opciones.map(op=>op.value));
+    for(const area of areas){
+      await menu.locator('#mg-area-selector').selectOption(area);
+      if(await menu.locator('#mg-modulo-selector option[value="'+id+'"]').count()){
+        await menu.locator('#mg-modulo-selector').selectOption(id);
+        return;
+      }
+    }
+    assert.fail('No aparece la función '+id+' en ninguna área');
+  }
+
   async function pantalla(ruta,esperado,nombre){
     await page.goto(base+ruta,{waitUntil:'domcontentloaded'});
     await page.locator('.mg-current-topbar h1').waitFor({timeout:25000});
@@ -357,7 +370,7 @@ try {
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-    await menu.locator('#mg-modulo-selector').selectOption('aplicaciones');
+    await elegirModulo(menu,'aplicaciones');
     const apps=page.locator('app-admin-applications');
     await apps.waitFor({timeout:15000});
     assert.equal(await page.locator('.mg-module-shell-head').count(),0,
@@ -390,7 +403,7 @@ try {
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-    await menu.locator('#mg-modulo-selector').selectOption('tareas-admin');
+    await elegirModulo(menu,'tareas-admin');
     await page.locator('app-admin-applications .mg-app-kanban').waitFor({timeout:15000});
     const respuesta=page.waitForResponse(r=>r.url().includes('/api/admin-gym-registros/tareas')
       && r.request().method()==='GET',{timeout:25000});
@@ -422,10 +435,14 @@ try {
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
     const selector=menu.locator('#mg-modulo-selector');
     await selector.waitFor({timeout:10000});
-    assert.equal(await selector.locator('optgroup').count(),7,
-      'Las siete áreas siguen disponibles dentro de un único selector.');
+    const areas=menu.locator('#mg-area-selector');
+    assert.equal(await areas.locator('option').count(),7,
+      'Deben existir siete áreas y solo un listado pequeño de funciones por área.');
+    await areas.selectOption('menu');
     assert.equal(await selector.locator('option[value="configuracion"]').count(),1,
       'Configuración debe estar disponible sin duplicar botones en el lateral.');
+    assert.ok((await selector.locator('option').count())<=8,
+      'Nunca abrir los más de 40 módulos de una sola vez.');
     await selector.selectOption('configuracion');
     const configuracion=page.locator('.config-page');
     await configuracion.waitFor({timeout:15000});
@@ -453,14 +470,19 @@ try {
       await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
       const menu=page.locator('.mg-clear-navigation');
       await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+      const areas=menu.locator('#mg-area-selector');
+      await areas.selectOption({label:grupo.area});
       const selector=menu.locator('#mg-modulo-selector');
-      assert.equal(await selector.locator('optgroup[label="'+grupo.area+'"] option').count(),grupo.total,
+      assert.equal(await selector.locator('option:not([disabled])').count(),grupo.total,
         'Faltan funciones del grupo '+grupo.area);
+      assert.ok((await selector.locator('option').count())<=8,
+        'La lista no debe tapar la pantalla con decenas de opciones.');
       await selector.selectOption({label:grupo.frecuente});
       assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio');
       assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
         'El selector debe cerrarse al abrir una pantalla.');
       await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+      await menu.locator('#mg-area-selector').selectOption({label:grupo.area});
       await menu.locator('#mg-modulo-selector').selectOption({label:grupo.adicional});
       assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio');
       assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
@@ -560,6 +582,7 @@ try {
     assert.equal(await menu.getByText('Todas las funciones',{exact:true}).count(),0);
     assert.equal(await menu.locator('.mg-optional-category-head').count(),0);
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+    await menu.locator('#mg-area-selector').selectOption('finance');
     const selector=menu.locator('#mg-modulo-selector');
     assert.equal(await selector.locator('option[value="historial-ventas"]').count(),1);
     assert.equal(await selector.locator('option[value="gastos"]').count(),1);
@@ -583,7 +606,7 @@ try {
     });
     try {
       await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-      await menu.locator('#mg-modulo-selector').selectOption('equipos');
+      await elegirModulo(menu,'equipos');
       const zona=page.locator('app-admin-gym-suite');
       await zona.locator('.mg-suite-network-error').waitFor({timeout:15000});
       assert.ok(peticionesFallidas>=1,'La falla simulada debe interceptar la consulta real del módulo.');
@@ -605,7 +628,7 @@ try {
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-    await menu.locator('#mg-modulo-selector').selectOption('galeria');
+    await elegirModulo(menu,'galeria');
     const zona=page.locator('app-admin-gym-suite');
     await zona.getByRole('button',{name:/Subir Imagen/}).first().waitFor({timeout:15000});
     await zona.getByRole('button',{name:/Subir Imagen/}).first().click();
@@ -631,7 +654,7 @@ try {
     // Cambiar de sección no modifica /admin; tras recargar se debe volver a abrir Galería.
     const menuRecargado=page.locator('.mg-clear-navigation');
     await menuRecargado.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-    await menuRecargado.locator('#mg-modulo-selector').selectOption('galeria');
+    await elegirModulo(menuRecargado,'galeria');
     const gallery=page.locator('app-admin-gym-suite');
     const foto=gallery.locator('.cf-suite-gallery article').filter({hasText:'Foto local temporal E2E'});
     await foto.waitFor({timeout:20000});
@@ -662,7 +685,7 @@ try {
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-    await menu.locator('#mg-modulo-selector').selectOption('nutricion');
+    await elegirModulo(menu,'nutricion');
     const zona=page.locator('app-admin-gym-suite');
     await zona.getByRole('button',{name:/Nuevo plan/}).waitFor({timeout:15000});
     await zona.getByRole('button',{name:/Nuevo plan/}).click();
@@ -715,7 +738,7 @@ try {
     const menu=page.locator('.mg-clear-navigation');
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
     const respuesta=page.waitForResponse(r=>r.url().includes('/api/reportes/ingresos') && r.request().method()==='GET',{timeout:25000});
-    await menu.locator('#mg-modulo-selector').selectOption('ingresos');
+    await elegirModulo(menu,'ingresos');
     const estado=await respuesta;
     assert.equal(estado.status(),200,'La API de ingresos debe responder desde MySQL.');
     const reporte=await estado.json();
@@ -736,7 +759,7 @@ try {
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-    await menu.locator('#mg-modulo-selector').selectOption('salarios');
+    await elegirModulo(menu,'salarios');
     const planilla=page.locator('app-admin-gym-suite');
     await planilla.getByRole('button',{name:/Agregar Salario/}).waitFor({timeout:20000});
     const nombre='Nómina temporal de prueba E2E';
