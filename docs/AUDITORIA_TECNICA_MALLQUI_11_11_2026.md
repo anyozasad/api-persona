@@ -51,7 +51,7 @@ Corrección funcional adicional de la **semana 06**: en **Entrenamientos → Rut
 
 1. Actualizar la rama `main` con `git pull origin main` desde la raíz del proyecto.
 2. Encender MySQL de XAMPP y comprobar `BACKEND/.env` (esquema correcto, sin compartir credenciales).
-3. Ejecutar `powershell -ExecutionPolicy Bypass -File .\INICIAR_DASHBOARD.ps1 -Migrar` **solo con autorización para modificar el esquema**. El script genera primero un backup SQL y lo comprueba; si no lo logra, no migra.
+3. Ejecutar `powershell -ExecutionPolicy Bypass -File .\scripts\INICIAR_DASHBOARD.ps1 -Migrar` **solo con autorización para modificar el esquema**. El script genera primero un backup SQL y lo comprueba; si no lo logra, no migra.
 4. Abrir **Configuración → Información del sistema → Diagnóstico avanzado**, comprobar las once semanas, descargar el CSV y revisar cada pendiente.
 5. Probar en el equipo real: socio → membresía/pago → reserva → asistencia → rutina → venta/stock → reporte → respaldo. Guardar capturas auténticas.
 
