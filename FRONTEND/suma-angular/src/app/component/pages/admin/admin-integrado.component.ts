@@ -6274,7 +6274,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   mostrarError(e:any){
     if(e?.status===401){this.auth.limpiarSesion();this.router.navigate(['/login']);return;}
     if(Number(e?.status)>=500){
-      this.error='El servidor no pudo completar la operación. Verifica que Laravel y MySQL estén activos y revisa el registro de Laravel.';
+      this.error=e?.error?.codigo==='BD_SOCIOS_PENDIENTE'
+        ? String(e?.error?.mensaje||'El esquema de MySQL debe actualizarse de forma segura, con un respaldo previo.')
+        : 'Laravel devolvió un error '+Number(e?.status)+'. Comprueba las tablas y migraciones de MySQL; el detalle del fallo está en BACKEND/storage/logs/laravel.log.';
       return;
     }
     if(e?.status===0){
