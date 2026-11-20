@@ -204,7 +204,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       'reportes-admin','configuracion'
     ]);
     expect(component.accesosDirectosAdmin.map(item=>item.id)).toEqual([
-      'clientes','reservas','asistencias','productos','ventas','pagos','reportes-admin','configuracion'
+      'clientes','reservas','asistencias','productos','ventas','pagos'
     ]);
     expect(component.mostrarGestionAvanzada).toBeFalse();
   });
@@ -333,7 +333,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
   });
 
   it('usa enlaces operativos y administrativos directos sin duplicarlos en el selector', () => {
-    expect(component.accesosDirectosAdmin).toHaveSize(8);
+    expect(component.accesosDirectosAdmin).toHaveSize(6);
     for(const directo of component.accesosDirectosAdmin){
       const grupo=component.menuPrincipal.find(g=>g.items.some(i=>i.id===directo.id))!;
       expect(grupo).toBeTruthy();
@@ -341,8 +341,12 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       (component as any).activarGrupoDeSeccion(directo.id);
       expect(component.mostrarGestionAvanzada).toBeFalse();
     }
-    expect(component.menuPrincipal.flatMap(g=>component.opcionesSelectorGrupo(g))).toHaveSize(38);
-    for(const id of ['asistencias','ventas','configuracion']){
+    expect(component.menuPrincipal.flatMap(g=>component.opcionesSelectorGrupo(g))).toHaveSize(40);
+    for(const id of ['reportes-admin','configuracion']){
+      const grupo=component.menuPrincipal.find(g=>g.items.some(item=>item.id===id))!;
+      expect(component.opcionesSelectorGrupo(grupo).some(item=>item.id===id)).toBeTrue();
+    }
+    for(const id of ['asistencias','ventas']){
       const grupo=component.menuPrincipal.find(g=>g.items.some(item=>item.id===id))!;
       expect(component.opcionesSelectorGrupo(grupo).some(item=>item.id===id)).toBeFalse();
     }
