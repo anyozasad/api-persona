@@ -225,6 +225,21 @@ Artisan::command('db:asegurar-membresias', function () {
                 'numero_operacion'=>'numero', 'observacion'=>'observacion',
                 'estado_pago'=>'estado_pago',
             ],
+            // Necesarias para cobrar membresías en efectivo sin SQL 500.
+            'cajas' => [
+                'id_caja'=>'pk', 'id_usuario_apertura'=>'relacion',
+                'fecha_apertura'=>'fecha_hora', 'monto_inicial'=>'monto_inicial',
+                'fecha_cierre'=>'fecha_hora_opcional', 'monto_esperado'=>'monto_opcional',
+                'monto_real'=>'monto_opcional', 'diferencia'=>'monto_opcional',
+                'estado'=>'estado_caja', 'observacion'=>'observacion_texto',
+            ],
+            'movimientos_caja' => [
+                'id_movimiento'=>'pk', 'id_caja'=>'relacion', 'id_usuario'=>'relacion',
+                'tipo'=>'tipo_movimiento', 'origen'=>'origen_movimiento',
+                'referencia_tipo'=>'referencia_tipo', 'referencia_id'=>'relacion_opcional',
+                'descripcion'=>'descripcion_movimiento', 'monto'=>'monto',
+                'fecha_movimiento'=>'fecha_hora', 'estado'=>'estado_movimiento',
+            ],
         ];
 
         $pendientes = [];
@@ -245,7 +260,7 @@ Artisan::command('db:asegurar-membresias', function () {
         }
 
         if ($pendientes === []) {
-            $this->info('Las tablas y columnas de membresías ya existen. No se modificó MySQL.');
+            $this->info('Las tablas y columnas de membresías y caja ya existen. No se modificó MySQL.');
             return 0;
         }
         $this->warn('Pendientes: '.implode(', ', $pendientes));
@@ -299,6 +314,33 @@ Artisan::command('db:asegurar-membresias', function () {
                     $col = $t->decimal($campo, 12, 2);
                     if (!$nueva) $col->nullable();
                     break;
+                case 'monto_inicial':
+                    $t->decimal($campo, 12, 2)->default(0);
+                    break;
+                case 'monto_opcional':
+                    $t->decimal($campo, 12, 2)->nullable();
+                    break;
+                case 'relacion_opcional':
+                    $t->unsignedBigInteger($campo)->nullable();
+                    break;
+                case 'observacion_texto':
+                    $t->text($campo)->nullable();
+                    break;
+                case 'tipo_movimiento':
+                    $col = $t->string($campo, 20);
+                    if (!$nueva) $col->nullable();
+                    break;
+                case 'origen_movimiento':
+                    $col = $t->string($campo, 50);
+                    if (!$nueva) $col->nullable();
+                    break;
+                case 'referencia_tipo':
+                    $t->string($campo, 80)->nullable();
+                    break;
+                case 'descripcion_movimiento':
+                    $col = $t->string($campo, 255);
+                    if (!$nueva) $col->nullable();
+                    break;
                 case 'descripcion':
                     $t->string($campo, 500)->nullable();
                     break;
@@ -320,6 +362,12 @@ Artisan::command('db:asegurar-membresias', function () {
                 case 'estado_pago':
                     $t->string($campo, 30)->default('Pendiente');
                     break;
+                case 'estado_caja':
+                    $t->string($campo, 20)->default('Abierta');
+                    break;
+                case 'estado_movimiento':
+                    $t->string($campo, 30)->default('Registrado');
+                    break;
                 case 'fecha':
                     $col = $t->date($campo);
                     if (!$nueva) $col->nullable();
@@ -327,6 +375,9 @@ Artisan::command('db:asegurar-membresias', function () {
                 case 'fecha_hora':
                     $col = $t->dateTime($campo);
                     if (!$nueva) $col->nullable();
+                    break;
+                case 'fecha_hora_opcional':
+                    $t->dateTime($campo)->nullable();
                     break;
                 case 'metodo':
                     $col = $t->string($campo, 50);
@@ -376,7 +427,7 @@ Artisan::command('db:asegurar-membresias', function () {
             return 1;
         }
 
-        $this->info('Tablas de membresías, asignaciones y pagos verificadas en '.$base.'.');
+        $this->info('Tablas de membresías, asignaciones, pagos y caja verificadas en '.$base.'.');
         $this->info('No se borraron filas ni se agregaron tarifas ficticias.');
         return 0;
     } catch (\Throwable $e) {
