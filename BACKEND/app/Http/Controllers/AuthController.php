@@ -19,6 +19,42 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        // Evitar SQL 500 en instalaciones parcialmente migradas de XAMPP.
+        // La preparación del esquema debe realizarse con respaldo previo.
+        try {
+            $schema = DB::connection()->getSchemaBuilder();
+            $requeridas = [
+                'clientes' => ['id_cliente', 'dni', 'nombres', 'apellidos', 'correo', 'fecha_registro', 'estado'],
+                'usuarios' => ['id_usuario', 'nombre_usuario', 'contrasena', 'nombres', 'apellidos', 'dni', 'correo', 'rol', 'estado', 'id_cliente', 'fecha_registro'],
+                'personal_access_tokens' => ['id', 'tokenable_type', 'tokenable_id', 'name', 'token'],
+            ];
+            $faltantes = [];
+            foreach ($requeridas as $tabla => $columnas) {
+                if (!$schema->hasTable($tabla)) {
+                    $faltantes[] = 'tabla:'.$tabla;
+                    continue;
+                }
+                foreach ($columnas as $columna) {
+                    if (!$schema->hasColumn($tabla, $columna)) {
+                        $faltantes[] = $tabla.'.'.$columna;
+                    }
+                }
+            }
+            if ($faltantes !== []) {
+                return response()->json([
+                    'codigo' => 'BD_REGISTRO_INCOMPLETA',
+                    'mensaje' => 'El registro de clientes aún no puede utilizar MySQL: hay tablas o columnas pendientes. Ejecuta el iniciador del proyecto con -Migrar después de crear el respaldo SQL.',
+                    'faltantes' => $faltantes,
+                ], 503);
+            }
+        } catch (\Throwable $e) {
+            Log::error('Registro público sin conexión con MySQL.', ['error' => $e->getMessage()]);
+            return response()->json([
+                'codigo' => 'BD_REGISTRO_NO_DISPONIBLE',
+                'mensaje' => 'No hay conexión con MySQL. Enciende MySQL en XAMPP y verifica DB_DATABASE en BACKEND/.env.',
+            ], 503);
+        }
+
         $datos = $request->validate([
             'nombre_usuario' => 'required|string|max:80|unique:usuarios,nombre_usuario',
             'nombres' => 'required|string|max:100',
