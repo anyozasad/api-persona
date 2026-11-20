@@ -167,17 +167,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           <span class="mg-nav-action-copy"><strong>{{item.nombre}}</strong><small>{{item.ayuda}}</small></span>
         </button>
 
-        <span class="mg-nav-caption mg-nav-section-separator">RESULTADOS</span>
-        <button type="button" class="mg-nav-primary mg-nav-administration" *ngFor="let item of accesosAdministracionAdmin"
-          [class.active]="seccion===item.id"
-          [attr.aria-current]="seccion===item.id ? 'page' : null"
-          [attr.aria-label]="item.nombre"
-          [attr.title]="item.ayuda"
-          (click)="navegarMenu(item)">
-          <span class="admin-main-nav-icon" aria-hidden="true">{{item.icono}}</span>
-          <span class="mg-nav-action-copy"><strong>{{item.nombre}}</strong><small>{{item.ayuda}}</small></span>
-        </button>
-        <span class="mg-nav-caption mg-nav-section-separator">GESTIÓN COMPLETA</span>
+        <span class="mg-nav-caption mg-nav-section-separator">GESTIÓN Y RESULTADOS</span>
         <button type="button" class="mg-nav-advanced-toggle"
           [class.active]="mostrarGestionAvanzada || moduloComplementarioActivo"
           [attr.aria-expanded]="mostrarGestionAvanzada"
@@ -2988,7 +2978,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     {id:'reportes-admin',nombre:'Reportes',icono:'▥',ayuda:'Indicadores y análisis'},
     {id:'configuracion',nombre:'Configuración',icono:'⚙',ayuda:'Usuarios, respaldo y diagnóstico'}
   ];
-  readonly accesosDirectosAdmin=[...this.accesosPrincipalesAdmin,...this.accesosAdministracionAdmin];
+  // Reportes y Configuración siguen disponibles en «Otras funciones» y en el buscador.
+  // No duplicarlos en la barra lateral evita ocho accesos visibles a la vez.
+  readonly accesosDirectosAdmin=[...this.accesosPrincipalesAdmin];
   mostrarGestionAvanzada = false;
 
   /** Menu único: cada módulo aparece en su área de trabajo, sin enlaces genéricos. */
