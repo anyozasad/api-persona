@@ -785,3 +785,44 @@
     transform:none!important;
   }
 }
+
+/* Menú por áreas: dos listas cortas en vez de un desplegable de 40 elementos. */
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-picker .mg-nav-picker-step {
+  margin-top:12px;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-picker select {
+  max-width:100%;
+  min-width:0;
+  font-size:14px!important;
+  line-height:1.4;
+  text-overflow:ellipsis;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-picker small {
+  margin-top:12px;
+  font-size:12px!important;
+}
+.admin-shell.admin-home-redesign .mg-reserva-prerequisito {
+  margin:0 0 16px;
+  padding:14px 16px;
+  border:1px solid #dce5ce;
+  border-left:4px solid #9ed43d;
+  border-radius:10px;
+  background:#f8fbf2;
+  color:#253627;
+}
+.admin-shell.admin-home-redesign .mg-reserva-prerequisito strong {
+  font-size:15px;
+}
+.admin-shell.admin-home-redesign .mg-reserva-prerequisito p {
+  margin:7px 0 12px;
+  font-size:14px;
+  line-height:1.5;
+}
+.admin-shell.admin-home-redesign .mg-reserva-prerequisito button {
+  min-height:40px;
+  padding-inline:14px;
+}
+.admin-shell.admin-home-redesign .mg-reserva-prerequisito button:focus-visible {
+  outline:3px solid #9ed43d;
+  outline-offset:2px;
+}
