@@ -16,8 +16,11 @@ class VerificarFuncionesPortalCliente extends Command
 
         $this->info('Portal del cliente');
         $this->line('Total definidas: '.$report['total']);
-        $this->line('Aprobadas: '.$report['passed']);
-        $this->line('Fallidas: '.$report['failed']);
+        $this->line('Referencias estructurales encontradas: '.$report['passed']);
+        $this->line('Referencias pendientes: '.$report['failed']);
+        $this->line('Contratos de rutas API: '.$report['route_checks']);
+        $this->line('Referencias del frontend: '.$report['file_checks']);
+        $this->comment('ATENCIÓN: una referencia válida NO equivale a un sprint terminado ni a un CRUD probado.');
 
         foreach ($report['results'] as $item) {
             if ($this->option('fallos') && $item['passed']) {

@@ -3,10 +3,52 @@
 namespace Tests\Feature;
 
 use App\Services\PortalClienteFunctionVerifier;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class PortalCliente150FuncionesTest extends TestCase
 {
+    /**
+     * Un caso por capacidad, identificable por su número en el resultado
+     * PHPUnit. Alcance: contrato estructural; no es un sprint de aceptación.
+     */
+    public static function capacidadesDeclaradas(): iterable
+    {
+        $catalogo = require dirname(__DIR__, 2).'/config/portal_cliente_funciones.php';
+        foreach ($catalogo as $item) {
+            yield sprintf('%03d - %s', $item['id'], $item['name']) => [$item];
+        }
+    }
+
+    #[DataProvider('capacidadesDeclaradas')]
+    public function test_cada_una_de_las_150_capacidades_tiene_evidencia_estructural_individual(array $item): void
+    {
+        $this->assertIsInt($item['id']);
+        $this->assertNotEmpty(trim((string) $item['name']));
+        $this->assertNotEmpty(trim((string) $item['area']));
+        $this->assertNotEmpty($item['checks']);
+        $resultado = app(PortalClienteFunctionVerifier::class)->verifyOne($item);
+        $fallos = array_filter($resultado['checks'], fn ($check) => !$check['passed']);
+        $this->assertTrue(
+            $resultado['passed'],
+            'Capacidad '.sprintf('%03d', $item['id']).' - '.$item['name'].': '.json_encode($fallos)
+        );
+    }
+
+    public function test_el_catalogo_distingue_las_52_rutas_de_las_98_referencias_de_interfaz(): void
+    {
+        $reporte = app(PortalClienteFunctionVerifier::class)->verifyAll();
+        $this->assertSame(150, $reporte['total']);
+        $this->assertSame(52, $reporte['route_checks']);
+        $this->assertSame(98, $reporte['file_checks']);
+
+        $invalida = app(PortalClienteFunctionVerifier::class)->verifyOne([
+            'id' => 151, 'name' => 'Ruta inválida', 'area' => 'Prueba',
+            'checks' => [['type' => 'route', 'method' => 'GET', 'uri' => 'auth/login']],
+        ]);
+        $this->assertFalse($invalida['passed'], 'Una ruta POST no debe contarse como GET.');
+    }
+
     public function test_el_portal_cliente_tiene_exactamente_ciento_cincuenta_funciones_definidas(): void
     {
         $items = config('portal_cliente_funciones', []);
