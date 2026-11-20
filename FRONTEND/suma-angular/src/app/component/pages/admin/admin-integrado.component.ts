@@ -642,6 +642,12 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
             <article><span>Semanas con observaciones</span><strong>{{revision.semanas_pendientes}}</strong><small>Requieren revisión o evidencia</small></article>
           </section>
           <p class="efsrt-notice">{{revision.nota}} Fecha de la consulta: {{revision.fecha_revision}}. Base: {{revision.base_datos}}.</p>
+          <p class="efsrt-notice" *ngIf="revision.funciones_portal as portal">
+            <strong>Catálogo del portal:</strong> {{portal.definidas}} funciones definidas;
+            {{portal.estructura_verificada}} referencias de rutas y archivos verificadas,
+            {{portal.estructura_pendiente}} con observaciones.
+            {{portal.alcance}}
+          </p>
           <section class="efsrt-weekly" *ngIf="revision.semanas?.length" aria-label="Revisión de las 11 semanas EFSRT">
             <div class="efsrt-weekly-head">
               <div><h3>Revisión de las 11 semanas</h3>
@@ -2902,7 +2908,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   comprobanteDatos:any = null;
   backupRestaurarArchivo:File|null = null;
   verificacionEfsrt:any = null;
-  semanaEfsrtSeleccionada = 1;
+  semanaEfsrtSeleccionada = 11;
   get semanaEfsrtActual(): any {
     return this.verificacionEfsrt?.semanas?.find(
       (semana:any)=>Number(semana.semana)===Number(this.semanaEfsrtSeleccionada)
@@ -4873,6 +4879,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         ]);
       }
     }
+    if(revision.funciones_portal){
+      filas.push([],['CATÁLOGO DEL PORTAL','Definidas','Estructura verificada','Estructura pendiente','Alcance']);
+      filas.push(['Funciones',revision.funciones_portal.definidas,
+        revision.funciones_portal.estructura_verificada,revision.funciones_portal.estructura_pendiente,
+        revision.funciones_portal.alcance]);
+    }
     filas.push([],['Alertas de datos','Cantidad','Detalle']);
     for(const alerta of Array.isArray(revision.alertas)?revision.alertas:[]){
       filas.push([alerta.tipo,alerta.cantidad,alerta.mensaje]);
@@ -4911,11 +4923,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       next:(resultado:any)=>{
         this.verificacionEfsrtCargando=false;
         this.verificacionEfsrt=resultado;
-        // Prioriza el primer requisito realmente pendiente, sin marcarlo aprobado.
+        // La exposición comienza en la última semana pendiente, sin ocultar ninguna otra.
         const semanas=Array.isArray(resultado?.semanas) ? resultado.semanas : [];
         this.semanaEfsrtSeleccionada=Number(
-          semanas.find((semana:any)=>semana.estado==='pendiente')?.semana
-            ?? semanas[0]?.semana ?? 1
+          semanas.slice().reverse().find((semana:any)=>semana.estado==='pendiente')?.semana
+            ?? semanas[semanas.length-1]?.semana ?? 11
         );
       },
       error:(e:any)=>{
