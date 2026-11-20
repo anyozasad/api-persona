@@ -174,6 +174,17 @@ class ClienteController extends Controller
                 'mensaje' => 'La base de datos no pudo guardar el socio. Es necesario revisar y actualizar el esquema de clientes y usuarios desde la preparación segura del sistema.',
                 'codigo' => 'BD_SOCIOS_PENDIENTE',
             ], 503);
+        } catch (\Throwable $e) {
+            // No atribuir al usuario un fallo de PHP, del modelo o del servidor.
+            // DB::transaction revierte ambas altas cuando ocurre una excepción.
+            Log::error('Excepción al registrar socio y cuenta de acceso.', [
+                'tipo' => get_class($e),
+                'mensaje' => $e->getMessage(),
+            ]);
+            return response()->json([
+                'codigo' => 'REGISTRO_SOCIO_ERROR_INTERNO',
+                'mensaje' => 'Laravel no pudo completar el registro. Los datos no se guardaron en esta operación. Revisa el último error en BACKEND/storage/logs/laravel*.log y comprueba que estás ejecutando el backend actualizado.',
+            ], 503);
         }
 
         $this->sincronizarGymSystem($cliente);
