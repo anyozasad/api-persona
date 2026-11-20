@@ -105,7 +105,10 @@ try {
         const respuesta=await inspect.goto(base+ruta,{waitUntil:'domcontentloaded'});
         assert.equal(respuesta?.status(),200,'No abrió la pantalla '+ruta);
         await inspect.locator('.mg-current-topbar h1').waitFor({timeout:20000});
-        await inspect.waitForTimeout(300);
+        // La API carga diversos módulos en paralelo al entrar. No recargar
+        // prematuramente: una navegación forzada cancelaría solicitudes sanas,
+        // ensuciando Network con net::ERR_ABORTED provocados por la prueba.
+        await inspect.waitForLoadState('networkidle',{timeout:20000});
         const imagenesRotas=await inspect.locator('img:visible').evaluateAll(imagenes=>
           imagenes.filter(img=>img.complete && img.naturalWidth===0)
             .map(img=>img.currentSrc||img.getAttribute('src')||'sin ruta'));
