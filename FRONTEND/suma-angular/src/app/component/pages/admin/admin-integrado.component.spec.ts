@@ -63,6 +63,32 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     component = new AdminIntegradoComponent(auth, api, router);
   });
 
+  it('explica por qué está bloqueado Registrar cliente sin enviar datos incompletos a Laravel', () => {
+    component.nuevoCliente();
+    component.clienteForm={
+      dni:'123',nombres:'',apellidos:'',
+      telefono:'',correo:'correo-invalido',direccion:'',estado:'Activo',
+      crear_acceso:true,nombre_usuario:'',contrasena:'abc'
+    };
+    const mensajes=component.validacionesPendientesCliente.join(' ');
+    expect(mensajes).toContain('DNI');
+    expect(mensajes).toContain('Nombres');
+    expect(mensajes).toContain('Apellidos');
+    expect(mensajes).toContain('Correo');
+    expect(mensajes).toContain('Usuario');
+    expect(mensajes).toContain('Contraseña');
+    component.guardarCliente();
+    expect(api.crearCliente).not.toHaveBeenCalled();
+    expect(component.clienteRegistroError).toContain('Revisa los datos');
+    expect(component.clienteFormularioAbierto).toBeTrue();
+    component.clienteForm={
+      ...component.clienteForm, dni:'12345678',nombres:'Socio',
+      apellidos:'Correcto',correo:'valido@example.test',nombre_usuario:'socio-correcto',
+      contrasena:'Password123'
+    };
+    expect(component.validacionesPendientesCliente).toEqual([]);
+  });
+
   it('muestra el error de validación al registrar cliente y conserva lo escrito', () => {
     api.crearCliente.and.returnValue(throwError(()=>({
       status:422,
