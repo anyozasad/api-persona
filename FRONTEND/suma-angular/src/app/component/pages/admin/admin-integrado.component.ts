@@ -2908,6 +2908,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   planesError = '';
   guardandoPlan = false;
   membresiasCliente: any[] = [];
+  membresiasCargando = false;
+  membresiasError = '';
   pagos: any[] = [];
   entrenadores: any[] = [];
   clases: any[] = [];
@@ -3320,10 +3322,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       this.sidebarCerrado = false;
       this.autoRefreshActivo = true;
     }
-    // Una apertura directa de Planes y Precios solo consulta tarifas;
-    // el refresco general lanza muchas peticiones ajenas y puede sobrescribir
-    // el resultado correcto con el fallback [] de una petición fallida.
-    if (this.seccion === 'planes') {
+    // Planes y Membresías necesitan solo las peticiones de su módulo.
+    // Evita sobrescribir tarifas y asignaciones con [] por errores de otros módulos.
+    if (['planes','membresias'].includes(this.seccion)) {
       this.cargarSegcion(this.seccion);
     } else {
       this.actualizarDashboardCompleto();
@@ -4231,11 +4232,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         // Nunca conservar cifras antiguas tras una respuesta fallida del resumen.
         this.dashboard=r.dashboard || null;
         this.clientes=Array.isArray(r.clientes)?r.clientes:[];
-        if (this.seccion !== 'planes') {
+        if (!['planes','membresias'].includes(this.seccion)) {
           this.planesMembresia=Array.isArray(r.planes)?r.planes:[];
           this.membresiasDisponibles=this.planesMembresia.filter((x:any)=>String(x?.estado||'').toLowerCase()==='activo');
         }
-        this.membresiasCliente=Array.isArray(r.membresias)?r.membresias:[];
+        if (this.seccion !== 'membresias') this.membresiasCliente=Array.isArray(r.membresias)?r.membresias:[];
         this.pagos=Array.isArray(r.pagos)?r.pagos:[];
         this.productos=Array.isArray(r.productos)?r.productos:[];
         this.reservas=Array.isArray(r.reservas)?r.reservas:[];
@@ -4257,7 +4258,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.ultimaActualizacionTs=Date.now();
         this.ultimaActualizacion=new Date(this.ultimaActualizacionTs).toLocaleTimeString('es-PE');
 
-        if(errores.length && this.seccion !== 'planes'){
+        if(errores.length && !['planes','membresias'].includes(this.seccion)){
           this.error='No se pudieron sincronizar: '+errores.join(', ')+'.';
         }
         // Inicio muestra datos de MySQL sin iniciar reparaciones automáticas
@@ -4659,6 +4660,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       this.error = '';
     }
     this.cargarSegcion(this.seccion);
+    if (['planes','membresias'].includes(this.seccion)) {
+      this.actualizandoDatos = false;
+      return;
+    }
     this.cargarDashboard(silencioso ? undefined : () => {
       this.actualizandoDatos = false;
     });
@@ -4710,7 +4715,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       case 'membresias':
         this.cargarClientes();
         this.cargarMembresias();
-        this.cargarPagos();
         this.cargarCaja();
         break;
       case 'pagos':
@@ -5034,6 +5038,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   cargarMembresias(incluirContrataciones = true){
     this.planesCargando = true;
     this.planesError = '';
+    if(incluirContrataciones){
+      this.membresiasCargando = true;
+      this.membresiasError = '';
+    }
     this.api.membresiasDisponibles().subscribe({
       next: r => {
         this.planesCargando = false;
@@ -5044,7 +5052,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
           return;
         }
         this.planesMembresia = r;
-        this.membresiasDisponibles = r.filter(x => x.estado === 'Activo');
+        this.membresiasDisponibles = r.filter(x => String(x.estado||'').toLowerCase() === 'activo');
       },
       error: e => {
         this.planesCargando = false;
@@ -5052,11 +5060,23 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.planesError = this.error || 'No fue posible consultar los planes en MySQL.';
       }
     });
-    // Planes y Precios no depende de las contrataciones de socios.
     if (incluirContrataciones) {
       this.api.clienteMembresias().subscribe({
-        next: r => this.membresiasCliente = Array.isArray(r) ? r : [],
-        error: e => this.mostrarError(e)
+        next: r => {
+          this.membresiasCargando = false;
+          if (!Array.isArray(r)) {
+            this.membresiasError = 'Laravel no devolvió una lista válida de membresías.';
+            this.membresiasCliente = [];
+            return;
+          }
+          this.membresiasCliente = r;
+          this.membresiasError = '';
+        },
+        error: e => {
+          this.membresiasCargando = false;
+          this.mostrarError(e);
+          this.membresiasError = this.error || 'No fue posible consultar las membresías en MySQL.';
+        }
       });
     }
   }
@@ -6333,6 +6353,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         'BD_SOCIOS_PENDIENTE','BD_REGISTRO_INCOMPLETA','BD_REGISTRO_NO_DISPONIBLE',
         'TABLA_MODULO_AUSENTE','COLUMNAS_PLANES_AUSENTES',
         'MYSQL_PLANES_NO_DISPONIBLE','PLANES_CONSULTA_FALLIDA','REGISTRO_SOCIO_ERROR_INTERNO',
+        'ESQUEMA_MEMBRESIAS_INCOMPLETO','MYSQL_MEMBRESIAS_NO_DISPONIBLE','CONSULTA_MEMBRESIAS_FALLIDA',
         'CONFIGURACION_TABLA_AUSENTE','CONFIGURACION_COLUMNAS_AUSENTES',
         'CONFIGURACION_CONSULTA_FALLIDA'
       ];
