@@ -1566,17 +1566,19 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
               <label><input type="checkbox" [(ngModel)]="planForm.permite_reservas" name="plan_reservas"> Permite reservar clases</label>
               <label>Estado<select [(ngModel)]="planForm.estado" name="plan_estado"><option>Activo</option><option>Inactivo</option></select></label>
               <div class="form-row">
-                <button class="admin-primary" type="submit">{{planEditandoId ? 'Guardar cambios' : 'Crear tarifa'}}</button>
+                <button class="admin-primary" type="submit" [disabled]="guardandoPlan">{{guardandoPlan ? 'Guardando…' : (planEditandoId ? 'Guardar cambios' : 'Crear tarifa')}}</button>
                 <button *ngIf="planEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionPlan()">Cancelar</button>
               </div>
             </form>
           </article>
           <article class="admin-list-card wide-card">
-            <div class="management-heading"><div><h2>Planes disponibles</h2><p>{{planesMembresia.length}} planes configurados.</p></div></div>
-            <div class="table-wrap">
+            <div class="management-heading"><div><h2>Planes disponibles</h2><p *ngIf="planesCargando">Consultando tarifas en MySQL...</p><p *ngIf="!planesCargando && !planesError">{{planesMembresia.length}} planes configurados.</p></div></div>
+            <p *ngIf="!planesCargando && planesError" role="alert">{{planesError}} <button type="button" class="admin-secondary" (click)="cargarMembresias(false)">Volver a consultar</button></p>
+            <div class="table-wrap" *ngIf="!planesCargando && !planesError">
               <table class="management-table">
                 <thead><tr><th>Membresía</th><th>Duración</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr></thead>
                 <tbody>
+                  <tr *ngIf="planesMembresia.length === 0"><td colspan="5">No hay planes registrados en la base de datos.</td></tr>
                   <tr *ngFor="let p of planesMembresia">
                     <td><b>{{p.nombre}}</b><br><small>{{p.descripcion}}</small></td>
                     <td>{{p.duracion_meses}} mes(es)</td>
@@ -2900,6 +2902,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   clientes: any[] = [];
   membresiasDisponibles: any[] = [];
   planesMembresia: any[] = [];
+  planesCargando = false;
+  planesError = '';
+  guardandoPlan = false;
   membresiasCliente: any[] = [];
   pagos: any[] = [];
   entrenadores: any[] = [];
@@ -4751,7 +4756,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.cargarVentas();
         break;
       case 'planes':
-        this.cargarMembresias();
+        this.cargarMembresias(false);
         break;
       case 'gastos':
         this.cargarCaja();
@@ -5015,9 +5020,34 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     });
   }
   cargarClientes(){ this.api.clientes().subscribe({next:r=>this.clientes=r,error:e=>this.mostrarError(e)}); }
-  cargarMembresias(){
-    this.api.membresiasDisponibles().subscribe({next:r=>{this.planesMembresia=r;this.membresiasDisponibles=r.filter(x=>x.estado==='Activo');},error:e=>this.mostrarError(e)});
-    this.api.clienteMembresias().subscribe({next:r=>this.membresiasCliente=r,error:e=>this.mostrarError(e)});
+  cargarMembresias(incluirContrataciones = true){
+    this.planesCargando = true;
+    this.planesError = '';
+    this.api.membresiasDisponibles().subscribe({
+      next: r => {
+        this.planesCargando = false;
+        if (!Array.isArray(r)) {
+          this.planesError = 'Laravel no devolvió una lista de planes válida.';
+          this.planesMembresia = [];
+          this.membresiasDisponibles = [];
+          return;
+        }
+        this.planesMembresia = r;
+        this.membresiasDisponibles = r.filter(x => x.estado === 'Activo');
+      },
+      error: e => {
+        this.planesCargando = false;
+        this.mostrarError(e);
+        this.planesError = this.error || 'No fue posible consultar los planes en MySQL.';
+      }
+    });
+    // Planes y Precios no depende de las contrataciones de socios.
+    if (incluirContrataciones) {
+      this.api.clienteMembresias().subscribe({
+        next: r => this.membresiasCliente = Array.isArray(r) ? r : [],
+        error: e => this.mostrarError(e)
+      });
+    }
   }
   cargarPagos(){
     this.api.pagos().subscribe({next:r=>this.pagos=r,error:e=>this.mostrarError(e)});
@@ -5268,6 +5298,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   guardarPlan(){
+    if (this.guardandoPlan) return;
     const datos:any={...this.planForm};
     datos.beneficios=String(datos.beneficios_texto||'')
       .split('\n')
@@ -5279,13 +5310,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       ? this.api.actualizarMembresia(this.planEditandoId,datos)
       : this.api.crearMembresia(datos);
 
+    this.guardandoPlan = true;
     req.subscribe({
       next:()=>{
+        this.guardandoPlan = false;
         this.ok(this.planEditandoId?'Tarifa actualizada':'Tarifa creada');
         this.cancelarEdicionPlan();
         this.cargarMembresias();
       },
-      error:e=>this.mostrarError(e)
+      error:e=>{this.guardandoPlan = false; this.mostrarError(e);}
     });
   }
   editarPlan(p:any){
