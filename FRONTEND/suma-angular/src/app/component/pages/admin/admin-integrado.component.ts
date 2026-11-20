@@ -5139,7 +5139,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(!nombres || nombres.length>100)pendientes.push('Nombres: completa el nombre (máximo 100 caracteres).');
     if(!apellidos || apellidos.length>100)pendientes.push('Apellidos: completa el apellido (máximo 100 caracteres).');
     if(correo || (!this.clienteEditandoId && f.crear_acceso)){
-      if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(correo) || correo.length>150)
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo) || correo.length>150)
         pendientes.push('Correo: escribe una dirección válida (por ejemplo, cliente@gmail.com).');
     }
     if(!this.clienteEditandoId && f.crear_acceso){
