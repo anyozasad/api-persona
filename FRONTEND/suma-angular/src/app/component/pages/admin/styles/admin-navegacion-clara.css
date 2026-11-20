@@ -955,3 +955,43 @@
   opacity:.65;
   cursor:not-allowed;
 }
+
+/* Identidad real del gimnasio y campana accesible, sin iconos de relleno. */
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-brand {
+  display:flex;
+  align-items:center;
+  gap:11px;
+  min-height:72px;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-brand-logo {
+  display:block;
+  width:44px;
+  height:44px;
+  max-width:44px;
+  min-width:44px;
+  object-fit:contain;
+  border-radius:9px;
+  background:#fff;
+  padding:3px;
+  box-sizing:border-box;
+  flex-shrink:0;
+}
+.admin-shell.admin-home-redesign .mg-mantis-top-actions .mg-mantis-bell {
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+}
+.admin-shell.admin-home-redesign .mg-mantis-top-actions .mg-notification-icon {
+  display:block;
+  height:21px;
+  width:21px;
+  stroke:currentColor;
+  flex-shrink:0;
+}
+.admin-shell.admin-home-redesign .mg-mantis-top-actions .mg-mantis-bell:focus-visible,
+.admin-shell.admin-home-redesign .mg-mantis-top-actions .mg-mantis-bell:hover {
+  outline-color:#9acc38;
+  color:#2b4515;
+}

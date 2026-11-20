@@ -6,6 +6,7 @@ use App\Models\Cliente;
 use App\Models\Usuario;
 use App\Services\GymSystemClienteMirror;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -77,7 +78,8 @@ class ClienteController extends Controller
         $datos['fecha_registro'] = $datos['fecha_registro'] ?? now();
         $datos['estado'] = $datos['estado'] ?? 'Activo';
 
-        $cliente = DB::transaction(function () use ($datos, $crearAcceso, $nombreUsuario, $contrasena) {
+        try {
+            $cliente = DB::transaction(function () use ($datos, $crearAcceso, $nombreUsuario, $contrasena) {
             $cliente = Cliente::create($datos);
 
             if ($crearAcceso) {
@@ -112,7 +114,28 @@ class ClienteController extends Controller
             }
 
             return $cliente;
-        });
+            });
+        } catch (QueryException $e) {
+            // En instalaciones XAMPP con tablas anteriores la DB puede carecer
+            // de columnas o restricciones esperadas. No mostrar SQL ni datos
+            // personales al navegador; el detalle queda en laravel.log.
+            $sqlState = (string) ($e->errorInfo[0] ?? '');
+            Log::error('Falló el alta de socio/cuenta de acceso.', [
+                'sqlstate' => $sqlState,
+                'codigo_driver' => $e->errorInfo[1] ?? null,
+            ]);
+
+            if ($sqlState === '23000') {
+                throw ValidationException::withMessages([
+                    'dni' => ['La base de datos indica un dato duplicado. Revisa el DNI, correo y nombre de usuario antes de volver a registrar.'],
+                ]);
+            }
+
+            return response()->json([
+                'mensaje' => 'La base de datos no pudo guardar el socio. Es necesario revisar y actualizar el esquema de clientes y usuarios desde la preparación segura del sistema.',
+                'codigo' => 'BD_SOCIOS_PENDIENTE',
+            ], 503);
+        }
 
         $this->sincronizarGymSystem($cliente);
 

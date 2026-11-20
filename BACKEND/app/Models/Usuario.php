@@ -22,6 +22,29 @@ class Usuario extends Authenticatable
      */
     protected static function booted(): void
     {
+        // Cuentas de instalaciones anteriores suelen requerir username,
+        // password y email, además de los nombres modernos de Laravel.
+        static::creating(function (self $usuario): void {
+            if (!Schema::hasTable('usuarios')) {
+                return;
+            }
+            foreach ([
+                'username' => 'nombre_usuario',
+                'password' => 'contrasena',
+                'email' => 'correo',
+            ] as $anterior => $actual) {
+                if (Schema::hasColumn('usuarios', $anterior)) {
+                    $usuario->setAttribute($anterior, $usuario->getAttribute($actual));
+                }
+            }
+            if (Schema::hasColumn('usuarios', 'name')) {
+                $usuario->setAttribute('name', trim(
+                    (string) $usuario->getAttribute('nombres').' '.
+                    (string) $usuario->getAttribute('apellidos')
+                ));
+            }
+        });
+
         static::created(function (self $usuario): void {
             if (!Schema::hasTable('usuarios') || !Schema::hasColumn('usuarios', 'id_usuario')) return;
             if (!in_array(DB::connection()->getDriverName(), ['mysql', 'mariadb'], true)) return;

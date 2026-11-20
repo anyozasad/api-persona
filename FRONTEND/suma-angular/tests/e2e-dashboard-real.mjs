@@ -143,6 +143,28 @@ try {
     }
   });
 
+  await paso('El logo es el archivo real del gimnasio y la campana abre sus notificaciones',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const logo=page.locator('.mg-current-sidebar .mg-brand-logo');
+    await logo.waitFor({timeout:15000});
+    assert.equal(await logo.getAttribute('src'),'/assets/mallqui-logo.svg',
+      'La identidad del gimnasio no debe ser una letra M provisional.');
+    const asset=await context.request.get(base+'/assets/mallqui-logo.svg');
+    assert.equal(asset.status(),200,'El logo oficial debe existir localmente sin depender de internet.');
+    assert.match((await asset.text()).slice(0,180),/<svg /);
+    const cargado=await logo.evaluate(img=>img.complete && img.naturalWidth>0);
+    assert.ok(cargado,'El logo del gimnasio debe mostrarse correctamente.');
+    const campana=page.getByRole('button',{name:'Notificaciones y pendientes'});
+    assert.equal(await campana.locator('svg.mg-notification-icon').count(),1,
+      'Notificaciones debe tener una campana SVG, no un símbolo extraño.');
+    await campana.click();
+    await page.getByRole('region',{name:'Notificaciones'}).waitFor({timeout:8000});
+    assert.equal(await campana.getAttribute('aria-expanded'),'true');
+    await campana.click();
+    assert.equal(await page.getByRole('region',{name:'Notificaciones'}).count(),0,
+      'La campana debe cerrar también el panel al pulsarla de nuevo.');
+  });
+
   await paso('Panel inicia con indicadores y gráficos sin controles duplicados',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     await page.locator('.mg-efsrt-kpis').waitFor({timeout:25000});

@@ -56,7 +56,11 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
         <button type="button" class="mg-mantis-icon-button mg-mantis-bell"
           (click)="alternarAlertasMantis()" [attr.aria-expanded]="avisosAbiertos"
           aria-label="Notificaciones y pendientes" title="Notificaciones">
-          ♧ <i *ngIf="totalAlertasDashboard()>0"></i>
+          <svg class="mg-notification-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+            <path d="M10 21h4"/>
+          </svg>
+          <i *ngIf="totalAlertasDashboard()>0"></i>
         </button>
         <button type="button" class="mg-mantis-profile-button"
           (click)="alternarPerfilMantis()" [attr.aria-expanded]="perfilAbiertoMantis"
@@ -132,7 +136,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
     </div>
     <aside class="mg-current-sidebar">
       <div class="mg-brand" aria-label="Mallqui Gym, panel de administración">
-        <span class="mg-brand-icon">M</span>
+        <img class="mg-brand-logo" src="/assets/mallqui-logo.svg" alt="" width="44" height="44">
         <span><strong>Mallqui</strong><b>Gym</b></span>
       </div>
 
@@ -6270,7 +6274,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   mostrarError(e:any){
     if(e?.status===401){this.auth.limpiarSesion();this.router.navigate(['/login']);return;}
     if(Number(e?.status)>=500){
-      this.error='El servidor no pudo completar la operación. Verifica que Laravel y MySQL estén activos y revisa el registro de Laravel.';
+      this.error=e?.error?.codigo==='BD_SOCIOS_PENDIENTE'
+        ? String(e?.error?.mensaje||'El esquema de MySQL debe actualizarse de forma segura, con un respaldo previo.')
+        : 'Laravel devolvió un error '+Number(e?.status)+'. Comprueba las tablas y migraciones de MySQL; el detalle del fallo está en BACKEND/storage/logs/laravel.log.';
       return;
     }
     if(e?.status===0){
