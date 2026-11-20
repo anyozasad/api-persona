@@ -64,6 +64,17 @@ try {
     // Esta página independiente revisa solo llamadas REALES y no debe ocultar
     // fallos de JavaScript, imágenes, CSS o llamadas HTTP.
     const inspect=await context.newPage();
+    // El login puede usar sessionStorage, que NO se comparte entre pestañas.
+    // Clonar únicamente la sesión temporal de CI antes de navegar.
+    const sesion=await page.evaluate(()=>{
+      const st=localStorage.getItem('mallqui_token')?localStorage:sessionStorage;
+      return {token:st.getItem('mallqui_token'),usuario:st.getItem('mallqui_usuario')};
+    });
+    assert.ok(sesion.token,'La pestaña de inspección necesita el token de prueba.');
+    await inspect.addInitScript(credenciales=>{
+      localStorage.setItem('mallqui_token',credenciales.token);
+      localStorage.setItem('mallqui_usuario',credenciales.usuario);
+    },sesion);
     const fallos=[];
     const esLocal=(url)=>{
       try{return new URL(url).origin===base;}catch{return false;}
