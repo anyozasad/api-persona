@@ -4170,7 +4170,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       const muestra=faltantes.slice(0,3).join(', ');
       return 'Laravel y MySQL responden, pero faltan '+faltantes.length
         +' tablas o columnas'+(muestra ? ': '+muestra : '')
-        +'. Para reparar tu base local sin borrar los datos, usa el iniciador de Mallqui Gym con -Migrar: primero solicita autorización y guarda un respaldo SQL.';
+        +'. Respalda primero tu base local: usa el iniciador de Mallqui Gym con -Migrar, que solicita autorización y genera un respaldo SQL antes de reparar.';
     }
     if (this.dashboardError || !this.dashboard) return 'Laravel y MySQL responden, pero falló el resumen: '
       +(this.dashboardError || 'revisa el registro de errores de Laravel en BACKEND/storage/logs.');
