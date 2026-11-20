@@ -668,15 +668,16 @@ try {
     assert.equal(await menu.locator('.mg-optional-category-head').count(),0);
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
     await menu.locator('#mg-area-selector').selectOption('finance');
-    const selector=menu.locator('#mg-modulo-selector');
-    assert.equal(await selector.locator('option[value="historial-ventas"]').count(),1);
-    assert.equal(await selector.locator('option[value="gastos"]').count(),1);
-    await selector.selectOption('gastos');
-    assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Gastos');
     assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
+      'La lista desplegable redundante no debe mostrarse.');
+    assert.equal(await menu.locator('.mg-secondary-link[data-module="historial-ventas"]').count(),1);
+    assert.equal(await menu.locator('.mg-secondary-link[data-module="gastos"]').count(),1);
+    await menu.locator('.mg-secondary-link[data-module="gastos"]').click();
+    assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Gastos');
+    assert.equal(await menu.locator('.mg-secondary-link').count(),0,
       'Al entrar en Gastos la lista debe ocultarse.');
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-    assert.equal(await menu.locator('#mg-modulo-selector').inputValue(),'gastos');
+    assert.equal(await menu.locator('.mg-secondary-link[data-module="gastos"].active').count(),1);
     await page.screenshot({path:'evidencias-dashboard/35_Menu_adicional_agrupado.png',
       fullPage:true,animations:'disabled'});
   });
