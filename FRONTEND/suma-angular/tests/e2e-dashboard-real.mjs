@@ -38,8 +38,9 @@ try {
     const areas=await menu.locator('#mg-area-selector option').evaluateAll(opciones=>opciones.map(op=>op.value));
     for(const area of areas){
       await menu.locator('#mg-area-selector').selectOption(area);
-      if(await menu.locator('#mg-modulo-selector option[value="'+id+'"]').count()){
-        await menu.locator('#mg-modulo-selector').selectOption(id);
+      const opcion=menu.locator('.mg-secondary-link[data-module="'+id+'"]');
+      if(await opcion.count()){
+        await opcion.click();
         return;
       }
     }
@@ -455,30 +456,26 @@ try {
     const menu=page.locator('.mg-clear-navigation');
     assert.equal(await menu.getByRole('button',{name:'Reportes',exact:true}).count(),0);
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-    const selector=menu.locator('#mg-modulo-selector');
-    await selector.waitFor({timeout:10000});
     const areas=menu.locator('#mg-area-selector');
-    assert.equal(await areas.locator('option').count(),7,
-      'Deben existir siete áreas y solo un listado pequeño de funciones por área.');
+    assert.equal(await areas.locator('option').count(),7);
     await areas.selectOption('menu');
-    assert.equal(await selector.locator('option[value="configuracion"]').count(),1,
-      'Configuración debe estar disponible sin duplicar botones en el lateral.');
-    assert.ok((await selector.locator('option').count())<=8,
-      'Nunca abrir los más de 40 módulos de una sola vez.');
-    await selector.selectOption('configuracion');
+    assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
+      'El segundo desplegable innecesario debe desaparecer.');
+    assert.equal(await menu.locator('.mg-secondary-link[data-module="configuracion"]').count(),1);
+    assert.ok((await menu.locator('.mg-secondary-link').count())<=7);
+    await menu.locator('.mg-secondary-link[data-module="configuracion"]').click();
     const configuracion=page.locator('.config-page');
     await configuracion.waitFor({timeout:15000});
     await configuracion.getByRole('button',{name:'Usuarios y permisos'}).waitFor({timeout:25000});
     for(const herramienta of [
       'Usuarios y permisos','Historial de actividad',
       'Gestionar respaldos','Diagnóstico avanzado'
-    ])assert.equal(await configuracion.getByRole('button',{name:herramienta}).count(),1,
-      'Falta herramienta funcional: '+herramienta);
+    ])assert.equal(await configuracion.getByRole('button',{name:herramienta}).count(),1);
     await page.screenshot({path:'evidencias-dashboard/21_Configuracion_sin_modulos_duplicados.png',
       fullPage:true,animations:'disabled'});
   });
 
-  await paso('Siete áreas avanzadas conservan las funciones sin repetir los seis accesos directos',async()=>{
+  await paso('Siete áreas avanzadas conservan enlaces sin segundo selector superpuesto',async()=>{
     const grupos=[
       {area:'Socios y membresías',frecuente:'Membresías',adicional:'Planes y tarifas',total:5},
       {area:'Clases y entrenamiento',frecuente:'Clases y horarios',adicional:'Seguimiento',total:5},
@@ -492,27 +489,20 @@ try {
       await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
       const menu=page.locator('.mg-clear-navigation');
       await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-      const areas=menu.locator('#mg-area-selector');
-      await areas.selectOption({label:grupo.area});
-      const selector=menu.locator('#mg-modulo-selector');
-      assert.equal(await selector.locator('option:not([disabled])').count(),grupo.total,
+      await menu.locator('#mg-area-selector').selectOption({label:grupo.area});
+      const opciones=menu.locator('.mg-secondary-link');
+      assert.equal(await opciones.count(),grupo.total,
         'Faltan funciones del grupo '+grupo.area);
-      assert.ok((await selector.locator('option').count())<=8,
-        'La lista no debe tapar la pantalla con decenas de opciones.');
-      await selector.selectOption({label:grupo.frecuente});
-      assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio');
       assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
-        'El selector debe cerrarse al abrir una pantalla.');
+        'El desplegable redundante debe desaparecer.');
+      await opciones.filter({hasText:grupo.frecuente}).first().click();
+      assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio');
+      assert.equal(await opciones.count(),0,'Los enlaces deben cerrarse al abrir una función.');
       await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
       await menu.locator('#mg-area-selector').selectOption({label:grupo.area});
-      await menu.locator('#mg-modulo-selector').selectOption({label:grupo.adicional});
+      await menu.locator('.mg-secondary-link').filter({hasText:grupo.adicional}).first().click();
       assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio');
-      assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
-        'Una pantalla abierta no debe quedar tapada por la lista de módulos.');
-      await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-      const seleccionado=await menu.locator('#mg-modulo-selector option:checked').innerText();
-      assert.equal(seleccionado.trim(),grupo.adicional,
-        'El selector debe recordar qué módulo está activo.');
+      assert.equal(await menu.locator('.mg-secondary-link').count(),0);
     }
   });
 
@@ -553,24 +543,24 @@ try {
         options.map(option=>option.value));
       assert.equal(areas.length,7,'Debe haber exactamente siete áreas de funciones secundarias.');
       for(const area of areas){
-        if(!await menu.locator('#mg-modulo-selector').count())
+        if(!await menu.locator('.mg-secondary-link').count())
           await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
         await menu.locator('#mg-area-selector').selectOption(area);
-        const opciones=await menu.locator('#mg-modulo-selector option:not([disabled])').evaluateAll(options=>
-          options.map(option=>({id:option.value,descripcion:option.textContent?.trim()||option.value})));
+        const opciones=await menu.locator('.mg-secondary-link').evaluateAll(options=>
+          options.map(option=>({id:option.getAttribute('data-module'),descripcion:option.textContent?.trim()||''})));
         assert.ok(opciones.length>0&&opciones.length<=7,
           'El área '+area+' debe presentar una lista corta y utilizable.');
         for(const opcion of opciones){
-          if(!await menu.locator('#mg-modulo-selector').count())
+          if(!await menu.locator('.mg-secondary-link').count())
             await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
           await menu.locator('#mg-area-selector').selectOption(area);
-          await menu.locator('#mg-modulo-selector').selectOption(opcion.id);
+          await menu.locator('.mg-secondary-link[data-module="'+opcion.id+'"]').click();
           await page.waitForFunction(id=>new URLSearchParams(location.search).get('modulo')===id,
             opcion.id,{timeout:15000});
           const titulo=(await page.locator('.mg-current-topbar h1').innerText()).trim();
           assert.ok(titulo && titulo!=='Inicio',
             'La función '+opcion.descripcion+' no muestra su pantalla.');
-          assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
+          assert.equal(await menu.locator('.mg-secondary-link').count(),0,
             'La lista de funciones se quedó encima de '+opcion.descripcion+'.');
           const espacio=await page.locator('.mg-current-workspace').innerText();
           assert.ok(espacio.trim().length>20,
