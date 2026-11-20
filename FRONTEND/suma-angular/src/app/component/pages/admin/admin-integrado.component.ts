@@ -1089,17 +1089,21 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                   <input [(ngModel)]="membresiaForm.numero_operacion" name="moperacion" [required]="membresiaForm.metodo_pago!=='Efectivo'" [placeholder]="membresiaForm.metodo_pago==='Efectivo' ? 'No requerido' : 'Requerido'">
                 </label>
               </div>
-              <button class="admin-primary" type="submit">Asignar membresía</button>
+              <p *ngIf="planesCargando" role="status">Consultando tarifas en MySQL...</p>
+              <p *ngIf="!planesCargando && planesError" role="alert">{{planesError}}</p>
+              <p *ngIf="!planesCargando && !planesError && !membresiasDisponibles.length" role="status">Todavía no hay tarifas activas. Entra en Administrar tarifas para crear una.</p>
+              <button class="admin-primary" type="submit" [disabled]="planesCargando || !!planesError || !membresiasDisponibles.length">Asignar membresía</button>
               <button class="admin-secondary" type="button" (click)="cambiarSegcion('planes')">Administrar tarifas</button>
             </form>
           </article>
 
           <article class="admin-list-card wide-card">
             <div class="management-heading">
-              <div><h2>Membresías de socios</h2><p>Vigencia real registrada en MySQL.</p></div>
-              <span class="big-number">{{membresiasCliente.length}}</span>
+              <div><h2>Membresías de socios</h2><p *ngIf="membresiasCargando">Consultando membresías en MySQL...</p><p *ngIf="!membresiasCargando && !membresiasError">Vigencia real registrada en MySQL.</p></div>
+              <span class="big-number" *ngIf="!membresiasCargando && !membresiasError">{{membresiasCliente.length}}</span>
             </div>
-            <div class="table-wrap">
+            <p *ngIf="!membresiasCargando && membresiasError" role="alert">{{membresiasError}} <button type="button" class="admin-secondary" (click)="cargarMembresias()">Volver a consultar</button></p>
+            <div class="table-wrap" *ngIf="!membresiasCargando && !membresiasError">
               <table class="management-table">
                 <thead><tr><th>ID</th><th>Cliente</th><th>Membresía</th><th>Inicio</th><th>Fin</th><th>Estado</th></tr></thead>
                 <tbody>
