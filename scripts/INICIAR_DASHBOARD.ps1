@@ -113,7 +113,7 @@ try {
     $composer = BuscarComando @('composer.bat','composer.cmd','composer') @('C:\ProgramData\ComposerSetup\bin\composer.bat')
 
     if (-not $php) { Fallar 'No encuentro PHP. Abre XAMPP o instala PHP 8.2+ y revisa C:\xampp\php\php.exe.' }
-    if (-not $npm) { Fallar 'No encuentro npm. Instala Node.js 22 y vuelve a ejecutar este archivo.' }
+    if (-not $npm -and -not $RepararClientes) { Fallar 'No encuentro npm. Instala Node.js 22 y vuelve a ejecutar este archivo.' }
     $versionPhp = & $php -r 'echo PHP_VERSION_ID;'
     $idVersionPhp = 0
     if ($LASTEXITCODE -ne 0 -or -not [int]::TryParse([string]$versionPhp, [ref]$idVersionPhp)) {
