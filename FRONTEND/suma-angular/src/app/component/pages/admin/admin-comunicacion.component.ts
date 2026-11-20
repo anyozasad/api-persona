@@ -400,6 +400,11 @@ export class AdminComunicacionComponent implements OnInit, OnChanges, OnDestroy 
       const primero = Object.values(errores)[0] as any;
       if (Array.isArray(primero) && primero[0]) return String(primero[0]);
     }
-    return e?.error?.mensaje || e?.error?.message || 'No se pudo completar la operación.';
+    if(Number(e?.status)>=500) {
+      return e?.error?.codigo==='TABLA_MODULO_AUSENTE'
+        ? String(e?.error?.mensaje)
+        : 'No se pudo completar la operación. Revisa la conexión y las tablas de MySQL; el error detallado está en laravel.log.';
+    }
+    return e?.error?.mensaje || 'No se pudo completar la operación.';
   }
 }
