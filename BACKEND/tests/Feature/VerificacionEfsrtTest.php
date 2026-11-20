@@ -83,6 +83,8 @@ class VerificacionEfsrtTest extends TestCase
     {
         $datos = app(VerificacionEfsrtController::class)->index()->getData(true);
         $this->assertSame(150, $datos['funciones_portal']['definidas']);
+        $this->assertSame(52, $datos['funciones_portal']['rutas_api']);
+        $this->assertSame(98, $datos['funciones_portal']['referencias_interfaz']);
         $this->assertSame(
             150,
             $datos['funciones_portal']['estructura_verificada'] + $datos['funciones_portal']['estructura_pendiente']
