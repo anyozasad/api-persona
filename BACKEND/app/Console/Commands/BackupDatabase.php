@@ -36,9 +36,13 @@ class BackupDatabase extends Command
         $archivo = $directorio.DIRECTORY_SEPARATOR.$database.'_'.now()->format('Ymd_His').'.sql';
 
         $binario = (string) env('MYSQLDUMP_PATH', '');
-        if ($binario === '') {
-            $xampp = 'C:\\xampp\\mysql\\bin\\mysqldump.exe';
-            $binario = PHP_OS_FAMILY === 'Windows' && File::exists($xampp) ? $xampp : 'mysqldump';
+        $nombreGenerico = in_array(strtolower(trim($binario)), ['', 'mysqldump', 'mysqldump.exe'], true);
+        $xampp = 'C:\\xampp\\mysql\\bin\\mysqldump.exe';
+        if ($nombreGenerico && PHP_OS_FAMILY === 'Windows' && File::exists($xampp)) {
+            // XAMPP instala mysqldump fuera del PATH de PowerShell en muchos equipos.
+            $binario = $xampp;
+        } elseif ($binario === '') {
+            $binario = 'mysqldump';
         }
 
         $process = new Process([
