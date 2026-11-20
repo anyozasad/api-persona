@@ -628,3 +628,70 @@
     margin:6px 8px 12px;
   }
 }
+
+/* Legibilidad en exposición: texto mínimo 14 px en controles y 15 px en datos.
+   No cambiar la paleta ni esconder módulos o funcionalidades. */
+.admin-shell.admin-home-redesign .mg-current-topbar .mg-top-greeting h1{
+  font-size:clamp(22px,2vw,28px)!important;
+}
+.admin-shell.admin-home-redesign .mg-current-topbar .mg-top-greeting span,
+.admin-shell.admin-home-redesign .mg-current-topbar input,
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-caption,
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary strong,
+.admin-shell.admin-home-redesign .mg-tec-order .mg-direct-home,
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-advanced-toggle,
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-picker label,
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-picker select,
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-picker small{
+  font-size:14px!important;
+  line-height:1.5!important;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary{
+  min-height:50px!important;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary small{
+  font-size:12px!important;
+  line-height:1.4!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-hero p,
+.admin-shell.admin-home-redesign .mg-efsrt-kpis article span,
+.admin-shell.admin-home-redesign .mg-efsrt-kpis article small,
+.admin-shell.admin-home-redesign .mg-premium-analytics p,
+.admin-shell.admin-home-redesign .mg-efsrt-heading p,
+.admin-shell.admin-home-redesign .mg-efsrt-panel p,
+.admin-shell.admin-home-redesign .mg-efsrt-panel span,
+.admin-shell.admin-home-redesign .mg-catalog-preview p,
+.admin-shell.admin-home-redesign .mg-catalog-preview small,
+.admin-shell.admin-home-redesign .mg-efsrt-data-status p,
+.admin-shell.admin-home-redesign .mg-efsrt-data-status small{
+  font-size:14px!important;
+  line-height:1.55!important;
+}
+.admin-shell.admin-home-redesign .mg-efsrt-heading h3,
+.admin-shell.admin-home-redesign .mg-premium-card h3,
+.admin-shell.admin-home-redesign .mg-catalog-preview h2{
+  font-size:19px!important;
+  line-height:1.35!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace input,
+.admin-shell.admin-home-redesign .mg-current-workspace select,
+.admin-shell.admin-home-redesign .mg-current-workspace textarea,
+.admin-shell.admin-home-redesign .mg-current-workspace button,
+.admin-shell.admin-home-redesign .mg-current-workspace table{
+  font-size:14px;
+  line-height:1.5;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace label,
+.admin-shell.admin-home-redesign .mg-current-workspace td,
+.admin-shell.admin-home-redesign .mg-current-workspace th{
+  font-size:14px;
+  line-height:1.5;
+}
+@media(max-width:700px){
+  .admin-shell.admin-home-redesign .mg-efsrt-kpis article{
+    padding:15px!important;
+  }
+  .admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary{
+    min-height:48px!important;
+  }
+}
