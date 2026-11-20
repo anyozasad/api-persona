@@ -217,6 +217,8 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
       </nav>
 
       <div class="mg-current-workspace">
+      <div *ngIf="toast" class="mg-action-feedback success" role="status" aria-live="polite">{{toast}}</div>
+      <div *ngIf="error && !clienteFormularioAbierto" class="mg-action-feedback error" role="alert">{{error}}</div>
       <section class="mg-module-shell-head" *ngIf="seccion!=='dashboard' && !['aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui'].includes(seccion)">
         <div class="mg-module-shell-copy">
           <p>{{subtituloActual}}</p>
@@ -937,6 +939,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
             </header>
 
             <form #clienteNgForm="ngForm" class="client-editor-form" autocomplete="off" (ngSubmit)="guardarCliente()">
+              <p class="client-editor-help">Los campos obligatorios deben estar completos. El DNI debe tener 8 números y el correo debe ser válido.</p>
               <section class="client-editor-section">
                 <div class="client-editor-section-title">
                   <span>1</span>
@@ -1001,6 +1004,9 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                     <small>El cliente podrá iniciar sesión en su portal personal.</small>
                   </div>
                 </label>
+                <p class="client-editor-help" *ngIf="clienteForm.crear_acceso">
+                  Usa un usuario y correo que no pertenezcan a otra cuenta. La contraseña temporal debe tener al menos 8 caracteres.
+                </p>
 
                 <div *ngIf="clienteForm.crear_acceso" class="client-editor-access-fields">
                   <label>Usuario
@@ -1012,6 +1018,11 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                 </div>
               </section>
 
+              <div class="client-editor-error" *ngIf="clienteRegistroError" role="alert" aria-live="assertive">
+                <strong>No se pudo guardar el socio</strong>
+                <p>{{clienteRegistroError}}</p>
+                <small>Corrige el dato indicado y vuelve a registrar. El formulario mantiene la información escrita.</small>
+              </div>
               <footer class="client-editor-footer">
                 <button type="button" class="cancel" (click)="cerrarFormularioCliente()">Cancelar</button>
                 <button type="submit" class="save" [disabled]="clienteNgForm.invalid || guardandoCliente">
@@ -1025,6 +1036,14 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
       </ng-container>
 
       <ng-container *ngIf="seccion==='membresias'">
+        <section class="mg-new-client-access" *ngIf="ultimoAccesoCliente" role="status">
+          <strong>Socio registrado y cuenta de cliente creada correctamente</strong>
+          <p>Usuario del cliente: <b>{{ultimoAccesoCliente}}</b></p>
+          <p>Para comprobar su portal sin cerrar la sesión de administrador, abre una ventana privada (Ctrl + Mayús + N),
+             entra en <b>http://localhost:4200/login</b> e inicia sesión con ese usuario y la contraseña temporal creada.
+             Su panel se abrirá en <b>/usuario</b>.</p>
+          <button type="button" (click)="ultimoAccesoCliente=''">Entendido</button>
+        </section>
         <section class="management-grid">
           <article class="admin-form-card">
             <div class="management-heading">
@@ -2858,6 +2877,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   seccion = 'dashboard';
   toast = '';
   error = '';
+  clienteRegistroError = '';
+  ultimoAccesoCliente = '';
   dashboard: any = null;
   herramientasAvanzadasAbiertas = false;
   reporteIngresos: any = null;
@@ -5107,6 +5128,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.clienteEditandoId=0;
     this.clienteForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:false,nombre_usuario:'',contrasena:''};
     this.error='';
+    this.clienteRegistroError='';
+    this.ultimoAccesoCliente='';
     this.clienteFormularioAbierto=true;
   }
 
@@ -5114,7 +5137,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(this.guardandoCliente)return;
 
     const datos={...this.clienteForm};
+    datos.dni=String(datos.dni||'').trim();
+    datos.nombres=String(datos.nombres||'').trim();
+    datos.apellidos=String(datos.apellidos||'').trim();
+    datos.correo=String(datos.correo||'').trim().toLowerCase();
+    datos.nombre_usuario=String(datos.nombre_usuario||'').trim();
     const crearAccesoSolicitado=!this.clienteEditandoId && Boolean(datos.crear_acceso);
+    this.clienteRegistroError='';
     if(this.clienteEditandoId){
       delete datos.crear_acceso;
       delete datos.nombre_usuario;
@@ -5133,6 +5162,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       next:(r:any)=>{
         this.guardandoCliente=false;
         const nuevoId=Number(r?.cliente?.id_cliente||0);
+        this.ultimoAccesoCliente=!eraEdicion && crearAccesoSolicitado ? datos.nombre_usuario : '';
         this.cancelarEdicionCliente();
         this.cargarClientes();
         this.cargarDashboard();
@@ -5142,8 +5172,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
           setTimeout(()=>{
             this.membresiaForm={...this.membresiaForm,id_cliente:nuevoId};
             this.ok(crearAccesoSolicitado
-              ? 'Socio matriculado y acceso creado. Ahora asigna su plan o membresía.'
-              : 'Socio matriculado. Ahora asigna su plan o membresía.');
+              ? 'Socio y cuenta de acceso guardados. Puedes probar el portal desde una ventana privada.'
+              : 'Socio registrado correctamente. Ahora asigna su plan o membresía.');
           },0);
           return;
         }
@@ -5153,6 +5183,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       error:e=>{
         this.guardandoCliente=false;
         this.mostrarError(e);
+        this.clienteRegistroError = this.error || 'No se pudo registrar el socio. Revisa la conexión con Laravel.';
       }
     });
   }
@@ -5177,6 +5208,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   cancelarEdicionCliente(){
     this.clienteEditandoId=0;
     this.clienteFormularioAbierto=false;
+    this.clienteRegistroError='';
     this.guardandoCliente=false;
     this.clienteForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:false,nombre_usuario:'',contrasena:''};
   }
@@ -6205,6 +6237,14 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ok(mensaje:string){ this.error=''; this.toast='✓ '+mensaje; setTimeout(()=>this.toast='',2600); }
   mostrarError(e:any){
     if(e?.status===401){this.auth.limpiarSesion();this.router.navigate(['/login']);return;}
+    if(Number(e?.status)>=500){
+      this.error='El servidor no pudo completar la operación. Verifica que Laravel y MySQL estén activos y revisa el registro de Laravel.';
+      return;
+    }
+    if(e?.status===0){
+      this.error='No hay conexión con Laravel. Verifica que el servidor PHP esté encendido.';
+      return;
+    }
     const errores=e?.error?.errors;
     if(errores){const primero=Object.values(errores)[0];this.error=Array.isArray(primero)?String(primero[0]):String(primero);return;}
     this.error=e?.error?.mensaje ?? e?.error?.message ?? e?.error?.error ?? 'No se pudo completar la operación.';
