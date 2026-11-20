@@ -496,6 +496,13 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.verificacionEfsrt.modulos[0].estado).toBe('estructura_incompleta');
   });
 
+  it('usa fecha del calendario local y no adelanta un día los formularios nocturnos', () => {
+    const casiMedianoche = new Date(2026, 10, 20, 23, 45);
+    expect(component.fechaLocalHoy(casiMedianoche)).toBe('2026-11-20');
+    const madrugada = new Date(2026, 10, 21, 0, 15);
+    expect(component.fechaLocalHoy(madrugada)).toBe('2026-11-21');
+  });
+
   it('no muestra sistema verificado si todavía hay semanas con observaciones', () => {
     component.seccion='verificacion-efsrt';
     component.verificacionEfsrt={semanas_pendientes:3};
