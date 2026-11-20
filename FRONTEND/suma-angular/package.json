@@ -5,7 +5,8 @@
   "scripts": {
     "start": "ng serve",
     "build": "ng build",
-    "test": "ng test"
+    "test": "ng test",
+    "reparar:clientes": "powershell -NoProfile -ExecutionPolicy Bypass -File ..\\..\\scripts\\INICIAR_DASHBOARD.ps1 -RepararClientes"
   },
   "dependencies": {
     "@angular/common": "^20.0.0",
