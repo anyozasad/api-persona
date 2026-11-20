@@ -929,7 +929,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
         this.subiendoImagen = false;
         this.error = e?.error?.codigo==='TABLA_MODULO_AUSENTE'
           ? String(e?.error?.mensaje)
-          : Number(e?.status)<500 && e?.error?.message
+          : !(Number(e?.status)>=500) && e?.error?.message
             ? String(e.error.message)
             : 'No se pudo completar la operación. Revisa Laravel y MySQL.';
         this.limpiarMensaje('error');
@@ -989,7 +989,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
         this.saving = false;
         this.error = e?.error?.codigo==='TABLA_MODULO_AUSENTE'
           ? String(e?.error?.mensaje)
-          : Number(e?.status)<500 && e?.error?.message
+          : !(Number(e?.status)>=500) && e?.error?.message
             ? String(e.error.message)
             : 'No se pudo completar la operación. Revisa Laravel y MySQL.';
         this.limpiarMensaje('error');
