@@ -494,6 +494,79 @@ try {
     }
   });
 
+  await paso('Los 46 módulos abren su pantalla desde sus botones sin errores JavaScript',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const menu=page.locator('.mg-clear-navigation');
+    const fallos=[];
+    const javascriptError=(error)=>fallos.push('JavaScript: '+error.message);
+    const respuestaFallida=(respuesta)=>{
+      if(respuesta.url().includes('/api/') && respuesta.status()>=500)
+        fallos.push('API '+respuesta.status()+': '+respuesta.url());
+    };
+    page.on('pageerror',javascriptError);
+    page.on('response',respuestaFallida);
+    let visitados=0;
+    try{
+      for(const directo of [
+        {id:'clientes',nombre:'Socios'}, {id:'reservas',nombre:'Reservas'},
+        {id:'asistencias',nombre:'Asistencia'}, {id:'productos',nombre:'Productos'},
+        {id:'ventas',nombre:'Ventas'}, {id:'pagos',nombre:'Pagos'}
+      ]){
+        await menu.getByRole('button',{name:directo.nombre,exact:true}).click();
+        await page.waitForFunction(id=>new URLSearchParams(location.search).get('modulo')===id,
+          directo.id,{timeout:15000});
+        assert.equal(await menu.getByRole('button',{name:directo.nombre,exact:true}).getAttribute('aria-current'),'page',
+          'El acceso principal '+directo.nombre+' no queda marcado como activo.');
+        assert.ok((await page.locator('.mg-current-topbar h1').innerText()).trim()!=='Inicio',
+          'El botón '+directo.nombre+' volvió al Inicio.');
+        visitados++;
+      }
+
+      await menu.getByRole('button',{name:'Inicio',exact:true}).click();
+      await page.waitForFunction(()=>!new URLSearchParams(location.search).has('modulo'),null,{timeout:15000});
+      assert.equal((await page.locator('.mg-current-topbar h1').innerText()).trim(),'Inicio');
+
+      await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+      const areas=await menu.locator('#mg-area-selector option').evaluateAll(options=>
+        options.map(option=>option.value));
+      assert.equal(areas.length,7,'Debe haber exactamente siete áreas de funciones secundarias.');
+      for(const area of areas){
+        if(!await menu.locator('#mg-modulo-selector').count())
+          await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+        await menu.locator('#mg-area-selector').selectOption(area);
+        const opciones=await menu.locator('#mg-modulo-selector option:not([disabled])').evaluateAll(options=>
+          options.map(option=>({id:option.value,descripcion:option.textContent?.trim()||option.value})));
+        assert.ok(opciones.length>0&&opciones.length<=7,
+          'El área '+area+' debe presentar una lista corta y utilizable.');
+        for(const opcion of opciones){
+          if(!await menu.locator('#mg-modulo-selector').count())
+            await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+          await menu.locator('#mg-area-selector').selectOption(area);
+          await menu.locator('#mg-modulo-selector').selectOption(opcion.id);
+          await page.waitForFunction(id=>new URLSearchParams(location.search).get('modulo')===id,
+            opcion.id,{timeout:15000});
+          const titulo=(await page.locator('.mg-current-topbar h1').innerText()).trim();
+          assert.ok(titulo && titulo!=='Inicio',
+            'La función '+opcion.descripcion+' no muestra su pantalla.');
+          assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
+            'La lista de funciones se quedó encima de '+opcion.descripcion+'.');
+          const espacio=await page.locator('.mg-current-workspace').innerText();
+          assert.ok(espacio.trim().length>20,
+            'La pantalla '+opcion.descripcion+' está vacía o no se dibujó.');
+          visitados++;
+        }
+      }
+      assert.equal(visitados,46,
+        'Deben abrirse los seis botones principales y las 40 funciones secundarias.');
+      assert.equal(fallos.length,0,'Se detectaron errores navegando por todos los módulos: '+fallos.join(' | '));
+    }finally{
+      page.off('pageerror',javascriptError);
+      page.off('response',respuestaFallida);
+    }
+    await page.screenshot({path:'evidencias-dashboard/36_46_Modulos_Navegacion_Revisada.png',
+      fullPage:true,animations:'disabled'});
+  });
+
   await paso('Gastos no inventa cierres ni permite egresos sin caja verificada',async()=>{
     await page.goto(base+'/gastos',{waitUntil:'domcontentloaded'});
     await page.locator('.mg-current-topbar h1').waitFor({timeout:20000});
