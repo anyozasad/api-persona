@@ -18,6 +18,23 @@ class Cliente extends Model
      */
     protected static function booted(): void
     {
+        // Tablas antiguas conservan nombre/apellido/email como NOT NULL.
+        // Cumplir esos campos además de los modernos sin cambiar el esquema viejo.
+        static::creating(function (self $cliente): void {
+            if (!Schema::hasTable('clientes')) {
+                return;
+            }
+            foreach ([
+                'nombre' => 'nombres',
+                'apellido' => 'apellidos',
+                'email' => 'correo',
+            ] as $anterior => $actual) {
+                if (Schema::hasColumn('clientes', $anterior)) {
+                    $cliente->setAttribute($anterior, $cliente->getAttribute($actual));
+                }
+            }
+        });
+
         static::created(function (self $cliente): void {
             if (!Schema::hasTable('clientes') || !Schema::hasColumn('clientes', 'id_cliente')) {
                 return;
