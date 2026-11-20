@@ -63,6 +63,28 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     component = new AdminIntegradoComponent(auth, api, router);
   });
 
+  it('consulta las tarifas sin pedir contratos de socios al abrir Planes y Precios', () => {
+    api.membresiasDisponibles.and.returnValue(of([{
+      id_membresia: 9, nombre: 'Mensualidad', precio: 80, estado: 'Activo'
+    }]));
+    component.cargarMembresias(false);
+    expect(api.membresiasDisponibles).toHaveBeenCalled();
+    expect(api.clienteMembresias).not.toHaveBeenCalled();
+    expect(component.planesError).toBe('');
+    expect(component.planesCargando).toBeFalse();
+    expect(component.planesMembresia.length).toBe(1);
+  });
+
+  it('distingue un error de MySQL de una lista vacía de tarifas', () => {
+    api.membresiasDisponibles.and.returnValue(throwError(() => ({
+      status: 503,
+      error: { codigo: 'COLUMNAS_PLANES_AUSENTES', mensaje: 'Faltan columnas en membresias.' }
+    })));
+    component.cargarMembresias(false);
+    expect(component.planesCargando).toBeFalse();
+    expect(component.planesError.length).toBeGreaterThan(0);
+  });
+
   it('habilita la creación de cuenta para un socio nuevo sin ocultar los campos de acceso', () => {
     component.nuevoCliente();
     expect(component.clienteForm.crear_acceso).toBeTrue();
