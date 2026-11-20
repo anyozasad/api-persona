@@ -891,6 +891,70 @@ try {
     await page.screenshot({path:'evidencias-dashboard/15_Socio_persistido_MySQL.png',fullPage:true});
   });
 
+  await paso('Registrar socio con acceso, autenticar al cliente y abrir su portal real',async()=>{
+    const username='portal-cliente-e2e';
+    const password='AccesoPortalTemporal2026!';
+    await page.goto(base+'/clientes',{waitUntil:'domcontentloaded'});
+    await page.getByRole('button',{name:/Agregar Socio/i}).first().click();
+    const form=page.locator('.client-editor-workspace form.client-editor-form');
+    await form.locator('input[name=dni]').fill('88776654');
+    await form.locator('input[name=nombres]').fill('Cuenta');
+    await form.locator('input[name=apellidos]').fill('Portal Verificado');
+    await form.locator('input[name=telefono]').fill('987654321');
+    await form.locator('input[name=correo]').fill('cuenta-portal-ci@example.test');
+    await form.locator('input[name=crear_acceso]').check();
+    await form.locator('input[name=cliente_usuario]').fill(username);
+    await form.locator('input[name=cliente_clave]').fill(password);
+    assert.equal(await form.locator('button.save').isEnabled(),true);
+    const respuesta=page.waitForResponse(r=>r.url().includes('/api/clientes')
+      && r.request().method()==='POST',{timeout:25000});
+    await form.locator('button.save').click();
+    const creado=await respuesta;
+    assert.equal(creado.status(),201,'El alta del socio y usuario debe persistir en MySQL.');
+    const datos=await creado.json();
+    assert.ok(Number(datos?.cliente?.id_cliente)>0,'Falta el id real del cliente.');
+    await page.locator('.mg-new-client-access').waitFor({timeout:15000});
+    assert.match(await page.locator('.mg-new-client-access').innerText(),/portal-cliente-e2e/);
+
+    const contextoCliente=await browser.newContext({viewport:{width:1280,height:800},locale:'es-PE'});
+    try{
+      const clientePage=await contextoCliente.newPage();
+      await clientePage.goto(base+'/login',{waitUntil:'domcontentloaded'});
+      await clientePage.locator('input[name=email]').fill(username);
+      await clientePage.locator('input[name=password]').fill(password);
+      await clientePage.locator('.mq-login-submit').click();
+      await clientePage.waitForURL('**/usuario',{timeout:25000});
+      const autenticado=await clientePage.evaluate(async()=>{
+        const token=localStorage.getItem('mallqui_token')||sessionStorage.getItem('mallqui_token');
+        if(!token)return null;
+        const respuesta=await fetch('/api/auth/me',{headers:{Authorization:'Bearer '+token}});
+        return respuesta.ok ? respuesta.json() : null;
+      });
+      assert.equal(autenticado?.usuario?.rol,'Cliente','La sesión debe tener rol Cliente.');
+      assert.equal(Number(autenticado?.usuario?.id_cliente),Number(datos.cliente.id_cliente),
+        'El portal debe usar la ficha creada por administración.');
+      await clientePage.screenshot({path:'evidencias-dashboard/16_Portal_cliente_nuevo_real.png',
+        fullPage:true,animations:'disabled'});
+    }finally{
+      await contextoCliente.close();
+    }
+
+    await page.goto(base+'/clientes',{waitUntil:'domcontentloaded'});
+    await page.getByRole('button',{name:/Agregar Socio/i}).first().click();
+    const duplicado=page.locator('.client-editor-workspace form.client-editor-form');
+    await duplicado.locator('input[name=dni]').fill('88776654');
+    await duplicado.locator('input[name=nombres]').fill('Cuenta');
+    await duplicado.locator('input[name=apellidos]').fill('Duplicada');
+    await duplicado.locator('input[name=correo]').fill('otra-cuenta-ci@example.test');
+    await duplicado.locator('button.save').click();
+    const error=page.locator('.client-editor-error');
+    await error.waitFor({timeout:15000});
+    assert.match(await error.innerText(),/registrad|único|existe|duplicate|taken/i,
+      'Debe explicar por qué se rechazó el DNI en vez de fallar en silencio.');
+    assert.equal(await duplicado.locator('input[name=dni]').inputValue(),'88776654',
+      'El formulario no debe borrar el DNI cuando Laravel rechaza un duplicado.');
+  });
+
   await paso('Semana 06: preparar ejercicios editables de acuerdo al perfil del socio',async()=>{
     await page.goto(base+'/rutinas',{waitUntil:'domcontentloaded'});
     const editor=page.locator('.routine-management .routine-editor-card');
