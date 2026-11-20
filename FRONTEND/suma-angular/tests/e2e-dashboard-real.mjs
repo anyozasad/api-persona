@@ -59,6 +59,77 @@ try {
     await page.screenshot({path:'evidencias-dashboard/Inicio_Dashboard.png',fullPage:true});
   });
 
+  await paso('Inspeccionar F12: consola, Red/Network y recursos de módulos principales',async()=>{
+    // La prueba del resto del recorrido simula algunos errores deliberadamente.
+    // Esta página independiente revisa solo llamadas REALES y no debe ocultar
+    // fallos de JavaScript, imágenes, CSS o llamadas HTTP.
+    const inspect=await context.newPage();
+    // El login puede usar sessionStorage, que NO se comparte entre pestañas.
+    // Clonar únicamente la sesión temporal de CI antes de navegar.
+    const sesion=await page.evaluate(()=>{
+      const st=localStorage.getItem('mallqui_token')?localStorage:sessionStorage;
+      return {token:st.getItem('mallqui_token'),usuario:st.getItem('mallqui_usuario')};
+    });
+    assert.ok(sesion.token,'La pestaña de inspección necesita el token de prueba.');
+    await inspect.addInitScript(credenciales=>{
+      localStorage.setItem('mallqui_token',credenciales.token);
+      localStorage.setItem('mallqui_usuario',credenciales.usuario);
+    },sesion);
+    const fallos=[];
+    const esLocal=(url)=>{
+      try{return new URL(url).origin===base;}catch{return false;}
+    };
+    inspect.on('pageerror',error=>{
+      fallos.push({tipo:'Javascript',detalle:error.message,ruta:inspect.url()});
+    });
+    inspect.on('console',mensaje=>{
+      if(mensaje.type()==='error'){
+        fallos.push({tipo:'Consola',detalle:mensaje.text(),ruta:inspect.url()});
+      }
+    });
+    inspect.on('requestfailed',solicitud=>{
+      if(esLocal(solicitud.url())){
+        fallos.push({tipo:'Network',detalle:solicitud.failure()?.errorText||'Solicitud fallida',
+          url:solicitud.url(),ruta:inspect.url()});
+      }
+    });
+    inspect.on('response',respuesta=>{
+      const url=respuesta.url();
+      if(esLocal(url) && respuesta.status()>=400){
+        fallos.push({tipo:'HTTP',detalle:String(respuesta.status()),url,ruta:inspect.url()});
+      }
+    });
+    try{
+      for(const ruta of ['/admin','/clientes','/productos','/reservas',
+        '/ventas','/pagos','/reportes','/configuracion','/verificacion-efsrt']){
+        const respuesta=await inspect.goto(base+ruta,{waitUntil:'domcontentloaded'});
+        assert.equal(respuesta?.status(),200,'No abrió la pantalla '+ruta);
+        await inspect.locator('.mg-current-topbar h1').waitFor({timeout:20000});
+        // La API carga diversos módulos en paralelo al entrar. No recargar
+        // prematuramente: una navegación forzada cancelaría solicitudes sanas,
+        // ensuciando Network con net::ERR_ABORTED provocados por la prueba.
+        await inspect.waitForLoadState('networkidle',{timeout:20000});
+        const imagenesRotas=await inspect.locator('img:visible').evaluateAll(imagenes=>
+          imagenes.filter(img=>img.complete && img.naturalWidth===0)
+            .map(img=>img.currentSrc||img.getAttribute('src')||'sin ruta'));
+        for(const imagen of imagenesRotas){
+          fallos.push({tipo:'Imagen rota',detalle:imagen,ruta});
+        }
+      }
+      const icono=await context.request.get(base+'/assets/mallqui-logo.png');
+      assert.equal(icono.status(),200,'Falta el icono local que usa la pestaña del navegador.');
+      const favicon=await inspect.locator('link[rel="icon"]').getAttribute('href');
+      assert.equal(favicon,'/assets/mallqui-logo.png','El navegador puede pedir /favicon.ico y mostrar 404.');
+      await fs.writeFile('evidencias-dashboard/auditoria-f12.json',
+        JSON.stringify({pantallas:9,fallos},null,2));
+      assert.deepEqual(fallos,[],
+        'Inspeccionar F12 detectó errores de consola, imágenes o Network: '+JSON.stringify(fallos));
+      console.log('OK: F12 sin errores detectados en nueve pantallas administrativas.');
+    }finally{
+      await inspect.close();
+    }
+  });
+
   await paso('Panel inicia con indicadores y gráficos sin controles duplicados',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     await page.locator('.mg-efsrt-kpis').waitFor({timeout:25000});
