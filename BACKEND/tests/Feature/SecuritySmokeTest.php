@@ -2,10 +2,46 @@
 
 namespace Tests\Feature;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class SecuritySmokeTest extends TestCase
 {
+    /**
+     * Cada endpoint del catálogo accesible únicamente con sesión debe bloquear
+     * visitantes anónimos. Las seis rutas públicas de login/recuperación se
+     * evalúan por separado y no forman parte de esta matriz.
+     */
+    public static function rutasPrivadasDelCatalogo(): iterable
+    {
+        $catalogo = require dirname(__DIR__, 2).'/config/portal_cliente_funciones.php';
+
+        foreach ($catalogo as $item) {
+            if ($item['id'] <= 6) {
+                continue;
+            }
+            foreach ($item['checks'] as $check) {
+                if (($check['type'] ?? '') !== 'route') {
+                    continue;
+                }
+                yield sprintf('%03d %s', $item['id'], $item['name']) => [
+                    (string) $check['method'],
+                    (string) $check['uri'],
+                ];
+            }
+        }
+    }
+
+    #[DataProvider('rutasPrivadasDelCatalogo')]
+    public function test_todas_las_rutas_privadas_del_catalogo_rechazan_visitantes(
+        string $method, string $uri
+    ): void {
+        // Reemplazar identificadores de una ruta sin modificar datos reales;
+        // la respuesta correcta se obtiene antes de ejecutar el controlador.
+        $ruta = preg_replace('/\\{[^}]+\\}/', '999999', $uri);
+        $this->json($method, '/api/'.$ruta)->assertUnauthorized();
+    }
+
     public function test_dashboard_requires_authentication(): void
     {
         $this->getJson('/api/dashboard/resumen')->assertUnauthorized();
