@@ -122,7 +122,16 @@ class ReconciliarEsquemaRealMallqui extends Command
                 return self::FAILURE;
             }
 
-            $this->info('Tablas y columnas recuperadas. Columnas añadidas: '.$reparadas);
+            // Las vistas son consultas derivadas, no contienen filas propias.
+            // Si una tabla incompleta las invalidó, reconstruirlas al final,
+            // cuando todas las columnas existen, aunque migrations diga aplicado.
+            $vistas = database_path('migrations/2026_11_07_170000_create_mallqui_reporting_views.php');
+            (require $vistas)->up();
+            foreach (['vista_clientes_membresias', 'vista_stock', 'vista_ventas'] as $vista) {
+                DB::table($vista)->limit(1)->get();
+            }
+
+            $this->info('Tablas, columnas y vistas recuperadas. Columnas añadidas: '.$reparadas);
             return self::SUCCESS;
         } catch (Throwable $e) {
             $this->error('No fue posible reparar la base: '.$e->getMessage());
