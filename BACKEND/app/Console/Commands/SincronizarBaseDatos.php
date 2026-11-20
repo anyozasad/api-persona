@@ -44,6 +44,20 @@ class SincronizarBaseDatos extends Command
             Artisan::call('migrate:install');
         }
 
+        // El historial migrations puede decir "aplicada" aunque la tabla no
+        // exista en el XAMPP actual. Reconstruir SOLO los objetos ausentes
+        // usando el esquema real antes de aplicar migraciones pendientes.
+        // El iniciador exige respaldo SQL confirmado antes de llamar aquí.
+        $codigoEsquema = Artisan::call('db:reconciliar-esquema');
+        $salidaEsquema = trim(Artisan::output());
+        if ($salidaEsquema !== '') {
+            $this->line($salidaEsquema);
+        }
+        if ($codigoEsquema !== 0) {
+            $this->error('No se puede migrar: la reconciliación detectó objetos pendientes. Conserva el respaldo y revisa la causa.');
+            return self::FAILURE;
+        }
+
         // Repara primero instalaciones antiguas para que las migraciones posteriores no fallen.
         if (Schema::hasTable('ventas') && Schema::hasTable('detalle_venta')) {
             $codigoReparacion = Artisan::call('db:reparar-ventas');
