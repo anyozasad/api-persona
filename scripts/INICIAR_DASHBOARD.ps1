@@ -196,7 +196,7 @@ try {
         $estadoFinal = ObtenerEstadoBackend
         if ($null -ne $estadoFinal -and $estadoFinal.sistema -eq 'Mallqui Gym' -and $estadoFinal.database -eq $true) {
             $pendientesRegistro = @($estadoFinal.faltantes | Where-Object {
-                $_ -match '^(clientes|usuarios|personal_access_tokens)(\\.|$|:)'
+                $_ -match '^(clientes|usuarios|personal_access_tokens)(\.|$|:)'
             })
             if ($pendientesRegistro.Count -gt 0) {
                 Avisar ('Aún faltan campos del registro: ' + ($pendientesRegistro -join ', '))
