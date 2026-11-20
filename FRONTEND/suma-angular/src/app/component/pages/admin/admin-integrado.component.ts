@@ -2899,7 +2899,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   historialCaja: any[] = [];
   progresoClienteId = 0;
   progresoDatos: any = null;
-  medidaForm:any = {peso:null,grasa:null,cintura:null,brazo:null,fecha:new Date().toISOString().slice(0,10)};
+  medidaForm:any = {peso:null,grasa:null,cintura:null,brazo:null,fecha:this.fechaLocalHoy()};
   renovacionesDias = 7;
   renovacionesLista:any[] = [];
   documentoClienteId = 0;
@@ -3193,7 +3193,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   clienteForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:true,nombre_usuario:'',contrasena:''};
   membresiaForm: any = {id_cliente:0,id_membresia:0,metodo_pago:'Efectivo',numero_operacion:''};
   entrenadorEditandoId = 0;
-  entrenadorForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',especialidad:'',fecha_contratacion:new Date().toISOString().slice(0,10),salario:0,estado:'Activo',crear_acceso:true,nombre_usuario:'',contrasena:''};
+  entrenadorForm: any = {dni:'',nombres:'',apellidos:'',telefono:'',correo:'',especialidad:'',fecha_contratacion:this.fechaLocalHoy(),salario:0,estado:'Activo',crear_acceso:true,nombre_usuario:'',contrasena:''};
   claseEditandoId = 0;
   claseForm: any = {id_entrenador:null,nombre:'',descripcion:'',dia_semana:'Lunes',hora_inicio:'08:00',hora_fin:'09:00',cupo_maximo:15,estado:'Activo'};
   asistenciaCliente = 0;
@@ -3203,7 +3203,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   categoriaEditandoId = 0;
   categoriaForm: any = {nombre_categoria:'',descripcion:'',estado:'Activo'};
   rutinaEditandoId = 0;
-  rutinaForm: any = {id_cliente:0,id_entrenador:0,nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:new Date().toISOString().slice(0,10),fecha_fin:'',estado:'Activo'};
+  rutinaForm: any = {id_cliente:0,id_entrenador:0,nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:this.fechaLocalHoy(),fecha_fin:'',estado:'Activo'};
   rutinaDetallesForm: any[] = [{ejercicio:'',series:3,repeticiones:12,peso_recomendado:null,descanso_segundos:60,observaciones:''}];
   solicitudRutinaContexto: any = null;
   solicitudRutinaIdPendiente = 0;
@@ -3223,6 +3223,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   movCajaForm: any = {tipo:'Ingreso',monto:0,descripcion:'',origen:'Manual'};
   gastoForm: any = {descripcion:'',monto:0};
   cajaCerrarForm: any = {monto_real:0,observacion:''};
+
+  /** Fecha de calendario local (no UTC): evita mostrar mañana al registrar algo de noche en Perú. */
+  fechaLocalHoy(fecha: Date = new Date()): string {
+    return [fecha.getFullYear(), String(fecha.getMonth()+1).padStart(2,'0'),
+      String(fecha.getDate()).padStart(2,'0')].join('-');
+  }
 
   constructor(public auth: AuthService, private api: AdminApiService, private router: Router, @Optional() private route?: ActivatedRoute) {}
 
@@ -3986,7 +3992,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     const url=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));
     const a=document.createElement('a');
     a.href=url;
-    a.download='dashboard-mallqui-gym-'+new Date().toISOString().slice(0,10)+'.csv';
+    a.download='dashboard-mallqui-gym-'+this.fechaLocalHoy()+'.csv';
     a.style.display='none';
     document.body.appendChild(a);
     a.click();
@@ -4314,7 +4320,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.api.guardarMedidaGym(payload).subscribe({
       next:(r:any)=>{
         this.ok(r?.mensaje||'Medición registrada.');
-        this.medidaForm={peso:null,grasa:null,cintura:null,brazo:null,fecha:new Date().toISOString().slice(0,10)};
+        this.medidaForm={peso:null,grasa:null,cintura:null,brazo:null,fecha:this.fechaLocalHoy()};
         this.cargarProgresoFisico();
       },
       error:e=>this.mostrarError(e)
@@ -4470,7 +4476,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         const url=URL.createObjectURL(blob);
         const a=document.createElement('a');
         a.href=url;
-        a.download='backup-mallqui-gym-'+new Date().toISOString().slice(0,10)+'.sql';
+        a.download='backup-mallqui-gym-'+this.fechaLocalHoy()+'.sql';
         a.style.display='none';
         document.body.appendChild(a);a.click();document.body.removeChild(a);
         setTimeout(()=>URL.revokeObjectURL(url),0);
@@ -4901,7 +4907,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     try {
       const elemento=document.createElement('a');
       elemento.href=enlace;
-      elemento.download='mallqui-gym-revision-11-semanas-'+new Date().toISOString().slice(0,10)+'.csv';
+      elemento.download='mallqui-gym-revision-11-semanas-'+this.fechaLocalHoy()+'.csv';
       elemento.style.display='none';
       document.body.appendChild(elemento);
       elemento.click();
@@ -5239,7 +5245,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       telefono:e.telefono||'',
       correo:e.correo||'',
       especialidad:e.especialidad||'',
-      fecha_contratacion:String(e.fecha_contratacion||new Date().toISOString()).slice(0,10),
+      fecha_contratacion:String(e.fecha_contratacion||this.fechaLocalHoy()).slice(0,10),
       salario:Number(e.salario||0),
       estado:e.estado||'Activo',
       crear_acceso:false,
@@ -5251,7 +5257,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   cancelarEdicionEntrenador(){
     this.entrenadorEditandoId=0;
-    this.entrenadorForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',especialidad:'',fecha_contratacion:new Date().toISOString().slice(0,10),salario:0,estado:'Activo',crear_acceso:true,nombre_usuario:'',contrasena:''};
+    this.entrenadorForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',especialidad:'',fecha_contratacion:this.fechaLocalHoy(),salario:0,estado:'Activo',crear_acceso:true,nombre_usuario:'',contrasena:''};
   }
 
   guardarClase(){
@@ -5584,7 +5590,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   cancelarEdicionRutina(){
     this.rutinaEditandoId=0;
-    this.rutinaForm={id_cliente:0,id_entrenador:Number(this.entrenadores[0]?.id_entrenador||0),nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:new Date().toISOString().slice(0,10),fecha_fin:'',estado:'Activo'};
+    this.rutinaForm={id_cliente:0,id_entrenador:Number(this.entrenadores[0]?.id_entrenador||0),nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:this.fechaLocalHoy(),fecha_fin:'',estado:'Activo'};
     this.rutinaDetallesForm=[{ejercicio:'',series:3,repeticiones:12,peso_recomendado:null,descanso_segundos:60,observaciones:''}];
   }
   desactivarRutina(id:number){ if(!confirm('¿Desactivar esta rutina?')) return; this.api.eliminarRutina(id).subscribe({next:r=>{this.ok(r.mensaje||'Rutina desactivada');this.cancelarEdicionRutina();this.cargarRutinas();},error:e=>this.mostrarError(e)}); }
@@ -5755,8 +5761,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     return paginas;
   }
   get auditoriaEventosHoy(): number {
-    const hoy=new Date(); const clave=hoy.toISOString().slice(0,10);
-    return this.auditorias.filter((a:any)=>{const d=new Date(a.fecha);return !isNaN(d.getTime())&&d.toISOString().slice(0,10)===clave;}).length;
+    const clave=this.fechaLocalHoy();
+    return this.auditorias.filter((a:any)=>{const d=new Date(a.fecha);return !isNaN(d.getTime())&&this.fechaLocalHoy(d)===clave;}).length;
   }
   get auditoriaUsuariosUnicos(): number {
     return new Set(this.auditorias.map((a:any)=>String(a.usuario||a.id_usuario||'')).filter(Boolean)).size;
@@ -6079,7 +6085,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       nombre_rutina:'',
       objetivo:'',
       descripcion:'',
-      fecha_inicio:new Date().toISOString().slice(0,10),
+      fecha_inicio:this.fechaLocalHoy(),
       fecha_fin:'',
       estado:'Activo'
     };
@@ -6092,7 +6098,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.solicitudRutinaContexto=null;
     this.solicitudRutinaIdPendiente=0;
     if(!this.rutinaEditandoId){
-      this.rutinaForm={id_cliente:0,id_entrenador:Number(this.entrenadores[0]?.id_entrenador||0),nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:new Date().toISOString().slice(0,10),fecha_fin:'',estado:'Activo'};
+      this.rutinaForm={id_cliente:0,id_entrenador:Number(this.entrenadores[0]?.id_entrenador||0),nombre_rutina:'',objetivo:'',descripcion:'',fecha_inicio:this.fechaLocalHoy(),fecha_fin:'',estado:'Activo'};
       this.rutinaDetallesForm=[{ejercicio:'',series:3,repeticiones:12,peso_recomendado:null,descanso_segundos:60,observaciones:''}];
     }
   }
