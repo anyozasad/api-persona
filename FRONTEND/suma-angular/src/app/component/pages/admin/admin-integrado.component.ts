@@ -187,13 +187,16 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
             aria-label="Elegir área de trabajo">
             <option *ngFor="let grupo of menuPrincipal" [value]="grupo.id">{{grupo.titulo}}</option>
           </select>
-          <label for="mg-modulo-selector" class="mg-nav-picker-step">2. Función</label>
-          <select id="mg-modulo-selector" [ngModel]="moduloSeleccionadoEnArea"
-            (ngModelChange)="seleccionarModuloSecundarioId($event)" aria-label="Abrir módulo adicional">
-            <option value="" disabled>Selecciona una función...</option>
-            <option *ngFor="let item of opcionesSelectorArea()" [value]="item.id">{{item.nombre}}</option>
-          </select>
-          <small>Primero selecciona un área y después una función. La pantalla se abrirá directamente.</small>
+          <div class="mg-secondary-links" aria-label="Funciones del área elegida">
+            <button type="button" class="mg-secondary-link" *ngFor="let item of opcionesSelectorArea()"
+              [attr.data-module]="item.id" [class.active]="seccion===item.id"
+              [attr.aria-current]="seccion===item.id ? 'page' : null"
+              (click)="seleccionarModuloSecundarioId(item.id)">
+              <span>{{item.nombre}}</span>
+              <span class="mg-secondary-chevron" aria-hidden="true">›</span>
+            </button>
+          </div>
+          <small>Selecciona una función para abrir su pantalla. No hay listas desplegables encima del menú.</small>
         </div>
         <p class="mg-nav-current-extra" *ngIf="!mostrarGestionAvanzada && moduloComplementarioActivo">
           Estás en: <strong>{{tituloActual}}</strong>

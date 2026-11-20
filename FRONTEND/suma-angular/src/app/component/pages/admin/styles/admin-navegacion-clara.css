@@ -995,3 +995,57 @@
   outline-color:#9acc38;
   color:#2b4515;
 }
+
+/* Otras funciones: enlaces compactos, sin un segundo combo desplegable. */
+.admin-shell.admin-home-redesign .mg-tec-order .mg-secondary-links {
+  margin-top:10px;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  max-height:236px;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding:2px 4px 4px 0;
+  scrollbar-width:thin;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-secondary-link {
+  display:flex;
+  width:100%;
+  min-height:36px;
+  box-sizing:border-box;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:8px 10px;
+  border:0;
+  border-radius:7px;
+  text-align:left;
+  font-size:13px;
+  line-height:1.35;
+  font-weight:500;
+  background:transparent;
+  color:#dce5d8;
+  cursor:pointer;
+  transition:background-color .15s ease;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-secondary-link .mg-secondary-chevron {
+  color:#a4c678;
+  font-size:17px;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-secondary-link:hover,
+.admin-shell.admin-home-redesign .mg-tec-order .mg-secondary-link:focus-visible {
+  background:#334038;
+  color:#fff;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-secondary-link.active {
+  background:#30462b;
+  color:#c5f475;
+  font-weight:650;
+}
+.admin-shell.admin-home-redesign .mg-tec-order .mg-secondary-link:focus-visible {
+  outline:2px solid #a6d449;
+  outline-offset:1px;
+}
+@media(prefers-reduced-motion:reduce) {
+  .admin-shell.admin-home-redesign .mg-tec-order .mg-secondary-link { transition:none; }
+}

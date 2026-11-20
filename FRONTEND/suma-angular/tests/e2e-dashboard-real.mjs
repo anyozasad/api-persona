@@ -38,8 +38,9 @@ try {
     const areas=await menu.locator('#mg-area-selector option').evaluateAll(opciones=>opciones.map(op=>op.value));
     for(const area of areas){
       await menu.locator('#mg-area-selector').selectOption(area);
-      if(await menu.locator('#mg-modulo-selector option[value="'+id+'"]').count()){
-        await menu.locator('#mg-modulo-selector').selectOption(id);
+      const opcion=menu.locator('.mg-secondary-link[data-module="'+id+'"]');
+      if(await opcion.count()){
+        await opcion.click();
         return;
       }
     }
@@ -455,30 +456,26 @@ try {
     const menu=page.locator('.mg-clear-navigation');
     assert.equal(await menu.getByRole('button',{name:'Reportes',exact:true}).count(),0);
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-    const selector=menu.locator('#mg-modulo-selector');
-    await selector.waitFor({timeout:10000});
     const areas=menu.locator('#mg-area-selector');
-    assert.equal(await areas.locator('option').count(),7,
-      'Deben existir siete áreas y solo un listado pequeño de funciones por área.');
+    assert.equal(await areas.locator('option').count(),7);
     await areas.selectOption('menu');
-    assert.equal(await selector.locator('option[value="configuracion"]').count(),1,
-      'Configuración debe estar disponible sin duplicar botones en el lateral.');
-    assert.ok((await selector.locator('option').count())<=8,
-      'Nunca abrir los más de 40 módulos de una sola vez.');
-    await selector.selectOption('configuracion');
+    assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
+      'El segundo desplegable innecesario debe desaparecer.');
+    assert.equal(await menu.locator('.mg-secondary-link[data-module="configuracion"]').count(),1);
+    assert.ok((await menu.locator('.mg-secondary-link').count())<=7);
+    await menu.locator('.mg-secondary-link[data-module="configuracion"]').click();
     const configuracion=page.locator('.config-page');
     await configuracion.waitFor({timeout:15000});
     await configuracion.getByRole('button',{name:'Usuarios y permisos'}).waitFor({timeout:25000});
     for(const herramienta of [
       'Usuarios y permisos','Historial de actividad',
       'Gestionar respaldos','Diagnóstico avanzado'
-    ])assert.equal(await configuracion.getByRole('button',{name:herramienta}).count(),1,
-      'Falta herramienta funcional: '+herramienta);
+    ])assert.equal(await configuracion.getByRole('button',{name:herramienta}).count(),1);
     await page.screenshot({path:'evidencias-dashboard/21_Configuracion_sin_modulos_duplicados.png',
       fullPage:true,animations:'disabled'});
   });
 
-  await paso('Siete áreas avanzadas conservan las funciones sin repetir los seis accesos directos',async()=>{
+  await paso('Siete áreas avanzadas conservan enlaces sin segundo selector superpuesto',async()=>{
     const grupos=[
       {area:'Socios y membresías',frecuente:'Membresías',adicional:'Planes y tarifas',total:5},
       {area:'Clases y entrenamiento',frecuente:'Clases y horarios',adicional:'Seguimiento',total:5},
@@ -492,27 +489,20 @@ try {
       await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
       const menu=page.locator('.mg-clear-navigation');
       await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-      const areas=menu.locator('#mg-area-selector');
-      await areas.selectOption({label:grupo.area});
-      const selector=menu.locator('#mg-modulo-selector');
-      assert.equal(await selector.locator('option:not([disabled])').count(),grupo.total,
+      await menu.locator('#mg-area-selector').selectOption({label:grupo.area});
+      const opciones=menu.locator('.mg-secondary-link');
+      assert.equal(await opciones.count(),grupo.total,
         'Faltan funciones del grupo '+grupo.area);
-      assert.ok((await selector.locator('option').count())<=8,
-        'La lista no debe tapar la pantalla con decenas de opciones.');
-      await selector.selectOption({label:grupo.frecuente});
-      assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio');
       assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
-        'El selector debe cerrarse al abrir una pantalla.');
+        'El desplegable redundante debe desaparecer.');
+      await opciones.filter({hasText:grupo.frecuente}).first().click();
+      assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio');
+      assert.equal(await opciones.count(),0,'Los enlaces deben cerrarse al abrir una función.');
       await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
       await menu.locator('#mg-area-selector').selectOption({label:grupo.area});
-      await menu.locator('#mg-modulo-selector').selectOption({label:grupo.adicional});
+      await menu.locator('.mg-secondary-link').filter({hasText:grupo.adicional}).first().click();
       assert.notEqual(await page.locator('.mg-current-topbar h1').innerText(),'Inicio');
-      assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
-        'Una pantalla abierta no debe quedar tapada por la lista de módulos.');
-      await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-      const seleccionado=await menu.locator('#mg-modulo-selector option:checked').innerText();
-      assert.equal(seleccionado.trim(),grupo.adicional,
-        'El selector debe recordar qué módulo está activo.');
+      assert.equal(await menu.locator('.mg-secondary-link').count(),0);
     }
   });
 
@@ -553,24 +543,24 @@ try {
         options.map(option=>option.value));
       assert.equal(areas.length,7,'Debe haber exactamente siete áreas de funciones secundarias.');
       for(const area of areas){
-        if(!await menu.locator('#mg-modulo-selector').count())
+        if(!await menu.locator('.mg-secondary-link').count())
           await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
         await menu.locator('#mg-area-selector').selectOption(area);
-        const opciones=await menu.locator('#mg-modulo-selector option:not([disabled])').evaluateAll(options=>
-          options.map(option=>({id:option.value,descripcion:option.textContent?.trim()||option.value})));
+        const opciones=await menu.locator('.mg-secondary-link').evaluateAll(options=>
+          options.map(option=>({id:option.getAttribute('data-module'),descripcion:option.textContent?.trim()||''})));
         assert.ok(opciones.length>0&&opciones.length<=7,
           'El área '+area+' debe presentar una lista corta y utilizable.');
         for(const opcion of opciones){
-          if(!await menu.locator('#mg-modulo-selector').count())
+          if(!await menu.locator('.mg-secondary-link').count())
             await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
           await menu.locator('#mg-area-selector').selectOption(area);
-          await menu.locator('#mg-modulo-selector').selectOption(opcion.id);
+          await menu.locator('.mg-secondary-link[data-module="'+opcion.id+'"]').click();
           await page.waitForFunction(id=>new URLSearchParams(location.search).get('modulo')===id,
             opcion.id,{timeout:15000});
           const titulo=(await page.locator('.mg-current-topbar h1').innerText()).trim();
           assert.ok(titulo && titulo!=='Inicio',
             'La función '+opcion.descripcion+' no muestra su pantalla.');
-          assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
+          assert.equal(await menu.locator('.mg-secondary-link').count(),0,
             'La lista de funciones se quedó encima de '+opcion.descripcion+'.');
           const espacio=await page.locator('.mg-current-workspace').innerText();
           assert.ok(espacio.trim().length>20,
@@ -678,15 +668,16 @@ try {
     assert.equal(await menu.locator('.mg-optional-category-head').count(),0);
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
     await menu.locator('#mg-area-selector').selectOption('finance');
-    const selector=menu.locator('#mg-modulo-selector');
-    assert.equal(await selector.locator('option[value="historial-ventas"]').count(),1);
-    assert.equal(await selector.locator('option[value="gastos"]').count(),1);
-    await selector.selectOption('gastos');
-    assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Gastos');
     assert.equal(await menu.locator('#mg-modulo-selector').count(),0,
+      'La lista desplegable redundante no debe mostrarse.');
+    assert.equal(await menu.locator('.mg-secondary-link[data-module="historial-ventas"]').count(),1);
+    assert.equal(await menu.locator('.mg-secondary-link[data-module="gastos"]').count(),1);
+    await menu.locator('.mg-secondary-link[data-module="gastos"]').click();
+    assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Gastos');
+    assert.equal(await menu.locator('.mg-secondary-link').count(),0,
       'Al entrar en Gastos la lista debe ocultarse.');
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-    assert.equal(await menu.locator('#mg-modulo-selector').inputValue(),'gastos');
+    assert.equal(await menu.locator('.mg-secondary-link[data-module="gastos"].active').count(),1);
     await page.screenshot({path:'evidencias-dashboard/35_Menu_adicional_agrupado.png',
       fullPage:true,animations:'disabled'});
   });
@@ -1050,6 +1041,53 @@ try {
       'Debe explicar por qué se rechazó el DNI en vez de fallar en silencio.');
     assert.equal(await duplicado.locator('input[name=dni]').inputValue(),'88776654',
       'El formulario no debe borrar el DNI cuando Laravel rechaza un duplicado.');
+  });
+
+  await paso('Planes, notificaciones, eventos y noticias funcionan y persisten en MySQL',async()=>{
+    await page.goto(base+'/admin?modulo=planes',{waitUntil:'domcontentloaded'});
+    const plan=page.locator('input[name="plan_nombre"]');
+    await plan.waitFor({timeout:15000});
+    await plan.fill('Plan prueba funcional 2026');
+    await page.locator('input[name="plan_duracion"]').fill('2');
+    await page.locator('input[name="plan_precio"]').fill('95.50');
+    const respuestaPlan=page.waitForResponse(respuesta=>respuesta.url().includes('/api/membresias')
+      && respuesta.request().method()==='POST',{timeout:20000});
+    await page.getByRole('button',{name:'Crear tarifa'}).click();
+    assert.equal((await respuestaPlan).status(),201,'El botón Crear tarifa debe guardar en MySQL.');
+    await page.getByText('Plan prueba funcional 2026',{exact:true}).first().waitFor({timeout:15000});
+    await page.reload({waitUntil:'domcontentloaded'});
+    await page.getByText('Plan prueba funcional 2026',{exact:true}).first().waitFor({timeout:15000});
+
+    await page.goto(base+'/admin?modulo=comunicacion',{waitUntil:'domcontentloaded'});
+    await page.locator('input[name="notif_titulo"]').fill('Aviso funcional de prueba');
+    await page.locator('textarea[name="notif_mensaje"]').fill('Horario de prueba exclusivo del entorno CI.');
+    const respuestaAviso=page.waitForResponse(respuesta=>respuesta.url().includes('/api/notificaciones-clientes')
+      && respuesta.request().method()==='POST',{timeout:25000});
+    await page.getByRole('button',{name:'Enviar notificación'}).click();
+    assert.equal((await respuestaAviso).status(),201,'El botón Enviar notificación debe guardar avisos.');
+    await page.getByText('Aviso funcional de prueba',{exact:true}).first().waitFor({timeout:15000});
+    await page.reload({waitUntil:'domcontentloaded'});
+    await page.getByText('Aviso funcional de prueba',{exact:true}).first().waitFor({timeout:15000});
+
+    for(const modulo of [
+      {id:'eventos',button:/Agregar Evento/i,title:'Evento real de prueba'},
+      {id:'noticias',button:/Agregar Noticia/i,title:'Noticia real de prueba'}
+    ]){
+      await page.goto(base+'/admin?modulo='+modulo.id,{waitUntil:'domcontentloaded'});
+      await page.getByRole('button',{name:modulo.button}).first().click();
+      const formulario=page.locator('.gym-suite-modal');
+      await formulario.waitFor({timeout:10000});
+      await formulario.locator('input[name="titulo"]').fill(modulo.title);
+      const respuesta=page.waitForResponse(r=>r.url().includes('/api/admin-gym-registros/'+modulo.id)
+        && r.request().method()==='POST',{timeout:20000});
+      await formulario.getByRole('button',{name:'Crear',exact:true}).click();
+      assert.equal((await respuesta).status(),201,'No guardó el módulo '+modulo.id);
+      await page.getByText(modulo.title,{exact:false}).first().waitFor({timeout:15000});
+      await page.reload({waitUntil:'domcontentloaded'});
+      await page.getByText(modulo.title,{exact:false}).first().waitFor({timeout:15000});
+    }
+    await page.screenshot({path:'evidencias-dashboard/38_Planes_Notificaciones_Eventos_Noticias_MySQL.png',
+      fullPage:true,animations:'disabled'});
   });
 
   await paso('Semana 06: preparar ejercicios editables de acuerdo al perfil del socio',async()=>{

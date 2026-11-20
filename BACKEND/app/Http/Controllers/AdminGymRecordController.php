@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AdminGymRecord;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class AdminGymRecordController extends Controller
@@ -25,6 +26,7 @@ class AdminGymRecordController extends Controller
     public function index(Request $request, string $modulo): JsonResponse
     {
         $this->validarModulo($modulo);
+        if ($error = $this->diagnosticarTabla('admin_gym_records')) return $error;
 
         $q = AdminGymRecord::query()
             ->where('modulo', $modulo)
@@ -49,6 +51,7 @@ class AdminGymRecordController extends Controller
     public function store(Request $request, string $modulo): JsonResponse
     {
         $this->validarModulo($modulo);
+        if ($error = $this->diagnosticarTabla('admin_gym_records')) return $error;
         $data = $this->validar($request);
         $data['modulo'] = $modulo;
 
@@ -60,6 +63,7 @@ class AdminGymRecordController extends Controller
     public function update(Request $request, string $modulo, int $id): JsonResponse
     {
         $this->validarModulo($modulo);
+        if ($error = $this->diagnosticarTabla('admin_gym_records')) return $error;
 
         $record = AdminGymRecord::where('modulo', $modulo)->findOrFail($id);
         $record->update($this->validar($request));
@@ -71,6 +75,7 @@ class AdminGymRecordController extends Controller
     public function destroy(string $modulo, int $id): JsonResponse
     {
         $this->validarModulo($modulo);
+        if ($error = $this->diagnosticarTabla('admin_gym_records')) return $error;
 
         $record = AdminGymRecord::where('modulo', $modulo)->findOrFail($id);
         $record->delete();
@@ -106,6 +111,7 @@ class AdminGymRecordController extends Controller
     public function cambiarEstado(Request $request, string $modulo, int $id): JsonResponse
     {
         $this->validarModulo($modulo);
+        if ($error = $this->diagnosticarTabla('admin_gym_records')) return $error;
         $data = $request->validate([
             'estado' => ['required', 'string', 'max:50'],
         ]);
@@ -133,4 +139,17 @@ class AdminGymRecordController extends Controller
     {
         abort_unless(in_array($modulo, self::MODULOS, true), 404, 'Módulo no disponible.');
     }
+    private function diagnosticarTabla(string $tabla): ?\Illuminate\Http\JsonResponse
+    {
+        if (Schema::hasTable($tabla)) {
+            return null;
+        }
+        return response()->json([
+            'codigo' => 'TABLA_MODULO_AUSENTE',
+            'mensaje' => 'Falta la tabla '.$tabla.' en MySQL. Realiza un respaldo y ejecuta la preparación segura de la base de datos para activar este módulo.',
+            'tabla' => $tabla,
+        ], 503);
+    }
+
+
 }
