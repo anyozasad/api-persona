@@ -1043,6 +1043,53 @@ try {
       'El formulario no debe borrar el DNI cuando Laravel rechaza un duplicado.');
   });
 
+  await paso('Planes, notificaciones, eventos y noticias funcionan y persisten en MySQL',async()=>{
+    await page.goto(base+'/admin?modulo=planes',{waitUntil:'domcontentloaded'});
+    const plan=page.locator('input[name="plan_nombre"]');
+    await plan.waitFor({timeout:15000});
+    await plan.fill('Plan prueba funcional 2026');
+    await page.locator('input[name="plan_duracion"]').fill('2');
+    await page.locator('input[name="plan_precio"]').fill('95.50');
+    const respuestaPlan=page.waitForResponse(respuesta=>respuesta.url().includes('/api/membresias')
+      && respuesta.request().method()==='POST',{timeout:20000});
+    await page.getByRole('button',{name:'Crear tarifa'}).click();
+    assert.equal((await respuestaPlan).status(),201,'El botón Crear tarifa debe guardar en MySQL.');
+    await page.getByText('Plan prueba funcional 2026',{exact:true}).first().waitFor({timeout:15000});
+    await page.reload({waitUntil:'domcontentloaded'});
+    await page.getByText('Plan prueba funcional 2026',{exact:true}).first().waitFor({timeout:15000});
+
+    await page.goto(base+'/admin?modulo=comunicacion',{waitUntil:'domcontentloaded'});
+    await page.locator('input[name="notif_titulo"]').fill('Aviso funcional de prueba');
+    await page.locator('textarea[name="notif_mensaje"]').fill('Horario de prueba exclusivo del entorno CI.');
+    const respuestaAviso=page.waitForResponse(respuesta=>respuesta.url().includes('/api/notificaciones-clientes')
+      && respuesta.request().method()==='POST',{timeout:25000});
+    await page.getByRole('button',{name:'Enviar notificación'}).click();
+    assert.equal((await respuestaAviso).status(),201,'El botón Enviar notificación debe guardar avisos.');
+    await page.getByText('Aviso funcional de prueba',{exact:true}).first().waitFor({timeout:15000});
+    await page.reload({waitUntil:'domcontentloaded'});
+    await page.getByText('Aviso funcional de prueba',{exact:true}).first().waitFor({timeout:15000});
+
+    for(const modulo of [
+      {id:'eventos',button:/Agregar Evento/i,title:'Evento real de prueba'},
+      {id:'noticias',button:/Agregar Noticia/i,title:'Noticia real de prueba'}
+    ]){
+      await page.goto(base+'/admin?modulo='+modulo.id,{waitUntil:'domcontentloaded'});
+      await page.getByRole('button',{name:modulo.button}).first().click();
+      const formulario=page.locator('.gym-suite-modal');
+      await formulario.waitFor({timeout:10000});
+      await formulario.locator('input[name="titulo"]').fill(modulo.title);
+      const respuesta=page.waitForResponse(r=>r.url().includes('/api/admin-gym-registros/'+modulo.id)
+        && r.request().method()==='POST',{timeout:20000});
+      await formulario.getByRole('button',{name:'Crear',exact:true}).click();
+      assert.equal((await respuesta).status(),201,'No guardó el módulo '+modulo.id);
+      await page.getByText(modulo.title,{exact:false}).first().waitFor({timeout:15000});
+      await page.reload({waitUntil:'domcontentloaded'});
+      await page.getByText(modulo.title,{exact:false}).first().waitFor({timeout:15000});
+    }
+    await page.screenshot({path:'evidencias-dashboard/38_Planes_Notificaciones_Eventos_Noticias_MySQL.png',
+      fullPage:true,animations:'disabled'});
+  });
+
   await paso('Semana 06: preparar ejercicios editables de acuerdo al perfil del socio',async()=>{
     await page.goto(base+'/rutinas',{waitUntil:'domcontentloaded'});
     const editor=page.locator('.routine-management .routine-editor-card');
