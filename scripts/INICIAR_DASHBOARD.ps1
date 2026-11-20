@@ -8,7 +8,8 @@ param(
     [switch]$Preparar,
     [switch]$Migrar,
     [switch]$SoloVerificar,
-    [switch]$RepararClientes
+    [switch]$RepararClientes,
+    [switch]$RepararMembresias
 )
 
 $ErrorActionPreference = 'Stop'
@@ -113,7 +114,7 @@ try {
     $composer = BuscarComando @('composer.bat','composer.cmd','composer') @('C:\ProgramData\ComposerSetup\bin\composer.bat')
 
     if (-not $php) { Fallar 'No encuentro PHP. Abre XAMPP o instala PHP 8.2+ y revisa C:\xampp\php\php.exe.' }
-    if (-not $npm -and -not $RepararClientes) { Fallar 'No encuentro npm. Instala Node.js 22 y vuelve a ejecutar este archivo.' }
+    if (-not $npm -and -not $RepararClientes -and -not $RepararMembresias) { Fallar 'No encuentro npm. Instala Node.js 22 y vuelve a ejecutar este archivo.' }
     $versionPhp = & $php -r 'echo PHP_VERSION_ID;'
     $idVersionPhp = 0
     if ($LASTEXITCODE -ne 0 -or -not [int]::TryParse([string]$versionPhp, [ref]$idVersionPhp)) {
@@ -155,6 +156,41 @@ try {
         }
         Informar ('La API Mallqui Gym reconoce la tabla clientes en: ' + $estado.base_datos)
         Informar 'Revisión de clientes completada. Verifica el registro en el dashboard.'
+        return
+    }
+
+    # Reparación limitada a las 3 tablas de tarifas, contratos y pagos.
+    # Se puede ejecutar desde FRONTEND mediante npm run reparar:membresias.
+    if ($RepararMembresias) {
+        if ($Migrar -or $SoloVerificar -or $RepararClientes) {
+            Fallar 'Usa -RepararMembresias sin otros modos de reparación o migración.'
+        }
+        if (-not (Test-Path (Join-Path $backend '.env') -PathType Leaf) -or
+            -not (Test-Path (Join-Path $backend 'vendor\autoload.php') -PathType Leaf)) {
+            Fallar 'Faltan .env o vendor del backend. Revisa la instalación de Laravel.'
+        }
+        Informar 'Revisando únicamente tablas de membresías y pagos de MySQL...'
+        Ejecutar $php @('artisan','db:asegurar-membresias') $backend
+        Ejecutar $php @('artisan','optimize:clear') $backend
+
+        $estado = ObtenerEstadoBackend
+        if ($null -eq $estado) {
+            Avisar 'La reparación CLI terminó, pero Laravel del puerto 8000 no respondió. Inicia el backend para verificar.'
+            return
+        }
+        VerificarServidorMallqui $estado
+        if ($estado.database -ne $true) {
+            Fallar 'Laravel del puerto 8000 no está conectado a MySQL.'
+        }
+        $faltantes = @($estado.faltantes | Where-Object {
+            $_ -match '^(tabla:)?(membresias|cliente_membresia|pagos_membresia)(\.|$)'
+        })
+        if ($faltantes.Count -gt 0) {
+            Avisar ('Base del Laravel activo: ' + $estado.base_datos)
+            Fallar ('La API todavía encuentra elementos de membresías ausentes: ' + ($faltantes -join ', '))
+        }
+        Informar ('El Laravel activo reconoce las tablas de membresías en: ' + $estado.base_datos)
+        Informar 'Esquema comprobado; verifica los planes y asignaciones en el navegador.'
         return
     }
 
