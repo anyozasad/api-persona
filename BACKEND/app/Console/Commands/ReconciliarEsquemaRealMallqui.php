@@ -115,7 +115,7 @@ class ReconciliarEsquemaRealMallqui extends Command
                         $this->line('Agregada: '.$tabla.'.'.$columna);
                     } catch (Throwable $e) {
                         $pendientes[] = $tabla.'.'.$columna;
-                        $this->warn('No se pudo reparar '.$tabla.'.'.$columna. Revisar esquema antiguo y laravel.log.');
+                        $this->warn('No se pudo reparar '.$tabla.'.'.$columna.'. Revisar esquema antiguo y laravel.log.');
                         report($e);
                     }
                 }
