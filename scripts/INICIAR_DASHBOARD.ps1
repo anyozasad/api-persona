@@ -183,7 +183,7 @@ try {
             Fallar 'Laravel del puerto 8000 no está conectado a MySQL.'
         }
         $faltantes = @($estado.faltantes | Where-Object {
-            $_ -match '^(tabla:)?(membresias|cliente_membresia|pagos_membresia)(\.|$)'
+            $_ -match '^(tabla:)?(membresias|cliente_membresia|pagos_membresia|cajas|movimientos_caja)(\.|$)'
         })
         if ($faltantes.Count -gt 0) {
             Avisar ('Base del Laravel activo: ' + $estado.base_datos)
