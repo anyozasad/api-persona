@@ -225,7 +225,8 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
 
       <div class="mg-current-workspace">
       <div *ngIf="toast" class="mg-action-feedback success" role="status" aria-live="polite">{{toast}}</div>
-      <div *ngIf="error && !clienteFormularioAbierto" class="mg-action-feedback error" role="alert">{{error}}</div>
+      <div *ngIf="error && !clienteFormularioAbierto && !(seccion==='dashboard' && estadoOperativoDashboard?.operativo===false && error.startsWith('No se pudieron sincronizar:'))"
+           class="mg-action-feedback error" role="alert">{{error}}</div>
       <section class="mg-module-shell-head" *ngIf="seccion!=='dashboard' && !['aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui'].includes(seccion)">
         <div class="mg-module-shell-copy">
           <p>{{subtituloActual}}</p>
@@ -4169,7 +4170,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       const muestra=faltantes.slice(0,3).join(', ');
       return 'Laravel y MySQL responden, pero faltan '+faltantes.length
         +' tablas o columnas'+(muestra ? ': '+muestra : '')
-        +'. Respalda la base antes de ejecutar php artisan sistema:preparar.';
+        +'. Para reparar tu base local sin borrar los datos, usa el iniciador de Mallqui Gym con -Migrar: primero solicita autorización y guarda un respaldo SQL.';
     }
     if (this.dashboardError || !this.dashboard) return 'Laravel y MySQL responden, pero falló el resumen: '
       +(this.dashboardError || 'revisa el registro de errores de Laravel en BACKEND/storage/logs.');
