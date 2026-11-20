@@ -63,6 +63,14 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     component = new AdminIntegradoComponent(auth, api, router);
   });
 
+  it('habilita la creación de cuenta para un socio nuevo sin ocultar los campos de acceso', () => {
+    component.nuevoCliente();
+    expect(component.clienteForm.crear_acceso).toBeTrue();
+    expect(component.clienteFormularioAbierto).toBeTrue();
+    expect(component.validacionesPendientesCliente.join(' ')).toContain('Usuario de acceso');
+    expect(component.validacionesPendientesCliente.join(' ')).toContain('Contraseña temporal');
+  });
+
   it('explica por qué está bloqueado Registrar cliente sin enviar datos incompletos a Laravel', () => {
     component.nuevoCliente();
     component.clienteForm={
