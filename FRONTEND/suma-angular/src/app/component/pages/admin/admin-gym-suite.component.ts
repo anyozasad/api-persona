@@ -774,7 +774,7 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
           ? 'No se pudieron cargar los registros manuales de ingresos.'
           : e?.error?.codigo==='TABLA_MODULO_AUSENTE'
             ? String(e?.error?.mensaje)
-            : 'No fue posible cargar este módulo. Comprueba la conexión y las tablas de MySQL; el detalle está en laravel.log.';
+            : 'No se pudo cargar este módulo. Comprueba la conexión y las tablas de MySQL; el detalle está en laravel.log.';
         // Mantener visible el fallo de carga hasta que el usuario reintente:
         // nunca confundir una consulta fallida con una lista sin registros.
       }
@@ -929,7 +929,9 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
         this.subiendoImagen = false;
         this.error = e?.error?.codigo==='TABLA_MODULO_AUSENTE'
           ? String(e?.error?.mensaje)
-          : 'No se pudo completar la operación. Revisa Laravel y MySQL.';
+          : Number(e?.status)<500 && e?.error?.message
+            ? String(e.error.message)
+            : 'No se pudo completar la operación. Revisa Laravel y MySQL.';
         this.limpiarMensaje('error');
       }
     });
@@ -987,7 +989,9 @@ export class AdminGymSuiteComponent implements OnInit, OnChanges {
         this.saving = false;
         this.error = e?.error?.codigo==='TABLA_MODULO_AUSENTE'
           ? String(e?.error?.mensaje)
-          : 'No se pudo completar la operación. Revisa Laravel y MySQL.';
+          : Number(e?.status)<500 && e?.error?.message
+            ? String(e.error.message)
+            : 'No se pudo completar la operación. Revisa Laravel y MySQL.';
         this.limpiarMensaje('error');
       }
     });
