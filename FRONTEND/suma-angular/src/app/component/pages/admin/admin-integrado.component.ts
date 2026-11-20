@@ -5161,7 +5161,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   nuevoCliente(){
     this.clienteEditandoId=0;
-    this.clienteForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:false,nombre_usuario:'',contrasena:''};
+    // Al registrar un socio nuevo se ofrece su acceso al portal desde el inicio.
+    // El administrador puede desmarcarlo cuando solo requiere la ficha del socio.
+    this.clienteForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:true,nombre_usuario:'',contrasena:''};
     this.error='';
     this.clienteRegistroError='';
     this.ultimoAccesoCliente='';
