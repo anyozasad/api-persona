@@ -389,7 +389,7 @@
 }
 
 
-/* Vista operativa: cuatro accesos directos. El dashboard es un resumen, no otro menú. */
+/* Vista operativa: seis tareas y dos herramientas en el menú, sin repetir botones en Inicio. */
 .admin-shell.admin-home-redesign .mg-tec-order .mg-nav-primary {
   min-height:48px!important;
   padding:7px 11px!important;
@@ -598,7 +598,7 @@
   }
 }
 
-/* Navegación enfocada: cinco acciones y un solo selector de funciones restantes. */
+/* Navegación enfocada: ocho acciones útiles y un solo selector de las 38 restantes. */
 .admin-shell.admin-home-redesign .mg-current-sidebar .mg-brand {
   cursor:default!important;
   user-select:none;
