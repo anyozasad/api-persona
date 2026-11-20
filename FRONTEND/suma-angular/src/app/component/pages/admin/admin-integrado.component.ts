@@ -1023,6 +1023,10 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                 <p>{{clienteRegistroError}}</p>
                 <small>Corrige el dato indicado y vuelve a registrar. El formulario mantiene la información escrita.</small>
               </div>
+              <div class="client-editor-validation-note" *ngIf="clienteNgForm.invalid && validacionesPendientesCliente.length" role="status" aria-live="polite">
+                <strong>Para habilitar «{{clienteEditandoId ? 'Guardar cambios' : 'Registrar cliente'}}», revisa:</strong>
+                <ul><li *ngFor="let pendiente of validacionesPendientesCliente">{{pendiente}}</li></ul>
+              </div>
               <footer class="client-editor-footer">
                 <button type="button" class="cancel" (click)="cerrarFormularioCliente()">Cancelar</button>
                 <button type="submit" class="save" [disabled]="clienteNgForm.invalid || guardandoCliente">
@@ -5124,6 +5128,29 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.ok('Reporte CSV generado');
   }
 
+  get validacionesPendientesCliente():string[] {
+    const f=this.clienteForm||{};
+    const pendientes:string[]=[];
+    const dni=String(f.dni||'').trim();
+    const nombres=String(f.nombres||'').trim();
+    const apellidos=String(f.apellidos||'').trim();
+    const correo=String(f.correo||'').trim();
+    if(!/^[0-9]{8}$/.test(dni))pendientes.push('DNI: exactamente 8 números.');
+    if(!nombres || nombres.length>100)pendientes.push('Nombres: completa el nombre (máximo 100 caracteres).');
+    if(!apellidos || apellidos.length>100)pendientes.push('Apellidos: completa el apellido (máximo 100 caracteres).');
+    if(correo || (!this.clienteEditandoId && f.crear_acceso)){
+      if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(correo) || correo.length>150)
+        pendientes.push('Correo: escribe una dirección válida (por ejemplo, cliente@gmail.com).');
+    }
+    if(!this.clienteEditandoId && f.crear_acceso){
+      const usuario=String(f.nombre_usuario||'').trim();
+      if(!usuario || usuario.length>80)pendientes.push('Usuario de acceso: escribe un nombre (máximo 80 caracteres).');
+      const clave=String(f.contrasena||'');
+      if(clave.length<8 || clave.length>100)pendientes.push('Contraseña temporal: entre 8 y 100 caracteres.');
+    }
+    return pendientes;
+  }
+
   nuevoCliente(){
     this.clienteEditandoId=0;
     this.clienteForm={dni:'',nombres:'',apellidos:'',telefono:'',correo:'',direccion:'',estado:'Activo',crear_acceso:false,nombre_usuario:'',contrasena:''};
@@ -5135,6 +5162,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   guardarCliente(){
     if(this.guardandoCliente)return;
+    const pendientes=this.validacionesPendientesCliente;
+    if(pendientes.length){
+      this.clienteRegistroError='Revisa los datos: '+pendientes.join(' ');
+      return;
+    }
 
     const datos={...this.clienteForm};
     datos.dni=String(datos.dni||'').trim();
