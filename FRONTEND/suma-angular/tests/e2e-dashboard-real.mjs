@@ -902,7 +902,9 @@ try {
     await form.locator('input[name=apellidos]').fill('Portal Verificado');
     await form.locator('input[name=telefono]').fill('987654321');
     await form.locator('input[name=correo]').fill('cuenta-portal-ci@example.test');
-    await form.locator('input[name=crear_acceso]').check();
+    await form.locator('.client-editor-switch').click();
+    assert.equal(await form.locator('input[name=crear_acceso]').isChecked(),true,
+      'El interruptor visible debe activar la creación de acceso.');
     await form.locator('input[name=cliente_usuario]').fill(username);
     await form.locator('input[name=cliente_clave]').fill(password);
     assert.equal(await form.locator('button.save').isEnabled(),true);
