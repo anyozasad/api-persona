@@ -7,11 +7,13 @@ use App\Models\NotificacionCliente;
 use App\Models\OpinionCliente;
 use App\Models\SolicitudSoporte;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class ComunicacionAdminController extends Controller
 {
     public function notificaciones()
     {
+        if ($error = $this->diagnosticarTabla('notificaciones_cliente')) return $error;
         return response()->json(
             NotificacionCliente::with('cliente')
                 ->orderByDesc('fecha')
@@ -22,6 +24,7 @@ class ComunicacionAdminController extends Controller
 
     public function enviarNotificacion(Request $request)
     {
+        if ($error = $this->diagnosticarTabla('notificaciones_cliente')) return $error;
         $datos = $request->validate([
             'id_cliente' => 'nullable|integer|exists:clientes,id_cliente',
             'titulo' => 'required|string|max:150',
@@ -64,6 +67,7 @@ class ComunicacionAdminController extends Controller
 
     public function eliminarNotificacion(string $id)
     {
+        if ($error = $this->diagnosticarTabla('notificaciones_cliente')) return $error;
         $notificacion = NotificacionCliente::findOrFail($id);
         $notificacion->delete();
 
@@ -82,6 +86,7 @@ class ComunicacionAdminController extends Controller
 
     public function cambiarEstadoOpinion(Request $request, string $id)
     {
+        if ($error = $this->diagnosticarTabla('notificaciones_cliente')) return $error;
         $datos = $request->validate([
             'estado' => 'required|string|in:Enviada,Revisada',
         ]);
@@ -120,6 +125,7 @@ class ComunicacionAdminController extends Controller
 
     public function responderSoporte(Request $request, string $id)
     {
+        if ($error = $this->diagnosticarTabla('notificaciones_cliente')) return $error;
         $datos = $request->validate([
             'respuesta' => 'required|string|min:3|max:3000',
             'estado' => 'nullable|string|in:Respondido,Cerrado',
@@ -160,4 +166,17 @@ class ComunicacionAdminController extends Controller
             'solicitud' => $solicitud->fresh('cliente'),
         ]);
     }
+    private function diagnosticarTabla(string $tabla): ?\Illuminate\Http\JsonResponse
+    {
+        if (Schema::hasTable($tabla)) {
+            return null;
+        }
+        return response()->json([
+            'codigo' => 'TABLA_MODULO_AUSENTE',
+            'mensaje' => 'Falta la tabla '.$tabla.' en MySQL. Realiza un respaldo y ejecuta la preparación segura de la base de datos para activar este módulo.',
+            'tabla' => $tabla,
+        ], 503);
+    }
+
+
 }
