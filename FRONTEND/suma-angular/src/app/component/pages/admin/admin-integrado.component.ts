@@ -643,9 +643,10 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           </section>
           <p class="efsrt-notice">{{revision.nota}} Fecha de la consulta: {{revision.fecha_revision}}. Base: {{revision.base_datos}}.</p>
           <p class="efsrt-notice" *ngIf="revision.funciones_portal as portal">
-            <strong>Catálogo del portal:</strong> {{portal.definidas}} funciones definidas;
-            {{portal.estructura_verificada}} referencias de rutas y archivos verificadas,
-            {{portal.estructura_pendiente}} con observaciones.
+            <strong>Calidad del portal (150 elementos):</strong> {{portal.definidas}} capacidades catalogadas
+            ({{portal.rutas_api}} contratos API y {{portal.referencias_interfaz}} referencias de interfaz).
+            {{portal.estructura_verificada}} verificaciones estructurales correctas y
+            {{portal.estructura_pendiente}} pendientes.
             {{portal.alcance}}
           </p>
           <section class="efsrt-weekly" *ngIf="revision.semanas?.length" aria-label="Revisión de las 11 semanas EFSRT">
@@ -4888,6 +4889,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       filas.push(['Funciones',revision.funciones_portal.definidas,
         revision.funciones_portal.estructura_verificada,revision.funciones_portal.estructura_pendiente,
         revision.funciones_portal.alcance]);
+      filas.push(['Contratos de rutas API',revision.funciones_portal.rutas_api],
+        ['Referencias de interfaz',revision.funciones_portal.referencias_interfaz]);
     }
     filas.push([],['Alertas de datos','Cantidad','Detalle']);
     for(const alerta of Array.isArray(revision.alertas)?revision.alertas:[]){
