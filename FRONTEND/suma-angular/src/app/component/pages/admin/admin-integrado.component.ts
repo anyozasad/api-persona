@@ -178,16 +178,18 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           <i aria-hidden="true">{{mostrarGestionAvanzada ? '⌃' : '⌄'}}</i>
         </button>
         <div class="mg-nav-advanced-content mg-nav-picker" *ngIf="mostrarGestionAvanzada">
-          <label for="mg-modulo-selector">Selecciona un módulo</label>
-          <select id="mg-modulo-selector" [ngModel]="moduloSecundarioSeleccionado"
-            (ngModelChange)="seleccionarModuloSecundarioId($event)" aria-label="Abrir módulo adicional">
-            <option value="" disabled>Elige una función...</option>
-            <optgroup *ngFor="let grupo of menuPrincipal" [label]="grupo.titulo">
-              <option *ngFor="let item of opcionesSelectorGrupo(grupo)"
-                [value]="item.id">{{item.nombre}}</option>
-            </optgroup>
+          <label for="mg-area-selector">1. Área de trabajo</label>
+          <select id="mg-area-selector" [(ngModel)]="grupoComplementarioSeleccionado"
+            aria-label="Elegir área de trabajo">
+            <option *ngFor="let grupo of menuPrincipal" [value]="grupo.id">{{grupo.titulo}}</option>
           </select>
-          <small>Elige una función y se abrirá su pantalla. También puedes buscar su nombre arriba.</small>
+          <label for="mg-modulo-selector" class="mg-nav-picker-step">2. Función</label>
+          <select id="mg-modulo-selector" [ngModel]="moduloSeleccionadoEnArea"
+            (ngModelChange)="seleccionarModuloSecundarioId($event)" aria-label="Abrir módulo adicional">
+            <option value="" disabled>Selecciona una función...</option>
+            <option *ngFor="let item of opcionesSelectorArea()" [value]="item.id">{{item.nombre}}</option>
+          </select>
+          <small>Primero selecciona un área y después una función. La pantalla se abrirá directamente.</small>
         </div>
         <p class="mg-nav-current-extra" *ngIf="!mostrarGestionAvanzada && moduloComplementarioActivo">
           Estás en: <strong>{{tituloActual}}</strong>
@@ -1905,6 +1907,13 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
               </div>
               <span>◫</span>
             </div>
+            <div class="mg-reserva-prerequisito" *ngIf="!clientes.length || !clases.length" role="status">
+              <strong>Antes de registrar una reserva</strong>
+              <p>{{!clientes.length ? 'No hay socios disponibles. Registra un socio primero.' : 'No hay clases disponibles. Registra una clase con horario y cupos.'}}</p>
+              <button type="button" class="admin-secondary" (click)="cambiarSegcion(!clientes.length ? 'clientes' : 'clases')">
+                {{!clientes.length ? 'Ir a Socios' : 'Ir a Clases y horarios'}}
+              </button>
+            </div>
             <form (ngSubmit)="guardarReservaAdmin()">
               <label>Socio
                 <select name="resSocio" [(ngModel)]="reservaForm.id_cliente" required>
@@ -1928,7 +1937,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
               </label>
               <p>Solo se permiten clases futuras, con membresía vigente y cupo disponible.</p>
               <div class="form-row">
-                <button class="admin-primary" type="submit" [disabled]="reservaGuardando">
+                <button class="admin-primary" type="submit" [disabled]="reservaGuardando || !clientes.length || !clases.length">
                   {{reservaGuardando ? 'Guardando...' : (reservaEditandoId ? 'Guardar cambios' : 'Registrar reserva')}}
                 </button>
                 <button *ngIf="reservaEditandoId" class="admin-secondary" type="button"
@@ -2982,6 +2991,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   // No duplicarlos en la barra lateral evita ocho accesos visibles a la vez.
   readonly accesosDirectosAdmin=[...this.accesosPrincipalesAdmin];
   mostrarGestionAvanzada = false;
+  grupoComplementarioSeleccionado = 'members';
 
   /** Menu único: cada módulo aparece en su área de trabajo, sin enlaces genéricos. */
   readonly menuPrincipal: Array<{
@@ -3082,6 +3092,17 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(esDirecto) return '';
     return this.menuPrincipal.some(grupo=>grupo.items.some(item=>item.id===this.seccion))
       ? this.seccion : '';
+  }
+
+  /** Nunca desplegar los 40 módulos a la vez: mostrar solo los del área elegida. */
+  opcionesSelectorArea():Array<{id:string;nombre:string;accion?:'nuevoSocio'}> {
+    const grupo=this.menuPrincipal.find(item=>item.id===this.grupoComplementarioSeleccionado);
+    return grupo ? this.opcionesSelectorGrupo(grupo) : [];
+  }
+
+  get moduloSeleccionadoEnArea():string {
+    const actual=this.moduloSecundarioSeleccionado;
+    return this.opcionesSelectorArea().some(item=>item.id===actual) ? actual : '';
   }
 
   seleccionarModuloSecundario(event:Event):void {
@@ -3412,7 +3433,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   alternarGestionAvanzada():void{
     this.mostrarGestionAvanzada=!this.mostrarGestionAvanzada;
-    if(!this.mostrarGestionAvanzada){
+    if(this.mostrarGestionAvanzada){
+      const grupoActivo=this.menuPrincipal.find(grupo=>this.opcionesSelectorGrupo(grupo).some(item=>item.id===this.seccion));
+      if(grupoActivo)this.grupoComplementarioSeleccionado=grupoActivo.id;
+    }else{
       Object.keys(this.navGroups).forEach(id=>this.navGroups[id]=false);
     }
   }

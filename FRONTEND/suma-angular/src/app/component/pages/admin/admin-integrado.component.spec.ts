@@ -278,6 +278,25 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.mostrarGestionAvanzada).toBeFalse();
   });
 
+  it('UX muestra un área por vez y conserva todas las funciones secundarias', () => {
+    expect(component.menuPrincipal).toHaveSize(7);
+    for(const grupo of component.menuPrincipal){
+      component.grupoComplementarioSeleccionado=grupo.id;
+      expect(component.opcionesSelectorArea().map(item=>item.id))
+        .toEqual(component.opcionesSelectorGrupo(grupo).map(item=>item.id));
+      expect(component.opcionesSelectorArea().length).toBeLessThan(8);
+    }
+    component.seccion='gastos';
+    component.mostrarGestionAvanzada=false;
+    component.alternarGestionAvanzada();
+    expect(component.grupoComplementarioSeleccionado).toBe('finance');
+    expect(component.moduloSeleccionadoEnArea).toBe('gastos');
+    component.grupoComplementarioSeleccionado='training';
+    expect(component.moduloSeleccionadoEnArea).toBe('');
+    component.alternarGestionAvanzada();
+    expect(component.mostrarGestionAvanzada).toBeFalse();
+  });
+
   it('selector sencillo conserva las funciones sin duplicar los accesos principales', () => {
     const grupo=component.menuPrincipal.find(g=>g.id==='operations')!;
     const visibles=component.opcionesSelectorGrupo(grupo).map(item=>item.id);
