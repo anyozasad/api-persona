@@ -100,3 +100,23 @@ Se actualizó directamente la rama `main` del proyecto Angular 20 + Laravel 12:
 Pruebas añadidas: `admin-gym-suite.component.spec.ts` para filtros, exportación, estados, errores, actualización y eliminación; `tests/e2e-dashboard-real.mjs` para exportar ingresos y registrar/eliminar un salario usando una **base MySQL temporal de GitHub Actions**. Los resultados válidos son los de cada ejecución del flujo `Mallqui Gym - Dashboard real navegador y MySQL`, no únicamente que el código de prueba exista.
 
 **Alcance pendiente:** las pruebas automáticas no sustituyen la comprobación con `BACKEND/.env` y las fotografías/productos existentes en el XAMPP real; no se acredita la emisión SUNAT ni que las 150 entradas estructurales del portal sean 150 sprints completados. Se debe conservar el respaldo SQL antes de migraciones y no ejecutar `migrate:fresh` sobre datos reales.
+
+## Calidad de software: matriz auditable de 150 capacidades
+
+El número **150** del catálogo `BACKEND/config/portal_cliente_funciones.php` describe capacidades del **portal del cliente**, no 150 sprints del documento EFSRT. La bitácora oficial tiene 11 semanas y 55 actividades. El profesor puede comprobar estas cifras directamente en el código, en los tests y en la revisión EFSRT.
+
+- **150 casos independientes PHPUnit** (`PortalCliente150FuncionesTest`): cada capacidad tiene nombre, área y al menos una referencia verificable. **52** son contratos de rutas/métodos de la API y **98** son referencias de la interfaz. Una prueba de existencia no reemplaza probar un formulario con la base de datos.
+- **46 comprobaciones de acceso sin iniciar sesión** (`SecuritySmokeTest`): las rutas privadas catalogadas deben responder 401 antes de que se ejecute cualquier acción. Las seis rutas de registro, login y recuperación son públicas con límites de intentos, por lo que no deben retornar 401.
+- **Pruebas reales de integración**: la suite Laravel utiliza MySQL temporal; Angular compila y prueba componentes; Chromium revisa formularios, fotos, navegación, operaciones y errores de consola/Network. GitHub Actions impide integrar una revisión si esas pruebas fallan y no se corrigen.
+- **Evidencia visible**: en Verificación EFSRT se muestran los contratos API y las referencias frontend por separado. En GitHub Actions buscar el paso **«Calidad del software - 150 contratos independientes y 46 rutas seguras»**.
+
+Para ejecutar la verificación **sin alterar tablas ni borrar registros**:
+
+```powershell
+cd BACKEND
+php artisan mallqui:cliente-funciones --fallos
+php artisan test --filter=PortalCliente150FuncionesTest
+php artisan test --filter=SecuritySmokeTest
+```
+
+**Criterio de aceptación honesto:** la cobertura estructural 150/150 y los casos de seguridad que aprueben en CI demuestran contratos y controles, **no** que existan 150 sprints funcionalmente aceptados ni que cada flujo esté completado en la PC de exposición. Queda por demostrar el uso con su base MySQL de XAMPP, las fotografías de sus artículos y los comprobantes legales si se exige SUNAT. La aplicación no debe convertir las pruebas automáticas en afirmaciones falsas de cumplimiento presencial.
