@@ -183,7 +183,27 @@ try {
         Informar ('Respaldo SQL verificado: ' + $nuevoRespaldo.FullName)
         Informar 'Sincronizando únicamente el esquema pendiente de Mallqui Gym...'
         Ejecutar $php @('artisan','sistema:preparar') $backend
-        Informar 'La preparación se ejecutó. Conserva el respaldo SQL antes de evaluar las 11 semanas.'
+
+        # Algunas instalaciones XAMPP contienen migraciones marcadas como
+        # ejecutadas pero conservan columnas ausentes en tablas legacy.
+        # Reconciliar el esquema real (sin fresh ni drop) tras el respaldo.
+        Informar 'Revisando tablas y columnas reales de clientes, usuarios y módulos...'
+        Ejecutar $php @('artisan','db:reconciliar-esquema') $backend
+
+        # No informar éxito si el registro todavía carece de columnas.
+        # El estado comprueba la conexión que usa el backend abierto.
+        Ejecutar $php @('artisan','optimize:clear') $backend
+        $estadoFinal = ObtenerEstadoBackend
+        if ($null -ne $estadoFinal -and $estadoFinal.sistema -eq 'Mallqui Gym' -and $estadoFinal.database -eq $true) {
+            $pendientesRegistro = @($estadoFinal.faltantes | Where-Object {
+                $_ -match '^(clientes|usuarios|personal_access_tokens)(\\.|$|:)'
+            })
+            if ($pendientesRegistro.Count -gt 0) {
+                Avisar ('Aún faltan campos del registro: ' + ($pendientesRegistro -join ', '))
+                Fallar 'No se pudo completar el esquema de registro; revisa las advertencias anteriores.'
+            }
+        }
+        Informar 'La preparación y conciliación terminaron. Conserva el respaldo SQL.'
     }
 
     if ($SoloVerificar) {
