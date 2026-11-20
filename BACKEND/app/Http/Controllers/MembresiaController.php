@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Membresia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 
 class MembresiaController extends Controller
 {
     public function index()
     {
+        if ($error = $this->diagnosticarTabla('membresias')) return $error;
+        if ($error = $this->diagnosticarTabla('cliente_membresia')) return $error;
         return response()->json(
             Membresia::withCount('clienteMembresias')
                 ->orderBy('precio')
@@ -19,6 +22,7 @@ class MembresiaController extends Controller
 
     public function store(Request $request)
     {
+        if ($error = $this->diagnosticarTabla('membresias')) return $error;
         $datos = $request->validate([
             'nombre' => 'required|string|max:100|unique:membresias,nombre',
             'duracion_meses' => 'required|integer|min:1|max:36',
@@ -38,6 +42,7 @@ class MembresiaController extends Controller
 
     public function show(Membresia $membresia)
     {
+        if ($error = $this->diagnosticarTabla('cliente_membresia')) return $error;
         return response()->json(
             $membresia->load(['clienteMembresias.cliente', 'clienteMembresias.pagos'])
         );
@@ -45,6 +50,7 @@ class MembresiaController extends Controller
 
     public function update(Request $request, Membresia $membresia)
     {
+        if ($error = $this->diagnosticarTabla('membresias')) return $error;
         $datos = $request->validate([
             'nombre' => [
                 'sometimes', 'string', 'max:100',
@@ -66,6 +72,7 @@ class MembresiaController extends Controller
 
     public function destroy(Membresia $membresia)
     {
+        if ($error = $this->diagnosticarTabla('membresias')) return $error;
         $membresia->update(['estado' => 'Inactivo']);
 
         return response()->json([
@@ -73,4 +80,17 @@ class MembresiaController extends Controller
             'membresia' => $membresia->fresh(),
         ]);
     }
+    private function diagnosticarTabla(string $tabla): ?\Illuminate\Http\JsonResponse
+    {
+        if (Schema::hasTable($tabla)) {
+            return null;
+        }
+        return response()->json([
+            'codigo' => 'TABLA_MODULO_AUSENTE',
+            'mensaje' => 'Falta la tabla '.$tabla.' en MySQL. Realiza un respaldo y ejecuta la preparación segura de la base de datos para activar este módulo.',
+            'tabla' => $tabla,
+        ], 503);
+    }
+
+
 }
