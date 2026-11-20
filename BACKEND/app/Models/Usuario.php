@@ -49,7 +49,15 @@ class Usuario extends Authenticatable
             if (!Schema::hasTable('usuarios') || !Schema::hasColumn('usuarios', 'id_usuario')) return;
             if (!in_array(DB::connection()->getDriverName(), ['mysql', 'mariadb'], true)) return;
 
-            foreach (DB::select('SHOW COLUMNS FROM usuarios') as $campo) {
+            $columnas = DB::select('SHOW COLUMNS FROM usuarios');
+            foreach ($columnas as $campo) {
+                if ((string) $campo->Field === 'id_usuario'
+                    && str_contains(strtolower((string) ($campo->Extra ?? '')), 'generated')) {
+                    // El ID se calcula en MySQL. No se puede asignar manualmente.
+                    return;
+                }
+            }
+            foreach ($columnas as $campo) {
                 $nombre = (string) $campo->Field;
                 if ($nombre === 'id_usuario' || !str_contains(strtolower((string) ($campo->Extra ?? '')), 'auto_increment')) continue;
                 if (!preg_match('/^[a-zA-Z0-9_]+$/', $nombre)) return;
