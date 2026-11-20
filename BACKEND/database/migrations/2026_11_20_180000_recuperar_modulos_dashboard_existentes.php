@@ -42,6 +42,18 @@ return new class extends Migration
             });
         }
 
+        if (!Schema::hasTable('cliente_membresia')) {
+            Schema::create('cliente_membresia', function (Blueprint $table) {
+                $table->bigIncrements('id_cliente_membresia');
+                $table->unsignedBigInteger('id_cliente')->index();
+                $table->unsignedBigInteger('id_membresia')->index();
+                $table->date('fecha_inicio');
+                $table->date('fecha_fin');
+                $table->string('estado', 30)->default('Activo')->index();
+                $table->index(['id_cliente', 'estado']);
+            });
+        }
+
         // El módulo Planes usa membresias; el esquema core puede figurar
         // migrado en instalaciones antiguas aunque falte la tabla.
         if (!Schema::hasTable('membresias')) {
