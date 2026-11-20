@@ -110,6 +110,11 @@ jobs:
           php artisan test --filter=ProductoModernLegacyBridgeTest
           php artisan test --filter=KardexLegacyRealTest
           php artisan test --filter=EfsrtInterfazEvidenciaTest
+      - name: Calidad del software - 150 contratos independientes y 46 rutas seguras
+        run: |
+          php artisan test --filter=PortalCliente150FuncionesTest
+          php artisan test --filter=SecuritySmokeTest
+          php artisan mallqui:cliente-funciones --fallos
       - name: Ejecutar suite completa de Laravel con BD aislada
         run: |
           php artisan migrate:fresh --force
