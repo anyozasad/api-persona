@@ -319,16 +319,16 @@ try {
     const menu=page.locator('.mg-clear-navigation');
     await menu.waitFor({timeout:20000});
     assert.equal(await menu.locator('.mg-direct-home').count(),1);
-    assert.equal(await menu.locator('.mg-nav-primary').count(),8,
+    assert.equal(await menu.locator('.mg-nav-primary').count(),6,
       'La pantalla inicial no debe mostrar siete grupos ni decenas de botones.');
     assert.deepEqual(await menu.locator('.mg-nav-primary').evaluateAll(nodes=>
       nodes.map(node=>node.getAttribute('aria-label'))),[
-      'Socios','Reservas','Asistencia','Productos','Ventas','Pagos','Reportes','Configuración'
+      'Socios','Reservas','Asistencia','Productos','Ventas','Pagos'
     ]);
     assert.equal(await menu.locator('.cf-nav-group-head').count(),0,
       'Los módulos secundarios permanecen plegados.');
     assert.deepEqual(await menu.locator('.mg-nav-caption').allTextContents(),
-      ['INICIO','SOCIOS Y SESIONES','PRODUCTOS Y COBROS','RESULTADOS','GESTIÓN COMPLETA']);
+      ['INICIO','SOCIOS Y SESIONES','PRODUCTOS Y COBROS','GESTIÓN Y RESULTADOS']);
     assert.equal(await menu.getByText('Todas las funciones',{exact:true}).count(),0);
     assert.equal(await page.locator('.mg-current-sidebar button.mg-brand').count(),0,
       'El logotipo no debe repetir el botón Inicio.');
@@ -418,16 +418,15 @@ try {
   await paso('Administración conserva reportes, usuarios, auditoría, configuración y respaldo',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
-    assert.equal(await menu.getByRole('button',{name:'Reportes',exact:true}).count(),1);
+    assert.equal(await menu.getByRole('button',{name:'Reportes',exact:true}).count(),0);
     await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
     const selector=menu.locator('#mg-modulo-selector');
     await selector.waitFor({timeout:10000});
     assert.equal(await selector.locator('optgroup').count(),7,
       'Las siete áreas siguen disponibles dentro de un único selector.');
-    assert.equal(await selector.locator('option[value="configuracion"]').count(),0,
-      'Configuración ya tiene un acceso directo; no debe duplicarse en el selector.');
-    await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
-    await menu.getByRole('button',{name:'Configuración',exact:true}).click();
+    assert.equal(await selector.locator('option[value="configuracion"]').count(),1,
+      'Configuración debe estar disponible sin duplicar botones en el lateral.');
+    await selector.selectOption('configuracion');
     const configuracion=page.locator('.config-page');
     await configuracion.waitFor({timeout:15000});
     await configuracion.getByRole('button',{name:'Usuarios y permisos'}).waitFor({timeout:25000});
@@ -440,7 +439,7 @@ try {
       fullPage:true,animations:'disabled'});
   });
 
-  await paso('Siete áreas avanzadas conservan las funciones sin repetir los ocho accesos directos',async()=>{
+  await paso('Siete áreas avanzadas conservan las funciones sin repetir los seis accesos directos',async()=>{
     const grupos=[
       {area:'Socios y membresías',frecuente:'Membresías',adicional:'Planes y tarifas',total:5},
       {area:'Clases y entrenamiento',frecuente:'Clases y horarios',adicional:'Seguimiento',total:5},
@@ -788,7 +787,7 @@ try {
     await inicio.locator('.mg-premium-analytics').waitFor({timeout:12000});
     assert.equal(await inicio.locator('.mg-premium-analytics-grid .mg-premium-card').count(),3,
       'Inicio debe mostrar tres gráficos alimentados por MySQL.');
-    assert.equal(await page.locator('.mg-clear-navigation .mg-nav-primary').count(),8);
+    assert.equal(await page.locator('.mg-clear-navigation .mg-nav-primary').count(),6);
     assert.equal(await page.locator('.mg-clear-navigation .cf-nav-group-head').count(),0);
     const inmediatamenteDespues=await inicio.locator('.mg-efsrt-charts-first').evaluate(
       el=>el.previousElementSibling?.classList.contains('mg-efsrt-kpis')===true);
