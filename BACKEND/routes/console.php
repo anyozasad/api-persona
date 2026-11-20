@@ -186,6 +186,205 @@ Artisan::command('db:asegurar-clientes', function () {
     }
 })->purpose('Crea solo la tabla clientes faltante después de respaldar la base MySQL activa');
 
+/**
+ * Recuperación no destructiva de membresías, contratación y pagos.
+ * No crea tarifas ficticias ni borra registros. Requiere un respaldo SQL nuevo.
+ */
+Artisan::command('db:asegurar-membresias', function () {
+    try {
+        $db = \Illuminate\Support\Facades\DB::connection();
+        $db->getPdo();
+        $base = (string) $db->getDatabaseName();
+        $this->info('Base de datos activa: '.$base);
+
+        if (!in_array($db->getDriverName(), ['mysql', 'mariadb'], true)) {
+            $this->error('Esta reparación requiere MySQL/MariaDB.');
+            return 1;
+        }
+        $schema = $db->getSchemaBuilder();
+        if (!$schema->hasTable('clientes')) {
+            $this->error('Primero debes recuperar la tabla clientes. No se harán cambios.');
+            return 1;
+        }
+
+        // Campos reales utilizados por Planes, Membresías y Pagos.
+        $estructuras = [
+            'membresias' => [
+                'id_membresia'=>'pk', 'nombre'=>'nombre', 'duracion_meses'=>'duracion',
+                'precio'=>'precio', 'descripcion'=>'descripcion', 'beneficios'=>'json',
+                'permite_reservas'=>'booleano', 'estado'=>'estado_plan',
+            ],
+            'cliente_membresia' => [
+                'id_cliente_membresia'=>'pk', 'id_cliente'=>'relacion',
+                'id_membresia'=>'relacion', 'fecha_inicio'=>'fecha',
+                'fecha_fin'=>'fecha', 'estado'=>'estado_contrato',
+            ],
+            'pagos_membresia' => [
+                'id_pago'=>'pk', 'id_cliente_membresia'=>'relacion',
+                'fecha_pago'=>'fecha_hora', 'monto'=>'monto', 'metodo_pago'=>'metodo',
+                'numero_operacion'=>'numero', 'observacion'=>'observacion',
+                'estado_pago'=>'estado_pago',
+            ],
+        ];
+
+        $pendientes = [];
+        foreach ($estructuras as $tabla => $columnas) {
+            if (!$schema->hasTable($tabla)) {
+                $pendientes[] = 'tabla:'.$tabla;
+                continue;
+            }
+            foreach ($columnas as $campo => $tipo) {
+                if (!$schema->hasColumn($tabla, $campo)) {
+                    $pendientes[] = $tabla.'.'.$campo;
+                    if ($tipo === 'pk') {
+                        $this->error('La tabla existente '.$tabla.' carece de '.$campo.'. Se requiere revisar su ID anterior para preservar los registros.');
+                        return 1;
+                    }
+                }
+            }
+        }
+
+        if ($pendientes === []) {
+            $this->info('Las tablas y columnas de membresías ya existen. No se modificó MySQL.');
+            return 0;
+        }
+        $this->warn('Pendientes: '.implode(', ', $pendientes));
+        if (!$this->confirm('¿Crear un respaldo SQL nuevo y recuperar únicamente el esquema pendiente de membresías?', false)) {
+            $this->warn('Operación cancelada. MySQL no se modificó.');
+            return 1;
+        }
+
+        $inicio = time();
+        $resultado = Artisan::call('backup:database');
+        $this->line(Artisan::output());
+        if ($resultado !== 0) {
+            $this->error('El respaldo SQL falló. No se modificarán tablas.');
+            return 1;
+        }
+        $respaldos = glob(storage_path('app/backups').DIRECTORY_SEPARATOR.$base.'_*.sql') ?: [];
+        $comprobado = false;
+        foreach ($respaldos as $archivo) {
+            if (is_file($archivo) && filesize($archivo) > 200 && filemtime($archivo) >= $inicio - 2) {
+                $comprobado = true;
+                break;
+            }
+        }
+        if (!$comprobado) {
+            $this->error('No se encontró un respaldo SQL nuevo, legible y no vacío. Sin cambios.');
+            return 1;
+        }
+
+        // Los campos nuevos en tablas existentes son nullable cuando hace falta,
+        // para no dañar las filas anteriores. En tablas nuevas se usa el esquema real.
+        $definirColumna = static function (\Illuminate\Database\Schema\Blueprint $t, string $campo, string $tipo, bool $nueva): void {
+            switch ($tipo) {
+                case 'pk':
+                    $t->bigIncrements($campo);
+                    break;
+                case 'nombre':
+                    $col = $t->string($campo, 100);
+                    $nueva ? $col->unique() : $col->nullable();
+                    break;
+                case 'relacion':
+                    $col = $t->unsignedBigInteger($campo);
+                    $nueva ? $col->index() : $col->nullable();
+                    break;
+                case 'duracion':
+                    $t->unsignedInteger($campo)->default(1);
+                    break;
+                case 'precio':
+                    $t->decimal($campo, 12, 2)->default(0);
+                    break;
+                case 'monto':
+                    $col = $t->decimal($campo, 12, 2);
+                    if (!$nueva) $col->nullable();
+                    break;
+                case 'descripcion':
+                    $t->string($campo, 500)->nullable();
+                    break;
+                case 'observacion':
+                    $t->string($campo, 500)->nullable();
+                    break;
+                case 'json':
+                    $t->json($campo)->nullable();
+                    break;
+                case 'booleano':
+                    $t->boolean($campo)->default(true);
+                    break;
+                case 'estado_plan':
+                    $t->string($campo, 20)->default('Activo');
+                    break;
+                case 'estado_contrato':
+                    $t->string($campo, 30)->default('Activo');
+                    break;
+                case 'estado_pago':
+                    $t->string($campo, 30)->default('Pendiente');
+                    break;
+                case 'fecha':
+                    $col = $t->date($campo);
+                    if (!$nueva) $col->nullable();
+                    break;
+                case 'fecha_hora':
+                    $col = $t->dateTime($campo);
+                    if (!$nueva) $col->nullable();
+                    break;
+                case 'metodo':
+                    $col = $t->string($campo, 50);
+                    if (!$nueva) $col->nullable();
+                    break;
+                case 'numero':
+                    $t->string($campo, 100)->nullable();
+                    break;
+                default:
+                    throw new \RuntimeException('Campo desconocido: '.$campo);
+            }
+        };
+
+        foreach ($estructuras as $tabla => $columnas) {
+            if (!$schema->hasTable($tabla)) {
+                $schema->create($tabla, static function (\Illuminate\Database\Schema\Blueprint $t) use ($columnas, $definirColumna): void {
+                    foreach ($columnas as $campo => $tipo) {
+                        $definirColumna($t, $campo, $tipo, true);
+                    }
+                });
+                $this->info('Tabla creada: '.$tabla);
+                continue;
+            }
+            foreach ($columnas as $campo => $tipo) {
+                if ($schema->hasColumn($tabla, $campo)) continue;
+                $schema->table($tabla, static function (\Illuminate\Database\Schema\Blueprint $t) use ($campo, $tipo, $definirColumna): void {
+                    $definirColumna($t, $campo, $tipo, false);
+                });
+                $this->info('Columna añadida: '.$tabla.'.'.$campo);
+            }
+        }
+
+        $faltantes = [];
+        foreach ($estructuras as $tabla => $columnas) {
+            if (!$schema->hasTable($tabla)) {
+                $faltantes[] = 'tabla:'.$tabla;
+                continue;
+            }
+            foreach (array_keys($columnas) as $campo) {
+                if (!$schema->hasColumn($tabla, $campo)) {
+                    $faltantes[] = $tabla.'.'.$campo;
+                }
+            }
+        }
+        if ($faltantes !== []) {
+            $this->error('Quedan componentes sin reparar: '.implode(', ', $faltantes));
+            return 1;
+        }
+
+        $this->info('Tablas de membresías, asignaciones y pagos verificadas en '.$base.'.');
+        $this->info('No se borraron filas ni se agregaron tarifas ficticias.');
+        return 0;
+    } catch (\Throwable $e) {
+        $this->error('No se pudo reparar membresías: '.$e->getMessage());
+        return 1;
+    }
+})->purpose('Repara esquema de membresías, asignaciones y pagos tras respaldar la base activa');
+
 // Automatizaciones operativas para producción.
 Schedule::command('membresias:actualizar-estados')->dailyAt('00:05')->withoutOverlapping();
 Schedule::command('backup:database --keep=30')->dailyAt('02:00')->withoutOverlapping();
