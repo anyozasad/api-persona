@@ -49,8 +49,8 @@ class AdminDashboardNavigationTest extends TestCase
         $this->assertStringNotContainsString("id:'apps'", $source);
         $this->assertStringContainsString('SOCIOS Y SESIONES', $source);
         $this->assertStringContainsString('PRODUCTOS Y COBROS', $source);
-        $this->assertStringContainsString('RESULTADOS', $source);
-        $this->assertStringContainsString('GESTIÓN COMPLETA', $source);
+        $this->assertStringContainsString('GESTIÓN Y RESULTADOS', $source);
+        $this->assertStringNotContainsString('GESTIÓN COMPLETA', $source);
         $this->assertStringContainsString('accesosAdministracionAdmin', $source);
         $this->assertStringContainsString('opcionesSelectorGrupo(grupo)', $source);
         $this->assertStringContainsString('mg-nav-primary', $source);
