@@ -513,11 +513,11 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       ]
     }));
     component.cargarVerificacionEfsrt();
-    expect(component.semanaEfsrtSeleccionada).toBe(5);
-    expect(component.semanaEfsrtActual.semana).toBe(5);
-    component.semanaEfsrtSeleccionada=10;
+    expect(component.semanaEfsrtSeleccionada).toBe(10);
     expect(component.semanaEfsrtActual.semana).toBe(10);
-    expect(component.semanaEfsrtActual.actividades.length).toBe(1);
+    component.semanaEfsrtSeleccionada=5;
+    expect(component.semanaEfsrtActual.semana).toBe(5);
+    expect(component.semanaEfsrtActual.actividades.length).toBe(2);
   });
 
   it('genera CSV de once semanas reales sin afirmar que todo está aprobado', () => {
