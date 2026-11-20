@@ -446,7 +446,7 @@ try {
       {area:'Productos e inventario',frecuente:'Control de inventario',adicional:'Proveedores',total:6},
       {area:'Ventas y caja',frecuente:'Apertura y cierre de caja',adicional:'Comprobantes internos',total:6},
       {area:'Atención al socio',frecuente:'Consultas y soporte',adicional:'Eventos',total:6},
-      {area:'Administración',frecuente:'Usuarios y permisos',adicional:'Auditoría',total:5},
+      {area:'Administración',frecuente:'Usuarios y permisos',adicional:'Auditoría',total:7},
       {area:'Organización interna',frecuente:'Calendario',adicional:'Tablas avanzadas',total:5}
     ];
     for(const grupo of grupos){
