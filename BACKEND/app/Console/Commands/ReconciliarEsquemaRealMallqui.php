@@ -84,14 +84,26 @@ class ReconciliarEsquemaRealMallqui extends Command
         $this->info('Revisando el esquema REAL de MySQL (sin borrar datos)...');
         try {
             DB::connection()->getPdo();
+
+            // Una migración legacy defectuosa no debe impedir que se
+            // intenten recuperar las demás tablas. Se registra la causa
+            // y se verifica TODO el esquema antes de declarar éxito.
+            $erroresMigraciones = [];
             foreach (self::MIGRACIONES_ADITIVAS as $nombre) {
                 $archivo = database_path('migrations/'.$nombre);
                 if (!is_file($archivo)) {
-                    throw new \RuntimeException('Falta la migración de recuperación: '.$nombre);
+                    $erroresMigraciones[] = $nombre.': archivo ausente';
+                    $this->warn('Falta el archivo de migración: '.$nombre);
+                    continue;
                 }
-                // Solo ejecutar up() de archivos que verifican existencia.
-                // No usar down(), fresh(), drop() ni sembrar datos ficticios.
-                (require $archivo)->up();
+                try {
+                    // Solo up() aditivos. Nunca down(), fresh() o drop().
+                    (require $archivo)->up();
+                } catch (Throwable $e) {
+                    $erroresMigraciones[] = $nombre.': '.$e->getMessage();
+                    $this->warn('Falló una migración de recuperación: '.$nombre.'. Se revisarán las restantes.');
+                    report($e);
+                }
             }
 
             $reparadas = 0;
@@ -123,6 +135,20 @@ class ReconciliarEsquemaRealMallqui extends Command
 
             if ($pendientes !== []) {
                 $this->error('No se completó el esquema: '.implode(', ', $pendientes));
+                if ($erroresMigraciones !== []) {
+                    foreach ($erroresMigraciones as $errorMigracion) {
+                        $this->warn('Migración pendiente: '.$errorMigracion);
+                    }
+                }
+                return self::FAILURE;
+            }
+            if ($erroresMigraciones !== []) {
+                // Los objetos requeridos ya pueden existir aunque una
+                // migración opcional haya fallado. No declarar éxito falso.
+                foreach ($erroresMigraciones as $errorMigracion) {
+                    $this->warn('Revisión de migración: '.$errorMigracion);
+                }
+                $this->error('Existen migraciones de recuperación con errores. Revisa los avisos antes de declarar el esquema listo.');
                 return self::FAILURE;
             }
 
