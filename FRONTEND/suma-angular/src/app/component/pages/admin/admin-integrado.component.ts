@@ -3329,14 +3329,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       this.sidebarCerrado = false;
       this.autoRefreshActivo = true;
     }
-    // Planes y Membresías necesitan solo las peticiones de su módulo.
-    // Evita sobrescribir tarifas y asignaciones con [] por errores de otros módulos.
-    if (['planes','membresias'].includes(this.seccion)) {
-      this.cargarSegcion(this.seccion);
-    } else {
-      this.actualizarDashboardCompleto();
-      if (this.seccion !== 'dashboard') this.cargarSegcion(this.seccion);
-    }
+    // Cada pantalla carga solo sus datos. No consultar todos los módulos
+    // al abrir Socios, Planes o Productos: una tabla ajena no debe impedir
+    // el funcionamiento de la pantalla actual.
+    if (this.seccion === 'dashboard') this.actualizarDashboardCompleto();
+    else this.cargarSegcion(this.seccion);
 
     // Refresco inteligente: no interrumpe formularios ni trabaja cuando la pestaña está oculta.
     this.autoRefreshId = setInterval(() => {
@@ -4667,7 +4664,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       this.error = '';
     }
     this.cargarSegcion(this.seccion);
-    if (['planes','membresias'].includes(this.seccion)) {
+    if (this.seccion !== 'dashboard') {
       this.actualizandoDatos = false;
       return;
     }
