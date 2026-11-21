@@ -533,46 +533,34 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.backupRestaurarArchivo).toBeNull();
   });
 
-  it('no da por actualizada una pantalla antes de recibir respuesta real del servidor', () => {
-    const lenta = new Subject<any>();
-    api.dashboard.and.returnValue(lenta.asObservable());
+  it('al actualizar Productos no consulta un resumen ajeno que pueda fallar', () => {
     const cargar=spyOn(component as any,'cargarSegcion').and.stub();
     component.seccion='productos';
     component.actualizandoDatos=false;
     component.actualizarSegcionActual();
-    expect(cargar).toHaveBeenCalledWith('productos');
-    expect(component.actualizandoDatos).toBeTrue();
-    expect(component.ultimaActualizacionTs).toBeFalsy();
-    lenta.next({ingresos:{total_mes:100},clientes:{activos:1}});
-    lenta.complete();
+    expect(cargar).toHaveBeenCalledOnceWith('productos');
+    expect(api.dashboard).not.toHaveBeenCalled();
     expect(component.actualizandoDatos).toBeFalse();
-    expect(component.dashboard?.ingresos?.total_mes).toBe(100);
-    expect(component.ultimaActualizacionTs).toBeGreaterThan(0);
   });
 
-  it('libera el control de actualizar y avisa del error si falla MySQL', () => {
-    const lenta=new Subject<any>();
-    api.dashboard.and.returnValue(lenta.asObservable());
-    spyOn(component as any,'cargarSegcion').and.stub();
-    spyOn(component as any,'mostrarError').and.stub();
+  it('Socios no hace una consulta de todas las tablas al pulsar Actualizar', () => {
+    const cargar=spyOn(component as any,'cargarSegcion').and.stub();
     component.seccion='clientes';
     component.actualizandoDatos=false;
     component.actualizarSegcionActual();
-    expect(component.actualizandoDatos).toBeTrue();
-    lenta.error({error:{mensaje:'No hay conexión MySQL'}});
+    expect(cargar).toHaveBeenCalledOnceWith('clientes');
     expect(component.actualizandoDatos).toBeFalse();
-    expect(component.dashboardError).toContain('No hay conexión MySQL');
-    expect(component.dashboard).toBeNull();
+    expect(api.dashboard).not.toHaveBeenCalled();
   });
 
-  it('al actualizar la sección abierta consulta también los datos de ese módulo', () => {
+  it('al actualizar la sección abierta consulta solo los datos de ese módulo', () => {
     spyOn(component,'cargarDashboard').and.stub();
     const cargar=spyOn(component as any,'cargarSegcion').and.stub();
     component.seccion='productos';
     component.actualizandoDatos=false;
     component.actualizarSegcionActual(true);
     expect(cargar).toHaveBeenCalledWith('productos');
-    expect(component.cargarDashboard).toHaveBeenCalled();
+    expect(component.cargarDashboard).not.toHaveBeenCalled();
   });
 
   it('no inventa cero alertas de stock cuando el resumen MySQL aún no está disponible',()=>{
