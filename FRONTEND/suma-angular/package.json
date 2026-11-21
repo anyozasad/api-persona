@@ -7,7 +7,8 @@
     "build": "ng build",
     "test": "ng test",
     "reparar:clientes": "powershell -NoProfile -ExecutionPolicy Bypass -File ..\\..\\scripts\\INICIAR_DASHBOARD.ps1 -RepararClientes",
-    "reparar:membresias": "powershell -NoProfile -ExecutionPolicy Bypass -File ..\\..\\scripts\\INICIAR_DASHBOARD.ps1 -RepararMembresias"
+    "reparar:membresias": "powershell -NoProfile -ExecutionPolicy Bypass -File ..\\..\\scripts\\INICIAR_DASHBOARD.ps1 -RepararMembresias",
+    "reparar:sistema": "powershell -NoProfile -ExecutionPolicy Bypass -File ..\\..\\scripts\\INICIAR_DASHBOARD.ps1 -Migrar"
   },
   "dependencies": {
     "@angular/common": "^20.0.0",
