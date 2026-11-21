@@ -50,7 +50,7 @@ class AccesoCodigoFlowTest extends TestCase
         $salida = $this->escanear('MG-'.str_pad((string) $this->clienteId, 6, '0', STR_PAD_LEFT));
         $this->assertSame(200, $salida->getStatusCode());
 
-        $registro = DB::table('asistencias')->where('id_cliente', 1)->first();
+        $registro = DB::table('asistencias')->where('id_cliente', $this->clienteId)->first();
         $this->assertNotNull($registro->fecha_hora_salida);
         $this->assertSame('Completado', $registro->estado);
     }
@@ -62,7 +62,7 @@ class AccesoCodigoFlowTest extends TestCase
         $response = $this->escanear('70000011');
 
         $this->assertSame(201, $response->getStatusCode());
-        $this->assertDatabaseCount('asistencias', 1);
+        $this->assertSame(1, DB::table('asistencias')->where('id_cliente', $this->clienteId)->count());
     }
 
     public function test_sin_membresia_vigente_el_acceso_es_denegado(): void
