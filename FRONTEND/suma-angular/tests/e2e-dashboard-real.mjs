@@ -1042,6 +1042,14 @@ try {
     await duplicado.locator('input[name=nombres]').fill('Cuenta');
     await duplicado.locator('input[name=apellidos]').fill('Duplicada');
     await duplicado.locator('input[name=correo]').fill('otra-cuenta-ci@example.test');
+    // La creación de acceso está encendida por defecto. Para comprobar el
+    // rechazo de DNI duplicado sin exigir una segunda contraseña, apagarla
+    // desde el mismo interruptor que usa el administrador.
+    if (await duplicado.locator('input[name=crear_acceso]').isChecked()) {
+      await duplicado.locator('label.client-editor-switch').click();
+    }
+    assert.equal(await duplicado.locator('button.save').isEnabled(),true,
+      'El formulario de duplicados debe estar completo antes de enviarlo.');
     await duplicado.locator('button.save').click();
     const error=page.locator('.client-editor-error');
     await error.waitFor({timeout:15000});
