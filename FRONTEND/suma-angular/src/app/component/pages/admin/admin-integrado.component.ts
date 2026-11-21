@@ -1057,7 +1057,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
              Su panel se abrirá en <b>/usuario</b>.</p>
           <button type="button" (click)="ultimoAccesoCliente=''">Entendido</button>
         </section>
-        <section class="management-grid">
+        <section class="management-grid mg-membership-page mg-ux-section">
           <article class="admin-form-card">
             <div class="management-heading">
               <div>
@@ -1557,7 +1557,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
       </ng-container>
 
       <ng-container *ngIf="seccion==='planes'">
-        <section class="management-grid">
+        <section class="management-grid mg-plan-page mg-ux-section">
           <article class="admin-form-card">
             <div class="management-heading"><div><h2>{{planEditandoId ? 'Editar tarifa' : 'Nueva tarifa'}}</h2><p>Configura precio, duración y estado.</p></div><span>◆</span></div>
             <form (ngSubmit)="guardarPlan()">
@@ -1568,9 +1568,12 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
               </div>
               <label>Descripción<textarea [(ngModel)]="planForm.descripcion" name="plan_descripcion"></textarea></label>
               <label>Beneficios (uno por línea)<textarea [(ngModel)]="planForm.beneficios_texto" name="plan_beneficios"></textarea></label>
-              <label><input type="checkbox" [(ngModel)]="planForm.permite_reservas" name="plan_reservas"> Permite reservar clases</label>
+              <label class="mg-plan-reservas">
+                <input type="checkbox" [(ngModel)]="planForm.permite_reservas" name="plan_reservas">
+                <span>Permite reservar clases</span>
+              </label>
               <label>Estado<select [(ngModel)]="planForm.estado" name="plan_estado"><option>Activo</option><option>Inactivo</option></select></label>
-              <div class="form-row">
+              <div class="form-row mg-plan-actions">
                 <button class="admin-primary" type="submit" [disabled]="guardandoPlan">{{guardandoPlan ? 'Guardando…' : (planEditandoId ? 'Guardar cambios' : 'Crear tarifa')}}</button>
                 <button *ngIf="planEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionPlan()">Cancelar</button>
               </div>
