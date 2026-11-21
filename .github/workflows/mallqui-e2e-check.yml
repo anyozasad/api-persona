@@ -98,6 +98,13 @@ jobs:
           find app/Http/Controllers app/Services tests/Feature -name '*.php' -type f -print0 | xargs -0 -n1 php -l
       - name: Ejecutar migraciones en la BD temporal de GitHub
         run: php artisan migrate --force
+      - name: Probar recuperación del esquema legacy en MySQL temporal
+        run: |
+          # Base aislada de GitHub Actions: nunca se usan datos del XAMPP local.
+          # Reproducir las tablas ausentes vistas en Socios/Planes/Membresías.
+          php artisan tinker --execute='DB::statement("SET FOREIGN_KEY_CHECKS=0"); Schema::dropIfExists("cliente_membresia"); Schema::dropIfExists("membresias"); Schema::dropIfExists("clientes"); DB::statement("SET FOREIGN_KEY_CHECKS=1");'
+          php artisan db:reconciliar-esquema
+          php artisan db:verificar
       - name: Verificar rutas de reservas, pagos y EFSRT
         run: php artisan route:list --path=api --except-vendor
       - name: Ejecutar pruebas del flujo principal
