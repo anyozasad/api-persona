@@ -964,7 +964,13 @@ try {
     await form.locator('input[name=apellidos]').fill('Interfaz Mallqui');
     await form.locator('input[name=telefono]').fill('987654321');
     await form.locator('input[name=correo]').fill('interfaz-ci@example.test');
-    await form.locator('input[name=crear_acceso]').uncheck();
+    // El input real está oculto visualmente dentro del switch.
+    // Interactuar con la etiqueta visible, como hace el usuario.
+    if (await form.locator('input[name=crear_acceso]').isChecked()) {
+      await form.locator('label.client-editor-switch').click();
+    }
+    assert.equal(await form.locator('input[name=crear_acceso]').isChecked(),false,
+      'El botón Crear cuenta debe poder desactivarse desde el switch visible.');
     await form.locator('button.save').click();
     await page.waitForFunction(()=>
       Boolean(document.querySelector('.mg-top-greeting h1')?.textContent?.includes('Membresías')),
@@ -988,7 +994,9 @@ try {
     await form.locator('input[name=apellidos]').fill('Portal Verificado');
     await form.locator('input[name=telefono]').fill('987654321');
     await form.locator('input[name=correo]').fill('cuenta-portal-ci@example.test');
-    await form.locator('.client-editor-switch').click();
+    if (!(await form.locator('input[name=crear_acceso]').isChecked())) {
+      await form.locator('label.client-editor-switch').click();
+    }
     assert.equal(await form.locator('input[name=crear_acceso]').isChecked(),true,
       'El interruptor visible debe activar la creación de acceso.');
     await form.locator('input[name=cliente_usuario]').fill(username);
