@@ -19,7 +19,16 @@ import { AdminApiService } from './admin-api.service';
         </header>
 
         <div *ngIf="cargando" class="client360-loading">Cargando información del cliente...</div>
-        <div *ngIf="error" class="client360-error">⚠ {{error}}</div>
+        <div *ngIf="error" class="client360-error" role="alert">
+          <strong>No se pudo cargar la ficha del socio.</strong>
+          <p>{{error}}</p>
+          <button type="button" (click)="cargar()">Volver a intentar</button>
+        </div>
+        <div *ngIf="ficha?.advertencias?.length" class="client360-warning" role="status">
+          <strong>Información parcialmente disponible</strong>
+          <p>Los datos personales se pueden consultar. Algunas funciones necesitan completar las tablas de MySQL.</p>
+          <ul><li *ngFor="let aviso of ficha.advertencias">{{aviso}}</li></ul>
+        </div>
 
         <ng-container *ngIf="ficha && !cargando">
           <section class="client360-kpis">
@@ -143,12 +152,21 @@ export class AdminClienteFichaComponent implements OnChanges {
   }
 
   cargar(): void {
+    if (!this.clienteId) return;
     this.cargando = true;
     this.error = '';
+    this.ficha = null;
     this.api.fichaCliente(this.clienteId).subscribe({
       next: r => { this.ficha = r; this.cargando = false; },
       error: e => {
-        this.error = e?.error?.mensaje || e?.error?.message || 'No se pudo cargar la ficha del cliente.';
+        // No mostrar SQLSTATE, consultas SQL ni rutas internas a los usuarios.
+        const mensaje = String(e?.error?.mensaje || '');
+        this.error = Number(e?.status) === 0
+          ? 'No se pudo conectar con Laravel. Comprueba que el servidor esté encendido.'
+          : Number(e?.status) >= 500
+            ? 'No se pudo consultar la información. Revisa el estado de MySQL en Configuración.'
+            : mensaje && !/SQLSTATE|SELECT\s+.*FROM|\bSQL:\b|exception|stack trace/i.test(mensaje)
+              ? mensaje : 'No se pudo cargar la información del socio.';
         this.cargando = false;
       }
     });
