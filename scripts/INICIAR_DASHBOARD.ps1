@@ -263,17 +263,28 @@ try {
         # No informar éxito si el registro todavía carece de columnas.
         # El estado comprueba la conexión que usa el backend abierto.
         Ejecutar $php @('artisan','optimize:clear') $backend
+        # Verificar todas las tablas y columnas utilizadas por el dashboard,
+        # no solamente clientes. Evitar mensajes de éxito engañosos.
         $estadoFinal = ObtenerEstadoBackend
-        if ($null -ne $estadoFinal -and $estadoFinal.sistema -eq 'Mallqui Gym' -and $estadoFinal.database -eq $true) {
-            $pendientesRegistro = @($estadoFinal.faltantes | Where-Object {
-                $_ -match '^(clientes|usuarios|personal_access_tokens)(\.|$|:)'
-            })
-            if ($pendientesRegistro.Count -gt 0) {
-                Avisar ('Aún faltan campos del registro: ' + ($pendientesRegistro -join ', '))
-                Fallar 'No se pudo completar el esquema de registro; revisa las advertencias anteriores.'
-            }
+        if ($null -eq $estadoFinal) {
+            Avisar 'La conciliación se ejecutó, pero Laravel del puerto 8000 no responde para verificarla.'
+            Avisar 'Inicia el backend de este proyecto y usa el modo -SoloVerificar.'
+            Informar 'El respaldo SQL previo fue conservado.'
+            return
         }
-        Informar 'La preparación y conciliación terminaron. Conserva el respaldo SQL.'
+        VerificarServidorMallqui $estadoFinal
+        if ($estadoFinal.database -ne $true) {
+            Fallar 'La API de Laravel no está conectada a MySQL. Comprueba el servidor activo y DB_DATABASE.'
+        }
+        Informar ('Base activa verificada por Laravel: ' + $estadoFinal.base_datos)
+        $faltantesGlobal = @($estadoFinal.faltantes | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
+        if ($faltantesGlobal.Count -gt 0 -or $estadoFinal.operativo -ne $true) {
+            Avisar ('La API todavía detecta ' + $faltantesGlobal.Count + ' tablas/columnas obligatorias pendientes.')
+            $faltantesGlobal | Select-Object -First 40 | ForEach-Object { Avisar ('Falta: ' + $_) }
+            Fallar 'El esquema MySQL del dashboard no está completo. No se puede declarar reparado.'
+        }
+        Informar 'Base MySQL verificada: todas las tablas y columnas obligatorias están disponibles.'
+        Informar 'Conserva el respaldo SQL.'
     }
 
     if ($SoloVerificar) {
