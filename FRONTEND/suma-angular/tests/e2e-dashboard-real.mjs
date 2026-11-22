@@ -389,6 +389,30 @@ try {
     await page.screenshot({path:'evidencias-dashboard/13_Menu_cuatro_tareas_directas.png',fullPage:true});
   });
 
+  await paso('Botones cambian a la ruta correcta desde accesos directos y el historial vuelve',async()=>{
+    await page.goto(base+'/productos',{waitUntil:'domcontentloaded'});
+    await page.locator('.productos-page').waitFor({timeout:20000});
+    await page.locator('.mg-clear-navigation').getByRole('button',{name:'Socios',exact:true}).click();
+    await page.waitForURL(url=>url.pathname==='/admin' && url.searchParams.get('modulo')==='clientes',
+      {timeout:20000});
+    assert.equal((await page.locator('.mg-current-topbar h1').innerText()).trim(),'Socios');
+    await page.reload({waitUntil:'domcontentloaded'});
+    await page.locator('.clients-v3-shell').waitFor({timeout:20000});
+    assert.equal((await page.locator('.mg-current-topbar h1').innerText()).trim(),'Socios');
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const menu=page.locator('.mg-clear-navigation');
+    await menu.getByRole('button',{name:'Productos',exact:true}).click();
+    await page.waitForURL(url=>url.searchParams.get('modulo')==='productos',{timeout:15000});
+    await menu.getByRole('button',{name:'Pagos',exact:true}).click();
+    await page.waitForURL(url=>url.searchParams.get('modulo')==='pagos',{timeout:15000});
+    await page.goBack({waitUntil:'domcontentloaded'});
+    await page.waitForURL(url=>url.searchParams.get('modulo')==='productos',{timeout:15000});
+    await page.locator('.productos-page').waitFor({timeout:20000});
+    assert.equal((await page.locator('.mg-current-topbar h1').innerText()).trim(),'Productos',
+      'Atrás debe recuperar el módulo anterior, no mostrar otra pantalla.');
+    await page.screenshot({path:'evidencias-dashboard/41_Botones_y_rutas_reales.png',fullPage:true});
+  });
+
   await paso('Menú lateral legible: Área de trabajo y enlaces no se comprimen',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
