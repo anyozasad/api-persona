@@ -25,8 +25,11 @@ class ReparacionEsquemaController extends Controller
                 $faltantes[] = 'tabla:'.$tabla;
                 continue;
             }
+            // Leer las columnas existentes una vez por tabla para que el
+            // diagnóstico no ejecute cientos de consultas sobre XAMPP.
+            $campos = array_fill_keys(Schema::getColumnListing($tabla), true);
             foreach ($columnas as $columna) {
-                if (!Schema::hasColumn($tabla, $columna)) {
+                if (!isset($campos[$columna])) {
                     $faltantes[] = $tabla.'.'.$columna;
                 }
             }

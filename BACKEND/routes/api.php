@@ -62,8 +62,11 @@ Route::get('/estado-sistema', function () {
             }
 
             $tablasDetectadas[] = $tabla;
+            // Una consulta por tabla en vez de una consulta por columna:
+            // el estado se solicita a menudo desde Angular.
+            $campos = array_fill_keys($schema->getColumnListing($tabla), true);
             foreach ($columnas as $columna) {
-                if (!$schema->hasColumn($tabla, $columna)) {
+                if (!isset($campos[$columna])) {
                     $faltantes[] = $tabla.'.'.$columna;
                 }
             }
