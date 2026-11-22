@@ -163,6 +163,37 @@ class AdminAdvancedCoreSchemaTest extends TestCase
         $this->assertSame('70.50', (string) $json['medidas'][0]['peso']);
     }
 
+    public function test_progreso_muestra_medidas_reales_aunque_no_exista_tabla_rutinas(): void
+    {
+        $controller = app(GymSystemAdminController::class);
+        $controller->guardarMedida(Request::create('/api/gym-admin/progreso/medidas', 'POST', [
+            'socio_id' => 1, 'peso' => 72.5, 'fecha' => today()->toDateString(),
+        ]));
+
+        // Solo en la BD temporal de PHPUnit; la función debe manejar este
+        // esquema incompleto sin devolver 500 ni perder mediciones.
+        Schema::dropIfExists('rutinas');
+        $respuesta = $controller->progreso('1');
+        $this->assertSame(200, $respuesta->getStatusCode());
+        $datos = $respuesta->getData(true);
+        $this->assertNull($datos['rutina']);
+        $this->assertSame('72.50', (string) $datos['medidas'][0]['peso']);
+        $this->assertContains('tabla:rutinas', $datos['faltantes']);
+    }
+
+    public function test_progreso_detecta_mediciones_ausentes_antes_de_guardar(): void
+    {
+        Schema::dropIfExists('progreso_medidas');
+        $respuesta = app(GymSystemAdminController::class)
+            ->guardarMedida(Request::create('/api/gym-admin/progreso/medidas', 'POST', [
+                'socio_id' => 1, 'peso' => 74.3, 'fecha' => today()->toDateString(),
+            ]));
+
+        $this->assertSame(503, $respuesta->getStatusCode());
+        $this->assertSame('ESQUEMA_PROGRESO_INCOMPLETO', $respuesta->getData(true)['codigo']);
+        $this->assertContains('tabla:progreso_medidas', $respuesta->getData(true)['faltantes']);
+    }
+
     public function test_no_emite_comprobante_de_membresia_si_el_pago_no_fue_confirmado(): void
     {
         DB::table('pagos_membresia')->where('id_pago', 1)
