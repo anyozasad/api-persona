@@ -232,6 +232,10 @@ export class AdminApiService {
   configuracion(): Observable<any> { return this.http.get('/api/configuracion'); }
   guardarConfiguracion(datos: any): Observable<any> { return this.http.put('/api/configuracion', datos); }
   estadoSistema(): Observable<any> { return this.http.get('/api/configuracion/estado'); }
+  diagnosticoEsquema(): Observable<any> { return this.http.get('/api/configuracion/diagnostico-esquema'); }
+  repararEsquema(): Observable<any> {
+    return this.http.post('/api/configuracion/reparar-esquema', {confirmacion:'RESPALDAR_Y_REPARAR'});
+  }
   crearRespaldo(): Observable<any> { return this.http.post('/api/configuracion/respaldo', {}); }
   limpiarCacheSistema(): Observable<any> { return this.http.post('/api/configuracion/limpiar-cache', {}); }
 
