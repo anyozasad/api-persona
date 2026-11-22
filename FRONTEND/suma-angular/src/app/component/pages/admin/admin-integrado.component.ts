@@ -226,7 +226,13 @@ import { catchError, forkJoin, of, tap, timeout } from 'rxjs';
       <div class="mg-current-workspace">
       <div *ngIf="toast" class="mg-action-feedback success" role="status" aria-live="polite">{{toast}}</div>
       <div *ngIf="error && !clienteFormularioAbierto && !(seccion==='dashboard' && estadoOperativoDashboard?.operativo===false && error.startsWith('No se pudieron sincronizar:'))"
-           class="mg-action-feedback error" role="alert">{{error}}</div>
+           class="mg-action-feedback error" role="alert">
+        <span>{{error}}</span>
+        <button *ngIf="errorEsquemaMysql" class="admin-secondary" type="button"
+          [disabled]="reparandoMysql" (click)="repararEsquemaMysql()">
+          {{reparandoMysql ? 'Respaldando y reparando...' : 'Respaldar y reparar base de datos'}}
+        </button>
+      </div>
       <section class="mg-module-shell-head" *ngIf="seccion!=='dashboard' && !['aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui'].includes(seccion)">
         <div class="mg-module-shell-copy">
           <p>{{subtituloActual}}</p>
@@ -6273,6 +6279,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       },
       error:e=>{this.configGuardando=false;this.mostrarError(e);}
     });
+  }
+
+  get errorEsquemaMysql(): boolean {
+    return /mysql|sql|tabla|columnas|migraciones|error 50[03]|esquema/i.test(this.error||'');
   }
 
   consultarEsquemaMysql(): void {
