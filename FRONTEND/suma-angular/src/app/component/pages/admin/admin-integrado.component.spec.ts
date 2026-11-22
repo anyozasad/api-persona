@@ -767,6 +767,42 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.productos[0]).toEqual(producto);
   });
 
+  it('muestra gráficos reales sin esperar que termine la consulta de reservas', () => {
+    const reservasLentas = new Subject<any[]>();
+    api.reservas.and.returnValue(reservasLentas.asObservable());
+
+    component.actualizarDashboardCompleto();
+
+    expect(component.dashboard?.ingresos?.total_mes).toBe(120);
+    expect(component.dashboardCargando).toBeFalse();
+    expect(component.actualizandoDatos).toBeTrue();
+
+    reservasLentas.next([]);
+    reservasLentas.complete();
+
+    expect(component.actualizandoDatos).toBeFalse();
+    expect(component.erroresSincronizacion).toEqual([]);
+  });
+
+  it('carga fotografías cuando MySQL responde sin bloquearse por otro módulo', () => {
+    const clientesLentos = new Subject<any[]>();
+    const foto = {id_producto: 8, nombre_producto: 'Agua', foto: '/assets/agua.png'};
+    api.clientes.and.returnValue(clientesLentos.asObservable());
+    api.productos.and.returnValue(of([foto]));
+
+    component.actualizarDashboardCompleto();
+
+    expect(component.productosCargando).toBeFalse();
+    expect(component.productos).toEqual([foto]);
+    expect(component.actualizandoDatos).toBeTrue();
+
+    clientesLentos.next([]);
+    clientesLentos.complete();
+
+    expect(component.actualizandoDatos).toBeFalse();
+    expect(component.productosError).toBe('');
+  });
+
   it('sincroniza los datos del dashboard con las APIs operativas', () => {
     component.actualizarDashboardCompleto();
 
