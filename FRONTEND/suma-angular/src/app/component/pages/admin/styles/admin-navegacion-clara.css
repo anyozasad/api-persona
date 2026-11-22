@@ -1273,3 +1273,126 @@
   .admin-shell.admin-home-redesign .mg-ux-section .admin-primary,
   .admin-shell.admin-home-redesign .mg-ux-section .admin-secondary{min-width:0!important;width:100%!important}
 }
+
+
+/* Mallqui Gym · navegación corregida 22/11
+   El menú avanzado debe ocupar el espacio real del panel:
+   nunca dividir cada nombre en palabras sueltas ni comprimir la flecha. */
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-nav-advanced-content.mg-nav-picker{
+  box-sizing:border-box!important;
+  width:calc(100% - 10px)!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:7px 5px 12px!important;
+  padding:10px 8px!important;
+  background:#1e2924!important;
+  border:1px solid #435c40!important;
+  border-radius:11px!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-nav-picker>label{
+  display:block!important;
+  margin:0 3px 7px!important;
+  color:#cfdbce!important;
+  font-size:12px!important;
+  letter-spacing:.01em!important;
+  font-weight:700!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-nav-picker #mg-area-selector{
+  box-sizing:border-box!important;
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:43px!important;
+  min-height:43px!important;
+  margin:0!important;
+  padding:8px 28px 8px 10px!important;
+  font-size:13px!important;
+  font-weight:650!important;
+  color:#253a26!important;
+  background:#fff!important;
+  border:1px solid #cddfc0!important;
+  border-radius:8px!important;
+  text-align:left!important;
+  letter-spacing:normal!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-nav-picker .mg-secondary-links{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:3px!important;
+  width:100%!important;
+  min-width:0!important;
+  max-height:260px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  box-sizing:border-box!important;
+  margin:9px 0 0!important;
+  padding:0 2px!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-nav-picker .mg-secondary-link{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 14px!important;
+  align-items:center!important;
+  column-gap:8px!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  min-height:39px!important;
+  height:auto!important;
+  margin:0!important;
+  padding:9px 8px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:#e8f0e7!important;
+  font-size:13px!important;
+  font-weight:550!important;
+  line-height:1.3!important;
+  text-align:left!important;
+  overflow:visible!important;
+  word-break:normal!important;
+  white-space:normal!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-nav-picker .mg-secondary-link > span:first-child{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  flex:none!important;
+  margin:0!important;
+  padding:0!important;
+  color:inherit!important;
+  font-size:13px!important;
+  line-height:1.3!important;
+  font-weight:inherit!important;
+  text-align:left!important;
+  word-break:normal!important;
+  overflow-wrap:normal!important;
+  white-space:normal!important;
+  text-overflow:clip!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-nav-picker .mg-secondary-link > .mg-secondary-chevron{
+  display:block!important;
+  width:14px!important;
+  min-width:14px!important;
+  max-width:14px!important;
+  margin:0!important;
+  padding:0!important;
+  font-size:18px!important;
+  line-height:1!important;
+  color:#b7da8c!important;
+  text-align:center!important;
+  justify-self:end!important;
+  white-space:nowrap!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-nav-picker .mg-secondary-link:hover,
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-nav-picker .mg-secondary-link:focus-visible{
+  background:#324731!important;
+  color:#fff!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-nav-picker .mg-secondary-link.active{
+  background:#344e2c!important;
+  color:#d4fa9a!important;
+}
