@@ -505,7 +505,7 @@ import { catchError, forkJoin, of, tap, timeout } from 'rxjs';
                   <p>{{progresoDatos?.rutina?.observaciones || 'Plan de entrenamiento activo.'}}</p>
                   <button type="button" class="admin-secondary" (click)="cambiarSegcion('rutinas')">Gestionar rutina</button>
                 </div>
-                <ng-template #sinRutinaProgreso><p class="mg-empty-copy">El socio todavía no tiene una rutina asignada.</p></ng-template>
+                <ng-template #sinRutinaProgreso><p class="mg-empty-copy">{{rutinasProgresoIncompletas ? 'No se puede comprobar la rutina porque faltan columnas o tablas de MySQL.' : 'El socio todavía no tiene una rutina asignada.'}}</p></ng-template>
               </article>
             </section>
 
@@ -4411,6 +4411,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   renovarDesdeSeguimiento(cliente:any): void {
     this.cambiarSegcion('membresias');
     setTimeout(()=>{ this.membresiaForm.id_cliente=Number(cliente?.id_cliente||0); },0);
+  }
+
+  get rutinasProgresoIncompletas(): boolean {
+    const pendientes=this.progresoDatos?.faltantes;
+    return Array.isArray(pendientes) && pendientes.some((item:any)=>
+      String(item).startsWith('rutinas.') || String(item)==='tabla:rutinas'
+    );
   }
 
   get medicionesProgresoIncompletas(): boolean {
