@@ -105,6 +105,14 @@ jobs:
           php artisan tinker --execute='DB::statement("SET FOREIGN_KEY_CHECKS=0"); Schema::dropIfExists("cliente_membresia"); Schema::dropIfExists("membresias"); Schema::dropIfExists("clientes"); DB::statement("SET FOREIGN_KEY_CHECKS=1");'
           php artisan db:reconciliar-esquema
           php artisan db:verificar
+      - name: Probar reparacion aditiva de columnas y tablas conservando datos
+        run: |
+          # Solo la base efimera mallqui_gym_pruebas; nunca ejecutar en gym_system.
+          php artisan tinker --execute='if (DB::getDatabaseName() !== "mallqui_gym_pruebas") throw new RuntimeException("BD de prueba requerida"); DB::table("clientes")->insert(["dni"=>"79998811","nombres"=>"Socio","apellidos"=>"Persistente","estado"=>"Activo"]); DB::table("membresias")->insert(["nombre"=>"Plan persistente CI","duracion_meses"=>1,"precio"=>89.50,"estado"=>"Activo"]); DB::table("progreso_medidas")->insert(["id_cliente"=>DB::table("clientes")->where("dni","79998811")->value("id_cliente"),"peso"=>72.50,"grasa"=>18.10,"fecha"=>"2026-11-22"]); Schema::table("membresias", function ($t) { $t->dropColumn("descripcion"); }); Schema::table("progreso_medidas", function ($t) { $t->dropColumn("grasa"); }); Schema::dropIfExists("rutinas");'
+          # Conservar el historial de migrations tal como se encuentra en XAMPP.
+          php artisan db:reconciliar-esquema
+          php artisan db:verificar
+          php artisan tinker --execute='if (DB::table("clientes")->where("dni","79998811")->value("apellidos")!=="Persistente") throw new RuntimeException("Socio perdido"); if ((float)DB::table("membresias")->where("nombre","Plan persistente CI")->value("precio")!==89.50) throw new RuntimeException("Plan alterado"); if ((float)DB::table("progreso_medidas")->where("peso",72.50)->value("peso")!==72.50) throw new RuntimeException("Medicion perdida"); foreach (["rutinas","membresias","progreso_medidas"] as $t) { if (!Schema::hasTable($t)) throw new RuntimeException("Tabla ausente: ".$t); } if (!Schema::hasColumn("membresias","descripcion") || !Schema::hasColumn("progreso_medidas","grasa")) throw new RuntimeException("Columnas no recuperadas");'
       - name: Verificar rutas de reservas, pagos y EFSRT
         run: php artisan route:list --path=api --except-vendor
       - name: Ejecutar pruebas del flujo principal
