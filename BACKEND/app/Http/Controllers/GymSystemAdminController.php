@@ -757,28 +757,68 @@ class GymSystemAdminController extends Controller
         return response()->json(['mensaje'=>'Estado del usuario actualizado.']);
     }
 
+    /**
+     * El progreso no depende de tener una rutina asignada ni del esquema
+     * de otra función. En instalaciones antiguas devolver datos parciales,
+     * con advertencias concretas y sin exponer SQLSTATE.
+     */
+    private function camposProgresoFaltantes(string $tabla, array $campos): array
+    {
+        if (!$this->schema->hasTable($tabla)) {
+            return ['tabla:'.$tabla];
+        }
+
+        return array_values(array_map(
+            static fn (string $campo): string => $tabla.'.'.$campo,
+            array_filter($campos, fn (string $campo): bool => !$this->schema->hasColumn($tabla, $campo))
+        ));
+    }
+
     public function progreso(string $socioId)
     {
         $cliente = $this->db->table('clientes')->where('id_cliente', $socioId)->first();
         abort_if(!$cliente, 404, 'Socio no encontrado.');
 
-        $medidas = $this->schema->hasTable('progreso_medidas')
-            ? $this->db->table('progreso_medidas')
-                ->where('id_cliente', $socioId)
-                ->orderByDesc('fecha')
-                ->orderByDesc('id')
-                ->get()
-            : collect();
+        $faltantesMedidas = $this->camposProgresoFaltantes('progreso_medidas', [
+            'id', 'id_cliente', 'peso', 'grasa', 'cintura', 'brazo', 'fecha'
+        ]);
+        $faltantesRutinas = $this->camposProgresoFaltantes('rutinas', [
+            'id_rutina', 'id_cliente', 'nombre_rutina', 'objetivo',
+            'descripcion', 'estado', 'fecha_inicio'
+        ]);
+        $advertencias = [];
 
-        $rutina = $this->db->table('rutinas')
-            ->where('id_cliente', $socioId)
-            ->orderByRaw("CASE WHEN estado = 'Activo' THEN 0 ELSE 1 END")
-            ->orderByDesc('fecha_inicio')
-            ->orderByDesc('id_rutina')
-            ->first();
+        $medidas = collect();
+        if ($faltantesMedidas === []) {
+            try {
+                $medidas = $this->db->table('progreso_medidas')
+                    ->where('id_cliente', $socioId)
+                    ->orderByDesc('fecha')->orderByDesc('id')->get();
+            } catch (\Throwable $e) {
+                report($e);
+                $advertencias[] = 'No se pudieron consultar las mediciones en MySQL.';
+            }
+        } else {
+            $advertencias[] = 'Mediciones pendientes de preparar: '.implode(', ', $faltantesMedidas);
+        }
 
-        if ($rutina) {
-            $rutina->observaciones = $rutina->descripcion ?: $rutina->objetivo;
+        $rutina = null;
+        if ($faltantesRutinas === []) {
+            try {
+                $rutina = $this->db->table('rutinas')
+                    ->where('id_cliente', $socioId)
+                    ->orderByRaw("CASE WHEN estado = 'Activo' THEN 0 ELSE 1 END")
+                    ->orderByDesc('fecha_inicio')->orderByDesc('id_rutina')->first();
+                if ($rutina) {
+                    $rutina->observaciones = ($rutina->descripcion ?? null)
+                        ?: ($rutina->objetivo ?? null);
+                }
+            } catch (\Throwable $e) {
+                report($e);
+                $advertencias[] = 'No se pudo consultar la rutina del socio en MySQL.';
+            }
+        } else {
+            $advertencias[] = 'Rutinas pendientes de preparar: '.implode(', ', $faltantesRutinas);
         }
 
         return response()->json([
@@ -789,12 +829,14 @@ class GymSystemAdminController extends Controller
                 'apellidos' => $cliente->apellidos,
                 'nombre' => trim($cliente->nombres.' '.$cliente->apellidos),
                 'dni' => $cliente->dni,
-                'correo' => $cliente->correo,
-                'telefono' => $cliente->telefono,
+                'correo' => $cliente->correo ?? null,
+                'telefono' => $cliente->telefono ?? null,
                 'estado' => $cliente->estado,
             ],
             'medidas' => $medidas,
             'rutina' => $rutina,
+            'advertencias' => $advertencias,
+            'faltantes' => array_merge($faltantesMedidas, $faltantesRutinas),
         ]);
     }
 
@@ -809,24 +851,43 @@ class GymSystemAdminController extends Controller
             'fecha' => 'nullable|date',
         ]);
 
-        abort_unless($this->schema->hasTable('progreso_medidas'), 500, 'Ejecuta las migraciones para habilitar progreso físico.');
+        $faltantes = $this->camposProgresoFaltantes('progreso_medidas', [
+            'id', 'id_cliente', 'peso', 'grasa', 'cintura', 'brazo', 'fecha'
+        ]);
+        if ($faltantes !== []) {
+            return response()->json([
+                'codigo' => 'ESQUEMA_PROGRESO_INCOMPLETO',
+                'mensaje' => 'La tabla de mediciones no está completa. Haz un respaldo y recupera las tablas de progreso físico antes de guardar.',
+                'faltantes' => $faltantes,
+            ], 503);
+        }
 
-        $id = $this->db->table('progreso_medidas')->insertGetId([
+        $registro = [
             'id_cliente' => (int) $d['socio_id'],
             'peso' => $d['peso'] ?? null,
             'grasa' => $d['grasa'] ?? null,
             'cintura' => $d['cintura'] ?? null,
             'brazo' => $d['brazo'] ?? null,
             'fecha' => $d['fecha'] ?? today()->toDateString(),
-            'created_at' => now(),
-        ]);
+        ];
+        if ($this->schema->hasColumn('progreso_medidas', 'created_at')) {
+            $registro['created_at'] = now();
+        }
 
+        $id = $this->db->table('progreso_medidas')->insertGetId($registro);
         return response()->json(['mensaje' => 'Medición registrada.', 'id_medida' => $id], 201);
     }
 
     public function eliminarMedida(string $id)
     {
-        abort_unless($this->schema->hasTable('progreso_medidas'), 404, 'Módulo de progreso no disponible.');
+        $faltantes = $this->camposProgresoFaltantes('progreso_medidas', ['id']);
+        if ($faltantes !== []) {
+            return response()->json([
+                'codigo' => 'ESQUEMA_PROGRESO_INCOMPLETO',
+                'mensaje' => 'La tabla de mediciones no está disponible para eliminar.',
+                'faltantes' => $faltantes,
+            ], 503);
+        }
         $this->db->table('progreso_medidas')->where('id', $id)->delete();
         return response()->json(['mensaje' => 'Medida eliminada.']);
     }
