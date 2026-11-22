@@ -115,6 +115,25 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.membresiasError).toBe('');
   });
 
+  it('Progreso Físico identifica la tabla de mediciones faltante sin habilitar Guardar', () => {
+    component.progresoDatos = {
+      socio: {id_cliente: 1},
+      medidas: [],
+      rutina: null,
+      faltantes: ['tabla:progreso_medidas','tabla:rutinas'],
+      advertencias: ['Mediciones pendientes de preparar: tabla:progreso_medidas']
+    };
+    expect(component.medicionesProgresoIncompletas).toBeTrue();
+  });
+
+  it('Progreso Físico permite una medición cuando existe su esquema', () => {
+    component.progresoDatos = {
+      socio: {id_cliente: 1}, medidas: [], rutina: null,
+      faltantes: ['tabla:rutinas'], advertencias: []
+    };
+    expect(component.medicionesProgresoIncompletas).toBeFalse();
+  });
+
   it('habilita la creación de cuenta para un socio nuevo sin ocultar los campos de acceso', () => {
     component.nuevoCliente();
     expect(component.clienteForm.crear_acceso).toBeTrue();
