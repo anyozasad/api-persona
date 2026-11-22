@@ -17,6 +17,35 @@ describe('Portal del cliente - sincronización real con MySQL', () => {
     component.nivelEntrenamiento = 'Principiante';
   });
 
+  it('los botones del socio guardan el destino correcto en la URL', () => {
+    const router={navigate:jasmine.createSpy('navigate').and.returnValue(Promise.resolve(true))} as any;
+    const route={snapshot:{queryParamMap:{get:()=>null}}} as any;
+    const c=new UsuarioComponent(api as any,{} as any,router,route);
+    spyOn(window,'scrollTo').and.stub();
+    spyOn(c,'sincronizarDatosCliente').and.stub();
+    spyOn(c,'cargarContadorAvisos').and.stub();
+    c.abrirModulo('reservas');
+    expect(c.moduloActivo).toBe('reservas');
+    expect(router.navigate).toHaveBeenCalledWith([],{
+      relativeTo:route,queryParams:{modulo:'reservas'},queryParamsHandling:'merge'
+    });
+    c.abrirModulo('inicio');
+    expect(router.navigate).toHaveBeenCalledWith([],{
+      relativeTo:route,queryParams:{modulo:'inicio'},queryParamsHandling:'merge'
+    });
+  });
+
+  it('al restaurar historial no crea nuevas entradas en el navegador', () => {
+    const router={navigate:jasmine.createSpy('navigate')} as any;
+    const route={snapshot:{queryParamMap:{get:()=>null}}} as any;
+    const c=new UsuarioComponent(api as any,{} as any,router,route);
+    spyOn(window,'scrollTo').and.stub();
+    spyOn(c,'sincronizarDatosCliente').and.stub();
+    c.abrirModulo('reservas',true);
+    expect(c.moduloActivo).toBe('reservas');
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
   it('no muestra preferencias de otro usuario guardadas en el mismo navegador', () => {
     component.enfoqueInicioSeleccionado='Masa muscular';
     component.nivelEntrenamiento='Avanzado';

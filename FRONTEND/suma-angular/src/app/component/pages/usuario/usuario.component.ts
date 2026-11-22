@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../../auth.service';
 import { GymApiService } from '../../../core/services/gym-api.service';
 import { ClienteExperienciaComponent } from './cliente-experiencia.component';
@@ -2143,6 +2144,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   ladoCasa:'derecho'|'izquierdo'='derecho';
   private timerCasa:any=null;
   private planSolicitadoRuta='';
+  private moduloRutaObservado=false;
+  private navegacionPortal?:Subscription;
   private autoSyncPortal:any=null;
   private readonly autoSyncCadaMs=15000;
   private onWindowFocus=()=>this.sincronizarPortalAutomatico();
@@ -2169,9 +2172,21 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     }catch{this.moduloActivo=moduloRuta ? safeModule(moduloRuta) : 'inicio';}
     this.cargarEstadoSistema();
     this.cargar();
+
+    // Al retroceder o avanzar en el navegador, restaurar la sección visible.
+    // La primera carga sin ?modulo sigue respetando la pestaña guardada.
+    this.navegacionPortal=this.route?.queryParamMap?.subscribe(parametros=>{
+      const valor=parametros.get('modulo');
+      if(valor===null && !this.moduloRutaObservado) return;
+      this.moduloRutaObservado=true;
+      const destino=safeModule(valor||'inicio');
+      if(destino!==this.moduloActivo) this.abrirModulo(destino,true);
+    });
+
     this.iniciarSincronizacionAutomatica();
   }
   ngOnDestroy():void{
+    this.navegacionPortal?.unsubscribe();
     this.detenerTimerCasa();
     if(this.autoSyncPortal)clearInterval(this.autoSyncPortal);
     if(this.fotoPerfilObjectUrl)URL.revokeObjectURL(this.fotoPerfilObjectUrl);
@@ -2289,11 +2304,21 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     }
   }
 
-  abrirModulo(m:string){
+  abrirModulo(m:string,desdeUrl=false){
     this.mobileMenuAbierto=false;
     m=safeModule(m);
     this.moduloActivo=m;
     try{localStorage.setItem('mallqui_modulo_cliente',m);}catch{}
+    if(!desdeUrl){
+      // Guardar el módulo en la URL. F5, Atrás y Adelante abren la pantalla
+      // real del socio; antes solo cambiaba una variable y la URL era antigua.
+      this.moduloRutaObservado=true;
+      void this.router?.navigate?.([],{
+        relativeTo:this.route,
+        queryParams:{modulo:m},
+        queryParamsHandling:'merge'
+      });
+    }
     document.title='Mallqui Gym · '+this.tituloModuloActual;
     this.error='';
 
