@@ -5190,10 +5190,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   cargarCategorias(){ this.api.categorias().subscribe({next:r=>this.categorias=r,error:e=>this.mostrarError(e)}); }
   cargarRutinas(){ this.api.rutinas().subscribe({next:r=>this.rutinas=r,error:e=>this.mostrarError(e)}); }
   cargarReservas(){
-    this.api.reservas().subscribe({
+    this.api.reservas().pipe(timeout(12000)).subscribe({
       next:r=>this.reservas=Array.isArray(r)?r:[],
       error:e=>{
-        this.reservas=[];
+        // Un fallo de MySQL no equivale a no tener reservas.
         this.mostrarError(e);
       }
     });
@@ -5215,20 +5215,31 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   cargarCaja(){
     this.cajaCargando=true;
     this.cajaError='';
+    // Un error al cargar el historial NO debe borrar el estado real de la caja.
+    // Conservar los datos exitosos y distinguir error de una caja sin abrir.
+    const fallos:string[]=[];
     forkJoin({
-      actual:this.api.cajaActual(),
-      historial:this.api.historialCaja()
+      actual:this.api.cajaActual().pipe(
+        timeout(12000),
+        catchError((_e:any)=>{fallos.push('caja actual');return of(null);})
+      ),
+      historial:this.api.historialCaja().pipe(
+        timeout(12000),
+        catchError((_e:any)=>{fallos.push('historial');return of(null);})
+      )
     }).subscribe({
       next:({actual,historial})=>{
-        this.caja=actual;
-        this.historialCaja=Array.isArray(historial)?historial:[];
+        if(!fallos.includes('caja actual'))this.caja=actual;
+        if(!fallos.includes('historial'))this.historialCaja=Array.isArray(historial)?historial:[];
         this.cajaCargando=false;
+        if(fallos.length){
+          this.cajaError='No se pudo consultar '+fallos.join(' y ')+' en MySQL. Los datos anteriores se conservan hasta volver a consultar.';
+          this.error=this.cajaError;
+        }
       },
       error:e=>{
-        this.caja=null;
-        this.historialCaja=[];
         this.cajaCargando=false;
-        this.cajaError='No se pudieron consultar ambos registros de caja en Laravel y MySQL';
+        this.cajaError='No se pudo comprobar la caja en Laravel y MySQL.';
         this.mostrarError(e);
       }
     });
