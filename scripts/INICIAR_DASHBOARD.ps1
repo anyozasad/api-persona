@@ -1,7 +1,7 @@
 # Mallqui Gym | Inicio y diagnóstico en Windows (PowerShell 5.1+).
 # Uso: powershell -ExecutionPolicy Bypass -File .\scripts\INICIAR_DASHBOARD.ps1
 # Primera instalación: agregar -Preparar (instala composer/npm y crea .env si no existe).
-# Esquema y datos mínimos: -Migrar ejecuta sistema:preparar SOLO con respaldo confirmado.
+# Solo esquema MySQL: -Migrar respalda, reconcilia y verifica SIN arrancar Angular ni sembrar datos.
 # Diagnóstico: agregar -SoloVerificar (no instala, migra ni inicia servicios).
 [CmdletBinding()]
 param(
@@ -114,7 +114,7 @@ try {
     $composer = BuscarComando @('composer.bat','composer.cmd','composer') @('C:\ProgramData\ComposerSetup\bin\composer.bat')
 
     if (-not $php) { Fallar 'No encuentro PHP. Abre XAMPP o instala PHP 8.2+ y revisa C:\xampp\php\php.exe.' }
-    if (-not $npm -and -not $RepararClientes -and -not $RepararMembresias) { Fallar 'No encuentro npm. Instala Node.js 22 y vuelve a ejecutar este archivo.' }
+    if (-not $npm -and -not $Migrar -and -not $RepararClientes -and -not $RepararMembresias) { Fallar 'No encuentro npm. Instala Node.js 22 y vuelve a ejecutar este archivo.' }
     $versionPhp = & $php -r 'echo PHP_VERSION_ID;'
     $idVersionPhp = 0
     if ($LASTEXITCODE -ne 0 -or -not [int]::TryParse([string]$versionPhp, [ref]$idVersionPhp)) {
@@ -222,7 +222,7 @@ try {
         Ejecutar $php @('artisan','key:generate','--force') $backend
     }
 
-    if (-not (Test-Path $nodeModules)) {
+    if (-not $Migrar -and -not (Test-Path $nodeModules)) {
         if ($Preparar -and -not $SoloVerificar) {
             Informar 'Instalando dependencias de Angular desde package-lock.json...'
             Ejecutar $npm @('ci','--no-audit','--no-fund') $frontend
@@ -233,7 +233,7 @@ try {
 
     if ($Migrar) {
         if ($SoloVerificar) { Fallar 'No combines -Migrar y -SoloVerificar.' }
-        Avisar 'La preparación puede modificar tablas y crear datos iniciales. Nunca elimina voluntariamente los registros.'
+        Avisar 'Se revisará SOLAMENTE la estructura de MySQL; no se crearán socios, ventas, productos ni tarifas ficticias.'
         $respuesta = Read-Host '¿Autorizas crear primero un respaldo SQL y después preparar las tablas faltantes? Escribe SI'
         if ($respuesta -ne 'SI') { Fallar 'Preparación cancelada; no se modificó la base.' }
 
@@ -251,14 +251,16 @@ try {
             Fallar 'Respaldo SQL no confirmado. Preparación cancelada antes de alterar tablas.'
         }
         Informar ('Respaldo SQL verificado: ' + $nuevoRespaldo.FullName)
-        Informar 'Sincronizando únicamente el esquema pendiente de Mallqui Gym...'
-        Ejecutar $php @('artisan','sistema:preparar') $backend
-
-        # Algunas instalaciones XAMPP contienen migraciones marcadas como
-        # ejecutadas pero conservan columnas ausentes en tablas legacy.
-        # Reconciliar el esquema real (sin fresh ni drop) tras el respaldo.
-        Informar 'Revisando tablas y columnas reales de clientes, usuarios y módulos...'
+        # No ejecutar sistema:preparar aquí: además de migraciones, siembra
+        # configuraciones y puede fallar antes de revisar todos los módulos.
+        # Recuperar el ESQUEMA REAL directamente, sin borrar datos ni tablas.
+        Informar 'Recuperando tablas y columnas reales de TODOS los módulos de MySQL...'
         Ejecutar $php @('artisan','db:reconciliar-esquema') $backend
+
+        # Exigir verificación independiente de tablas y vistas. Nunca presentar
+        # "reparado" mientras db:verificar encuentre objetos ausentes.
+        Informar 'Verificando todas las tablas, columnas y vistas obligatorias...'
+        Ejecutar $php @('artisan','db:verificar') $backend
 
         # No informar éxito si el registro todavía carece de columnas.
         # El estado comprueba la conexión que usa el backend abierto.
@@ -285,6 +287,7 @@ try {
         }
         Informar 'Base MySQL verificada: todas las tablas y columnas obligatorias están disponibles.'
         Informar 'Conserva el respaldo SQL.'
+        return
     }
 
     if ($SoloVerificar) {
