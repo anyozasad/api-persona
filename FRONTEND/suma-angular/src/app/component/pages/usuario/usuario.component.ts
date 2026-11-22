@@ -83,7 +83,17 @@ import {
       </div>
 
       <main class="member-main" *ngIf="!cargando; else cargandoTpl">
-        <div *ngIf="error" class="member-toast member-toast-error"><span aria-hidden="true">!</span><b>{{error}}</b></div>
+        <div *ngIf="error" class="member-toast member-toast-error" role="alert"><span aria-hidden="true">!</span><b>{{error}}</b></div>
+        <div *ngIf="modulosConError.length" class="member-toast member-toast-error" role="alert">
+          <span aria-hidden="true">!</span>
+          <div>
+            <b>Algunos datos no se pudieron consultar en MySQL: {{modulosConError.join(', ')}}.</b>
+            <p>Una lista vacía no significa que no tengas registros. Revisa la conexión y vuelve a consultar.</p>
+          </div>
+          <button type="button" (click)="sincronizarDatosCliente()" [disabled]="actualizandoModulo">
+            {{actualizandoModulo ? 'Consultando...' : 'Reintentar'}}
+          </button>
+        </div>
         <div *ngIf="toast" class="member-toast member-toast-success"><span aria-hidden="true">✓</span><b>{{toast}}</b></div>
 
         <section *ngIf="!['inicio','casa','rutinas','clases','progreso','reservas','pagos','avisos'].includes(moduloActivo)" class="member-page-context">
@@ -2070,6 +2080,8 @@ import {
 })
 export class UsuarioComponent implements OnInit, OnDestroy {
   moduloActivo='inicio'; cargando=true; error=''; toast='';
+  modulosConError:string[]=[];
+  guardandoPreferenciaEntrenamiento=false;
   avisosNoLeidos=0;
   mobileMenuAbierto=false;
   apiConectada=false;
@@ -2182,6 +2194,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
     this.api.cargarPortalCliente().subscribe({
       next:r=>{
+        this.modulosConError=Array.isArray(r?.erroresModulos) ? r.erroresModulos : [];
         this.resumen=r.resumen||this.resumen;
         if(this.moduloActivo!=='perfil'){
           this.perfil=this.normalizarPerfil(r.perfil||this.perfil);
@@ -2229,8 +2242,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargar():void{
     this.cargando=true; this.error='';
     this.api.cargarPortalCliente().subscribe({
-      next:r=>{this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.aplicarPreferenciasPerfil();this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=safeArray(r.membresiasDisponibles);this.gymInfo=r.gymInfo||{};this.pagos=sortNewest(uniqueById(safeArray(r.pagos),['id_pago']),'fecha_pago');this.rutinas=sortNewest(uniqueById(safeArray(r.rutinas),['id_rutina']),'fecha_inicio');this.asistencias=sortNewest(uniqueById(safeArray(r.asistencias),['id_asistencia']),'fecha_hora_entrada');this.reservas=sortNewest(uniqueById(safeArray(r.reservas),['id_reserva']),'fecha_clase');this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));this.compras=sortNewest(uniqueById(safeArray(r.compras),['id_venta']),'fecha_venta');this.productosDisponibles=this.normalizarProductosPortal(r.productos);this.preseleccionarPlanActual();this.aplicarPlanSolicitadoRuta();this.cargando=false;this.cargarFotoPerfil();this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
-      error:e=>{this.error=this.errorApi(e);this.cargando=false;}
+      next:r=>{this.modulosConError=Array.isArray(r?.erroresModulos) ? r.erroresModulos : [];this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.aplicarPreferenciasPerfil();this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=safeArray(r.membresiasDisponibles);this.gymInfo=r.gymInfo||{};this.pagos=sortNewest(uniqueById(safeArray(r.pagos),['id_pago']),'fecha_pago');this.rutinas=sortNewest(uniqueById(safeArray(r.rutinas),['id_rutina']),'fecha_inicio');this.asistencias=sortNewest(uniqueById(safeArray(r.asistencias),['id_asistencia']),'fecha_hora_entrada');this.reservas=sortNewest(uniqueById(safeArray(r.reservas),['id_reserva']),'fecha_clase');this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));this.compras=sortNewest(uniqueById(safeArray(r.compras),['id_venta']),'fecha_venta');this.productosDisponibles=this.normalizarProductosPortal(r.productos);this.preseleccionarPlanActual();this.aplicarPlanSolicitadoRuta();this.cargando=false;this.cargarFotoPerfil();this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
+      error:e=>{this.modulosConError=[];this.error=this.errorApi(e);this.cargando=false;}
     });
   }
   aplicarPlanSolicitadoRuta():void{
@@ -2304,22 +2317,41 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   abrirEnfoqueEntrenamiento(enfoque:string):void{
-    this.enfoqueInicioSeleccionado=enfoque;
-    this.perfil={...(this.perfil||{}),enfoque_entrenamiento:enfoque};
-    try{localStorage.setItem('mallqui_enfoque_entrenamiento',enfoque);}catch{}
+    if(this.guardandoPreferenciaEntrenamiento)return;
+    this.guardandoPreferenciaEntrenamiento=true;
+    this.errorCasa='';
     this.api.actualizarPerfilCliente({enfoque_entrenamiento:enfoque}).subscribe({
-      error:e=>this.errorCasa='No se pudo guardar el objetivo: '+this.errorApi(e)
+      next:r=>{
+        this.guardandoPreferenciaEntrenamiento=false;
+        this.perfil=this.normalizarPerfil(r?.cliente||{...this.perfil,enfoque_entrenamiento:enfoque});
+        this.aplicarPreferenciasPerfil();
+        this.abrirModulo('casa');
+        this.ok('Objetivo guardado en tu cuenta: '+enfoque);
+      },
+      error:e=>{
+        this.guardandoPreferenciaEntrenamiento=false;
+        this.errorCasa='No se pudo guardar el objetivo: '+this.errorApi(e);
+        this.error=this.errorCasa;
+      }
     });
-    this.abrirModulo('casa');
-    this.ok('Objetivo seleccionado: '+enfoque);
   }
 
   seleccionarNivelEntrenamiento(nivel:'Principiante'|'Intermedio'|'Avanzado'):void{
-    this.nivelEntrenamiento=nivel;
-    this.perfil={...(this.perfil||{}),nivel_entrenamiento:nivel};
-    try{localStorage.setItem('mallqui_nivel_entrenamiento',nivel);}catch{}
+    if(this.guardandoPreferenciaEntrenamiento)return;
+    this.guardandoPreferenciaEntrenamiento=true;
+    this.errorCasa='';
     this.api.actualizarPerfilCliente({nivel_entrenamiento:nivel}).subscribe({
-      error:e=>this.errorCasa='No se pudo guardar el nivel: '+this.errorApi(e)
+      next:r=>{
+        this.guardandoPreferenciaEntrenamiento=false;
+        this.perfil=this.normalizarPerfil(r?.cliente||{...this.perfil,nivel_entrenamiento:nivel});
+        this.aplicarPreferenciasPerfil();
+        this.ok('Nivel de entrenamiento guardado: '+nivel);
+      },
+      error:e=>{
+        this.guardandoPreferenciaEntrenamiento=false;
+        this.errorCasa='No se pudo guardar el nivel: '+this.errorApi(e);
+        this.error=this.errorCasa;
+      }
     });
   }
 
@@ -2599,6 +2631,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
     this.api.cargarPortalCliente().subscribe({
       next:r=>{
+        this.modulosConError=Array.isArray(r?.erroresModulos) ? r.erroresModulos : [];
         this.resumen=r.resumen;
         this.perfil=this.normalizarPerfil(r.perfil);
         this.aplicarPreferenciasPerfil();
