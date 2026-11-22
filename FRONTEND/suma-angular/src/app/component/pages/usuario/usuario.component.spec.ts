@@ -17,6 +17,16 @@ describe('Portal del cliente - sincronización real con MySQL', () => {
     component.nivelEntrenamiento = 'Principiante';
   });
 
+  it('no muestra preferencias de otro usuario guardadas en el mismo navegador', () => {
+    component.enfoqueInicioSeleccionado='Masa muscular';
+    component.nivelEntrenamiento='Avanzado';
+    component.perfil={nombres:'Otro socio',enfoque_entrenamiento:null,nivel_entrenamiento:null};
+    (component as any).aplicarPreferenciasPerfil();
+
+    expect(component.enfoqueInicioSeleccionado).toBe('Cardiovascular');
+    expect(component.nivelEntrenamiento).toBe('Principiante');
+  });
+
   it('no marca como guardado el objetivo si la BD de Laravel falla', () => {
     api.actualizarPerfilCliente.and.returnValue(throwError(() => ({
       status: 503, error: { mensaje: 'MySQL sin conexión' }
