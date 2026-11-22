@@ -3395,7 +3395,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     // Atrás/Adelante vuelve al módulo seleccionado, sin perder la URL.
     // La suscripción no repite consultas después de un clic normal.
     if (this.route?.snapshot?.routeConfig?.path === 'admin') {
-      this.navegacionRuta = this.route.queryParamMap.subscribe(parametros => {
+      this.navegacionRuta = this.route.queryParamMap?.subscribe(parametros => {
         const modulo = this.normalizarSegcion(parametros.get('modulo') || this.seccionInicial || 'dashboard');
         if (modulo === this.seccion) return;
         if (modulo !== 'clientes' && this.clienteFormularioAbierto) this.cancelarEdicionCliente();
