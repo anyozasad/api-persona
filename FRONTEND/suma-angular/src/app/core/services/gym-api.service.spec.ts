@@ -20,13 +20,9 @@ describe('GymApiService - integridad de datos entre administrador y cliente', ()
   const responderConsultas = (falla: string | null = null, estado = 503) => {
     const peticiones = http.match(req => req.method === 'GET');
     expect(peticiones.length).toBe(12);
-    peticiones.forEach(req => {
-      if (req.request.url === falla) {
-        req.flush({mensaje: 'Esquema de MySQL incompleto'}, {
-          status: estado, statusText: 'Server Error'
-        });
-        return;
-      }
+    // Resolver primero las peticiones correctas. Un 401 cancela las demás
+    // suscripciones de forkJoin y no deberían quedar peticiones sin responder.
+    peticiones.filter(req => req.request.url !== falla).forEach(req => {
       const datos: Record<string, any> = {
         '/api/mi-cuenta/resumen': {cliente: {id_cliente: 5}},
         '/api/mi-cuenta/perfil': {id_cliente: 5, nombres: 'Socio'},
@@ -43,6 +39,13 @@ describe('GymApiService - integridad de datos entre administrador y cliente', ()
       };
       req.flush(datos[req.request.url]);
     });
+    if (falla) {
+      const error = peticiones.find(req => req.request.url === falla);
+      expect(error).toBeDefined();
+      error!.flush({mensaje: 'Esquema de MySQL incompleto'}, {
+        status: estado, statusText: 'Server Error'
+      });
+    }
   };
 
   it('no confunde fallo en pagos con inexistencia de pagos, y conserva lo disponible', () => {
