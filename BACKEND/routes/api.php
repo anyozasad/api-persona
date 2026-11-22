@@ -49,42 +49,10 @@ Route::get('/estado-sistema', function () {
         $db->getPdo();
         $schema = $db->getSchemaBuilder();
 
-        $requeridas = [
-            'clientes' => ['id_cliente','dni','nombres','apellidos','estado'],
-            'usuarios' => ['id_usuario','nombre_usuario','contrasena','rol','estado','id_cliente','id_entrenador'],
-            'membresias' => ['id_membresia','nombre','duracion_meses','precio','estado'],
-            'cliente_membresia' => ['id_cliente_membresia','id_cliente','id_membresia','fecha_inicio','fecha_fin','estado'],
-            'pagos_membresia' => ['id_pago','id_cliente_membresia','monto','metodo_pago','estado_pago'],
-            'entrenadores' => ['id_entrenador','nombres','apellidos','estado'],
-            'clases' => ['id_clase','nombre','hora_inicio','hora_fin','cupo_maximo','estado'],
-            'reservas' => ['id_reserva','id_cliente','id_clase','fecha_clase','estado'],
-            'rutinas' => ['id_rutina','id_cliente','id_entrenador','nombre_rutina','estado'],
-            'detalle_rutina' => ['id_detalle_rutina','id_rutina','ejercicio','series','repeticiones'],
-            'asistencias' => ['id_asistencia','id_cliente','fecha_hora_entrada','fecha_hora_salida','estado'],
-            'categorias' => ['id_categoria','nombre_categoria','estado'],
-            'productos' => ['id_producto','id_categoria','nombre_producto','foto','precio_venta','stock','estado'],
-            'ventas' => ['id_venta','id_cliente','numero_comprobante','metodo_pago','subtotal','igv','total','estado'],
-            'detalle_venta' => ['id_detalle_venta','id_venta','id_producto','cantidad','precio_unitario','subtotal'],
-            'cajas' => ['id_caja','id_usuario_apertura','fecha_apertura','estado'],
-            'movimientos_caja' => ['id_movimiento','id_caja','tipo','monto','fecha_movimiento'],
-            'movimientos_inventario' => ['id_movimiento_inventario','id_producto','tipo','cantidad','stock_anterior','stock_nuevo'],
-            'proveedores' => ['id_proveedor','ruc','razon_social','estado'],
-            'compras' => ['id_compra','id_proveedor','id_usuario','total','estado'],
-            'detalle_compra' => ['id_detalle_compra','id_compra','id_producto','cantidad','subtotal'],
-            'auditorias' => ['id_auditoria','ruta','fecha'],
-            'configuracion_sistema' => ['id','nombre_gimnasio','hora_apertura','hora_cierre'],
-            'admin_gym_records' => ['id','modulo','titulo','estado','datos'],
-            'notificaciones_cliente' => ['id_notificacion','id_cliente','titulo','mensaje','leida'],
-            'solicitudes_soporte' => ['id_soporte','id_cliente','asunto','mensaje','estado'],
-            'opiniones_cliente' => ['id_opinion','id_cliente','calificacion','comentario','estado'],
-            'metas_cliente' => ['id_meta_cliente','id_cliente','sesiones_semanales'],
-            'clases_favoritas' => ['id_favorito','id_cliente','id_clase'],
-            'planes_entrenamiento_casa' => ['id_plan_casa','id_cliente','dias','zonas','activo'],
-            'sesiones_entrenamiento_casa' => ['id_sesion_casa','id_cliente','zona','fecha','estado'],
-            'progreso_medidas' => ['id','id_cliente','fecha'],
-            'personal_access_tokens' => ['id','tokenable_type','tokenable_id','name','token'],
-        ];
-
+        // Un solo contrato de tablas y columnas para el dashboard, portal,
+        // diagnóstico y reparador. El subconjunto anterior omitía campos
+        // reales y podía mostrar "operativo" cuando un botón fallaba.
+        $requeridas = \App\Console\Commands\ReconciliarEsquemaRealMallqui::requisitos();
         $tablasDetectadas = [];
         $faltantes = [];
         foreach ($requeridas as $tabla => $columnas) {
@@ -101,6 +69,15 @@ Route::get('/estado-sistema', function () {
             }
         }
 
+        // Las vistas también forman parte de los reportes del administrador.
+        foreach (['vista_clientes_membresias', 'vista_stock', 'vista_ventas'] as $vista) {
+            try {
+                DB::table($vista)->limit(1)->get();
+            } catch (\Throwable $e) {
+                $faltantes[] = 'vista:'.$vista;
+            }
+        }
+
         return response()->json([
             'sistema' => 'Mallqui Gym',
             'api' => true,
@@ -112,7 +89,7 @@ Route::get('/estado-sistema', function () {
             'faltantes' => $faltantes,
             'mensaje' => count($faltantes) === 0
                 ? 'API, base principal y esquema funcional disponibles.'
-                : 'La API y la base responden, pero faltan objetos del esquema. Ejecuta php artisan sistema:preparar.',
+                : 'La API y MySQL responden, pero hay tablas, columnas o vistas pendientes. Haz un respaldo y ejecuta db:reconciliar-esquema; después db:verificar.',
         ]);
     } catch (\Throwable $e) {
         return response()->json([

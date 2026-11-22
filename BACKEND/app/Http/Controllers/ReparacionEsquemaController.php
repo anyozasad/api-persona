@@ -31,6 +31,16 @@ class ReparacionEsquemaController extends Controller
                 }
             }
         }
+        // Mismo criterio que /api/estado-sistema y db:verificar. Si las
+        // vistas faltan, el botón de reparación debe poder reconstruirlas.
+        foreach (['vista_clientes_membresias', 'vista_stock', 'vista_ventas'] as $vista) {
+            try {
+                DB::table($vista)->limit(1)->get();
+            } catch (Throwable $e) {
+                $faltantes[] = 'vista:'.$vista;
+            }
+        }
+
         return [
             'base_datos' => (string) DB::connection()->getDatabaseName(),
             'total_tablas' => count($requisitos),

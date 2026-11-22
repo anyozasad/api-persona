@@ -1501,12 +1501,12 @@
   border-color:rgba(255,255,255,.12)!important;
 }
 
-/* En pantallas anchas Inicio ya está en el menú lateral. En móvil
-   conservamos Volver para no quitar la navegación accesible. */
-@media(min-width:1024px) {
-  .admin-shell.admin-home-redesign .mg-current-workspace .mg-module-shell-actions > .mg-back-home {
-    display:none!important;
-  }
+/* El botón Volver permanece visible también en escritorio;
+   ocultarlo hacía perder un acceso que el usuario necesita. */
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-module-shell-actions > .mg-back-home {
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
 }
 @media(max-width:700px) {
   .admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > .mg-nav-primary,

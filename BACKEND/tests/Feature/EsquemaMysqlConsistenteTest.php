@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Console\Commands\ReconciliarEsquemaRealMallqui;
 use App\Console\Commands\VerificarMallquiBd;
+use Illuminate\Support\Facades\Schema;
 use ReflectionClass;
 use ReflectionMethod;
 use Tests\TestCase;
@@ -29,6 +30,38 @@ class EsquemaMysqlConsistenteTest extends TestCase
                 'El módulo '.$tabla.' tiene columnas sin verificar.'
             );
         }
+    }
+
+    /** La API pública y el reparador deben evaluar el MISMO esquema real. */
+    public function test_estado_publico_no_omite_las_columnas_que_el_reparador_exige(): void
+    {
+        $esperadas = [];
+        $detectadas = [];
+        foreach (ReconciliarEsquemaRealMallqui::requisitos() as $tabla => $columnas) {
+            if (!Schema::hasTable($tabla)) {
+                $esperadas[] = 'tabla:'.$tabla;
+                continue;
+            }
+            $detectadas[] = $tabla;
+            foreach ($columnas as $columna) {
+                if (!Schema::hasColumn($tabla, $columna)) {
+                    $esperadas[] = $tabla.'.'.$columna;
+                }
+            }
+        }
+        foreach (['vista_clientes_membresias', 'vista_stock', 'vista_ventas'] as $vista) {
+            try {
+                \Illuminate\Support\Facades\DB::table($vista)->limit(1)->get();
+            } catch (\Throwable $e) {
+                $esperadas[] = 'vista:'.$vista;
+            }
+        }
+
+        $respuesta = $this->getJson('/api/estado-sistema');
+        $respuesta->assertOk()
+            ->assertJsonPath('faltantes', $esperadas)
+            ->assertJsonPath('tablas_detectadas', $detectadas)
+            ->assertJsonPath('operativo', $esperadas === []);
     }
 
     /** El diagnóstico debe exigir las columnas que Eloquent realmente escribe. */
