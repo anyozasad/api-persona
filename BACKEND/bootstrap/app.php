@@ -7,6 +7,7 @@ use App\Http\Middleware\SyncGymSystemMirror;
 use App\Console\Commands\VerificarSprintsMallqui;
 use App\Console\Commands\ImportarFotosProductos;
 use App\Console\Commands\ReconciliarEsquemaRealMallqui;
+use App\Console\Commands\RepararMallquiLocal;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -24,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         VerificarSprintsMallqui::class,
         ImportarFotosProductos::class,
         ReconciliarEsquemaRealMallqui::class,
+        RepararMallquiLocal::class,
     ])
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->appendToGroup('api', SyncGymSystemMirror::class);

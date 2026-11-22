@@ -63,6 +63,18 @@ class BaseDatosUnicaSistemaTest extends TestCase
         $this->assertStringNotContainsString('$sql = $process->getOutput();', $backup);
     }
 
+    public function test_reparador_directo_del_backend_exige_respaldo_y_no_usa_scripts(): void
+    {
+        $ruta = app_path('Console/Commands/RepararMallquiLocal.php');
+        $codigo = (string) file_get_contents($ruta);
+        $this->assertStringContainsString('db:reparar-gym', $codigo);
+        $this->assertStringContainsString("Artisan::call('backup:database')", $codigo);
+        $this->assertStringContainsString("Artisan::call('db:reconciliar-esquema')", $codigo);
+        $this->assertStringContainsString("Artisan::call('db:verificar')", $codigo);
+        $this->assertStringNotContainsString('migrate:fresh', (string) file_get_contents($ruta));
+        $this->assertArrayHasKey('db:reparar-gym', \Illuminate\Support\Facades\Artisan::all());
+    }
+
     public function test_interfaz_conserva_rutas_normales_y_refleja_socios_legacy(): void
     {
         $adminApi = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/component/pages/admin/admin-api.service.ts'));
