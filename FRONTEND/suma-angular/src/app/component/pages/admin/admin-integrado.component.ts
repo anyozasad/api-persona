@@ -182,7 +182,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           <i aria-hidden="true">{{mostrarGestionAvanzada ? '⌃' : '⌄'}}</i>
         </button>
         <div class="mg-nav-advanced-content mg-nav-picker" *ngIf="mostrarGestionAvanzada">
-          <label for="mg-area-selector">1. Área de trabajo</label>
+          <label for="mg-area-selector">Área de trabajo</label>
           <select id="mg-area-selector" [(ngModel)]="grupoComplementarioSeleccionado"
             aria-label="Elegir área de trabajo">
             <option *ngFor="let grupo of menuPrincipal" [value]="grupo.id">{{grupo.titulo}}</option>
@@ -190,13 +190,13 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
           <div class="mg-secondary-links" aria-label="Funciones del área elegida">
             <button type="button" class="mg-secondary-link" *ngFor="let item of opcionesSelectorArea()"
               [attr.data-module]="item.id" [class.active]="seccion===item.id"
+              [attr.title]="item.nombre"
               [attr.aria-current]="seccion===item.id ? 'page' : null"
               (click)="seleccionarModuloSecundarioId(item.id)">
               <span>{{item.nombre}}</span>
               <span class="mg-secondary-chevron" aria-hidden="true">›</span>
             </button>
           </div>
-          <small>Selecciona una función para abrir su pantalla. No hay listas desplegables encima del menú.</small>
         </div>
         <p class="mg-nav-current-extra" *ngIf="!mostrarGestionAvanzada && moduloComplementarioActivo">
           Estás en: <strong>{{tituloActual}}</strong>
