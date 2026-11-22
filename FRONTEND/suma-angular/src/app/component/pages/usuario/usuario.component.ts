@@ -2156,13 +2156,10 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   ){}
 
   ngOnInit():void{
-    try{
-      this.enfoqueInicioSeleccionado=localStorage.getItem('mallqui_enfoque_entrenamiento')||'Cardiovascular';
-      this.nivelEntrenamiento=localStorage.getItem('mallqui_nivel_entrenamiento')||'Principiante';
-    }catch{
-      this.enfoqueInicioSeleccionado='Cardiovascular';
-      this.nivelEntrenamiento='Principiante';
-    }
+    // El perfil almacenado en MySQL es la fuente de verdad. Nunca mostrar
+    // preferencias de otra cuenta guardadas en el mismo navegador.
+    this.enfoqueInicioSeleccionado='Cardiovascular';
+    this.nivelEntrenamiento='Principiante';
     const moduloRuta=String(this.route.snapshot.queryParamMap.get('modulo')||'').trim();
     this.planSolicitadoRuta=String(this.route.snapshot.queryParamMap.get('plan')||'').trim();
     try{
@@ -2616,11 +2613,15 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   private aplicarPreferenciasPerfil():void{
     const enfoque=String(this.perfil?.enfoque_entrenamiento||'').trim();
     const nivel=String(this.perfil?.nivel_entrenamiento||'').trim();
-    if(enfoque)this.enfoqueInicioSeleccionado=enfoque;
-    if(['Principiante','Intermedio','Avanzado'].includes(nivel))this.nivelEntrenamiento=nivel as 'Principiante'|'Intermedio'|'Avanzado';
+    const opciones=['Cardiovascular','Masa muscular','Tonificación','CrossFit','Pérdida de peso'];
+    this.enfoqueInicioSeleccionado=opciones.includes(enfoque)?enfoque:'Cardiovascular';
+    this.nivelEntrenamiento=['Principiante','Intermedio','Avanzado'].includes(nivel)
+      ? nivel as 'Principiante'|'Intermedio'|'Avanzado'
+      : 'Principiante';
+    // Caché secundaria únicamente después de recibir un perfil válido.
     try{
-      if(enfoque)localStorage.setItem('mallqui_enfoque_entrenamiento',enfoque);
-      if(nivel)localStorage.setItem('mallqui_nivel_entrenamiento',nivel);
+      localStorage.setItem('mallqui_enfoque_entrenamiento',this.enfoqueInicioSeleccionado);
+      localStorage.setItem('mallqui_nivel_entrenamiento',this.nivelEntrenamiento);
     }catch{}
   }
 
