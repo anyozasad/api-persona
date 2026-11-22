@@ -1149,7 +1149,8 @@ import { catchError, forkJoin, of, tap, timeout } from 'rxjs';
             <strong>Pagos no disponibles</strong>
             <p>{{pagosError}}. No se mostrará una lista vacía como si no existieran pagos.</p>
             <button type="button" class="admin-secondary" (click)="cargarPagos()">Volver a consultar</button>
-            <button type="button" class="admin-secondary" (click)="cambiarSegcion('configuracion')">Revisar y reparar MySQL</button>
+            <button type="button" class="admin-secondary" [disabled]="reparandoMysql" (click)="repararEsquemaMysql()">{{reparandoMysql?'Reparando...':'Respaldar y reparar MySQL'}}</button>
+            <button type="button" class="admin-secondary" (click)="cambiarSegcion('configuracion')">Ver diagnóstico</button>
           </div>
           <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Plan</th><th>Monto</th><th>Método</th><th>N° operación</th><th>Fecha</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
             <tr *ngFor="let p of pagos">
@@ -2223,6 +2224,31 @@ import { catchError, forkJoin, of, tap, timeout } from 'rxjs';
             </div>
           </div>
 
+          <section class="config-card" aria-label="Reparación de base de datos">
+            <div class="config-card-head simple">
+              <div><span>BD</span><div>
+                <h3>Estado y reparación de MySQL</h3>
+                <p>Comprueba todas las tablas del administrador y del cliente. La reparación conserva registros y exige respaldo SQL.</p>
+              </div></div>
+            </div>
+            <p *ngIf="diagnosticoMysql" role="status">
+              Base: <strong>{{diagnosticoMysql.base_datos}}</strong> ·
+              Tablas comprobadas: <strong>{{diagnosticoMysql.total_tablas}}</strong> ·
+              {{diagnosticoMysql.operativo ? 'Estructura completa' : 'Estructura pendiente de completar'}}
+            </p>
+            <p *ngIf="diagnosticoMysql && !diagnosticoMysql.operativo" role="status">
+              Componentes faltantes: {{diagnosticoMysql.faltantes?.length || 0}}
+            </p>
+            <p *ngIf="reparacionMysqlError" role="alert">{{reparacionMysqlError}}</p>
+            <p *ngIf="reparacionMysqlMensaje" role="status">{{reparacionMysqlMensaje}}</p>
+            <div class="config-recovery-actions">
+              <button type="button" class="admin-secondary" [disabled]="reparandoMysql" (click)="consultarEsquemaMysql()">Comprobar tablas</button>
+              <button type="button" class="admin-primary" [disabled]="reparandoMysql || diagnosticoMysql?.operativo===true" (click)="repararEsquemaMysql()">
+                {{reparandoMysql ? 'Respaldando y comprobando...' : 'Respaldar y reparar MySQL'}}
+              </button>
+            </div>
+          </section>
+
           <div class="config-fetch-status" *ngIf="configCargando">
             Consultando la configuración del gimnasio desde MySQL...
           </div>
@@ -2935,6 +2961,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   pagos: any[] = [];
   pagosCargando = false;
   pagosError = '';
+  diagnosticoMysql: any = null;
+  reparandoMysql = false;
+  reparacionMysqlError = '';
+  reparacionMysqlMensaje = '';
+
   entrenadores: any[] = [];
   clases: any[] = [];
   asistencias: any[] = [];
@@ -6241,6 +6272,48 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.ok('Configuración guardada en MySQL. Se reflejará también en el portal.');
       },
       error:e=>{this.configGuardando=false;this.mostrarError(e);}
+    });
+  }
+
+  consultarEsquemaMysql(): void {
+    this.reparacionMysqlError='';
+    this.api.diagnosticoEsquema().pipe(timeout(12000)).subscribe({
+      next:r=>{this.diagnosticoMysql=r;},
+      error:e=>{
+        this.diagnosticoMysql=null;
+        this.reparacionMysqlError=Number(e?.status)===0
+          ? 'No se puede conectar con Laravel.'
+          : 'No se pudo comprobar el esquema MySQL. Revisa el backend.';
+      }
+    });
+  }
+
+  repararEsquemaMysql(): void {
+    if(this.reparandoMysql)return;
+    if(!confirm('Se hará primero un respaldo SQL y después se recuperarán las tablas y columnas pendientes, sin borrar socios, ventas ni pagos. ¿Continuar?'))return;
+    this.reparandoMysql=true;
+    this.reparacionMysqlError='';
+    this.reparacionMysqlMensaje='';
+    this.api.repararEsquema().subscribe({
+      next:r=>{
+        this.reparandoMysql=false;
+        this.diagnosticoMysql=r;
+        this.reparacionMysqlMensaje=String(r?.mensaje||'Revisión terminada.');
+        if(r?.operativo){
+          this.error='';
+          this.pagosError='';
+          this.cajaError='';
+          this.cargarSegcion(this.seccion);
+        }
+      },
+      error:e=>{
+        this.reparandoMysql=false;
+        const r=e?.error||{};
+        if(Array.isArray(r.faltantes)){
+          this.diagnosticoMysql=r;
+        }
+        this.reparacionMysqlError=String(r?.mensaje||'La reparación no pudo finalizar. No repitas cambios sin revisar el respaldo.');
+      }
     });
   }
 
