@@ -3360,7 +3360,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.seccion = this.normalizarSegcion(this.route?.snapshot?.data?.['seccion'] || moduloEnUrl || this.seccionInicial || 'dashboard');
     // Recuperar el socio recién registrado después de cambiar desde /clientes
     // a /admin?modulo=membresias, donde Angular crea otra instancia.
-    const traslado = this.router.getCurrentNavigation?.()?.extras.state as
+    // getCurrentNavigation() puede ser null en ngOnInit cuando Angular ya
+    // completó el cambio de ruta. history.state conserva los datos del traslado.
+    const traslado = (this.router.getCurrentNavigation?.()?.extras.state || history.state) as
       {mallquiAltaSocio?:{idCliente:number;nombreUsuario:string};mallquiAbrirNuevoSocio?:boolean}|undefined;
     if (this.seccion === 'membresias' && Number(traslado?.mallquiAltaSocio?.idCliente)>0) {
       this.membresiaForm={...this.membresiaForm,id_cliente:Number(traslado?.mallquiAltaSocio?.idCliente)};
