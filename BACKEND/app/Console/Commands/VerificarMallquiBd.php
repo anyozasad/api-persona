@@ -199,6 +199,14 @@ class VerificarMallquiBd extends Command
                 'id', 'tokenable_type', 'tokenable_id', 'name', 'token', 'abilities',
                 'last_used_at', 'expires_at', 'created_at', 'updated_at',
             ],
+            // Portal del cliente: comprobar también estos seis módulos.
+            // Antes se omitían y podía informarse un éxito falso.
+            'notificaciones_cliente' => ['id_notificacion', 'id_cliente', 'titulo', 'mensaje', 'leida'],
+            'solicitudes_soporte' => ['id_soporte', 'id_cliente', 'asunto', 'mensaje', 'estado'],
+            'opiniones_cliente' => ['id_opinion', 'id_cliente', 'calificacion', 'comentario', 'estado'],
+            'metas_cliente' => ['id_meta_cliente', 'id_cliente', 'sesiones_semanales'],
+            'clases_favoritas' => ['id_favorito', 'id_cliente', 'id_clase'],
+            'planes_entrenamiento_casa' => ['id_plan_casa', 'id_cliente', 'dias', 'zonas', 'activo'],
         ];
     }
 }
