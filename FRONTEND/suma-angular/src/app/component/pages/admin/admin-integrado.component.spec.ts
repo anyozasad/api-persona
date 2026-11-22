@@ -306,7 +306,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     })));
     component.cargarReservas();
     expect(component.reservas).toEqual(anteriores);
-    expect(component.error).toContain('reservas');
+    expect(component.error).toContain('Laravel devolvió un error 503');
   });
 
   it('Configuración carga datos de MySQL y diferencia conexión de esquema', () => {
