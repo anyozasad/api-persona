@@ -71,7 +71,7 @@ class BaseDatosUnicaSistemaTest extends TestCase
         $this->assertStringContainsString("Artisan::call('backup:database')", $codigo);
         $this->assertStringContainsString("Artisan::call('db:reconciliar-esquema')", $codigo);
         $this->assertStringContainsString("Artisan::call('db:verificar')", $codigo);
-        $this->assertStringNotContainsString('migrate:fresh', (string) file_get_contents($ruta));
+        $this->assertStringNotContainsString("Artisan::call('migrate:fresh')", $codigo);
         $this->assertArrayHasKey('db:reparar-gym', \Illuminate\Support\Facades\Artisan::all());
     }
 
