@@ -40,6 +40,7 @@ use App\Http\Controllers\ClienteFichaController;
 use App\Http\Controllers\GymSystemAdminController;
 use App\Http\Controllers\AdminGymRecordController;
 use App\Http\Controllers\VerificacionEfsrtController;
+use App\Http\Controllers\ReparacionEsquemaController;
 
 // ESTADO REAL DEL SISTEMA: una sola conexión y una sola DB_DATABASE.
 Route::get('/estado-sistema', function () {
@@ -309,6 +310,10 @@ Route::middleware(['auth:sanctum', 'rol:Administrador', 'auditoria'])->group(fun
     Route::put('/configuracion', [ConfiguracionSistemaController::class, 'update']);
     Route::get('/configuracion/estado', [ConfiguracionSistemaController::class, 'estado']);
     Route::post('/configuracion/respaldo', [ConfiguracionSistemaController::class, 'respaldo']);
+    // Solo Administrador autenticado, respaldo SQL obligatorio y confirmación.
+    Route::get('/configuracion/diagnostico-esquema', [ReparacionEsquemaController::class, 'estado']);
+    Route::post('/configuracion/reparar-esquema', [ReparacionEsquemaController::class, 'reparar'])
+        ->middleware('throttle:2,10');
     Route::post('/configuracion/limpiar-cache', [ConfiguracionSistemaController::class, 'limpiarCache']);
 
     Route::get('/notificaciones-clientes', [ComunicacionAdminController::class, 'notificaciones']);
