@@ -282,6 +282,30 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.cajaCargando).toBeFalse();
   });
 
+  it('Pagos conserva el historial anterior y muestra error distinto de lista vacía', () => {
+    const previos=[{id_pago:20,monto:50,estado_pago:'Completado'}];
+    component.pagos=previos;
+    api.pagos.and.returnValue(throwError(() => ({
+      status:503,error:{codigo:'PAGOS_ESQUEMA_INCOMPLETO',faltantes:['tabla:pagos_membresia']}
+    })));
+    component.cargarPagos();
+    expect(component.pagos).toEqual(previos);
+    expect(component.pagosCargando).toBeFalse();
+    expect(component.pagosError).toContain('pendientes de reparar');
+  });
+
+  it('Pagos no muestra como error propio el fallo independiente de Caja', () => {
+    component.seccion='pagos';
+    component.error='';
+    api.cajaActual.and.returnValue(throwError(() => ({
+      status:503,error:{codigo:'ESQUEMA_MODULO_INCOMPLETO'}
+    })));
+    api.historialCaja.and.returnValue(of([]));
+    component.cargarCaja();
+    expect(component.cajaError).toContain('caja actual');
+    expect(component.error).toBe('');
+  });
+
   it('Caja conserva el estado abierto si únicamente falla el historial de MySQL', () => {
     const real={caja_abierta:true,caja:{id_caja:8,movimientos:[]},resumen:{monto_esperado:80}};
     api.cajaActual.and.returnValue(of(real));
