@@ -51,6 +51,18 @@ class BaseDatosUnicaSistemaTest extends TestCase
         $this->assertStringContainsString('if ($existe) continue;', $preparacion);
     }
 
+    public function test_reparacion_desde_dashboard_no_depende_de_la_carpeta_scripts_ni_deja_estado_antiguo(): void
+    {
+        $admin = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/component/pages/admin/admin-integrado.component.ts'));
+        $backup = (string) file_get_contents(app_path('Console/Commands/BackupDatabase.php'));
+
+        $this->assertStringContainsString('mg-operational-repair', $admin);
+        $this->assertStringContainsString('(click)="repararEsquemaMysql()"', $admin);
+        $this->assertStringContainsString('this.actualizarDashboardCompleto();', $admin);
+        $this->assertStringContainsString("'--result-file='.$archivo", $backup);
+        $this->assertStringNotContainsString('$sql = $process->getOutput();', $backup);
+    }
+
     public function test_interfaz_conserva_rutas_normales_y_refleja_socios_legacy(): void
     {
         $adminApi = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/component/pages/admin/admin-api.service.ts'));

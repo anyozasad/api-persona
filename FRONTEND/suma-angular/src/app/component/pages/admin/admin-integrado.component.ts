@@ -269,6 +269,14 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
               <p>{{mensajeSincronizacion}}</p>
               <small>Base: {{estadoOperativoDashboard?.base_datos || dashboard?.fuente?.base_datos || 'sin identificar'}}
                 · Socios: {{clientes.length}} · Productos: {{productos.length}} · Pagos: {{pagos.length}}</small>
+              <div *ngIf="estadoOperativoDashboard?.database===true && estadoOperativoDashboard?.operativo===false"
+                   class="mg-operational-repair">
+                <button type="button" class="admin-primary" [disabled]="reparandoMysql"
+                  (click)="repararEsquemaMysql()">
+                  {{reparandoMysql ? 'Creando respaldo y reparando...' : 'Respaldar y reparar MySQL'}}
+                </button>
+                <p *ngIf="reparacionMysqlError" role="alert">{{reparacionMysqlError}}</p>
+              </div>
             </div>
           </section>
 
@@ -6366,7 +6374,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
           this.error='';
           this.pagosError='';
           this.cajaError='';
-          this.cargarSegcion(this.seccion);
+          // La pantalla mostraba el aviso rojo viejo hasta el siguiente F5:
+          // renovar estado, indicadores y errores de todos los módulos.
+          this.actualizarDashboardCompleto();
+          this.consultarEsquemaMysql();
+          if(this.seccion!=='dashboard')this.cargarSegcion(this.seccion);
         }
       },
       error:e=>{
