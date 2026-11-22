@@ -282,6 +282,33 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.cajaCargando).toBeFalse();
   });
 
+  it('Caja conserva el estado abierto si únicamente falla el historial de MySQL', () => {
+    const real={caja_abierta:true,caja:{id_caja:8,movimientos:[]},resumen:{monto_esperado:80}};
+    api.cajaActual.and.returnValue(of(real));
+    api.historialCaja.and.returnValue(throwError(() => ({
+      status:503,error:{mensaje:'Falta la tabla movimientos_caja'}
+    })));
+    component.historialCaja=[{id_caja:7,estado:'Cerrada'}];
+
+    component.cargarCaja();
+
+    expect(component.caja).toEqual(real);
+    expect(component.historialCaja).toEqual([{id_caja:7,estado:'Cerrada'}]);
+    expect(component.cajaError).toContain('historial');
+    expect(component.cajaCargando).toBeFalse();
+  });
+
+  it('Reservas mantiene las confirmadas previamente si la actualización de MySQL falla', () => {
+    const anteriores=[{id_reserva:19,id_cliente:4,estado:'Reservada'}];
+    component.reservas=anteriores;
+    api.reservas.and.returnValue(throwError(() => ({
+      status:503,error:{mensaje:'No se pudo consultar reservas'}
+    })));
+    component.cargarReservas();
+    expect(component.reservas).toEqual(anteriores);
+    expect(component.error).toContain('reservas');
+  });
+
   it('Configuración carga datos de MySQL y diferencia conexión de esquema', () => {
     api.estadoOperativo.and.returnValue(of({
       api:true,database:true,operativo:false,faltantes:['reservas','clases']
