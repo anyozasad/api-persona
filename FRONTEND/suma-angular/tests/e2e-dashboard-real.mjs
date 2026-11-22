@@ -444,6 +444,23 @@ try {
       'El selector no ocupa el ancho del panel: '+JSON.stringify(medidas));
     assert.ok(medidas.elementos.every(item=>item.texto>=120),
       'Las etiquetas del menú se parten en palabras demasiado estrechas: '+JSON.stringify(medidas));
+    // Los dos botones señalados deben permanecer visibles, completos y
+    // llevar a sus módulos, con la flecha al costado y no encima del texto.
+    for (const [id,nombre] of [['planes','Planes y tarifas'],['documentos-socio','Carnets y constancias']]) {
+      const boton=menu.locator('.mg-secondary-link[data-module="'+id+'"]');
+      assert.equal(await boton.count(),1,'Falta el botón '+nombre);
+      assert.equal((await boton.locator('span').first().innerText()).trim(),nombre);
+      const geometria=await boton.evaluate(elemento=>{
+        const etiqueta=elemento.querySelector('span:first-child')?.getBoundingClientRect();
+        const flecha=elemento.querySelector('.mg-secondary-chevron')?.getBoundingClientRect();
+        const area=elemento.getBoundingClientRect();
+        return {etiquetaDerecha:etiqueta?.right??0,flechaIzquierda:flecha?.left??0,
+          flechaDerecha:flecha?.right??0,areaDerecha:area.right};
+      });
+      assert.ok(geometria.flechaIzquierda>=geometria.etiquetaDerecha-1 &&
+        geometria.flechaDerecha<=geometria.areaDerecha+1,
+        'La flecha de '+nombre+' está desalineada: '+JSON.stringify(geometria));
+    }
     await page.screenshot({path:'evidencias-dashboard/40_Menu_lateral_sin_textos_cortados.png',
       fullPage:true,animations:'disabled'});
   });
