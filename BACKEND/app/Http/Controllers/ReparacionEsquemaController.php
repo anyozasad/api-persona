@@ -91,7 +91,7 @@ class ReparacionEsquemaController extends Controller
             $resultadoBackup = Artisan::call('backup:database', ['--keep' => 30]);
             if ($resultadoBackup !== 0) {
                 Log::error('Reparación de MySQL cancelada: falló el respaldo.', [
-                    'base' => $inicial['base_datos'], 'salida' => mb_substr(Artisan::output(), 0, 2500),
+                    'base' => $inicial['base_datos'], 'salida' => substr(Artisan::output(), 0, 2500),
                 ]);
                 return response()->json([
                     'codigo' => 'RESPALDO_SQL_FALLIDO',
@@ -119,8 +119,9 @@ class ReparacionEsquemaController extends Controller
             $final = $this->diagnostico();
 
             if ($codigo !== 0 || !$final['operativo']) {
+                $final['operativo'] = false;
                 Log::warning('La recuperación de MySQL dejó módulos pendientes.', [
-                    'base' => $inicial['base_datos'], 'salida' => mb_substr($salida, 0, 5000),
+                    'base' => $inicial['base_datos'], 'salida' => substr($salida, 0, 5000),
                     'faltantes' => $final['faltantes'],
                 ]);
                 return response()->json(array_merge($final, [
