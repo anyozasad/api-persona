@@ -79,6 +79,11 @@ class ReconciliarEsquemaRealMallqui extends Command
         '2026_11_12_110000_complete_legacy_reservas_without_losing_rows.php',
     ];
 
+    public static function requisitos(): array
+    {
+        return self::REQUERIDAS;
+    }
+
     public function handle(): int
     {
         $this->info('Revisando el esquema REAL de MySQL (sin borrar datos)...');
