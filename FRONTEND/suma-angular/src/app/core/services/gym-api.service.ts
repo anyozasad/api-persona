@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { catchError, forkJoin, Observable, of, throwError } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, throwError, timeout } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class GymApiService {
@@ -39,30 +39,36 @@ export class GymApiService {
   reservasCliente(): Observable<any[]> { return this.http.get<any[]>('/api/mi-cuenta/reservas'); }
 
   cargarPortalCliente(): Observable<any> {
-    const seguro = <T>(obs: Observable<T>, fallback: T): Observable<T> =>
+    // Las listas vacías son válidas, pero una consulta que falla NO significa
+    // que el cliente no tenga pagos, rutinas o reservas.
+    // Conservar los módulos disponibles y comunicar cuáles fallaron en MySQL.
+    const erroresModulos: string[] = [];
+    const seguro = <T>(nombre: string, obs: Observable<T>, fallback: T): Observable<T> =>
       obs.pipe(
+        timeout(12000),
         catchError((error: any) => {
           if (error?.status === 401 || error?.status === 403) {
             return throwError(() => error);
           }
+          erroresModulos.push(nombre);
           return of(fallback);
         })
       );
 
     return forkJoin({
-      resumen: seguro(this.resumenCliente(), null),
-      perfil: seguro(this.perfilCliente(), {}),
-      membresia: seguro(this.membresiaCliente(), { actual: null, historial: [] }),
-      pagos: seguro(this.pagosCliente(), []),
-      rutinas: seguro(this.rutinasCliente(), []),
-      asistencias: seguro(this.asistenciasCliente(), []),
-      compras: seguro(this.comprasCliente(), []),
-      productos: seguro(this.productosCliente(), []),
-      reservas: seguro(this.reservasCliente(), []),
-      clases: seguro(this.clases(), []),
-      membresiasDisponibles: seguro(this.membresias(), []),
-      gymInfo: seguro(this.informacionGym(), {}),
-    });
+      resumen: seguro('Resumen', this.resumenCliente(), null),
+      perfil: seguro('Perfil', this.perfilCliente(), {}),
+      membresia: seguro('Membresía', this.membresiaCliente(), { actual: null, historial: [] }),
+      pagos: seguro('Pagos', this.pagosCliente(), []),
+      rutinas: seguro('Rutinas', this.rutinasCliente(), []),
+      asistencias: seguro('Asistencias', this.asistenciasCliente(), []),
+      compras: seguro('Compras', this.comprasCliente(), []),
+      productos: seguro('Productos', this.productosCliente(), []),
+      reservas: seguro('Reservas', this.reservasCliente(), []),
+      clases: seguro('Clases', this.clases(), []),
+      membresiasDisponibles: seguro('Planes', this.membresias(), []),
+      gymInfo: seguro('Configuración', this.informacionGym(), {}),
+    }).pipe(map(r => ({...r, erroresModulos: [...erroresModulos]})));
   }
 
   reservarClase(id_clase: number, fecha_clase: string): Observable<any> {
