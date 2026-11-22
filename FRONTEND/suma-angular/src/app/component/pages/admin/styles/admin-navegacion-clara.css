@@ -1396,3 +1396,123 @@
   background:#344e2c!important;
   color:#d4fa9a!important;
 }
+
+
+/* Mallqui Gym | navegación simplificada: eliminar indicadores rojos heredados.
+   Los módulos y sus acciones siguen funcionando; solo cambia la presentación. */
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > button.active::before,
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > button.active::after,
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order .mg-secondary-link.active::before,
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order .mg-secondary-link.active::after {
+  content:none!important;
+  display:none!important;
+  width:0!important;
+  border:0!important;
+  background:none!important;
+  box-shadow:none!important;
+}
+
+/* Una línea por operación: los detalles siguen accesibles en el título
+   del botón y en la pantalla, no se repiten debajo de cada enlace. */
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > .mg-nav-primary,
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > .mg-direct-home,
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > .mg-nav-advanced-toggle {
+  box-sizing:border-box!important;
+  width:calc(100% - 12px)!important;
+  margin:2px 6px!important;
+  min-height:44px!important;
+  padding:10px 12px!important;
+  gap:11px!important;
+  display:flex!important;
+  align-items:center!important;
+  text-align:left!important;
+  border:1px solid transparent!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  color:#e1ebe3!important;
+  font-size:13.5px!important;
+  font-weight:620!important;
+  line-height:1.35!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > .mg-nav-primary .mg-nav-action-copy {
+  flex:1 1 auto!important;
+  min-width:0!important;
+  display:block!important;
+  line-height:1.35!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > .mg-nav-primary .mg-nav-action-copy strong {
+  display:block!important;
+  color:inherit!important;
+  font-size:13.5px!important;
+  font-weight:650!important;
+  line-height:1.35!important;
+  white-space:normal!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > .mg-nav-primary .mg-nav-action-copy small {
+  display:none!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > button .admin-main-nav-icon {
+  flex:0 0 24px!important;
+  width:24px!important;
+  min-width:24px!important;
+  height:25px!important;
+  font-size:19px!important;
+  color:#b9cec1!important;
+  background:transparent!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > button:hover,
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > button:focus-visible {
+  color:#fff!important;
+  background:#2c3b32!important;
+  border-color:transparent!important;
+  transform:none!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > button.active,
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > button[aria-current="page"] {
+  color:#d6fa9a!important;
+  background:#314c2a!important;
+  border-color:#557d3f!important;
+  box-shadow:none!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > button.active .admin-main-nav-icon,
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > button[aria-current="page"] .admin-main-nav-icon {
+  color:#d6fa9a!important;
+  background:transparent!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order .mg-nav-advanced-toggle > i {
+  margin-left:auto!important;
+  color:#c7d4c6!important;
+  font-size:15px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > button:focus-visible,
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-nav-picker .mg-secondary-link:focus-visible {
+  outline:2px solid #c6f272!important;
+  outline-offset:2px!important;
+}
+
+/* Se marca solo el botón real seleccionado. El selector de módulos no
+   parece activo cuando está cerrado y la cabecera indica dónde estás. */
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > .mg-nav-advanced-toggle[aria-expanded="false"]:not(.active) {
+  color:#e1ebe3!important;
+  border-color:rgba(255,255,255,.12)!important;
+}
+
+/* En pantallas anchas Inicio ya está en el menú lateral. En móvil
+   conservamos Volver para no quitar la navegación accesible. */
+@media(min-width:1024px) {
+  .admin-shell.admin-home-redesign .mg-current-workspace .mg-module-shell-actions > .mg-back-home {
+    display:none!important;
+  }
+}
+@media(max-width:700px) {
+  .admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > .mg-nav-primary,
+  .admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > .mg-direct-home,
+  .admin-shell.admin-home-redesign .mg-current-sidebar .mg-tec-order > .mg-nav-advanced-toggle {
+    min-height:46px!important;
+    padding:11px 12px!important;
+  }
+}

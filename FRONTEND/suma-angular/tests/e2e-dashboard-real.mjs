@@ -373,6 +373,16 @@ try {
     await page.locator('.productos-page').waitFor({timeout:20000});
     assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Productos');
     assert.equal(await primario.getAttribute('aria-current'),'page');
+    // No deben reaparecer las rayas rojas del CSS antiguo en el menú activo.
+    const marcaAnterior=await primario.evaluate(elemento=>({
+      before:getComputedStyle(elemento,'::before').content,
+      after:getComputedStyle(elemento,'::after').content,
+      ayudaVisible:getComputedStyle(elemento.querySelector('small')).display
+    }));
+    assert.equal(marcaAnterior.before,'none','El botón todavía conserva la raya roja antigua.');
+    assert.equal(marcaAnterior.after,'none','El botón activo muestra otro indicador innecesario.');
+    assert.equal(marcaAnterior.ayudaVisible,'none',
+      'Los textos de ayuda duplicados saturan la barra lateral.');
     await page.waitForURL(url=>new URL(url).searchParams.get('modulo')==='productos',{timeout:10000});
     assert.equal(new URL(page.url()).searchParams.get('modulo'),'productos',
       'La URL debe recordar el módulo que el administrador abrió.');

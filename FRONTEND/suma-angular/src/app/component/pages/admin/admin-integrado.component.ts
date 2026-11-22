@@ -173,12 +173,12 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
 
         <span class="mg-nav-caption mg-nav-section-separator">GESTIÓN Y RESULTADOS</span>
         <button type="button" class="mg-nav-advanced-toggle"
-          [class.active]="mostrarGestionAvanzada || moduloComplementarioActivo"
+          [class.active]="mostrarGestionAvanzada"
           [attr.aria-expanded]="mostrarGestionAvanzada"
           aria-label="Mostrar módulos complementarios"
           (click)="alternarGestionAvanzada()">
           <span class="admin-main-nav-icon" aria-hidden="true">▤</span>
-          <span>{{mostrarGestionAvanzada ? 'Cerrar lista' : 'Otras funciones'}}</span>
+          <span>{{mostrarGestionAvanzada ? 'Cerrar opciones' : 'Más módulos'}}</span>
           <i aria-hidden="true">{{mostrarGestionAvanzada ? '⌃' : '⌄'}}</i>
         </button>
         <div class="mg-nav-advanced-content mg-nav-picker" *ngIf="mostrarGestionAvanzada">
@@ -198,9 +198,6 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
             </button>
           </div>
         </div>
-        <p class="mg-nav-current-extra" *ngIf="!mostrarGestionAvanzada && moduloComplementarioActivo">
-          Estás en: <strong>{{tituloActual}}</strong>
-        </p>
       </nav>
 
       <div class="mg-sidebar-bottom mg-sidebar-account" aria-label="Sesión de administrador">
