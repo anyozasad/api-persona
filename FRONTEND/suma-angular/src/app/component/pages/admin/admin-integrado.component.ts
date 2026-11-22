@@ -472,6 +472,12 @@ import { catchError, forkJoin, of, tap, timeout } from 'rxjs';
           </section>
 
           <ng-container *ngIf="progresoClienteId">
+            <p *ngIf="progresoCargando" class="mg-action-feedback" role="status">Consultando las mediciones del socio en MySQL...</p>
+            <p *ngIf="progresoError" class="mg-action-feedback error" role="alert">{{progresoError}}</p>
+            <div *ngIf="progresoDatos?.advertencias?.length" class="mg-action-feedback error" role="alert">
+              <strong>Progreso Físico: tablas pendientes en MySQL</strong>
+              <p *ngFor="let aviso of progresoDatos.advertencias">{{aviso}}</p>
+            </div>
             <section class="mg-progress-kpis">
               <article><small>Peso actual</small><b>{{progresoDatos?.medidas?.[0]?.peso ?? '-'}} <em>kg</em></b></article>
               <article><small>Grasa corporal</small><b>{{progresoDatos?.medidas?.[0]?.grasa ?? '-'}} <em>%</em></b></article>
@@ -488,7 +494,7 @@ import { catchError, forkJoin, of, tap, timeout } from 'rxjs';
                   <div><label>Cintura (cm)<input type="number" step="0.1" min="0" [(ngModel)]="medidaForm.cintura" name="mcintura"></label>
                   <label>Brazo (cm)<input type="number" step="0.1" min="0" [(ngModel)]="medidaForm.brazo" name="mbrazo"></label></div>
                   <label>Fecha<input type="date" [(ngModel)]="medidaForm.fecha" name="mfecha"></label>
-                  <button type="submit" class="admin-primary">Guardar medición</button>
+                  <button type="submit" class="admin-primary" [disabled]="progresoCargando || !progresoDatos || medicionesProgresoIncompletas">Guardar medición</button>
                 </form>
               </article>
 
@@ -2950,6 +2956,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   historialCaja: any[] = [];
   progresoClienteId = 0;
   progresoDatos: any = null;
+  progresoCargando = false;
+  progresoError = '';
   medidaForm:any = {peso:null,grasa:null,cintura:null,brazo:null,fecha:this.fechaLocalHoy()};
   renovacionesDias = 7;
   renovacionesLista:any[] = [];
@@ -4405,11 +4413,30 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     setTimeout(()=>{ this.membresiaForm.id_cliente=Number(cliente?.id_cliente||0); },0);
   }
 
+  get medicionesProgresoIncompletas(): boolean {
+    const pendientes=this.progresoDatos?.faltantes;
+    return Array.isArray(pendientes) && pendientes.some((item:any)=>
+      String(item).startsWith('progreso_medidas.') || String(item)==='tabla:progreso_medidas'
+    );
+  }
+
   cargarProgresoFisico(): void {
-    if(!this.progresoClienteId){ this.progresoDatos=null; return; }
-    this.api.progresoGym(Number(this.progresoClienteId)).subscribe({
-      next:(r:any)=>this.progresoDatos=r,
-      error:e=>this.mostrarError(e)
+    this.progresoError='';
+    this.progresoDatos=null;
+    if(!this.progresoClienteId){ this.progresoCargando=false; return; }
+    this.progresoCargando=true;
+    this.api.progresoGym(Number(this.progresoClienteId)).pipe(timeout(12000)).subscribe({
+      next:(r:any)=>{
+        this.progresoCargando=false;
+        this.progresoDatos=r;
+      },
+      error:e=>{
+        this.progresoCargando=false;
+        this.progresoError=e?.status===0
+          ? 'Laravel no responde. Verifica que el servidor del puerto 8000 esté encendido.'
+          : e?.error?.mensaje || 'No se pudo consultar el progreso real del socio en MySQL.';
+        this.mostrarError(e);
+      }
     });
   }
 
