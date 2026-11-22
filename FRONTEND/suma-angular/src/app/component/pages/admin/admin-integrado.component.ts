@@ -1145,6 +1145,12 @@ import { catchError, forkJoin, of, tap, timeout } from 'rxjs';
             <button type="button" class="admin-primary" (click)="imprimirComprobantePago()">Abrir / imprimir</button>
             <button type="button" class="admin-secondary" (click)="comprobanteDatos=null">Cerrar</button>
           </div>
+          <div *ngIf="pagosError" class="mg-action-feedback error" role="alert">
+            <strong>Pagos no disponibles</strong>
+            <p>{{pagosError}}. No se mostrará una lista vacía como si no existieran pagos.</p>
+            <button type="button" class="admin-secondary" (click)="cargarPagos()">Volver a consultar</button>
+            <button type="button" class="admin-secondary" (click)="cambiarSegcion('configuracion')">Revisar y reparar MySQL</button>
+          </div>
           <div class="table-wrap"><table class="management-table"><thead><tr><th>ID</th><th>Cliente</th><th>Plan</th><th>Monto</th><th>Método</th><th>N° operación</th><th>Fecha</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
             <tr *ngFor="let p of pagos">
               <td>{{p.id_pago}}</td><td>{{clientePago(p)}}</td><td>{{planPago(p)}}</td><td>S/ {{p.monto | number:'1.2-2'}}</td><td>{{p.metodo_pago}}</td><td>{{p.numero_operacion || '-'}}</td><td>{{fecha(p.fecha_pago)}}</td><td>{{p.estado_pago}}</td>
@@ -1158,7 +1164,8 @@ import { catchError, forkJoin, of, tap, timeout } from 'rxjs';
                 <small *ngIf="p.estado_pago!=='Pendiente' && p.estado_pago!=='Completado'">Sin constancia</small>
               </td>
             </tr>
-            <tr *ngIf="!pagos.length"><td colspan="9">No hay pagos registrados.</td></tr>
+            <tr *ngIf="!pagos.length && !pagosCargando && !pagosError"><td colspan="9">No hay pagos registrados.</td></tr>
+            <tr *ngIf="pagosCargando"><td colspan="9">Consultando pagos confirmados en MySQL...</td></tr>
           </tbody></table></div>
         </section>
       </ng-container>
@@ -2926,6 +2933,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   membresiasCargando = false;
   membresiasError = '';
   pagos: any[] = [];
+  pagosCargando = false;
+  pagosError = '';
   entrenadores: any[] = [];
   clases: any[] = [];
   asistencias: any[] = [];
@@ -4784,8 +4793,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.cargarCaja();
         break;
       case 'pagos':
-        this.cargarClientes();
-        this.cargarMembresias();
+        // Pagos independiente de tablas de caja o listas de tarifas.
         this.cargarPagos();
         this.cargarCaja();
         break;
@@ -5147,7 +5155,27 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     }
   }
   cargarPagos(){
-    this.api.pagos().subscribe({next:r=>this.pagos=r,error:e=>this.mostrarError(e)});
+    this.pagosCargando=true;
+    this.pagosError='';
+    this.api.pagos().pipe(timeout(12000)).subscribe({
+      next:r=>{
+        this.pagosCargando=false;
+        if(!Array.isArray(r)){
+          this.pagosError='El servidor no devolvió un historial de pagos válido.';
+          return;
+        }
+        this.pagos=r;
+      },
+      error:e=>{
+        this.pagosCargando=false;
+        const faltantes=Array.isArray(e?.error?.faltantes)?e.error.faltantes:[];
+        this.pagosError=Number(e?.status)===0
+          ? 'Laravel no responde. Comprueba el servidor PHP.'
+          : faltantes.length
+            ? 'La base MySQL tiene tablas o columnas de pagos pendientes de reparar.'
+            : 'No se pudo consultar el historial de pagos en MySQL.';
+      }
+    });
   }
 
   confirmarPagoEfectivo(p:any){
@@ -5234,13 +5262,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.cajaCargando=false;
         if(fallos.length){
           this.cajaError='No se pudo consultar '+fallos.join(' y ')+' en MySQL. Los datos anteriores se conservan hasta volver a consultar.';
-          this.error=this.cajaError;
+          if(['caja','gastos'].includes(this.seccion)) this.error=this.cajaError;
         }
       },
       error:e=>{
         this.cajaCargando=false;
         this.cajaError='No se pudo comprobar la caja en Laravel y MySQL.';
-        this.mostrarError(e);
+        if(['caja','gastos'].includes(this.seccion)) this.mostrarError(e);
       }
     });
   }
