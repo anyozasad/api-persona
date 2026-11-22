@@ -30,4 +30,35 @@ class EsquemaMysqlConsistenteTest extends TestCase
             );
         }
     }
+
+    /** El diagnóstico debe exigir las columnas que Eloquent realmente escribe. */
+    public function test_contrato_incluye_campos_de_modelos_y_timestamps(): void
+    {
+        $requisitos = ReconciliarEsquemaRealMallqui::requisitos();
+        $modelos = [
+            \App\Models\AdminGymRecord::class,
+            \App\Models\ConfiguracionSistema::class,
+            \App\Models\NotificacionCliente::class,
+            \App\Models\SolicitudSoporte::class,
+            \App\Models\OpinionCliente::class,
+            \App\Models\MetaCliente::class,
+            \App\Models\ClaseFavorita::class,
+            \App\Models\PlanEntrenamientoCasa::class,
+            \App\Models\SesionEntrenamientoCasa::class,
+            \App\Models\DetalleSesionEntrenamiento::class,
+        ];
+        foreach ($modelos as $clase) {
+            $modelo = new $clase();
+            $tabla = $modelo->getTable();
+            $this->assertArrayHasKey($tabla, $requisitos);
+            foreach ($modelo->getFillable() as $columna) {
+                $this->assertContains($columna, $requisitos[$tabla], "$tabla.$columna no se verifica");
+            }
+            if ($modelo->usesTimestamps()) {
+                $this->assertContains('created_at', $requisitos[$tabla], "$tabla.created_at no se verifica");
+                $this->assertContains('updated_at', $requisitos[$tabla], "$tabla.updated_at no se verifica");
+            }
+        }
+    }
+
 }

@@ -41,18 +41,18 @@ class ReconciliarEsquemaRealMallqui extends Command
         'movimientos_caja' => ['id_movimiento', 'id_caja', 'id_usuario', 'tipo', 'origen', 'referencia_tipo', 'referencia_id', 'descripcion', 'monto', 'fecha_movimiento', 'estado'],
         'movimientos_inventario' => ['id_movimiento_inventario', 'id_producto', 'id_usuario', 'tipo', 'origen', 'referencia_tipo', 'referencia_id', 'cantidad', 'stock_anterior', 'stock_nuevo', 'observacion', 'fecha_movimiento'],
         'auditorias' => ['id_auditoria', 'id_usuario', 'usuario', 'rol', 'metodo', 'ruta', 'ip', 'status', 'fecha'],
-        'progreso_medidas' => ['id', 'id_cliente', 'peso', 'grasa', 'cintura', 'brazo', 'fecha'],
-        'admin_gym_records' => ['id', 'modulo', 'titulo', 'subtitulo', 'estado', 'fecha', 'monto', 'imagen_url', 'datos'],
-        'configuracion_sistema' => ['id', 'nombre_gimnasio', 'ruc', 'telefono', 'correo', 'direccion', 'referencia', 'frase_publicitaria', 'horario_detalle', 'tarifa_diaria', 'mensaje_productos', 'hora_apertura', 'hora_cierre', 'dias_atencion', 'dias_aviso_vencimiento', 'minutos_cancelacion_reserva', 'dias_anticipacion_reserva', 'stock_minimo_default', 'notificar_vencimientos', 'notificar_stock_bajo', 'notificar_pagos_pendientes'],
-        'sesiones_entrenamiento_casa' => ['id_sesion_casa', 'id_cliente', 'id_rutina', 'zona', 'fecha', 'duracion_segundos', 'ejercicios_total', 'ejercicios_completados', 'estado'],
-        'detalle_sesion_entrenamiento' => ['id_detalle_sesion', 'id_sesion_casa', 'id_detalle_rutina', 'series_realizadas', 'repeticiones_realizadas', 'peso_utilizado', 'completado'],
+        'progreso_medidas' => ['id', 'id_cliente', 'peso', 'grasa', 'cintura', 'brazo', 'fecha', 'created_at'],
+        'admin_gym_records' => ['id', 'modulo', 'titulo', 'subtitulo', 'estado', 'fecha', 'monto', 'imagen_url', 'datos', 'created_at', 'updated_at'],
+        'configuracion_sistema' => ['id', 'nombre_gimnasio', 'ruc', 'telefono', 'correo', 'direccion', 'referencia', 'frase_publicitaria', 'horario_detalle', 'tarifa_diaria', 'mensaje_productos', 'hora_apertura', 'hora_cierre', 'dias_atencion', 'dias_aviso_vencimiento', 'minutos_cancelacion_reserva', 'dias_anticipacion_reserva', 'stock_minimo_default', 'notificar_vencimientos', 'notificar_stock_bajo', 'notificar_pagos_pendientes', 'created_at', 'updated_at'],
+        'sesiones_entrenamiento_casa' => ['id_sesion_casa', 'id_cliente', 'id_rutina', 'zona', 'fecha', 'duracion_segundos', 'ejercicios_total', 'ejercicios_completados', 'estado', 'created_at', 'updated_at'],
+        'detalle_sesion_entrenamiento' => ['id_detalle_sesion', 'id_sesion_casa', 'id_detalle_rutina', 'series_realizadas', 'repeticiones_realizadas', 'peso_utilizado', 'completado', 'created_at', 'updated_at'],
         'personal_access_tokens' => ['id', 'tokenable_type', 'tokenable_id', 'name', 'token', 'abilities', 'last_used_at', 'expires_at', 'created_at', 'updated_at'],
-        'notificaciones_cliente' => ['id_notificacion', 'id_cliente', 'titulo', 'mensaje', 'leida'],
-        'solicitudes_soporte' => ['id_soporte', 'id_cliente', 'asunto', 'mensaje', 'estado'],
-        'opiniones_cliente' => ['id_opinion', 'id_cliente', 'calificacion', 'comentario', 'estado'],
-        'metas_cliente' => ['id_meta_cliente', 'id_cliente', 'sesiones_semanales'],
-        'clases_favoritas' => ['id_favorito', 'id_cliente', 'id_clase'],
-        'planes_entrenamiento_casa' => ['id_plan_casa', 'id_cliente', 'dias', 'zonas', 'activo'],
+        'notificaciones_cliente' => ['id_notificacion', 'id_cliente', 'titulo', 'mensaje', 'leida', 'tipo', 'fecha', 'created_at', 'updated_at'],
+        'solicitudes_soporte' => ['id_soporte', 'id_cliente', 'asunto', 'mensaje', 'estado', 'respuesta', 'fecha', 'fecha_respuesta', 'created_at', 'updated_at'],
+        'opiniones_cliente' => ['id_opinion', 'id_cliente', 'calificacion', 'comentario', 'estado', 'categoria', 'fecha', 'created_at', 'updated_at'],
+        'metas_cliente' => ['id_meta_cliente', 'id_cliente', 'sesiones_semanales', 'recordatorios', 'created_at', 'updated_at'],
+        'clases_favoritas' => ['id_favorito', 'id_cliente', 'id_clase', 'created_at', 'updated_at'],
+        'planes_entrenamiento_casa' => ['id_plan_casa', 'id_cliente', 'dias', 'zonas', 'activo', 'objetivo', 'created_at', 'updated_at'],
     ];
 
     private const MIGRACIONES_ADITIVAS = [
@@ -220,7 +220,8 @@ class ReconciliarEsquemaRealMallqui extends Command
             } elseif (in_array($columna, ['descripcion','observacion','observaciones','mensaje','mensaje_productos','horario_detalle','frase_publicitaria','respuesta','comentario'], true)) {
                 $t->text($columna)->nullable();
             } elseif (str_starts_with($columna, 'fecha_hora_') || str_ends_with($columna, '_at')
-                || in_array($columna, ['fecha_registro','fecha_venta','fecha_compra','fecha_pago','fecha_movimiento','fecha_apertura','fecha_cierre','fecha_reserva','fecha_anulacion','fecha_respuesta'], true)) {
+                || in_array($columna, ['fecha_registro','fecha_venta','fecha_compra','fecha_pago','fecha_movimiento','fecha_apertura','fecha_cierre','fecha_reserva','fecha_anulacion','fecha_respuesta'], true)
+                || ($columna === 'fecha' && in_array($tabla, ['notificaciones_cliente','solicitudes_soporte','opiniones_cliente'], true))) {
                 $t->dateTime($columna)->nullable();
             } elseif (str_starts_with($columna, 'fecha_') || $columna === 'fecha') {
                 $t->date($columna)->nullable();
@@ -229,10 +230,10 @@ class ReconciliarEsquemaRealMallqui extends Command
             } elseif (str_starts_with($columna, 'precio') || str_starts_with($columna, 'monto')
                 || in_array($columna, ['subtotal','igv','total','diferencia','salario','peso','grasa','cintura','brazo','peso_recomendado','peso_utilizado','tarifa_diaria'], true)) {
                 $t->decimal($columna, 12, 2)->nullable();
-            } elseif (in_array($columna, ['permite_reservas','activo','leida','completado','notificar_vencimientos','notificar_stock_bajo','notificar_pagos_pendientes'], true)) {
+            } elseif (in_array($columna, ['permite_reservas','activo','leida','completado','recordatorios','notificar_vencimientos','notificar_stock_bajo','notificar_pagos_pendientes'], true)) {
                 $t->boolean($columna)->nullable();
             } elseif (str_starts_with($columna, 'stock') || str_starts_with($columna, 'ejercicios_')
-                || in_array($columna, ['cantidad','series','repeticiones','calificacion','sesiones_semanales','cupo_maximo','duracion_meses','dias_aviso_vencimiento','minutos_cancelacion_reserva','dias_anticipacion_reserva','descanso_segundos','duracion_segundos','status','referencia_id'], true)) {
+                || in_array($columna, ['cantidad','series','repeticiones','series_realizadas','repeticiones_realizadas','calificacion','stock_minimo_default','sesiones_semanales','cupo_maximo','duracion_meses','dias_aviso_vencimiento','minutos_cancelacion_reserva','dias_anticipacion_reserva','descanso_segundos','duracion_segundos','status','referencia_id'], true)) {
                 $t->integer($columna)->nullable();
             } elseif ($columna === 'token') {
                 $t->string($columna, 64)->nullable();
