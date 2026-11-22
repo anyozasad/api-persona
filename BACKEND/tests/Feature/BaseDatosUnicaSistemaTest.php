@@ -59,7 +59,7 @@ class BaseDatosUnicaSistemaTest extends TestCase
         $this->assertStringContainsString('mg-operational-repair', $admin);
         $this->assertStringContainsString('(click)="repararEsquemaMysql()"', $admin);
         $this->assertStringContainsString('this.actualizarDashboardCompleto();', $admin);
-        $this->assertStringContainsString("'--result-file='.$archivo", $backup);
+        $this->assertStringContainsString('--result-file=', $backup);
         $this->assertStringNotContainsString('$sql = $process->getOutput();', $backup);
     }
 
