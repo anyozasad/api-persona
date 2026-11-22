@@ -10,7 +10,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
 import { AdminGymSuiteComponent } from './admin-gym-suite.component';
 import { AdminApplicationsComponent } from './admin-applications.component';
 import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component';
-import { catchError, forkJoin, of, timeout } from 'rxjs';
+import { catchError, forkJoin, of, tap, timeout } from 'rxjs';
 
 @Component({
   selector: 'app-admin-integrado',
@@ -322,7 +322,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                     </svg>
                     <div class="mg-revenue-labels"><span *ngFor="let mes of ingresosMensualesDashboard()">{{mes.mes}}</span></div>
                   </div>
-                  <ng-template #sinDatosIngresos><div class="mg-no-chart-data">{{dashboardCargando ? 'Consultando ingresos mensuales de MySQL...' : 'No se pudieron comprobar ingresos mensuales. Revisa las tablas de pagos y ventas.'}}</div></ng-template>
+                  <ng-template #sinDatosIngresos><div class="mg-no-chart-data" role="status">{{dashboardCargando ? 'Consultando ingresos mensuales de MySQL...' : (dashboardError || (fuenteKpiDisponible('ingresos') ? 'Aún no hay ingresos mensuales para graficar.' : 'Los ingresos no están disponibles. Revisa la conexión y las tablas de MySQL.'))}}</div></ng-template>
                   <footer><span><i></i>Ingresos calculados por el sistema</span><b>{{dashboard?.periodo?.mes || 'Mes actual'}}</b></footer>
                 </article>
 
@@ -336,7 +336,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                       <span>{{d.dia}}</span>
                     </div>
                   </div>
-                  <ng-template #faltanAsistenciasGrafica><div class="mg-no-chart-data">{{dashboardCargando ? 'Consultando asistencias de los últimos siete días...' : 'La tabla de asistencias no está disponible o no se pudo consultar.'}}</div></ng-template>
+                  <ng-template #faltanAsistenciasGrafica><div class="mg-no-chart-data" role="status">{{dashboardCargando ? 'Consultando asistencias de los últimos siete días...' : (dashboardError || (fuenteKpiDisponible('asistencias') ? 'Todavía no hay asistencias de esta semana para graficar.' : 'Las asistencias no están disponibles en MySQL.'))}}</div></ng-template>
                   <footer>Registros de asistencia recuperados del servidor.</footer>
                 </article>
 
@@ -363,7 +363,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
                       <div><span><i class="v"></i>Ventas</span><b>{{fuenteKpiDisponible('ingresos') ? (dashboard?.ventas?.hoy_cantidad ?? 0) : '—'}}</b></div>
                     </div>
                   </div>
-                  <ng-template #faltaOperacionGrafica><div class="mg-no-chart-data">{{dashboardCargando ? 'Consultando la operación diaria...' : 'No hay información operativa recuperada.'}}</div></ng-template>
+                  <ng-template #faltaOperacionGrafica><div class="mg-no-chart-data" role="status">{{dashboardCargando ? 'Consultando la operación diaria...' : (dashboardError || 'No hay actividad operativa disponible por ahora.')}}</div></ng-template>
                   <footer *ngIf="dashboard && totalActividadOperativa() === 0">Todavía no hay movimientos registrados hoy.</footer>
                   <footer *ngIf="totalActividadOperativa() > 0">Distribución calculada a partir de registros reales.</footer>
                 </article>
@@ -450,7 +450,7 @@ import { catchError, forkJoin, of, timeout } from 'rxjs';
               </article>
             </div>
             <ng-template #sinProductosEfsrt>
-              <p class="mg-efsrt-empty">{{dashboardCargando ? 'Consultando productos y fotografías de MySQL...' : 'No hay productos cargados desde MySQL. Abre Productos para registrar artículos y fotografías.'}}</p>
+              <p class="mg-efsrt-empty" role="status">{{productosCargando ? 'Consultando productos y fotografías de MySQL...' : (productosError || 'Todavía no hay productos registrados. Puedes agregarlos desde Productos.')}}</p>
             </ng-template>
           </section>
 
@@ -2903,6 +2903,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   clienteRegistroFalloServidor = false;
   ultimoAccesoCliente = '';
   dashboard: any = null;
+  productosCargando = false;
+  productosError = '';
   herramientasAvanzadasAbiertas = false;
   reporteIngresos: any = null;
   reporteAsistencias: any = null;
@@ -4203,18 +4205,42 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
     this.actualizandoDatos=true;
     this.dashboardCargando=!this.dashboard;
+    this.productosCargando=!this.productos.length;
+    this.productosError='';
     this.error='';
     this.dashboardError='';
     const errores:string[]=[];
 
+    // Mostrar cada dato al llegar, sin bloquear los gráficos hasta que respondan
+    // otros doce módulos independientes. forkJoin conserva la validación global
+    // una vez que se completan todas las consultas.
     const seguro=(nombre:string, observable:any, fallback:any)=>
-      observable.pipe(timeout(12000),catchError((e:any)=>{
-        errores.push(nombre);
-        if(nombre==='dashboard'){
-          this.dashboardError=e?.error?.mensaje ?? e?.error?.message ?? 'No se pudo cargar el resumen administrativo.';
-        }
-        return of(fallback);
-      }));
+      observable.pipe(
+        timeout(12000),
+        tap((valor:any)=>{
+          if(nombre==='dashboard'){
+            this.dashboard=valor || null;
+            this.dashboardCargando=false;
+          }
+          if(nombre==='productos'){
+            this.productos=Array.isArray(valor) ? valor : [];
+            this.productosCargando=false;
+          }
+        }),
+        catchError((e:any)=>{
+          errores.push(nombre);
+          if(nombre==='dashboard'){
+            this.dashboard=null;
+            this.dashboardCargando=false;
+            this.dashboardError=e?.error?.mensaje ?? e?.error?.message ?? 'No se pudo cargar el resumen administrativo.';
+          }
+          if(nombre==='productos'){
+            this.productosCargando=false;
+            this.productosError='No se pudo consultar el catálogo de MySQL. Comprueba la conexión con Laravel.';
+          }
+          return of(fallback);
+        })
+      );
 
     forkJoin({
       estado: seguro('estado del sistema',this.api.estadoOperativo(),{api:false,database:false,operativo:false,faltantes:[]}),
@@ -4258,6 +4284,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
         this.erroresSincronizacion=errores;
         this.dashboardCargando=false;
+        this.productosCargando=false;
         this.actualizandoDatos=false;
         this.ultimaActualizacionTs=Date.now();
         this.ultimaActualizacion=new Date(this.ultimaActualizacionTs).toLocaleTimeString('es-PE');
@@ -4270,6 +4297,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       },
       error:(e:any)=>{
         this.dashboardCargando=false;
+        this.productosCargando=false;
         this.actualizandoDatos=false;
         this.erroresSincronizacion=['sincronización general'];
         this.dashboardError=e?.error?.mensaje ?? e?.error?.message ?? 'No se pudo sincronizar el dashboard.';
@@ -5020,7 +5048,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   cargarDashboard(alFinalizar?: () => void):void {
     if(!this.dashboard)this.dashboardCargando=true;
-    this.api.dashboard().subscribe({
+    this.api.dashboard().pipe(timeout(12000)).subscribe({
       next:r=>{
         this.dashboard=r;
         this.dashboardCargando=false;
