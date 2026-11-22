@@ -32,11 +32,19 @@ class BaseDatosUnicaSistemaTest extends TestCase
         $preparacion = (string) file_get_contents(app_path('Console/Commands/PrepararMallquiSistema.php'));
 
         $posRespaldo = strpos($inicio, "Ejecutar \$php @('artisan','backup:database')");
-        $posPreparacion = strpos($inicio, "Ejecutar \$php @('artisan','sistema:preparar')");
+        $posReparacion = strpos($inicio, "Ejecutar \$php @('artisan','db:reconciliar-esquema')");
+        $posVerificacion = strpos($inicio, "Ejecutar \$php @('artisan','db:verificar')");
         $this->assertNotFalse($posRespaldo);
-        $this->assertNotFalse($posPreparacion);
-        $this->assertLessThan($posPreparacion, $posRespaldo,
-            'Primero se confirma el respaldo, después se preparan tablas.');
+        $this->assertNotFalse($posReparacion);
+        $this->assertNotFalse($posVerificacion);
+        $this->assertLessThan($posReparacion, $posRespaldo,
+            'Primero se confirma el respaldo y después se reparan tablas.');
+        $this->assertLessThan($posVerificacion, $posReparacion,
+            'La validación integral debe realizarse después de recuperar tablas.');
+        $this->assertStringNotContainsString(
+            "Ejecutar \$php @('artisan','sistema:preparar')", $inicio,
+            'La reparación exclusiva de MySQL no debe agregar datos de ejemplo.'
+        );
         $this->assertStringContainsString('Respaldo SQL no confirmado.', $inicio);
         $this->assertStringContainsString('Suplementos', $preparacion);
         $this->assertStringContainsString('Accesorios', $preparacion);
