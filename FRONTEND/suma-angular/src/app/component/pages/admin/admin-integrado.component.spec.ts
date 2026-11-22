@@ -1,4 +1,4 @@
-import { of, Subject, throwError } from 'rxjs';
+import { BehaviorSubject, of, Subject, throwError } from 'rxjs';
 import { AdminIntegradoComponent } from './admin-integrado.component';
 
 describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
@@ -452,16 +452,57 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
         relativeTo:route,
         queryParams:{modulo:'pagos'},
         queryParamsHandling:'merge',
-        replaceUrl:true
+        replaceUrl:false
       });
       c.cambiarSegcion('dashboard');
       expect(router.navigate).toHaveBeenCalledWith([],{
         relativeTo:route,
         queryParams:{modulo:null},
         queryParamsHandling:'merge',
-        replaceUrl:true
+        replaceUrl:false
       });
     }finally{c.ngOnDestroy();}
+  });
+
+  it('desde una ruta directa el botón de otro módulo cambia la dirección real', () => {
+    const route = {snapshot:{
+      data:{seccion:'productos'},
+      routeConfig:{path:'productos'},
+      queryParamMap:{get:()=>null}
+    }} as any;
+    const router = {navigate:jasmine.createSpy('navigate').and.returnValue(Promise.resolve(true))} as any;
+    const c = new AdminIntegradoComponent({usuario:{rol:'Administrador'}} as any,api,router,route);
+    spyOn(c as any,'cargarSegcion').and.stub();
+    c.ngOnInit();
+    try {
+      expect(c.seccion).toBe('productos');
+      c.cambiarSegcion('clientes');
+      expect(router.navigate).toHaveBeenCalledWith(['/admin'],{
+        queryParams:{modulo:'clientes'}
+      });
+    } finally { c.ngOnDestroy(); }
+  });
+
+  it('Atrás y Adelante recuperan el módulo sin volver al inicio por error', () => {
+    const parametros = new BehaviorSubject({get:(k:string)=>k==='modulo'?'productos':null});
+    const route = {snapshot:{
+      data:{},
+      routeConfig:{path:'admin'},
+      queryParamMap:{get:(k:string)=>k==='modulo'?'productos':null}
+    },queryParamMap:parametros.asObservable()} as any;
+    const router = {navigate:jasmine.createSpy('navigate').and.returnValue(Promise.resolve(true))} as any;
+    const c = new AdminIntegradoComponent({usuario:{rol:'Administrador'}} as any,api,router,route);
+    const cargar = spyOn(c as any,'cargarSegcion').and.stub();
+    c.ngOnInit();
+    try {
+      expect(c.seccion).toBe('productos');
+      parametros.next({get:(k:string)=>k==='modulo'?'pagos':null});
+      expect(c.seccion).toBe('pagos');
+      expect(cargar).toHaveBeenCalledWith('pagos');
+      parametros.next({get:(k:string)=>k==='modulo'?'productos':null});
+      expect(c.seccion).toBe('productos');
+      expect(cargar).toHaveBeenCalledWith('productos');
+    } finally {c.ngOnDestroy();}
   });
 
   it('abre la función secundaria y cierra el selector para no tapar la pantalla', () => {

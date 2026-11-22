@@ -10,7 +10,7 @@ import { AdminClienteFichaComponent } from './admin-cliente-ficha.component';
 import { AdminGymSuiteComponent } from './admin-gym-suite.component';
 import { AdminApplicationsComponent } from './admin-applications.component';
 import { AdminDashboardToolsComponent } from './admin-dashboard-tools.component';
-import { catchError, forkJoin, of, tap, timeout } from 'rxjs';
+import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
 
 @Component({
   selector: 'app-admin-integrado',
@@ -2941,6 +2941,7 @@ import { catchError, forkJoin, of, tap, timeout } from 'rxjs';
 export class AdminIntegradoComponent implements OnInit, OnDestroy {
   @ViewChild(AdminApplicationsComponent) panelAplicaciones?: AdminApplicationsComponent;
   @Input() seccionInicial = 'dashboard';
+  private navegacionRuta?: Subscription;
   seccion = 'dashboard';
   toast = '';
   error = '';
@@ -3391,6 +3392,21 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if (this.seccion === 'dashboard') this.actualizarDashboardCompleto();
     else this.cargarSegcion(this.seccion);
 
+    // Atrás/Adelante vuelve al módulo seleccionado, sin perder la URL.
+    // La suscripción no repite consultas después de un clic normal.
+    if (this.route?.snapshot?.routeConfig?.path === 'admin') {
+      this.navegacionRuta = this.route.queryParamMap.subscribe(parametros => {
+        const modulo = this.normalizarSegcion(parametros.get('modulo') || this.seccionInicial || 'dashboard');
+        if (modulo === this.seccion) return;
+        if (modulo !== 'clientes' && this.clienteFormularioAbierto) this.cancelarEdicionCliente();
+        this.seccion = modulo;
+        this.error = '';
+        this.cerrarMenusMantis();
+        this.activarGrupoDeSeccion(modulo);
+        this.cargarSegcion(modulo);
+      });
+    }
+
     // Refresco inteligente: no interrumpe formularios ni trabaja cuando la pestaña está oculta.
     this.autoRefreshId = setInterval(() => {
       if (this.autoRefreshActivo && !document.hidden && !this.actualizandoDatos && this.puedeAutoActualizar) {
@@ -3400,6 +3416,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.navegacionRuta?.unsubscribe();
     if (this.autoRefreshId) {
       clearInterval(this.autoRefreshId);
       this.autoRefreshId = null;
@@ -4727,15 +4744,24 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(destino!=='clientes' && this.clienteFormularioAbierto){
       this.cancelarEdicionCliente();
     }
+    // Si entró por /productos, /clientes o /pagos, no dejar una URL de otro
+    // módulo al pulsar un botón: pasar al panel con la sección correcta.
+    const rutaActual = this.route?.snapshot?.routeConfig?.path;
+    if (rutaActual && rutaActual !== 'admin') {
+      this.cerrarMenusMantis();
+      void this.router.navigate(['/admin'], {
+        queryParams: destino === 'dashboard' ? {} : {modulo: destino}
+      });
+      return;
+    }
     this.seccion = destino;
-    // La ruta /admin conserva el módulo en la URL para restaurarlo al recargar.
-    // Las rutas directas (/productos, /reservas, etc.) mantienen su ruta propia.
-    if(this.route?.snapshot?.routeConfig?.path==='admin'){
+    // La URL del panel refleja siempre la sección seleccionada.
+    if(rutaActual==='admin'){
       void this.router.navigate([],{
         relativeTo:this.route,
         queryParams:{modulo:destino==='dashboard'?null:destino},
         queryParamsHandling:'merge',
-        replaceUrl:true
+        replaceUrl:false
       });
     }
     this.error = '';
