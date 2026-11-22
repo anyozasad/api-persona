@@ -505,6 +505,50 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     } finally {c.ngOnDestroy();}
   });
 
+  it('registrar socio desde /clientes conserva el acceso al pasar a Membresías', () => {
+    const route={snapshot:{
+      data:{seccion:'clientes'},routeConfig:{path:'clientes'},
+      queryParamMap:{get:()=>null}
+    }} as any;
+    const router={navigate:jasmine.createSpy('navigate').and.returnValue(Promise.resolve(true))} as any;
+    const c=new AdminIntegradoComponent({usuario:{rol:'Administrador'}} as any,api,router,route);
+    c.clienteForm={
+      dni:'88776654',nombres:'Cuenta',apellidos:'Portal Verificado',
+      telefono:'987654321',correo:'cuenta-portal-ci@example.test',direccion:'',
+      estado:'Activo',crear_acceso:true,nombre_usuario:'portal-cliente-e2e',
+      contrasena:'AccesoPortalTemporal2026!'
+    };
+    spyOn(c,'cargarClientes').and.stub();
+    spyOn(c,'cargarDashboard').and.stub();
+    api.crearCliente.and.returnValue(of({cliente:{id_cliente:52}}));
+    c.guardarCliente();
+    expect(router.navigate).toHaveBeenCalledWith(['/admin'],{
+      queryParams:{modulo:'membresias'},
+      state:{mallquiAltaSocio:{idCliente:52,nombreUsuario:'portal-cliente-e2e'}}
+    });
+  });
+
+  it('Membresías recupera el socio creado y muestra su usuario de acceso', () => {
+    const route={snapshot:{
+      data:{},routeConfig:{path:'admin'},
+      queryParamMap:{get:(k:string)=>k==='modulo'?'membresias':null}
+    }} as any;
+    const router={
+      navigate:jasmine.createSpy('navigate'),
+      getCurrentNavigation:()=>({extras:{
+        state:{mallquiAltaSocio:{idCliente:52,nombreUsuario:'portal-cliente-e2e'}}
+      }})
+    } as any;
+    const c=new AdminIntegradoComponent({usuario:{rol:'Administrador'}} as any,api,router,route);
+    spyOn(c as any,'cargarSegcion').and.stub();
+    c.ngOnInit();
+    try{
+      expect(c.seccion).toBe('membresias');
+      expect(c.membresiaForm.id_cliente).toBe(52);
+      expect(c.ultimoAccesoCliente).toBe('portal-cliente-e2e');
+    }finally{c.ngOnDestroy();}
+  });
+
   it('abre la función secundaria y cierra el selector para no tapar la pantalla', () => {
     spyOn(window,'scrollTo').and.stub();
     spyOn(component as any,'cargarSegcion').and.stub();

@@ -3358,6 +3358,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     // Mantener la ubicación después de F5 sin usar rutas ocultas ni guardar datos privados.
     const moduloEnUrl=this.route?.snapshot?.queryParamMap?.get('modulo');
     this.seccion = this.normalizarSegcion(this.route?.snapshot?.data?.['seccion'] || moduloEnUrl || this.seccionInicial || 'dashboard');
+    // Recuperar el socio recién registrado después de cambiar desde /clientes
+    // a /admin?modulo=membresias, donde Angular crea otra instancia.
+    const traslado = this.router.getCurrentNavigation?.()?.extras.state as
+      {mallquiAltaSocio?:{idCliente:number;nombreUsuario:string};mallquiAbrirNuevoSocio?:boolean}|undefined;
+    if (this.seccion === 'membresias' && Number(traslado?.mallquiAltaSocio?.idCliente)>0) {
+      this.membresiaForm={...this.membresiaForm,id_cliente:Number(traslado?.mallquiAltaSocio?.idCliente)};
+      this.ultimoAccesoCliente=String(traslado?.mallquiAltaSocio?.nombreUsuario||'');
+    }
+    if (this.seccion === 'clientes' && traslado?.mallquiAbrirNuevoSocio) this.nuevoCliente();
     this.activarGrupoDeSeccion(this.seccion);
     try{
       // Mostrar siempre nombres y módulos al entrar: el menú colapsado confundía al usuario.
@@ -4774,6 +4783,13 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   abrirNuevoSocioDesdeDashboard(): void {
+    const rutaActual=this.route?.snapshot?.routeConfig?.path;
+    if(rutaActual && rutaActual!=='admin'){
+      void this.router.navigate(['/admin'],{
+        queryParams:{modulo:'clientes'},state:{mallquiAbrirNuevoSocio:true}
+      });
+      return;
+    }
     this.cambiarSegcion('clientes');
     setTimeout(() => this.nuevoCliente(), 0);
   }
@@ -5441,6 +5457,18 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.cargarDashboard();
 
         if(!eraEdicion && nuevoId){
+          // La ruta directa /clientes crea un componente nuevo al ir a
+          // Membresías. Transferir ID y usuario sin exponerlos en la URL.
+          const rutaActual=this.route?.snapshot?.routeConfig?.path;
+          if(rutaActual && rutaActual!=='admin'){
+            void this.router.navigate(['/admin'],{
+              queryParams:{modulo:'membresias'},
+              state:{mallquiAltaSocio:{
+                idCliente:nuevoId,nombreUsuario:this.ultimoAccesoCliente
+              }}
+            });
+            return;
+          }
           this.cambiarSegcion('membresias');
           setTimeout(()=>{
             this.membresiaForm={...this.membresiaForm,id_cliente:nuevoId};
