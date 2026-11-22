@@ -389,6 +389,31 @@ try {
     await page.screenshot({path:'evidencias-dashboard/13_Menu_cuatro_tareas_directas.png',fullPage:true});
   });
 
+  await paso('Menú lateral legible: Área de trabajo y enlaces no se comprimen',async()=>{
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    const menu=page.locator('.mg-clear-navigation');
+    await menu.getByRole('button',{name:'Mostrar módulos complementarios'}).click();
+    await menu.locator('#mg-area-selector').selectOption({label:'Socios y membresías'});
+    const medidas=await menu.locator('.mg-nav-picker').evaluate(panel=>{
+      const r=panel.getBoundingClientRect();
+      const selector=panel.querySelector('#mg-area-selector')?.getBoundingClientRect();
+      const elementos=Array.from(panel.querySelectorAll('.mg-secondary-link')).map(item=>{
+        const boton=item.getBoundingClientRect();
+        const texto=item.querySelector('span:first-child')?.getBoundingClientRect();
+        return {nombre:item.textContent?.trim(),ancho:boton.width,texto:texto?.width??0};
+      });
+      return {panel:r.width,selector:selector?.width??0,elementos};
+    });
+    assert.ok(medidas.panel>=188,
+      'El panel de Área de trabajo está muy estrecho: '+JSON.stringify(medidas));
+    assert.ok(medidas.selector>=medidas.panel-28,
+      'El selector no ocupa el ancho del panel: '+JSON.stringify(medidas));
+    assert.ok(medidas.elementos.every(item=>item.texto>=120),
+      'Las etiquetas del menú se parten en palabras demasiado estrechas: '+JSON.stringify(medidas));
+    await page.screenshot({path:'evidencias-dashboard/40_Menu_lateral_sin_textos_cortados.png',
+      fullPage:true,animations:'disabled'});
+  });
+
   await paso('Centro de aplicaciones tiene seis tareas y 44 módulos accesibles sin duplicar pestañas',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-clear-navigation');
