@@ -11,9 +11,33 @@ use Tests\TestCase;
 
 class AdminAdvancedCoreSchemaTest extends TestCase
 {
+    private ?string $conexionOriginal = null;
+    private const CONEXION_CI = 'mallqui_admin_advanced_connection';
+    private const BASE_CI = 'mallqui_admin_advanced_ci';
+
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Estas pruebas modifican tablas: AISLAR la BD por completo.
+        // Antes destruían tablas de mallqui_gym_pruebas y dañaban pruebas
+        // posteriores (Pagos, Membresías y diagnóstico de MySQL).
+        $this->conexionOriginal = DB::getDefaultConnection();
+        $admin = DB::connection($this->conexionOriginal);
+        if (!in_array($admin->getDriverName(), ['mysql','mariadb'], true)) {
+            $this->markTestSkipped('Prueba avanzada requiere MySQL de pruebas.');
+        }
+        if (!app()->environment('testing') || !str_contains($admin->getDatabaseName(), 'pruebas')) {
+            throw new \RuntimeException('Prohibido modificar un esquema que no sea de pruebas.');
+        }
+
+        $admin->statement('CREATE DATABASE IF NOT EXISTS `'.self::BASE_CI.'` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $config = (array) config('database.connections.'.$this->conexionOriginal);
+        $config['database'] = self::BASE_CI;
+        $config['url'] = null;
+        config(['database.connections.'.self::CONEXION_CI => $config]);
+        DB::setDefaultConnection(self::CONEXION_CI);
+        DB::purge(self::CONEXION_CI);
 
         foreach (['pagos_membresia','progreso_medidas','rutinas','cliente_membresia','membresias','clientes','configuracion_sistema'] as $tabla) {
             Schema::dropIfExists($tabla);
@@ -138,6 +162,21 @@ class AdminAdvancedCoreSchemaTest extends TestCase
             'id' => 1,
             'nombre_gimnasio' => 'Mallqui Gym',
         ]);
+    }
+
+    protected function tearDown(): void
+    {
+        try {
+            if ($this->conexionOriginal !== null) {
+                DB::setDefaultConnection($this->conexionOriginal);
+                DB::disconnect(self::CONEXION_CI);
+                // SOLO la base aislada creada aquí, nunca gym_system.
+                DB::connection($this->conexionOriginal)
+                    ->statement('DROP DATABASE IF EXISTS `'.self::BASE_CI.'`');
+            }
+        } finally {
+            parent::tearDown();
+        }
     }
 
     public function test_progreso_usa_cliente_y_rutina_del_esquema_actual(): void
