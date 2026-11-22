@@ -8,7 +8,8 @@
     "test": "ng test",
     "reparar:clientes": "powershell -NoProfile -ExecutionPolicy Bypass -File ..\\..\\scripts\\INICIAR_DASHBOARD.ps1 -RepararClientes",
     "reparar:membresias": "powershell -NoProfile -ExecutionPolicy Bypass -File ..\\..\\scripts\\INICIAR_DASHBOARD.ps1 -RepararMembresias",
-    "reparar:sistema": "powershell -NoProfile -ExecutionPolicy Bypass -File ..\\..\\scripts\\INICIAR_DASHBOARD.ps1 -Migrar"
+    "reparar:sistema": "powershell -NoProfile -ExecutionPolicy Bypass -File ..\\..\\scripts\\INICIAR_DASHBOARD.ps1 -Migrar",
+    "reparar:progreso": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Set-Location ..\\\\..\\\\BACKEND; & C:\\\\xampp\\\\php\\\\php.exe artisan db:asegurar-progreso; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; & C:\\\\xampp\\\\php\\\\php.exe artisan optimize:clear\""
   },
   "dependencies": {
     "@angular/common": "^20.0.0",
