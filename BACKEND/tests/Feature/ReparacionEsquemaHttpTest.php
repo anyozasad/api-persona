@@ -57,9 +57,16 @@ class ReparacionEsquemaHttpTest extends TestCase
 
     public function test_con_esquema_completo_no_ejecuta_respaldo_ni_modifica_tablas(): void
     {
-        $this->withHeaders(['Authorization' => 'Bearer '.$this->token('Administrador', 'completo')])
-            ->postJson('/api/configuracion/reparar-esquema', [
-                'confirmacion' => 'RESPALDAR_Y_REPARAR',
-            ])->assertOk()->assertJsonPath('codigo','ESQUEMA_COMPLETO');
+        $this->withHeaders(['Authorization' => 'Bearer '.$this->token('Administrador', 'completo')]);
+        $estado = $this->getJson('/api/configuracion/diagnostico-esquema');
+        $estado->assertOk();
+        // Algunas suites simulan fallos de esquema; nunca ejecutar un ALTER
+        // sobre la BD compartida de PHPUnit solo para probar idempotencia.
+        if ($estado->json('operativo') !== true) {
+            $this->markTestSkipped('Prueba de no-op requiere esquema completo; la recuperación se prueba por separado.');
+        }
+        $this->postJson('/api/configuracion/reparar-esquema', [
+            'confirmacion' => 'RESPALDAR_Y_REPARAR',
+        ])->assertOk()->assertJsonPath('codigo','ESQUEMA_COMPLETO');
     }
 }
