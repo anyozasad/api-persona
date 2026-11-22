@@ -484,7 +484,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
   });
 
   it('Atrás y Adelante recuperan el módulo sin volver al inicio por error', () => {
-    const parametros = new BehaviorSubject({get:(k:string)=>k==='modulo'?'productos':null});
+    const parametros = new BehaviorSubject<{get:(k:string)=>string|null}>({get:(k:string)=>k==='modulo'?'productos':null});
     const route = {snapshot:{
       data:{},
       routeConfig:{path:'admin'},
