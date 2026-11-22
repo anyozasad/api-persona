@@ -67,7 +67,19 @@ class BackupDatabase extends Command
             return self::FAILURE;
         }
 
-        File::put($archivo, $process->getOutput());
+        // No considerar correcto un dump vacío o incompleto.
+        // Mantener los respaldos anteriores si la nueva copia falla.
+        $sql = $process->getOutput();
+        if (strlen($sql) < 200 || !str_contains($sql, 'CREATE TABLE')) {
+            $this->error('El respaldo no contiene tablas SQL verificables. La base NO se modificará.');
+            @unlink($archivo);
+            return self::FAILURE;
+        }
+        File::put($archivo, $sql);
+        if (!File::exists($archivo) || File::size($archivo) !== strlen($sql)) {
+            $this->error('No se pudo verificar el archivo de respaldo. Preparación cancelada.');
+            return self::FAILURE;
+        }
 
         $keep = max(1, (int) $this->option('keep'));
         $limite = now()->subDays($keep)->getTimestamp();
