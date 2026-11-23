@@ -179,7 +179,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
 
       <div class="mg-current-workspace">
       <div *ngIf="toast" class="mg-action-feedback success" role="status" aria-live="polite">{{toast}}</div>
-      <div *ngIf="error && !clienteFormularioAbierto && !(seccion==='reservas' && reservaError) && !(seccion==='dashboard' && estadoOperativoDashboard?.operativo===false && error.startsWith('No se pudieron sincronizar:'))"
+      <div *ngIf="error && !clienteFormularioAbierto && !(seccion==='reservas' && reservaError) && !(seccion==='planes' && planError) && !(seccion==='dashboard' && estadoOperativoDashboard?.operativo===false && error.startsWith('No se pudieron sincronizar:'))"
            class="mg-action-feedback error" role="alert">
         <span>{{error}}</span>
         <button type="button" class="mg-feedback-close" aria-label="Cerrar mensaje de error" (click)="error=''">×</button>
@@ -5768,7 +5768,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(!Number.isInteger(duracion)||duracion<1||duracion>36){
       this.planError='La duración debe ser de 1 a 36 meses.';return;
     }
-    if(datos.precio===null || datos.precio==='' || !Number.isFinite(precio)||precio<0 || Math.round(precio*100)!==precio*100){
+    if(datos.precio===null || datos.precio==='' || !Number.isFinite(precio)||precio<0 || Math.abs(Math.round(precio*100)-precio*100)>0.000001){
       this.planError='Ingresa un precio válido en soles, con máximo dos decimales.';return;
     }
     if(precio===0 && !this.planGratisConfirmado){
