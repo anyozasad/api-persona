@@ -280,7 +280,9 @@ class PortalClienteController extends Controller
         // debe recibir exactamente las mismas fotos que el administrador.
         // No crear otra tabla, copiar registros ni usar imágenes de muestra.
         if (Schema::hasColumn('productos','id')
-            && !Schema::hasColumn('productos','id_producto')) {
+            && Schema::hasColumn('productos','categoria_id')
+            && Schema::hasColumn('productos','codigo')
+            && Schema::hasColumn('productos','nombre')) {
             $productos = app(GymSystemAdminController::class)->productos()->getData(true);
             return response()->json(
                 collect($productos)

@@ -39,7 +39,15 @@ class GymSystemAdminController extends Controller
 
     private function usaProductosModernos(): bool
     {
-        return $this->schema->hasTable('productos')
+        // No reenviar al controlador moderno una tabla legacy que recibió
+        // columnas de compatibilidad; sus campos obligatorios siguen siendo
+        // codigo/nombre/categoria_id.
+        $legacy = $this->schema->hasTable('productos')
+            && $this->schema->hasColumn('productos', 'id')
+            && $this->schema->hasColumn('productos', 'categoria_id')
+            && $this->schema->hasColumn('productos', 'codigo')
+            && $this->schema->hasColumn('productos', 'nombre');
+        return !$legacy && $this->schema->hasTable('productos')
             && $this->schema->hasColumn('productos', 'id_producto');
     }
 

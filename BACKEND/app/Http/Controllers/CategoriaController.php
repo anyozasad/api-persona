@@ -11,9 +11,11 @@ class CategoriaController extends Controller
 {
     private function usaEsquemaOriginal(): bool
     {
+        // Tras reparar MySQL puede existir id_categoria GENERATED, pero
+        // el nombre real y las inserciones legacy siguen en id/nombre.
         return Schema::hasTable('categorias')
             && Schema::hasColumn('categorias', 'id')
-            && !Schema::hasColumn('categorias', 'id_categoria');
+            && Schema::hasColumn('categorias', 'nombre');
     }
 
 

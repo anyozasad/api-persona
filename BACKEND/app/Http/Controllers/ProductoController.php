@@ -18,9 +18,14 @@ class ProductoController extends Controller
      */
     private function usaEsquemaOriginal(): bool
     {
+        // La reconciliación puede agregar id_producto GENERATED a una tabla
+        // que todavía escribe en id/categoria_id/codigo/nombre. La mera
+        // presencia de la columna nueva NO convierte esa tabla en moderna.
         return Schema::hasTable('productos')
             && Schema::hasColumn('productos', 'id')
-            && !Schema::hasColumn('productos', 'id_producto');
+            && Schema::hasColumn('productos', 'categoria_id')
+            && Schema::hasColumn('productos', 'codigo')
+            && Schema::hasColumn('productos', 'nombre');
     }
 
 
