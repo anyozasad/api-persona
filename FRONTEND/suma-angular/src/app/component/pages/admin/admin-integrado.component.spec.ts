@@ -1460,4 +1460,30 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.renovacionesConWhatsapp).toBe(1);
   });
 
+  it('no envía una reserva si faltan socio, clase o fecha', () => {
+    component.reservaForm={id_cliente:0,id_clase:0,fecha_clase:''};
+    component.guardarReservaAdmin();
+    expect(api.crearReservaAdmin).not.toHaveBeenCalled();
+    expect(component.error).toContain('Selecciona socio');
+    expect(component.reservaGuardando).toBeFalse();
+  });
+
+  it('no permite marcar asistencia sobre una reserva ya cancelada', () => {
+    component.reservas=[{id_reserva:91,estado:'Cancelada'}] as any;
+    component.cambiarEstadoReserva(91,'Asistio');
+    expect(api.cambiarEstadoReserva).not.toHaveBeenCalled();
+    expect(component.error).toContain('finalizada o cancelada');
+  });
+
+  it('entrar a Clases y reservas abre Reservas y deja visibles las tareas relacionadas', () => {
+    const cambiar=spyOn(component,'cambiarSegcion').and.stub();
+    component.abrirAreaPrincipalAdmin('entrenamiento');
+    expect(cambiar).toHaveBeenCalledOnceWith('reservas');
+    component.seccion='reservas';
+    expect(component.areaActualAdmin?.nombre).toBe('Clases y reservas');
+    expect(component.areaActualAdmin?.opciones.map(x=>x.nombre)).toEqual([
+      'Reservas','Asistencia','Clases','Rutinas'
+    ]);
+  });
+
 });
