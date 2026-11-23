@@ -153,6 +153,11 @@ class ReconciliarEsquemaRealMallqui extends Command
                 return self::FAILURE;
             }
 
+            // Las tablas originales siguen escribiendo codigo/nombre/categoria_id.
+            // Rellenar sus equivalentes modernos para vistas y reportes sin
+            // modificar los campos originales ni descartar fotografías.
+            $this->sincronizarAliasesCatalogo();
+
             // Las vistas son consultas derivadas, no contienen filas propias.
             // Si una tabla incompleta las invalidó, reconstruirlas al final,
             // cuando todas las columnas existen, aunque migrations diga aplicado.
@@ -207,6 +212,40 @@ class ReconciliarEsquemaRealMallqui extends Command
         return $pendientes;
     }
 
+    /**
+     * Copia valores existentes de categorías y productos legacy a columnas
+     * que el catálogo y las vistas modernas necesitan. Es idempotente.
+     */
+    private function sincronizarAliasesCatalogo(): void
+    {
+        $compatibilidades = [
+            'categorias' => [
+                'id_categoria' => 'id',
+                'nombre_categoria' => 'nombre',
+            ],
+            'productos' => [
+                'id_producto' => 'id',
+                'id_categoria' => 'categoria_id',
+                'codigo_producto' => 'codigo',
+                'nombre_producto' => 'nombre',
+            ],
+        ];
+        foreach ($compatibilidades as $tabla => $alias) {
+            if (!Schema::hasTable($tabla)) {
+                continue;
+            }
+            $campos = array_fill_keys(Schema::getColumnListing($tabla), true);
+            foreach ($alias as $nuevo => $anterior) {
+                if (!isset($campos[$nuevo], $campos[$anterior])) {
+                    continue;
+                }
+                // Nombre y código antiguos pueden ser obligatorios; solo
+                // rellenar la copia nueva cuando aún está sin contenido.
+                DB::table($tabla)->whereNull($nuevo)->update([$nuevo => DB::raw('`'.$anterior.'`')]);
+            }
+        }
+    }
+
     private function repararIdentificador(string $tabla, string $columna): void
     {
         $motor = DB::connection()->getDriverName();
@@ -230,9 +269,12 @@ class ReconciliarEsquemaRealMallqui extends Command
             if (!preg_match('/^[a-z_][a-z0-9_]*$/i', $autoAnterior)) {
                 throw new \RuntimeException('Columna auto incremental anterior no permitida.');
             }
-            // Una columna generada mantiene el mismo ID en altas futuras.
-            // No se crea una segunda secuencia ni se modifican claves antiguas.
-            DB::statement('ALTER TABLE `'.$tabla.'` ADD COLUMN `'.$columna.'` BIGINT UNSIGNED GENERATED ALWAYS AS (`'.$autoAnterior.'`) STORED UNIQUE');
+            // MySQL 8 y MariaDB NO permiten una columna GENERATED que dependa
+            // de una columna AUTO_INCREMENT. Mantener el ID original y agregar
+            // una referencia normal, nullable y única; copiar los IDs existentes.
+            // Los controladores legacy actualizan el alias en cada nuevo INSERT.
+            DB::statement('ALTER TABLE `'.$tabla.'` ADD COLUMN `'.$columna.'` BIGINT UNSIGNED NULL UNIQUE');
+            DB::statement('UPDATE `'.$tabla.'` SET `'.$columna.'` = `'.$autoAnterior.'` WHERE `'.$columna.'` IS NULL');
             return;
         }
         DB::statement('ALTER TABLE `'.$tabla.'` ADD COLUMN `'.$columna.'` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE');
