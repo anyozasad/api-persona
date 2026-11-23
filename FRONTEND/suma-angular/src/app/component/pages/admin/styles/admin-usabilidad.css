@@ -395,3 +395,51 @@
   color:#25421b!important;
   cursor:pointer!important;
 }
+
+/* Notificación persistente y visible para los botones de todos los módulos.
+ * Antes quedaba al inicio del contenido, invisible si el usuario estaba abajo. */
+.admin-shell.admin-home-redesign .mg-current-workspace>.mg-action-feedback{
+  position:fixed!important;
+  z-index:750!important;
+  bottom:20px!important;
+  right:24px!important;
+  width:min(440px,calc(100vw - 32px))!important;
+  max-width:calc(100vw - 32px)!important;
+  max-height:45vh!important;
+  overflow-y:auto!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+  padding:15px 52px 15px 17px!important;
+  border-radius:12px!important;
+  font-size:14px!important;
+  line-height:1.55!important;
+  box-shadow:0 14px 42px rgba(20,40,20,.22)!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace>.mg-action-feedback .mg-feedback-close{
+  position:absolute!important;
+  top:7px!important;
+  right:7px!important;
+  width:34px!important;
+  height:34px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-radius:8px!important;
+  border:1px solid transparent!important;
+  background:transparent!important;
+  color:inherit!important;
+  font-size:22px!important;
+  cursor:pointer!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace>.mg-action-feedback .mg-feedback-close:hover{
+  background:rgba(0,0,0,.07)!important;
+}
+@media(max-width:640px){
+  .admin-shell.admin-home-redesign .mg-current-workspace>.mg-action-feedback{
+    bottom:12px!important;
+    left:12px!important;
+    right:12px!important;
+    width:auto!important;
+    max-width:none!important;
+  }
+}
