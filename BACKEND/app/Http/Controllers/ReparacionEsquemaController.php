@@ -74,6 +74,15 @@ class ReparacionEsquemaController extends Controller
     {
         $request->validate(['confirmacion' => 'required|in:RESPALDAR_Y_REPARAR']);
 
+        // XAMPP suele limitar las peticiones PHP a 30-120 s. Crear un dump
+        // y recuperar decenas de columnas requiere más tiempo; de otro modo
+        // se interrumpe a medias y el administrador sigue viendo el aviso.
+        // Solo se habilita tras autenticación, permiso de administrador y
+        // confirmación explícita. La copia SQL conserva los datos anteriores.
+        if (function_exists('set_time_limit')) {
+            @set_time_limit(600);
+        }
+
         // Impedir dos reparaciones concurrentes, incluso en Windows/XAMPP.
         $lockPath = storage_path('app/mallqui_esquema_reparacion.lock');
         $lock = @fopen($lockPath, 'c');

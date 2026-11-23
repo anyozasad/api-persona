@@ -343,8 +343,29 @@ try {
         Avisar 'MySQL no está disponible. Enciende MySQL desde XAMPP y revisa BACKEND/.env.'
     } elseif ($estado.operativo -ne $true) {
         $cantidadFaltantes = @($estado.faltantes).Count
-        Avisar ("MySQL responde, pero el esquema requiere revisión (" + $cantidadFaltantes + " requisitos pendientes).")
-        Avisar 'Para crear respaldo automáticamente y preparar tablas, ejecuta este script con -Migrar.'
+        Avisar ("La base MySQL " + $estado.base_datos + " tiene " + $cantidadFaltantes + " requisitos pendientes.")
+        Avisar 'No se abrirá el panel como si estuviera completo. Puedes recuperar las tablas desde aquí, sin ejecutar -Migrar.'
+        $respuestaReparar = Read-Host '¿Crear respaldo SQL y reparar los módulos faltantes ahora? Escribe SI'
+        if ($respuestaReparar -eq 'SI') {
+            # Misma reparación que el botón web, pero el comando CLI evita
+            # los límites de tiempo de una petición HTTP de XAMPP.
+            Informar 'Creando respaldo y reconciliando MySQL sin borrar registros...'
+            Ejecutar $php @('artisan','db:reparar-gym','--confirmar') $backend
+            Ejecutar $php @('artisan','optimize:clear') $backend
+            $estadoReparado = ObtenerEstadoBackend
+            VerificarServidorMallqui $estadoReparado
+            if ($null -eq $estadoReparado -or $estadoReparado.database -ne $true) {
+                Fallar 'La reparación terminó por CLI, pero Laravel no puede verificar MySQL. Revisa el backend del puerto 8000.'
+            }
+            if ($estadoReparado.operativo -ne $true) {
+                $pendientes = @($estadoReparado.faltantes | Where-Object { $_ })
+                $pendientes | Select-Object -First 15 | ForEach-Object { Avisar ('Pendiente: ' + $_) }
+                Fallar 'La API aún detecta elementos pendientes. No declarar terminado y revisar el respaldo SQL.'
+            }
+            Informar ('MySQL reparado y verificado en la base ' + $estadoReparado.base_datos + '.')
+        } else {
+            Avisar 'Reparación no autorizada: MySQL no fue modificado. El aviso amarillo seguirá visible hasta completar el esquema.'
+        }
     } else {
         Informar 'Backend y base de datos detectados.'
     }
