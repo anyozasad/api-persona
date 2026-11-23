@@ -1486,4 +1486,44 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     ]);
   });
 
+
+  it('Reservas guía el registro y solo habilita guardar con tres datos válidos', () => {
+    component.clientes=[{id_cliente:1,estado:'Activo'}];
+    component.clases=[{id_clase:2,estado:'Activo'}];
+    component.reservaForm={id_cliente:0,id_clase:0,fecha_clase:''};
+    expect(component.reservaListaParaGuardar).toBeFalse();
+    component.reservaForm={id_cliente:1,id_clase:2,fecha_clase:'2000-01-01'};
+    expect(component.reservaListaParaGuardar).toBeFalse();
+    component.reservaForm={id_cliente:1,id_clase:2,fecha_clase:fechaHoy()};
+    expect(component.reservaListaParaGuardar).toBeTrue();
+    component.reservaGuardando=true;
+    expect(component.reservaListaParaGuardar).toBeFalse();
+  });
+
+  it('Reservas distingue cero datos de un error de conexión con MySQL', () => {
+    api.reservas.and.returnValue(of([]));
+    component.cargarReservas();
+    expect(component.reservas).toEqual([]);
+    expect(component.reservasCargando).toBeFalse();
+    expect(component.reservasError).toBe('');
+    api.reservas.and.returnValue(throwError(()=>({
+      status:503,error:{mensaje:'No hay conexión con MySQL'}
+    })));
+    component.cargarReservas();
+    expect(component.reservasCargando).toBeFalse();
+    expect(component.reservasError).toContain('No hay conexión');
+  });
+
+  it('Reservas permite reintentar la consulta después de un fallo', () => {
+    api.reservas.and.returnValue(throwError(()=>new Error('Sin conexión')));
+    component.cargarReservas();
+    expect(component.reservasError).toContain('Sin conexión');
+    api.reservas.and.returnValue(of([{id_reserva:15,estado:'Reservada'}]));
+    component.cargarReservas();
+    expect(component.reservasError).toBe('');
+    expect(component.reservas.length).toBe(1);
+    expect(component.reservas[0].id_reserva).toBe(15);
+  });
+
+
 });
