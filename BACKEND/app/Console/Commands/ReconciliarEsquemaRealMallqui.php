@@ -202,6 +202,11 @@ class ReconciliarEsquemaRealMallqui extends Command
             // modificar los campos originales ni descartar fotografías.
             $this->sincronizarAliasesCatalogo();
 
+            // Sincronizar socios y planes históricos después de crear las
+            // tablas modernas, pero antes de consultar reportes y vistas.
+            // Nunca convertir una suscripción en pago confirmado.
+            $this->importarDatosLegado();
+
             // Las vistas son consultas derivadas, no contienen filas propias.
             // Si una tabla incompleta las invalidó, reconstruirlas al final,
             // cuando todas las columnas existen, aunque migrations diga aplicado.
@@ -297,6 +302,103 @@ class ReconciliarEsquemaRealMallqui extends Command
                     })
                     ->update([$nuevo => DB::raw('`'.$anterior.'`')]);
             }
+        }
+    }
+
+    /**
+     * Cuando gym_system contiene socios/planes/suscripciones, importar las
+     * entidades que todavía no están representadas en clientes/membresias.
+     * Solo inserta faltantes. No borra, no renombra, ni pisa registros nuevos.
+     */
+    private function importarDatosLegado(): void
+    {
+        if (Schema::hasTable('planes') && Schema::hasTable('membresias')) {
+            $campos = array_fill_keys(Schema::getColumnListing('planes'), true);
+            if (isset($campos['id'], $campos['nombre'])) {
+                DB::table('planes')->orderBy('id')->chunk(100, function ($planes) {
+                    foreach ($planes as $p) {
+                        $nombre = trim((string) ($p->nombre ?? ''));
+                        if ($nombre === '' || mb_strlen($nombre) > 100) continue;
+                        if (DB::table('membresias')->where('nombre', $nombre)->exists()) continue;
+                        $dias = max(1, (int)($p->duracion_dias ?? 30));
+                        DB::table('membresias')->insert([
+                            'nombre' => $nombre,
+                            'duracion_meses' => max(1, (int)ceil($dias / 30)),
+                            'precio' => max(0, (float)($p->precio ?? 0)),
+                            'descripcion' => $p->descripcion ?? null,
+                            'estado' => strtolower((string)($p->estado ?? 'activo')) === 'activo'
+                                ? 'Activo' : 'Inactivo',
+                        ]);
+                    }
+                });
+            }
+        }
+
+        if (Schema::hasTable('socios') && Schema::hasTable('clientes')) {
+            $campos = array_fill_keys(Schema::getColumnListing('socios'), true);
+            if (isset($campos['id'], $campos['dni'], $campos['nombre'])) {
+                DB::table('socios')->orderBy('id')->chunk(100, function ($socios) {
+                    foreach ($socios as $s) {
+                        $dni = trim((string)($s->dni ?? ''));
+                        $nombre = trim((string)($s->nombre ?? ''));
+                        // No inventar DNI ni una persona distinta para
+                        // superar una restricción UNIQUE.
+                        if ($dni === '' || mb_strlen($dni) > 15 || $nombre === '') continue;
+                        if (DB::table('clientes')->where('dni', $dni)->exists()) continue;
+                        $partes = preg_split('/\s+/u', $nombre, 2);
+                        $correo = trim((string)($s->email ?? ''));
+                        if ($correo === '' || !filter_var($correo, FILTER_VALIDATE_EMAIL)
+                            || DB::table('clientes')->where('correo', $correo)->exists()) {
+                            $correo = null;
+                        }
+                        DB::table('clientes')->insert([
+                            'dni' => $dni,
+                            'nombres' => mb_substr($partes[0], 0, 100),
+                            'apellidos' => mb_substr($partes[1] ?? '', 0, 100),
+                            'telefono' => mb_substr((string)($s->telefono ?? ''), 0, 25) ?: null,
+                            'correo' => $correo,
+                            'fecha_registro' => $s->fecha_registro ?? null,
+                            'estado' => strtolower((string)($s->estado ?? 'activo')) === 'activo'
+                                ? 'Activo' : 'Inactivo',
+                        ]);
+                    }
+                });
+            }
+        }
+
+        if (Schema::hasTable('suscripciones') && Schema::hasTable('cliente_membresia')
+            && Schema::hasTable('socios') && Schema::hasTable('planes')) {
+            $campos = array_fill_keys(Schema::getColumnListing('suscripciones'), true);
+            if (!isset($campos['id'], $campos['socio_id'], $campos['plan_id'],
+                $campos['fecha_inicio'], $campos['fecha_fin'])) {
+                return;
+            }
+            DB::table('suscripciones')->orderBy('id')->chunk(100, function ($subs) {
+                foreach ($subs as $s) {
+                    $socio = DB::table('socios')->where('id', $s->socio_id)->first();
+                    $plan = DB::table('planes')->where('id', $s->plan_id)->first();
+                    if (!$socio || !$plan || empty($s->fecha_inicio) || empty($s->fecha_fin)) continue;
+                    $idCliente = DB::table('clientes')->where('dni', trim((string)($socio->dni ?? '')))
+                        ->value('id_cliente');
+                    $idPlan = DB::table('membresias')->where('nombre', (string)($plan->nombre ?? ''))
+                        ->value('id_membresia');
+                    if (!$idCliente || !$idPlan) continue;
+                    $existe = DB::table('cliente_membresia')
+                        ->where('id_cliente', $idCliente)->where('id_membresia', $idPlan)
+                        ->whereDate('fecha_inicio', $s->fecha_inicio)
+                        ->whereDate('fecha_fin', $s->fecha_fin)->exists();
+                    if ($existe) continue;
+                    $estado = strtolower((string)($s->estado ?? 'activa'));
+                    DB::table('cliente_membresia')->insert([
+                        'id_cliente' => $idCliente,
+                        'id_membresia' => $idPlan,
+                        'fecha_inicio' => $s->fecha_inicio,
+                        'fecha_fin' => $s->fecha_fin,
+                        'estado' => in_array($estado, ['activa','activo'], true)
+                            ? 'Activo' : 'Vencido',
+                    ]);
+                }
+            });
         }
     }
 

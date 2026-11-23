@@ -46,6 +46,47 @@ class EsquemaRealPersistenciaReparacionTest extends TestCase
                 ['migration' => '2026_10_21_210000_create_admin_gym_records_table', 'batch' => 1],
             ]);
 
+            // gym_system original: un socio y un plan creados desde el
+            // dashboard antiguo. La reparación debe recuperarlos al módulo
+            // Clientes, no crear tablas nuevas vacías perdiendo su visibilidad.
+            Schema::create('socios', function (Blueprint $tabla) {
+                $tabla->bigIncrements('id');
+                $tabla->string('nombre');
+                $tabla->string('dni', 20);
+                $tabla->string('email')->nullable();
+                $tabla->string('telefono')->nullable();
+                $tabla->string('estado')->default('activo');
+                $tabla->dateTime('fecha_registro')->nullable();
+            });
+            DB::table('socios')->insert([
+                'nombre'=>'Ana Ejemplo', 'dni'=>'81234567', 'email'=>'ana@mallqui.test',
+                'telefono'=>'999888777', 'estado'=>'activo',
+            ]);
+            Schema::create('planes', function (Blueprint $tabla) {
+                $tabla->bigIncrements('id');
+                $tabla->string('nombre');
+                $tabla->integer('duracion_dias')->default(30);
+                $tabla->decimal('precio', 12, 2)->default(0);
+                $tabla->string('descripcion')->nullable();
+                $tabla->string('estado')->default('activo');
+            });
+            DB::table('planes')->insert([
+                'nombre'=>'Plan histórico', 'duracion_dias'=>30,
+                'precio'=>80, 'estado'=>'activo',
+            ]);
+            Schema::create('suscripciones', function (Blueprint $tabla) {
+                $tabla->bigIncrements('id');
+                $tabla->unsignedBigInteger('socio_id');
+                $tabla->unsignedBigInteger('plan_id');
+                $tabla->date('fecha_inicio');
+                $tabla->date('fecha_fin');
+                $tabla->string('estado')->default('activa');
+            });
+            DB::table('suscripciones')->insert([
+                'socio_id'=>1,'plan_id'=>1,'fecha_inicio'=>'2026-11-20',
+                'fecha_fin'=>'2026-12-20','estado'=>'activa',
+            ]);
+
             // Two partially populated legacy tables; there is NO clientes,
             // and almost all other tables are absent despite migrations history.
             Schema::create('membresias', function (Blueprint $tabla) {
@@ -76,6 +117,8 @@ class EsquemaRealPersistenciaReparacionTest extends TestCase
             $codigo = Artisan::call('db:reconciliar-esquema');
             $this->assertSame(0, $codigo, Artisan::output());
             $this->assertSame(0, Artisan::call('db:reconciliar-esquema'), 'La segunda ejecución debe ser segura.');
+            $this->assertSame(1, DB::table('clientes')->where('dni','81234567')->count());
+            $this->assertSame(1, DB::table('cliente_membresia')->count());
 
             foreach ([
                 'clientes', 'usuarios', 'membresias', 'cliente_membresia',
@@ -84,6 +127,13 @@ class EsquemaRealPersistenciaReparacionTest extends TestCase
             ] as $tabla) {
                 $this->assertTrue(Schema::hasTable($tabla), 'Falta '.$tabla);
             }
+
+            $this->assertSame(1, DB::table('clientes')->where('dni', '81234567')->count());
+            $this->assertSame('Ana', DB::table('clientes')->where('dni', '81234567')->value('nombres'));
+            $this->assertSame(1, DB::table('membresias')->where('nombre', 'Plan histórico')->count());
+            $this->assertSame(1, DB::table('cliente_membresia')->count());
+            $this->assertSame(0, DB::table('pagos_membresia')->count(),
+                'Una suscripción legacy no debe convertirse en un pago confirmado.');
 
             $this->assertSame('Plan existente del gimnasio', DB::table('membresias')->first()->nombre);
             $this->assertSame('Producto histórico', DB::table('productos')->first()->nombre_producto);
