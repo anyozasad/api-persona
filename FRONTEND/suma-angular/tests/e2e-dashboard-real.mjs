@@ -433,10 +433,14 @@ try {
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-focus-sidebar');
     const tamaños=await menu.locator('.mg-focus-nav-button').evaluateAll(nodes=>
-      nodes.map(el=>({ancho:el.getBoundingClientRect().width,
-        texto:el.querySelector('span:last-child')?.getBoundingClientRect().width||0})));
-    assert.ok(tamaños.every(x=>x.ancho>=170&&x.texto>=100),
-      'Los accesos del menú se estrecharon: '+JSON.stringify(tamaños));
+      nodes.map(el=>({
+        ancho:el.getBoundingClientRect().width,
+        texto:el.querySelector('span:last-child')?.getBoundingClientRect().width||0,
+        fuente:parseFloat(getComputedStyle(el.querySelector('span:last-child')).fontSize),
+        icono:parseFloat(getComputedStyle(el.querySelector('.mg-focus-nav-icon')).fontSize)
+      })));
+    assert.ok(tamaños.every(x=>x.ancho>=170&&x.texto>=100&&x.fuente>=16&&x.icono>=20),
+      'Texto e iconos demasiado pequeños o comprimidos en el menú: '+JSON.stringify(tamaños));
     await menu.getByRole('button',{name:'Socios',exact:true}).click();
     const tabs=page.locator('.mg-focus-task-tabs');
     assert.equal(await tabs.locator('button').count(),5);
