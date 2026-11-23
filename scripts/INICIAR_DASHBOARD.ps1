@@ -332,14 +332,6 @@ try {
         Informar 'La API correcta de Mallqui Gym ya está iniciada en el puerto 8000.'
     }
 
-    $paginaYaAbierta = LeerApi 'http://127.0.0.1:4200/'
-    VerificarFrontendMallqui $paginaYaAbierta
-    if (-not $paginaYaAbierta) {
-        Start-Process -FilePath $npm -ArgumentList @('start','--','--host','127.0.0.1','--port','4200') -WorkingDirectory $frontend
-    } else {
-        Informar 'El frontend correcto de Mallqui Gym ya está iniciado en el puerto 4200.'
-    }
-
     $estado = $null
     for ($intento=0; $intento -lt 25; $intento++) {
         $estado = ObtenerEstadoBackend
@@ -348,9 +340,9 @@ try {
     }
     VerificarServidorMallqui $estado
     if ($null -eq $estado) {
-        Avisar 'Laravel no responde con la API Mallqui Gym. Comprueba la consola PHP y el puerto 8000.'
+        Fallar 'No se abrirá un dashboard sin guardado: Laravel no responde. Revisa PHP, el puerto 8000 y XAMPP.'
     } elseif ($estado.database -ne $true) {
-        Avisar 'MySQL no está disponible. Enciende MySQL desde XAMPP y revisa BACKEND/.env.'
+        Fallar 'No se abrirá un dashboard que no guarda datos: MySQL no está conectado. Enciende MySQL desde XAMPP y revisa BACKEND/.env.'
     } elseif ($estado.operativo -ne $true) {
         $cantidadFaltantes = @($estado.faltantes).Count
         Avisar ("La base MySQL " + $estado.base_datos + " tiene " + $cantidadFaltantes + " requisitos pendientes.")
@@ -374,10 +366,20 @@ try {
             }
             Informar ('MySQL reparado y verificado en la base ' + $estadoReparado.base_datos + '.')
         } else {
-            Avisar 'Reparación no autorizada: MySQL no fue modificado. El aviso amarillo seguirá visible hasta completar el esquema.'
+            Fallar 'No se abrirá el dashboard con tablas o columnas incompletas. MySQL no fue modificado. Para reparar con respaldo puedes ejecutar nuevamente el iniciador y autorizarlo cuando lo solicite.'
         }
     } else {
-        Informar 'Backend y base de datos detectados.'
+        Informar ('Backend y MySQL operativos: ' + $estado.base_datos)
+    }
+
+    # Arrancar Angular SOLO después de comprobar que Laravel conoce las tablas
+    # necesarias. No exponer formularios capaces de mostrar éxitos engañosos.
+    $paginaYaAbierta = LeerApi 'http://127.0.0.1:4200/'
+    VerificarFrontendMallqui $paginaYaAbierta
+    if (-not $paginaYaAbierta) {
+        Start-Process -FilePath $npm -ArgumentList @('start','--','--host','127.0.0.1','--port','4200') -WorkingDirectory $frontend
+    } else {
+        Informar 'El frontend correcto de Mallqui Gym ya está iniciado en el puerto 4200.'
     }
 
     $angularDisponible = $false
