@@ -101,21 +101,16 @@ class AdminDashboardNavigationTest extends TestCase
         );
     }
 
-    public function test_el_dashboard_comparte_los_colores_de_la_portada(): void
+    public function test_el_dashboard_conserva_la_paleta_anterior(): void
     {
-        $portada = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/component/pages/mallqui-landing.css'));
-        $paleta = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/component/pages/admin/styles/admin-paleta-portada.css'));
+        $paleta = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/component/pages/admin/styles/admin-mallqui-original-palette.css'));
         $panel = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/component/pages/admin/admin-integrado.component.ts'));
 
-        $this->assertStringContainsString('--mq-bg:#211f26;', $portada);
-        $this->assertStringContainsString('--mq-accent:#ff6047;', $portada);
-        $this->assertStringContainsString('--mg-sidebar:#211f26;', $paleta);
-        $this->assertStringContainsString('--mg-mantis-accent:#ff6047;', $paleta);
-        $this->assertStringContainsString("'./styles/admin-paleta-portada.css'", $panel);
-        $this->assertStringContainsString("acentoDashboard: 'coral'|'azul'|'verde' = 'coral';", $panel);
-        $this->assertStringContainsString("this.guardarAparienciaMantis('color','coral');", $panel);
-        $this->assertStringContainsString('mg-focus-nav-button.active', $paleta);
-        $this->assertStringContainsString('mg-focus-task-tabs>button.active', $paleta);
+        $this->assertStringContainsString('--mg-mantis-accent:#a6d842;', $paleta);
+        $this->assertStringContainsString("acentoDashboard: 'coral'|'azul'|'verde' = 'verde';", $panel);
+        $this->assertStringContainsString("this.guardarAparienciaMantis('color','verde');", $panel);
+        $this->assertStringNotContainsString("'./styles/admin-paleta-portada.css'", $panel);
+        $this->assertStringContainsString("mallqui_paleta_verde_restaurada_20261123", $panel);
     }
 
 }
