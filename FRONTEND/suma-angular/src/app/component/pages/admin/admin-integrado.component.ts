@@ -1421,19 +1421,26 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
             <article class="admin-form-card sales-entry-card">
               <div class="management-heading">
                 <div>
-                  <h2>Nueva venta</h2>
-                  <p>Selecciona el cliente y agrega los productos que llevará.</p>
+                  <h2><span class="sales-step-label">Paso 1</span> Agregar productos</h2>
+                  <p>Selecciona el socio, el producto y la cantidad.</p>
                 </div>
-                <span>＋</span>
+                <span class="sales-step-icon" aria-hidden="true">1</span>
               </div>
 
               <label>
                 Cliente
                 <select [(ngModel)]="ventaForm.id_cliente" name="vcliente" required>
-                  <option [ngValue]="0">Público general</option>
+                  <option [ngValue]="0" disabled>Selecciona un socio</option>
                   <option *ngFor="let c of clientes" [ngValue]="c.id_cliente">{{nombreCliente(c)}}</option>
                 </select>
               </label>
+              <p class="sales-field-hint" *ngIf="!ventaForm.id_cliente">
+                Selecciona un socio registrado para poder emitir la boleta o factura.
+              </p>
+              <p class="sales-field-hint" *ngIf="!clientes.length">
+                No hay socios disponibles. <button class="sales-inline-link" type="button"
+                  (click)="cambiarSegcion('clientes')">Ir a Socios para registrar uno</button>
+              </p>
 
               <div class="form-row sales-product-row">
                 <label>
@@ -1447,34 +1454,41 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
                 </label>
                 <label>
                   Cantidad
-                  <input type="number" min="1" [(ngModel)]="ventaForm.cantidad" name="vcantidad">
+                  <input type="number" min="1" [(ngModel)]="ventaForm.cantidad"
+                       name="vcantidad" aria-label="Cantidad de unidades del producto">
                 </label>
               </div>
 
-              <button class="admin-secondary sales-add-button" type="button" (click)="agregarItemVenta()">
-                + Agregar al carrito
+              <button class="admin-secondary sales-add-button" type="button" (click)="agregarItemVenta()"
+                [disabled]="!ventaForm.id_producto || ventaForm.cantidad < 1"
+                aria-label="Agregar producto seleccionado al carrito">
+                + Agregar producto al carrito
               </button>
 
-              <div class="sales-entry-help">
-                <span>1</span>
-                <p><b>Agrega los productos primero.</b><small>El resumen y el cobro se completan a la derecha.</small></p>
+              <div class="sales-entry-help" role="status">
+                <span aria-hidden="true">{{ventaItems.length ? '✓' : 'i'}}</span>
+                <p>
+                  <b>{{ventaItems.length ? 'Productos agregados al carrito' : 'Primero elige un producto'}}</b>
+                  <small>{{ventaItems.length ? 'Revisa las cantidades a la derecha y continúa con el cobro.' :
+                    'Selecciona un producto y pulsa «Agregar producto al carrito».'}}</small>
+                </p>
               </div>
             </article>
 
             <article class="admin-list-card sales-cart-card">
               <div class="management-heading">
                 <div>
-                  <h2>Carrito de compra</h2>
+                  <h2><span class="sales-step-label">Paso 2</span> Revisar carrito</h2>
                   <p>{{ventaItems.length}} {{ventaItems.length === 1 ? 'producto agregado' : 'productos agregados'}}.</p>
                 </div>
-                <span>▤</span>
+                <span class="sales-step-icon" aria-hidden="true">2</span>
               </div>
 
               <div class="sales-cart-empty" *ngIf="!ventaItems.length">
                 <span>🛒</span>
                 <div>
                   <b>El carrito está vacío</b>
-                  <p>Selecciona un producto y presiona “Agregar al carrito”.</p>
+                  <p>Elige un producto en el paso 1 y pulsa «Agregar producto al carrito».</p>
                 </div>
               </div>
 
@@ -1505,10 +1519,10 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
             <article class="admin-form-card sales-checkout-card">
               <div class="management-heading">
                 <div>
-                  <h2>Resumen de cobro</h2>
-                  <p>Revisa el total, selecciona el comprobante y registra el pago.</p>
+                  <h2><span class="sales-step-label">Paso 3</span> Confirmar cobro</h2>
+                  <p>Comprueba el importe y el método de pago antes de registrar la venta.</p>
                 </div>
-                <span>S/</span>
+                <span class="sales-step-icon" aria-hidden="true">3</span>
               </div>
 
               <div class="sales-checkout-content">
@@ -1549,15 +1563,30 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
                       <option>Tarjeta</option>
                     </select>
                   </label>
-                  <label>
-                    N° operación
-                    <input [(ngModel)]="ventaForm.numero_operacion" name="voperacion" placeholder="Opcional para efectivo">
+                  <label *ngIf="ventaForm.metodo_pago!=='Efectivo'">
+                    Número de operación
+                    <input [(ngModel)]="ventaForm.numero_operacion" name="voperacion"
+                      placeholder="Número obligatorio del pago" required>
                   </label>
                 </div>
 
-                <button class="admin-primary sales-charge-button" type="submit" [disabled]="!ventaItems.length">
-                  Cobrar venta · S/ {{totalVentaPreview | number:'1.2-2'}}
-                </button>
+                <div class="sales-checkout-actions">
+                  <p class="sales-checkout-note" *ngIf="!caja?.caja_abierta">
+                    La caja está cerrada. <button type="button" class="sales-inline-link"
+                      (click)="cambiarSegcion('caja')">Abrir caja</button> antes de cobrar.
+                  </p>
+                  <p class="sales-checkout-note" *ngIf="caja?.caja_abierta && !ventaItems.length">
+                    Agrega al menos un producto al carrito para continuar.
+                  </p>
+                  <p class="sales-checkout-note" *ngIf="caja?.caja_abierta && !!ventaItems.length && !ventaForm.id_cliente">
+                    Selecciona el socio que realizará la compra.
+                  </p>
+                  <button class="admin-primary sales-charge-button" type="submit"
+                    [disabled]="ventaGuardando || !ventaItems.length || !ventaForm.id_cliente || !caja?.caja_abierta ||
+                      (ventaForm.metodo_pago!=='Efectivo' && !ventaForm.numero_operacion.trim())">
+                    {{ventaGuardando ? 'Registrando cobro en MySQL…' : 'Confirmar cobro · S/ ' + (totalVentaPreview | number:'1.2-2')}}
+                  </button>
+                </div>
               </div>
             </article>
           </section>
@@ -5756,12 +5785,14 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
   anularCompra(id:number){ if(!confirm('¿Anular esta compra?')) return; this.api.anularCompra(id).subscribe({next:r=>{this.ok(r.mensaje||'Compra anulada');this.cargarCompras();this.cargarProductos();this.cargarKardex();this.cargarDashboard();},error:e=>this.mostrarError(e)}); }
 
-  agregarItemVenta(){ if(!this.ventaForm.id_producto || Number(this.ventaForm.cantidad)<1){this.error='Selecciona producto y cantidad.';return;} const p=this.productos.find(x=>x.id_producto===this.ventaForm.id_producto); if(!p || Number(p.stock)<Number(this.ventaForm.cantidad)){this.error='Stock insuficiente para agregar ese producto.';return;} if(this.ventaItems.some(i=>i.id_producto===this.ventaForm.id_producto)){this.error='Ese producto ya está en el carrito.';return;} this.ventaItems.push({id_producto:this.ventaForm.id_producto,cantidad:Number(this.ventaForm.cantidad)});this.ventaForm.id_producto=0;this.ventaForm.cantidad=1; }
+  ventaGuardando = false;
+  agregarItemVenta(){ if(!this.ventaForm.id_producto || Number(this.ventaForm.cantidad)<1){this.error='Selecciona producto y cantidad.';return;} const p=this.productos.find(x=>x.id_producto===this.ventaForm.id_producto); if(!p || Number(p.stock)<Number(this.ventaForm.cantidad)){this.error='Stock insuficiente para agregar ese producto.';return;} if(this.ventaItems.some(i=>i.id_producto===this.ventaForm.id_producto)){this.error='Ese producto ya está en el carrito.';return;} this.error='';this.ventaItems.push({id_producto:this.ventaForm.id_producto,cantidad:Number(this.ventaForm.cantidad)});this.ventaForm.id_producto=0;this.ventaForm.cantidad=1; }
   quitarItemVenta(i:number){this.ventaItems.splice(i,1);}
   get totalVentaPreview():number{return this.ventaItems.reduce((s,i)=>s+(Number(i.cantidad)*this.precioProducto(i.id_producto)),0);}
   get subtotalVentaPreview():number{const f=1+(Number(this.ventaForm.igv_porcentaje||0)/100);return f>0?this.totalVentaPreview/f:this.totalVentaPreview;}
   get igvVentaPreview():number{return this.totalVentaPreview-this.subtotalVentaPreview;}
   registrarVenta(){
+    if(this.ventaGuardando)return;
     if(!this.caja?.caja_abierta){this.error='Abre Caja antes de registrar una venta.';return;}
     if(!this.ventaForm.id_cliente){this.error='Selecciona el socio que realiza la compra.';return;}
     if(!this.ventaItems.length){this.error='Agrega al menos un producto al carrito.';return;}
@@ -5777,15 +5808,17 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       igv_porcentaje:this.ventaForm.igv_porcentaje,
       items:this.ventaItems
     };
+    this.ventaGuardando=true;
     this.api.registrarVenta(datos).subscribe({
       next:r=>{
+        this.ventaGuardando=false;
         const numero=r?.numero_comprobante ? ` · ${this.ventaForm.tipo_comprobante} ${r.numero_comprobante}` : '';
         this.ok((r.mensaje||'Venta registrada')+numero);
         this.ventaForm={id_cliente:0,id_producto:0,cantidad:1,tipo_comprobante:'Boleta',numero_comprobante:'',metodo_pago:'Efectivo',numero_operacion:'',igv_porcentaje:18};
         this.ventaItems=[];
         this.cargarVentas();this.cargarProductos();this.cargarKardex();this.cargarCaja();this.cargarDashboard();
       },
-      error:e=>this.mostrarError(e)
+      error:e=>{this.ventaGuardando=false;this.mostrarError(e);}
     });
   }
   anularVenta(id:number){const motivo=prompt('Motivo de la anulación (mínimo 5 caracteres):');if(!motivo||motivo.trim().length<5)return;this.api.anularVenta(id,motivo.trim()).subscribe({next:r=>{this.ok(r.mensaje||'Venta anulada');this.cargarVentas();this.cargarProductos();this.cargarKardex();this.cargarCaja();this.cargarDashboard();},error:e=>this.mostrarError(e)});}
