@@ -312,6 +312,76 @@ class CajaVentaInventarioFlowTest extends TestCase
         $this->assertDatabaseCount('movimientos_caja', 1);
     }
 
+    public function test_venta_con_mysql_legacy_guarda_ambos_ids_caja_stock_y_comprobante(): void
+    {
+        // Reproduce el error 500 del POS cuando XAMPP conserva gym_system:
+        // ventas.id/caja_id y movimientos_caja.id/caja_id obligatorios,
+        // pero el frontend envía el contrato moderno (id_cliente/items).
+        Schema::dropIfExists('ventas');
+        Schema::create('ventas', function (Blueprint $t) {
+            $t->id('id');
+            $t->unsignedBigInteger('id_venta')->nullable()->unique();
+            $t->unsignedBigInteger('caja_id');
+            $t->unsignedBigInteger('id_cliente');
+            $t->unsignedBigInteger('id_usuario');
+            $t->unsignedBigInteger('socio_id')->nullable();
+            $t->dateTime('fecha');
+            $t->dateTime('fecha_venta');
+            $t->string('tipo_comprobante');
+            $t->string('numero_comprobante')->nullable()->unique();
+            $t->string('metodo_pago');
+            $t->string('numero_operacion')->nullable();
+            $t->decimal('subtotal', 12, 2);
+            $t->decimal('igv', 12, 2);
+            $t->decimal('igv_porcentaje', 6, 2);
+            $t->decimal('descuento', 12, 2);
+            $t->decimal('total', 12, 2);
+            $t->string('estado');
+            $t->dateTime('fecha_anulacion')->nullable();
+            $t->text('motivo_anulacion')->nullable();
+            $t->unsignedBigInteger('id_usuario_anulacion')->nullable();
+        });
+        Schema::dropIfExists('movimientos_caja');
+        Schema::create('movimientos_caja', function (Blueprint $t) {
+            $t->id('id');
+            $t->unsignedBigInteger('id_movimiento')->nullable()->unique();
+            $t->unsignedBigInteger('caja_id');
+            $t->unsignedBigInteger('id_caja');
+            $t->unsignedBigInteger('id_usuario');
+            $t->string('tipo');
+            $t->string('origen');
+            $t->string('referencia_tipo')->nullable();
+            $t->unsignedBigInteger('referencia_id')->nullable();
+            $t->string('descripcion');
+            $t->decimal('monto', 12, 2);
+            $t->dateTime('fecha_movimiento');
+            $t->string('estado');
+        });
+
+        $this->abrirCaja(100);
+        $payload = $this->ventaPayload();
+        $payload['numero_comprobante'] = null;
+        $payload['items'][0]['cantidad'] = 4;
+
+        $this->postJson('/api/ventas', $payload)
+            ->assertCreated()
+            ->assertJsonPath('venta.id_venta', 1)
+            ->assertJsonPath('numero_comprobante', 'B001-00000001');
+
+        $this->assertDatabaseHas('ventas', [
+            'id' => 1, 'id_venta' => 1, 'caja_id' => 1, 'total' => 40,
+            'numero_comprobante' => 'B001-00000001',
+        ]);
+        $this->assertDatabaseHas('detalle_venta', [
+            'id_venta' => 1, 'cantidad' => 4,
+        ]);
+        $this->assertDatabaseHas('productos', ['id_producto' => 1, 'stock' => 6]);
+        $this->assertDatabaseHas('movimientos_caja', [
+            'id' => 1, 'id_movimiento' => 1,
+            'caja_id' => 1, 'id_caja' => 1, 'tipo' => 'Ingreso', 'monto' => 40,
+        ]);
+    }
+
     private function abrirCaja(float $monto = 100): void
     {
         $this->postJson('/api/caja/abrir', [
