@@ -1526,4 +1526,66 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
   });
 
 
+  it('no envía una reserva de miércoles con fecha de martes, como en la captura', () => {
+    component.clientes=[{id_cliente:1,estado:'Activo'}];
+    component.clases=[{id_clase:2,estado:'Activo',nombre:'Fuerza y masa muscular',
+      dia_semana:'Miércoles',hora_inicio:'18:00:00'}];
+    component.reservaForm={id_cliente:1,id_clase:2,fecha_clase:'2026-11-24'};
+    expect(component.fechaCoincideConClase).toBeFalse();
+    expect(component.reservaListaParaGuardar).toBeFalse();
+    component.guardarReservaAdmin();
+    expect(api.crearReservaAdmin).not.toHaveBeenCalled();
+    expect(component.reservaError).toContain('Miércoles');
+  });
+
+  it('sugiere el próximo miércoles y entonces habilita el guardado', () => {
+    component.clientes=[{id_cliente:1,estado:'Activo'}];
+    component.clases=[{id_clase:2,estado:'Activo',nombre:'Fuerza y masa muscular',
+      dia_semana:'Miércoles',hora_inicio:'18:00:00'}];
+    component.reservaForm={id_cliente:1,id_clase:2,fecha_clase:''};
+    const fecha=component.fechaSugeridaReserva;
+    expect(fecha).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(fecha>=component.fechaMinimaReserva).toBeTrue();
+    component.usarFechaSugeridaReserva();
+    expect(component.reservaForm.fecha_clase).toBe(fecha);
+    expect(component.fechaCoincideConClase).toBeTrue();
+    expect(component.reservaListaParaGuardar).toBeTrue();
+    api.crearReservaAdmin.and.returnValue(of({mensaje:'Reserva registrada',
+      reserva:{id_reserva:25}}));
+    spyOn(component,'cargarReservas');
+    component.guardarReservaAdmin();
+    expect(api.crearReservaAdmin).toHaveBeenCalledOnceWith({
+      id_cliente:1,id_clase:2,fecha_clase:fecha
+    });
+    expect(component.cargarReservas).toHaveBeenCalled();
+  });
+
+  it('muestra junto al formulario el rechazo real de membresía desde Laravel', () => {
+    component.clientes=[{id_cliente:1,estado:'Activo'}];
+    component.clases=[{id_clase:2,estado:'Activo',
+      dia_semana:'Miércoles',hora_inicio:'18:00:00'}];
+    component.reservaForm={id_cliente:1,id_clase:2,fecha_clase:''};
+    component.reservaForm.fecha_clase=component.fechaSugeridaReserva;
+    api.crearReservaAdmin.and.returnValue(throwError(()=>({
+      status:422,error:{errors:{id_cliente:[
+        'El socio necesita una membresía vigente para la fecha elegida.'
+      ]}}
+    })));
+    component.guardarReservaAdmin();
+    expect(api.crearReservaAdmin).toHaveBeenCalled();
+    expect(component.reservaError).toContain('membresía vigente');
+    expect(component.reservaGuardando).toBeFalse();
+    expect(component.reservaForm.id_cliente).toBe(1);
+  });
+
+  it('si cambia de clase, corrige una fecha incompatible antes de intentar registrar', () => {
+    component.clientes=[{id_cliente:1,estado:'Activo'}];
+    component.clases=[{id_clase:2,estado:'Activo',dia_semana:'Miércoles',
+      hora_inicio:'18:00:00'}];
+    component.reservaForm={id_cliente:1,id_clase:2,fecha_clase:''};
+    component.ajustarFechaAlElegirClase();
+    expect(component.fechaCoincideConClase).toBeTrue();
+    expect(component.reservaForm.fecha_clase).toBe(component.fechaSugeridaReserva);
+  });
+
 });

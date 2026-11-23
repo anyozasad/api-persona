@@ -232,6 +232,66 @@ class ReservaClienteFlowTest extends TestCase
         $this->assertDatabaseCount('reservas', 1);
     }
 
+    public function test_dashboard_rechaza_martes_para_clase_de_miercoles_sin_escribir_en_mysql(): void
+    {
+        $this->crearMembresia(true);
+        DB::table('clases')->where('id_clase', 1)->update(['dia_semana' => 'Miércoles']);
+        $fechaMartes = Carbon::now()->next(Carbon::TUESDAY)->toDateString();
+
+        $request = Request::create('/api/reservas', 'POST', [
+            'id_cliente' => 1, 'id_clase' => 1, 'fecha_clase' => $fechaMartes,
+        ]);
+        $request->setUserResolver(fn () => Usuario::findOrFail(1));
+
+        try {
+            app(ReservaController::class)->registrarDesdeAdmin($request);
+            $this->fail('Una reserva de martes no debe guardarse para una clase de miércoles.');
+        } catch (ValidationException $e) {
+            $this->assertStringContainsString('Miércoles', $e->errors()['fecha_clase'][0]);
+            $this->assertDatabaseCount('reservas', 0);
+        }
+    }
+
+    public function test_dashboard_guarda_y_vuelve_a_leer_la_reserva_de_mysql(): void
+    {
+        $this->crearMembresia(true);
+        $fecha = Carbon::now()->next(Carbon::MONDAY)->toDateString();
+        $usuario = Usuario::findOrFail(1);
+
+        $request = Request::create('/api/reservas', 'POST', [
+            'id_cliente' => 1, 'id_clase' => 1, 'fecha_clase' => $fecha,
+        ]);
+        $request->setUserResolver(fn () => $usuario);
+
+        $creada = app(ReservaController::class)->registrarDesdeAdmin($request);
+        $this->assertSame(201, $creada->getStatusCode());
+        $this->assertDatabaseHas('reservas', [
+            'id_cliente' => 1, 'id_clase' => 1,
+            'fecha_clase' => $fecha, 'estado' => 'Reservada',
+        ]);
+
+        $consulta = Request::create('/api/reservas', 'GET');
+        $consulta->setUserResolver(fn () => $usuario);
+        $lista = app(ReservaController::class)->index($consulta);
+        $this->assertSame(200, $lista->getStatusCode());
+        $filas = json_decode($lista->getContent(), true);
+        $this->assertCount(1, $filas);
+        $this->assertSame('Reservada', $filas[0]['estado']);
+        $this->assertSame($fecha, substr($filas[0]['fecha_clase'], 0, 10));
+    }
+
+    public function test_no_inventa_cero_reservas_si_falta_la_tabla_mysql(): void
+    {
+        Schema::dropIfExists('reservas');
+        $consulta = Request::create('/api/reservas', 'GET');
+        $consulta->setUserResolver(fn () => Usuario::findOrFail(1));
+
+        $respuesta = app(ReservaController::class)->index($consulta);
+        $this->assertSame(503, $respuesta->getStatusCode());
+        $this->assertSame('TABLA_MODULO_AUSENTE',
+            json_decode($respuesta->getContent(), true)['codigo']);
+    }
+
     public function test_dashboard_no_registra_reservas_sin_membresia(): void
     {
         $request = Request::create('/api/reservas', 'POST', [

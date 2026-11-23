@@ -438,6 +438,52 @@ try {
     await page.screenshot({path:'evidencias-dashboard/43_Reservas_UI_UX_claro.png',fullPage:true,animations:'disabled'});
   });
 
+  await paso('Reservas advierte el día equivocado y corrige la fecha antes de enviar a MySQL',async()=>{
+    // Crear una clase real exclusivamente en la base temporal de GitHub Actions.
+    const token=await page.evaluate(()=>localStorage.getItem('mallqui_token')||
+      sessionStorage.getItem('mallqui_token'));
+    assert.ok(token,'El test necesita la sesión temporal del administrador.');
+    const nombre='Verificacion reservas miercoles CI';
+    const nueva=await context.request.post(base+'/api/clases',{
+      headers:{Authorization:'Bearer '+token,Accept:'application/json'},
+      data:{nombre,dia_semana:'Miércoles',hora_inicio:'18:00',
+        hora_fin:'19:00',cupo_maximo:12,estado:'Activo',id_entrenador:null}
+    });
+    assert.equal(nueva.status(),201,'Debe permitir crear una clase válida en MySQL temporal.');
+    const creado=await nueva.json();
+    assert.ok(Number(creado?.id_clase)>0,'No se obtuvo el id de clase persistida.');
+
+    await page.goto(base+'/admin?modulo=reservas',{waitUntil:'domcontentloaded'});
+    const clase=page.locator('select[name="resClase"]');
+    await clase.waitFor({timeout:15000});
+    await page.waitForFunction(nombreClase=>
+      [...document.querySelectorAll('select[name="resClase"] option')]
+        .some(op=>op.textContent?.includes(nombreClase)),
+      nombre,{timeout:15000});
+    const indice=await clase.locator('option').evaluateAll((options,nom)=>
+      options.findIndex(op=>op.textContent?.includes(nom)),nombre);
+    assert.ok(indice>0);
+    await clase.selectOption({index:indice});
+    const proximoMartes=new Date();
+    proximoMartes.setUTCHours(12,0,0,0);
+    const diasHastaMartes=(2-proximoMartes.getUTCDay()+7)%7||7;
+    proximoMartes.setUTCDate(proximoMartes.getUTCDate()+diasHastaMartes);
+    const fechaMartes=proximoMartes.toISOString().slice(0,10);
+    await page.locator('input[name="resFecha"]').fill(fechaMartes);
+    const advertencia=page.locator('.mg-reserva-fecha-invalida');
+    await advertencia.waitFor({timeout:10000});
+    assert.match(await advertencia.innerText(),/mi[eé]rcoles/i);
+    assert.equal(await page.getByRole('button',{name:'Registrar reserva'}).isDisabled(),true);
+    await advertencia.getByRole('button',{name:/Usar/}).click();
+    await advertencia.waitFor({state:'hidden',timeout:10000});
+    const corregida=await page.locator('input[name="resFecha"]').inputValue();
+    assert.notEqual(corregida,fechaMartes,'El botón de corregir fecha debe cambiarla.');
+    const dia=new Date(corregida+'T12:00:00Z').getUTCDay();
+    assert.equal(dia,3,'La sugerencia debe corresponder al miércoles real.');
+    await page.screenshot({path:'evidencias-dashboard/44_Reserva_fecha_validada.png',
+      fullPage:true,animations:'disabled'});
+  });
+
   await paso('El menú y las pestañas de Socios son legibles y no se enciman',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-focus-sidebar');
