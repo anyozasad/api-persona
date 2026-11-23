@@ -382,6 +382,41 @@ class CajaVentaInventarioFlowTest extends TestCase
         ]);
     }
 
+    public function test_caja_legacy_se_abre_sin_error_mysql_y_conserva_id_caja(): void
+    {
+        Schema::dropIfExists('cajas');
+        Schema::create('cajas', function (Blueprint $t) {
+            $t->id('id');
+            $t->unsignedBigInteger('id_caja')->nullable()->unique();
+            $t->unsignedBigInteger('usuario_id');
+            $t->unsignedBigInteger('id_usuario_apertura');
+            $t->decimal('monto_inicial', 12, 2);
+            $t->decimal('monto_final', 12, 2);
+            $t->decimal('total_ventas', 12, 2);
+            $t->decimal('total_gastos', 12, 2);
+            $t->dateTime('fecha_apertura');
+            $t->dateTime('fecha_cierre')->nullable();
+            $t->decimal('monto_esperado', 12, 2)->nullable();
+            $t->decimal('monto_real', 12, 2)->nullable();
+            $t->decimal('diferencia', 12, 2)->nullable();
+            $t->string('estado');
+            $t->text('observacion')->nullable();
+        });
+
+        $this->postJson('/api/caja/abrir', [
+            'monto_inicial' => 100,
+            'observacion' => 'Caja con tablas antiguas',
+        ])->assertCreated()
+          ->assertJsonPath('caja.id_caja', 1);
+
+        $this->assertDatabaseHas('cajas', [
+            'id' => 1, 'id_caja' => 1,
+            'usuario_id' => 1, 'id_usuario_apertura' => 1,
+            'monto_inicial' => 100, 'monto_final' => 0,
+            'total_ventas' => 0, 'total_gastos' => 0,
+        ]);
+    }
+
     private function abrirCaja(float $monto = 100): void
     {
         $this->postJson('/api/caja/abrir', [
