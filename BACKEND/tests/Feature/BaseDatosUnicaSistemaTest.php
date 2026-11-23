@@ -63,6 +63,23 @@ class BaseDatosUnicaSistemaTest extends TestCase
         $this->assertStringNotContainsString('$sql = $process->getOutput();', $backup);
     }
 
+    public function test_inicio_normal_repara_esquema_pendiente_solo_si_administrador_confirma(): void
+    {
+        $inicio = (string) file_get_contents(base_path('../scripts/INICIAR_DASHBOARD.ps1'));
+        $controlador = (string) file_get_contents(app_path('Http/Controllers/ReparacionEsquemaController.php'));
+        $this->assertStringContainsString(
+            "Read-Host '¿Crear respaldo SQL y reparar los módulos faltantes ahora? Escribe SI'",
+            $inicio
+        );
+        $this->assertStringContainsString(
+            "if ($" . "respuestaReparar -eq 'SI')",
+            $inicio
+        );
+        $this->assertStringContainsString("db:reparar-gym','--confirmar'", $inicio);
+        $this->assertStringContainsString("estadoReparado.operativo -ne $" . "true", $inicio);
+        $this->assertStringContainsString('set_time_limit(600)', $controlador);
+    }
+
     public function test_reparador_directo_del_backend_exige_respaldo_y_no_usa_scripts(): void
     {
         $ruta = app_path('Console/Commands/RepararMallquiLocal.php');
