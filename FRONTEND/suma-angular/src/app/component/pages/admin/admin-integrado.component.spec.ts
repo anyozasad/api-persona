@@ -1544,7 +1544,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       dia_semana:'Miércoles',hora_inicio:'18:00:00'}];
     component.reservaForm={id_cliente:1,id_clase:2,fecha_clase:''};
     const fecha=component.fechaSugeridaReserva;
-    expect(fecha).toMatch(/^\\d{4}-\\d{2}-\\d{2}$/);
+    expect(fecha).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(fecha>=component.fechaMinimaReserva).toBeTrue();
     component.usarFechaSugeridaReserva();
     expect(component.reservaForm.fecha_clase).toBe(fecha);
