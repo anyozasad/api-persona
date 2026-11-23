@@ -1220,6 +1220,42 @@ try {
     await page.setViewportSize({width:1440,height:900});
   });
 
+
+  await paso('Ventas accesibles: tres pasos, cobro seguro y campos legibles',async()=>{
+    await page.goto(base+'/admin?modulo=ventas',{waitUntil:'domcontentloaded'});
+    const venta=page.locator('.sales-pos-form');
+    await venta.waitFor({timeout:25000});
+    assert.equal(await venta.locator('.sales-step-label').count(),3,
+      'Ventas debe ordenar agregar, revisar y cobrar en tres pasos.');
+    const ux=await venta.evaluate(el=>{
+      const cliente=el.querySelector('select[name=vcliente]');
+      const agregar=el.querySelector('.sales-add-button');
+      const cobrar=el.querySelector('.sales-charge-button');
+      const titulo=el.querySelector('.sales-entry-card .management-heading h2');
+      return {
+        fuenteCliente:parseFloat(getComputedStyle(cliente).fontSize),
+        altoCliente:cliente.getBoundingClientRect().height,
+        fuenteAgregar:parseFloat(getComputedStyle(agregar).fontSize),
+        fuenteCobrar:parseFloat(getComputedStyle(cobrar).fontSize),
+        titulo:parseFloat(getComputedStyle(titulo).fontSize),
+        opcionInicial:cliente.options[0]?.textContent?.trim()||'',
+        cobroBloqueado:cobrar.disabled
+      };
+    });
+    assert.ok(ux.fuenteCliente>=14 && ux.altoCliente>=44 &&
+      ux.fuenteAgregar>=14 && ux.fuenteCobrar>=14 && ux.titulo>=18,
+      'Los botones y campos se ven demasiado pequeños: '+JSON.stringify(ux));
+    assert.equal(ux.opcionInicial,'Selecciona un socio',
+      'No sugerir Público general cuando MySQL exige un cliente.');
+    assert.equal(ux.cobroBloqueado,true,
+      'No permitir el cobro de un carrito vacío.');
+    await venta.locator('select[name=vmetodo]').selectOption('Yape');
+    await venta.locator('input[name=voperacion]').waitFor({timeout:5000});
+    await venta.locator('select[name=vmetodo]').selectOption('Efectivo');
+    assert.equal(await venta.locator('input[name=voperacion]').count(),0,
+      'El campo Número de operación debe ocultarse en efectivo.');
+  });
+
   let codigoProductoFoto = '';
   await paso('Crear producto con foto desde el formulario y verificar persistencia',async()=>{
     await page.goto(base+'/productos',{waitUntil:'domcontentloaded'});
