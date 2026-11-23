@@ -2043,13 +2043,21 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
             </form>
           </article>
           <article class="admin-list-card wide-card">
-            <div class="management-heading"><div><h2>Reservas registradas</h2><p>Consulta las reservas y administra su asistencia.</p></div><span class="mg-reserva-total" aria-label="Cantidad de reservas">{{reservas.length}} {{reservas.length===1 ? 'reserva' : 'reservas'}}</span></div>
-            <div class="mg-reservas-empty-state" *ngIf="!reservas.length" role="status">
+            <div class="management-heading"><div><h2>Reservas registradas</h2><p>Consulta las reservas y administra su asistencia.</p></div><span class="mg-reserva-total" aria-label="Cantidad de reservas">{{reservasCargando || reservasError ? '—' : reservas.length}} {{reservasCargando ? 'cargando' : reservasError ? 'sin datos' : reservas.length===1 ? 'reserva' : 'reservas'}}</span></div>
+            <div class="mg-reservas-empty-state" *ngIf="reservasCargando" role="status" aria-live="polite">
+              <strong>Cargando reservas...</strong><p>Consultando las reservas guardadas en MySQL.</p>
+            </div>
+            <div class="mg-reservas-empty-state" *ngIf="!reservasCargando && reservasError" role="alert">
+              <strong>No se pudieron consultar las reservas</strong>
+              <p>{{reservasError}}. Los registros no se han borrado.</p>
+              <button type="button" class="admin-secondary" (click)="cargarReservas()">Reintentar consulta</button>
+            </div>
+            <div class="mg-reservas-empty-state" *ngIf="!reservasCargando && !reservasError && !reservas.length" role="status">
               <span class="mg-reservas-empty-icon" aria-hidden="true">▦</span>
               <strong>Aún no hay reservas</strong>
               <p>Selecciona un socio, una clase y una fecha para registrar la primera. Después aparecerá aquí y podrás administrar su asistencia.</p>
             </div>
-            <div class="table-wrap mg-reservas-lista" *ngIf="reservas.length">
+            <div class="table-wrap mg-reservas-lista" *ngIf="!reservasCargando && !reservasError && reservas.length">
               <table class="management-table">
                 <thead><tr><th>Socio</th><th>Clase y entrenador</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead>
                 <tbody>
@@ -3030,6 +3038,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   categorias: any[] = [];
   rutinas: any[] = [];
   reservas: any[] = [];
+  reservasCargando = false;
+  reservasError = '';
   reservaEditandoId = 0;
   reservaGuardando = false;
   reservaForm: any = {id_cliente:0,id_clase:0,fecha_clase:''};
@@ -5462,10 +5472,18 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   cargarCategorias(){ this.api.categorias().subscribe({next:r=>this.categorias=r,error:e=>this.mostrarError(e)}); }
   cargarRutinas(){ this.api.rutinas().subscribe({next:r=>this.rutinas=r,error:e=>this.mostrarError(e)}); }
   cargarReservas(){
+    this.reservasCargando=true;
+    this.reservasError='';
     this.api.reservas().pipe(timeout(12000)).subscribe({
-      next:r=>this.reservas=Array.isArray(r)?r:[],
+      next:r=>{
+        this.reservas=Array.isArray(r)?r:[];
+        this.reservasCargando=false;
+        this.reservasError='';
+      },
       error:e=>{
-        // Un fallo de MySQL no equivale a no tener reservas.
+        this.reservasCargando=false;
+        // Un fallo de MySQL no equivale a tener una lista vacía.
+        this.reservasError=String(e?.error?.mensaje || e?.message || 'Error de conexión con el servidor');
         this.mostrarError(e);
       }
     });
