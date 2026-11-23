@@ -20,7 +20,13 @@ class ReservaController extends Controller
     public function index(Request $request)
     {
         if (!Schema::hasTable('reservas')) {
-            return response()->json([]);
+            // No fingir "0 reservas" cuando la instalación MySQL
+            // no contiene la tabla requerida por el dashboard.
+            return response()->json([
+                'codigo' => 'TABLA_MODULO_AUSENTE',
+                'mensaje' => 'No se pueden consultar las reservas porque falta la tabla reservas en MySQL. Revisa las migraciones sin borrar los datos.',
+                'faltantes' => ['tabla:reservas'],
+            ], 503);
         }
 
         $query = Reserva::with(['cliente', 'clase.entrenador']);
