@@ -2010,7 +2010,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
             </div>
             <form (ngSubmit)="guardarReservaAdmin()">
               <label><span class="mg-reserva-label"><b>1</b> Selecciona un socio</span>
-                <select name="resSocio" [(ngModel)]="reservaForm.id_cliente" required>
+                <select name="resSocio" [(ngModel)]="reservaForm.id_cliente" (ngModelChange)="reservaError=''" required>
                   <option [ngValue]="0">Selecciona un socio</option>
                   <option *ngFor="let c of clientes" [ngValue]="c.id_cliente" [disabled]="c.estado!=='Activo'">
                     {{nombreCliente(c)}} · {{c.dni}}
@@ -2018,7 +2018,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
                 </select>
               </label>
               <label><span class="mg-reserva-label"><b>2</b> Selecciona una clase</span>
-                <select name="resClase" [(ngModel)]="reservaForm.id_clase" required>
+                <select name="resClase" [(ngModel)]="reservaForm.id_clase" (ngModelChange)="ajustarFechaAlElegirClase()" required>
                   <option [ngValue]="0">Selecciona una clase</option>
                   <option *ngFor="let c of clases" [ngValue]="c.id_clase" [disabled]="c.estado!=='Activo'">
                     {{c.nombre}} · {{c.dia_semana}} · {{c.hora_inicio}}
@@ -2026,13 +2026,25 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
                 </select>
               </label>
               <label><span class="mg-reserva-label"><b>3</b> Elige la fecha</span>
-                <input type="date" name="resFecha" [(ngModel)]="reservaForm.fecha_clase"
+                <input type="date" name="resFecha" [(ngModel)]="reservaForm.fecha_clase" (ngModelChange)="reservaError=''"
                   [min]="fechaMinimaReserva" [attr.aria-describedby]="'mg-ayuda-reserva'" required>
               </label>
-              <p class="mg-reserva-ayuda" id="mg-ayuda-reserva">El sistema verificará tu membresía, el horario y los cupos disponibles.</p>
-              <p class="mg-reserva-estado" role="status" *ngIf="!reservaListaParaGuardar && !reservaGuardando">
+              <p class="mg-reserva-ayuda" id="mg-ayuda-reserva">La fecha debe coincidir con el día de la clase. También se verificarán la membresía vigente y los cupos.</p>
+              <div class="mg-reserva-fecha-invalida" role="alert" *ngIf="!fechaCoincideConClase && reservaForm.id_clase && reservaForm.fecha_clase">
+                <strong>La fecha no corresponde a esta clase.</strong>
+                <p>Esta clase se dicta los {{diaClaseSeleccionada}}. El día que elegiste no coincide con su horario.</p>
+                <button class="admin-secondary" type="button" *ngIf="fechaSugeridaReserva"
+                  (click)="usarFechaSugeridaReserva()">Usar {{fechaSugeridaReserva | date:'dd/MM/yyyy'}}</button>
+              </div>
+              <p class="mg-reserva-estado" role="status" *ngIf="!reservaListaParaGuardar && !reservaGuardando && fechaCoincideConClase">
                 {{!clientes.length ? 'Primero registra un socio.' : !clases.length ? 'Primero registra una clase.' : 'Completa los tres pasos con una fecha válida para activar el botón.'}}
               </p>
+              <div class="mg-reserva-error" role="alert" *ngIf="reservaError">
+                <strong>No se pudo guardar la reserva</strong>
+                <p>{{reservaError}}</p>
+                <button type="button" class="admin-secondary" *ngIf="reservaError.toLowerCase().includes('membresía') || reservaError.toLowerCase().includes('membresia')"
+                  (click)="cambiarSegcion('membresias')">Revisar membresía del socio</button>
+              </div>
               <div class="form-row">
                 <button class="admin-primary" type="submit" [disabled]="!reservaListaParaGuardar">
                   {{reservaGuardando ? 'Guardando...' : (reservaEditandoId ? 'Guardar cambios' : 'Registrar reserva')}}
@@ -3042,6 +3054,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   reservasError = '';
   reservaEditandoId = 0;
   reservaGuardando = false;
+  reservaError = '';
   reservaForm: any = {id_cliente:0,id_clase:0,fecha_clase:''};
   usuarios: any[] = [];
   opiniones: any[] = [];
@@ -6166,18 +6179,85 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   cancelarEdicionReservaAdmin():void{
     this.reservaEditandoId=0;
     this.reservaGuardando=false;
+    this.reservaError='';
     this.reservaForm={id_cliente:0,id_clase:0,fecha_clase:''};
   }
 
-  /** El botón solo se activa cuando los tres datos necesarios están completos. */
+  /** Los horarios se guardan como días de semana en la base de datos. */
+  get claseSeleccionadaReserva():any {
+    return this.clases.find((clase:any)=>
+      Number(clase?.id_clase)===Number(this.reservaForm?.id_clase||0));
+  }
+
+  get diaClaseSeleccionada():string {
+    return String(this.claseSeleccionadaReserva?.dia_semana||'').trim();
+  }
+
+  private indiceDiaReserva(valor:string):number {
+    const dias=['domingo','lunes','martes','miercoles','jueves','viernes','sabado'];
+    const normalizado=String(valor||'').trim().toLocaleLowerCase('es')
+      .normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');
+    return dias.indexOf(normalizado);
+  }
+
+  private diaFechaReserva(fecha:string):number {
+    if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(fecha))return -1;
+    const [y,m,d]=fecha.split('-').map(Number);
+    const valor=new Date(Date.UTC(y,m-1,d,12));
+    if(valor.getUTCFullYear()!==y||valor.getUTCMonth()!==m-1||valor.getUTCDate()!==d)return -1;
+    return valor.getUTCDay();
+  }
+
+  get fechaCoincideConClase():boolean {
+    const dia=this.indiceDiaReserva(this.diaClaseSeleccionada);
+    const fecha=String(this.reservaForm?.fecha_clase||'').slice(0,10);
+    // Si una clase heredada carece de día, Laravel sigue validando el horario.
+    return dia<0 || this.diaFechaReserva(fecha)<0 || this.diaFechaReserva(fecha)===dia;
+  }
+
+  get fechaSugeridaReserva():string {
+    const clase=this.claseSeleccionadaReserva;
+    const dia=this.indiceDiaReserva(String(clase?.dia_semana||''));
+    if(dia<0)return '';
+    const hoy=this.fechaMinimaReserva;
+    const [year,month,day]=hoy.split('-').map(Number);
+    const date=new Date(Date.UTC(year,month-1,day,12));
+    const salto=(dia-date.getUTCDay()+7)%7;
+    date.setUTCDate(date.getUTCDate()+salto);
+    if(salto===0 && clase?.hora_inicio){
+      const partes=String(clase.hora_inicio).split(':');
+      const hora=Number(partes[0]||0),minuto=Number(partes[1]||0),ahora=new Date();
+      if(ahora.getHours()>hora || (ahora.getHours()===hora && ahora.getMinutes()>=minuto)){
+        date.setUTCDate(date.getUTCDate()+7);
+      }
+    }
+    return date.toISOString().slice(0,10);
+  }
+
+  ajustarFechaAlElegirClase():void {
+    this.reservaError='';
+    const fecha=String(this.reservaForm?.fecha_clase||'');
+    if(!fecha || fecha<this.fechaMinimaReserva || !this.fechaCoincideConClase){
+      const sugerida=this.fechaSugeridaReserva;
+      if(sugerida)this.reservaForm.fecha_clase=sugerida;
+    }
+  }
+
+  usarFechaSugeridaReserva():void {
+    if(this.fechaSugeridaReserva)this.reservaForm.fecha_clase=this.fechaSugeridaReserva;
+    this.reservaError='';
+  }
+
+  /** Evita enviar una reserva en un día diferente al horario real de la clase. */
   get reservaListaParaGuardar(): boolean {
     const socio=Number(this.reservaForm?.id_cliente||0);
     const clase=Number(this.reservaForm?.id_clase||0);
     const fecha=String(this.reservaForm?.fecha_clase||'').slice(0,10);
     return !this.reservaGuardando
       && this.clientes.length>0 && this.clases.length>0
-      && socio>0 && clase>0 && fecha.length===10
-      && fecha>=this.fechaMinimaReserva;
+      && socio>0 && clase>0 && this.diaFechaReserva(fecha)>=0
+      && fecha>=this.fechaMinimaReserva
+      && this.fechaCoincideConClase;
   }
 
   guardarReservaAdmin():void{
@@ -6188,16 +6268,25 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       fecha_clase:String(this.reservaForm.fecha_clase||'').slice(0,10)
     };
     if(!datos.id_cliente||!datos.id_clase||!datos.fecha_clase){
-      this.error='Selecciona socio, clase y fecha para guardar la reserva.';
+      this.reservaError='Selecciona socio, clase y fecha para guardar la reserva.';
+      this.error=this.reservaError;
       return;
     }
     if(datos.fecha_clase<this.fechaMinimaReserva){
-      this.error='La fecha de la reserva no puede ser anterior a hoy.';
+      this.reservaError='La fecha de la reserva no puede ser anterior a hoy.';
+      this.error=this.reservaError;
+      return;
+    }
+    if(!this.fechaCoincideConClase){
+      this.reservaError='Esta clase se dicta los '+this.diaClaseSeleccionada+
+        '. Selecciona una fecha de ese día para registrarla.';
+      this.error=this.reservaError;
       return;
     }
     const editando=this.reservaEditandoId;
     this.reservaGuardando=true;
     this.error='';
+    this.reservaError='';
     const peticion=editando
       ?this.api.actualizarReservaAdmin(editando,datos)
       :this.api.crearReservaAdmin(datos);
@@ -6205,6 +6294,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       next:(r:any)=>{
         this.reservaGuardando=false;
         this.cancelarEdicionReservaAdmin();
+        this.reservaError='';
         this.ok(r?.mensaje||(editando?'Reserva actualizada':'Reserva registrada'));
         this.cargarReservas();
         this.cargarDashboard();
@@ -6212,6 +6302,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       error:e=>{
         this.reservaGuardando=false;
         this.mostrarError(e);
+        this.reservaError=this.error || 'No se pudo guardar. Comprueba la fecha, la membresía y los cupos disponibles.';
       }
     });
   }
