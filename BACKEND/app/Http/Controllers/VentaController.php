@@ -9,6 +9,7 @@ use App\Services\CajaService;
 use App\Services\InventarioService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -47,7 +48,8 @@ class VentaController extends Controller
             'items.*.cantidad' => 'required|integer|min:1',
         ]);
 
-        if (!$cajaService->cajaAbierta()) {
+        $cajaAbierta = $cajaService->cajaAbierta();
+        if (!$cajaAbierta) {
             throw ValidationException::withMessages(['caja' => ['Debes abrir caja antes de registrar una venta.']]);
         }
 
@@ -64,7 +66,7 @@ class VentaController extends Controller
             throw ValidationException::withMessages(['numero_operacion' => ['Ese número de operación ya fue utilizado en otra venta.']]);
         }
 
-        $venta = DB::transaction(function () use ($datos, $request, $inventario, $cajaService) {
+        $venta = DB::transaction(function () use ($datos, $request, $inventario, $cajaService, $cajaAbierta) {
             $itemsPreparados = [];
             $totalPrecioFinal = 0;
 
@@ -101,7 +103,11 @@ class VentaController extends Controller
             $numeroComprobante = trim((string) ($datos['numero_comprobante'] ?? ''));
             if ($numeroComprobante === '') {
                 $prefijo = mb_strtolower((string) $datos['tipo_comprobante']) === 'factura' ? 'F001' : 'B001';
-                $ultimoId = Venta::query()->lockForUpdate()->orderByDesc('id_venta')->value('id_venta');
+                // En la antigua gym_system el ID real sigue siendo ventas.id.
+                // No generar el comprobante a partir de un alias id_venta vacío.
+                $ultimoId = Schema::hasColumn('ventas', 'id') && Schema::hasColumn('ventas', 'caja_id')
+                    ? DB::table('ventas')->lockForUpdate()->max('id')
+                    : Venta::query()->lockForUpdate()->orderByDesc('id_venta')->value('id_venta');
                 $siguiente = ((int) $ultimoId) + 1;
                 $numeroComprobante = $prefijo.'-'.str_pad((string) $siguiente, 8, '0', STR_PAD_LEFT);
             }
@@ -112,7 +118,7 @@ class VentaController extends Controller
                 ]);
             }
 
-            $venta = Venta::create([
+            $atributosVenta = [
                 'id_cliente' => $datos['id_cliente'],
                 'id_usuario' => $request->user()->id_usuario,
                 'fecha_venta' => $datos['fecha_venta'] ?? now(),
@@ -124,7 +130,8 @@ class VentaController extends Controller
                 'igv' => $igv,
                 'total' => $total,
                 'estado' => 'Registrado',
-            ]);
+            ];
+            $venta = $this->crearVentaCompatible($atributosVenta, $cajaAbierta, $porcentajeIgv);
 
             foreach ($itemsPreparados as $item) {
                 DetalleVenta::create([
@@ -173,6 +180,53 @@ class VentaController extends Controller
             'numero_comprobante' => $venta->numero_comprobante,
             'venta' => $venta->load(['cliente', 'usuario', 'detalles.producto']),
         ], 201);
+    }
+
+    /**
+     * Si MySQL usa todavía tablas gym_system antiguas, ventas.id es la
+     * PK autoincremental y caja_id/fecha/descuento siguen siendo obligatorios.
+     * Registrar solo las columnas modernas provocaba SQLSTATE 23000/1364
+     * al confirmar el cobro. Se guardan ambos contratos en UNA transacción.
+     */
+    private function crearVentaCompatible(array $atributos, \App\Models\Caja $caja, float $igvPorcentaje): Venta
+    {
+        if (!Schema::hasColumn('ventas', 'id') || !Schema::hasColumn('ventas', 'caja_id')) {
+            return Venta::create($atributos);
+        }
+
+        $campos = array_fill_keys(Schema::getColumnListing('ventas'), true);
+        $idCajaLegacy = $caja->getAttribute('id') ?: $caja->getAttribute('id_caja');
+        if (!$idCajaLegacy) {
+            throw ValidationException::withMessages([
+                'caja' => ['La caja antigua no tiene identificador válido. Comprueba el esquema de caja.'],
+            ]);
+        }
+
+        $atributos['caja_id'] = (int) $idCajaLegacy;
+        if (isset($campos['fecha'])) {
+            $atributos['fecha'] = $atributos['fecha_venta'];
+        }
+        if (isset($campos['descuento'])) {
+            $atributos['descuento'] = 0;
+        }
+        if (isset($campos['igv_porcentaje'])) {
+            $atributos['igv_porcentaje'] = $igvPorcentaje;
+        }
+        if (isset($campos['socio_id'])) {
+            $dni = DB::table('clientes')->where('id_cliente', $atributos['id_cliente'])->value('dni');
+            $atributos['socio_id'] = $dni && Schema::hasTable('socios')
+                ? DB::table('socios')->where('dni', $dni)->value('id')
+                : null;
+        }
+
+        $idLegacy = (int) DB::table('ventas')->insertGetId($atributos, 'id');
+        // id_venta es una columna de compatibilidad, no el AUTO_INCREMENT original.
+        // Eloquent, comprobantes, detalle_venta y los reportes necesitan el mismo ID.
+        if (isset($campos['id_venta'])) {
+            DB::table('ventas')->where('id', $idLegacy)->update(['id_venta' => $idLegacy]);
+        }
+
+        return Venta::findOrFail($idLegacy);
     }
 
     public function anular(Request $request, string $id, InventarioService $inventario, CajaService $cajaService)
