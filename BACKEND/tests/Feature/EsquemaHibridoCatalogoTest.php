@@ -64,6 +64,14 @@ class EsquemaHibridoCatalogoTest extends TestCase
             $this->assertSame(0, Artisan::call('db:reconciliar-esquema'), Artisan::output());
             $this->assertTrue(Schema::hasColumn('productos', 'id_producto'));
             $this->assertTrue(Schema::hasColumn('categorias', 'id_categoria'));
+            $this->assertSame(
+                'Proteína histórica',
+                DB::table('productos')->where('codigo', 'HIST-001')->value('nombre_producto')
+            );
+            $this->assertSame(
+                (int) $categoria,
+                (int) DB::table('productos')->where('codigo', 'HIST-001')->value('id_categoria')
+            );
 
             $productos = app(ProductoController::class)->index(Request::create('/api/productos'))
                 ->getData(true);
@@ -82,6 +90,22 @@ class EsquemaHibridoCatalogoTest extends TestCase
             ]));
             $this->assertSame(201, $alta->getStatusCode());
             $this->assertSame(1, DB::table('productos')->where('codigo', 'NUEVO-002')->count());
+            $nuevo = DB::table('productos')->where('codigo', 'NUEVO-002')->first();
+            $this->assertSame((int) $nuevo->id, (int) $nuevo->id_producto);
+            $this->assertSame('Creatina guardada', $nuevo->nombre_producto);
+            $this->assertSame('NUEVO-002', $nuevo->codigo_producto);
+            $this->assertSame((int) $categoria, (int) $nuevo->id_categoria);
+
+            $nuevaCategoria = app(CategoriaController::class)->store(
+                Request::create('/api/categorias', 'POST', [
+                    'nombre_categoria' => 'Accesorios',
+                    'estado' => 'Activo',
+                ])
+            );
+            $this->assertSame(201, $nuevaCategoria->getStatusCode());
+            $guardada = DB::table('categorias')->where('nombre', 'Accesorios')->first();
+            $this->assertSame((int) $guardada->id, (int) $guardada->id_categoria);
+            $this->assertSame('Accesorios', $guardada->nombre_categoria);
 
             $idCliente = DB::table('clientes')->insertGetId([
                 'dni' => '86664422', 'nombres' => 'Cliente', 'apellidos' => 'Prueba',
