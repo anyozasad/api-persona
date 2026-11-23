@@ -140,34 +140,34 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
         <span><strong>Mallqui</strong><b>Gym</b></span>
       </div>
 
-      <nav class="admin-main-nav crossfit-sidebar-nav mg-clear-navigation mg-tec-order mg-quick-sidebar" aria-label="Navegación principal del gimnasio">
-        <span class="mg-nav-caption">PANEL PRINCIPAL</span>
-        <button type="button" class="mg-quick-link" [class.active]="seccion==='dashboard'"
+      <nav class="admin-main-nav crossfit-sidebar-nav mg-clear-navigation mg-tec-order mg-direct-areas" aria-label="Navegación del gimnasio">
+        <button type="button" class="mg-direct-home" [class.active]="seccion==='dashboard'"
           [attr.aria-current]="seccion==='dashboard' ? 'page' : null"
           (click)="cambiarSegcion('dashboard')">
-          <span class="mg-quick-icon" aria-hidden="true">⌂</span><span>Inicio</span>
+          <span class="admin-main-nav-icon" aria-hidden="true">⌂</span>
+          <span>Inicio</span>
         </button>
-        <button type="button" class="mg-quick-link" *ngFor="let item of accesosPrincipalesAdmin.slice(0,2)"
-          [class.active]="seccion===item.id"
-          [attr.aria-current]="seccion===item.id ? 'page' : null"
-          [attr.title]="item.ayuda" (click)="navegarMenu(item)">
-          <span class="mg-quick-icon" aria-hidden="true">{{item.icono}}</span><span>{{item.nombre}}</span>
-        </button>
-        <button type="button" class="mg-quick-link" [class.active]="seccion==='productos'"
-          [attr.aria-current]="seccion==='productos' ? 'page' : null"
-          (click)="cambiarSegcion('productos')">
-          <span class="mg-quick-icon" aria-hidden="true">▦</span><span>Productos</span>
-        </button>
-        <button type="button" class="mg-quick-link" [class.active]="seccion==='ventas'"
-          [attr.aria-current]="seccion==='ventas' ? 'page' : null"
-          (click)="cambiarSegcion('ventas')">
-          <span class="mg-quick-icon" aria-hidden="true">▤</span><span>Ventas</span>
-        </button>
-        <button type="button" class="mg-quick-link mg-quick-all" [attr.aria-expanded]="catalogoAdminAbierto"
-          (click)="catalogoAdminAbierto=true;busquedaCatalogoAdmin=''">
-          <span class="mg-quick-icon" aria-hidden="true">☷</span><span>Otras funciones</span>
-          <span class="mg-quick-tail" aria-hidden="true">›</span>
-        </button>
+        <span class="mg-nav-caption mg-nav-section-separator">ÁREAS DEL GIMNASIO</span>
+        <section class="mg-simple-group" *ngFor="let grupo of menuPrincipal"
+          [class.mg-simple-group-open]="grupoComplementarioSeleccionado===grupo.id">
+          <button type="button" class="mg-simple-group-toggle"
+            [attr.aria-expanded]="grupoComplementarioSeleccionado===grupo.id"
+            (click)="grupoComplementarioSeleccionado=grupoComplementarioSeleccionado===grupo.id ? '' : grupo.id">
+            <span class="mg-simple-group-icon" aria-hidden="true">{{grupo.icono}}</span>
+            <span>{{grupo.titulo}}</span>
+            <span class="mg-simple-group-chevron" aria-hidden="true">{{grupoComplementarioSeleccionado===grupo.id ? '⌃' : '⌄'}}</span>
+          </button>
+          <div class="mg-simple-group-links" *ngIf="grupoComplementarioSeleccionado===grupo.id">
+            <button type="button" class="mg-secondary-link" *ngFor="let item of grupo.items"
+              [class.active]="seccion===item.id"
+              [attr.aria-current]="seccion===item.id ? 'page' : null"
+              [attr.title]="descripcionOpcionMenu(item.id)"
+              (click)="abrirAreaAdmin(item.id)">
+              <span>{{item.nombre}}</span>
+              <span class="mg-secondary-chevron" aria-hidden="true">›</span>
+            </button>
+          </div>
+        </section>
       </nav>
 
       <div class="mg-sidebar-bottom mg-sidebar-account" aria-label="Sesión de administrador">
@@ -190,30 +190,6 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
         <button type="button" (click)="toggleSidebar()" [attr.aria-expanded]="!sidebarCerrado"><span>☰</span><b>Menú</b></button>
       </nav>
 
-      <div class="mg-catalog-overlay" *ngIf="catalogoAdminAbierto" (click)="catalogoAdminAbierto=false">
-        <section class="mg-catalog-dialog" role="dialog" aria-modal="true" aria-label="Buscar otras funciones del gimnasio"
-          (click)="$event.stopPropagation()">
-          <header class="mg-catalog-head">
-            <div><h2>Otras funciones</h2><p>Busca la tarea que necesitas realizar.</p></div>
-            <button type="button" class="mg-catalog-close" aria-label="Cerrar otras funciones" (click)="catalogoAdminAbierto=false">×</button>
-          </header>
-          <label class="mg-catalog-search-label" for="mg-busqueda-funciones">Buscar función</label>
-          <input id="mg-busqueda-funciones" type="search" [(ngModel)]="busquedaCatalogoAdmin"
-            placeholder="Ej.: membresías, pagos, vencimientos..." autocomplete="off">
-          <div class="mg-catalog-scroll">
-            <ng-container *ngFor="let grupo of menuPrincipal">
-              <div class="mg-catalog-section" *ngIf="opcionesCatalogoAdmin(grupo).length">
-                <h3>{{grupo.titulo}}</h3>
-                <button type="button" *ngFor="let item of opcionesCatalogoAdmin(grupo)"
-                  [class.active]="seccion===item.id" (click)="abrirDesdeCatalogo(item.id)">
-                  <span>{{item.nombre}}</span><span aria-hidden="true">›</span>
-                </button>
-              </div>
-            </ng-container>
-            <p class="mg-catalog-empty" *ngIf="!hayResultadosCatalogoAdmin()">No hay funciones con ese nombre. Prueba otra palabra.</p>
-          </div>
-        </section>
-      </div>
       <div class="mg-current-workspace">
       <div *ngIf="toast" class="mg-action-feedback success" role="status" aria-live="polite">{{toast}}</div>
       <div *ngIf="error && !clienteFormularioAbierto && !(seccion==='dashboard' && estadoOperativoDashboard?.operativo===false && error.startsWith('No se pudieron sincronizar:'))"
@@ -3146,10 +3122,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   // Reportes y Configuración siguen disponibles en «Otras funciones» y en el buscador.
   // No duplicarlos en la barra lateral evita ocho accesos visibles a la vez.
   readonly accesosDirectosAdmin=[...this.accesosPrincipalesAdmin];
-  catalogoAdminAbierto = false;
-  busquedaCatalogoAdmin = '';
   mostrarGestionAvanzada = false;
-  grupoComplementarioSeleccionado = 'members';
+  grupoComplementarioSeleccionado = '';
 
   /** Menu único: cada módulo aparece en su área de trabajo, sin enlaces genéricos. */
   readonly menuPrincipal: Array<{
@@ -3253,22 +3227,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   /** Nunca desplegar los 40 módulos a la vez: mostrar solo los del área elegida. */
-  opcionesCatalogoAdmin(grupo:{id:string;titulo:string;items:Array<{id:string;nombre:string;accion?:'nuevoSocio'}>}):
-      Array<{id:string;nombre:string;accion?:'nuevoSocio'}> {
-    const filtro=this.busquedaCatalogoAdmin.trim().toLocaleLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');
-    if(!filtro)return grupo.items;
-    return grupo.items.filter(item=>
-      (item.nombre+' '+grupo.titulo).toLocaleLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').includes(filtro));
-  }
-
-  hayResultadosCatalogoAdmin():boolean {
-    return this.menuPrincipal.some(grupo=>this.opcionesCatalogoAdmin(grupo).length>0);
-  }
-
-  abrirDesdeCatalogo(destino:string):void {
-    if(!this.menuPrincipal.some(grupo=>grupo.items.some(item=>item.id===destino)))return;
-    this.catalogoAdminAbierto=false;
-    this.busquedaCatalogoAdmin='';
+  abrirAreaAdmin(destino:string):void {
+    const existe=this.menuPrincipal.some(grupo=>grupo.items.some(item=>item.id===destino));
+    if(!existe)return;
+    this.grupoComplementarioSeleccionado='';
     this.cambiarSegcion(destino);
   }
 
@@ -3637,7 +3599,6 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   /** La pantalla elegida se identifica en la cabecera; el selector nunca queda abierto encima del trabajo. */
   private activarGrupoDeSeccion(_seccion:string):void{
     const grupoActivo=this.menuPrincipal.find(grupo=>grupo.items.some(item=>item.id===_seccion));
-    if(grupoActivo)this.grupoComplementarioSeleccionado=grupoActivo.id;
     this.mostrarGestionAvanzada=false;
     Object.keys(this.navGroups).forEach(id=>this.navGroups[id]=false);
     Object.keys(this.masOpcionesMenu).forEach(id=>this.masOpcionesMenu[id]=false);
