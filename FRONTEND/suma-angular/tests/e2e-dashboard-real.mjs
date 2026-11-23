@@ -394,6 +394,36 @@ try {
     await page.screenshot({path:'evidencias-dashboard/41_Botones_y_rutas_reales.png',fullPage:true});
   });
 
+  await paso('Reservas es legible y no repite cabeceras ni botones de adorno',async()=>{
+    await page.goto(base+'/admin?modulo=reservas',{waitUntil:'domcontentloaded'});
+    const pantalla=page.locator('.mg-reservas-ui');
+    await pantalla.waitFor({timeout:20000});
+    assert.equal(await page.locator('.mg-current-topbar h1').innerText(),'Reservas');
+    assert.equal(await page.locator('.mg-module-shell-head').count(),0,
+      'La pantalla repite un bloque con Volver a Inicio debajo de sus tareas.');
+    assert.equal(await pantalla.locator('.admin-form-card .management-heading>span').count(),0,
+      'El icono decorativo parece un botón sin acción.');
+    assert.equal(await pantalla.locator('form select').count(),2);
+    assert.equal(await pantalla.locator('form input[type="date"]').count(),1);
+    assert.equal(await pantalla.getByRole('button',{name:'Registrar reserva'}).count(),1);
+    const tipos=await pantalla.evaluate(raiz=>{
+      const fuente=(css)=>{const el=raiz.querySelector(css);return el?parseFloat(getComputedStyle(el).fontSize):0;};
+      return {
+        etiqueta:fuente('.admin-form-card form>label'),
+        selector:fuente('.admin-form-card form select'),
+        tabla:fuente('.admin-list-card .management-table td'),
+        titulo:fuente('.admin-form-card h2')
+      };
+    });
+    assert.ok(tipos.etiqueta>=14 && tipos.selector>=15 && tipos.tabla>=13 && tipos.titulo>=18,
+      'Reservas contiene texto difícil de leer: '+JSON.stringify(tipos));
+    const menu=page.locator('.mg-focus-sidebar .mg-focus-nav-button').first();
+    const fuenteMenu=await menu.evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
+    assert.ok(fuenteMenu>=14,'Menú lateral con etiquetas demasiado pequeñas: '+fuenteMenu);
+    assert.equal(await pantalla.locator('details.mg-reserva-acciones').count(),await pantalla.locator('tbody tr:not(:has(.mg-reservas-vacio))').count());
+    await page.screenshot({path:'evidencias-dashboard/43_Reservas_UI_UX_claro.png',fullPage:true,animations:'disabled'});
+  });
+
   await paso('El menú y las pestañas de Socios son legibles y no se enciman',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-focus-sidebar');
