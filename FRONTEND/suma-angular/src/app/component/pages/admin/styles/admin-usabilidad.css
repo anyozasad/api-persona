@@ -1,0 +1,239 @@
+/*
+ * Mallqui Gym • Correcciones de usabilidad desde la pantalla Reservas.
+ * Paleta original conservada: carbón, blanco y verde lima.
+ * Solo presentación: ninguna llamada API ni evento Angular cambia.
+ */
+
+/* Menú lateral con etiquetas que se leen sin acercar el navegador. */
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-focus-sidebar>.mg-focus-nav-button {
+  font-size:15px!important;
+  font-weight:650!important;
+  line-height:1.45!important;
+  min-height:54px!important;
+  letter-spacing:0!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-focus-sidebar .mg-focus-nav-icon {
+  font-size:20px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-sidebar-account-copy strong{
+  font-size:14px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-sidebar .mg-sidebar-account-copy small{
+  font-size:12px!important;
+}
+
+/* Dentro de cada área, una sola orientación y las tareas al alcance. */
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-focus-taskbar{
+  padding:17px 21px!important;
+  margin-bottom:17px!important;
+  gap:11px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-focus-taskbar-intro>span{
+  font-size:17px!important;
+  font-weight:650!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-focus-taskbar-intro p{
+  font-size:14px!important;
+  margin-top:4px!important;
+  line-height:1.5!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-area-status{
+  display:inline-block!important;
+  max-width:100%!important;
+  margin-top:5px!important;
+  font-size:12px!important;
+  color:#536052!important;
+  overflow-wrap:anywhere!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-focus-task-tabs>button{
+  font-size:14px!important;
+  font-weight:700!important;
+  min-height:45px!important;
+  padding:11px 16px!important;
+}
+
+/* Reservas: campos legibles, formulario a la izquierda, tabla a la derecha. */
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui{
+  display:grid!important;
+  grid-template-columns:minmax(340px, .95fr) minmax(0, 1.7fr)!important;
+  gap:16px!important;
+  align-items:start!important;
+  width:100%!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui>.admin-form-card,
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui>.admin-list-card{
+  min-width:0!important;
+  padding:20px!important;
+  box-sizing:border-box!important;
+  border-radius:13px!important;
+  background:#fff!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .management-heading{
+  display:flex!important;
+  align-items:flex-start!important;
+  gap:12px!important;
+  justify-content:space-between!important;
+  margin-bottom:15px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .management-heading h2{
+  margin:0 0 6px!important;
+  font-size:19px!important;
+  font-weight:750!important;
+  line-height:1.35!important;
+  color:#18261b!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .management-heading p{
+  font-size:13px!important;
+  line-height:1.5!important;
+  color:#536054!important;
+  margin:0!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui form{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:11px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui form>label{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:7px!important;
+  margin:0!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  color:#24362a!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui form>label select,
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui form>label input{
+  display:block!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  height:47px!important;
+  min-height:47px!important;
+  padding:10px 12px!important;
+  font-size:15px!important;
+  font-weight:550!important;
+  color:#1d3022!important;
+  background:#fff!important;
+  border:1px solid #cfdbcd!important;
+  border-radius:9px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui form>label select:focus-visible,
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui form>label input:focus-visible{
+  outline:2px solid #8fb53c!important;
+  outline-offset:2px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-ayuda{
+  font-size:13px!important;
+  line-height:1.5!important;
+  margin:2px 0 0!important;
+  color:#536054!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .form-row{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:10px!important;
+  margin:0!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .form-row button{
+  min-height:46px!important;
+  padding:10px 18px!important;
+  font-size:14px!important;
+  font-weight:750!important;
+  border-radius:9px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .form-row button:disabled{
+  opacity:.52!important;
+  cursor:not-allowed!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-total{
+  flex:0 0 auto!important;
+  padding:7px 10px!important;
+  font-size:13px!important;
+  font-weight:750!important;
+  white-space:nowrap!important;
+  border-radius:10px!important;
+  background:#edf7d5!important;
+  color:#29411d!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .table-wrap{
+  max-width:100%!important;
+  overflow-x:auto!important;
+  border-radius:10px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .management-table{
+  font-size:13px!important;
+  line-height:1.45!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .management-table th{
+  font-size:12px!important;
+  font-weight:750!important;
+  letter-spacing:0!important;
+  white-space:nowrap!important;
+  padding:12px 10px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .management-table td{
+  font-size:13px!important;
+  padding:12px 10px!important;
+  vertical-align:middle!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reservas-vacio{
+  text-align:center!important;
+  padding:23px 16px!important;
+  font-size:14px!important;
+  color:#5c695d!important;
+  white-space:normal!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-acciones{
+  display:block!important;
+  min-width:145px!important;
+  font-size:13px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-acciones>summary{
+  display:flex!important;
+  justify-content:space-between!important;
+  align-items:center!important;
+  gap:10px!important;
+  cursor:pointer!important;
+  border:1px solid #c9d9c4!important;
+  border-radius:8px!important;
+  padding:10px 12px!important;
+  min-height:42px!important;
+  box-sizing:border-box!important;
+  color:#294124!important;
+  font-weight:700!important;
+  background:#f4faed!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-acciones>summary:after{
+  content:'⌄'!important;
+  display:inline-block!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-acciones[open]>summary:after{
+  transform:rotate(180deg)!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-acciones-lista{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:6px!important;
+  padding-top:9px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-acciones-lista button{
+  min-height:39px!important;
+  width:100%!important;
+  margin:0!important;
+  white-space:normal!important;
+  text-align:center!important;
+  font-size:12px!important;
+}
+@media(max-width:1080px){
+  .admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui{
+    grid-template-columns:1fr!important;
+  }
+}
+@media(max-width:640px){
+  .admin-shell.admin-home-redesign .mg-current-workspace .mg-focus-taskbar{padding:14px!important}
+  .admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui>.admin-form-card,
+  .admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui>.admin-list-card{
+    padding:15px!important;
+  }
+  .admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .form-row button{width:100%!important}
+}
