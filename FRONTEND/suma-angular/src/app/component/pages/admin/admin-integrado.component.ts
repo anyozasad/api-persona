@@ -533,14 +533,19 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
             <div><span>RENOVACIONES Y AVISOS</span><h2>Membresías próximas a vencer</h2><p>Controla renovaciones y comunica al socio antes de que pierda acceso al gimnasio.</p></div>
             <div class="mg-business-actions">
               <select [(ngModel)]="renovacionesDias" (ngModelChange)="cargarRenovaciones()"><option [ngValue]="7">7 días</option><option [ngValue]="15">15 días</option><option [ngValue]="30">30 días</option></select>
-              <button type="button" class="admin-primary" (click)="enviarAvisosTodos()">Enviar avisos disponibles</button>
+              <button type="button" class="admin-primary"
+                [disabled]="renovacionesConWhatsapp===0 || enviandoAvisos"
+                [attr.title]="renovacionesConWhatsapp===0 ? 'No hay socios con teléfono y WhatsApp configurado' : 'Requiere Internet y enviará avisos a los socios preparados'"
+                (click)="enviarAvisosTodos()">
+                {{enviandoAvisos ? 'Enviando avisos...' : 'Enviar avisos ('+renovacionesConWhatsapp+')'}}
+              </button>
             </div>
           </header>
 
           <section class="mg-renewal-summary">
             <article><small>Por vencer</small><b>{{renovacionesLista.length}}</b><span>socios requieren seguimiento</span></article>
             <article><small>Con teléfono</small><b>{{renovacionesConTelefono}}</b><span>contactos disponibles</span></article>
-            <article><small>Con WhatsApp configurado</small><b>{{renovacionesConWhatsapp}}</b><span>avisos automáticos listos</span></article>
+            <article><small>Listos para aviso</small><b>{{renovacionesConWhatsapp}}</b><span>teléfono y WhatsApp configurados · requiere Internet</span></article>
           </section>
 
           <article class="mg-business-card">
@@ -552,9 +557,15 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
                     <td><b>{{v.nombre}}</b></td><td>{{v.nombre_plan}}</td><td>{{v.fecha_fin}}</td><td>{{v.telefono || 'Sin teléfono'}}</td>
                     <td><span class="mg-follow-status" [class.warning]="!v.whatsapp_api_key">{{v.whatsapp_api_key ? 'Configurado' : 'Sin API Key'}}</span></td>
                     <td>
-                      <button type="button" class="admin-secondary" (click)="configurarWhatsapp(v)">Configurar</button>
-                      <button type="button" class="admin-primary" [disabled]="!v.telefono || !v.whatsapp_api_key" (click)="enviarAvisoWhatsapp(v)">Enviar aviso</button>
-                      <button type="button" class="table-action" (click)="abrirRenovacionSocio(v)">Renovar</button>
+                      <div class="mg-renewal-row-actions">
+                        <button type="button" class="admin-primary" (click)="abrirRenovacionSocio(v)"
+                          [attr.aria-label]="'Renovar membresía de '+v.nombre">Renovar membresía</button>
+                        <button *ngIf="v.telefono && v.whatsapp_api_key" type="button" class="admin-secondary"
+                          (click)="enviarAvisoWhatsapp(v)" [attr.aria-label]="'Enviar aviso a '+v.nombre">Enviar aviso</button>
+                        <button *ngIf="!v.whatsapp_api_key && v.telefono" type="button" class="admin-secondary"
+                          (click)="configurarWhatsapp(v)" [attr.aria-label]="'Configurar WhatsApp de '+v.nombre">Configurar WhatsApp</button>
+                        <span *ngIf="!v.telefono" class="mg-renewal-contact-hint">Socio sin teléfono. Actualízalo en Socios.</span>
+                      </div>
                     </td>
                   </tr>
                   <tr *ngIf="!renovacionesLista.length"><td colspan="6">No hay membresías próximas a vencer en este rango.</td></tr>
@@ -4662,7 +4673,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   get renovacionesConWhatsapp(): number {
-    return this.renovacionesLista.filter((v:any)=>!!String(v?.whatsapp_api_key||'').trim()).length;
+    // Solo contar personas a quienes realmente puede enviarse un aviso.
+    return this.renovacionesLista.filter((v:any)=>
+      !!String(v?.telefono||'').trim() && !!String(v?.whatsapp_api_key||'').trim()).length;
   }
 
   configurarWhatsapp(v:any): void {
@@ -4677,22 +4690,39 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   }
 
   enviarAvisoWhatsapp(v:any): void {
+    if(!String(v?.telefono||'').trim() || !String(v?.whatsapp_api_key||'').trim()){
+      this.error='Para enviar un aviso, el socio necesita teléfono y WhatsApp configurado.';
+      return;
+    }
+    if(!confirm('¿Enviar un aviso de vencimiento a '+String(v?.nombre||'este socio')+' por WhatsApp?'))return;
     this.api.enviarWhatsappGym(Number(v.id)).subscribe({
       next:(r:any)=>this.ok(r?.mensaje||'Aviso enviado.'),
       error:e=>this.mostrarError(e)
     });
   }
 
+  enviandoAvisos = false;
+
   enviarAvisosTodos(): void {
-    if(!this.renovacionesLista.length){this.ok('No hay vencimientos para avisar.');return;}
-    if(!confirm('¿Enviar avisos a todos los socios configurados?')) return;
+    if(this.enviandoAvisos)return;
+    const listos=this.renovacionesConWhatsapp;
+    if(!listos){
+      this.error='No hay socios con teléfono y WhatsApp configurado para avisar.';
+      return;
+    }
+    if(!confirm('¿Enviar '+listos+' aviso(s) de vencimiento por WhatsApp? Esta acción requiere Internet.'))return;
+    this.enviandoAvisos=true;
     this.api.enviarWhatsappTodosGym(Number(this.renovacionesDias||7)).subscribe({
-      next:(r:any)=>this.ok((r?.mensaje||'Proceso terminado.')+' Enviados: '+Number(r?.enviados||0)+'.'),
-      error:e=>this.mostrarError(e)
+      next:(r:any)=>{
+        this.enviandoAvisos=false;
+        this.ok('Avisos enviados: '+Number(r?.enviados||0)+'. Omitidos: '+Number(r?.omitidos||0)+'.');
+      },
+      error:e=>{this.enviandoAvisos=false;this.mostrarError(e);}
     });
   }
 
   abrirRenovacionSocio(v:any): void {
+    if(!Number(v?.id)){this.error='No se encontró el socio que se quiere renovar.';return;}
     this.cambiarSegcion('membresias');
     const socio=this.clientes.find((c:any)=>Number(c?.id_cliente)===Number(v?.id));
     setTimeout(()=>{this.membresiaForm.id_cliente=Number(socio?.id_cliente||v?.id||0);},0);
