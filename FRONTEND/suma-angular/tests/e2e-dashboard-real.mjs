@@ -350,7 +350,7 @@ try {
     const menu=page.locator('.mg-focus-sidebar');
     await menu.waitFor({timeout:20000});
     assert.equal(await menu.locator('.mg-focus-nav-button').count(),7);
-    const nombres=(await menu.locator('.mg-focus-nav-button').allTextContents()).map(x=>x.trim());
+    const nombres=(await menu.locator('.mg-focus-nav-button > span:last-child').allTextContents()).map(x=>x.trim());
     assert.deepEqual(nombres,['Inicio','Socios','Clases y reservas','Productos',
       'Ventas y caja','Atención al socio','Administración']);
     assert.equal(await menu.locator('.mg-simple-group').count(),0);
