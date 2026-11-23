@@ -5,14 +5,14 @@
       <h2>Gestión de Productos</h2>
       <p>Administra los productos, precios y stock del gimnasio desde un solo lugar.</p>
     </div>
-    <button type="button" class="productos-nuevo-boton" (click)="mostrarFormularioNuevo()"
-      [attr.aria-expanded]="formularioVisible && !editando"
+    <button *ngIf="!formularioVisible" type="button" class="productos-nuevo-boton"
+      (click)="mostrarFormularioNuevo()" aria-controls="mallqui-formulario-producto"
       aria-label="Abrir formulario para agregar producto">＋ Nuevo producto</button>
     <div class="inventario-status">
       <span class="status-dot"></span>
       <div>
-        <b>Inventario actualizado</b>
-        <small>{{ totalProductos }} productos registrados</small>
+        <b>{{ cargando ? 'Consultando MySQL…' : (error ? 'Revisar conexión' : 'Inventario en MySQL') }}</b>
+        <small>{{ totalProductos }} {{ totalProductos === 1 ? 'producto registrado' : 'productos registrados' }}</small>
       </div>
     </div>
   </section>
@@ -83,14 +83,16 @@
   @if (mensaje) { <div class="mensaje-ok"><span>✓</span>{{ mensaje }}</div> }
   @if (error) { <div class="mensaje-error"><span>!</span>{{ error }}</div> }
 
-  <section class="producto-card producto-form-card" *ngIf="formularioVisible">
+  <section class="producto-card producto-form-card" id="mallqui-formulario-producto"
+           *ngIf="formularioVisible" aria-label="Formulario de producto">
     <div class="card-heading">
       <div>
         <span class="card-kicker">{{ editando ? 'EDICIÓN' : 'NUEVO REGISTRO' }}</span>
-        <h3>{{ editando ? 'Editar producto' : 'Nuevo producto' }}</h3>
+        <h3>{{ editando ? 'Editar producto' : 'Registrar nuevo producto' }}</h3>
         <p>{{ editando ? 'Actualiza la información del producto seleccionado.' : 'Completa los datos para agregar un producto al inventario.' }}</p>
       </div>
-      <span class="card-heading-icon">{{ editando ? '✎' : '+' }}</span>
+      <button type="button" class="producto-form-cerrar" (click)="limpiarFormulario()"
+        aria-label="Cerrar el formulario de producto">Cerrar formulario <span aria-hidden="true">×</span></button>
     </div>
 
     <form (ngSubmit)="editando ? actualizar() : guardar()" class="producto-form">
@@ -215,7 +217,8 @@
       </div>
       <div class="buscador-productos">
         <span>⌕</span>
-        <input [(ngModel)]="busqueda" placeholder="Buscar por nombre, código o categoría">
+        <input [(ngModel)]="busqueda" aria-label="Buscar productos por nombre, código o categoría"
+               placeholder="Buscar por nombre, código o categoría">
       </div>
     </div>
 

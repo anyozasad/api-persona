@@ -1229,6 +1229,23 @@ try {
     await page.getByRole('button',{name:'Abrir formulario para agregar producto'}).click();
     const form=page.locator('app-productos form.producto-form').first();
     await form.waitFor({timeout:30000});
+    // Comprobar UX en navegador: tipografía legible y ningún CTA repetido.
+    assert.equal(await page.locator('app-productos .productos-nuevo-boton').count(),0,
+      'Al abrir el formulario no debe quedar un segundo Nuevo producto.');
+    const tamanos=await form.evaluate(formulario=>{
+      const label=formulario.querySelector('.field-label');
+      const input=formulario.querySelector('input[name=nombre_producto]');
+      const titulo=formulario.closest('.producto-form-card')?.querySelector('h3');
+      return {
+        label:parseFloat(getComputedStyle(label).fontSize),
+        input:parseFloat(getComputedStyle(input).fontSize),
+        titulo:parseFloat(getComputedStyle(titulo).fontSize),
+        altoCampo:input.getBoundingClientRect().height
+      };
+    });
+    assert.ok(tamanos.label>=13 && tamanos.input>=14 && tamanos.titulo>=20
+      && tamanos.altoCampo>=44,
+      'Formulario de producto demasiado pequeño: '+JSON.stringify(tamanos));
     const codigo='E2E-'+Date.now();
     codigoProductoFoto = codigo;
     const cat=form.locator('select[name=id_categoria]');

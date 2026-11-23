@@ -149,7 +149,7 @@ export class ProductosComponent implements OnInit {
   mostrarFormularioNuevo(): void {
     this.limpiarFormulario();
     this.formularioVisible = true;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.llevarAlFormulario();
   }
 
   editar(p: Producto): void {
@@ -159,7 +159,19 @@ export class ProductosComponent implements OnInit {
     this.producto = { ...p };
     this.editando = true;
     this.formularioVisible = true;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.llevarAlFormulario();
+  }
+
+  /** El usuario debe llegar al formulario, no volver al inicio del panel. */
+  private llevarAlFormulario(): void {
+    if (typeof document === 'undefined') return;
+    setTimeout(() => {
+      const formulario = document.getElementById('mallqui-formulario-producto');
+      if (!formulario) return;
+      formulario.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      formulario.querySelector<HTMLSelectElement>('select[name="id_categoria"]')
+        ?.focus({ preventScroll: true });
+    }, 0);
   }
 
   actualizar(): void {
