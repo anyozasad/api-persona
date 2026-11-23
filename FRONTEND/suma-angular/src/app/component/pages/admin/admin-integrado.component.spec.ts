@@ -22,6 +22,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       'configuracion', 'guardarConfiguracion', 'estadoSistema', 'restaurarGym',
       'registrarAccesoCodigo', 'cambiarEstadoReserva', 'confirmarPagoPendiente',
       'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin', 'comprobantePago', 'verificacionEfsrt', 'completarFotosIniciales',
+      'crearMembresia', 'actualizarMembresia', 'eliminarMembresia',
       'crearCliente', 'actualizarCliente', 'enviarWhatsappGym', 'enviarWhatsappTodosGym', 'guardarWhatsappKeyGym'
     ]);
 
@@ -61,6 +62,67 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     const auth = { usuario: { nombre_usuario: 'admin', rol: 'Administrador' } } as any;
     const router = { navigate: jasmine.createSpy('navigate') } as any;
     component = new AdminIntegradoComponent(auth, api, router);
+  });
+
+  it('Planes no guarda si el nombre dice 2 meses pero la duración dice 1', () => {
+    component.planForm={nombre:'Promoción 2 meses',duracion_meses:1,precio:85.50,
+      descripcion:'',beneficios_texto:'',permite_reservas:true,estado:'Activo'};
+    expect(component.planMesesEnNombre).toBe(2);
+    component.guardarPlan();
+    expect(api.crearMembresia).not.toHaveBeenCalled();
+    expect(component.planError).toContain('2 meses');
+    expect(component.guardandoPlan).toBeFalse();
+  });
+
+  it('Planes no crea un plan gratuito por accidente', () => {
+    component.planForm={nombre:'Acceso de prueba',duracion_meses:1,precio:0,
+      descripcion:'',beneficios_texto:'',permite_reservas:true,estado:'Activo'};
+    component.guardarPlan();
+    expect(api.crearMembresia).not.toHaveBeenCalled();
+    expect(component.planError).toContain('gratuita');
+    expect(component.planGratisConfirmado).toBeFalse();
+  });
+
+  it('Planes confirma guardado solamente tras consultar la tarifa persistida en MySQL', () => {
+    const tarifa={id_membresia:23,nombre:'Promoción 2 meses',
+      duracion_meses:2,precio:'95.50',estado:'Activo',permite_reservas:true};
+    component.planForm={nombre:tarifa.nombre,duracion_meses:2,precio:95.50,
+      descripcion:'',beneficios_texto:'Acceso al gimnasio',permite_reservas:true,estado:'Activo'};
+    api.crearMembresia.and.returnValue(of(tarifa));
+    api.membresiasDisponibles.and.returnValue(of([tarifa]));
+    component.guardarPlan();
+    expect(api.crearMembresia).toHaveBeenCalled();
+    expect(api.membresiasDisponibles).toHaveBeenCalled();
+    expect(component.planError).toBe('');
+    expect(component.planEditandoId).toBe(0);
+    expect(component.planForm.nombre).toBe('');
+    expect(component.planesMembresia.some(p=>p.id_membresia===23)).toBeTrue();
+    expect(component.toast).toContain('verificada en MySQL');
+    expect(component.guardandoPlan).toBeFalse();
+  });
+
+  it('Planes mantiene el formulario si Laravel rechaza un nombre duplicado', () => {
+    component.planForm={nombre:'Mensualidad 1 mes',duracion_meses:1,precio:80,
+      descripcion:'',beneficios_texto:'',permite_reservas:true,estado:'Activo'};
+    api.crearMembresia.and.returnValue(throwError(()=>({
+      status:422,error:{errors:{nombre:['Ya existe una tarifa con ese nombre.']}}
+    })));
+    component.guardarPlan();
+    expect(component.planError).toContain('Ya existe');
+    expect(component.planForm.nombre).toBe('Mensualidad 1 mes');
+    expect(component.guardandoPlan).toBeFalse();
+  });
+
+  it('Planes no informa éxito cuando el GET posterior no encuentra la tarifa', () => {
+    component.planForm={nombre:'Anual',duracion_meses:12,precio:700,
+      descripcion:'',beneficios_texto:'',permite_reservas:true,estado:'Activo'};
+    api.crearMembresia.and.returnValue(of({id_membresia:32,nombre:'Anual'}));
+    api.membresiasDisponibles.and.returnValue(of([]));
+    component.guardarPlan();
+    expect(component.planError).toContain('no coincide');
+    expect(component.planForm.nombre).toBe('Anual');
+    expect(component.toast).not.toContain('Tarifa creada');
+    expect(component.guardandoPlan).toBeFalse();
   });
 
   it('consulta las tarifas sin pedir contratos de socios al abrir Planes y Precios', () => {

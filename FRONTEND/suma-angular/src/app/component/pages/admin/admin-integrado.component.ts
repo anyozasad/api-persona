@@ -179,7 +179,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
 
       <div class="mg-current-workspace">
       <div *ngIf="toast" class="mg-action-feedback success" role="status" aria-live="polite">{{toast}}</div>
-      <div *ngIf="error && !clienteFormularioAbierto && !(seccion==='reservas' && reservaError) && !(seccion==='dashboard' && estadoOperativoDashboard?.operativo===false && error.startsWith('No se pudieron sincronizar:'))"
+      <div *ngIf="error && !clienteFormularioAbierto && !(seccion==='reservas' && reservaError) && !(seccion==='planes' && planError) && !(seccion==='dashboard' && estadoOperativoDashboard?.operativo===false && error.startsWith('No se pudieron sincronizar:'))"
            class="mg-action-feedback error" role="alert">
         <span>{{error}}</span>
         <button type="button" class="mg-feedback-close" aria-label="Cerrar mensaje de error" (click)="error=''">×</button>
@@ -1614,24 +1614,45 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
       <ng-container *ngIf="seccion==='planes'">
         <section class="management-grid mg-plan-page mg-ux-section">
           <article class="admin-form-card">
-            <div class="management-heading"><div><h2>{{planEditandoId ? 'Editar tarifa' : 'Nueva tarifa'}}</h2><p>Configura precio, duración y estado.</p></div><span>◆</span></div>
-            <form (ngSubmit)="guardarPlan()">
-              <label>Nombre<input [(ngModel)]="planForm.nombre" name="plan_nombre" required></label>
-              <div class="form-row">
-                <label>Duración (meses)<input type="number" min="1" [(ngModel)]="planForm.duracion_meses" name="plan_duracion" required></label>
-                <label>Precio S/<input type="number" min="0" step="0.01" [(ngModel)]="planForm.precio" name="plan_precio" required></label>
-              </div>
-              <label>Descripción<textarea [(ngModel)]="planForm.descripcion" name="plan_descripcion"></textarea></label>
-              <label>Beneficios (uno por línea)<textarea [(ngModel)]="planForm.beneficios_texto" name="plan_beneficios"></textarea></label>
-              <label class="mg-plan-reservas">
-                <input type="checkbox" [(ngModel)]="planForm.permite_reservas" name="plan_reservas">
-                <span>Permite reservar clases</span>
+            <div class="management-heading"><div><h2>{{planEditandoId ? 'Editar tarifa' : 'Nueva tarifa'}}</h2><p>Ingresa nombre, duración y precio. El plan se verificará en MySQL antes de confirmar.</p></div></div>
+            <form (ngSubmit)="guardarPlan()" class="mg-plan-form" novalidate>
+              <label>Nombre del plan
+                <input [(ngModel)]="planForm.nombre" (ngModelChange)="planError=''" name="plan_nombre" maxlength="100" placeholder="Ej.: Promoción 2 meses" required>
               </label>
-              <label>Estado<select [(ngModel)]="planForm.estado" name="plan_estado"><option>Activo</option><option>Inactivo</option></select></label>
-              <div class="form-row mg-plan-actions">
-                <button class="admin-primary" type="submit" [disabled]="guardandoPlan">{{guardandoPlan ? 'Guardando…' : (planEditandoId ? 'Guardar cambios' : 'Crear tarifa')}}</button>
-                <button *ngIf="planEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionPlan()">Cancelar</button>
+              <div class="form-row mg-plan-core-fields">
+                <label>Duración (meses)
+                  <input type="number" min="1" max="36" step="1" [(ngModel)]="planForm.duracion_meses" (ngModelChange)="planError=''" name="plan_duracion" required>
+                </label>
+                <label>Precio en soles (S/)
+                  <input type="number" min="0" step="0.01" [(ngModel)]="planForm.precio" (ngModelChange)="planError=''; planGratisConfirmado=false" name="plan_precio" required>
+                </label>
               </div>
+              <p class="mg-plan-warning" role="alert" *ngIf="planMesesEnNombre && planMesesEnNombre!==planForm.duracion_meses">
+                El nombre indica {{planMesesEnNombre}} meses, pero la duración es {{planForm.duracion_meses}}.
+                <button class="admin-secondary" type="button" (click)="planForm.duracion_meses=planMesesEnNombre;planError=''">Usar {{planMesesEnNombre}} meses</button>
+              </p>
+              <label class="mg-plan-free-confirm" *ngIf="planForm.precio===0">
+                <input type="checkbox" [(ngModel)]="planGratisConfirmado" name="plan_gratis">
+                <span>Confirmo que esta tarifa será gratuita (S/ 0.00).</span>
+              </label>
+              <details class="mg-plan-optional" [open]="planEditandoId>0">
+                <summary>Descripción y beneficios (opcional)</summary>
+                <label>Descripción<textarea [(ngModel)]="planForm.descripcion" name="plan_descripcion" maxlength="500" rows="2"></textarea></label>
+                <label>Beneficios (uno por línea)<textarea [(ngModel)]="planForm.beneficios_texto" name="plan_beneficios" rows="2"></textarea></label>
+              </details>
+              <div class="mg-plan-checks">
+                <label class="mg-plan-reservas">
+                  <input type="checkbox" [(ngModel)]="planForm.permite_reservas" name="plan_reservas">
+                  <span>Permite reservar clases</span>
+                </label>
+                <label>Estado<select [(ngModel)]="planForm.estado" name="plan_estado"><option>Activo</option><option>Inactivo</option></select></label>
+              </div>
+              <p *ngIf="planError" class="mg-plan-error" role="alert">{{planError}}</p>
+              <div class="form-row mg-plan-actions">
+                <button class="admin-primary" type="submit" [disabled]="guardandoPlan || planesCargando || !!planesError">{{guardandoPlan ? 'Guardando y comprobando…' : (planEditandoId ? 'Guardar cambios' : 'Guardar tarifa')}}</button>
+                <button *ngIf="planEditandoId" class="admin-secondary" type="button" (click)="cancelarEdicionPlan()">Cancelar edición</button>
+              </div>
+              <p class="mg-plan-help">Después de guardar, comprueba el registro en «Planes disponibles».</p>
             </form>
           </article>
           <article class="admin-list-card wide-card">
@@ -3494,7 +3515,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ventaForm: any = {id_cliente:0,id_producto:0,cantidad:1,tipo_comprobante:'Boleta',numero_comprobante:'',metodo_pago:'Efectivo',numero_operacion:'',igv_porcentaje:18};
   ventaItems: any[] = [];
   planEditandoId = 0;
-  planForm: any = {nombre:'',duracion_meses:1,precio:0,descripcion:'',beneficios_texto:'',permite_reservas:true,estado:'Activo'};
+  planError = '';
+  planGratisConfirmado = false;
+  planForm: any = {nombre:'',duracion_meses:1,precio:null,descripcion:'',beneficios_texto:'',permite_reservas:true,estado:'Activo'};
   ajusteForm: any = {id_producto:0,tipo:'Entrada',cantidad:1,motivo:''};
   cajaAbrirForm: any = {monto_inicial:0,observacion:''};
   movCajaForm: any = {tipo:'Ingreso',monto:0,descripcion:'',origen:'Manual'};
@@ -5726,32 +5749,101 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.api.contratarMembresia(datos).subscribe({next:()=>{this.ok('Membresía contratada y pago registrado');this.cargarMembresias();this.cargarPagos();this.cargarDashboard();this.cargarCaja();},error:e=>this.mostrarError(e)});
   }
 
-  guardarPlan(){
-    if (this.guardandoPlan) return;
-    const datos:any={...this.planForm};
-    datos.beneficios=String(datos.beneficios_texto||'')
-      .split('\n')
-      .map((x:string)=>x.trim())
-      .filter((x:string)=>Boolean(x));
-    delete datos.beneficios_texto;
+  /** Evita precios gratuitos accidentales y nombres con meses contradictorios. */
+  get planMesesEnNombre():number {
+    const match=String(this.planForm?.nombre||'').match(/\b(\d{1,2})\s*mes(?:es)?\b/i);
+    return match ? Number(match[1]) : 0;
+  }
 
-    const req=this.planEditandoId
+  guardarPlan(){
+    if(this.guardandoPlan)return;
+    this.planError='';
+    const datos:any={...this.planForm};
+    datos.nombre=String(datos.nombre||'').trim();
+    const duracion=Number(datos.duracion_meses);
+    const precio=Number(datos.precio);
+    if(!datos.nombre || datos.nombre.length>100){
+      this.planError='Escribe el nombre del plan (máximo 100 caracteres).';return;
+    }
+    if(!Number.isInteger(duracion)||duracion<1||duracion>36){
+      this.planError='La duración debe ser de 1 a 36 meses.';return;
+    }
+    if(datos.precio===null || datos.precio==='' || !Number.isFinite(precio)||precio<0 || Math.abs(Math.round(precio*100)-precio*100)>0.000001){
+      this.planError='Ingresa un precio válido en soles, con máximo dos decimales.';return;
+    }
+    if(precio===0 && !this.planGratisConfirmado){
+      this.planError='El precio S/ 0.00 crea una tarifa gratuita. Confírmalo o escribe el precio correcto.';return;
+    }
+    if(this.planMesesEnNombre && this.planMesesEnNombre!==duracion){
+      this.planError='El nombre dice '+this.planMesesEnNombre+' meses, pero la duración configurada es '+duracion+'. Corrige uno de los dos antes de guardar.';return;
+    }
+    datos.duracion_meses=duracion;
+    datos.precio=precio;
+    datos.beneficios=String(datos.beneficios_texto||'')
+      .split('\n').map((x:string)=>x.trim()).filter((x:string)=>Boolean(x));
+    delete datos.beneficios_texto;
+    if(datos.beneficios.length>12 || datos.beneficios.some((x:string)=>x.length>150)){
+      this.planError='Agrega máximo 12 beneficios de 150 caracteres cada uno.';return;
+    }
+    if(String(datos.descripcion||'').length>500){
+      this.planError='La descripción permite máximo 500 caracteres.';return;
+    }
+
+    const eraEdicion=Number(this.planEditandoId)>0;
+    const req=eraEdicion
       ? this.api.actualizarMembresia(this.planEditandoId,datos)
       : this.api.crearMembresia(datos);
 
-    this.guardandoPlan = true;
-    req.subscribe({
-      next:()=>{
-        this.guardandoPlan = false;
-        this.ok(this.planEditandoId?'Tarifa actualizada':'Tarifa creada');
-        this.cancelarEdicionPlan();
-        this.cargarMembresias(false);
+    this.guardandoPlan=true;
+    req.pipe(timeout(12000)).subscribe({
+      next:r=>{
+        const id=Number(r?.id_membresia ?? this.planEditandoId ?? 0);
+        if(!id){
+          this.guardandoPlan=false;
+          this.planError='Laravel respondió, pero no devolvió el ID del plan. Revisa la lista antes de volver a guardar.';
+          return;
+        }
+        // La respuesta al POST/PUT no basta: confirmar consulta posterior en MySQL.
+        this.api.membresiasDisponibles().pipe(timeout(12000)).subscribe({
+          next:lista=>{
+            this.guardandoPlan=false;
+            if(!Array.isArray(lista)){
+              this.planError='Laravel confirmó el guardado, pero la consulta de planes no devolvió una lista válida. No repitas el registro hasta verificar MySQL.';
+              return;
+            }
+            this.planesMembresia=lista;
+            this.membresiasDisponibles=lista.filter((x:any)=>String(x.estado||'').toLowerCase()==='activo');
+            this.planesError='';
+            this.planesCargando=false;
+            const comprobado=lista.find((x:any)=>Number(x.id_membresia)===id);
+            if(!comprobado || String(comprobado.nombre).trim()!==datos.nombre
+                || Number(comprobado.duracion_meses)!==duracion
+                || Number(comprobado.precio)!==precio){
+              this.planError='Laravel respondió al guardado, pero la lista de MySQL no coincide. Comprueba el registro antes de volver a intentarlo.';
+              return;
+            }
+            this.cancelarEdicionPlan();
+            this.ok(eraEdicion?'Cambios de tarifa guardados y verificados en MySQL':'Tarifa creada y verificada en MySQL');
+            this.cargarDashboard();
+          },
+          error:e=>{
+            this.guardandoPlan=false;
+            this.planError='Laravel aceptó el guardado, pero no se pudo comprobar la lectura en MySQL. Consulta los planes antes de volver a enviarlo.';
+            this.mostrarError(e);
+          }
+        });
       },
-      error:e=>{this.guardandoPlan = false; this.mostrarError(e);}
+      error:e=>{
+        this.guardandoPlan=false;
+        this.mostrarError(e);
+        this.planError=this.error||'El servidor no pudo guardar esta tarifa. Comprueba los campos y la conexión.';
+      }
     });
   }
   editarPlan(p:any){
-    this.planEditandoId=p.id_membresia;
+    this.planEditandoId=Number(p.id_membresia||0);
+    this.planError='';
+    this.planGratisConfirmado=Number(p.precio)===0;
     this.planForm={
       nombre:p.nombre,
       duracion_meses:p.duracion_meses,
@@ -5761,12 +5853,35 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       permite_reservas:p.permite_reservas!==false,
       estado:p.estado
     };
+    window.scrollTo({top:0,behavior:'smooth'});
   }
   cancelarEdicionPlan(){
     this.planEditandoId=0;
-    this.planForm={nombre:'',duracion_meses:1,precio:0,descripcion:'',beneficios_texto:'',permite_reservas:true,estado:'Activo'};
+    this.planError='';
+    this.planGratisConfirmado=false;
+    this.planForm={nombre:'',duracion_meses:1,precio:null,descripcion:'',beneficios_texto:'',permite_reservas:true,estado:'Activo'};
   }
-  desactivarPlan(id:number){if(!confirm('¿Desactivar esta tarifa?'))return;this.api.eliminarMembresia(id).subscribe({next:r=>{this.ok(r.mensaje||'Tarifa desactivada');this.cargarMembresias(false);this.cargarDashboard();},error:e=>this.mostrarError(e)});}
+  desactivarPlan(id:number){
+    if(!confirm('¿Desactivar esta tarifa? Se conservarán las membresías y los pagos de los socios.'))return;
+    this.api.eliminarMembresia(id).pipe(timeout(12000)).subscribe({
+      next:()=>{
+        this.api.membresiasDisponibles().pipe(timeout(12000)).subscribe({
+          next:lista=>{
+            if(!Array.isArray(lista)){this.planesError='No se pudo comprobar la baja de la tarifa en MySQL.';return;}
+            this.planesMembresia=lista;
+            this.membresiasDisponibles=lista.filter((x:any)=>String(x.estado||'').toLowerCase()==='activo');
+            if(String(lista.find((p:any)=>Number(p.id_membresia)===Number(id))?.estado||'').toLowerCase()!=='inactivo'){
+              this.planError='La tarifa no aparece desactivada en MySQL. Comprueba el estado antes de repetir.';return;
+            }
+            this.ok('Tarifa desactivada y verificada en MySQL');
+            this.cargarDashboard();
+          },
+          error:e=>{this.mostrarError(e);this.planesError='La tarifa se procesó, pero no se pudo confirmar su estado en MySQL.';}
+        });
+      },
+      error:e=>{this.mostrarError(e);this.planError=this.error;}
+    });
+  }
 
   guardarEntrenador(){
     const datos={...this.entrenadorForm};

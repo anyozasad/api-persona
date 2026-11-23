@@ -443,3 +443,177 @@
     max-width:none!important;
   }
 }
+
+/* Planes y Precios: acciones visibles, campos claros y ninguna opción decorativa.
+ * La paleta carbón / blanco / verde lima no se modifica. */
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-page {
+  display:grid!important;
+  grid-template-columns:minmax(340px, .88fr) minmax(0, 1.4fr)!important;
+  align-items:start!important;
+  gap:16px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-page>.admin-form-card,
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-page>.admin-list-card {
+  min-width:0!important;
+  box-sizing:border-box!important;
+  padding:20px 21px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-page .management-heading{
+  margin-bottom:14px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-page .management-heading h2{
+  font-size:19px!important;line-height:1.4!important;font-weight:750!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-page .management-heading p{
+  font-size:13px!important;line-height:1.5!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form {
+  display:flex!important;
+  flex-direction:column!important;
+  gap:11px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form label {
+  display:flex!important;
+  flex-direction:column!important;
+  gap:7px!important;
+  margin:0!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  line-height:1.45!important;
+  color:#243728!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form input:not([type="checkbox"]),
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form select,
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form textarea {
+  min-height:46px!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  padding:10px 12px!important;
+  border-radius:9px!important;
+  border:1px solid #cbd9c7!important;
+  background:#fff!important;
+  color:#243728!important;
+  font-size:15px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-core-fields {
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:12px!important;
+  margin:0!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-optional {
+  border:1px solid #d8e4d3!important;
+  padding:0!important;
+  border-radius:10px!important;
+  background:#fbfcf9!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-optional>summary {
+  cursor:pointer!important;
+  padding:12px 14px!important;
+  min-height:45px!important;
+  box-sizing:border-box!important;
+  color:#34532b!important;
+  font-size:14px!important;
+  font-weight:750!important;
+  line-height:1.45!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-optional[open]>label{
+  margin:0 12px 12px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-optional textarea{
+  resize:vertical!important;
+  min-height:67px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-checks{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:12px!important;
+  align-items:center!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-checks>label:last-child{
+  flex:1 1 140px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-reservas,
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-free-confirm{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:flex-start!important;
+  gap:9px!important;
+  font-size:13px!important;
+  font-weight:650!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-reservas input,
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-free-confirm input{
+  flex:0 0 auto!important;
+  width:17px!important;
+  height:17px!important;
+  margin-top:2px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-free-confirm{
+  padding:11px 12px!important;
+  border:1px solid #d6dfbc!important;
+  background:#f8faee!important;
+  border-radius:10px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-warning,
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-error{
+  padding:12px!important;
+  margin:0!important;
+  border:1px solid #e5cc9e!important;
+  border-radius:9px!important;
+  background:#fff9ec!important;
+  color:#624619!important;
+  font-size:13px!important;
+  line-height:1.55!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-error{
+  border-color:#e6b5af!important;
+  background:#fff6f5!important;
+  color:#852b25!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-warning button{
+  margin:8px 0 0!important;
+  display:block!important;
+  min-height:38px!important;
+  padding:9px 12px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-actions{
+  display:flex!important;flex-wrap:wrap!important;gap:9px!important;margin:0!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-actions button{
+  min-height:46px!important;
+  font-size:14px!important;
+  font-weight:750!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-actions .admin-primary{
+  flex:1 1 180px!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-help{
+  margin:0!important;
+  color:#607160!important;
+  font-size:12px!important;
+  line-height:1.4!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-page .management-table td{
+  font-size:13px!important;
+  padding:11px!important;
+  vertical-align:middle!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-page .management-table td small{
+  color:#68796a!important;
+  line-height:1.5!important;
+}
+@media(max-width:1150px){
+  .admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-page{
+    grid-template-columns:1fr!important;
+  }
+}
+@media(max-width:520px){
+  .admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-form .mg-plan-core-fields{
+    grid-template-columns:1fr!important;
+  }
+  .admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-page>.admin-form-card,
+  .admin-shell.admin-home-redesign .mg-current-workspace .mg-plan-page>.admin-list-card{
+    padding:15px!important;
+  }
+}

@@ -1104,16 +1104,34 @@ try {
     await page.goto(base+'/admin?modulo=planes',{waitUntil:'domcontentloaded'});
     const plan=page.locator('input[name="plan_nombre"]');
     await plan.waitFor({timeout:15000});
+    // La captura real mostraba "Promoción 2 meses" con duración 1 y precio 0.
+    // Verificar que el formulario oriente al administrador ANTES del guardado.
+    await plan.fill('Promoción 2 meses CI');
+    const duracion=page.locator('input[name="plan_duracion"]');
+    const precio=page.locator('input[name="plan_precio"]');
+    await duracion.fill('1');
+    await precio.fill('95.50');
+    const avisoMeses=page.locator('.mg-plan-warning');
+    await avisoMeses.waitFor({timeout:10000});
+    assert.match(await avisoMeses.innerText(),/2 meses/i);
+    await avisoMeses.getByRole('button',{name:'Usar 2 meses'}).click();
+    assert.equal(await duracion.inputValue(),'2');
+    await precio.fill('0');
+    await page.getByRole('button',{name:'Guardar tarifa'}).click();
+    assert.match(await page.locator('.mg-plan-error').innerText(),/gratuita/i);
+    await precio.fill('95.50');
     await plan.fill('Plan prueba funcional 2026');
-    await page.locator('input[name="plan_duracion"]').fill('2');
-    await page.locator('input[name="plan_precio"]').fill('95.50');
     const respuestaPlan=page.waitForResponse(respuesta=>respuesta.url().includes('/api/membresias')
       && respuesta.request().method()==='POST',{timeout:20000});
-    await page.getByRole('button',{name:'Crear tarifa'}).click();
-    assert.equal((await respuestaPlan).status(),201,'El botón Crear tarifa debe guardar en MySQL.');
+    await page.getByRole('button',{name:'Guardar tarifa'}).click();
+    assert.equal((await respuestaPlan).status(),201,'Guardar tarifa debe persistir en MySQL.');
     await page.getByText('Plan prueba funcional 2026',{exact:true}).first().waitFor({timeout:15000});
+    await page.getByText('Tarifa creada y verificada en MySQL',{exact:false})
+      .first().waitFor({timeout:15000});
     await page.reload({waitUntil:'domcontentloaded'});
     await page.getByText('Plan prueba funcional 2026',{exact:true}).first().waitFor({timeout:15000});
+    await page.screenshot({path:'evidencias-dashboard/45_Planes_registro_confirmado.png',
+      fullPage:true,animations:'disabled'});
 
     await page.goto(base+'/admin?modulo=comunicacion',{waitUntil:'domcontentloaded'});
     await page.locator('input[name="notif_titulo"]').fill('Aviso funcional de prueba');
