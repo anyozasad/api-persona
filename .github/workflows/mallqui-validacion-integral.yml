@@ -28,9 +28,10 @@ jobs:
       - name: Compilar Angular
         run: npm run build
       - name: Probar el dashboard
-        env:
-          CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
-        run: npm test -- --watch=false --browsers=ChromeHeadless --no-progress
+        run: |
+          printf '#!/usr/bin/env bash\\nexec "%s" --no-sandbox --disable-dev-shm-usage "$@"\\n' "${{ steps.chrome.outputs.chrome-path }}" > "$RUNNER_TEMP/chrome-ci"
+          chmod +x "$RUNNER_TEMP/chrome-ci"
+          CHROME_BIN="$RUNNER_TEMP/chrome-ci" npm test -- --watch=false --browsers=ChromeHeadless --no-progress
 
   laravel:
     name: Verificar Laravel y rutas API
