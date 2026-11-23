@@ -590,8 +590,22 @@ class GymSystemAdminController extends Controller
 
         $actual=$this->db->table('productos')->where('id',$id)->first();
         abort_if(!$actual,404,'Producto no encontrado.');
+        // Editar solo fotografía, precio o stock no debe exigir volver
+        // a escribir código, categoría y nombre de un producto existente.
+        // Conservar las propiedades anteriores que no viajan en el formulario.
+        $request->merge(array_merge([
+            'id_categoria'=>$actual->categoria_id,
+            'codigo_producto'=>$actual->codigo,
+            'nombre_producto'=>$actual->nombre,
+            'descripcion'=>$actual->descripcion,
+            'precio_compra'=>(float)($actual->precio_compra??0),
+            'precio_venta'=>(float)($actual->precio_venta??0),
+            'stock'=>(int)($actual->stock??0),
+            'stock_minimo'=>(int)($actual->stock_minimo??5),
+            'unidad_medida'=>$actual->unidad_medida??'Unidad',
+            'estado'=>ucfirst((string)($actual->estado??'activo')),
+        ],$request->all()));
         $datos=$this->validarProducto($request);
-        if(!$request->has('stock')) $datos['stock']=$actual->stock;
         $this->db->table('productos')->where('id',$id)->update($datos);
         $this->sincronizarAliasLegacy('productos',(int)$id,[
             'id_producto'=>(int)$id,

@@ -119,6 +119,24 @@ class EsquemaHibridoCatalogoTest extends TestCase
             $this->assertContains('Proteína histórica', array_column($catalogo, 'nombre_producto'));
             $this->assertContains('Creatina guardada', array_column($catalogo, 'nombre_producto'));
             $this->assertSame(2, count(array_filter($catalogo, fn ($p) => $p['foto'] === $foto)));
+            // El botón Editar foto debe aceptar un cambio parcial. Stock,
+            // categoría, nombre y precio anteriores continúan en MySQL.
+            $nuevaFoto = 'data:image/webp;base64,'.base64_encode('foto-editada');
+            $edicion = app(ProductoController::class)->update(
+                Request::create('/api/productos/'.$nuevo->id, 'PUT', ['foto' => $nuevaFoto]),
+                (string) $nuevo->id
+            );
+            $this->assertSame(200, $edicion->getStatusCode());
+            $despues = DB::table('productos')->where('id', $nuevo->id)->first();
+            $this->assertSame($nuevaFoto, $despues->foto);
+            $this->assertSame('Creatina guardada', $despues->nombre);
+            $this->assertEqualsWithDelta(30.0, (float) $despues->precio_venta, 0.001);
+            $this->assertSame(5, (int) $despues->stock);
+            $catalogoActualizado = app(PortalClienteController::class)->productos($peticion)->getData(true);
+            $this->assertSame(
+                $nuevaFoto,
+                collect($catalogoActualizado)->firstWhere('codigo_producto', 'NUEVO-002')['foto']
+            );
         } finally {
             DB::setDefaultConnection($original);
             DB::disconnect($conexion);
