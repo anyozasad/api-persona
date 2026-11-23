@@ -384,7 +384,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
               </div>
               <div class="mg-pulse-item" *ngIf="(dashboard?.inventario?.productos_stock_bajo ?? 0)>0">
                 <strong>{{dashboard?.inventario?.productos_stock_bajo}}</strong>
-                <span>Productos con stock bajo<small>Busca «Inventario» o abre Otras funciones.</small></span>
+                <span>Productos con stock bajo<small>Abre Productos e inventario para revisarlos.</small></span>
               </div>
               <div class="mg-pulse-item" *ngIf="(dashboard?.membresias?.pagos_pendientes ?? 0)>0">
                 <strong>{{dashboard?.membresias?.pagos_pendientes}}</strong>
@@ -3119,8 +3119,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     {id:'reportes-admin',nombre:'Reportes',icono:'▥',ayuda:'Indicadores y análisis'},
     {id:'configuracion',nombre:'Configuración',icono:'⚙',ayuda:'Usuarios, respaldo y diagnóstico'}
   ];
-  // Reportes y Configuración siguen disponibles en «Otras funciones» y en el buscador.
-  // No duplicarlos en la barra lateral evita ocho accesos visibles a la vez.
+  // Reportes y Configuración están agrupados en Administración.
   readonly accesosDirectosAdmin=[...this.accesosPrincipalesAdmin];
   mostrarGestionAvanzada = false;
   grupoComplementarioSeleccionado = '';
