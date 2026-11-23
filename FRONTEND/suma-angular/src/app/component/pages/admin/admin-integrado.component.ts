@@ -1998,7 +1998,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
             <div class="management-heading">
               <div>
                 <h2>{{reservaEditandoId ? 'Editar reserva' : 'Nueva reserva'}}</h2>
-                <p>Elige un socio, una clase y la fecha para guardar la reserva.</p>
+                <p>Completa estos 3 pasos para programar una clase.</p>
               </div>
             </div>
             <div class="mg-reserva-prerequisito" *ngIf="!clientes.length || !clases.length" role="status">
@@ -2009,7 +2009,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
               </button>
             </div>
             <form (ngSubmit)="guardarReservaAdmin()">
-              <label>Socio
+              <label><span class="mg-reserva-label"><b>1</b> Selecciona un socio</span>
                 <select name="resSocio" [(ngModel)]="reservaForm.id_cliente" required>
                   <option [ngValue]="0">Selecciona un socio</option>
                   <option *ngFor="let c of clientes" [ngValue]="c.id_cliente" [disabled]="c.estado!=='Activo'">
@@ -2017,7 +2017,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
                   </option>
                 </select>
               </label>
-              <label>Clase
+              <label><span class="mg-reserva-label"><b>2</b> Selecciona una clase</span>
                 <select name="resClase" [(ngModel)]="reservaForm.id_clase" required>
                   <option [ngValue]="0">Selecciona una clase</option>
                   <option *ngFor="let c of clases" [ngValue]="c.id_clase" [disabled]="c.estado!=='Activo'">
@@ -2025,13 +2025,16 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
                   </option>
                 </select>
               </label>
-              <label>Fecha de la clase
+              <label><span class="mg-reserva-label"><b>3</b> Elige la fecha</span>
                 <input type="date" name="resFecha" [(ngModel)]="reservaForm.fecha_clase"
-                  [min]="fechaMinimaReserva" required>
+                  [min]="fechaMinimaReserva" [attr.aria-describedby]="'mg-ayuda-reserva'" required>
               </label>
-              <p class="mg-reserva-ayuda" id="mg-ayuda-reserva">La fecha debe ser futura. Se comprobarán la membresía vigente, el horario y los cupos disponibles al guardar.</p>
+              <p class="mg-reserva-ayuda" id="mg-ayuda-reserva">El sistema verificará tu membresía, el horario y los cupos disponibles.</p>
+              <p class="mg-reserva-estado" role="status" *ngIf="!reservaListaParaGuardar && !reservaGuardando">
+                {{!clientes.length ? 'Primero registra un socio.' : !clases.length ? 'Primero registra una clase.' : 'Completa los tres pasos con una fecha válida para activar el botón.'}}
+              </p>
               <div class="form-row">
-                <button class="admin-primary" type="submit" [disabled]="reservaGuardando || !clientes.length || !clases.length">
+                <button class="admin-primary" type="submit" [disabled]="!reservaListaParaGuardar">
                   {{reservaGuardando ? 'Guardando...' : (reservaEditandoId ? 'Guardar cambios' : 'Registrar reserva')}}
                 </button>
                 <button *ngIf="reservaEditandoId" class="admin-secondary" type="button"
@@ -2041,33 +2044,40 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
           </article>
           <article class="admin-list-card wide-card">
             <div class="management-heading"><div><h2>Reservas registradas</h2><p>Consulta las reservas y administra su asistencia.</p></div><span class="mg-reserva-total" aria-label="Cantidad de reservas">{{reservas.length}} {{reservas.length===1 ? 'reserva' : 'reservas'}}</span></div>
-            <div class="table-wrap"><table class="management-table">
-              <thead><tr><th>ID</th><th>Socio</th><th>Clase</th><th>Fecha</th><th>Entrenador</th><th>Estado</th><th>Acciones</th></tr></thead>
-              <tbody>
-                <tr *ngFor="let r of reservas">
-                  <td>{{r.id_reserva}}</td><td>{{nombreCliente(r.cliente)}}</td>
-                  <td>{{r.clase?.nombre}}</td><td>{{r.fecha_clase | date:'dd/MM/yyyy'}}</td>
-                  <td>{{nombreEntrenador(r.clase?.entrenador)}}</td><td>{{r.estado}}</td>
-                  <td>
-                    <details class="mg-reserva-acciones">
-                      <summary aria-label="Abrir acciones de la reserva">Acciones</summary>
-                      <div class="mg-reserva-acciones-lista">
-                        <button class="table-action" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
-                          (click)="editarReservaAdmin(r)">Editar reserva</button>
-                        <button class="table-action" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
-                          (click)="cambiarEstadoReserva(r.id_reserva,'Asistio')">Marcar asistencia</button>
-                        <button class="admin-secondary" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
-                          (click)="cambiarEstadoReserva(r.id_reserva,'NoAsistio')">Marcar inasistencia</button>
-                        <button class="table-danger" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
-                          title="Cancelar sin borrar el historial"
-                          (click)="cancelarReservaAdmin(r)">Cancelar reserva</button>
-                      </div>
-                    </details>
-                  </td>
-                </tr>
-                <tr *ngIf="!reservas.length"><td colspan="7" class="mg-reservas-vacio">Aún no hay reservas. Completa el formulario de la izquierda para registrar la primera.</td></tr>
-              </tbody>
-            </table></div>
+            <div class="mg-reservas-empty-state" *ngIf="!reservas.length" role="status">
+              <span class="mg-reservas-empty-icon" aria-hidden="true">▦</span>
+              <strong>Aún no hay reservas</strong>
+              <p>Selecciona un socio, una clase y una fecha para registrar la primera. Después aparecerá aquí y podrás administrar su asistencia.</p>
+            </div>
+            <div class="table-wrap mg-reservas-lista" *ngIf="reservas.length">
+              <table class="management-table">
+                <thead><tr><th>Socio</th><th>Clase y entrenador</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody>
+                  <tr *ngFor="let r of reservas">
+                    <td><strong>{{nombreCliente(r.cliente)}}</strong><small>Reserva #{{r.id_reserva}}</small></td>
+                    <td><strong>{{r.clase?.nombre || 'Clase no disponible'}}</strong><small>{{nombreEntrenador(r.clase?.entrenador)}}</small></td>
+                    <td>{{r.fecha_clase | date:'dd/MM/yyyy'}}</td>
+                    <td><span class="mg-reserva-estado-chip">{{r.estado}}</span></td>
+                    <td>
+                      <details class="mg-reserva-acciones">
+                        <summary [attr.aria-label]="'Ver acciones de la reserva '+r.id_reserva">Acciones</summary>
+                        <div class="mg-reserva-acciones-lista">
+                          <button class="table-action" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
+                            (click)="editarReservaAdmin(r)">Editar reserva</button>
+                          <button class="table-action" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
+                            (click)="cambiarEstadoReserva(r.id_reserva,'Asistio')">Marcar asistencia</button>
+                          <button class="admin-secondary" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
+                            (click)="cambiarEstadoReserva(r.id_reserva,'NoAsistio')">Marcar inasistencia</button>
+                          <button class="table-danger" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
+                            title="Cancelar sin borrar el historial"
+                            (click)="cancelarReservaAdmin(r)">Cancelar reserva</button>
+                        </div>
+                      </details>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </article>
         </section>
       </ng-container>
@@ -6139,6 +6149,17 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.reservaEditandoId=0;
     this.reservaGuardando=false;
     this.reservaForm={id_cliente:0,id_clase:0,fecha_clase:''};
+  }
+
+  /** El botón solo se activa cuando los tres datos necesarios están completos. */
+  get reservaListaParaGuardar(): boolean {
+    const socio=Number(this.reservaForm?.id_cliente||0);
+    const clase=Number(this.reservaForm?.id_clase||0);
+    const fecha=String(this.reservaForm?.fecha_clase||'').slice(0,10);
+    return !this.reservaGuardando
+      && this.clientes.length>0 && this.clases.length>0
+      && socio>0 && clase>0 && fecha.length===10
+      && fecha>=this.fechaMinimaReserva;
   }
 
   guardarReservaAdmin():void{
