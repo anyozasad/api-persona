@@ -29,7 +29,7 @@ jobs:
         run: npm run build
       - name: Probar el dashboard
         run: |
-          printf '#!/usr/bin/env bash\\nexec "%s" --no-sandbox --disable-dev-shm-usage "$@"\\n' "${{ steps.chrome.outputs.chrome-path }}" > "$RUNNER_TEMP/chrome-ci"
+          printf '#!/usr/bin/env bash\nexec "%s" --no-sandbox --disable-dev-shm-usage "$@"\n' "${{ steps.chrome.outputs.chrome-path }}" > "$RUNNER_TEMP/chrome-ci"
           chmod +x "$RUNNER_TEMP/chrome-ci"
           CHROME_BIN="$RUNNER_TEMP/chrome-ci" npm test -- --watch=false --browsers=ChromeHeadless --no-progress
 
