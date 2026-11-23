@@ -93,6 +93,12 @@ function VerificarServidorMallqui([object]$estado) {
     if ($null -ne $estado -and $estado.sistema -ne 'Mallqui Gym') {
         Fallar 'El puerto 8000 responde, pero NO es la API de Mallqui Gym actual. Deten el otro servidor Laravel que usa el puerto 8000 antes de abrir este proyecto.'
     }
+    # Es posible tener dos copias de Mallqui Gym abiertas: una actualizada en
+    # GitHub y otra vieja escuchando en localhost:8000. Ambas responden el
+    # mismo nombre; impedir la reparación contra el servidor equivocado.
+    if ($null -ne $estado -and $estado.revision_mysql -ne 'mallqui-esquema-respaldo-20261123') {
+        Fallar 'El Laravel del puerto 8000 está desactualizado o corresponde a otra copia del gimnasio. Detén ese servidor e inicia BACKEND de esta carpeta antes de reparar MySQL.'
+    }
 }
 function VerificarFrontendMallqui([string]$html) {
     # Además del título, exigir la marca de la copia actual del frontend.
@@ -233,6 +239,10 @@ try {
 
     if ($Migrar) {
         if ($SoloVerificar) { Fallar 'No combines -Migrar y -SoloVerificar.' }
+        # Validar el puerto 8000 ANTES de modificar tablas del .env local.
+        # Si hay otra copia Laravel abierta no mezclar dos bases diferentes.
+        $estadoAntes = ObtenerEstadoBackend
+        VerificarServidorMallqui $estadoAntes
         Avisar 'Se revisará SOLAMENTE la estructura de MySQL; no se crearán socios, ventas, productos ni tarifas ficticias.'
         $respuesta = Read-Host '¿Autorizas crear primero un respaldo SQL y después preparar las tablas faltantes? Escribe SI'
         if ($respuesta -ne 'SI') { Fallar 'Preparación cancelada; no se modificó la base.' }

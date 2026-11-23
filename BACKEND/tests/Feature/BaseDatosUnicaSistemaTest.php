@@ -63,6 +63,17 @@ class BaseDatosUnicaSistemaTest extends TestCase
         $this->assertStringNotContainsString('$sql = $process->getOutput();', $backup);
     }
 
+    public function test_distingue_laravel_antiguo_del_servidor_actual_antes_de_reparar_mysql(): void
+    {
+        $rutas = (string) file_get_contents(base_path('routes/api.php'));
+        $script = (string) file_get_contents(base_path('../scripts/INICIAR_DASHBOARD.ps1'));
+        $revision = 'mallqui-esquema-respaldo-20261123';
+        $this->assertSame(2, substr_count($rutas, "'revision_mysql' => '".$revision."'"));
+        $this->assertStringContainsString('$estado.revision_mysql -ne', $script);
+        $this->assertStringContainsString('$estadoAntes = ObtenerEstadoBackend', $script);
+        $this->assertStringContainsString('VerificarServidorMallqui $estadoAntes', $script);
+    }
+
     public function test_inicio_normal_repara_esquema_pendiente_solo_si_administrador_confirma(): void
     {
         $inicio = (string) file_get_contents(base_path('../scripts/INICIAR_DASHBOARD.ps1'));

@@ -88,6 +88,7 @@ Route::get('/estado-sistema', function () {
 
         return response()->json([
             'sistema' => 'Mallqui Gym',
+            'revision_mysql' => 'mallqui-esquema-respaldo-20261123',
             'api' => true,
             'database' => true,
             'operativo' => count($faltantes) === 0,
@@ -102,6 +103,7 @@ Route::get('/estado-sistema', function () {
     } catch (\Throwable $e) {
         return response()->json([
             'sistema' => 'Mallqui Gym',
+            'revision_mysql' => 'mallqui-esquema-respaldo-20261123',
             'api' => true,
             'database' => false,
             'operativo' => false,
