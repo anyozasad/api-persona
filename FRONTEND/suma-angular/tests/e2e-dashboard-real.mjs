@@ -418,8 +418,13 @@ try {
     assert.ok(tipos.etiqueta>=14 && tipos.selector>=15 && tipos.tabla>=13 && tipos.titulo>=18,
       'Reservas contiene texto difícil de leer: '+JSON.stringify(tipos));
     const menu=page.locator('.mg-focus-sidebar .mg-focus-nav-button').first();
-    const fuenteMenu=await menu.evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
-    assert.ok(fuenteMenu>=14,'Menú lateral con etiquetas demasiado pequeñas: '+fuenteMenu);
+    const tamanoMenu=await menu.evaluate(el=>({
+      boton:parseFloat(getComputedStyle(el).fontSize),
+      texto:parseFloat(getComputedStyle(el.querySelector('span:last-child')).fontSize),
+      icono:parseFloat(getComputedStyle(el.querySelector('.mg-focus-nav-icon')).fontSize)
+    }));
+    assert.ok(tamanoMenu.boton>=15 && tamanoMenu.texto>=16 && tamanoMenu.icono>=20,
+      'El texto REAL o los iconos del menú se ven pequeños: '+JSON.stringify(tamanoMenu));
     assert.equal(await pantalla.locator('details.mg-reserva-acciones').count(),await pantalla.locator('tbody tr:not(:has(.mg-reservas-vacio))').count());
     await page.screenshot({path:'evidencias-dashboard/43_Reservas_UI_UX_claro.png',fullPage:true,animations:'disabled'});
   });
