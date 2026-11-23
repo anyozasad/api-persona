@@ -70,6 +70,24 @@ class ReparacionEsquemaController extends Controller
         }
     }
 
+    /**
+     * Resumen útil para el administrador, sin enviar SQL, contraseñas,
+     * rutas locales ni datos de socios al navegador.
+     */
+    private function erroresReparacion(string $salida): array
+    {
+        $encontrados = [];
+        foreach (preg_split('/\\r\\n|\\n|\\r/', $salida) ?: [] as $linea) {
+            $linea = trim($linea);
+            if (preg_match('/(?:No se pudo reparar|Migración pendiente|Falta el archivo de migración):?\\s*([a-zA-Z0-9_.-]+)/u', $linea, $m)) {
+                $encontrados[] = $m[1];
+            } elseif (preg_match('/SQLSTATE\\[([A-Z0-9]+)\\]/i', $linea, $m)) {
+                $encontrados[] = 'SQLSTATE_'.$m[1];
+            }
+        }
+        return array_slice(array_values(array_unique($encontrados)), 0, 12);
+    }
+
     public function reparar(Request $request)
     {
         $request->validate(['confirmacion' => 'required|in:RESPALDAR_Y_REPARAR']);
@@ -121,7 +139,10 @@ class ReparacionEsquemaController extends Controller
                 ]);
                 return response()->json([
                     'codigo' => 'RESPALDO_SQL_FALLIDO',
-                    'mensaje' => 'No se pudo generar un respaldo SQL válido. No se modificó ninguna tabla.',
+                    'etapa' => 'respaldo',
+                    'faltantes' => $inicial['faltantes'],
+                    'problemas_detectados' => $this->erroresReparacion(Artisan::output()),
+                    'mensaje' => 'Falló el respaldo de gym_system; no se modificó MySQL. Comprueba mysqldump y el usuario de la conexión.',
                 ], 503);
             }
 
@@ -134,7 +155,9 @@ class ReparacionEsquemaController extends Controller
             if ($copias === []) {
                 return response()->json([
                     'codigo' => 'RESPALDO_NO_VERIFICADO',
-                    'mensaje' => 'No se verificó una copia SQL nueva. La reparación no se ejecutó.',
+                    'etapa' => 'respaldo',
+                    'faltantes' => $inicial['faltantes'],
+                    'mensaje' => 'El respaldo no apareció en BACKEND/storage/app/backups. No se ejecutaron cambios sobre MySQL.',
                 ], 503);
             }
             usort($copias, static fn (string $a, string $b): int => filemtime($b) <=> filemtime($a));
@@ -152,7 +175,9 @@ class ReparacionEsquemaController extends Controller
                 ]);
                 return response()->json(array_merge($final, [
                     'codigo' => 'REPARACION_PARCIAL',
-                    'mensaje' => 'Se conservó el respaldo SQL. Hay tablas o columnas que todavía requieren revisión.',
+                    'etapa' => 'migraciones',
+                    'problemas_detectados' => $this->erroresReparacion($salida),
+                    'mensaje' => 'El respaldo existe, pero la reparación de tablas no terminó. Consulta los componentes pendientes que se muestran abajo.',
                     'respaldo' => $backup,
                 ]), 503);
             }
@@ -161,13 +186,17 @@ class ReparacionEsquemaController extends Controller
             if ($verificado !== 0) {
                 return response()->json(array_merge($final, [
                     'codigo' => 'VERIFICACION_BD_PENDIENTE',
-                    'mensaje' => 'Las tablas principales están disponibles, pero la validación completa detectó pendientes.',
+                    'etapa' => 'verificacion',
+                    'problemas_detectados' => $this->erroresReparacion(Artisan::output()),
+                    'mensaje' => 'MySQL completó parte de la reparación, pero todavía fallan verificaciones. No se ha declarado terminado.',
                     'respaldo' => $backup,
                 ]), 503);
             }
 
             return response()->json(array_merge($final, [
                 'codigo' => 'REPARACION_COMPLETA',
+                'etapa' => 'completo',
+                'problemas_detectados' => [],
                 'mensaje' => 'MySQL reparado y verificado. No se borraron datos existentes.',
                 'respaldo' => $backup,
             ]));
@@ -175,7 +204,9 @@ class ReparacionEsquemaController extends Controller
             report($e);
             return response()->json([
                 'codigo' => 'REPARACION_ERROR',
-                'mensaje' => 'No se completó la recuperación. Revisa el registro de Laravel antes de repetir.',
+                'etapa' => 'excepcion',
+                'problemas_detectados' => $this->erroresReparacion($e->getMessage()),
+                'mensaje' => 'No se completó la recuperación. La causa técnica quedó registrada en BACKEND/storage/logs.',
             ], 503);
         } finally {
             flock($lock, LOCK_UN);

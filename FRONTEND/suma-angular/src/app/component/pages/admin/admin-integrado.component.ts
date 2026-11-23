@@ -281,6 +281,12 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
                 <p *ngIf="reparacionMysqlError" role="alert">
                   <strong>{{reparacionMysqlCodigo ? reparacionMysqlCodigo + ': ' : ''}}</strong>{{reparacionMysqlError}}
                 </p>
+                <p *ngIf="reparacionMysqlError && reparacionMysqlEtapa" role="status">
+                  Etapa donde falló: <strong>{{reparacionMysqlEtapa}}</strong>.
+                </p>
+                <p *ngIf="reparacionMysqlError && reparacionMysqlProblemas.length" role="status">
+                  Errores detectados: {{reparacionMysqlProblemas.join(', ')}}.
+                </p>
                 <p *ngIf="reparacionMysqlError && diagnosticoMysql?.faltantes?.length" role="status">
                   Siguen pendientes {{diagnosticoMysql.faltantes.length}} objetos:
                   {{diagnosticoMysql.faltantes.slice(0,6).join(', ')}}.
@@ -2991,6 +2997,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   reparacionMysqlError = '';
   reparacionMysqlMensaje = '';
   reparacionMysqlCodigo = '';
+  reparacionMysqlEtapa = '';
+  reparacionMysqlProblemas: string[] = [];
 
   entrenadores: any[] = [];
   clases: any[] = [];
@@ -6382,12 +6390,16 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.reparandoMysql=true;
     this.reparacionMysqlError='';
     this.reparacionMysqlCodigo='';
+    this.reparacionMysqlEtapa='';
+    this.reparacionMysqlProblemas=[];
     this.reparacionMysqlMensaje='Creando respaldo SQL antes de completar las tablas...';
     this.api.repararEsquema().subscribe({
       next:r=>{
         this.reparandoMysql=false;
         this.diagnosticoMysql=r;
         this.reparacionMysqlCodigo=String(r?.codigo||'');
+        this.reparacionMysqlEtapa=String(r?.etapa||'');
+        this.reparacionMysqlProblemas=Array.isArray(r?.problemas_detectados) ? r.problemas_detectados : [];
         this.reparacionMysqlMensaje=String(r?.mensaje||'Revisión terminada.');
         if(r?.operativo){
           this.error='';
@@ -6407,6 +6419,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.reparandoMysql=false;
         const r=e?.error||{};
         this.reparacionMysqlCodigo=String(r?.codigo||('HTTP_'+(e?.status||0)));
+        this.reparacionMysqlEtapa=String(r?.etapa||'desconocida');
+        this.reparacionMysqlProblemas=Array.isArray(r?.problemas_detectados) ? r.problemas_detectados : [];
         if(Array.isArray(r.faltantes)){
           this.diagnosticoMysql=r;
         }

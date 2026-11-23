@@ -91,6 +91,18 @@ class BaseDatosUnicaSistemaTest extends TestCase
         $this->assertStringContainsString('set_time_limit(600)', $controlador);
     }
 
+    public function test_reparacion_muestra_etapa_y_errores_sin_exponer_sql_ni_datos_personales(): void
+    {
+        $controller = (string) file_get_contents(app_path('Http/Controllers/ReparacionEsquemaController.php'));
+        $admin = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/component/pages/admin/admin-integrado.component.ts'));
+        $this->assertStringContainsString("'etapa' => 'respaldo'", $controller);
+        $this->assertStringContainsString("'etapa' => 'migraciones'", $controller);
+        $this->assertStringContainsString("'etapa' => 'verificacion'", $controller);
+        $this->assertStringContainsString('problemas_detectados', $controller);
+        $this->assertStringContainsString('reparacionMysqlEtapa', $admin);
+        $this->assertStringContainsString('reparacionMysqlProblemas.join', $admin);
+    }
+
     public function test_reparador_directo_del_backend_exige_respaldo_y_no_usa_scripts(): void
     {
         $ruta = app_path('Console/Commands/RepararMallquiLocal.php');
