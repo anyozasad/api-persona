@@ -77,7 +77,7 @@ class ReparacionEsquemaController extends Controller
     private function erroresReparacion(string $salida): array
     {
         $encontrados = [];
-        foreach (preg_split('/\\r\\n|\\n|\\r/', $salida) ?: [] as $linea) {
+        foreach (preg_split('/\R/u', $salida) ?: [] as $linea) {
             $linea = trim($linea);
             if (preg_match('/(?:No se pudo reparar|Migración pendiente|Falta el archivo de migración):?\\s*([a-zA-Z0-9_.-]+)/u', $linea, $m)) {
                 $encontrados[] = $m[1];
@@ -142,7 +142,7 @@ class ReparacionEsquemaController extends Controller
                     'etapa' => 'respaldo',
                     'faltantes' => $inicial['faltantes'],
                     'problemas_detectados' => $this->erroresReparacion(Artisan::output()),
-                    'mensaje' => 'Falló el respaldo de gym_system; no se modificó MySQL. Comprueba mysqldump y el usuario de la conexión.',
+                    'mensaje' => 'Falló el respaldo de la base de datos activa; no se modificó MySQL. Comprueba mysqldump y el usuario de la conexión.',
                 ], 503);
             }
 
