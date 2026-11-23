@@ -406,17 +406,26 @@ try {
     assert.equal(await pantalla.locator('form select').count(),2);
     assert.equal(await pantalla.locator('form input[type="date"]').count(),1);
     assert.equal(await pantalla.getByRole('button',{name:'Registrar reserva'}).count(),1);
+    assert.equal(await pantalla.locator('.mg-reserva-label').count(),3,'Deben verse los tres pasos para registrar.');
+    await pantalla.locator('.mg-reservas-empty-state, .mg-reservas-lista').first().waitFor({timeout:15000});
     const tipos=await pantalla.evaluate(raiz=>{
       const fuente=(css)=>{const el=raiz.querySelector(css);return el?parseFloat(getComputedStyle(el).fontSize):0;};
       return {
         etiqueta:fuente('.admin-form-card form>label'),
         selector:fuente('.admin-form-card form select'),
         tabla:fuente('.admin-list-card .management-table td'),
+        vacio:fuente('.mg-reservas-empty-state p'),
         titulo:fuente('.admin-form-card h2')
       };
     });
-    assert.ok(tipos.etiqueta>=14 && tipos.selector>=15 && tipos.tabla>=13 && tipos.titulo>=18,
+    assert.ok(tipos.etiqueta>=14 && tipos.selector>=15 && (tipos.tabla>=13 || tipos.vacio>=14) && tipos.titulo>=18,
       'Reservas contiene texto difícil de leer: '+JSON.stringify(tipos));
+    const vacio=await pantalla.getByText('Aún no hay reservas',{exact:true}).count();
+    if(vacio){
+      assert.equal(await pantalla.locator('.management-table').count(),0,
+        'Cuando no existen reservas no debe verse una tabla vacía con desplazamiento horizontal.');
+      assert.equal(await pantalla.locator('.mg-reservas-lista').count(),0);
+    }
     const menu=page.locator('.mg-focus-sidebar .mg-focus-nav-button').first();
     const tamanoMenu=await menu.evaluate(el=>({
       boton:parseFloat(getComputedStyle(el).fontSize),
