@@ -16,7 +16,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
   selector: 'app-admin-integrado',
   standalone: true,
   imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminGymSuiteComponent, AdminApplicationsComponent, AdminDashboardToolsComponent],
-  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './styles/admin-live.css', '../crossfit-final.css', './styles/admin-dashboard-polish.css', './styles/admin-dashboard-premium.css', './styles/admin-mantis-interactions.css', './styles/admin-dashboard-refined.css', './styles/admin-mantis-reference.css', './styles/admin-efsrt-validation.css', './styles/admin-mallqui-original-palette.css', './styles/admin-claridad.css', './styles/admin-efsrt-simplificado.css', './styles/admin-navegacion-clara.css'],
+  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './styles/admin-live.css', '../crossfit-final.css', './styles/admin-dashboard-polish.css', './styles/admin-dashboard-premium.css', './styles/admin-mantis-interactions.css', './styles/admin-dashboard-refined.css', './styles/admin-mantis-reference.css', './styles/admin-efsrt-validation.css', './styles/admin-mallqui-original-palette.css', './styles/admin-claridad.css', './styles/admin-efsrt-simplificado.css', './styles/admin-navegacion-clara.css', './styles/admin-usabilidad.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
   <div class="admin-shell admin-home-redesign" [class.admin-sidebar-collapsed]="sidebarCerrado" [class.mg-mantis-collapsed]="sidebarCerrado" [class.mg-mantis-dark]="modoDashboard==='oscuro'" [class.mg-mantis-compact]="densidadDashboard==='compacta'" [class.mg-mantis-blue]="acentoDashboard==='azul'" [class.mg-mantis-green]="acentoDashboard==='verde'" [class.mg-mantis-coral]="acentoDashboard==='coral'">
@@ -191,6 +191,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
         <div class="mg-focus-taskbar-intro">
           <span>Estás en <strong>{{area.nombre}}</strong></span>
           <p>{{area.ayuda}}</p>
+          <span class="mg-area-status" *ngIf="['configuracion','caja','gastos','inventario','productos','kardex'].includes(seccion)">{{estadoModuloActual}}</span>
         </div>
         <nav class="mg-focus-task-tabs" [attr.aria-label]="'Elegir tarea en '+area.nombre">
           <button type="button" *ngFor="let tarea of area.opciones"
@@ -199,7 +200,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
             (click)="cambiarSegcion(tarea.id)">{{tarea.nombre}}</button>
         </nav>
       </section>
-      <section class="mg-module-shell-head" *ngIf="seccion!=='dashboard' && !['aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui'].includes(seccion)">
+      <section class="mg-module-shell-head" *ngIf="seccion!=='dashboard' && !areaActualAdmin && !['aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui'].includes(seccion)">
         <div class="mg-module-shell-copy">
           <p>{{subtituloActual}}</p>
         </div>
@@ -1992,14 +1993,13 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
       </ng-container>
 
       <ng-container *ngIf="seccion==='reservas'">
-        <section class="management-grid">
+        <section class="management-grid mg-reservas-ui" aria-label="Gestión de reservas">
           <article class="admin-form-card">
             <div class="management-heading">
               <div>
                 <h2>{{reservaEditandoId ? 'Editar reserva' : 'Nueva reserva'}}</h2>
-                <p>Valida socio, membresía, fecha, horario y cupos disponibles.</p>
+                <p>Elige un socio, una clase y la fecha para guardar la reserva.</p>
               </div>
-              <span>◫</span>
             </div>
             <div class="mg-reserva-prerequisito" *ngIf="!clientes.length || !clases.length" role="status">
               <strong>Antes de registrar una reserva</strong>
@@ -2029,7 +2029,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
                 <input type="date" name="resFecha" [(ngModel)]="reservaForm.fecha_clase"
                   [min]="fechaMinimaReserva" required>
               </label>
-              <p>Solo se permiten clases futuras, con membresía vigente y cupo disponible.</p>
+              <p class="mg-reserva-ayuda" id="mg-ayuda-reserva">La fecha debe ser futura. Se comprobarán la membresía vigente, el horario y los cupos disponibles al guardar.</p>
               <div class="form-row">
                 <button class="admin-primary" type="submit" [disabled]="reservaGuardando || !clientes.length || !clases.length">
                   {{reservaGuardando ? 'Guardando...' : (reservaEditandoId ? 'Guardar cambios' : 'Registrar reserva')}}
@@ -2040,7 +2040,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
             </form>
           </article>
           <article class="admin-list-card wide-card">
-            <div class="management-heading"><div><h2>Reservas de clases</h2><p>Alta, consulta, edición y cancelación con historial.</p></div><span class="big-number">{{reservas.length}}</span></div>
+            <div class="management-heading"><div><h2>Reservas registradas</h2><p>Consulta las reservas y administra su asistencia.</p></div><span class="mg-reserva-total" aria-label="Cantidad de reservas">{{reservas.length}} {{reservas.length===1 ? 'reserva' : 'reservas'}}</span></div>
             <div class="table-wrap"><table class="management-table">
               <thead><tr><th>ID</th><th>Socio</th><th>Clase</th><th>Fecha</th><th>Entrenador</th><th>Estado</th><th>Acciones</th></tr></thead>
               <tbody>
@@ -2049,18 +2049,23 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
                   <td>{{r.clase?.nombre}}</td><td>{{r.fecha_clase | date:'dd/MM/yyyy'}}</td>
                   <td>{{nombreEntrenador(r.clase?.entrenador)}}</td><td>{{r.estado}}</td>
                   <td>
-                    <button class="table-action" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
-                      (click)="editarReservaAdmin(r)">Editar</button>
-                    <button class="table-action" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
-                      (click)="cambiarEstadoReserva(r.id_reserva,'Asistio')">Asistió</button>
-                    <button class="admin-secondary" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
-                      (click)="cambiarEstadoReserva(r.id_reserva,'NoAsistio')">No asistió</button>
-                    <button class="table-danger" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
-                      title="Cancelar sin eliminar el historial"
-                      (click)="cancelarReservaAdmin(r)">Eliminar / cancelar</button>
+                    <details class="mg-reserva-acciones">
+                      <summary aria-label="Abrir acciones de la reserva">Acciones</summary>
+                      <div class="mg-reserva-acciones-lista">
+                        <button class="table-action" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
+                          (click)="editarReservaAdmin(r)">Editar reserva</button>
+                        <button class="table-action" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
+                          (click)="cambiarEstadoReserva(r.id_reserva,'Asistio')">Marcar asistencia</button>
+                        <button class="admin-secondary" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
+                          (click)="cambiarEstadoReserva(r.id_reserva,'NoAsistio')">Marcar inasistencia</button>
+                        <button class="table-danger" type="button" [disabled]="!reservaAdmiteCambioEstado(r)"
+                          title="Cancelar sin borrar el historial"
+                          (click)="cancelarReservaAdmin(r)">Cancelar reserva</button>
+                      </div>
+                    </details>
                   </td>
                 </tr>
-                <tr *ngIf="!reservas.length"><td colspan="7">No hay reservas registradas.</td></tr>
+                <tr *ngIf="!reservas.length"><td colspan="7" class="mg-reservas-vacio">Aún no hay reservas. Completa el formulario de la izquierda para registrar la primera.</td></tr>
               </tbody>
             </table></div>
           </article>
