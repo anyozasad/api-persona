@@ -6,6 +6,7 @@ use App\Models\Caja;
 use App\Models\MovimientoCaja;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -43,13 +44,37 @@ class CajaController extends Controller
                 ]);
             }
 
-            return Caja::create([
+            $datosCaja = [
                 'id_usuario_apertura' => $request->user()->id_usuario,
                 'fecha_apertura' => now(),
                 'monto_inicial' => $datos['monto_inicial'],
                 'estado' => 'Abierta',
                 'observacion' => $datos['observacion'] ?? null,
-            ]);
+            ];
+
+            // Compatibilidad con instalaciones originales de gym_system:
+            // cajas.id es la PK, usuario_id/monto_final/total_ventas/total_gastos
+            // son columnas legacy requeridas y deben conservarse.
+            if (Schema::hasColumn('cajas', 'id') && Schema::hasColumn('cajas', 'usuario_id')) {
+                $campos = array_fill_keys(Schema::getColumnListing('cajas'), true);
+                $datosCaja['usuario_id'] = (int) (
+                    $request->user()->getAttribute('id') ?: $request->user()->id_usuario
+                );
+                foreach (['monto_final', 'total_ventas', 'total_gastos'] as $columna) {
+                    if (isset($campos[$columna])) {
+                        $datosCaja[$columna] = 0;
+                    }
+                }
+                $datosCaja['estado'] = 'abierta';
+                $idLegacy = (int) DB::table('cajas')->insertGetId($datosCaja, 'id');
+                if (isset($campos['id_caja'])) {
+                    DB::table('cajas')->where('id', $idLegacy)->update(['id_caja' => $idLegacy]);
+                }
+
+                return Caja::findOrFail($idLegacy);
+            }
+
+            return Caja::create($datosCaja);
         });
 
         return response()->json([
