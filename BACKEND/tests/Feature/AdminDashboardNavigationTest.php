@@ -30,10 +30,20 @@ class AdminDashboardNavigationTest extends TestCase
 
         $this->assertCount(26, $secciones);
 
-        // El menú actual usa una lista única y el método navegarMenu()
-        // en lugar de repetir un (click) por cada botón.
-        $this->assertStringContainsString('navegarMenu(item)', $source);
-        $this->assertStringContainsString('this.cambiarSegcion(item.id)', $source);
+        // El menú muestra seis áreas claras; las tareas permanecen dentro
+        // de su área sin desplegables repetidos en la barra lateral.
+        $inicio = strpos($source, '<nav class="admin-main-nav mg-clear-navigation mg-focus-sidebar"');
+        $this->assertNotFalse($inicio);
+        $fin = strpos($source, '</nav>', $inicio);
+        $this->assertNotFalse($fin);
+        $menu = substr($source, $inicio, $fin - $inicio);
+        $this->assertStringContainsString('*ngFor="let area of areasPanelAdmin"', $menu);
+        $this->assertStringContainsString('(click)="abrirAreaPrincipalAdmin(area.id)"', $menu);
+        $this->assertStringNotContainsString('mg-simple-group', $menu);
+        $this->assertStringNotContainsString('Otras funciones', $menu);
+        $this->assertStringContainsString('readonly areasPanelAdmin:', $source);
+        $this->assertStringContainsString('class="mg-focus-task-tabs"', $source);
+        $this->assertStringContainsString('(click)="cambiarSegcion(tarea.id)"', $source);
         foreach ($secciones as $seccion) {
             $this->assertStringContainsString(
                 "id:'".$seccion."'",
@@ -47,14 +57,12 @@ class AdminDashboardNavigationTest extends TestCase
         $this->assertStringContainsString('admin-efsrt-simplificado.css', $source);
         $this->assertStringNotContainsString('Todas las funciones', $source);
         $this->assertStringNotContainsString("id:'apps'", $source);
-        $this->assertStringContainsString('SOCIOS Y SESIONES', $source);
-        $this->assertStringContainsString('PRODUCTOS Y COBROS', $source);
-        $this->assertStringContainsString('GESTIÓN Y RESULTADOS', $source);
-        $this->assertStringNotContainsString('GESTIÓN COMPLETA', $source);
-        $this->assertStringContainsString('accesosAdministracionAdmin', $source);
-        $this->assertStringContainsString('opcionesSelectorGrupo(grupo)', $source);
-        $this->assertStringContainsString('mg-nav-primary', $source);
-        $this->assertStringContainsString('mostrarGestionAvanzada', $source);
+        $this->assertStringContainsString("id:'socios',nombre:'Socios'", $source);
+        $this->assertStringContainsString("id:'entrenamiento',nombre:'Clases y reservas'", $source);
+        $this->assertStringContainsString("id:'inventario',nombre:'Productos'", $source);
+        $this->assertStringContainsString("id:'ventas',nombre:'Ventas y caja'", $source);
+        $this->assertStringContainsString("id:'atencion',nombre:'Atención al socio'", $source);
+        $this->assertStringContainsString("id:'administracion',nombre:'Administración'", $source);
         $this->assertStringContainsString("id:'verificacion-efsrt'", $source);
         $this->assertStringContainsString('mostrarGraficosDashboard', $source);
         $this->assertStringNotContainsString('class="mg-module-tabs"', $source);
