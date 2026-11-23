@@ -519,6 +519,7 @@ class GymSystemAdminController extends Controller
         $nombre=trim((string)$request->input('nombre_categoria',$request->input('nombre','')));
         abort_if($nombre==='',422,'Ingresa el nombre de la categoría.');
         $id=$this->db->table('categorias')->insertGetId(['nombre'=>$nombre,'estado'=>$this->estadoDb((string)$request->input('estado','Activo'))]);
+        $this->sincronizarAliasLegacy('categorias',(int)$id,['id_categoria'=>$id,'nombre_categoria'=>$nombre]);
         return response()->json(['mensaje'=>'Categoría registrada.','id_categoria'=>$id],201);
     }
 
@@ -527,6 +528,7 @@ class GymSystemAdminController extends Controller
         $nombre=trim((string)$request->input('nombre_categoria',$request->input('nombre','')));
         abort_if($nombre==='',422,'Ingresa el nombre de la categoría.');
         $this->db->table('categorias')->where('id',$id)->update(['nombre'=>$nombre,'estado'=>$this->estadoDb((string)$request->input('estado','Activo'))]);
+        $this->sincronizarAliasLegacy('categorias',(int)$id,['id_categoria'=>(int)$id,'nombre_categoria'=>$nombre]);
         return response()->json(['mensaje'=>'Categoría actualizada.']);
     }
 
@@ -567,6 +569,12 @@ class GymSystemAdminController extends Controller
 
         $d=$this->validarProducto($request);
         $id=$this->db->table('productos')->insertGetId($d);
+        $this->sincronizarAliasLegacy('productos',(int)$id,[
+            'id_producto'=>$id,
+            'id_categoria'=>$d['categoria_id'],
+            'codigo_producto'=>$d['codigo'],
+            'nombre_producto'=>$d['nombre'],
+        ]);
         return response()->json(['mensaje'=>'Producto registrado.','id_producto'=>$id],201);
     }
 
@@ -585,6 +593,12 @@ class GymSystemAdminController extends Controller
         $datos=$this->validarProducto($request);
         if(!$request->has('stock')) $datos['stock']=$actual->stock;
         $this->db->table('productos')->where('id',$id)->update($datos);
+        $this->sincronizarAliasLegacy('productos',(int)$id,[
+            'id_producto'=>(int)$id,
+            'id_categoria'=>$datos['categoria_id'],
+            'codigo_producto'=>$datos['codigo'],
+            'nombre_producto'=>$datos['nombre'],
+        ]);
         return response()->json(['mensaje'=>'Producto actualizado.']);
     }
 
@@ -1293,6 +1307,26 @@ class GymSystemAdminController extends Controller
     {
         $s=(object)['id'=>$r->socio_id,'nombre'=>$r->socio_nombre??'','dni'=>$r->dni??'','email'=>$r->email??null,'telefono'=>$r->telefono??null,'estado'=>$r->socio_estado??'activo','foto'=>null,'whatsapp_api_key'=>null,'fecha_registro'=>null];
         return ['id_asistencia'=>(int)$r->id,'cliente'=>$this->mapSocio($s),'fecha_hora_entrada'=>$r->fecha_hora,'fecha_hora_salida'=>$r->fecha_hora_salida??null,'estado'=>$r->estado??(($r->fecha_hora_salida??null)?'Salió':'Dentro')];
+    }
+
+    /** Los IDs y nombres antiguos siguen siendo los campos de inserción.
+     *  Si el reparador añadió columnas modernas, reflejar la fila real
+     *  también en ellas para los reportes, sin tablas duplicadas.
+     */
+    private function sincronizarAliasLegacy(string $tabla, int $id, array $datos): void
+    {
+        $disponibles = [];
+        foreach ($this->db->select('SHOW COLUMNS FROM `'.$tabla.'`') as $campo) {
+            $nombre = (string) $campo->Field;
+            $extra = strtoupper((string) ($campo->Extra ?? ''));
+            if (!str_contains($extra, 'GENERATED')) {
+                $disponibles[$nombre] = true;
+            }
+        }
+        $cambios = array_intersect_key($datos, $disponibles);
+        if ($cambios !== []) {
+            $this->db->table($tabla)->where('id', $id)->update($cambios);
+        }
     }
 
     private function mapProducto($p):array
