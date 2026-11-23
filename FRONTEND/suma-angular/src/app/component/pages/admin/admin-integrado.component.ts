@@ -149,33 +149,12 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
           <span>Inicio</span>
         </button>
 
-        <span class="mg-nav-caption mg-nav-section-separator">SOCIOS Y SESIONES</span>
-        <button type="button" class="mg-nav-primary" *ngFor="let item of accesosPrincipalesAdmin.slice(0,3)"
-          [class.active]="seccion===item.id"
-          [attr.aria-current]="seccion===item.id ? 'page' : null"
-          [attr.aria-label]="item.nombre"
-          [attr.title]="item.ayuda"
-          (click)="navegarMenu(item)">
-          <span class="admin-main-nav-icon" aria-hidden="true">{{item.icono}}</span>
-          <span class="mg-nav-action-copy"><strong>{{item.nombre}}</strong><small>{{item.ayuda}}</small></span>
-        </button>
-
-        <span class="mg-nav-caption mg-nav-section-separator">PRODUCTOS Y COBROS</span>
-        <button type="button" class="mg-nav-primary" *ngFor="let item of accesosPrincipalesAdmin.slice(3)"
-          [class.active]="seccion===item.id"
-          [attr.aria-current]="seccion===item.id ? 'page' : null"
-          [attr.aria-label]="item.nombre"
-          [attr.title]="item.ayuda"
-          (click)="navegarMenu(item)">
-          <span class="admin-main-nav-icon" aria-hidden="true">{{item.icono}}</span>
-          <span class="mg-nav-action-copy"><strong>{{item.nombre}}</strong><small>{{item.ayuda}}</small></span>
-        </button>
-
-        <span class="mg-nav-caption mg-nav-section-separator">MÓDULOS DEL GIMNASIO</span>
+        <span class="mg-nav-caption mg-nav-section-separator">GESTIÓN DEL GIMNASIO</span>
         <div class="mg-simple-groups" aria-label="Áreas de gestión">
           <section class="mg-simple-group" *ngFor="let grupo of menuPrincipal"
             [class.mg-simple-group-open]="grupoComplementarioSeleccionado===grupo.id">
             <button type="button" class="mg-simple-group-toggle"
+              [class.active]="grupoComplementarioSeleccionado===grupo.id"
               [attr.aria-expanded]="grupoComplementarioSeleccionado===grupo.id"
               [attr.aria-label]="'Mostrar funciones de '+grupo.titulo"
               (click)="grupoComplementarioSeleccionado=grupoComplementarioSeleccionado===grupo.id ? '' : grupo.id">
@@ -184,7 +163,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
               <span class="mg-simple-group-chevron" aria-hidden="true">{{grupoComplementarioSeleccionado===grupo.id ? '⌃' : '⌄'}}</span>
             </button>
             <div class="mg-simple-group-links" *ngIf="grupoComplementarioSeleccionado===grupo.id">
-              <button type="button" class="mg-secondary-link" *ngFor="let item of opcionesSelectorGrupo(grupo)"
+              <button type="button" class="mg-secondary-link" *ngFor="let item of grupo.items"
                 [class.active]="seccion===item.id"
                 [attr.data-module]="item.id"
                 [attr.aria-current]="seccion===item.id ? 'page' : null"
