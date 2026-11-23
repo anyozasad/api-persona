@@ -276,7 +276,19 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
                   (click)="repararEsquemaMysql()">
                   {{reparandoMysql ? 'Creando respaldo y reparando...' : 'Respaldar y reparar MySQL'}}
                 </button>
-                <p *ngIf="reparacionMysqlError" role="alert">{{reparacionMysqlError}}</p>
+                <p *ngIf="reparandoMysql" role="status">Reparación en curso. No cierres esta pestaña ni ejecutes el proceso dos veces.</p>
+                <p *ngIf="reparacionMysqlMensaje" role="status">{{reparacionMysqlMensaje}}</p>
+                <p *ngIf="reparacionMysqlError" role="alert">
+                  <strong>{{reparacionMysqlCodigo ? reparacionMysqlCodigo + ': ' : ''}}</strong>{{reparacionMysqlError}}
+                </p>
+                <p *ngIf="reparacionMysqlError && diagnosticoMysql?.faltantes?.length" role="status">
+                  Siguen pendientes {{diagnosticoMysql.faltantes.length}} objetos:
+                  {{diagnosticoMysql.faltantes.slice(0,6).join(', ')}}.
+                </p>
+                <small *ngIf="reparacionMysqlError">
+                  Comprueba el resultado del respaldo y el registro de Laravel en BACKEND/storage/logs;
+                  no borres las tablas existentes.
+                </small>
               </div>
             </div>
           </section>
@@ -2978,6 +2990,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   reparandoMysql = false;
   reparacionMysqlError = '';
   reparacionMysqlMensaje = '';
+  reparacionMysqlCodigo = '';
 
   entrenadores: any[] = [];
   clases: any[] = [];
@@ -6362,33 +6375,46 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   repararEsquemaMysql(): void {
     if(this.reparandoMysql)return;
-    if(!confirm('Se hará primero un respaldo SQL y después se recuperarán las tablas y columnas pendientes, sin borrar socios, ventas ni pagos. ¿Continuar?'))return;
+    if(!confirm('Se hará primero un respaldo SQL y después se recuperarán las tablas y columnas pendientes, sin borrar socios, ventas ni pagos. ¿Continuar?')){
+      this.reparacionMysqlMensaje='Reparación cancelada: no se modificó MySQL.';
+      return;
+    }
     this.reparandoMysql=true;
     this.reparacionMysqlError='';
-    this.reparacionMysqlMensaje='';
+    this.reparacionMysqlCodigo='';
+    this.reparacionMysqlMensaje='Creando respaldo SQL antes de completar las tablas...';
     this.api.repararEsquema().subscribe({
       next:r=>{
         this.reparandoMysql=false;
         this.diagnosticoMysql=r;
+        this.reparacionMysqlCodigo=String(r?.codigo||'');
         this.reparacionMysqlMensaje=String(r?.mensaje||'Revisión terminada.');
         if(r?.operativo){
           this.error='';
           this.pagosError='';
           this.cajaError='';
-          // La pantalla mostraba el aviso rojo viejo hasta el siguiente F5:
-          // renovar estado, indicadores y errores de todos los módulos.
+          // Actualizar las cifras y dejar desaparecer el aviso amarillo
+          // únicamente cuando MySQL confirme su estructura.
           this.actualizarDashboardCompleto();
           this.consultarEsquemaMysql();
           if(this.seccion!=='dashboard')this.cargarSegcion(this.seccion);
+        } else {
+          this.reparacionMysqlError='La respuesta no confirmó que MySQL está completo.';
+          this.actualizarDashboardCompleto();
         }
       },
       error:e=>{
         this.reparandoMysql=false;
         const r=e?.error||{};
+        this.reparacionMysqlCodigo=String(r?.codigo||('HTTP_'+(e?.status||0)));
         if(Array.isArray(r.faltantes)){
           this.diagnosticoMysql=r;
         }
+        this.reparacionMysqlMensaje='';
         this.reparacionMysqlError=String(r?.mensaje||'La reparación no pudo finalizar. No repitas cambios sin revisar el respaldo.');
+        // Una reparación parcial puede haber recuperado muchas columnas:
+        // actualizar el número real en vez de conservar los 64 iniciales.
+        this.actualizarDashboardCompleto();
       }
     });
   }
