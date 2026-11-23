@@ -102,6 +102,12 @@ class ReconciliarEsquemaRealMallqui extends Command
                 continue;
             }
             $columnas = array_fill_keys(Schema::getColumnListing($tabla), true);
+            $firmaLegacy = $tabla === 'productos'
+                ? ['id', 'categoria_id', 'codigo', 'nombre']
+                : ['id', 'nombre'];
+            if (array_diff($firmaLegacy, array_keys($columnas)) !== []) {
+                continue;
+            }
             $paresExistentes = array_filter(
                 $alias,
                 fn (string $origen, string $nuevo) => isset($columnas[$nuevo], $columnas[$origen]),
@@ -273,6 +279,12 @@ class ReconciliarEsquemaRealMallqui extends Command
                 continue;
             }
             $campos = array_fill_keys(Schema::getColumnListing($tabla), true);
+            $firmaLegacy = $tabla === 'productos'
+                ? ['id', 'categoria_id', 'codigo', 'nombre']
+                : ['id', 'nombre'];
+            if (array_diff($firmaLegacy, array_keys($campos)) !== []) {
+                continue;
+            }
             foreach ($alias as $nuevo => $anterior) {
                 if (!isset($campos[$nuevo], $campos[$anterior])) {
                     continue;
