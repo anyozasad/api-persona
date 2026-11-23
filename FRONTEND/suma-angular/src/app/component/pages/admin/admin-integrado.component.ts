@@ -271,6 +271,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
                 · Socios: {{clientes.length}} · Productos: {{productos.length}} · Pagos: {{pagos.length}}</small>
               <div *ngIf="estadoOperativoDashboard?.database===true && estadoOperativoDashboard?.operativo===false"
                    class="mg-operational-repair">
+                <small>Para recuperar las tablas no basta con actualizar GitHub: confirma la reparación en esta base local.</small>
                 <button type="button" class="admin-primary" [disabled]="reparandoMysql"
                   (click)="repararEsquemaMysql()">
                   {{reparandoMysql ? 'Creando respaldo y reparando...' : 'Respaldar y reparar MySQL'}}
@@ -4278,7 +4279,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       const muestra=faltantes.slice(0,3).join(', ');
       return 'Laravel y MySQL responden, pero faltan '+faltantes.length
         +' tablas o columnas'+(muestra ? ': '+muestra : '')
-        +'. Respalda primero tu base local: usa el iniciador de Mallqui Gym con -Migrar, que solicita autorización y genera un respaldo SQL antes de reparar.';
+        +'. Pulsa el botón «Respaldar y reparar MySQL» que aparece debajo. El sistema solicitará confirmación, guardará un respaldo SQL y completará las tablas pendientes sin borrar tus registros.';
     }
     if (this.dashboardError || !this.dashboard) return 'Laravel y MySQL responden, pero falló el resumen: '
       +(this.dashboardError || 'revisa el registro de errores de Laravel en BACKEND/storage/logs.');
