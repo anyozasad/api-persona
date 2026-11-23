@@ -84,6 +84,44 @@ class ReconciliarEsquemaRealMallqui extends Command
         return self::REQUERIDAS;
     }
 
+    /** Verifica datos legacy que pueden quedar sin copiar aunque las
+     *  columnas ya existan. Devuelve solo tablas, nunca datos personales.
+     */
+    public static function integridadCatalogoPendiente(): array
+    {
+        $pares = [
+            'categorias' => ['id_categoria' => 'id', 'nombre_categoria' => 'nombre'],
+            'productos' => [
+                'id_producto' => 'id', 'id_categoria' => 'categoria_id',
+                'codigo_producto' => 'codigo', 'nombre_producto' => 'nombre',
+            ],
+        ];
+        $pendientes = [];
+        foreach ($pares as $tabla => $alias) {
+            if (!Schema::hasTable($tabla)) {
+                continue;
+            }
+            $columnas = array_fill_keys(Schema::getColumnListing($tabla), true);
+            $paresExistentes = array_filter(
+                $alias,
+                fn (string $origen, string $nuevo) => isset($columnas[$nuevo], $columnas[$origen]),
+                ARRAY_FILTER_USE_BOTH
+            );
+            if ($paresExistentes === []) {
+                continue;
+            }
+            $desajuste = DB::table($tabla)->where(function ($q) use ($paresExistentes) {
+                foreach ($paresExistentes as $nuevo => $origen) {
+                    $q->orWhereNull($nuevo)->orWhereColumn($nuevo, '<>', $origen);
+                }
+            })->exists();
+            if ($desajuste) {
+                $pendientes[] = 'integridad:'.$tabla;
+            }
+        }
+        return $pendientes;
+    }
+
     public function handle(): int
     {
         $this->info('Revisando el esquema REAL de MySQL (sin borrar datos)...');
@@ -241,7 +279,11 @@ class ReconciliarEsquemaRealMallqui extends Command
                 }
                 // Nombre y código antiguos pueden ser obligatorios; solo
                 // rellenar la copia nueva cuando aún está sin contenido.
-                DB::table($tabla)->whereNull($nuevo)->update([$nuevo => DB::raw('`'.$anterior.'`')]);
+                DB::table($tabla)
+                    ->where(function ($q) use ($nuevo, $anterior) {
+                        $q->whereNull($nuevo)->orWhereColumn($nuevo, '<>', $anterior);
+                    })
+                    ->update([$nuevo => DB::raw('`'.$anterior.'`')]);
             }
         }
     }

@@ -41,6 +41,11 @@ class VerificarMallquiBd extends Command
             }
         }
 
+        foreach (ReconciliarEsquemaRealMallqui::integridadCatalogoPendiente() as $pendiente) {
+            $this->error('FALTA sincronizar datos legacy: '.$pendiente);
+            ++$errores;
+        }
+
         // Los usuarios con id_usuario NULL pueden validar la contraseña,
         // pero fallan al generar su sesión con Sanctum.
         if (Schema::hasTable('usuarios') && Schema::hasColumn('usuarios', 'id_usuario')) {

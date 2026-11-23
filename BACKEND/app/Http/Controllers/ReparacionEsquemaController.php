@@ -34,6 +34,10 @@ class ReparacionEsquemaController extends Controller
                 }
             }
         }
+        $faltantes = array_merge(
+            $faltantes,
+            ReconciliarEsquemaRealMallqui::integridadCatalogoPendiente()
+        );
         // Mismo criterio que /api/estado-sistema y db:verificar. Si las
         // vistas faltan, el botón de reparación debe poder reconstruirlas.
         foreach (['vista_clientes_membresias', 'vista_stock', 'vista_ventas'] as $vista) {

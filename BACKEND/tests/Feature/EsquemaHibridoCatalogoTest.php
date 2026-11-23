@@ -132,6 +132,20 @@ class EsquemaHibridoCatalogoTest extends TestCase
             $this->assertSame('Creatina guardada', $despues->nombre);
             $this->assertEqualsWithDelta(30.0, (float) $despues->precio_venta, 0.001);
             $this->assertSame(5, (int) $despues->stock);
+            // Una instalación que tiene la columna pero dejó los datos a
+            // NULL no debe declarar "TODO OK" ni saltarse la reparación.
+            DB::table('productos')->where('id', $nuevo->id)->update(['nombre_producto' => null]);
+            $this->assertContains(
+                'integridad:productos',
+                \App\Console\Commands\ReconciliarEsquemaRealMallqui::integridadCatalogoPendiente()
+            );
+            $this->assertSame(1, Artisan::call('db:verificar'));
+            $this->assertSame(0, Artisan::call('db:reconciliar-esquema'), Artisan::output());
+            $this->assertSame(0, Artisan::call('db:verificar'), Artisan::output());
+            $this->assertSame(
+                'Creatina guardada',
+                DB::table('productos')->where('id', $nuevo->id)->value('nombre_producto')
+            );
             $catalogoActualizado = app(PortalClienteController::class)->productos($peticion)->getData(true);
             $this->assertSame(
                 $nuevaFoto,

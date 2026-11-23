@@ -72,6 +72,11 @@ Route::get('/estado-sistema', function () {
             }
         }
 
+        $faltantes = array_merge(
+            $faltantes,
+            \App\Console\Commands\ReconciliarEsquemaRealMallqui::integridadCatalogoPendiente()
+        );
+
         // Las vistas también forman parte de los reportes del administrador.
         foreach (['vista_clientes_membresias', 'vista_stock', 'vista_ventas'] as $vista) {
             try {
