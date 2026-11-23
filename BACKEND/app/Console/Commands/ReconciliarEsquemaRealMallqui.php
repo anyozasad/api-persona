@@ -112,41 +112,8 @@ class ReconciliarEsquemaRealMallqui extends Command
             }
 
             $reparadas = 0;
-            $pendientes = [];
-            foreach (self::REQUERIDAS as $tabla => $columnas) {
-                if (!Schema::hasTable($tabla)) {
-                    $pendientes[] = 'tabla:'.$tabla;
-                    continue;
-                }
-                foreach ($columnas as $i => $columna) {
-                    if (Schema::hasColumn($tabla, $columna)) {
-                        continue;
-                    }
-                    try {
-                        if ($i === 0) {
-                            $this->repararIdentificador($tabla, $columna);
-                        } else {
-                            $this->agregarColumna($tabla, $columna);
-                        }
-                        ++$reparadas;
-                        $this->line('Agregada: '.$tabla.'.'.$columna);
-                    } catch (Throwable $e) {
-                        $pendientes[] = $tabla.'.'.$columna;
-                        $this->warn('No se pudo reparar '.$tabla.'.'.$columna.'. Revisar esquema antiguo y laravel.log.');
-                        report($e);
-                    }
-                }
-            }
+            $pendientes = $this->completarColumnas($reparadas);
 
-            if ($pendientes !== []) {
-                $this->error('No se completó el esquema: '.implode(', ', $pendientes));
-                if ($erroresMigraciones !== []) {
-                    foreach ($erroresMigraciones as $errorMigracion) {
-                        $this->warn('Migración pendiente: '.$errorMigracion);
-                    }
-                }
-                return self::FAILURE;
-            }
             if ($erroresMigraciones !== []) {
                 // Esquemas XAMPP incompletos pueden no tener aún la columna
                 // indicada por ->after('id_cliente') o ->after('descripcion').
@@ -168,6 +135,10 @@ class ReconciliarEsquemaRealMallqui extends Command
                         report($e);
                     }
                 }
+                // Una migración recuperada puede haber creado tablas nuevas
+                // que todavía no existían durante la primera revisión.
+                // Revisar también sus columnas antes de decidir el resultado.
+                $pendientes = $this->completarColumnas($reparadas);
                 if ($erroresMigraciones !== []) {
                     foreach ($erroresMigraciones as $nombre => $motivo) {
                         $this->warn('Migración pendiente: '.$nombre.' - '.$motivo);
@@ -175,6 +146,11 @@ class ReconciliarEsquemaRealMallqui extends Command
                     $this->error('Hay migraciones que siguen fallando tras completar el esquema. El respaldo SQL se conserva.');
                     return self::FAILURE;
                 }
+            }
+
+            if ($pendientes !== []) {
+                $this->error('No se completó el esquema: '.implode(', ', $pendientes));
+                return self::FAILURE;
             }
 
             // Las vistas son consultas derivadas, no contienen filas propias.
@@ -193,6 +169,42 @@ class ReconciliarEsquemaRealMallqui extends Command
             report($e);
             return self::FAILURE;
         }
+    }
+
+    /**
+     * Inspección reutilizable para instalaciones XAMPP con migraciones
+     * incompletas. Mantiene las filas existentes y sólo agrega columnas.
+     * Devuelve los elementos que siguen ausentes en ESTE intento.
+     */
+    private function completarColumnas(int &$reparadas): array
+    {
+        $pendientes = [];
+        foreach (self::REQUERIDAS as $tabla => $columnas) {
+            if (!Schema::hasTable($tabla)) {
+                $pendientes[] = 'tabla:'.$tabla;
+                continue;
+            }
+            foreach ($columnas as $i => $columna) {
+                if (Schema::hasColumn($tabla, $columna)) {
+                    continue;
+                }
+                try {
+                    if ($i === 0) {
+                        $this->repararIdentificador($tabla, $columna);
+                    } else {
+                        $this->agregarColumna($tabla, $columna);
+                    }
+                    ++$reparadas;
+                    $this->line('Agregada: '.$tabla.'.'.$columna);
+                } catch (Throwable $e) {
+                    $pendientes[] = $tabla.'.'.$columna;
+                    $this->warn('No se pudo reparar '.$tabla.'.'.$columna.'. Revisar esquema antiguo y laravel.log.');
+                    report($e);
+                }
+            }
+        }
+
+        return $pendientes;
     }
 
     private function repararIdentificador(string $tabla, string $columna): void
