@@ -140,34 +140,21 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
         <span><strong>Mallqui</strong><b>Gym</b></span>
       </div>
 
-      <nav class="admin-main-nav crossfit-sidebar-nav mg-clear-navigation mg-tec-order mg-direct-areas" aria-label="Navegación del gimnasio">
-        <button type="button" class="mg-direct-home" [class.active]="seccion==='dashboard'"
+      <nav class="admin-main-nav mg-clear-navigation mg-focus-sidebar" aria-label="Ir a un área del gimnasio">
+        <button type="button" class="mg-focus-nav-button" [class.active]="seccion==='dashboard'"
           [attr.aria-current]="seccion==='dashboard' ? 'page' : null"
           (click)="cambiarSegcion('dashboard')">
-          <span class="admin-main-nav-icon" aria-hidden="true">⌂</span>
+          <span class="mg-focus-nav-icon" aria-hidden="true">⌂</span>
           <span>Inicio</span>
         </button>
-        <span class="mg-nav-caption mg-nav-section-separator">ÁREAS DEL GIMNASIO</span>
-        <section class="mg-simple-group" *ngFor="let grupo of menuPrincipal"
-          [class.mg-simple-group-open]="grupoComplementarioSeleccionado===grupo.id">
-          <button type="button" class="mg-simple-group-toggle"
-            [attr.aria-expanded]="grupoComplementarioSeleccionado===grupo.id"
-            (click)="grupoComplementarioSeleccionado=grupoComplementarioSeleccionado===grupo.id ? '' : grupo.id">
-            <span class="mg-simple-group-icon" aria-hidden="true">{{grupo.icono}}</span>
-            <span>{{grupo.titulo}}</span>
-            <span class="mg-simple-group-chevron" aria-hidden="true">{{grupoComplementarioSeleccionado===grupo.id ? '⌃' : '⌄'}}</span>
-          </button>
-          <div class="mg-simple-group-links" *ngIf="grupoComplementarioSeleccionado===grupo.id">
-            <button type="button" class="mg-secondary-link" *ngFor="let item of grupo.items"
-              [class.active]="seccion===item.id"
-              [attr.aria-current]="seccion===item.id ? 'page' : null"
-              [attr.title]="descripcionOpcionMenu(item.id)"
-              (click)="abrirAreaAdmin(item.id)">
-              <span>{{item.nombre}}</span>
-              <span class="mg-secondary-chevron" aria-hidden="true">›</span>
-            </button>
-          </div>
-        </section>
+        <button type="button" class="mg-focus-nav-button" *ngFor="let area of areasPanelAdmin"
+          [class.active]="areaActualAdmin?.id===area.id"
+          [attr.aria-current]="areaActualAdmin?.id===area.id ? 'page' : null"
+          [attr.title]="area.ayuda"
+          (click)="abrirAreaPrincipalAdmin(area.id)">
+          <span class="mg-focus-nav-icon" aria-hidden="true">{{area.icono}}</span>
+          <span>{{area.nombre}}</span>
+        </button>
       </nav>
 
       <div class="mg-sidebar-bottom mg-sidebar-account" aria-label="Sesión de administrador">
@@ -200,6 +187,18 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
           {{reparandoMysql ? 'Respaldando y reparando...' : 'Respaldar y reparar base de datos'}}
         </button>
       </div>
+      <section class="mg-focus-taskbar" *ngIf="areaActualAdmin as area" [attr.aria-label]="'Acciones de '+area.nombre">
+        <div class="mg-focus-taskbar-intro">
+          <span>Estás en <strong>{{area.nombre}}</strong></span>
+          <p>{{area.ayuda}}</p>
+        </div>
+        <nav class="mg-focus-task-tabs" [attr.aria-label]="'Elegir tarea en '+area.nombre">
+          <button type="button" *ngFor="let tarea of area.opciones"
+            [class.active]="seccion===tarea.id"
+            [attr.aria-current]="seccion===tarea.id ? 'page' : null"
+            (click)="cambiarSegcion(tarea.id)">{{tarea.nombre}}</button>
+        </nav>
+      </section>
       <section class="mg-module-shell-head" *ngIf="seccion!=='dashboard' && !['aplicaciones','calendario-admin','tareas-admin','tablas-admin','componentes-ui'].includes(seccion)">
         <div class="mg-module-shell-copy">
           <p>{{subtituloActual}}</p>
@@ -222,7 +221,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
             <div>
               <span class="mg-efsrt-eyebrow">MALLQUI GYM · ADMINISTRACIÓN</span>
               <h2>Panel principal</h2>
-              <p>Empieza por Socios y Reservas. Asistencia, Productos, Ventas y Pagos están directamente en el menú lateral.</p>
+              <p>Elige un área a la izquierda. Dentro de cada área encontrarás las tareas relacionadas en la parte superior de la pantalla.</p>
             </div>
             <div class="mg-efsrt-hero-aside">
               <span class="mg-efsrt-connection" [class.problem]="!sistemaSincronizado">
@@ -3121,6 +3120,79 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   ];
   // Reportes y Configuración están agrupados en Administración.
   readonly accesosDirectosAdmin=[...this.accesosPrincipalesAdmin];
+  /** Navegación por tareas: un área abre su pantalla real sin menús secundarios. */
+  readonly areasPanelAdmin: Array<{
+    id:string; nombre:string; icono:string; principal:string; ayuda:string;
+    opciones:Array<{id:string;nombre:string}>
+  }> = [
+    {id:'socios',nombre:'Socios',icono:'♙',principal:'clientes',
+      ayuda:'Registra socios, asigna membresías y revisa vencimientos.',
+      opciones:[
+        {id:'clientes',nombre:'Socios'},
+        {id:'membresias',nombre:'Membresías'},
+        {id:'planes',nombre:'Planes'},
+        {id:'pagos',nombre:'Pagos'},
+        {id:'renovaciones',nombre:'Vencimientos'}
+      ]},
+    {id:'entrenamiento',nombre:'Clases y reservas',icono:'◫',principal:'reservas',
+      ayuda:'Programa clases, controla asistencias y asigna rutinas.',
+      opciones:[
+        {id:'reservas',nombre:'Reservas'},
+        {id:'asistencias',nombre:'Asistencia'},
+        {id:'clases',nombre:'Clases'},
+        {id:'rutinas',nombre:'Rutinas'}
+      ]},
+    {id:'inventario',nombre:'Productos',icono:'▦',principal:'productos',
+      ayuda:'Registra productos, consulta el stock y administra compras.',
+      opciones:[
+        {id:'productos',nombre:'Productos'},
+        {id:'inventario',nombre:'Stock'},
+        {id:'compras',nombre:'Compras'},
+        {id:'proveedores',nombre:'Proveedores'}
+      ]},
+    {id:'ventas',nombre:'Ventas y caja',icono:'▤',principal:'ventas',
+      ayuda:'Registra ventas, consulta movimientos y controla la caja.',
+      opciones:[
+        {id:'ventas',nombre:'Vender'},
+        {id:'historial-ventas',nombre:'Historial'},
+        {id:'caja',nombre:'Caja'},
+        {id:'gastos',nombre:'Gastos'}
+      ]},
+    {id:'atencion',nombre:'Atención al socio',icono:'✉',principal:'soporte',
+      ayuda:'Responde consultas, envía avisos y revisa opiniones.',
+      opciones:[
+        {id:'soporte',nombre:'Consultas'},
+        {id:'comunicacion',nombre:'Avisos'},
+        {id:'opiniones',nombre:'Opiniones'}
+      ]},
+    {id:'administracion',nombre:'Administración',icono:'⚙',principal:'reportes-admin',
+      ayuda:'Consulta los reportes y gestiona usuarios y configuración.',
+      opciones:[
+        {id:'reportes-admin',nombre:'Reportes'},
+        {id:'usuarios',nombre:'Usuarios'},
+        {id:'configuracion',nombre:'Configuración'},
+        {id:'auditoria',nombre:'Auditoría'}
+      ]}
+  ];
+
+  get areaActualAdmin(): (typeof this.areasPanelAdmin)[number] | undefined {
+    if(this.seccion==='dashboard')return undefined;
+    const directa=this.areasPanelAdmin.find(area=>area.opciones.some(opcion=>opcion.id===this.seccion));
+    if(directa)return directa;
+    const grupo=this.menuPrincipal.find(area=>area.items.some(item=>item.id===this.seccion))?.id;
+    const equivalencias:Record<string,string>={
+      members:'socios', training:'entrenamiento', operations:'inventario',
+      finance:'ventas', communication:'atencion', menu:'administracion', tools:'administracion'
+    };
+    return this.areasPanelAdmin.find(area=>area.id===equivalencias[grupo||'']);
+  }
+
+  abrirAreaPrincipalAdmin(id:string):void {
+    const area=this.areasPanelAdmin.find(item=>item.id===id);
+    if(!area)return;
+    this.cambiarSegcion(area.principal);
+  }
+
   mostrarGestionAvanzada = false;
   grupoComplementarioSeleccionado = '';
 
