@@ -1,0 +1,135 @@
+/*
+ * Mallqui Gym | Paleta compartida entre portada y panel administrativo.
+ * PORTADA: #211F26 (fondo), #FF6047 (acento), #F8F6F2 (texto).
+ * SOLO COLOR: no modifica tamaños, posiciones, rutas, eventos ni datos.
+ * Conservar colores semánticos de éxito, alerta y error.
+ */
+.admin-shell.admin-home-redesign.mg-mantis-coral{
+  --mg-mantis-accent:#ff6047;
+  --mg-mantis-accent-soft:#fff0ed;
+  --mg-mantis-page:#f8f6f7;
+  --mg-mantis-ink:#211f26;
+  --mg-sidebar:#211f26;
+  --mg-reference-line:#e8e0e3;
+  --mg-ui-stroke:#e8e0e3;
+  --mg-ui-text:#211f26;
+  --mg-ui-muted:#6d646d;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark)>.mg-current-sidebar{
+  background:#211f26!important;
+  border-right-color:#383139!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark)>.mg-current-content{
+  background:#f8f6f7!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark)>.mg-current-topbar{
+  background:#fff!important;
+  border-bottom-color:#e8e0e3!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-current-sidebar .mg-brand{
+  border-bottom-color:#383139!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-current-sidebar .mg-brand strong{
+  color:#f8f6f2!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-current-sidebar .mg-brand b{
+  color:#ff816e!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-current-sidebar .mg-brand-icon{
+  color:#211f26!important;
+  background:#ff6047!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-current-sidebar .mg-focus-sidebar>.mg-focus-nav-button{
+  color:#f4edee!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-current-sidebar .mg-focus-sidebar>.mg-focus-nav-button:hover{
+  background:#393038!important;
+  color:#fff!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-current-sidebar .mg-focus-sidebar>.mg-focus-nav-button.active,
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-current-sidebar .mg-focus-sidebar>.mg-focus-nav-button[aria-current="page"]{
+  background:#4b3037!important;
+  border-color:#ff816e!important;
+  color:#ffd0c7!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-current-sidebar .mg-focus-sidebar>.mg-focus-nav-button:focus-visible{
+  outline-color:#ff816e!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-current-sidebar .mg-sidebar-bottom{
+  border-top-color:#383139!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-current-sidebar .mg-sidebar-bottom button:hover{
+  background:#393038!important;
+}
+/* Acciones del área actual: coral sobre blanco, igual que la portada. */
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark) .mg-current-workspace .mg-focus-taskbar{
+  background:#fff!important;
+  border-color:#e8e0e3!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark) .mg-current-workspace .mg-focus-taskbar-intro>span{
+  color:#30262b!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark) .mg-current-workspace .mg-focus-taskbar-intro p{
+  color:#75676d!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark) .mg-current-workspace .mg-focus-task-tabs>button{
+  background:#fffaf8!important;
+  border-color:#e9deda!important;
+  color:#403338!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark) .mg-current-workspace .mg-focus-task-tabs>button:hover{
+  background:#fff0ed!important;
+  border-color:#ffad9e!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark) .mg-current-workspace .mg-focus-task-tabs>button.active{
+  background:#ffe2db!important;
+  border-color:#ff6047!important;
+  color:#6c2a22!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark) .mg-current-workspace .mg-focus-task-tabs>button:focus-visible{
+  outline-color:#ff6047!important;
+}
+/* Botones primarios y controles seleccionados, sin cambiar su comportamiento. */
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark) .mg-current-workspace .admin-primary:not(:disabled),
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark) .mg-current-workspace .clients-v3-new:not(:disabled),
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark) .mg-current-workspace .config-save-bar button:not(:disabled){
+  background:#ff6047!important;
+  border-color:#ee543e!important;
+  color:#211f26!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark) .mg-current-workspace .admin-primary:not(:disabled):hover,
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark) .mg-current-workspace .clients-v3-new:not(:disabled):hover{
+  background:#ff816e!important;
+  border-color:#ff6047!important;
+  color:#211f26!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark) .mg-current-workspace .admin-secondary:not(:disabled){
+  background:#fff!important;
+  color:#68362f!important;
+  border-color:#e9c8c2!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark) .mg-current-workspace .admin-secondary:not(:disabled):hover{
+  background:#fff0ed!important;
+  border-color:#ffad9e!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral .admin-wix-search:focus-within,
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-mantis-search-wrap:focus-within{
+  border-color:#ff816e!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral:not(.mg-mantis-dark) .mg-current-content a:hover{
+  color:#a93d2e!important;
+}
+/* Identidad cromática de los gráficos (las cantidades siguen viniendo de MySQL). */
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-efsrt-dashboard .mg-revenue-line{
+  stroke:#ff6047!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-efsrt-dashboard .mg-revenue-dot{
+  fill:#ff6047!important;
+  stroke:#fff!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-efsrt-dashboard .mg-premium-card{
+  border-color:#e8e0e3!important;
+}
+.admin-shell.admin-home-redesign.mg-mantis-coral .mg-current-workspace .mg-mantis-breadcrumb button:hover{
+  color:#b84231!important;
+}
