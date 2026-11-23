@@ -171,32 +171,30 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
           <span class="mg-nav-action-copy"><strong>{{item.nombre}}</strong><small>{{item.ayuda}}</small></span>
         </button>
 
-        <span class="mg-nav-caption mg-nav-section-separator">GESTIÓN Y RESULTADOS</span>
-        <button type="button" class="mg-nav-advanced-toggle"
-          [class.active]="mostrarGestionAvanzada"
-          [attr.aria-expanded]="mostrarGestionAvanzada"
-          aria-label="Mostrar módulos complementarios"
-          (click)="alternarGestionAvanzada()">
-          <span class="admin-main-nav-icon" aria-hidden="true">▤</span>
-          <span>{{mostrarGestionAvanzada ? 'Cerrar opciones' : 'Más módulos'}}</span>
-          <i aria-hidden="true">{{mostrarGestionAvanzada ? '⌃' : '⌄'}}</i>
-        </button>
-        <div class="mg-nav-advanced-content mg-nav-picker" *ngIf="mostrarGestionAvanzada">
-          <label for="mg-area-selector">Área de trabajo</label>
-          <select id="mg-area-selector" [(ngModel)]="grupoComplementarioSeleccionado"
-            aria-label="Elegir área de trabajo">
-            <option *ngFor="let grupo of menuPrincipal" [value]="grupo.id">{{grupo.titulo}}</option>
-          </select>
-          <div class="mg-secondary-links" aria-label="Funciones del área elegida">
-            <button type="button" class="mg-secondary-link" *ngFor="let item of opcionesSelectorArea()"
-              [attr.data-module]="item.id" [class.active]="seccion===item.id"
-              [attr.title]="item.nombre"
-              [attr.aria-current]="seccion===item.id ? 'page' : null"
-              (click)="seleccionarModuloSecundarioId(item.id)">
-              <span>{{item.nombre}}</span>
-              <span class="mg-secondary-chevron" aria-hidden="true">›</span>
+        <span class="mg-nav-caption mg-nav-section-separator">MÓDULOS DEL GIMNASIO</span>
+        <div class="mg-simple-groups" aria-label="Áreas de gestión">
+          <section class="mg-simple-group" *ngFor="let grupo of menuPrincipal"
+            [class.mg-simple-group-open]="grupoComplementarioSeleccionado===grupo.id">
+            <button type="button" class="mg-simple-group-toggle"
+              [attr.aria-expanded]="grupoComplementarioSeleccionado===grupo.id"
+              [attr.aria-label]="'Mostrar funciones de '+grupo.titulo"
+              (click)="grupoComplementarioSeleccionado=grupoComplementarioSeleccionado===grupo.id ? '' : grupo.id">
+              <span class="mg-simple-group-icon" aria-hidden="true">{{grupo.icono}}</span>
+              <span>{{grupo.titulo}}</span>
+              <span class="mg-simple-group-chevron" aria-hidden="true">{{grupoComplementarioSeleccionado===grupo.id ? '⌃' : '⌄'}}</span>
             </button>
-          </div>
+            <div class="mg-simple-group-links" *ngIf="grupoComplementarioSeleccionado===grupo.id">
+              <button type="button" class="mg-secondary-link" *ngFor="let item of opcionesSelectorGrupo(grupo)"
+                [class.active]="seccion===item.id"
+                [attr.data-module]="item.id"
+                [attr.aria-current]="seccion===item.id ? 'page' : null"
+                [attr.title]="descripcionOpcionMenu(item.id)"
+                (click)="seleccionarModuloSecundarioId(item.id)">
+                <span>{{item.nombre}}</span>
+                <span class="mg-secondary-chevron" aria-hidden="true">›</span>
+              </button>
+            </div>
+          </section>
         </div>
       </nav>
 
@@ -3275,6 +3273,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     const encontrado=this.menuPrincipal.some(grupo=>this.opcionesSelectorGrupo(grupo).some(item=>item.id===destino));
     if(!encontrado) return;
     this.cambiarSegcion(destino);
+    // Mantener visible el grupo de navegación después de elegir un módulo.
+    const grupo=this.menuPrincipal.find(g=>g.items.some(item=>item.id===destino));
+    if(grupo)this.grupoComplementarioSeleccionado=grupo.id;
     this.mostrarGestionAvanzada=false;
   }
 
@@ -3618,6 +3619,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   /** La pantalla elegida se identifica en la cabecera; el selector nunca queda abierto encima del trabajo. */
   private activarGrupoDeSeccion(_seccion:string):void{
+    const grupoActivo=this.menuPrincipal.find(grupo=>grupo.items.some(item=>item.id===_seccion));
+    if(grupoActivo)this.grupoComplementarioSeleccionado=grupoActivo.id;
     this.mostrarGestionAvanzada=false;
     Object.keys(this.navGroups).forEach(id=>this.navGroups[id]=false);
     Object.keys(this.masOpcionesMenu).forEach(id=>this.masOpcionesMenu[id]=false);
