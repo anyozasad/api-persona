@@ -1564,8 +1564,8 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     component.clientes=[{id_cliente:1,estado:'Activo'}];
     component.clases=[{id_clase:2,estado:'Activo',
       dia_semana:'Miércoles',hora_inicio:'18:00:00'}];
-    component.reservaForm={id_cliente:1,id_clase:2,
-      fecha_clase:component.fechaSugeridaReserva};
+    component.reservaForm={id_cliente:1,id_clase:2,fecha_clase:''};
+    component.reservaForm.fecha_clase=component.fechaSugeridaReserva;
     api.crearReservaAdmin.and.returnValue(throwError(()=>({
       status:422,error:{errors:{id_cliente:[
         'El socio necesita una membresía vigente para la fecha elegida.'
