@@ -179,9 +179,10 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
 
       <div class="mg-current-workspace">
       <div *ngIf="toast" class="mg-action-feedback success" role="status" aria-live="polite">{{toast}}</div>
-      <div *ngIf="error && !clienteFormularioAbierto && !(seccion==='dashboard' && estadoOperativoDashboard?.operativo===false && error.startsWith('No se pudieron sincronizar:'))"
+      <div *ngIf="error && !clienteFormularioAbierto && !(seccion==='reservas' && reservaError) && !(seccion==='dashboard' && estadoOperativoDashboard?.operativo===false && error.startsWith('No se pudieron sincronizar:'))"
            class="mg-action-feedback error" role="alert">
         <span>{{error}}</span>
+        <button type="button" class="mg-feedback-close" aria-label="Cerrar mensaje de error" (click)="error=''">×</button>
         <button *ngIf="errorEsquemaMysql" class="admin-secondary" type="button"
           [disabled]="reparandoMysql" (click)="repararEsquemaMysql()">
           {{reparandoMysql ? 'Respaldando y reparando...' : 'Respaldar y reparar base de datos'}}
@@ -4938,6 +4939,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   cambiarSegcion(id: string): void {
     const destino=this.normalizarSegcion(id);
+    if(destino!=='reservas')this.reservaError='';
     if(destino!=='clientes' && this.clienteFormularioAbierto){
       this.cancelarEdicionCliente();
     }
@@ -6898,7 +6900,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     return this.totalAsistenciasSemana > 0;
   }
 
-  ok(mensaje:string){ this.error=''; this.toast='✓ '+mensaje; setTimeout(()=>this.toast='',2600); }
+  ok(mensaje:string){ this.error=''; this.toast='✓ '+mensaje; setTimeout(()=>this.toast='',4500); }
   mostrarError(e:any){
     if(e?.status===401){this.auth.limpiarSesion();this.router.navigate(['/login']);return;}
     if(Number(e?.status)>=500){
