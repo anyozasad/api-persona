@@ -1627,11 +1627,11 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
                   <input type="number" min="0" step="0.01" [(ngModel)]="planForm.precio" (ngModelChange)="planError=''; planGratisConfirmado=false" name="plan_precio" required>
                 </label>
               </div>
-              <p class="mg-plan-warning" role="alert" *ngIf="planMesesEnNombre && planMesesEnNombre!==Number(planForm.duracion_meses)">
+              <p class="mg-plan-warning" role="alert" *ngIf="planMesesEnNombre && planMesesEnNombre!==planForm.duracion_meses">
                 El nombre indica {{planMesesEnNombre}} meses, pero la duración es {{planForm.duracion_meses}}.
                 <button class="admin-secondary" type="button" (click)="planForm.duracion_meses=planMesesEnNombre;planError=''">Usar {{planMesesEnNombre}} meses</button>
               </p>
-              <label class="mg-plan-free-confirm" *ngIf="Number(planForm.precio)===0">
+              <label class="mg-plan-free-confirm" *ngIf="planForm.precio===0">
                 <input type="checkbox" [(ngModel)]="planGratisConfirmado" name="plan_gratis">
                 <span>Confirmo que esta tarifa será gratuita (S/ 0.00).</span>
               </label>
@@ -5751,7 +5751,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   /** Evita precios gratuitos accidentales y nombres con meses contradictorios. */
   get planMesesEnNombre():number {
-    const match=String(this.planForm?.nombre||'').match(/\\b(\\d{1,2})\\s*mes(?:es)?\\b/i);
+    const match=String(this.planForm?.nombre||'').match(/\b(\d{1,2})\s*mes(?:es)?\b/i);
     return match ? Number(match[1]) : 0;
   }
 
