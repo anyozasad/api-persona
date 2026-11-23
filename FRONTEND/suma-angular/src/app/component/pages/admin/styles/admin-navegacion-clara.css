@@ -2158,3 +2158,40 @@
     width:100%!important; min-width:0!important;
   }
 }
+
+
+/* Interacciones coherentes: una acción principal por fila y avisos únicamente cuando son posibles. */
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-renewal-row-actions {
+  display:flex!important; flex-wrap:wrap!important; align-items:center!important;
+  gap:8px!important; min-width:0!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-renewal-row-actions button {
+  width:auto!important; min-height:42px!important; margin:0!important;
+  padding:9px 12px!important; border-radius:9px!important;
+  font-size:13px!important; line-height:1.35!important;
+  font-weight:700!important; white-space:normal!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-renewal-row-actions .mg-renewal-contact-hint {
+  display:block!important; font-size:12px!important; line-height:1.45!important;
+  max-width:220px!important; color:#75562b!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-business-actions button:disabled {
+  opacity:.52!important; cursor:not-allowed!important;
+}
+/* La barra de tareas se mantiene visible al navegar dentro del área en escritorio. */
+@media(min-width:1025px) {
+  .admin-shell.admin-home-redesign .mg-current-topbar .mg-mantis-nav-toggle {
+    display:none!important;
+  }
+  .admin-shell.admin-home-redesign .mg-current-workspace .mg-focus-taskbar {
+    position:sticky!important; top:0!important; z-index:7!important;
+  }
+}
+@media(max-width:740px) {
+  .admin-shell.admin-home-redesign .mg-current-workspace .mg-renewal-row-actions{
+    display:flex!important; flex-direction:column!important; align-items:stretch!important;
+  }
+  .admin-shell.admin-home-redesign .mg-current-workspace .mg-renewal-row-actions button {
+    width:100%!important;
+  }
+}
