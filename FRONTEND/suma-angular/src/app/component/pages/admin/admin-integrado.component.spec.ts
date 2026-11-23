@@ -1261,6 +1261,38 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.error).toContain('Abre Caja');
   });
 
+  it('Ventas impide cobrar dos veces mientras MySQL registra la operación', () => {
+    const pendiente = new Subject<any>();
+    api.registrarVenta = jasmine.createSpy('registrarVenta').and.returnValue(pendiente.asObservable());
+    component.caja = { caja_abierta: true, caja: { id_caja: 1 } };
+    component.ventaForm = {
+      id_cliente: 1, id_producto: 0, cantidad: 1,
+      tipo_comprobante: 'Boleta', numero_comprobante: '',
+      metodo_pago: 'Efectivo', numero_operacion: '', igv_porcentaje: 18
+    };
+    component.ventaItems = [{ id_producto: 5, cantidad: 2 }];
+
+    component.registrarVenta();
+    component.registrarVenta();
+
+    expect(api.registrarVenta).toHaveBeenCalledTimes(1);
+    expect(component.ventaGuardando).toBeTrue();
+    pendiente.error({ status: 503, error: { mensaje: 'Servidor desconectado' } });
+    expect(component.ventaGuardando).toBeFalse();
+  });
+
+  it('Ventas explica requisitos sin enviar solicitudes cuando Caja está cerrada', () => {
+    api.registrarVenta = jasmine.createSpy('registrarVenta').and.returnValue(of({}));
+    component.caja = { caja_abierta: false, caja: null };
+    component.ventaForm.id_cliente = 1;
+    component.ventaItems = [{ id_producto: 1, cantidad: 1 }];
+
+    component.registrarVenta();
+
+    expect(api.registrarVenta).not.toHaveBeenCalled();
+    expect(component.error).toContain('Abre Caja');
+  });
+
   it('conserva la paleta Mallqui blanco negro verde lima y el menú sin saturar', () => {
     expect(component.navGroups['members']).toBeFalse();
     expect(component.acentoDashboard).toBe('verde');
