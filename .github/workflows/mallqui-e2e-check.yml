@@ -103,8 +103,11 @@ jobs:
           # Base aislada de GitHub Actions: nunca se usan datos del XAMPP local.
           # Reproducir las tablas ausentes vistas en Socios/Planes/Membresías.
           php artisan tinker --execute='DB::statement("SET FOREIGN_KEY_CHECKS=0"); Schema::dropIfExists("cliente_membresia"); Schema::dropIfExists("membresias"); Schema::dropIfExists("clientes"); DB::statement("SET FOREIGN_KEY_CHECKS=1");'
-          php artisan db:reconciliar-esquema
+          php artisan db:reparar-gym --confirmar
           php artisan db:verificar
+          # La reparación real exige crear un respaldo SQL válido ANTES de
+          # modificar la base. No basta con probar db:reconciliar-esquema.
+          test -n "$(find storage/app/backups -maxdepth 1 -name 'mallqui_gym_pruebas_*.sql' -size +200c -print -quit)"
       - name: Probar reparacion aditiva de columnas y tablas conservando datos
         run: |
           # Solo la base efimera mallqui_gym_pruebas; nunca ejecutar en gym_system.
