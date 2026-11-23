@@ -59,6 +59,19 @@ class EsquemaRealPersistenciaReparacionTest extends TestCase
                 $tabla->string('nombre_producto', 150);
             });
             DB::table('productos')->insert(['nombre_producto' => 'Producto histórico']);
+            // XAMPP legacy: las sesiones existen pero carecen de id_cliente.
+            // Una migración que usa ->after('id_cliente') fallaba antes de
+            // que el conciliador añadiera la columna; el error quedaba rojo
+            // aunque se completara la estructura al final.
+            Schema::create('sesiones_entrenamiento_casa', function (Blueprint $tabla) {
+                $tabla->bigIncrements('id_sesion_casa');
+                $tabla->string('zona', 50)->nullable();
+                $tabla->date('fecha')->nullable();
+                $tabla->string('estado', 30)->nullable();
+            });
+            DB::table('sesiones_entrenamiento_casa')->insert([
+                'zona' => 'Piernas', 'fecha' => '2026-11-20', 'estado' => 'Finalizada',
+            ]);
 
             $codigo = Artisan::call('db:reconciliar-esquema');
             $this->assertSame(0, $codigo, Artisan::output());
@@ -74,6 +87,10 @@ class EsquemaRealPersistenciaReparacionTest extends TestCase
 
             $this->assertSame('Plan existente del gimnasio', DB::table('membresias')->first()->nombre);
             $this->assertSame('Producto histórico', DB::table('productos')->first()->nombre_producto);
+            $this->assertTrue(Schema::hasColumn('sesiones_entrenamiento_casa', 'id_cliente'));
+            $this->assertTrue(Schema::hasColumn('sesiones_entrenamiento_casa', 'id_rutina'));
+            $this->assertSame('Piernas', DB::table('sesiones_entrenamiento_casa')->first()->zona);
+            $this->assertSame(1, DB::table('sesiones_entrenamiento_casa')->count());
 
             $cliente = DB::table('clientes')->insertGetId([
                 'dni' => '82828282', 'nombres' => 'Socio', 'apellidos' => 'Real',

@@ -97,7 +97,7 @@ class ReconciliarEsquemaRealMallqui extends Command
             foreach (self::MIGRACIONES_ADITIVAS as $nombre) {
                 $archivo = database_path('migrations/'.$nombre);
                 if (!is_file($archivo)) {
-                    $erroresMigraciones[] = $nombre.': archivo ausente';
+                    $erroresMigraciones[$nombre] = 'archivo ausente';
                     $this->warn('Falta el archivo de migración: '.$nombre);
                     continue;
                 }
@@ -105,7 +105,7 @@ class ReconciliarEsquemaRealMallqui extends Command
                     // Solo up() aditivos. Nunca down(), fresh() o drop().
                     (require $archivo)->up();
                 } catch (Throwable $e) {
-                    $erroresMigraciones[] = $nombre.': '.$e->getMessage();
+                    $erroresMigraciones[$nombre] = $e->getMessage();
                     $this->warn('Falló una migración de recuperación: '.$nombre.'. Se revisarán las restantes.');
                     report($e);
                 }
@@ -148,13 +148,33 @@ class ReconciliarEsquemaRealMallqui extends Command
                 return self::FAILURE;
             }
             if ($erroresMigraciones !== []) {
-                // Los objetos requeridos ya pueden existir aunque una
-                // migración opcional haya fallado. No declarar éxito falso.
-                foreach ($erroresMigraciones as $errorMigracion) {
-                    $this->warn('Revisión de migración: '.$errorMigracion);
+                // Esquemas XAMPP incompletos pueden no tener aún la columna
+                // indicada por ->after('id_cliente') o ->after('descripcion').
+                // La fase anterior ya recuperó esas dependencias: reintentar
+                // SOLO migraciones que fallaron, sin ejecutar down ni borrar filas.
+                $pendientesReintento = $erroresMigraciones;
+                $erroresMigraciones = [];
+                foreach ($pendientesReintento as $nombre => $motivo) {
+                    $archivo = database_path('migrations/'.$nombre);
+                    if (!is_file($archivo)) {
+                        $erroresMigraciones[$nombre] = 'archivo ausente';
+                        continue;
+                    }
+                    try {
+                        (require $archivo)->up();
+                        $this->info('Recuperada migración después de completar columnas: '.$nombre);
+                    } catch (Throwable $e) {
+                        $erroresMigraciones[$nombre] = $e->getMessage();
+                        report($e);
+                    }
                 }
-                $this->error('Existen migraciones de recuperación con errores. Revisa los avisos antes de declarar el esquema listo.');
-                return self::FAILURE;
+                if ($erroresMigraciones !== []) {
+                    foreach ($erroresMigraciones as $nombre => $motivo) {
+                        $this->warn('Migración pendiente: '.$nombre.' - '.$motivo);
+                    }
+                    $this->error('Hay migraciones que siguen fallando tras completar el esquema. El respaldo SQL se conserva.');
+                    return self::FAILURE;
+                }
             }
 
             // Las vistas son consultas derivadas, no contienen filas propias.
