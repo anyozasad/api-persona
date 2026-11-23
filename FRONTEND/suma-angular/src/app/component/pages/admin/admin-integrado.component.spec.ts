@@ -1293,9 +1293,9 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(component.error).toContain('Abre Caja');
   });
 
-  it('el dashboard usa coral de la portada como color inicial sin cambiar sus módulos', () => {
+  it('el dashboard conserva los colores anteriores sin cambiar sus módulos', () => {
     expect(component.navGroups['members']).toBeFalse();
-    expect(component.acentoDashboard).toBe('coral');
+    expect(component.acentoDashboard).toBe('verde');
     expect(component.modoDashboard).toBe('claro');
     expect(component.areasPanelAdmin).toHaveSize(6);
   });
