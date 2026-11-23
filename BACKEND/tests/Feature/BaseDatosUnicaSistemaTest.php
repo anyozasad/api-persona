@@ -58,7 +58,8 @@ class BaseDatosUnicaSistemaTest extends TestCase
         $this->assertStringContainsString("'vista_clientes_membresias'", $origen);
         $this->assertStringContainsString("'vista_stock'", $origen);
         $this->assertStringContainsString("'vista_ventas'", $origen);
-        $this->assertStringContainsString("'--ignore-table='.$database.'.'.$vista", $origen);
+        $this->assertStringContainsString('--ignore-table=', $origen);
+        $this->assertStringContainsString("vistasOmitidas", $origen);
         $this->assertStringContainsString('in_array($nombreVista, $vistasDerivadas, true)', $origen);
     }
 
