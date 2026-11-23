@@ -6196,12 +6196,12 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   private indiceDiaReserva(valor:string):number {
     const dias=['domingo','lunes','martes','miercoles','jueves','viernes','sabado'];
     const normalizado=String(valor||'').trim().toLocaleLowerCase('es')
-      .normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'');
     return dias.indexOf(normalizado);
   }
 
   private diaFechaReserva(fecha:string):number {
-    if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(fecha))return -1;
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(fecha))return -1;
     const [y,m,d]=fecha.split('-').map(Number);
     const valor=new Date(Date.UTC(y,m-1,d,12));
     if(valor.getUTCFullYear()!==y||valor.getUTCMonth()!==m-1||valor.getUTCDate()!==d)return -1;
