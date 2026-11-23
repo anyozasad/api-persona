@@ -51,6 +51,17 @@ class BaseDatosUnicaSistemaTest extends TestCase
         $this->assertStringContainsString('if ($existe) continue;', $preparacion);
     }
 
+    public function test_respaldo_mysql_tolera_vistas_de_reportes_danadas_sin_omitir_tablas_de_datos(): void
+    {
+        $origen = (string) file_get_contents(app_path('Console/Commands/BackupDatabase.php'));
+        $this->assertStringContainsString('INFORMATION_SCHEMA.VIEWS', $origen);
+        $this->assertStringContainsString("'vista_clientes_membresias'", $origen);
+        $this->assertStringContainsString("'vista_stock'", $origen);
+        $this->assertStringContainsString("'vista_ventas'", $origen);
+        $this->assertStringContainsString("'--ignore-table='.$database.'.'.$vista", $origen);
+        $this->assertStringContainsString('in_array($nombreVista, $vistasDerivadas, true)', $origen);
+    }
+
     public function test_reparacion_desde_dashboard_no_depende_de_la_carpeta_scripts_ni_deja_estado_antiguo(): void
     {
         $admin = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/component/pages/admin/admin-integrado.component.ts'));

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\Process\Process;
 use Throwable;
 
@@ -46,9 +47,48 @@ class BackupDatabase extends Command
             $binario = 'mysqldump';
         }
 
+        // Cuando una migración antigua figura aplicada pero faltan las
+        // tablas referenciadas, las vistas de reportes quedan INVÁLIDAS.
+        // mysqldump intenta SHOW FIELDS sobre ellas y ABORTA (error 1356),
+        // impidiendo hacer respaldo y reparar las propias tablas faltantes.
+        // Solo omitir del dump las vistas derivadas de Mallqui Gym que estén
+        // dañadas. Los datos reales viven en tablas y nunca se excluyen.
+        // Las vistas omitidas se reconstruyen con la migración de reportes
+        // al concluir db:reconciliar-esquema.
+        $vistasDerivadas = [
+            'vista_clientes_membresias',
+            'vista_stock',
+            'vista_ventas',
+        ];
+        $vistasOmitidas = [];
+        try {
+            $vistasReales = DB::select(
+                'SELECT TABLE_NAME AS nombre FROM INFORMATION_SCHEMA.VIEWS
+                 WHERE TABLE_SCHEMA = ? AND TABLE_NAME IN (?, ?, ?)',
+                array_merge([$database], $vistasDerivadas)
+            );
+            foreach ($vistasReales as $vista) {
+                $nombreVista = (string) ($vista->nombre ?? '');
+                if (!in_array($nombreVista, $vistasDerivadas, true)) {
+                    continue;
+                }
+                try {
+                    DB::select('SELECT 1 FROM `'.$nombreVista.'` LIMIT 0');
+                } catch (Throwable $e) {
+                    $vistasOmitidas[] = $nombreVista;
+                    $this->warn('La vista derivada '.$nombreVista.' no es válida. Se omitirá solo del respaldo; se reconstruirá tras reparar tablas.');
+                }
+            }
+        } catch (Throwable $e) {
+            // No crear una copia aparentemente válida si no se pudieron
+            // identificar las vistas. Detenerse antes de ALTER TABLE.
+            $this->error('No se pudo inspeccionar las vistas SQL. Se canceló el respaldo para proteger los datos.');
+            return self::FAILURE;
+        }
+
         // mysqldump escribe directamente al disco; nunca acumular toda
         // la base SQL en memoria PHP (un gimnasio puede tener fotos grandes).
-        $process = new Process([
+        $argumentos = [
             $binario,
             '--host='.$host,
             '--port='.$port,
@@ -59,8 +99,12 @@ class BackupDatabase extends Command
             '--events',
             '--default-character-set=utf8mb4',
             '--result-file='.$archivo,
-            $database,
-        ]);
+        ];
+        foreach ($vistasOmitidas as $vista) {
+            $argumentos[] = '--ignore-table='.$database.'.'.$vista;
+        }
+        $argumentos[] = $database;
+        $process = new Process($argumentos);
         $process->setEnv(array_merge($_ENV, ['MYSQL_PWD' => $password]));
         $process->setTimeout(300);
 
