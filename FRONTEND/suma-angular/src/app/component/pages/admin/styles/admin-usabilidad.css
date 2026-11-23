@@ -346,3 +346,52 @@
     min-width:600px!important;table-layout:auto!important;
   }
 }
+
+/* Reserva guiada: validaciones visibles junto a Guardar, sin modificar los tonos del dashboard. */
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-fecha-invalida,
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-error {
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  gap:8px!important;
+  margin:5px 0 0!important;
+  padding:13px 14px!important;
+  border:1px solid #e8c69b!important;
+  border-radius:10px!important;
+  background:#fffaf1!important;
+  color:#613f19!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-error {
+  border-color:#e4afad!important;
+  background:#fff6f4!important;
+  color:#852d2a!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-fecha-invalida strong,
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-error strong{
+  font-size:14px!important;
+  line-height:1.45!important;
+  font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-fecha-invalida p,
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-error p{
+  font-size:13px!important;
+  line-height:1.5!important;
+  margin:0!important;
+  color:inherit!important;
+}
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-fecha-invalida button,
+.admin-shell.admin-home-redesign .mg-current-workspace .mg-reservas-ui .mg-reserva-error button{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:42px!important;
+  margin:0!important;
+  padding:10px 13px!important;
+  font-size:13px!important;
+  font-weight:750!important;
+  border-radius:8px!important;
+  border:1px solid #a8c77f!important;
+  background:#e9f5d7!important;
+  color:#25421b!important;
+  cursor:pointer!important;
+}
