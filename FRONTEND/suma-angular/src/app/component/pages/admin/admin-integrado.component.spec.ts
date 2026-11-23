@@ -22,7 +22,7 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
       'configuracion', 'guardarConfiguracion', 'estadoSistema', 'restaurarGym',
       'registrarAccesoCodigo', 'cambiarEstadoReserva', 'confirmarPagoPendiente',
       'crearReservaAdmin', 'actualizarReservaAdmin', 'eliminarReservaAdmin', 'comprobantePago', 'verificacionEfsrt', 'completarFotosIniciales',
-      'crearCliente', 'actualizarCliente'
+      'crearCliente', 'actualizarCliente', 'enviarWhatsappGym', 'enviarWhatsappTodosGym', 'guardarWhatsappKeyGym'
     ]);
 
     api.estadoOperativo.and.returnValue(of({
@@ -1388,6 +1388,75 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     expect(cambiar).toHaveBeenCalledWith('rutinas');
     component.abrirModuloAdmin('herramientas');
     expect(cambiar).toHaveBeenCalledWith('tablas-admin');
+  });
+
+  it('navegación accesible muestra seis áreas directas y una tarea principal por área', () => {
+    expect(component.areasPanelAdmin.map(area => area.nombre)).toEqual([
+      'Socios', 'Clases y reservas', 'Productos', 'Ventas y caja',
+      'Atención al socio', 'Administración'
+    ]);
+    expect(new Set(component.areasPanelAdmin.map(area => area.id)).size).toBe(6);
+    for(const area of component.areasPanelAdmin){
+      expect(area.opciones.length).toBeGreaterThanOrEqual(3);
+      expect(area.opciones.length).toBeLessThanOrEqual(5);
+      expect(area.opciones.some(opcion => opcion.id === area.principal)).toBeTrue();
+      expect(area.ayuda.length).toBeGreaterThan(15);
+      expect((component as any).normalizarSegcion(area.principal)).toBe(area.principal);
+    }
+  });
+
+  it('cada acceso principal navega al módulo real y mantiene la pestaña contextual', () => {
+    const navegar=spyOn(component,'cambiarSegcion').and.stub();
+    for(const area of component.areasPanelAdmin){
+      component.abrirAreaPrincipalAdmin(area.id);
+      expect(navegar).toHaveBeenCalledWith(area.principal);
+      component.seccion=area.principal;
+      expect(component.areaActualAdmin?.id).toBe(area.id);
+    }
+    const total=navegar.calls.count();
+    component.abrirAreaPrincipalAdmin('no-existe');
+    expect(navegar.calls.count()).toBe(total);
+    component.seccion='dashboard';
+    expect(component.areaActualAdmin).toBeUndefined();
+  });
+
+  it('las pestañas visibles tienen destinos conocidos y no duplican funciones', () => {
+    for(const area of component.areasPanelAdmin){
+      const ids=area.opciones.map(opcion=>opcion.id);
+      expect(new Set(ids).size).toBe(ids.length);
+      for(const id of ids){
+        expect((component as any).normalizarSegcion(id)).toBe(id);
+      }
+    }
+    component.seccion='renovaciones';
+    expect(component.areaActualAdmin?.id).toBe('socios');
+    component.seccion='ventas';
+    expect(component.areaActualAdmin?.id).toBe('ventas');
+    component.seccion='auditoria';
+    expect(component.areaActualAdmin?.id).toBe('administracion');
+  });
+
+  it('no ofrece enviar avisos masivos cuando falta teléfono o WhatsApp', () => {
+    component.renovacionesLista=[
+      {id:1,nombre:'A',telefono:'',whatsapp_api_key:'KEY'},
+      {id:2,nombre:'B',telefono:'999999999',whatsapp_api_key:''}
+    ];
+    expect(component.renovacionesConWhatsapp).toBe(0);
+    component.enviarAvisosTodos();
+    expect(component.error).toContain('No hay socios');
+    expect(api.enviarWhatsappTodosGym).not.toHaveBeenCalled();
+    expect(component.enviandoAvisos).toBeFalse();
+  });
+
+  it('un envío masivo aprobado se ejecuta una sola vez y muestra resultados reales', () => {
+    component.renovacionesLista=[{id:3,nombre:'C',telefono:'999999999',whatsapp_api_key:'KEY'}];
+    api.enviarWhatsappTodosGym.and.returnValue(of({enviados:1,omitidos:0}));
+    const confirmar=spyOn(window,'confirm').and.returnValue(true);
+    component.enviarAvisosTodos();
+    expect(confirmar).toHaveBeenCalled();
+    expect(api.enviarWhatsappTodosGym).toHaveBeenCalledOnceWith(Number(component.renovacionesDias || 7));
+    expect(component.enviandoAvisos).toBeFalse();
+    expect(component.renovacionesConWhatsapp).toBe(1);
   });
 
 });
