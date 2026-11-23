@@ -217,4 +217,81 @@ class ConfiguracionSistemaFlowTest extends TestCase
             ->assertJsonPath('dias_atencion.1', 'Martes')
             ->assertJsonPath('membresias.0.nombre', 'Mensualidad 1 mes');
     }
+
+    public function test_crear_editar_y_desactivar_tarifa_se_refleja_en_mysql_y_listado(): void
+    {
+        $creada = $this->postJson('/api/membresias', [
+            'nombre'=>'Promoción 2 meses verificada',
+            'duracion_meses'=>2,
+            'precio'=>95.50,
+            'descripcion'=>'Promoción de temporada',
+            'beneficios'=>['Acceso al gimnasio', 'Clases programadas'],
+            'permite_reservas'=>true,
+            'estado'=>'Activo',
+        ])->assertCreated()->json();
+
+        $id=(int)($creada['id_membresia'] ?? 0);
+        $this->assertGreaterThan(0,$id);
+        $this->assertDatabaseHas('membresias',[
+            'id_membresia'=>$id,
+            'nombre'=>'Promoción 2 meses verificada',
+            'duracion_meses'=>2,
+            'precio'=>95.50,
+            'estado'=>'Activo',
+        ]);
+        $this->getJson('/api/membresias')->assertOk()
+            ->assertJsonFragment(['nombre'=>'Promoción 2 meses verificada']);
+
+        $this->putJson('/api/membresias/'.$id,[
+            'nombre'=>'Promoción 2 meses actualizada',
+            'precio'=>89.90,
+            'duracion_meses'=>2,
+        ])->assertOk()->assertJsonPath('nombre','Promoción 2 meses actualizada');
+        $this->assertDatabaseHas('membresias',[
+            'id_membresia'=>$id,
+            'nombre'=>'Promoción 2 meses actualizada',
+            'precio'=>89.90,
+        ]);
+        $this->getJson('/api/membresias')->assertOk()
+            ->assertJsonFragment(['nombre'=>'Promoción 2 meses actualizada']);
+
+        $this->deleteJson('/api/membresias/'.$id)->assertOk();
+        $this->assertDatabaseHas('membresias',[
+            'id_membresia'=>$id,'estado'=>'Inactivo',
+        ]);
+        // No se borra la tarifa ni el historial vinculado.
+        $this->assertDatabaseCount('membresias',2);
+    }
+
+    public function test_duplicados_precio_negativo_y_duracion_invalida_no_se_guardan(): void
+    {
+        $this->postJson('/api/membresias',[
+            'nombre'=>'Mensualidad 1 mes',
+            'duracion_meses'=>1,'precio'=>80,
+        ])->assertStatus(422)->assertJsonValidationErrors(['nombre']);
+
+        $this->postJson('/api/membresias',[
+            'nombre'=>'Plan precio inválido',
+            'duracion_meses'=>1,'precio'=>-30,
+        ])->assertStatus(422)->assertJsonValidationErrors(['precio']);
+
+        $this->postJson('/api/membresias',[
+            'nombre'=>'Plan duración inválida',
+            'duracion_meses'=>0,'precio'=>30,
+        ])->assertStatus(422)->assertJsonValidationErrors(['duracion_meses']);
+
+        $this->assertDatabaseCount('membresias',1);
+    }
+
+    public function test_si_falta_tabla_planes_no_reporta_guardado_falso(): void
+    {
+        Schema::dropIfExists('membresias');
+        $this->postJson('/api/membresias',[
+            'nombre'=>'Tarifa no persistida',
+            'duracion_meses'=>2,'precio'=>100,
+        ])->assertStatus(503)->assertJsonPath('codigo','TABLA_MODULO_AUSENTE');
+        $this->getJson('/api/membresias')
+            ->assertStatus(503)->assertJsonPath('codigo','TABLA_MODULO_AUSENTE');
+    }
+
 }
