@@ -100,4 +100,22 @@ class AdminDashboardNavigationTest extends TestCase
             $source
         );
     }
+
+    public function test_el_dashboard_comparte_los_colores_de_la_portada(): void
+    {
+        $portada = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/component/pages/mallqui-landing.css'));
+        $paleta = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/component/pages/admin/styles/admin-paleta-portada.css'));
+        $panel = (string) file_get_contents(base_path('../FRONTEND/suma-angular/src/app/component/pages/admin/admin-integrado.component.ts'));
+
+        $this->assertStringContainsString('--mq-bg:#211f26;', $portada);
+        $this->assertStringContainsString('--mq-accent:#ff6047;', $portada);
+        $this->assertStringContainsString('--mg-sidebar:#211f26;', $paleta);
+        $this->assertStringContainsString('--mg-mantis-accent:#ff6047;', $paleta);
+        $this->assertStringContainsString("'./styles/admin-paleta-portada.css'", $panel);
+        $this->assertStringContainsString("acentoDashboard: 'coral'|'azul'|'verde' = 'coral';", $panel);
+        $this->assertStringContainsString("this.guardarAparienciaMantis('color','coral');", $panel);
+        $this->assertStringContainsString('mg-focus-nav-button.active', $paleta);
+        $this->assertStringContainsString('mg-focus-task-tabs>button.active', $paleta);
+    }
+
 }

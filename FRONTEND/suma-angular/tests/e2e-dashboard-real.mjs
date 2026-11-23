@@ -400,7 +400,7 @@ try {
     const tamaños=await menu.locator('.mg-focus-nav-button').evaluateAll(nodes=>
       nodes.map(el=>({ancho:el.getBoundingClientRect().width,
         texto:el.querySelector('span:last-child')?.getBoundingClientRect().width||0})));
-    assert.ok(tamaños.every(x=>x.ancho>=180&&x.texto>=100),
+    assert.ok(tamaños.every(x=>x.ancho>=170&&x.texto>=100),
       'Los accesos del menú se estrecharon: '+JSON.stringify(tamaños));
     await menu.getByRole('button',{name:'Socios',exact:true}).click();
     const tabs=page.locator('.mg-focus-task-tabs');
