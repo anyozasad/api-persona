@@ -1921,3 +1921,106 @@
   justify-self:end!important;
   margin:0!important;
 }
+
+/* Menú de tareas principales: máximo seis controles visibles en escritorio. */
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-quick-sidebar{
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  gap:6px!important;padding:12px 14px!important;min-width:0!important;
+  box-sizing:border-box!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-quick-sidebar>.mg-nav-caption{
+  margin:6px 8px 11px!important;padding:0!important;border:0!important;
+  color:#acbfad!important;font-size:12px!important;letter-spacing:.07em!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-quick-sidebar>.mg-quick-link{
+  display:grid!important;grid-template-columns:28px minmax(0,1fr) auto!important;
+  align-items:center!important;column-gap:12px!important;width:100%!important;
+  min-height:51px!important;margin:0!important;padding:12px!important;
+  box-sizing:border-box!important;border:1px solid transparent!important;
+  border-radius:10px!important;background:transparent!important;
+  color:#edf4e8!important;box-shadow:none!important;
+  font-size:15px!important;font-weight:650!important;line-height:1.35!important;
+  text-align:left!important;white-space:normal!important;cursor:pointer!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-quick-sidebar>.mg-quick-link:hover{
+  background:#293c2f!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-quick-sidebar>.mg-quick-link.active{
+  background:#354e27!important;border-color:#618341!important;color:#e3ffb8!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-quick-sidebar .mg-quick-icon{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:28px!important;height:28px!important;font-size:20px!important;
+  color:inherit!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-quick-sidebar .mg-quick-all{
+  margin-top:12px!important;border:1px solid rgba(183,223,143,.30)!important;
+  background:rgba(191,225,139,.08)!important;
+}
+.admin-shell.admin-home-redesign:not(.mg-mantis-collapsed) .mg-current-sidebar .mg-quick-sidebar .mg-quick-tail{
+  justify-self:end!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-overlay{
+  position:fixed!important;inset:0!important;z-index:9900!important;
+  display:flex!important;justify-content:center!important;align-items:center!important;
+  padding:18px!important;background:rgba(12,26,19,.66)!important;
+  box-sizing:border-box!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-dialog{
+  width:min(720px,100%)!important;max-height:min(760px,92vh)!important;
+  display:flex!important;flex-direction:column!important;overflow:hidden!important;
+  background:#fff!important;border-radius:16px!important;
+  box-shadow:0 25px 80px rgba(0,0,0,.25)!important;
+  color:#263b29!important;padding:22px!important;box-sizing:border-box!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-head{
+  display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:12px!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-head h2{
+  margin:0!important;font-size:23px!important;line-height:1.3!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-head p{
+  margin:6px 0 16px!important;font-size:14px!important;color:#667565!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-close{
+  flex:0 0 42px!important;height:42px!important;border-radius:9px!important;
+  border:1px solid #dbe4d5!important;background:#fff!important;color:#29402b!important;
+  font-size:26px!important;cursor:pointer!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-search-label{
+  display:block!important;margin:0 0 7px!important;font-size:13px!important;font-weight:700!important;
+}
+.admin-shell.admin-home-redesign #mg-busqueda-funciones{
+  width:100%!important;min-height:48px!important;padding:11px 14px!important;
+  border:1px solid #bcccb4!important;border-radius:9px!important;
+  background:#fff!important;color:#273a28!important;font-size:15px!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-scroll{
+  overflow-y:auto!important;overscroll-behavior:contain!important;
+  margin-top:13px!important;padding:2px 6px 4px 0!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-section{
+  margin:0 0 16px!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-section h3{
+  margin:8px 0!important;color:#54664d!important;font-size:13px!important;font-weight:800!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-section button{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  width:100%!important;min-height:45px!important;margin:3px 0!important;
+  padding:10px 14px!important;text-align:left!important;
+  border:1px solid #e2ebdc!important;border-radius:8px!important;
+  background:#fafcf9!important;color:#2c422b!important;
+  font-size:14px!important;cursor:pointer!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-section button:hover,
+.admin-shell.admin-home-redesign .mg-catalog-section button.active{
+  background:#eaf5dc!important;border-color:#aecb95!important;
+}
+.admin-shell.admin-home-redesign .mg-catalog-empty{
+  padding:18px!important;color:#536752!important;font-size:14px!important;
+}
+@media(max-width:600px){
+  .admin-shell.admin-home-redesign .mg-catalog-dialog{padding:15px!important;}
+  .admin-shell.admin-home-redesign .mg-catalog-head h2{font-size:20px!important;}
+}
