@@ -16,7 +16,7 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
   selector: 'app-admin-integrado',
   standalone: true,
   imports: [CommonModule, FormsModule, ProductosComponent, AdminComunicacionComponent, AdminClienteFichaComponent, AdminGymSuiteComponent, AdminApplicationsComponent, AdminDashboardToolsComponent],
-  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './styles/admin-live.css', '../crossfit-final.css', './styles/admin-dashboard-polish.css', './styles/admin-dashboard-premium.css', './styles/admin-mantis-interactions.css', './styles/admin-dashboard-refined.css', './styles/admin-mantis-reference.css', './styles/admin-efsrt-validation.css', './styles/admin-mallqui-original-palette.css', './styles/admin-claridad.css', './styles/admin-efsrt-simplificado.css', './styles/admin-navegacion-clara.css', './styles/admin-paleta-portada.css'],
+  styleUrls: ['../mallqui-admin.css', '../ui-readable.css', './styles/admin-live.css', '../crossfit-final.css', './styles/admin-dashboard-polish.css', './styles/admin-dashboard-premium.css', './styles/admin-mantis-interactions.css', './styles/admin-dashboard-refined.css', './styles/admin-mantis-reference.css', './styles/admin-efsrt-validation.css', './styles/admin-mallqui-original-palette.css', './styles/admin-claridad.css', './styles/admin-efsrt-simplificado.css', './styles/admin-navegacion-clara.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
   <div class="admin-shell admin-home-redesign" [class.admin-sidebar-collapsed]="sidebarCerrado" [class.mg-mantis-collapsed]="sidebarCerrado" [class.mg-mantis-dark]="modoDashboard==='oscuro'" [class.mg-mantis-compact]="densidadDashboard==='compacta'" [class.mg-mantis-blue]="acentoDashboard==='azul'" [class.mg-mantis-green]="acentoDashboard==='verde'" [class.mg-mantis-coral]="acentoDashboard==='coral'">
@@ -3510,14 +3510,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.acentoDashboard=color;
       }
       if(!reparado)localStorage.setItem('mallqui_palette_restored_20261109','1');
-      // Cambio visual solicitado: migrar una sola vez el verde anterior a
-      // coral, como en la portada. Después respetar lo elegido en Apariencia.
-      if(localStorage.getItem('mallqui_dashboard_paleta_portada_20261123')!=='1'){
-        if(!color || color==='verde'){
-          this.acentoDashboard='coral';
-          localStorage.setItem('mallqui_mantis_color','coral');
+      // Recuperar la paleta anterior si la última actualización aplicó coral.
+      // Solo una vez: los cambios posteriores de Apariencia se respetan.
+      if(localStorage.getItem('mallqui_paleta_verde_restaurada_20261123')!=='1'){
+        if(localStorage.getItem('mallqui_dashboard_paleta_portada_20261123')==='1'
+            && color==='coral'){
+          this.acentoDashboard='verde';
+          localStorage.setItem('mallqui_mantis_color','verde');
         }
-        localStorage.setItem('mallqui_dashboard_paleta_portada_20261123','1');
+        localStorage.setItem('mallqui_paleta_verde_restaurada_20261123','1');
       }
       if(densidad==='normal'||densidad==='compacta') this.densidadDashboard=densidad;
     }catch{
@@ -4021,7 +4022,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   tipoIngresoDashboard: 'total'|'membresias'|'ventas' = 'total';
   modoDashboard: 'claro'|'oscuro' = 'claro';
   densidadDashboard: 'normal'|'compacta' = 'normal';
-  acentoDashboard: 'coral'|'azul'|'verde' = 'coral';
+  acentoDashboard: 'coral'|'azul'|'verde' = 'verde';
   personalizadorAbierto = false;
   avisosAbiertos = false;
   perfilAbiertoMantis = false;
@@ -4160,7 +4161,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   restablecerAparienciaMantis():void{
     this.guardarAparienciaMantis('tema','claro');
-    this.guardarAparienciaMantis('color','coral');
+    this.guardarAparienciaMantis('color','verde');
     this.guardarAparienciaMantis('densidad','normal');
     this.sidebarCerrado=false;
     try{localStorage.setItem('mallqui_admin_sidebar_closed','0');}catch{}
