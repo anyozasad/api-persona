@@ -99,6 +99,18 @@ function VerificarServidorMallqui([object]$estado) {
     if ($null -ne $estado -and $estado.revision_mysql -ne 'mallqui-esquema-respaldo-20261123') {
         Fallar 'El Laravel del puerto 8000 está desactualizado o corresponde a otra copia del gimnasio. Detén ese servidor e inicia BACKEND de esta carpeta antes de reparar MySQL.'
     }
+    # Comparar el controlador que realmente ejecuta localhost:8000 con el
+    # archivo de esta carpeta. Dos copias diferentes de Mallqui Gym pueden
+    # compartir el mismo título y la misma revisión de base de datos.
+    if ($null -ne $estado) {
+        $archivoVentas = Join-Path $backend 'app\Http\Controllers\VentaController.php'
+        $revisionLocal = (Get-FileHash -LiteralPath $archivoVentas -Algorithm SHA256).Hash
+        $revisionServidor = [string]$estado.revision_ventas
+        if ([string]::IsNullOrWhiteSpace($revisionServidor) -or
+            $revisionServidor -ine $revisionLocal) {
+            Fallar 'El Laravel del puerto 8000 no está ejecutando la versión nueva de Ventas de ESTA carpeta. Cierra el servidor Laravel anterior y vuelve a ejecutar este iniciador; así evitarás repetir el error de MySQL con código viejo.'
+        }
+    }
 }
 function VerificarFrontendMallqui([string]$html) {
     # Además del título, exigir la marca de la copia actual del frontend.
