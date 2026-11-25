@@ -115,7 +115,7 @@ try {
         Fallar 'Ejecuta este archivo desde la carpeta principal del repositorio que contiene BACKEND y FRONTEND.'
     }
 
-    $php = BuscarComando @('php.exe','php') @('C:\xampp\php\php.exe','C:\laragon\bin\php\php.exe')
+    $php = BuscarComando @('php.exe','php') @('C:\xampp\php\php.exe','D:\xampp\php\php.exe','C:\laragon\bin\php\php.exe')
     $npm = BuscarComando @('npm.cmd','npm.exe') @('C:\Program Files\nodejs\npm.cmd')
     $composer = BuscarComando @('composer.bat','composer.cmd','composer') @('C:\ProgramData\ComposerSetup\bin\composer.bat')
 
