@@ -87,24 +87,47 @@ class ReconciliarEsquemaRealMallqui extends Command
     /** Verifica datos legacy que pueden quedar sin copiar aunque las
      *  columnas ya existan. Devuelve solo tablas, nunca datos personales.
      */
-    public static function integridadCatalogoPendiente(): array
+    /**
+     * Las tablas antiguas de gym_system tienen identificadores y fechas
+     * propias. Un esquema con columnas nuevas pero valores NULL no es
+     * funcional. Usar el mismo contrato para comprobar y recuperar.
+     */
+    private static function aliasesLegado(): array
     {
-        $pares = [
+        return [
             'categorias' => ['id_categoria' => 'id', 'nombre_categoria' => 'nombre'],
             'productos' => [
                 'id_producto' => 'id', 'id_categoria' => 'categoria_id',
                 'codigo_producto' => 'codigo', 'nombre_producto' => 'nombre',
             ],
+            'cajas' => ['id_caja' => 'id', 'id_usuario_apertura' => 'usuario_id'],
+            'ventas' => ['id_venta' => 'id', 'fecha_venta' => 'fecha'],
+            'movimientos_caja' => ['id_movimiento' => 'id', 'id_caja' => 'caja_id'],
         ];
+    }
+
+    private static function firmaLegado(string $tabla): array
+    {
+        return match ($tabla) {
+            'productos' => ['id', 'categoria_id', 'codigo', 'nombre'],
+            'categorias' => ['id', 'nombre'],
+            'cajas' => ['id', 'usuario_id', 'fecha_apertura'],
+            'ventas' => ['id', 'caja_id', 'fecha'],
+            'movimientos_caja' => ['id', 'caja_id', 'fecha_movimiento'],
+            default => [],
+        };
+    }
+
+    public static function integridadCatalogoPendiente(): array
+    {
+        $pares = self::aliasesLegado();
         $pendientes = [];
         foreach ($pares as $tabla => $alias) {
             if (!Schema::hasTable($tabla)) {
                 continue;
             }
             $columnas = array_fill_keys(Schema::getColumnListing($tabla), true);
-            $firmaLegacy = $tabla === 'productos'
-                ? ['id', 'categoria_id', 'codigo', 'nombre']
-                : ['id', 'nombre'];
+            $firmaLegacy = self::firmaLegado($tabla);
             if (array_diff($firmaLegacy, array_keys($columnas)) !== []) {
                 continue;
             }
@@ -267,26 +290,13 @@ class ReconciliarEsquemaRealMallqui extends Command
      */
     private function sincronizarAliasesCatalogo(): void
     {
-        $compatibilidades = [
-            'categorias' => [
-                'id_categoria' => 'id',
-                'nombre_categoria' => 'nombre',
-            ],
-            'productos' => [
-                'id_producto' => 'id',
-                'id_categoria' => 'categoria_id',
-                'codigo_producto' => 'codigo',
-                'nombre_producto' => 'nombre',
-            ],
-        ];
+        $compatibilidades = self::aliasesLegado();
         foreach ($compatibilidades as $tabla => $alias) {
             if (!Schema::hasTable($tabla)) {
                 continue;
             }
             $campos = array_fill_keys(Schema::getColumnListing($tabla), true);
-            $firmaLegacy = $tabla === 'productos'
-                ? ['id', 'categoria_id', 'codigo', 'nombre']
-                : ['id', 'nombre'];
+            $firmaLegacy = self::firmaLegado($tabla);
             if (array_diff($firmaLegacy, array_keys($campos)) !== []) {
                 continue;
             }
