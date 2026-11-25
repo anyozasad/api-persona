@@ -1311,6 +1311,97 @@ try {
     await page.screenshot({path:'evidencias-dashboard/11_Producto_creado_y_foto.png',fullPage:true});
   });
 
+  await paso('Cobro real de S/ 40 desde Angular hasta MySQL, Kardex y caja',async()=>{
+    // Esta prueba reproduce exactamente el botón y monto reportados en la
+    // captura. Ejecutar únicamente sobre la base efímera mallqui_gym_e2e.
+    await page.goto(base+'/admin?modulo=caja',{waitUntil:'domcontentloaded'});
+    const cajaForm=page.locator('form').filter({has:page.locator('input[name=camonto]')});
+    const abrir=page.getByRole('button',{name:'Abrir caja',exact:true});
+    if (await abrir.count()) {
+      await cajaForm.locator('input[name=camonto]').fill('100');
+      const promesa=page.waitForResponse(r=>r.url().includes('/api/caja/abrir')
+        && r.request().method()==='POST',{timeout:20000});
+      await abrir.click();
+      const respuesta=await promesa;
+      assert.equal(respuesta.status(),201,
+        'Abrir caja debe registrar sus datos en MySQL antes de cobrar.');
+    } else {
+      await page.getByRole('heading',{name:'Caja abierta'}).waitFor({timeout:20000});
+    }
+
+    await page.goto(base+'/admin?modulo=ventas',{waitUntil:'domcontentloaded'});
+    const formulario=page.locator('.sales-pos-form');
+    await formulario.waitFor({timeout:20000});
+    const cliente=formulario.locator('select[name=vcliente]');
+    await cliente.evaluate(async el=>{
+      const limite=Date.now()+20000;
+      while(el.options.length<2 && Date.now()<limite) {
+        await new Promise(r=>setTimeout(r,100));
+      }
+      if(el.options.length<2) throw new Error('El cobro no tiene socios de MySQL.');
+    });
+    const opcionCliente=await cliente.locator('option').allTextContents();
+    const idxCliente=opcionCliente.findIndex(t=>t.includes('Interfaz Mallqui'));
+    assert.ok(idxCliente>0,'El socio creado anteriormente no aparece en Ventas.');
+    await cliente.selectOption({index:idxCliente});
+
+    const producto=formulario.locator('select[name=vproducto]');
+    await producto.evaluate(async el=>{
+      const limite=Date.now()+20000;
+      while(![...el.options].some(o=>o.textContent.includes('Producto de prueba con fotografía'))
+        && Date.now()<limite){await new Promise(r=>setTimeout(r,100));}
+    });
+    const opcionesProducto=await producto.locator('option').allTextContents();
+    const idxProducto=opcionesProducto.findIndex(t=>t.includes('Producto de prueba con fotografía'));
+    assert.ok(idxProducto>0,'El producto recién registrado no aparece en Ventas.');
+    await producto.selectOption({index:idxProducto});
+    await formulario.locator('input[name=vcantidad]').fill('2');
+    await formulario.locator('.sales-add-button').click();
+    await formulario.getByText('S/ 40.00').first().waitFor({timeout:12000});
+    const cobrar=formulario.locator('.sales-charge-button');
+    assert.equal(await cobrar.isEnabled(),true,
+      'La caja abierta, cliente y producto deben permitir cobrar.');
+
+    const peticion=page.waitForResponse(r=>r.url().includes('/api/ventas')
+      && r.request().method()==='POST',{timeout:30000});
+    await cobrar.click();
+    const respuesta=await peticion;
+    const respuestaVenta=await respuesta.json();
+    assert.equal(respuesta.status(),201,'El botón Confirmar cobro falló en Laravel/MySQL: '+
+      JSON.stringify(respuestaVenta).slice(0,700));
+    assert.equal(Number(respuestaVenta?.venta?.total),40,
+      'El total guardado en MySQL no coincide con lo mostrado al cobrar.');
+    const numero=String(respuestaVenta?.numero_comprobante||'');
+    assert.match(numero,/^B001-\d{8}$/,'La boleta no se generó correctamente.');
+    await page.screenshot({
+      path:'evidencias-dashboard/40_Cobro_real_guardado_MySQL.png',
+      fullPage:true,animations:'disabled'
+    });
+
+    // Releer desde API mediante el propio Angular, después de recargar.
+    await page.goto(base+'/admin?modulo=historial-ventas',{waitUntil:'domcontentloaded'});
+    const fila=page.locator('.management-table tbody tr').filter({hasText:numero}).first();
+    await fila.waitFor({timeout:25000});
+    assert.match(await fila.innerText(),/40[.,]00/,'El historial perdió el cobro de S/ 40.');
+
+    await page.goto(base+'/productos',{waitUntil:'domcontentloaded'});
+    const filaProducto=page.locator('app-productos .tabla-productos tr')
+      .filter({hasText:codigoProductoFoto}).first();
+    await filaProducto.waitFor({timeout:25000});
+    assert.match(await filaProducto.locator('.stock-cell b').innerText(),/^1$/,
+      'Después de vender dos unidades el stock de tres debe quedar en uno.');
+
+    await page.goto(base+'/admin?modulo=caja',{waitUntil:'domcontentloaded'});
+    const cajaAbierta=page.getByRole('heading',{name:'Caja abierta'});
+    await cajaAbierta.waitFor({timeout:25000});
+    assert.match(await cajaAbierta.locator('..').innerText(),/140[.,]00/,
+      'Caja debe mostrar monto inicial S/100 más la venta S/40.');
+    await page.screenshot({
+      path:'evidencias-dashboard/41_Caja_real_con_venta_de_40_soles.png',
+      fullPage:true,animations:'disabled'
+    });
+  });
+
   await paso('Subir imagen desde la fila sin alterar el precio ni el stock',async()=>{
     await page.goto(base+'/productos',{waitUntil:'domcontentloaded'});
     const tabla=page.locator('app-productos .tabla-productos');
