@@ -89,6 +89,7 @@ Route::get('/estado-sistema', function () {
         return response()->json([
             'sistema' => 'Mallqui Gym',
             'revision_mysql' => 'mallqui-esquema-respaldo-20261123',
+            'revision_ventas' => hash_file('sha256', app_path('Http/Controllers/VentaController.php')),
             'api' => true,
             'database' => true,
             'operativo' => count($faltantes) === 0,
@@ -104,6 +105,7 @@ Route::get('/estado-sistema', function () {
         return response()->json([
             'sistema' => 'Mallqui Gym',
             'revision_mysql' => 'mallqui-esquema-respaldo-20261123',
+            'revision_ventas' => hash_file('sha256', app_path('Http/Controllers/VentaController.php')),
             'api' => true,
             'database' => false,
             'operativo' => false,
