@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Caja;
 use App\Models\MovimientoCaja;
+use App\Services\CajaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -83,7 +84,7 @@ class CajaController extends Controller
         ], 201);
     }
 
-    public function movimiento(Request $request)
+    public function movimiento(Request $request, CajaService $cajaService)
     {
         $datos = $request->validate([
             'tipo' => ['required', Rule::in(['Ingreso', 'Egreso'])],
@@ -92,7 +93,7 @@ class CajaController extends Controller
             'monto' => 'required|numeric|min:0.01|max:99999999.99',
         ]);
 
-        $movimiento = DB::transaction(function () use ($datos, $request) {
+        $movimiento = DB::transaction(function () use ($datos, $request, $cajaService) {
             $caja = Caja::whereRaw('LOWER(estado) = ?', ['abierta'])->lockForUpdate()->first();
             if (!$caja) {
                 throw ValidationException::withMessages([
@@ -108,16 +109,25 @@ class CajaController extends Controller
                 ]);
             }
 
-            return MovimientoCaja::create([
-                'id_caja' => $caja->id_caja,
-                'id_usuario' => $request->user()->id_usuario,
-                'tipo' => $datos['tipo'],
-                'origen' => $datos['origen'],
-                'descripcion' => $datos['descripcion'],
-                'monto' => $datos['monto'],
-                'fecha_movimiento' => now(),
-                'estado' => 'Registrado',
-            ]);
+            // Utiliza el mismo guardado que una venta: incluye caja_id
+            // e id_movimiento en las instalaciones anteriores de gym_system.
+            // Reutilizar la caja bloqueada evita movimientos sin referencia.
+            $movimiento = $cajaService->registrarMovimiento(
+                (int) $request->user()->id_usuario,
+                $datos['tipo'],
+                $datos['origen'],
+                $datos['descripcion'],
+                (float) $datos['monto'],
+                null,
+                null,
+                $caja
+            );
+            if (!$movimiento) {
+                throw ValidationException::withMessages([
+                    'caja' => ['No existe una caja abierta para registrar este movimiento.'],
+                ]);
+            }
+            return $movimiento;
         });
 
         return response()->json([
