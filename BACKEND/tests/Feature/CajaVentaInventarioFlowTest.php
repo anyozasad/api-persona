@@ -417,6 +417,82 @@ class CajaVentaInventarioFlowTest extends TestCase
         ]);
     }
 
+    public function test_movimiento_manual_funciona_con_la_caja_original_gym_system(): void
+    {
+        Schema::dropIfExists('movimientos_caja');
+        Schema::create('movimientos_caja', function (Blueprint $t) {
+            $t->id('id');
+            $t->unsignedBigInteger('id_movimiento')->nullable()->unique();
+            $t->unsignedBigInteger('caja_id');
+            $t->unsignedBigInteger('id_caja');
+            $t->unsignedBigInteger('id_usuario');
+            $t->string('tipo');
+            $t->string('origen');
+            $t->string('referencia_tipo')->nullable();
+            $t->unsignedBigInteger('referencia_id')->nullable();
+            $t->string('descripcion');
+            $t->decimal('monto', 12, 2);
+            $t->dateTime('fecha_movimiento');
+            $t->string('estado');
+        });
+
+        $this->abrirCaja(100);
+        $this->postJson('/api/caja/movimientos', [
+            'tipo' => 'Ingreso',
+            'origen' => 'Manual',
+            'descripcion' => 'Ingreso de prueba',
+            'monto' => 10,
+        ])->assertCreated()->assertJsonPath('movimiento.id_movimiento', 1);
+
+        $this->assertDatabaseHas('movimientos_caja', [
+            'id' => 1, 'id_movimiento' => 1,
+            'caja_id' => 1, 'id_caja' => 1,
+            'tipo' => 'Ingreso', 'monto' => 10,
+        ]);
+        $this->getJson('/api/caja/actual')
+            ->assertOk()
+            ->assertJsonPath('resumen.ingresos', 10)
+            ->assertJsonPath('resumen.monto_esperado', 110);
+    }
+
+    public function test_detecta_y_recupera_identificadores_vacios_de_caja_legacy(): void
+    {
+        Schema::dropIfExists('cajas');
+        Schema::create('cajas', function (Blueprint $t) {
+            $t->id('id');
+            $t->unsignedBigInteger('id_caja')->nullable()->unique();
+            $t->unsignedBigInteger('id_usuario_apertura')->nullable();
+            $t->unsignedBigInteger('usuario_id');
+            $t->dateTime('fecha_apertura');
+            $t->decimal('monto_inicial', 12, 2);
+            $t->string('estado');
+            $t->text('observacion')->nullable();
+            $t->dateTime('fecha_cierre')->nullable();
+            $t->decimal('monto_esperado', 12, 2)->nullable();
+            $t->decimal('monto_real', 12, 2)->nullable();
+            $t->decimal('diferencia', 12, 2)->nullable();
+        });
+        DB::table('cajas')->insert([
+            'usuario_id' => 1, 'fecha_apertura' => now(),
+            'monto_inicial' => 80, 'estado' => 'abierta',
+        ]);
+
+        $pendientes = \App\Console\Commands\ReconciliarEsquemaRealMallqui::integridadCatalogoPendiente();
+        $this->assertContains('integridad:cajas', $pendientes);
+
+        $reparador = app(\App\Console\Commands\ReconciliarEsquemaRealMallqui::class);
+        (new \ReflectionMethod($reparador, 'sincronizarAliasesCatalogo'))->invoke($reparador);
+
+        $this->assertDatabaseHas('cajas', [
+            'id' => 1, 'id_caja' => 1,
+            'usuario_id' => 1, 'id_usuario_apertura' => 1,
+        ]);
+        $this->assertNotContains(
+            'integridad:cajas',
+            \App\Console\Commands\ReconciliarEsquemaRealMallqui::integridadCatalogoPendiente()
+        );
+    }
+
     private function abrirCaja(float $monto = 100): void
     {
         $this->postJson('/api/caja/abrir', [
