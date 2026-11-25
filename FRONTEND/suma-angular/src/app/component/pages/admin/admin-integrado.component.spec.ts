@@ -1588,11 +1588,20 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
   });
 
 
-  it('no envía una reserva de miércoles con fecha de martes, como en la captura', () => {
+  it('no permite reservar un martes futuro para una clase de miércoles', () => {
     component.clientes=[{id_cliente:1,estado:'Activo'}];
     component.clases=[{id_clase:2,estado:'Activo',nombre:'Fuerza y masa muscular',
       dia_semana:'Miércoles',hora_inicio:'18:00:00'}];
-    component.reservaForm={id_cliente:1,id_clase:2,fecha_clase:'2026-11-24'};
+    // No usar una fecha fija de 2026: al pasar ese día la validación correcta
+    // rechaza primero la fecha pasada y se rompe esta prueba por el calendario.
+    const minima=new Date(component.fechaMinimaReserva+'T12:00:00');
+    minima.setDate(minima.getDate()+(2-minima.getDay()+7)%7);
+    const martes=[
+      minima.getFullYear(),
+      String(minima.getMonth()+1).padStart(2,'0'),
+      String(minima.getDate()).padStart(2,'0')
+    ].join('-');
+    component.reservaForm={id_cliente:1,id_clase:2,fecha_clase:martes};
     expect(component.fechaCoincideConClase).toBeFalse();
     expect(component.reservaListaParaGuardar).toBeFalse();
     component.guardarReservaAdmin();
