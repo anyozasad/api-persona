@@ -1359,8 +1359,31 @@ try {
     await formulario.locator('.sales-add-button').click();
     await formulario.getByText('S/ 40.00').first().waitFor({timeout:12000});
     const cobrar=formulario.locator('.sales-charge-button');
+    // El estado de caja se consulta en paralelo al cargar socios y catálogo.
+    // No diagnosticar un error de guardado mientras la solicitud sigue activa.
+    await page.waitForFunction(()=>
+      !!document.querySelector('.sales-charge-button')
+      && !document.querySelector('.sales-charge-button').disabled,
+      null,{timeout:9000}
+    ).catch(()=>{});
+    const diagnostico=await formulario.evaluate(el=>{
+      const cliente=el.querySelector('select[name=vcliente]');
+      const producto=el.querySelector('select[name=vproducto]');
+      const cobrar=el.querySelector('.sales-charge-button');
+      return {
+        cliente:cliente?.selectedOptions?.[0]?.textContent?.trim(),
+        producto:producto?.selectedOptions?.[0]?.textContent?.trim(),
+        cantidad:el.querySelector('input[name=vcantidad]')?.value,
+        pago:el.querySelector('select[name=vmetodo]')?.value,
+        botonDeshabilitado:cobrar?.disabled,
+        botonTexto:cobrar?.textContent?.trim(),
+        cajaCerrada:el.textContent?.includes('La caja está cerrada.'),
+        campos:el.querySelectorAll('.sales-cart-table tbody tr').length
+      };
+    });
     assert.equal(await cobrar.isEnabled(),true,
-      'La caja abierta, cliente y producto deben permitir cobrar.');
+      'El botón sigue bloqueado después de comprobar MySQL. Estado: '+
+      JSON.stringify(diagnostico));
 
     const peticion=page.waitForResponse(r=>r.url().includes('/api/ventas')
       && r.request().method()==='POST',{timeout:30000});
