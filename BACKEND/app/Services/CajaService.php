@@ -21,9 +21,10 @@ class CajaService
         string $descripcion,
         float $monto,
         ?string $referenciaTipo = null,
-        ?int $referenciaId = null
+        ?int $referenciaId = null,
+        ?Caja $cajaObjetivo = null
     ): ?MovimientoCaja {
-        $caja = $this->cajaAbierta();
+        $caja = $cajaObjetivo ?? $this->cajaAbierta();
         if (!$caja) {
             return null;
         }
