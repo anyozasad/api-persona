@@ -107,7 +107,10 @@ final class PortableMysqlBackup
             $this->write($out, 'USE '.$this->id($database).";\n\n");
 
             $pdo->exec('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
-            $pdo->exec('START TRANSACTION WITH CONSISTENT SNAPSHOT');
+            // PDO::beginTransaction mantiene la transacción registrada
+            // en el driver, para que commit y rollback funcionen en XAMPP.
+            // REPEATABLE READ conserva el mismo snapshot entre tablas InnoDB.
+            $pdo->beginTransaction();
             $transaction = true;
             foreach ($tables as $table) {
                 $name = $this->id($table);
