@@ -458,3 +458,20 @@
  .member-page .gym-workout-exercise{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){.member-page .member-enter-up,.member-page .train-ux-carousel img{animation:none!important}.member-page .train-ux-slide-1{opacity:1!important}}
+
+/* Aviso de sincronización: claro, compacto y sin botones inservibles */
+.member-page .member-sync-banner{display:flex;align-items:center;gap:16px;padding:15px 18px;background:#352629;border:1px solid #93494d;border-left:4px solid #ef777d;border-radius:12px;margin:16px clamp(18px,3vw,55px);color:#fff}
+.member-page .member-sync-symbol{display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;border-radius:50%;background:#69363a;color:#fff;font-size:18px;font-weight:900}
+.member-page .member-sync-copy{flex:1;min-width:0}
+.member-page .member-sync-copy>b{display:block;font-size:14px;font-weight:850;line-height:1.45}
+.member-page .member-sync-copy>p{color:#f2cdcd;font-size:12px;line-height:1.45;margin:4px 0 0}
+.member-page .member-sync-copy details{margin-top:8px}
+.member-page .member-sync-copy summary{width:max-content;max-width:100%;color:#ffe7e7;font-size:12px;text-decoration:underline;cursor:pointer}
+.member-page .member-sync-copy ul{display:flex;flex-wrap:wrap;gap:7px;list-style:none;padding:9px 0 0;margin:0}
+.member-page .member-sync-copy li{font-size:11px;padding:6px 9px;border:1px solid #80575c;background:#482e32;border-radius:7px}
+.member-page .member-sync-copy li small{font-size:10px;color:#eed3d5}
+.member-page .member-sync-retry{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;min-height:43px;padding:11px 17px;border:1px solid #b1d57b;background:#b7e75e;color:#1c2b13;border-radius:9px;font-weight:850;font-size:13px;cursor:pointer}
+.member-page .member-sync-retry:disabled{background:#9c9797;color:#242424;border-color:#9c9797;opacity:.8;cursor:wait}
+.member-page .classes-live-chip.offline{color:#ffd1bb;border-color:#986b56;background:rgba(160,76,42,.16)}
+.member-page .classes-live-chip.offline i{background:#ee9875;box-shadow:0 0 0 5px rgba(240,146,91,.12)}
+@media(max-width:650px){.member-page .member-sync-banner{align-items:flex-start;flex-wrap:wrap}.member-page .member-sync-retry{width:100%}.member-page .member-sync-copy{flex:1 1 calc(100% - 60px)}}
