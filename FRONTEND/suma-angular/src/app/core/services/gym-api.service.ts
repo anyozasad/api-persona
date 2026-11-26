@@ -39,18 +39,34 @@ export class GymApiService {
   reservasCliente(): Observable<any[]> { return this.http.get<any[]>('/api/mi-cuenta/reservas'); }
 
   cargarPortalCliente(): Observable<any> {
+    // Una sola llamada reduce colas y expiraciones al usar php artisan serve
+    // en Windows. Durante la actualización acepta el backend anterior.
+    return this.http.get<any>('/api/mi-cuenta/portal').pipe(
+      timeout(30000),
+      catchError((error: any) => {
+        if (Number(error?.status) === 404 || Number(error?.status) === 405) {
+          return this.cargarPortalClienteLegacy();
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+
+  private cargarPortalClienteLegacy(): Observable<any> {
     // Las listas vacías son válidas, pero una consulta que falla NO significa
     // que el cliente no tenga pagos, rutinas o reservas.
     // Conservar los módulos disponibles y comunicar cuáles fallaron en MySQL.
     const erroresModulos: string[] = [];
+    const erroresDetalle: Record<string, { http: number }> = {};
     const seguro = <T>(nombre: string, obs: Observable<T>, fallback: T): Observable<T> =>
       obs.pipe(
-        timeout(12000),
+        timeout(20000),
         catchError((error: any) => {
           if (error?.status === 401 || error?.status === 403) {
             return throwError(() => error);
           }
           erroresModulos.push(nombre);
+          erroresDetalle[nombre] = { http: Number(error?.status || 0) };
           return of(fallback);
         })
       );
@@ -68,7 +84,7 @@ export class GymApiService {
       clases: seguro('Clases', this.clases(), []),
       membresiasDisponibles: seguro('Planes', this.membresias(), []),
       gymInfo: seguro('Configuración', this.informacionGym(), {}),
-    }).pipe(map(r => ({...r, erroresModulos: [...erroresModulos]})));
+    }).pipe(map(r => ({...r, erroresModulos: [...erroresModulos], erroresDetalle})));
   }
 
   reservarClase(id_clase: number, fecha_clase: string): Observable<any> {
