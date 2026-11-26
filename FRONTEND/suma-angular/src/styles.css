@@ -139,3 +139,20 @@ html.mallqui-public-scroll body::-webkit-scrollbar {
 @keyframes mallqui-card-arrive{from{opacity:.5;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
 @media (max-width:440px){.mallqui-logout-dialog{padding:22px}.mallqui-logout-buttons{flex-direction:column-reverse}.mallqui-logout-buttons button{width:100%}}
 @media (prefers-reduced-motion:reduce){.mallqui-logout-overlay,.mallqui-logout-dialog,.admin-shell .mg-efsrt-kpis article,.admin-shell .mg-efsrt-dashboard article,.admin-shell .admin-dashboard-grid article{animation:none!important;transition:none!important}}
+
+
+/* Tabla de tarifas: más espacio para los nombres, precios y estados */
+.admin-shell .mg-plan-page.management-grid{grid-template-columns:minmax(325px,.92fr) minmax(570px,1.4fr)!important;align-items:start;gap:22px}
+.admin-shell .mg-plan-page .admin-list-card,.admin-shell .mg-plan-page .admin-form-card{min-width:0}
+.admin-shell .mg-plan-page .table-wrap{max-width:100%;overflow-x:auto}
+.admin-shell .mg-plan-page .management-table{width:100%;min-width:620px}
+.admin-shell .mg-plan-page .management-table th:nth-child(n+2),.admin-shell .mg-plan-page .management-table td:nth-child(n+2){white-space:nowrap}
+.admin-shell .mg-plan-page .mg-plan-error{padding:12px 14px;border-radius:10px;line-height:1.5;font-size:14px}
+.admin-shell .mg-backup-help{display:grid;gap:6px;line-height:1.5;font-size:13px}
+.admin-shell .mg-backup-help strong{font-weight:800}
+.admin-shell .mg-backup-help details{margin-top:5px}
+.admin-shell .mg-backup-help summary{cursor:pointer;text-decoration:underline;font-weight:700}
+.admin-shell .mg-backup-help details p{margin:5px 0;overflow-wrap:anywhere}
+@media(max-width:1360px){
+ .admin-shell .mg-plan-page.management-grid{grid-template-columns:minmax(0,1fr)!important}
+}
