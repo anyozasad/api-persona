@@ -1,4 +1,186 @@
 
+/* Mallqui Gym: recuperar la presentación original horizontal del portal de socios.
+   Mantener la plantilla Angular, las imágenes locales y todas las acciones. */
+.member-page{--member-bg:#0b1013;--member-paper:#151b20;--member-border:#30383c;--member-ink:#f6f7f6;--member-muted:#adb8b9;--member-red:#f84259;display:block;min-height:100vh;background:var(--member-bg);color:var(--member-ink);font-family:Inter,Arial,sans-serif;font-size:15px}
+.member-page *{box-sizing:border-box}
+.member-page .member-topbar.mallqui-apex-header{position:sticky;top:0;z-index:55;width:100%;background:#111619;color:#fff;border-bottom:1px solid rgba(255,255,255,.09);box-shadow:0 5px 24px rgba(0,0,0,.22)}
+.member-page .mallqui-apex-nav{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:24px;min-height:92px!important;width:100%;max-width:1720px;margin:0 auto;padding:12px clamp(20px,3vw,56px)!important}
+.member-page .mallqui-apex-brand{border:0;background:none;color:#fff;display:flex;flex:0 0 auto;align-items:center;gap:11px;padding:0;cursor:pointer;text-align:left;min-width:0}
+.member-page .mallqui-apex-brand img{display:block;width:57px!important;height:57px!important;object-fit:contain}
+.member-page .mallqui-apex-brand span{display:flex;flex-direction:column;gap:5px;white-space:nowrap}
+.member-page .mallqui-apex-brand b{font-size:20px!important;line-height:1;letter-spacing:.5px;font-weight:950}
+.member-page .mallqui-apex-brand strong{color:#b9e75e}
+.member-page .mallqui-apex-brand small{font-size:9px;letter-spacing:2px;color:#a9b4b8}
+.member-page .mallqui-apex-menu{display:flex;align-items:center;justify-content:center;gap:5px;min-width:0;flex:1}
+.member-page .mallqui-apex-menu button{appearance:none;background:transparent;color:#dce1e0;cursor:pointer;font:inherit;font-weight:700;font-size:13px!important;letter-spacing:.1px!important;white-space:nowrap;border:1px solid transparent;border-radius:9px;min-height:44px;padding:0 13px;transition:background .2s,color .2s,transform .2s}
+.member-page .mallqui-apex-menu button:hover{background:#252d30;color:#fff;transform:translateY(-1px)}
+.member-page .mallqui-apex-menu button.active{background:#293a26;border-color:#6e974b;color:#d7faad}
+.member-page .mallqui-apex-user{display:flex;align-items:center;flex:0 0 auto;justify-content:flex-end;gap:9px;min-width:0}
+.member-page .mallqui-apex-bell,.member-page .mallqui-apex-logout{position:relative;display:grid;place-items:center;flex:0 0 auto;width:42px!important;height:42px!important;padding:0;border:1px solid #384044;border-radius:11px;background:#1a2226;color:#f4f6f5;cursor:pointer;transition:background .2s,transform .2s}
+.member-page .mallqui-apex-bell:hover,.member-page .mallqui-apex-logout:hover{background:#2b3539;transform:translateY(-2px)}
+.member-page .mallqui-apex-bell svg,.member-page .mallqui-apex-logout svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.member-page .mallqui-apex-bell b{position:absolute;right:-5px;top:-5px;background:var(--member-red);color:white;border-radius:12px;min-width:18px;height:18px;display:grid;place-items:center;font-size:10px}
+.member-page .mallqui-apex-profile{display:flex;flex:0 1 auto;align-items:center;gap:10px;border:1px solid #384044;border-radius:12px;background:#1c2529;padding:5px 11px 5px 5px;min-width:0;max-width:195px;cursor:pointer;color:#fff}
+.member-page .mallqui-apex-profile>span{display:grid;place-items:center;flex:0 0 auto;background:#b7e75e;color:#15240d;font-size:15px;font-weight:850;border-radius:9px;width:38px;height:38px}
+.member-page .mallqui-apex-profile>div{display:flex;flex-direction:column;min-width:0;text-align:left;gap:3px}
+.member-page .mallqui-apex-profile b{color:#fff;font-size:12px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:110px}
+.member-page .mallqui-apex-profile small{color:#b1bbb8;font-size:10px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.member-page .member-main{width:100%;min-height:60vh;background:#0a0f13}
+.member-page .mallqui-apex-home{overflow:hidden}
+.member-page .mallqui-apex-hero{position:relative;isolation:isolate;display:flex;align-items:center;min-height:670px;padding:72px max(36px,calc((100vw - 1480px)/2));overflow:hidden;color:#fff;background:#10161a}
+.member-page .mallqui-apex-static,.member-page .mallqui-apex-carousel,.member-page .mallqui-apex-shade{position:absolute;inset:0;width:100%;height:100%}
+.member-page .mallqui-apex-static{z-index:-4;object-fit:cover}
+.member-page .mallqui-apex-carousel{z-index:-3}
+.member-page .mallqui-apex-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;animation:mallqui-hero-cycle 24s infinite}
+.member-page .mallqui-apex-slide.slide-1{animation-delay:0s}
+.member-page .mallqui-apex-slide.slide-2{animation-delay:6s}
+.member-page .mallqui-apex-slide.slide-3{animation-delay:12s}
+.member-page .mallqui-apex-slide.slide-4{animation-delay:18s}
+.member-page .mallqui-apex-shade{z-index:-2;pointer-events:none}
+.member-page .mallqui-apex-copy{position:relative;z-index:2;max-width:720px;padding-bottom:78px;animation:member-rise .55s ease both}
+.member-page .mallqui-apex-kicker{display:inline-block;color:#b9e75e;font-size:11px;font-weight:850;letter-spacing:2px;margin:0 0 19px}
+.member-page .mallqui-apex-copy h1{font-weight:950;font-size:clamp(44px,5.4vw,86px);line-height:.99;letter-spacing:-2px;margin:0 0 21px;max-width:730px;color:#fff}
+.member-page .mallqui-apex-copy h1 strong{color:#b9e75e}
+.member-page .mallqui-apex-copy h2{font-size:clamp(17px,1.6vw,24px);font-weight:700;line-height:1.4;margin:0 0 14px;color:#fff}
+.member-page .mallqui-apex-copy p{font-size:15px;line-height:1.7;max-width:620px;color:#e1e7e6;margin:0}
+.member-page .mallqui-apex-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:27px}
+.member-page .mallqui-apex-actions button{display:flex;align-items:center;gap:32px;justify-content:space-between;padding:14px 20px;min-height:51px;border-radius:10px;font:inherit;font-weight:850;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.member-page .mallqui-apex-actions button:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(0,0,0,.2)}
+.member-page .mallqui-apex-actions .apex-primary{background:#b9e75e;border:1px solid #b9e75e;color:#14210c}
+.member-page .mallqui-apex-actions .apex-secondary{background:rgba(12,17,18,.5);border:1px solid #9da7aa;color:white}
+.member-page .mallqui-apex-actions em{font-style:normal;font-size:21px}
+.member-page .mallqui-apex-proof{display:flex;flex-wrap:wrap;gap:15px;margin-top:27px}
+.member-page .mallqui-apex-proof>span{font-size:11px;color:#edf3f0}
+.member-page .mallqui-apex-proof i{font-style:normal;color:#b9e75e;margin-right:6px}
+.member-page .mallqui-apex-social,.member-page .mallqui-apex-scroll{position:absolute;z-index:2;letter-spacing:2px;font-size:10px;color:#d6dddc}
+.member-page .mallqui-apex-social{top:35px;right:36px;display:flex;align-items:center;gap:8px}
+.member-page .mallqui-apex-social i{width:23px;height:1px;background:#b9e75e}
+.member-page .mallqui-apex-scroll{right:35px;bottom:110px;display:flex;align-items:center;gap:12px}
+.member-page .mallqui-apex-coach{position:absolute;z-index:3;right:max(28px,calc((100vw - 1500px)/2));bottom:135px;width:min(32vw,350px);padding:19px;border:1px solid rgba(255,255,255,.22);border-radius:18px;background:rgba(14,20,22,.84);backdrop-filter:blur(12px);box-shadow:0 15px 35px rgba(0,0,0,.17)}
+.member-page .apex-coach-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px;font-size:9px;font-weight:800;letter-spacing:1px;color:#dfe7e3}
+.member-page .apex-coach-top b{color:#b9e75e;letter-spacing:0}
+.member-page .apex-coach-body{display:grid;grid-template-columns:75px 1fr;gap:13px;align-items:center}
+.member-page .apex-coach-body img{width:75px;height:90px;border-radius:9px;object-fit:cover}
+.member-page .apex-coach-body h3{margin:0 0 6px;font-size:14px;color:#fff}
+.member-page .apex-coach-body p{margin:0;color:#c0c9c8;font-size:11px;line-height:1.5}
+.member-page .mallqui-apex-coach>button{margin-top:16px;width:100%;padding:11px 13px;display:flex;justify-content:space-between;border:1px solid #526a3d;border-radius:8px;background:#263721;color:#e5f9d0;cursor:pointer;font-weight:800}
+.member-page .mallqui-apex-coach>button:disabled{opacity:.6;cursor:not-allowed}
+.member-page .mallqui-apex-bottom{position:absolute;inset:auto 0 0 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:rgba(12,18,20,.88);border-top:1px solid rgba(255,255,255,.17);backdrop-filter:blur(10px);z-index:2;padding:20px max(35px,calc((100vw - 1480px)/2))}
+.member-page .mallqui-apex-bottom>div{display:flex;align-items:flex-start;flex-direction:column;gap:4px;border-right:1px solid #3a4244;padding:0 18px}
+.member-page .mallqui-apex-bottom>div:first-child{padding-left:0}
+.member-page .mallqui-apex-bottom>div:last-child{border:0}
+.member-page .mallqui-apex-bottom small{color:#b0bbb5;letter-spacing:1px;font-size:9px}
+.member-page .mallqui-apex-bottom b{font-size:23px;color:#fff;line-height:1}
+.member-page .mallqui-apex-bottom span{font-size:10px;color:#b5c1be}
+.member-page .mallqui-apex-dashboard,.member-page .mallqui-focus-section,.member-page .mallqui-wellbeing-section,.member-page .gym-real-info-panel{padding:52px clamp(24px,4vw,72px)}
+.member-page .mallqui-apex-dashboard{background:#0b1114}
+.member-page .mallqui-apex-section-title,.member-page .mallqui-focus-head,.member-page .mallqui-wellbeing-head,.member-page .gym-real-info-head{display:flex;justify-content:space-between;align-items:end;gap:25px;margin:0 0 22px}
+.member-page .mallqui-apex-section-title span,.member-page .mallqui-focus-head span,.member-page .mallqui-wellbeing-head span{font-size:10px;color:#b9e75e;letter-spacing:1.5px;font-weight:850}
+.member-page .mallqui-apex-section-title h2,.member-page .mallqui-focus-head h2,.member-page .mallqui-wellbeing-head h2{margin:8px 0 0;font-size:clamp(24px,2.3vw,36px);line-height:1.2;color:white}
+.member-page .mallqui-apex-section-title p,.member-page .mallqui-focus-head p,.member-page .mallqui-wellbeing-head p{color:#a8b4b5;font-size:13px;max-width:390px;line-height:1.6;margin:0}
+.member-page .mallqui-apex-grid{display:grid;grid-template-columns:1.1fr 1fr .95fr;gap:16px}
+.member-page .mallqui-apex-grid>article{min-width:0;background:#172025;border:1px solid #303d40;border-radius:16px;padding:22px;color:#f7f9f9;transition:transform .22s,box-shadow .22s}
+.member-page .mallqui-apex-grid>article:hover{transform:translateY(-4px);box-shadow:0 16px 30px rgba(0,0,0,.22)}
+.member-page .apex-card-head,.member-page .apex-membership-main,.member-page .apex-profile-main{display:flex;align-items:center;justify-content:space-between;gap:15px}
+.member-page .apex-card-head>span,.member-page .apex-membership>span,.member-page .apex-profile-card>span{font-size:10px;letter-spacing:1.2px;color:#b9e75e;font-weight:800}
+.member-page .apex-card-head button,.member-page .apex-membership>button{border:0;background:transparent;color:#cce3b6;cursor:pointer;font:inherit;font-size:11px;font-weight:750}
+.member-page .apex-next-body{display:flex;gap:14px;align-items:center;margin-top:21px}
+.member-page .apex-next-body>img{height:105px;width:130px;border-radius:12px;object-fit:cover;flex:none}
+.member-page .mallqui-apex-grid h3{font-size:17px;margin:7px 0;color:#fff}
+.member-page .mallqui-apex-grid p{font-size:12px;line-height:1.55;color:#adbdc0;margin:5px 0}
+.member-page .apex-next-body small,.member-page .apex-membership-main small{font-size:10px;color:#aabbb8}
+.member-page .apex-membership-main{align-items:flex-start;margin:22px 0}
+.member-page .apex-membership-main> b{font-size:11px;white-space:nowrap;border-radius:20px;background:#365227;color:#d5f2be;padding:7px}
+.member-page .apex-membership-main> b.off{background:#453a2a;color:#f6dfb3}
+.member-page .apex-membership>button{padding:0}
+.member-page .apex-profile-card{cursor:pointer}
+.member-page .apex-profile-main{margin-top:20px}
+.member-page .apex-profile-main>b{font-size:22px;color:#b9e75e}
+.member-page .apex-profile-icon{width:45px;height:45px;flex:0 0 auto;display:grid;place-items:center;background:#30472b;border-radius:12px}
+.member-page .apex-profile-icon svg{width:25px;height:25px;fill:none;stroke:#c3eaa4;stroke-width:1.7}
+.member-page .apex-profile-progress{height:5px;border-radius:7px;background:#303e40;margin-top:18px;overflow:hidden}
+.member-page .apex-profile-progress i{height:100%;display:block;background:#b9e75e}
+.member-page .mallqui-focus-section{background:#12191c}
+.member-page .mallqui-focus-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.member-page .focus-action-card{background:#192126;border:1px solid #2d383d;border-radius:15px;padding:13px;min-width:0;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.member-page .focus-action-card:hover{transform:translateY(-4px);box-shadow:0 13px 24px rgba(0,0,0,.2)}
+.member-page .focus-index{display:block;font-size:11px;font-weight:900;color:#bfd8b5;padding:2px 0 10px}
+.member-page .focus-photo{width:100%;height:150px;border-radius:10px;overflow:hidden}
+.member-page .focus-photo img{display:block;width:100%;height:100%;object-fit:cover}
+.member-page .focus-action-card small{display:block;color:#b9e75e;font-size:9px;font-weight:850;letter-spacing:.8px;margin:12px 0 6px}
+.member-page .focus-action-card h3{font-size:18px;margin:0 0 7px;color:white}
+.member-page .focus-action-card p{font-size:12px;line-height:1.6;min-height:75px;margin:0 0 12px;color:#bdc7c8}
+.member-page .focus-card-action{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #394147;padding-top:11px;font-size:11px;color:#d1efb5}
+.member-page .member-page-context{display:flex;justify-content:space-between;gap:18px;align-items:center;background:#151d20;padding:28px clamp(24px,4vw,60px);border-bottom:1px solid #303e43}
+.member-page .member-page-context>div>span{font-size:10px;color:#b9e75e;letter-spacing:1.5px}
+.member-page .member-page-context h2{color:#fff;margin:7px 0;font-size:clamp(24px,2.5vw,36px)}
+.member-page .member-page-context p{color:#b5bfbc;font-size:14px;margin:0}
+.member-page .member-page-context>button{border:1px solid #62765b;border-radius:9px;background:#283926;color:#d5f2c2;padding:12px 16px;cursor:pointer;font-weight:800}
+.member-page .member-module{min-width:0;margin:0 auto;width:100%;padding:30px clamp(18px,3vw,55px);background:#0c1215}
+.member-page .member-module-card{background:#172023;border:1px solid #334145;border-radius:14px;padding:22px;margin:12px 0;color:#f3f6f5}
+.member-page .member-module-hero{position:relative;min-height:240px;display:flex;align-items:center;background:#172125;color:white;padding:34px;border-radius:15px;margin-bottom:22px;overflow:hidden}
+.member-page .member-module-hero .hero-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35}
+.member-page .member-module-hero>div{position:relative;z-index:1;max-width:760px}
+.member-page .member-module-hero h1{font-size:clamp(30px,4vw,55px);line-height:1.08;margin:10px 0;color:white}
+.member-page .member-module-hero p{font-size:14px;color:#e1e8e3;line-height:1.6}
+.member-page .member-form input,.member-page .member-form select,.member-page .member-form textarea{width:100%;max-width:100%;min-height:42px;border:1px solid #506065;border-radius:9px;background:#111b20;color:#fff;padding:10px 12px;font:inherit}
+.member-page .member-toast{position:relative;max-width:100%;padding:14px 18px;margin:15px clamp(18px,3vw,55px);border-radius:10px;border:1px solid #3d5f45;background:#213d2a;color:#e9ffdf;display:flex;gap:10px;align-items:center;font-size:13px}
+.member-page .member-toast-error{background:#462629;border-color:#9d474e;color:#fff}
+.member-page .member-toast-success{background:#213e2b;border-color:#4f8057;color:#efffe7}
+.member-page .member-mobile-menu-backdrop{position:fixed;z-index:85;inset:0;background:rgba(0,0,0,.65);display:flex;justify-content:flex-end}
+.member-page .member-mobile-menu-sheet{background:#151d20;width:min(100%,380px);height:100%;overflow:auto;padding:22px}
+.member-page .member-mobile-menu-head{display:flex;justify-content:space-between;align-items:center}
+.member-page .member-mobile-menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:20px 0}
+.member-page .member-mobile-menu-grid button{background:#232e32;color:#fff;border:1px solid #405052;min-height:54px;border-radius:10px}
+.member-page .member-mobile-logout{padding:12px 16px;background:#b9e75e;color:#1b2b13;border:0;border-radius:9px;font-weight:800}
+@keyframes mallqui-hero-cycle{0%,2%{opacity:0}5%,22%{opacity:1}25%,100%{opacity:0}}
+@keyframes member-rise{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1280px){
+ .member-page .mallqui-apex-nav{gap:14px;padding-inline:20px!important}
+ .member-page .mallqui-apex-brand b{font-size:18px!important}
+ .member-page .mallqui-apex-menu button{padding:0 9px}
+ .member-page .mallqui-apex-coach{width:300px;bottom:140px}
+ .member-page .mallqui-apex-copy{max-width:58%}
+ .member-page .mallqui-focus-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:960px){
+ .member-page .mallqui-apex-nav{display:grid;grid-template-columns:1fr auto;gap:10px;min-height:unset!important;padding:10px 18px!important}
+ .member-page .mallqui-apex-menu{grid-column:1/-1;grid-row:2;overflow-x:auto;justify-content:flex-start;padding:4px 0 6px}
+ .member-page .mallqui-apex-user{grid-column:2;grid-row:1}
+ .member-page .mallqui-apex-hero{padding:58px 24px 110px;min-height:640px}
+ .member-page .mallqui-apex-copy{max-width:100%}
+ .member-page .mallqui-apex-coach{position:relative;bottom:auto;right:auto;align-self:end;width:290px;margin:140px 0 50px -290px}
+ .member-page .mallqui-apex-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .member-page .mallqui-apex-grid>article:last-child{grid-column:1/-1}
+}
+@media(max-width:650px){
+ .member-page .mallqui-apex-nav{padding:9px 12px!important}
+ .member-page .mallqui-apex-brand img{width:42px!important;height:42px!important}
+ .member-page .mallqui-apex-brand b{font-size:16px!important}
+ .member-page .mallqui-apex-brand small{font-size:8px;letter-spacing:1px}
+ .member-page .mallqui-apex-profile{max-width:55px;padding:4px}
+ .member-page .mallqui-apex-profile>div{display:none}
+ .member-page .mallqui-apex-bell,.member-page .mallqui-apex-logout{width:39px!important;height:39px!important}
+ .member-page .mallqui-apex-menu button{min-height:40px;font-size:12px!important}
+ .member-page .mallqui-apex-hero{min-height:690px;display:block;padding:60px 20px 130px}
+ .member-page .mallqui-apex-copy{padding-bottom:20px}
+ .member-page .mallqui-apex-copy h1{font-size:46px}
+ .member-page .mallqui-apex-proof{gap:10px}
+ .member-page .mallqui-apex-coach{position:relative;right:auto;bottom:auto;margin:36px 0 0;width:100%;max-width:100%}
+ .member-page .mallqui-apex-social,.member-page .mallqui-apex-scroll{display:none}
+ .member-page .mallqui-apex-bottom{grid-template-columns:repeat(2,minmax(0,1fr));padding:12px 10px;gap:12px}
+ .member-page .mallqui-apex-bottom>div{padding:0 10px}
+ .member-page .mallqui-apex-bottom b{font-size:19px}
+ .member-page .mallqui-apex-dashboard,.member-page .mallqui-focus-section,.member-page .mallqui-wellbeing-section,.member-page .gym-real-info-panel{padding:30px 17px}
+ .member-page .mallqui-apex-section-title,.member-page .mallqui-focus-head,.member-page .mallqui-wellbeing-head{align-items:flex-start;flex-direction:column;gap:8px}
+ .member-page .mallqui-apex-grid,.member-page .mallqui-focus-grid{grid-template-columns:1fr}
+ .member-page .mallqui-apex-grid>article:last-child{grid-column:auto}
+ .member-page .member-page-context{align-items:flex-start;flex-direction:column;padding:20px}
+ .member-page .apex-next-body>img{width:100px}
+}
+@media(prefers-reduced-motion:reduce){.member-page .mallqui-apex-slide{animation:none!important}.member-page .mallqui-apex-slide.slide-1{opacity:1}.member-page .mallqui-apex-copy{animation:none}}
+
+
 
 /* MALLQUI_MEMBER_REAL_PHOTO_GRADE_2026_10_30 */
 .mallqui-apex-static,
