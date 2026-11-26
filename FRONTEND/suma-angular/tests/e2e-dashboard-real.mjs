@@ -348,6 +348,43 @@ try {
     }
   });
 
+  await paso('Inicio muestra un solo aviso compacto para integridad de cajas y ventas',async()=>{
+    let consultado=0;
+    await page.route('**/api/estado-sistema**',async ruta=>{
+      consultado++;
+      await ruta.fulfill({
+        status:200,contentType:'application/json',
+        body:JSON.stringify({
+          api:true,database:true,operativo:false,
+          faltantes:['integridad:cajas','integridad:ventas'],
+          base_datos:'gym_system'
+        })
+      });
+    });
+    try{
+      await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+      const diagnostico=page.locator('.mg-diagnostic-compact');
+      await diagnostico.waitFor({timeout:15000});
+      assert.ok(consultado>0);
+      assert.equal(await page.locator('.mg-efsrt-connection').count(),0,
+        'No duplicar el mismo estado con una segunda etiqueta en el hero.');
+      assert.equal(await page.locator('.mg-operational-diagnostic').count(),1);
+      const texto=await diagnostico.innerText();
+      assert.match(texto,/Datos por sincronizar/);
+      assert.doesNotMatch(texto,/Esquema MySQL incompleto/);
+      assert.match(texto,/MySQL funciona/);
+      assert.equal(await diagnostico.locator('details[open]').count(),0,
+        'Los detalles técnicos deben permanecer plegados.');
+      await diagnostico.getByRole('button',{name:'Corregir y verificar'}).waitFor();
+      await page.screenshot({
+        path:'evidencias-dashboard/44_Aviso_MySQL_compacto_sin_duplicados.png',
+        fullPage:true,animations:'disabled'
+      });
+    }finally{
+      await page.unroute('**/api/estado-sistema**');
+    }
+  });
+
   await paso('El panel presenta seis áreas claras y abre Productos sin duplicar botones',async()=>{
     await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
     const menu=page.locator('.mg-focus-sidebar');
