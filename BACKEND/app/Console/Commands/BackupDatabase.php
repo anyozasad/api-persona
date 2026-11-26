@@ -11,7 +11,7 @@ use Throwable;
 
 class BackupDatabase extends Command
 {
-    protected $signature = 'backup:database {--keep=30 : Dias que se conservaran los respaldos}';
+    protected $signature = 'backup:database {--keep=30 : Dias que se conservaran los respaldos} {--portable : Usar copia SQL portable de Laravel en lugar de mysqldump}';
 
     protected $description = 'Genera un respaldo SQL de MySQL y elimina copias antiguas';
 
@@ -134,12 +134,14 @@ class BackupDatabase extends Command
         $process->setTimeout(300);
 
         $nativoCorrecto = false;
-        try {
-            $process->run();
-            $nativoCorrecto = $process->isSuccessful();
-        } catch (Throwable $e) {
-            // proc_open deshabilitado, ruta fuera del PATH o permisos Windows.
-            // El respaldo con PDO lee la misma conexión que ya usa Laravel.
+        if (!$this->option('portable')) {
+            try {
+                $process->run();
+                $nativoCorrecto = $process->isSuccessful();
+            } catch (Throwable $e) {
+                // proc_open deshabilitado, ruta fuera del PATH o permisos Windows.
+                // El respaldo con PDO lee la misma conexión que ya usa Laravel.
+            }
         }
 
         if (!$nativoCorrecto) {
