@@ -22,6 +22,67 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PortalClienteController extends Controller
 {
+
+    /**
+     * Consulta el portal en una sola petición autenticada.
+     * Evita saturar el servidor PHP integrado de Windows con doce
+     * solicitudes paralelas y comunica exactamente qué módulo falló.
+     * Los registros del socio se obtienen de las mismas funciones existentes.
+     */
+    public function portal(Request $request)
+    {
+        $fuentes = [
+            'resumen' => ['Resumen', fn () => $this->resumen($request), null],
+            'perfil' => ['Perfil', fn () => $this->perfil($request), []],
+            'membresia' => ['Membresía', fn () => $this->membresia($request), ['actual' => null, 'historial' => []]],
+            'pagos' => ['Pagos', fn () => $this->pagos($request), []],
+            'rutinas' => ['Rutinas', fn () => $this->rutinas($request), []],
+            'asistencias' => ['Asistencias', fn () => $this->asistencias($request), []],
+            'compras' => ['Compras', fn () => $this->compras($request), []],
+            'productos' => ['Productos', fn () => $this->productos($request), []],
+            'reservas' => ['Reservas', fn () => app(\App\Http\Controllers\ReservaController::class)->reservasCliente($request), []],
+            'clases' => ['Clases', fn () => app(ClaseController::class)->index(), []],
+            'membresiasDisponibles' => ['Planes', fn () => app(MembresiaController::class)->index(), []],
+            'gymInfo' => ['Configuración', fn () => app(ConfiguracionSistemaController::class)->publico(), []],
+        ];
+
+        $datos = [];
+        $fallos = [];
+        $detalles = [];
+        foreach ($fuentes as $clave => [$nombre, $resolver, $vacio]) {
+            try {
+                $respuesta = $resolver();
+                if ($respuesta instanceof \Symfony\Component\HttpFoundation\Response) {
+                    if ($respuesta->getStatusCode() >= 400) {
+                        $detalles[$nombre] = ['http' => $respuesta->getStatusCode()];
+                        $fallos[] = $nombre;
+                        $datos[$clave] = $vacio;
+                        continue;
+                    }
+                    $contenido = json_decode($respuesta->getContent(), true);
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        throw new \RuntimeException('Respuesta no válida del módulo '.$nombre);
+                    }
+                    $datos[$clave] = $contenido;
+                } elseif ($respuesta instanceof \Illuminate\Contracts\Support\Arrayable) {
+                    $datos[$clave] = $respuesta->toArray();
+                } else {
+                    $datos[$clave] = $respuesta;
+                }
+            } catch (\Throwable $e) {
+                report($e);
+                $fallos[] = $nombre;
+                $detalles[$nombre] = ['http' => 500];
+                $datos[$clave] = $vacio;
+            }
+        }
+
+        return response()->json($datos + [
+            'erroresModulos' => $fallos,
+            'erroresDetalle' => $detalles,
+        ]);
+    }
+
     public function resumen(Request $request)
     {
         $cliente = $this->clienteDelUsuario($request);
