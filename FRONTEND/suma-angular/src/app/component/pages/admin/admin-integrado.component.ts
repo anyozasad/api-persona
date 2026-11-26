@@ -250,11 +250,13 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
                   <small>Socios: {{clientes.length}} · Productos: {{productos.length}}</small>
                 </details>
               </div>
-              <button *ngIf="estadoOperativoDashboard?.database===true && estadoOperativoDashboard?.operativo===false"
-                      type="button" class="mg-diagnostic-fix"
-                      [disabled]="reparandoMysql" (click)="repararEsquemaMysql()">
-                {{reparandoMysql ? 'Corrigiendo MySQL…' : 'Corregir y verificar'}}
-              </button>
+              <div class="mg-operational-repair"
+                   *ngIf="estadoOperativoDashboard?.database===true && estadoOperativoDashboard?.operativo===false">
+                <button type="button" class="mg-diagnostic-fix"
+                        [disabled]="reparandoMysql" (click)="repararEsquemaMysql()">
+                  {{reparandoMysql ? 'Corrigiendo MySQL…' : 'Corregir y verificar'}}
+                </button>
+              </div>
             </div>
             <p *ngIf="reparandoMysql" class="mg-diagnostic-feedback" aria-live="polite">
               Creando respaldo SQL antes de corregir. No cierres el panel.
