@@ -99,14 +99,26 @@ import {
 
       <main class="member-main" *ngIf="!cargando; else cargandoTpl">
         <div *ngIf="error" class="member-toast member-toast-error" role="alert"><span aria-hidden="true">!</span><b>{{error}}</b></div>
-        <div *ngIf="modulosConError.length" class="member-toast member-toast-error" role="alert">
-          <span aria-hidden="true">!</span>
-          <div>
-            <b>Algunos datos no se pudieron consultar en MySQL: {{modulosConError.join(', ')}}.</b>
-            <p>Una lista vacía no significa que no tengas registros. Revisa la conexión y vuelve a consultar.</p>
+        <div *ngIf="modulosConError.length" class="member-toast member-toast-error member-sync-banner" role="alert">
+          <span class="member-sync-symbol" aria-hidden="true">!</span>
+          <div class="member-sync-copy">
+            <b>No se pudo actualizar parte de tu información.</b>
+            <p>Las consultas pendientes no se consideran registros vacíos. Conservamos los datos que ya estaban cargados.</p>
+            <details>
+              <summary>Ver módulos pendientes ({{modulosConError.length}})</summary>
+              <ul>
+                <li *ngFor="let modulo of modulosConError">
+                  {{modulo}}
+                  <small *ngIf="erroresDetallePortal[modulo]?.http">
+                    · HTTP {{erroresDetallePortal[modulo].http}}
+                  </small>
+                  <small *ngIf="erroresDetallePortal[modulo]?.http===0"> · Sin respuesta de Laravel</small>
+                </li>
+              </ul>
+            </details>
           </div>
-          <button type="button" (click)="sincronizarDatosCliente()" [disabled]="actualizandoModulo">
-            {{actualizandoModulo ? 'Consultando...' : 'Reintentar'}}
+          <button type="button" class="member-sync-retry" (click)="sincronizarDatosCliente()" [disabled]="actualizandoModulo">
+            {{actualizandoModulo ? 'Consultando...' : 'Volver a intentar'}}
           </button>
         </div>
         <div *ngIf="toast" class="member-toast member-toast-success"><span aria-hidden="true">✓</span><b>{{toast}}</b></div>
@@ -2096,6 +2108,7 @@ import {
 export class UsuarioComponent implements OnInit, OnDestroy {
   moduloActivo='inicio'; cargando=true; error=''; toast='';
   modulosConError:string[]=[];
+  erroresDetallePortal: Record<string,{http:number}>={};
   guardandoPreferenciaEntrenamiento=false;
   avisosNoLeidos=0;
   mobileMenuAbierto=false;
@@ -2219,36 +2232,39 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   sincronizarPortalAutomatico():void{
     if(document.hidden || this.cargando || this.actualizandoModulo || this.sesionCasaActiva)return;
-
     this.api.cargarPortalCliente().subscribe({
       next:r=>{
-        this.modulosConError=Array.isArray(r?.erroresModulos) ? r.erroresModulos : [];
-        this.resumen=r.resumen||this.resumen;
-        if(this.moduloActivo!=='perfil'){
-          this.perfil=this.normalizarPerfil(r.perfil||this.perfil);
+        this.modulosConError=Array.isArray(r?.erroresModulos) ? r.erroresModulos : [];this.erroresDetallePortal=r?.erroresDetalle||{};
+        this.erroresDetallePortal=r?.erroresDetalle||{};
+        const disponible=(nombre:string)=>!this.modulosConError.includes(nombre);
+        if(disponible('Resumen')) this.resumen=r.resumen;
+        if(disponible('Perfil') && this.moduloActivo!=='perfil'){
+          this.perfil=this.normalizarPerfil(r.perfil||{});
           this.aplicarPreferenciasPerfil();
         }
-        this.membresiaActual=r.membresia?.actual||null;
-        this.membresiaProxima=r.membresia?.proxima||null;
-        this.membresiasDisponibles=r.membresiasDisponibles||[];
-        this.gymInfo=r.gymInfo||this.gymInfo||{};
-        this.pagos=sortNewest(uniqueById(safeArray(r.pagos),['id_pago']),'fecha_pago');
-        this.rutinas=sortNewest(uniqueById(safeArray(r.rutinas),['id_rutina']),'fecha_inicio');
-        this.asistencias=sortNewest(uniqueById(safeArray(r.asistencias),['id_asistencia']),'fecha_hora_entrada');
-        this.reservas=sortNewest(uniqueById(safeArray(r.reservas),['id_reserva']),'fecha_clase');
-        this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));
-        this.compras=sortNewest(uniqueById(safeArray(r.compras),['id_venta']),'fecha_venta');
-        this.productosDisponibles=this.normalizarProductosPortal(r.productos);
-        this.preseleccionarPlanActual();
+        if(disponible('Membresía')){
+          this.membresiaActual=r.membresia?.actual||null;
+          this.membresiaProxima=r.membresia?.proxima||null;
+        }
+        if(disponible('Planes')) this.membresiasDisponibles=safeArray(r.membresiasDisponibles);
+        if(disponible('Configuración')) this.gymInfo=r.gymInfo||{};
+        if(disponible('Pagos')) this.pagos=sortNewest(uniqueById(safeArray(r.pagos),['id_pago']),'fecha_pago');
+        if(disponible('Rutinas')) this.rutinas=sortNewest(uniqueById(safeArray(r.rutinas),['id_rutina']),'fecha_inicio');
+        if(disponible('Asistencias')) this.asistencias=sortNewest(uniqueById(safeArray(r.asistencias),['id_asistencia']),'fecha_hora_entrada');
+        if(disponible('Reservas')) this.reservas=sortNewest(uniqueById(safeArray(r.reservas),['id_reserva']),'fecha_clase');
+        if(disponible('Clases')) this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));
+        if(disponible('Compras')) this.compras=sortNewest(uniqueById(safeArray(r.compras),['id_venta']),'fecha_venta');
+        if(disponible('Productos')) this.productosDisponibles=this.normalizarProductosPortal(r.productos);
+        if(disponible('Planes') && disponible('Pagos')) this.preseleccionarPlanActual();
         this.cargarContadorAvisos();
-
-        // Si está viendo Entrenar, también vuelve a leer la rutina activa,
-        // pero nunca interrumpe una sesión que ya comenzó.
         if(this.moduloActivo==='casa' && !this.sesionCasaActiva && !this.sesionCasaTerminada){
           this.cargarEntrenamientoCasa();
         }
       },
-      error:()=>{}
+      error:e=>{
+        this.error=this.errorApi(e);
+        this.cargarEstadoSistema();
+      }
     });
   }
 
@@ -2270,7 +2286,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   cargar():void{
     this.cargando=true; this.error='';
     this.api.cargarPortalCliente().subscribe({
-      next:r=>{this.modulosConError=Array.isArray(r?.erroresModulos) ? r.erroresModulos : [];this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.aplicarPreferenciasPerfil();this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=safeArray(r.membresiasDisponibles);this.gymInfo=r.gymInfo||{};this.pagos=sortNewest(uniqueById(safeArray(r.pagos),['id_pago']),'fecha_pago');this.rutinas=sortNewest(uniqueById(safeArray(r.rutinas),['id_rutina']),'fecha_inicio');this.asistencias=sortNewest(uniqueById(safeArray(r.asistencias),['id_asistencia']),'fecha_hora_entrada');this.reservas=sortNewest(uniqueById(safeArray(r.reservas),['id_reserva']),'fecha_clase');this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));this.compras=sortNewest(uniqueById(safeArray(r.compras),['id_venta']),'fecha_venta');this.productosDisponibles=this.normalizarProductosPortal(r.productos);this.preseleccionarPlanActual();this.aplicarPlanSolicitadoRuta();this.cargando=false;this.cargarFotoPerfil();this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
+      next:r=>{this.modulosConError=Array.isArray(r?.erroresModulos) ? r.erroresModulos : [];this.erroresDetallePortal=r?.erroresDetalle||{};this.resumen=r.resumen;this.perfil=this.normalizarPerfil(r.perfil);this.aplicarPreferenciasPerfil();this.membresiaActual=r.membresia?.actual;this.membresiaProxima=r.membresia?.proxima||null;this.membresiasDisponibles=safeArray(r.membresiasDisponibles);this.gymInfo=r.gymInfo||{};this.pagos=sortNewest(uniqueById(safeArray(r.pagos),['id_pago']),'fecha_pago');this.rutinas=sortNewest(uniqueById(safeArray(r.rutinas),['id_rutina']),'fecha_inicio');this.asistencias=sortNewest(uniqueById(safeArray(r.asistencias),['id_asistencia']),'fecha_hora_entrada');this.reservas=sortNewest(uniqueById(safeArray(r.reservas),['id_reserva']),'fecha_clase');this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));this.compras=sortNewest(uniqueById(safeArray(r.compras),['id_venta']),'fecha_venta');this.productosDisponibles=this.normalizarProductosPortal(r.productos);this.preseleccionarPlanActual();this.aplicarPlanSolicitadoRuta();this.cargando=false;this.cargarFotoPerfil();this.cargarEntrenamientoCasa();this.cargarContadorAvisos();},
       error:e=>{this.modulosConError=[];this.error=this.errorApi(e);this.cargando=false;}
     });
   }
@@ -2673,24 +2689,24 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
     this.api.cargarPortalCliente().subscribe({
       next:r=>{
-        this.modulosConError=Array.isArray(r?.erroresModulos) ? r.erroresModulos : [];
-        this.resumen=r.resumen;
-        this.perfil=this.normalizarPerfil(r.perfil);
-        this.aplicarPreferenciasPerfil();
-        this.membresiaActual=r.membresia?.actual||null;
-        this.membresiaProxima=r.membresia?.proxima||null;
-        this.membresiasDisponibles=r.membresiasDisponibles||[];
-        this.gymInfo=r.gymInfo||this.gymInfo||{};
-        this.pagos=r.pagos||[];
-        this.rutinas=r.rutinas||[];
-        this.asistencias=r.asistencias||[];
-        this.reservas=r.reservas||[];
-        this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');
-        this.compras=r.compras||[];
-        this.productosDisponibles=this.normalizarProductosPortal(r.productos);
+        this.modulosConError=Array.isArray(r?.erroresModulos) ? r.erroresModulos : [];this.erroresDetallePortal=r?.erroresDetalle||{};
+        const disponible=(nombre:string)=>!this.modulosConError.includes(nombre);
+        if(disponible('Resumen')) this.resumen=r.resumen;
+        if(disponible('Perfil')){this.perfil=this.normalizarPerfil(r.perfil||{});this.aplicarPreferenciasPerfil();}
+        if(disponible('Membresía')){this.membresiaActual=r.membresia?.actual||null;this.membresiaProxima=r.membresia?.proxima||null;}
+        if(disponible('Planes')) this.membresiasDisponibles=safeArray(r.membresiasDisponibles);
+        if(disponible('Configuración')) this.gymInfo=r.gymInfo||{};
+        if(disponible('Pagos')) this.pagos=safeArray(r.pagos);
+        if(disponible('Rutinas')) this.rutinas=safeArray(r.rutinas);
+        if(disponible('Asistencias')) this.asistencias=safeArray(r.asistencias);
+        if(disponible('Reservas')) this.reservas=safeArray(r.reservas);
+        if(disponible('Clases')) this.clases=activeClasses(uniqueById(safeArray(r.clases),['id_clase']));
+        if(disponible('Compras')) this.compras=safeArray(r.compras);
+        if(disponible('Productos')) this.productosDisponibles=this.normalizarProductosPortal(r.productos);
         this.preseleccionarPlanActual();
         this.actualizandoModulo=false;
-        if(mostrarAviso)this.ok('Información actualizada');
+        if(mostrarAviso && !this.modulosConError.length)this.ok('Información actualizada');
+        else if(mostrarAviso)this.toast='Se actualizaron los módulos disponibles. Revisa los pendientes.';
       },
       error:e=>{
         this.actualizandoModulo=false;
@@ -2706,33 +2722,9 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   actualizarSeccion(modulo:'rutinas'|'clases'):void{
-    this.cargando=true;
-    this.error='';
-    this.api.cargarPortalCliente().subscribe({
-      next:r=>{
-        this.resumen=r.resumen;
-        this.perfil=this.normalizarPerfil(r.perfil);
-        this.membresiaActual=r.membresia?.actual;
-        this.membresiaProxima=r.membresia?.proxima||null;
-        this.membresiasDisponibles=r.membresiasDisponibles||[];
-        this.gymInfo=r.gymInfo||this.gymInfo||{};
-        this.pagos=r.pagos||[];
-        this.rutinas=r.rutinas||[];
-        this.asistencias=r.asistencias||[];
-        this.reservas=r.reservas||[];
-        this.clases=(r.clases||[]).filter((x:any)=>x.estado==='Activo');
-        this.compras=r.compras||[];
-        this.productosDisponibles=this.normalizarProductosPortal(r.productos);
-        this.moduloActivo=modulo;
-        this.cargando=false;
-        this.toast=modulo==='rutinas' ? 'Rutinas actualizadas' : 'Clases actualizadas';
-        setTimeout(()=>{ if(this.toast.includes('actualizadas')) this.toast=''; },2200);
-      },
-      error:e=>{
-        this.error=this.errorApi(e);
-        this.cargando=false;
-      }
-    });
+    if(this.actualizandoModulo)return;
+    this.sincronizarDatosCliente(false);
+    this.moduloActivo=modulo;
   }
 
   /* Mantiene el menú principal sincronizado con la acción que está viendo el usuario.
