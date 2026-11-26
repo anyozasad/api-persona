@@ -1622,6 +1622,26 @@ try {
     });
   });
 
+  await paso('MySQL y dashboard siguen operativos después de guardar, cobrar y respaldar',async()=>{
+    // A diferencia del estado inicial, esta verificación se ejecuta DESPUÉS
+    // de registrar socios, ventas, caja, productos, fotos y respaldo SQL.
+    // Detecta inconsistencias que aparecen solo tras varias escrituras.
+    const respuesta=await context.request.get(base+'/api/estado-sistema');
+    assert.equal(respuesta.status(),200,'La API dejó de responder después de guardar datos.');
+    const salud=await respuesta.json();
+    assert.equal(salud.sistema,'Mallqui Gym');
+    assert.equal(salud.database,true,'Perdió conexión con MySQL después de varias operaciones.');
+    assert.equal(salud.operativo,true,
+      'Quedaron tablas, columnas o registros inconsistentes: '+JSON.stringify(salud.faltantes||[]));
+    assert.deepEqual(salud.faltantes,[],'No deben reaparecer los avisos de esquema MySQL incompleto.');
+    assert.equal(salud.base_datos,'mallqui_gym_e2e',
+      'Laravel está consultando otra base en vez de la utilizada para los guardados.');
+    await page.goto(base+'/admin',{waitUntil:'domcontentloaded'});
+    await page.locator('.mg-current-topbar h1').waitFor({timeout:25000});
+    assert.equal(await page.locator('.mg-operational-diagnostic').count(),0,
+      'No mostrar advertencias de MySQL después de confirmar esquema operativo.');
+  });
+
   const movil=await browser.newContext({viewport:{width:390,height:844},locale:'es-PE'});
   const mobile=await movil.newPage();
   // Reutilizar solo la sesión admin de prueba.
