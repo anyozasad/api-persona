@@ -163,8 +163,25 @@ class ReparacionEsquemaController extends Controller
             usort($copias, static fn (string $a, string $b): int => filemtime($b) <=> filemtime($a));
             $backup = basename($copias[0]);
 
-            $codigo = Artisan::call('db:reconciliar-esquema');
-            $salida = Artisan::output();
+            // Cuando solo aparecen "integridad:cajas" o "integridad:ventas",
+            // las tablas YA existen. No ejecutar 50 migraciones generales para
+            // reparar copias antiguas de IDs/fechas: basta sincronizar los
+            // alias con una transacción después de confirmar el respaldo.
+            $soloIntegridad = $inicial['faltantes'] !== []
+                && count(array_filter(
+                    $inicial['faltantes'],
+                    static fn (string $item): bool => !str_starts_with($item, 'integridad:')
+                )) === 0;
+            if ($soloIntegridad) {
+                DB::transaction(static function (): void {
+                    ReconciliarEsquemaRealMallqui::sincronizarAliasesLegados();
+                });
+                $codigo = 0;
+                $salida = 'Sincronización de columnas legacy de cajas y ventas completada.';
+            } else {
+                $codigo = Artisan::call('db:reconciliar-esquema');
+                $salida = Artisan::output();
+            }
             $final = $this->diagnostico();
 
             if ($codigo !== 0 || !$final['operativo']) {
