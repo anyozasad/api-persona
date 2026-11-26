@@ -89,9 +89,12 @@ import {
             <button type="button" (click)="abrirModulo('soporte')"><i>?</i><span>Ayuda</span></button>
             <button type="button" (click)="abrirModulo('perfil')"><i>♙</i><span>Perfil</span></button>
           </div>
-          <div class="member-mobile-system" [class.offline]="!dbConectada">
+          <div class="member-mobile-system" [class.offline]="!dbConectada || !dbOperativa">
             <i></i>
-            <div><b>{{dbConectada ? 'Sistema conectado' : 'Sin conexión a datos'}}</b><small>{{dbConectada ? ('Laravel + '+dbMotor) : 'Revisa Laravel y MySQL'}}</small></div>
+            <div>
+              <b>{{!dbConectada ? 'MySQL sin conexión' : (dbOperativa ? 'Sistema conectado' : 'MySQL conectado, con pendientes')}}</b>
+              <small>{{dbConectada && dbOperativa ? ('Laravel + '+dbMotor) : 'Revisa la estructura de la base de datos'}}</small>
+            </div>
           </div>
           <button type="button" class="member-mobile-logout" (click)="cerrarSesion()">Cerrar sesión</button>
         </aside>
@@ -2127,6 +2130,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   saliendo=false;
   apiConectada=false;
   dbConectada=false;
+  dbOperativa=false;
   dbMotor='MySQL';
   resumen:any=null; perfil:any={}; membresiaActual:any=null; membresiaProxima:any=null; membresiasDisponibles:any[]=[]; gymInfo:any={};
   pagos:any[]=[]; rutinas:any[]=[]; asistencias:any[]=[]; reservas:any[]=[]; clases:any[]=[]; compras:any[]=[]; productosDisponibles:any[]=[];
@@ -2287,12 +2291,14 @@ export class UsuarioComponent implements OnInit, OnDestroy {
     this.api.estadoSistema().subscribe({
       next:r=>{
         this.apiConectada=Boolean(r?.api);
-        this.dbConectada=Boolean(r?.database) && Boolean(r?.operativo);
+        this.dbConectada=Boolean(r?.database);
+        this.dbOperativa=Boolean(r?.operativo);
         this.dbMotor=String(r?.motor || 'MySQL').toUpperCase();
       },
       error:e=>{
         this.apiConectada=Boolean(e?.error?.api);
         this.dbConectada=false;
+        this.dbOperativa=false;
         this.dbMotor=String(e?.error?.motor || 'MySQL').toUpperCase();
       }
     });
