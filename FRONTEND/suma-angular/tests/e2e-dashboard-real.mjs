@@ -1024,6 +1024,41 @@ try {
     await page.screenshot({path:'evidencias-dashboard/15_Socio_persistido_MySQL.png',fullPage:true});
   });
 
+  await paso('Editar socio, guardar cambios y comprobar persistencia después de F5',async()=>{
+    await page.goto(base+'/clientes',{waitUntil:'domcontentloaded'});
+    const registro=page.locator('.clients-v3-table tbody tr').filter({hasText:'88776655'}).first();
+    await registro.waitFor({timeout:18000});
+    await registro.getByRole('button',{name:'Editar',exact:true}).click();
+    const form=page.locator('.client-editor-workspace form.client-editor-form');
+    await form.waitFor({timeout:12000});
+    await form.locator('input[name=telefono]').fill('912345678');
+    const confirmacion=page.waitForResponse(r=>
+      /\/api\/clientes\/\d+/.test(new URL(r.url()).pathname)
+      && ['PUT','PATCH'].includes(r.request().method()),{timeout:25000});
+    await form.getByRole('button',{name:/Guardar cambios/}).click();
+    const respuesta=await confirmacion;
+    assert.equal(respuesta.status(),200,
+      'La edición del socio debe actualizar MySQL sin error 500.');
+    const datos=await respuesta.json();
+    assert.equal(String(datos?.cliente?.telefono), '912345678',
+      'Laravel debe devolver el teléfono ya guardado en la base.');
+
+    await page.reload({waitUntil:'domcontentloaded'});
+    const fila=page.locator('.clients-v3-table tbody tr').filter({hasText:'88776655'}).first();
+    await fila.waitFor({timeout:20000});
+    assert.match(await fila.innerText(),/912345678/,
+      'El socio vuelve a mostrar el teléfono anterior después de F5.');
+    await fila.getByRole('button',{name:'Editar',exact:true}).click();
+    const editado=page.locator('.client-editor-workspace form.client-editor-form');
+    await editado.waitFor({timeout:10000});
+    assert.equal(await editado.locator('input[name=telefono]').inputValue(),'912345678',
+      'Al volver a editar deben aparecer los cambios persistidos.');
+    await page.screenshot({
+      path:'evidencias-dashboard/42_Guardar_cambios_socio_recuperado_MySQL.png',
+      fullPage:true,animations:'disabled'
+    });
+  });
+
   await paso('Registrar socio con acceso, autenticar al cliente y abrir su portal real',async()=>{
     const username='portal-cliente-e2e';
     const password='AccesoPortalTemporal2026!';
@@ -1466,6 +1501,38 @@ try {
     });
     await page.screenshot({
       path:'evidencias-dashboard/19_Foto_desde_fila_con_stock_intacto.png',
+      fullPage:true,animations:'disabled'
+    });
+  });
+
+  await paso('Guardar cambios del producto y recuperar descripción de MySQL tras recarga',async()=>{
+    await page.goto(base+'/productos',{waitUntil:'domcontentloaded'});
+    const fila=page.locator('app-productos .tabla-productos tr')
+      .filter({hasText:codigoProductoFoto}).first();
+    await fila.waitFor({timeout:25000});
+    await fila.getByRole('button',{name:/Editar \/ cambiar foto/}).click();
+    const form=page.locator('app-productos form.producto-form').first();
+    await form.waitFor({timeout:12000});
+    const descripcion='Descripción editada y recuperada de MySQL';
+    await form.locator('input[name=descripcion]').fill(descripcion);
+    const guardando=page.waitForResponse(r=>
+      /\/api\/productos\/\d+/.test(new URL(r.url()).pathname)
+      && ['PUT','PATCH'].includes(r.request().method()),{timeout:25000});
+    await form.getByRole('button',{name:/Guardar cambios/}).click();
+    const respuesta=await guardando;
+    assert.equal(respuesta.status(),200,'No se guardó la descripción editada en MySQL.');
+    await page.locator('app-productos .mensaje-ok').waitFor({timeout:20000});
+    await page.reload({waitUntil:'domcontentloaded'});
+    const filaNueva=page.locator('app-productos .tabla-productos tr')
+      .filter({hasText:codigoProductoFoto}).first();
+    await filaNueva.waitFor({timeout:20000});
+    await filaNueva.getByRole('button',{name:/Editar \/ cambiar foto/}).click();
+    const edicion=page.locator('app-productos form.producto-form').first();
+    await edicion.waitFor({timeout:12000});
+    assert.equal(await edicion.locator('input[name=descripcion]').inputValue(),descripcion,
+      'La descripción se perdió al recargar el formulario.');
+    await page.screenshot({
+      path:'evidencias-dashboard/43_Guardar_cambios_producto_recuperado_MySQL.png',
       fullPage:true,animations:'disabled'
     });
   });
