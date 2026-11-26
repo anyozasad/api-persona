@@ -6,7 +6,7 @@ on:
     paths:
       - 'FRONTEND/suma-angular/**'
       - 'BACKEND/**'
-      - 'scripts/INICIAR_DASHBOARD.ps1'
+      - 'scripts/*.ps1'
       - '.github/workflows/mallqui-e2e-check.yml'
   pull_request:
     branches: [main]
@@ -38,10 +38,15 @@ jobs:
         run: |
           $tokens = $null
           $errores = $null
-          [System.Management.Automation.Language.Parser]::ParseFile('scripts/INICIAR_DASHBOARD.ps1', [ref]$tokens, [ref]$errores) | Out-Null
-          if ($errores.Count -gt 0) {
-            $errores | ForEach-Object { Write-Error $_.Message }
-            exit 1
+          foreach ($script in @('scripts/INICIAR_DASHBOARD.ps1', 'scripts/ACTUALIZAR_Y_REPARAR_MALLQUI.ps1')) {
+            $tokens = $null
+            $errores = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($script, [ref]$tokens, [ref]$errores) | Out-Null
+            if ($errores.Count -gt 0) {
+              $errores | ForEach-Object { Write-Error ($script + ': ' + $_.Message) }
+              exit 1
+            }
+            Write-Host ('OK sintaxis PowerShell: ' + $script)
           }
       - name: Compilar frontend de producción
         run: npm run build
