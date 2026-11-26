@@ -40,7 +40,7 @@ class PortalClienteController extends Controller
             'asistencias' => ['Asistencias', fn () => $this->asistencias($request), []],
             'compras' => ['Compras', fn () => $this->compras($request), []],
             'productos' => ['Productos', fn () => $this->productos($request), []],
-            'reservas' => ['Reservas', fn () => app(\App\Http\Controllers\ReservaController::class)->reservasCliente($request), []],
+            'reservas' => ['Reservas', fn () => app(ReservaController::class)->misReservas($request), []],
             'clases' => ['Clases', fn () => app(ClaseController::class)->index(), []],
             'membresiasDisponibles' => ['Planes', fn () => app(MembresiaController::class)->index(), []],
             'gymInfo' => ['Configuración', fn () => app(ConfiguracionSistemaController::class)->publico(), []],
