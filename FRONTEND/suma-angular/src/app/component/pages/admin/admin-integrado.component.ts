@@ -276,11 +276,17 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
               Creando respaldo SQL antes de corregir. No cierres el panel.
             </p>
             <p *ngIf="reparacionMysqlMensaje" class="mg-diagnostic-feedback" aria-live="polite">{{reparacionMysqlMensaje}}</p>
-            <p *ngIf="reparacionMysqlError" class="mg-diagnostic-feedback" role="alert">
-              {{reparacionMysqlCodigo ? reparacionMysqlCodigo + ': ' : ''}}{{reparacionMysqlError}}
-              <span *ngIf="reparacionMysqlEtapa">Etapa: {{reparacionMysqlEtapa}}.</span>
-              <span *ngIf="reparacionMysqlProblemas.length">Revisar: {{reparacionMysqlProblemas.join(', ')}}.</span>
-            </p>
+            <div *ngIf="reparacionMysqlError" class="mg-diagnostic-feedback mg-backup-help" role="alert">
+              <strong>No se pudo completar la corrección de MySQL.</strong>
+              <span>La reparación se detuvo para proteger tus registros. Revisa la copia de seguridad antes de volver a intentarlo.</span>
+              <details>
+                <summary>Ver detalles técnicos</summary>
+                <p>{{reparacionMysqlError}}</p>
+                <small *ngIf="reparacionMysqlCodigo">Código: {{reparacionMysqlCodigo}}</small>
+                <small *ngIf="reparacionMysqlEtapa"> · Etapa: {{reparacionMysqlEtapa}}</small>
+                <p *ngIf="reparacionMysqlProblemas.length">Revisar: {{reparacionMysqlProblemas.join(', ')}}.</p>
+              </details>
+            </div>
           </section>
 
 
@@ -7107,7 +7113,19 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       return;
     }
     const errores=e?.error?.errors;
-    if(errores){const primero=Object.values(errores)[0];this.error=Array.isArray(primero)?String(primero[0]):String(primero);return;}
-    this.error=e?.error?.mensaje ?? e?.error?.message ?? e?.error?.error ?? 'No se pudo completar la operación.';
+    if(errores){
+      const primero=Object.values(errores)[0];
+      const mensaje=Array.isArray(primero)?String(primero[0]):String(primero);
+      this.error=this.traducirValidacion(mensaje);
+      return;
+    }
+    this.error=this.traducirValidacion(e?.error?.mensaje ?? e?.error?.message ?? e?.error?.error ?? 'No se pudo completar la operación.');
+  }
+  traducirValidacion(mensaje:any):string{
+    const texto=String(mensaje||'').trim();
+    if(/has already been taken/i.test(texto)) return 'Este dato ya está registrado. Utiliza un valor diferente o edita el registro existente.';
+    if(/the .* field is required/i.test(texto)) return 'Completa todos los campos obligatorios antes de guardar.';
+    if(/the .* must be a valid email address/i.test(texto)) return 'Escribe un correo electrónico válido.';
+    return texto||'No se pudo completar la operación.';
   }
 }
