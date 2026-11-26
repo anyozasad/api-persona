@@ -17,13 +17,17 @@ class BackupDatabase extends Command
 
     public function handle(): int
     {
-        if (!in_array(config('database.default'), ['mysql', 'mariadb'], true)) {
-            $this->error('El respaldo empresarial esta preparado para MySQL.');
+        // Identificar el motor REAL de la conexión activa, no su alias
+        // ('mysql', 'respaldo_portable_ci', etc.). Esto evita un falso
+        // respaldo de otra base cuando Laravel cambia de conexión.
+        $conexionActiva = DB::connection();
+        if (!in_array($conexionActiva->getDriverName(), ['mysql', 'mariadb'], true)) {
+            $this->error('El respaldo empresarial está preparado para MySQL/MariaDB.');
             return self::FAILURE;
         }
 
-        $conexion = config('database.connections.'.config('database.default'));
-        $database = (string) ($conexion['database'] ?? '');
+        $conexion = $conexionActiva->getConfig();
+        $database = (string) $conexionActiva->getDatabaseName();
         $username = (string) ($conexion['username'] ?? '');
         $password = (string) ($conexion['password'] ?? '');
         $host = (string) ($conexion['host'] ?? '127.0.0.1');
