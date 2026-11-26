@@ -225,50 +225,48 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
               <h2>Panel principal</h2>
               <p>Elige un área a la izquierda. Dentro de cada área encontrarás las tareas relacionadas en la parte superior de la pantalla.</p>
             </div>
-            <div class="mg-efsrt-hero-aside">
-              <span class="mg-efsrt-connection" [class.problem]="!sistemaSincronizado">
-                ● {{estadoConexionDashboard}}
-              </span>
+            <div class="mg-efsrt-hero-aside" *ngIf="sistemaSincronizado">
+              <span class="mg-efsrt-connection">● Sistema conectado</span>
             </div>
           </header>
 
-          <section class="mg-efsrt-data-status problem mg-operational-diagnostic"
+          <!-- Un solo aviso discreto: no repetir el mismo diagnóstico en
+               una etiqueta grande y otra tarjeta amarilla. La advertencia
+               desaparece al verificar la reparación real en MySQL. -->
+          <section class="mg-efsrt-data-status mg-operational-diagnostic mg-diagnostic-compact"
                    *ngIf="estadoOperativoDashboard && !sistemaSincronizado"
-                   aria-live="polite" aria-label="Diagnóstico de conexión y datos reales">
-            <div>
-              <strong>{{estadoConexionDashboard}}</strong>
-              <p>{{mensajeSincronizacion}}</p>
-              <small>Base: {{estadoOperativoDashboard?.base_datos || dashboard?.fuente?.base_datos || 'sin identificar'}}
-                · Socios: {{clientes.length}} · Productos: {{productos.length}} · Pagos: {{pagos.length}}</small>
-              <div *ngIf="estadoOperativoDashboard?.database===true && estadoOperativoDashboard?.operativo===false"
-                   class="mg-operational-repair">
-                <small>Para recuperar las tablas no basta con actualizar GitHub: confirma la reparación en esta base local.</small>
-                <button type="button" class="admin-primary" [disabled]="reparandoMysql"
-                  (click)="repararEsquemaMysql()">
-                  {{reparandoMysql ? 'Creando respaldo y reparando...' : 'Respaldar y reparar MySQL'}}
-                </button>
-                <p *ngIf="reparandoMysql" role="status">Reparación en curso. No cierres esta pestaña ni ejecutes el proceso dos veces.</p>
-                <p *ngIf="reparacionMysqlMensaje" role="status">{{reparacionMysqlMensaje}}</p>
-                <p *ngIf="reparacionMysqlError" role="alert">
-                  <strong>{{reparacionMysqlCodigo ? reparacionMysqlCodigo + ': ' : ''}}</strong>{{reparacionMysqlError}}
-                </p>
-                <p *ngIf="reparacionMysqlError && reparacionMysqlEtapa" role="status">
-                  Etapa donde falló: <strong>{{reparacionMysqlEtapa}}</strong>.
-                </p>
-                <p *ngIf="reparacionMysqlError && reparacionMysqlProblemas.length" role="status">
-                  Errores detectados: {{reparacionMysqlProblemas.join(', ')}}.
-                </p>
-                <p *ngIf="reparacionMysqlError && diagnosticoMysql?.faltantes?.length" role="status">
-                  Siguen pendientes {{diagnosticoMysql.faltantes.length}} objetos:
-                  {{diagnosticoMysql.faltantes.slice(0,6).join(', ')}}.
-                </p>
-                <small *ngIf="reparacionMysqlError">
-                  Comprueba el resultado del respaldo y el registro de Laravel en BACKEND/storage/logs;
-                  no borres las tablas existentes.
-                </small>
+                   role="status" aria-label="Estado de la base de datos">
+            <div class="mg-diagnostic-summary">
+              <span class="mg-diagnostic-dot" aria-hidden="true">!</span>
+              <div class="mg-diagnostic-copy">
+                <strong>{{estadoConexionDashboard}}</strong>
+                <p>{{mensajeSincronizacion}}</p>
+                <details class="mg-diagnostic-details" *ngIf="estadoOperativoDashboard?.database===true">
+                  <summary>Ver detalles de la base de datos</summary>
+                  <small>Base: {{estadoOperativoDashboard?.base_datos || 'sin identificar'}}</small>
+                  <p *ngIf="estadoOperativoDashboard?.faltantes?.length">
+                    Revisar: {{estadoOperativoDashboard.faltantes.join(', ')}}.
+                  </p>
+                  <small>Socios: {{clientes.length}} · Productos: {{productos.length}}</small>
+                </details>
               </div>
+              <button *ngIf="estadoOperativoDashboard?.database===true && estadoOperativoDashboard?.operativo===false"
+                      type="button" class="mg-diagnostic-fix"
+                      [disabled]="reparandoMysql" (click)="repararEsquemaMysql()">
+                {{reparandoMysql ? 'Corrigiendo MySQL…' : 'Corregir y verificar'}}
+              </button>
             </div>
+            <p *ngIf="reparandoMysql" class="mg-diagnostic-feedback" aria-live="polite">
+              Creando respaldo SQL antes de corregir. No cierres el panel.
+            </p>
+            <p *ngIf="reparacionMysqlMensaje" class="mg-diagnostic-feedback" aria-live="polite">{{reparacionMysqlMensaje}}</p>
+            <p *ngIf="reparacionMysqlError" class="mg-diagnostic-feedback" role="alert">
+              {{reparacionMysqlCodigo ? reparacionMysqlCodigo + ': ' : ''}}{{reparacionMysqlError}}
+              <span *ngIf="reparacionMysqlEtapa">Etapa: {{reparacionMysqlEtapa}}.</span>
+              <span *ngIf="reparacionMysqlProblemas.length">Revisar: {{reparacionMysqlProblemas.join(', ')}}.</span>
+            </p>
           </section>
+
 
           <section class="mg-efsrt-kpis" aria-label="Indicadores obtenidos de MySQL">
             <article>
@@ -4443,12 +4441,19 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       && this.ultimaActualizacionTs>0;
   }
 
+  /** Distinguir alias antiguos de tablas realmente ausentes. */
+  get soloDatosLegacyPendientes():boolean {
+    const faltantes=this.estadoOperativoDashboard?.faltantes;
+    return Array.isArray(faltantes) && faltantes.length>0
+      && faltantes.every((item:string)=>String(item).startsWith('integridad:'));
+  }
+
   /** Estado verdadero de la instalación; no confunde fallos de módulos con MySQL desconectado. */
   get estadoConexionDashboard(): string {
     if (this.actualizandoDatos && !this.estadoOperativoDashboard) return 'Comprobando conexión';
     if (!this.estadoOperativoDashboard?.api) return 'Laravel no responde';
     if (!this.estadoOperativoDashboard?.database) return 'MySQL sin conexión';
-    if (!this.estadoOperativoDashboard?.operativo) return 'Esquema MySQL incompleto';
+    if (!this.estadoOperativoDashboard?.operativo) return this.soloDatosLegacyPendientes ? 'Datos por sincronizar' : 'Revisar base de datos';
     if (this.dashboardError || !this.dashboard) return 'Indicadores no disponibles';
     if (this.erroresSincronizacion.length) return 'Módulos con errores';
     return 'Sistema conectado';
@@ -4461,10 +4466,11 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if (!estado?.api) return 'No hay respuesta válida de Laravel. Comprueba que php artisan serve esté iniciado en 127.0.0.1:8000 y vuelve a cargar la página.';
     if (!estado?.database) return 'Laravel responde, pero MySQL no. Enciende MySQL en XAMPP y revisa BACKEND/.env y el puerto 3306; conserva tus registros.';
     if (!estado?.operativo) {
-      const muestra=faltantes.slice(0,3).join(', ');
-      return 'Laravel y MySQL responden, pero faltan '+faltantes.length
-        +' tablas o columnas'+(muestra ? ': '+muestra : '')
-        +'. Pulsa el botón «Respaldar y reparar MySQL» que aparece debajo. El sistema solicitará confirmación, guardará un respaldo SQL y completará las tablas pendientes sin borrar tus registros.';
+      if(this.soloDatosLegacyPendientes){
+        return 'MySQL funciona; hay identificadores o fechas antiguos de caja y ventas pendientes de sincronizar. Puedes corregirlos con respaldo previo.';
+      }
+      return 'MySQL responde, pero hay '+faltantes.length
+        +' requisitos de datos o estructura pendientes. Usa «Corregir y verificar» para respaldar y revisar la base.';
     }
     if (this.dashboardError || !this.dashboard) return 'Laravel y MySQL responden, pero falló el resumen: '
       +(this.dashboardError || 'revisa el registro de errores de Laravel en BACKEND/storage/logs.');
