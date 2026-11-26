@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\PortableMysqlBackup;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
@@ -35,7 +36,8 @@ class BackupDatabase extends Command
 
         $directorio = storage_path('app/backups');
         File::ensureDirectoryExists($directorio);
-        $archivo = $directorio.DIRECTORY_SEPARATOR.$database.'_'.now()->format('Ymd_His').'.sql';
+        // Microsegundos: evitar sobrescribir copias si se pulsa dos veces.
+        $archivo = $directorio.DIRECTORY_SEPARATOR.$database.'_'.now()->format('Ymd_His_u').'.sql';
 
         $binario = (string) env('MYSQLDUMP_PATH', '');
         $nombreGenerico = in_array(strtolower(trim($binario)), ['', 'mysqldump', 'mysqldump.exe'], true);
@@ -43,13 +45,20 @@ class BackupDatabase extends Command
             // XAMPP también puede estar en D: o definido por XAMPP_HOME.
             // No omitir el respaldo solo porque mysqldump no esté en PATH.
             $xamppHome = trim((string) getenv('XAMPP_HOME'));
-            $candidatos = [
-                $xamppHome !== '' ? rtrim($xamppHome, '\\/').DIRECTORY_SEPARATOR.'mysql'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'mysqldump.exe' : '',
-                'C:\\xampp\\mysql\\bin\\mysqldump.exe',
-                'D:\\xampp\\mysql\\bin\\mysqldump.exe',
-            ];
+            $raizPhp = dirname(dirname(PHP_BINARY));
+            $raices = array_values(array_filter([
+                $xamppHome, $raizPhp, dirname($raizPhp),
+                'C:\\xampp', 'D:\\xampp',
+            ]));
+            $candidatos = [];
+            foreach ($raices as $raiz) {
+                foreach (['mysqldump.exe', 'mariadb-dump.exe'] as $nombre) {
+                    $candidatos[] = rtrim($raiz, '\\/').DIRECTORY_SEPARATOR
+                        .'mysql'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.$nombre;
+                }
+            }
             foreach ($candidatos as $candidato) {
-                if ($candidato !== '' && File::exists($candidato)) {
+                if (File::exists($candidato)) {
                     $binario = $candidato;
                     break;
                 }
@@ -120,18 +129,30 @@ class BackupDatabase extends Command
         $process->setEnv(array_merge($_ENV, ['MYSQL_PWD' => $password]));
         $process->setTimeout(300);
 
+        $nativoCorrecto = false;
         try {
             $process->run();
+            $nativoCorrecto = $process->isSuccessful();
         } catch (Throwable $e) {
-            $this->error('No se pudo iniciar mysqldump. Revisa MYSQLDUMP_PATH o C:\xampp\mysql\bin\mysqldump.exe.');
-            @unlink($archivo);
-            return self::FAILURE;
+            // proc_open deshabilitado, ruta fuera del PATH o permisos Windows.
+            // El respaldo con PDO lee la misma conexión que ya usa Laravel.
         }
 
-        if (!$process->isSuccessful()) {
-            $this->error('Falló el respaldo SQL: '.trim($process->getErrorOutput()));
-            @unlink($archivo);
-            return self::FAILURE;
+        if (!$nativoCorrecto) {
+            @unlink($archivo); // mysqldump puede dejar un dump incompleto.
+            $this->warn('mysqldump no completó el respaldo. Intentando copia SQL portable con la conexión MySQL de Laravel...');
+            try {
+                // La alternativa guarda tablas, datos y vistas válidas. Si la
+                // base tiene rutinas/triggers/eventos no respaldables, falla
+                // antes de modificar datos, en vez de crear una copia falsa.
+                (new PortableMysqlBackup())->export($archivo, $database, $vistasOmitidas);
+                $this->info('Respaldo SQL portable completado sin mysqldump.');
+            } catch (Throwable $e) {
+                @unlink($archivo);
+                $this->error('El respaldo portable tampoco pudo completarse: '.$e->getMessage());
+                $this->error('No se modificó la base. Revisa permisos de MySQL y espacio en storage/app/backups.');
+                return self::FAILURE;
+            }
         }
 
         if (!File::exists($archivo) || File::size($archivo) < 200) {
