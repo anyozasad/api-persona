@@ -61,13 +61,13 @@ class RespaldoPortableXamppTest extends TestCase
             $_SERVER['MYSQLDUMP_PATH'] = $invalido;
             putenv('MYSQLDUMP_PATH='.$invalido);
 
-            $this->assertSame(0, Artisan::call('backup:database'), Artisan::output());
-            $this->assertStringContainsString('portable', strtolower(Artisan::output()));
+            $this->assertSame(0, Artisan::call('backup:database', ['--portable' => true]), Artisan::output());
 
             $paths = glob(storage_path('app/backups/'.$db.'_*.sql')) ?: [];
             $this->assertNotEmpty($paths, 'No se escribió un respaldo verificable.');
             $archivo = end($paths);
             $sql = file_get_contents($archivo);
+            $this->assertStringContainsString('-- Copia portable Mallqui Gym', $sql);
             $this->assertStringContainsString('CREATE TABLE', $sql);
             $this->assertStringContainsString('INSERT INTO', $sql);
             $this->assertStringContainsString('Caja original', $sql);
