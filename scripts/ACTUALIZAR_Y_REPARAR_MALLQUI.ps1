@@ -144,7 +144,11 @@ try {
         Detener 'El puerto 8000 pertenece a otra API. Cierra ese servidor para iniciar Mallqui Gym.'
     }
     $shaLocal=(Get-FileHash -LiteralPath (Join-Path $backend 'app\Http\Controllers\VentaController.php') -Algorithm SHA256).Hash
-    if ([string]$actual.revision_ventas -ine $shaLocal) {
+    $shaRespaldo=(Get-FileHash -LiteralPath (Join-Path $backend 'app\Console\Commands\BackupDatabase.php') -Algorithm SHA256).Hash
+    $shaReparador=(Get-FileHash -LiteralPath (Join-Path $backend 'app\Console\Commands\RepararMallquiLocal.php') -Algorithm SHA256).Hash
+    if ([string]$actual.revision_ventas -ine $shaLocal -or
+        [string]$actual.revision_respaldo -ine $shaRespaldo -or
+        [string]$actual.revision_reparador -ine $shaReparador) {
         $pidServidor = PuertoServidor
         if (!$pidServidor) {
             Detener 'Hay un Laravel viejo en 8000. Cierra su terminal y vuelve a ejecutar este script.'
@@ -161,6 +165,14 @@ try {
             Detener 'El servidor PHP antiguo se reinicio o el puerto sigue ocupado. Cierra el Laravel viejo manualmente.'
         }
         $actual = ArrancarBackend $php $backend
+    }
+
+    # Exigir que la API nueva sirva realmente el backup portable y el
+    # reparador; no basta con que el login y Ventas esten actualizados.
+    if ([string]$actual.revision_respaldo -ine $shaRespaldo -or
+        [string]$actual.revision_reparador -ine $shaReparador -or
+        [string]$actual.revision_ventas -ine $shaLocal) {
+        Detener 'El backend sigue ejecutando codigo viejo de respaldo o ventas. Cierra los Laravel abiertos y ejecuta este script desde la carpeta actualizada.'
     }
 
     if ([string]$actual.base_datos -ne 'gym_system' -or
