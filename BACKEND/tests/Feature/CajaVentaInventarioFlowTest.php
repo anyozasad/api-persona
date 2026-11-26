@@ -493,6 +493,66 @@ class CajaVentaInventarioFlowTest extends TestCase
         );
     }
 
+    public function test_repara_solo_integridad_de_cajas_y_ventas_sin_borrar_las_filas_originales(): void
+    {
+        // Reproduce exactamente "integridad:cajas, integridad:ventas" en
+        // gym_system. Las columnas existen, pero los alias no están rellenos.
+        Schema::dropIfExists('cajas');
+        Schema::create('cajas', function (Blueprint $t) {
+            $t->id('id');
+            $t->unsignedBigInteger('id_caja')->nullable()->unique();
+            $t->unsignedBigInteger('usuario_id');
+            $t->unsignedBigInteger('id_usuario_apertura')->nullable();
+            $t->dateTime('fecha_apertura');
+            $t->decimal('monto_inicial', 12, 2);
+            $t->string('estado');
+        });
+        Schema::dropIfExists('ventas');
+        Schema::create('ventas', function (Blueprint $t) {
+            $t->id('id');
+            $t->unsignedBigInteger('id_venta')->nullable()->unique();
+            $t->unsignedBigInteger('caja_id');
+            $t->dateTime('fecha');
+            $t->dateTime('fecha_venta')->nullable();
+            $t->decimal('total', 12, 2);
+            $t->string('estado');
+        });
+        DB::table('cajas')->insert([
+            'usuario_id' => 1, 'fecha_apertura' => '2026-11-25 08:00:00',
+            'monto_inicial' => 100, 'estado' => 'abierta',
+        ]);
+        DB::table('ventas')->insert([
+            'caja_id' => 1, 'fecha' => '2026-11-25 08:30:00',
+            'total' => 40, 'estado' => 'Registrado',
+        ]);
+
+        $reparador = \App\Console\Commands\ReconciliarEsquemaRealMallqui::class;
+        $this->assertSameCanonicalizing(
+            ['integridad:cajas', 'integridad:ventas'],
+            $reparador::integridadCatalogoPendiente()
+        );
+
+        DB::transaction(static fn () => $reparador::sincronizarAliasesLegados());
+
+        $this->assertSame([], $reparador::integridadCatalogoPendiente());
+        $this->assertDatabaseHas('cajas', [
+            'id' => 1, 'id_caja' => 1, 'usuario_id' => 1,
+            'id_usuario_apertura' => 1, 'monto_inicial' => 100,
+        ]);
+        $this->assertDatabaseHas('ventas', [
+            'id' => 1, 'id_venta' => 1, 'caja_id' => 1,
+            'fecha' => '2026-11-25 08:30:00',
+            'fecha_venta' => '2026-11-25 08:30:00',
+            'total' => 40, 'estado' => 'Registrado',
+        ]);
+        $this->assertSame(1, DB::table('ventas')->count());
+        $this->assertSame(1, DB::table('cajas')->count());
+        // La reparación es idempotente: nunca agrega cajas ni ventas.
+        $reparador::sincronizarAliasesLegados();
+        $this->assertSame(1, DB::table('ventas')->count());
+        $this->assertSame(1, DB::table('cajas')->count());
+    }
+
     private function abrirCaja(float $monto = 100): void
     {
         $this->postJson('/api/caja/abrir', [
