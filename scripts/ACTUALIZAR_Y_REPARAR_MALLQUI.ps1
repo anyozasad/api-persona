@@ -105,8 +105,15 @@ try {
         Revisar 'Limpiar cache Laravel'
 
         Paso 'Comprobando tablas, IDs de cajas y ventas y vistas SQL...'
-        & $php artisan db:verificar
+        $salidaInicial = @(& $php artisan db:verificar 2>&1)
         $problema = ($LASTEXITCODE -ne 0)
+        $textoInicial = ($salidaInicial | Out-String)
+        $salidaInicial | ForEach-Object { Write-Host $_ }
+        # Aunque .env indique gym_system, DB_URL u otra configuracion podrian
+        # apuntar a una BD diferente. Comprobar la conexion Laravel real.
+        if ($textoInicial -notmatch 'BASE_ACTIVA:\s*gym_system\s*\|') {
+            Detener 'Laravel NO esta usando gym_system. No se respaldara ni se modificara otra base. Revisa BACKEND/.env, DB_URL y el cache de configuracion.'
+        }
 
         if ($problema) {
             Write-Host ''
