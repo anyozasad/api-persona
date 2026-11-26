@@ -732,3 +732,15 @@
     width:100%!important;
   }
 }
+
+/* Control único del aviso, mantiene el botón al lado del diagnóstico. */
+.admin-shell.admin-home-redesign .mg-diagnostic-compact .mg-operational-repair{
+  flex:0 0 auto!important;
+  display:flex!important;
+  align-items:center!important;
+}
+@media(max-width:680px){
+  .admin-shell.admin-home-redesign .mg-diagnostic-compact .mg-operational-repair{
+    width:100%!important;
+  }
+}
