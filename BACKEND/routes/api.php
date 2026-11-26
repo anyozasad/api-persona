@@ -167,6 +167,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // PORTAL DEL CLIENTE: SOLO SUS PROPIOS DATOS
 Route::middleware(['auth:sanctum', 'rol:Cliente', 'auditoria'])->prefix('mi-cuenta')->group(function () {
+    Route::get('/portal', [PortalClienteController::class, 'portal']);
     Route::get('/resumen', [PortalClienteController::class, 'resumen']);
     Route::get('/perfil', [PortalClienteController::class, 'perfil']);
     Route::get('/perfil/foto', [PortalClienteController::class, 'fotoPerfil']);
