@@ -95,6 +95,20 @@ import { catchError, forkJoin, of, Subscription, tap, timeout } from 'rxjs';
         <button type="button" (click)="cerrarMenusMantis(); cerrarSesion()">↪ Cerrar sesión</button>
       </div>
     </header>
+
+    <div *ngIf="confirmandoSalida" class="mallqui-logout-overlay" role="presentation">
+      <section class="mallqui-logout-dialog" role="dialog" aria-modal="true"
+               aria-labelledby="mallqui-logout-titulo" aria-describedby="mallqui-logout-descripcion"
+               tabindex="-1" (keydown.escape)="!saliendo && (confirmandoSalida=false)">
+        <div class="mallqui-logout-icon" aria-hidden="true">↪</div>
+        <h2 id="mallqui-logout-titulo">¿Deseas cerrar sesión?</h2>
+        <p id="mallqui-logout-descripcion">¿Estás seguro de que deseas salir de tu cuenta?</p>
+        <div class="mallqui-logout-buttons">
+          <button type="button" class="mallqui-logout-cancel" [disabled]="saliendo" (click)="confirmandoSalida=false">No, cancelar</button>
+          <button type="button" class="mallqui-logout-accept" [disabled]="saliendo" (click)="confirmarCierreSesion()">{{saliendo ? 'Cerrando sesión...' : 'Sí, cerrar sesión'}}</button>
+        </div>
+      </section>
+    </div>
     <button *ngIf="busquedaAbierta || avisosAbiertos || perfilAbiertoMantis" type="button"
       class="mg-mantis-dismiss" aria-label="Cerrar desplegables" (click)="cerrarMenusMantis()"></button>
 
@@ -3514,6 +3528,8 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
   compraItems: any[] = [];
   ventaForm: any = {id_cliente:0,id_producto:0,cantidad:1,tipo_comprobante:'Boleta',numero_comprobante:'',metodo_pago:'Efectivo',numero_operacion:'',igv_porcentaje:18};
   ventaItems: any[] = [];
+  confirmandoSalida=false;
+  saliendo=false;
   planEditandoId = 0;
   planError = '';
   planGratisConfirmado = false;
@@ -5787,6 +5803,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if(this.planMesesEnNombre && this.planMesesEnNombre!==duracion){
       this.planError='El nombre dice '+this.planMesesEnNombre+' meses, pero la duración configurada es '+duracion+'. Corrige uno de los dos antes de guardar.';return;
     }
+    const mismoNombre=(v:any)=>String(v||'').trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es');
+    const duplicado=this.planesMembresia.find((p:any)=>
+      mismoNombre(p.nombre)===mismoNombre(datos.nombre)
+      && Number(p.id_membresia)!==Number(this.planEditandoId)
+    );
+    if(duplicado){
+      this.planError='Ya existe un plan con ese nombre. Escribe uno diferente o utiliza «Editar» en el plan existente.';
+      return;
+    }
     datos.duracion_meses=duracion;
     datos.precio=precio;
     datos.beneficios=String(datos.beneficios_texto||'')
@@ -5845,8 +5870,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       },
       error:e=>{
         this.guardandoPlan=false;
-        this.mostrarError(e);
-        this.planError=this.error||'El servidor no pudo guardar esta tarifa. Comprueba los campos y la conexión.';
+        const respuesta=String(e?.error?.errors?.nombre?.[0]||e?.error?.message||e?.error?.mensaje||'');
+        if((Number(e?.status)===422 || Number(e?.status)===409)
+           && /already been taken|ya existe|duplicad|unique/i.test(respuesta)){
+          this.error='';
+          this.planError='Ya existe un plan con ese nombre. Cambia el nombre o edita el plan registrado.';
+        }else{
+          this.mostrarError(e);
+          this.planError=this.error||'No se pudo guardar la tarifa. Verifica los datos y la conexión.';
+        }
       }
     });
   }
@@ -6873,7 +6905,15 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     });
   }
 
-  cerrarSesion(){ this.auth.logout().subscribe({next:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);},error:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);}}); }
+  cerrarSesion(){ this.cerrarMenusMantis(); this.confirmandoSalida=true; }
+  confirmarCierreSesion(){
+    if (!this.confirmandoSalida || this.saliendo) return;
+    this.saliendo=true;
+    this.auth.logout().subscribe({
+      next:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);},
+      error:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);}
+    });
+  }
 
   iconoActividadPortal(tipo:any):string{
     const t=String(tipo||'').toLowerCase();
