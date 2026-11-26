@@ -146,9 +146,13 @@ try {
     $shaLocal=(Get-FileHash -LiteralPath (Join-Path $backend 'app\Http\Controllers\VentaController.php') -Algorithm SHA256).Hash
     $shaRespaldo=(Get-FileHash -LiteralPath (Join-Path $backend 'app\Console\Commands\BackupDatabase.php') -Algorithm SHA256).Hash
     $shaReparador=(Get-FileHash -LiteralPath (Join-Path $backend 'app\Console\Commands\RepararMallquiLocal.php') -Algorithm SHA256).Hash
+    $shaPortal=(Get-FileHash -LiteralPath (Join-Path $backend 'app\Http\Controllers\PortalClienteController.php') -Algorithm SHA256).Hash
+    $shaRutas=(Get-FileHash -LiteralPath (Join-Path $backend 'routes\api.php') -Algorithm SHA256).Hash
     if ([string]$actual.revision_ventas -ine $shaLocal -or
         [string]$actual.revision_respaldo -ine $shaRespaldo -or
-        [string]$actual.revision_reparador -ine $shaReparador) {
+        [string]$actual.revision_reparador -ine $shaReparador -or
+        [string]$actual.revision_portal -ine $shaPortal -or
+        [string]$actual.revision_rutas -ine $shaRutas) {
         $pidServidor = PuertoServidor
         if (!$pidServidor) {
             Detener 'Hay un Laravel viejo en 8000. Cierra su terminal y vuelve a ejecutar este script.'
@@ -171,7 +175,9 @@ try {
     # reparador; no basta con que el login y Ventas esten actualizados.
     if ([string]$actual.revision_respaldo -ine $shaRespaldo -or
         [string]$actual.revision_reparador -ine $shaReparador -or
-        [string]$actual.revision_ventas -ine $shaLocal) {
+        [string]$actual.revision_ventas -ine $shaLocal -or
+        [string]$actual.revision_portal -ine $shaPortal -or
+        [string]$actual.revision_rutas -ine $shaRutas) {
         Detener 'El backend sigue ejecutando codigo viejo de respaldo o ventas. Cierra los Laravel abiertos y ejecuta este script desde la carpeta actualizada.'
     }
 
