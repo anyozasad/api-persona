@@ -1122,12 +1122,12 @@ import {
 
             <aside class="classes-live-status">
               <div class="classes-live-indicator"><i></i><span>ACTUALIZACIÓN AUTOMÁTICA</span></div>
-              <strong>Cada 15 segundos</strong>
+              <strong>Consulta automática</strong>
               <p>Clases, reservas y asistencias se vuelven a consultar sin recargar la página.</p>
               <div class="classes-live-mini">
-                <article><b>{{clases.length}}</b><span>clases activas</span></article>
-                <article><b>{{reservasActivas.length}}</b><span>reservas</span></article>
-                <article><b>{{showcaseAsistencias}}</b><span>asistencias mes</span></article>
+                <article><b>{{modulosConError.includes('Clases') ? '—' : clases.length}}</b><span>clases activas</span></article>
+                <article><b>{{modulosConError.includes('Reservas') ? '—' : reservasActivas.length}}</b><span>reservas</span></article>
+                <article><b>{{modulosConError.includes('Asistencias') ? '—' : showcaseAsistencias}}</b><span>asistencias mes</span></article>
               </div>
             </aside>
           </section>
@@ -1140,7 +1140,9 @@ import {
                 <p *ngIf="clases.length">La fecha de cada clase se calcula según el día y horario registrado.</p>
                 <p *ngIf="!clases.length">El sistema sigue consultando nuevos horarios automáticamente.</p>
               </div>
-              <span class="classes-live-chip"><i></i> En línea</span>
+              <span class="classes-live-chip" [class.offline]="modulosConError.includes('Clases')"><i></i>
+                {{modulosConError.includes('Clases') ? 'Consulta pendiente' : 'Datos actualizados'}}
+              </span>
             </header>
 
             <div class="classes-live-grid" *ngIf="clases.length; else clasesAutoVacias">
@@ -1177,9 +1179,9 @@ import {
                 <div class="classes-live-empty-main">
                   <span class="classes-live-empty-icon">▣</span>
                   <div>
-                    <small>SIN CLASES GRUPALES ACTIVAS</small>
-                    <h3>No necesitas estar actualizando manualmente.</h3>
-                    <p>Esta pantalla seguirá consultando la API automáticamente. En cuanto exista un horario activo, aparecerá aquí con su próxima fecha calculada.</p>
+                    <small>{{modulosConError.includes('Clases') ? 'CONSULTA NO DISPONIBLE' : 'SIN CLASES GRUPALES ACTIVAS'}}</small>
+                    <h3>{{modulosConError.includes('Clases') ? 'No se pudieron consultar las clases.' : 'Todavía no hay clases grupales activas.'}}</h3>
+                    <p>{{modulosConError.includes('Clases') ? 'Los horarios no se han confirmado. Usa «Volver a intentar» cuando Laravel responda.' : 'Cuando el gimnasio publique un horario activo, aparecerá aquí automáticamente.'}}</p>
                   </div>
                 </div>
 
@@ -2176,7 +2178,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   private moduloRutaObservado=false;
   private navegacionPortal?:Subscription;
   private autoSyncPortal:any=null;
-  private readonly autoSyncCadaMs=15000;
+  private readonly autoSyncCadaMs=30000;
+  private consultaPortalEnCurso=false;
   private onWindowFocus=()=>this.sincronizarPortalAutomatico();
   private onVisibilityChange=()=>{ if(!document.hidden)this.sincronizarPortalAutomatico(); };
 
@@ -2231,10 +2234,12 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   }
 
   sincronizarPortalAutomatico():void{
-    if(document.hidden || this.cargando || this.actualizandoModulo || this.sesionCasaActiva)return;
+    if(document.hidden || this.cargando || this.actualizandoModulo || this.sesionCasaActiva || this.consultaPortalEnCurso)return;
+    this.consultaPortalEnCurso=true;
     this.api.cargarPortalCliente().subscribe({
       next:r=>{
-        this.modulosConError=Array.isArray(r?.erroresModulos) ? r.erroresModulos : [];this.erroresDetallePortal=r?.erroresDetalle||{};
+        this.consultaPortalEnCurso=false;
+        this.modulosConError=Array.isArray(r?.erroresModulos) ? r.erroresModulos : [];
         this.erroresDetallePortal=r?.erroresDetalle||{};
         const disponible=(nombre:string)=>!this.modulosConError.includes(nombre);
         if(disponible('Resumen')) this.resumen=r.resumen;
@@ -2262,6 +2267,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         }
       },
       error:e=>{
+        this.consultaPortalEnCurso=false;
         this.error=this.errorApi(e);
         this.cargarEstadoSistema();
       }
