@@ -18,6 +18,19 @@ class VerificarMallquiBd extends Command
         $tablas = $this->tablas();
         $errores = 0;
 
+        try {
+            $conexion = DB::connection();
+            $baseReal = (string) $conexion->getDatabaseName();
+            $motorReal = (string) $conexion->getDriverName();
+            $conexion->getPdo();
+        } catch (Throwable $e) {
+            $this->error('MySQL no responde o la base configurada no existe. Revisa XAMPP y BACKEND/.env.');
+            return self::FAILURE;
+        }
+
+        // La identidad mostrada es de la conexion REAL, no solo de .env.
+        // El actualizador la comprueba antes de cualquier ALTER de tablas.
+        $this->info('BASE_ACTIVA: '.$baseReal.' | MOTOR: '.$motorReal);
         $this->info('Verificando base de datos...');
         $this->newLine();
 
