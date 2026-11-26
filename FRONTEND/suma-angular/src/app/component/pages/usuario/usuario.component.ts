@@ -56,6 +56,20 @@ import {
       </header>
 
 
+
+    <div *ngIf="confirmandoSalida" class="mallqui-logout-overlay" role="presentation">
+      <section class="mallqui-logout-dialog" role="dialog" aria-modal="true"
+               aria-labelledby="mallqui-logout-titulo" aria-describedby="mallqui-logout-descripcion"
+               tabindex="-1" (keydown.escape)="!saliendo && (confirmandoSalida=false)">
+        <div class="mallqui-logout-icon" aria-hidden="true">↪</div>
+        <h2 id="mallqui-logout-titulo">¿Deseas cerrar sesión?</h2>
+        <p id="mallqui-logout-descripcion">¿Estás seguro de que deseas salir de tu cuenta?</p>
+        <div class="mallqui-logout-buttons">
+          <button type="button" class="mallqui-logout-cancel" [disabled]="saliendo" (click)="confirmandoSalida=false">No, cancelar</button>
+          <button type="button" class="mallqui-logout-accept" [disabled]="saliendo" (click)="confirmarCierreSesion()">{{saliendo ? 'Cerrando sesión...' : 'Sí, cerrar sesión'}}</button>
+        </div>
+      </section>
+    </div>
       <div *ngIf="mobileMenuAbierto" class="member-mobile-menu-backdrop" (click)="mobileMenuAbierto=false">
         <aside class="member-mobile-menu-sheet" (click)="$event.stopPropagation()">
           <div class="member-mobile-menu-head">
@@ -2085,6 +2099,8 @@ export class UsuarioComponent implements OnInit, OnDestroy {
   guardandoPreferenciaEntrenamiento=false;
   avisosNoLeidos=0;
   mobileMenuAbierto=false;
+  confirmandoSalida=false;
+  saliendo=false;
   apiConectada=false;
   dbConectada=false;
   dbMotor='MySQL';
@@ -4457,7 +4473,15 @@ export class UsuarioComponent implements OnInit, OnDestroy {
       error:e=>this.error=this.errorApi(e)
     });
   }
-  cerrarSesion(){this.auth.logout().subscribe({next:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);},error:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);}});}
+  cerrarSesion(){ this.mobileMenuAbierto=false; this.confirmandoSalida=true; }
+  confirmarCierreSesion(){
+    if (!this.confirmandoSalida || this.saliendo) return;
+    this.saliendo=true;
+    this.auth.logout().subscribe({
+      next:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);},
+      error:()=>{this.auth.limpiarSesion();this.router.navigate(['/login']);}
+    });
+  }
   ok(m:string){this.error='';this.toast='✓ '+m;setTimeout(()=>this.toast='',2600);}
   errorApi(e:any):string{const er=e?.error?.errors;if(er){const p=Object.values(er)[0];if(Array.isArray(p))return String(p[0]);}return e?.error?.mensaje??e?.error?.message??'No se pudo completar la operación.';}
 }
