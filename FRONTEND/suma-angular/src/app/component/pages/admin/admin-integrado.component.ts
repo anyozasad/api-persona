@@ -4453,7 +4453,7 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     if (this.actualizandoDatos && !this.estadoOperativoDashboard) return 'Comprobando conexión';
     if (!this.estadoOperativoDashboard?.api) return 'Laravel no responde';
     if (!this.estadoOperativoDashboard?.database) return 'MySQL sin conexión';
-    if (!this.estadoOperativoDashboard?.operativo) return this.soloDatosLegacyPendientes ? 'Datos por sincronizar' : 'Revisar base de datos';
+    if (!this.estadoOperativoDashboard?.operativo) return this.soloDatosLegacyPendientes ? 'Datos por sincronizar' : 'Esquema MySQL incompleto';
     if (this.dashboardError || !this.dashboard) return 'Indicadores no disponibles';
     if (this.erroresSincronizacion.length) return 'Módulos con errores';
     return 'Sistema conectado';
@@ -4469,8 +4469,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
       if(this.soloDatosLegacyPendientes){
         return 'MySQL funciona; hay identificadores o fechas antiguos de caja y ventas pendientes de sincronizar. Puedes corregirlos con respaldo previo.';
       }
+      const muestra=faltantes.slice(0,2).join(', ');
       return 'MySQL responde, pero hay '+faltantes.length
-        +' requisitos de datos o estructura pendientes. Usa «Corregir y verificar» para respaldar y revisar la base.';
+        +' requisitos pendientes'+(muestra ? ': '+muestra : '')
+        +'. Respalda la base y pulsa «Corregir y verificar» para revisarlos.';
     }
     if (this.dashboardError || !this.dashboard) return 'Laravel y MySQL responden, pero falló el resumen: '
       +(this.dashboardError || 'revisa el registro de errores de Laravel en BACKEND/storage/logs.');
