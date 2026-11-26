@@ -333,7 +333,10 @@ try {
         const texto=await aviso.innerText();
         assert.match(texto,/MySQL sin conexión/);
         assert.match(texto,/Enciende MySQL en XAMPP/);
-        assert.match(texto,/gym_system/);
+        // La base no tiene conexión: no enseñar datos internos del servidor
+        // y no duplicar el mismo aviso como otra insignia sobre el panel.
+        assert.equal(await page.locator('.mg-efsrt-connection').count(),0);
+        assert.equal(await page.locator('.mg-operational-diagnostic').count(),1);
         assert.doesNotMatch(texto,/Laravel no responde/);
       });
       await page.screenshot({
