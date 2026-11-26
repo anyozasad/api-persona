@@ -64,6 +64,19 @@ describe('AdminIntegradoComponent - pruebas funcionales del dashboard', () => {
     component = new AdminIntegradoComponent(auth, api, router);
   });
 
+  it('Inicio muestra un solo estado de datos legacy, sin inventar tablas faltantes', () => {
+    component.estadoOperativoDashboard={
+      api:true,database:true,operativo:false,base_datos:'gym_system',
+      faltantes:['integridad:cajas','integridad:ventas']
+    };
+    expect(component.soloDatosLegacyPendientes).toBeTrue();
+    expect(component.estadoConexionDashboard).toBe('Datos por sincronizar');
+    expect(component.mensajeSincronizacion).toContain('identificadores o fechas antiguos');
+    expect(component.mensajeSincronizacion).not.toContain('faltan 2 tablas');
+    component.estadoOperativoDashboard={api:true,database:true,operativo:true,faltantes:[]};
+    expect(component.soloDatosLegacyPendientes).toBeFalse();
+  });
+
   it('Planes no guarda si el nombre dice 2 meses pero la duración dice 1', () => {
     component.planForm={nombre:'Promoción 2 meses',duracion_meses:1,precio:85.50,
       descripcion:'',beneficios_texto:'',permite_reservas:true,estado:'Activo'};
