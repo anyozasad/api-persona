@@ -6766,7 +6766,10 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
 
   repararEsquemaMysql(): void {
     if(this.reparandoMysql)return;
-    if(!confirm('Se hará primero un respaldo SQL y después se recuperarán las tablas y columnas pendientes, sin borrar socios, ventas ni pagos. ¿Continuar?')){
+    const explicacion=this.soloDatosLegacyPendientes
+      ? 'MySQL está conectado. Se hará un respaldo SQL de la base activa y después se corregirán únicamente los identificadores y fechas de cajas y ventas antiguas. No se eliminarán registros. ¿Continuar?'
+      : 'Se hará primero un respaldo SQL y después se recuperarán las tablas y columnas pendientes, sin borrar socios, ventas ni pagos. ¿Continuar?';
+    if(!confirm(explicacion)){
       this.reparacionMysqlMensaje='Reparación cancelada: no se modificó MySQL.';
       return;
     }
@@ -6775,7 +6778,9 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
     this.reparacionMysqlCodigo='';
     this.reparacionMysqlEtapa='';
     this.reparacionMysqlProblemas=[];
-    this.reparacionMysqlMensaje='Creando respaldo SQL antes de completar las tablas...';
+    this.reparacionMysqlMensaje=this.soloDatosLegacyPendientes
+      ? 'Respaldando gym_system antes de sincronizar cajas y ventas...'
+      : 'Creando respaldo SQL antes de completar las tablas...';
     this.api.repararEsquema().subscribe({
       next:r=>{
         this.reparandoMysql=false;
@@ -6785,6 +6790,14 @@ export class AdminIntegradoComponent implements OnInit, OnDestroy {
         this.reparacionMysqlProblemas=Array.isArray(r?.problemas_detectados) ? r.problemas_detectados : [];
         this.reparacionMysqlMensaje=String(r?.mensaje||'Revisión terminada.');
         if(r?.operativo){
+          // El servidor ya ejecutó respaldo + reconciliación + db:verificar.
+          // Retirar el aviso en esta misma vista, aun si un refresco paralelo
+          // todavía no ha terminado. La siguiente consulta confirma el dato.
+          this.estadoOperativoDashboard={
+            ...(this.estadoOperativoDashboard||{}),
+            api:true,database:true,operativo:true,faltantes:[],
+            base_datos:r?.base_datos||this.estadoOperativoDashboard?.base_datos
+          };
           this.error='';
           this.pagosError='';
           this.cajaError='';
