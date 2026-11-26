@@ -112,3 +112,30 @@ html.mallqui-public-scroll body::-webkit-scrollbar {
   height: 0;
   display: none;
 }
+
+
+/* Confirmación accesible y compartida: usuario y administrador */
+.mallqui-logout-overlay{position:fixed;inset:0;z-index:10020;display:grid;place-items:center;padding:20px;background:rgba(8,17,14,.68);backdrop-filter:blur(5px);animation:mallqui-overlay-in .2s ease both}
+.mallqui-logout-dialog{box-sizing:border-box;width:min(100%,420px);padding:28px;background:#fff;color:#1b3023;border:1px solid #e2ebdc;border-radius:18px;box-shadow:0 30px 100px rgba(0,0,0,.28);text-align:left;animation:mallqui-dialog-in .23s ease both}
+.mallqui-logout-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;color:#356020;background:#eaf5d4;font-size:27px;font-weight:800}
+.mallqui-logout-dialog h2{font-size:23px;line-height:1.2;margin:18px 0 8px;font-weight:800}
+.mallqui-logout-dialog p{font-size:15px;line-height:1.55;margin:0 0 24px;color:#58665b}
+.mallqui-logout-buttons{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.mallqui-logout-buttons button{border-radius:10px;min-height:45px;padding:11px 16px;font:inherit;font-size:14px;font-weight:750;cursor:pointer;transition:transform .18s,background-color .18s,box-shadow .18s}
+.mallqui-logout-cancel{border:1px solid #d8e2d4;background:#fff;color:#263d2b}
+.mallqui-logout-accept{border:1px solid #a8d755;background:#b7e75e;color:#1b2c12}
+.mallqui-logout-buttons button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 17px rgba(20,30,20,.09)}
+.mallqui-logout-buttons button:disabled{opacity:.55;cursor:wait}
+.mallqui-logout-dialog :focus-visible{outline:3px solid #87bc47;outline-offset:3px}
+@keyframes mallqui-overlay-in{from{opacity:0}to{opacity:1}}
+@keyframes mallqui-dialog-in{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+/* Animaciones discretas del dashboard, sin alterar datos, acciones ni layout */
+.admin-shell .mg-efsrt-kpis article,.admin-shell .mg-efsrt-dashboard article,.admin-shell .admin-dashboard-grid article{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;animation:mallqui-card-arrive .33s ease both}
+.admin-shell .mg-efsrt-kpis article:nth-child(2){animation-delay:.05s}
+.admin-shell .mg-efsrt-kpis article:nth-child(3){animation-delay:.1s}
+.admin-shell .mg-efsrt-kpis article:nth-child(4){animation-delay:.15s}
+.admin-shell .mg-efsrt-kpis article:hover,.admin-shell .admin-dashboard-grid article:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(14,46,22,.09)}
+.admin-shell button:focus-visible,.member-page button:focus-visible{outline:3px solid #93c34b;outline-offset:2px}
+@keyframes mallqui-card-arrive{from{opacity:.5;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+@media (max-width:440px){.mallqui-logout-dialog{padding:22px}.mallqui-logout-buttons{flex-direction:column-reverse}.mallqui-logout-buttons button{width:100%}}
+@media (prefers-reduced-motion:reduce){.mallqui-logout-overlay,.mallqui-logout-dialog,.admin-shell .mg-efsrt-kpis article,.admin-shell .mg-efsrt-dashboard article,.admin-shell .admin-dashboard-grid article{animation:none!important;transition:none!important}}
