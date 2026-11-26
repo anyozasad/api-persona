@@ -151,6 +151,16 @@ class ReconciliarEsquemaRealMallqui extends Command
         return $pendientes;
     }
 
+    /**
+     * Reparación limitada a los alias originales de gym_system: no altera
+     * tablas, no crea registros y no modifica datos ajenos a las columnas
+     * duplicadas. La ruta administrativa ya exige un respaldo SQL válido.
+     */
+    public static function sincronizarAliasesLegados(): void
+    {
+        (new self())->sincronizarAliasesCatalogo();
+    }
+
     public function handle(): int
     {
         $this->info('Revisando el esquema REAL de MySQL (sin borrar datos)...');
