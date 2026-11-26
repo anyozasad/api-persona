@@ -527,7 +527,7 @@ class CajaVentaInventarioFlowTest extends TestCase
         ]);
 
         $reparador = \App\Console\Commands\ReconciliarEsquemaRealMallqui::class;
-        $this->assertSameCanonicalizing(
+        $this->assertEqualsCanonicalizing(
             ['integridad:cajas', 'integridad:ventas'],
             $reparador::integridadCatalogoPendiente()
         );
