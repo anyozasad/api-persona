@@ -53,6 +53,9 @@ class PortalClienteController extends Controller
             try {
                 $respuesta = $resolver();
                 if ($respuesta instanceof \Symfony\Component\HttpFoundation\Response) {
+                    if (in_array($respuesta->getStatusCode(), [401, 403], true)) {
+                        return $respuesta;
+                    }
                     if ($respuesta->getStatusCode() >= 400) {
                         $detalles[$nombre] = ['http' => $respuesta->getStatusCode()];
                         $fallos[] = $nombre;
@@ -70,6 +73,10 @@ class PortalClienteController extends Controller
                     $datos[$clave] = $respuesta;
                 }
             } catch (\Throwable $e) {
+                if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface
+                    && in_array($e->getStatusCode(), [401, 403, 404], true)) {
+                    throw $e;
+                }
                 report($e);
                 $fallos[] = $nombre;
                 $detalles[$nombre] = ['http' => 500];
