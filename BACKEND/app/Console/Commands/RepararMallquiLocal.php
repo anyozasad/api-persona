@@ -33,10 +33,23 @@ class RepararMallquiLocal extends Command
             return self::FAILURE;
         }
 
-        if (Artisan::call('db:verificar') === 0) {
-            $this->info('MySQL ya tiene todas las tablas, columnas y vistas requeridas. No se modificó.');
+        $codigoVerificacion = Artisan::call('db:verificar');
+        $detalleVerificacion = Artisan::output();
+        if ($codigoVerificacion === 0) {
+            $this->info('MySQL ya tiene todas las tablas, columnas y vistas requeridas. No se modifico.');
             return self::SUCCESS;
         }
+
+        // En el gimnasio original hay filas antiguas de cajas y ventas cuyo
+        // alias id_caja/id_venta o fecha_venta permanece NULL. Si NO faltan
+        // tablas, columnas, vistas ni usuarios, evitar migrar todo por dos
+        // identificadores que se pueden sincronizar de forma transaccional.
+        $integridad = ReconciliarEsquemaRealMallqui::integridadCatalogoPendiente();
+        $faltantesEstructura = preg_match(
+            '/FALTA tabla:|faltan columnas|FALTA o falla vista:|FALTA identificador|No se pudo validar los identificadores/i',
+            $detalleVerificacion
+        ) === 1;
+        $soloDatosLegado = $integridad !== [] && !$faltantesEstructura;
 
         $base = (string) DB::connection()->getDatabaseName();
         $this->warn('Base con pendientes: '.$base.'. No se borrarán socios, productos, ventas ni pagos.');
@@ -77,12 +90,20 @@ class RepararMallquiLocal extends Command
             }
             $this->info('Respaldo conservado: '.$rutaSql);
 
-            $this->info('Completando tablas y columnas faltantes...');
-            $reconciliacion = Artisan::call('db:reconciliar-esquema');
-            $this->line(trim(Artisan::output()));
-            if ($reconciliacion !== 0) {
-                $this->error('Algunos componentes siguen pendientes. Se conservó el respaldo SQL.');
-                return self::FAILURE;
+            if ($soloDatosLegado) {
+                $this->info('Solo quedan datos legacy por sincronizar: '.implode(', ', $integridad));
+                $this->info('Conservando tablas y registros originales; sin migraciones generales...');
+                DB::transaction(static function (): void {
+                    ReconciliarEsquemaRealMallqui::sincronizarAliasesLegados();
+                });
+            } else {
+                $this->info('Completando tablas y columnas faltantes...');
+                $reconciliacion = Artisan::call('db:reconciliar-esquema');
+                $this->line(trim(Artisan::output()));
+                if ($reconciliacion !== 0) {
+                    $this->error('Algunos componentes siguen pendientes. Se conservo el respaldo SQL.');
+                    return self::FAILURE;
+                }
             }
 
             $this->info('Verificando la base de datos después de repararla...');
