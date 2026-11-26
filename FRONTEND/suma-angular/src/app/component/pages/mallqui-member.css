@@ -230,3 +230,231 @@
  .member-page .member-topbar.mallqui-apex-header{min-height:92px!important}
  .member-page .mallqui-apex-brand{min-width:0!important}
 }
+
+/* ===== RESTAURACIÓN DE MÓDULOS (2026-11-26) =====
+   Repara reglas perdidas sin tocar HTML, rutas ni acciones de Angular. */
+.member-page{--mq-lime:#b7e75e;--mq-red:#fc3854;--mq-panel:#172024;--mq-line:#304044;--mq-text:#f4f8f8;--mq-mute:#b4c0bf}
+.member-page .member-enter-up{animation:mq-module-appear .3s ease both}
+@keyframes mq-module-appear{from{opacity:.75;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.member-page .member-mobile-bottom-nav{display:none!important}
+.member-page button:not(:disabled){cursor:pointer}
+.member-page .home-training-module,.member-page .module-routines-v34{max-width:1680px;margin:auto}
+.member-page .home-training-module{padding-top:30px;background:#0d1317}
+.member-page .train-ux-shell,.member-page .module-portal-head{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(310px,.8fr);gap:20px;align-items:stretch}
+.member-page .train-ux-intro,.member-page .module-portal-hero{min-width:0;display:grid;align-items:stretch}
+.member-page .train-ux-copy-card,.member-page .module-portal-hero{background:linear-gradient(130deg,#1b292b,#11191e);border:1px solid var(--mq-line);border-radius:18px;padding:clamp(24px,3vw,44px);color:var(--mq-text)}
+.member-page .train-ux-kicker,.member-page .module-portal-copy>span,.member-page .module-window-title span{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:850;letter-spacing:1.2px;color:var(--mq-lime);line-height:1.4}
+.member-page .train-ux-kicker i{display:block;width:8px;height:8px;border-radius:50%;background:var(--mq-lime)}
+.member-page .train-ux-copy-card h1,.member-page .module-portal-copy h1{font-size:clamp(32px,3.25vw,54px);line-height:1.09;letter-spacing:-1.3px;max-width:790px;margin:17px 0 15px;font-weight:900;color:#fff}
+.member-page .train-ux-copy-card h1 strong{color:var(--mq-lime)}
+.member-page .train-ux-copy-card>p,.member-page .module-portal-copy>p{font-size:15px;line-height:1.7;max-width:740px;color:var(--mq-mute);margin:0 0 24px}
+.member-page .train-gym-statusbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-radius:12px;background:#0d1518;border:1px solid #324148;overflow:hidden;margin:20px 0;gap:0}
+.member-page .train-gym-statusbar>div{min-width:0;padding:16px;border-right:1px solid #324148;display:flex;flex-direction:column;gap:8px}
+.member-page .train-gym-statusbar>div:last-child{border:0}
+.member-page .train-gym-statusbar small,.member-page .train-ux-summary small{display:block;color:#aebcba;font-size:10px;font-weight:800;letter-spacing:.8px;line-height:1.4}
+.member-page .train-gym-statusbar b,.member-page .train-ux-summary b{display:block;color:#fff;font-size:15px;overflow-wrap:anywhere;line-height:1.35}
+.member-page .train-ux-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 24px}
+.member-page .train-ux-summary>div{display:flex;gap:12px;align-items:center;min-width:0;background:#243034;border:1px solid #3a4a4e;border-radius:12px;padding:15px 12px}
+.member-page .train-ux-summary>div>span{flex:0 0 auto;font-size:23px;color:var(--mq-lime)}
+.member-page .train-ux-summary p{margin:0;min-width:0;display:grid;gap:6px}
+.member-page .train-ux-actions,.member-page .module-portal-actions,.member-page .empty-actions{display:flex;align-items:stretch;gap:12px;flex-wrap:wrap}
+.member-page .train-ux-actions button,.member-page .module-portal-actions button,.member-page .empty-actions button{min-width:0;min-height:54px;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 19px;line-height:1.35;font:inherit;font-size:14px;font-weight:800;text-align:left;transition:transform .18s,box-shadow .18s}
+.member-page .train-ux-actions button:hover:not(:disabled),.member-page .module-portal-actions button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,.16)}
+.member-page .train-ux-actions .train-ux-primary,.member-page .module-portal-actions .portal-action-primary,.member-page .empty-primary{background:var(--mq-lime);color:#182711;border:1px solid var(--mq-lime);flex:1 1 235px}
+.member-page .train-ux-actions .train-ux-secondary,.member-page .module-portal-actions .portal-action-secondary,.member-page .empty-secondary{background:#233036;color:#eef4f4;border:1px solid #536367;flex:0 1 auto}
+.member-page .train-ux-actions button>div,.member-page .module-portal-actions button>span{display:flex;flex-direction:column;gap:4px}
+.member-page .train-ux-actions button small,.member-page .module-portal-actions button small{font-size:11px;font-weight:500;line-height:1.4}
+.member-page .train-ux-actions button i,.member-page .module-portal-actions button i{font-style:normal}
+.member-page .train-ux-actions button em,.member-page .module-portal-actions button em{font-style:normal;font-size:19px;margin-left:auto}
+.member-page .train-ux-visual-card{position:relative;min-height:440px;background:#1b2528;border:1px solid #364448;border-radius:18px;overflow:hidden;display:flex;align-items:flex-end;color:#fff}
+.member-page .train-ux-carousel,.member-page .train-ux-visual-shade{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.member-page .train-ux-carousel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;animation:mq-train-slides 21s infinite}
+.member-page .train-ux-slide-1{animation-delay:0s!important}
+.member-page .train-ux-slide-2{animation-delay:7s!important}
+.member-page .train-ux-slide-3{animation-delay:14s!important}
+@keyframes mq-train-slides{0%,3%{opacity:0}7%,30%{opacity:1}34%,100%{opacity:0}}
+.member-page .train-ux-visual-shade{background:linear-gradient(0deg,rgba(3,8,10,.88),rgba(4,8,9,.08) 75%)}
+.member-page .train-ux-live-badge{position:absolute;top:20px;left:20px;z-index:2;border:1px solid #82a569;background:#243c27c9;color:#d9f9cc;font-size:11px;font-weight:850;letter-spacing:.7px;border-radius:25px;padding:8px 12px}
+.member-page .train-ux-visual-info{position:relative;z-index:2;padding:28px;width:100%}
+.member-page .train-ux-visual-info h2{font-size:28px;margin:9px 0;color:#fff;line-height:1.1}
+.member-page .train-ux-visual-info p{font-size:13px;line-height:1.6;color:#e1e9ea}
+.member-page .train-ux-stepbar,.member-page .training-level-selector{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+.member-page .train-ux-stepbar .train-step{background:#1c282d;border:1px solid #425357;border-radius:12px;padding:12px 18px;color:#dbe5e5;min-width:120px}
+.member-page .home-training-module>section+section,.member-page .home-training-module>.member-module-card{margin-top:22px}
+.member-page .member-empty-card,.member-page .training-profile-guide,.member-page .gym-assigned-routine,.member-page .membership-unlocked-panel,.member-page .gym-session-flow,.member-page .gym-workout-session,.member-page .home-session-complete{margin-top:20px;padding:24px;border-radius:17px;background:#182226;border:1px solid #354448;color:#fff}
+.member-page .empty-routines-panel{display:grid;gap:12px;justify-items:start}
+.member-page .empty-state-icon{display:grid;place-items:center;width:55px;height:55px;border-radius:14px;background:#314729;color:var(--mq-lime);font-size:28px}
+.member-page .empty-state-kicker{display:block;font-size:10px;font-weight:900;letter-spacing:1.2px;color:var(--mq-lime)}
+.member-page .member-empty-card h2,.member-page .gym-assigned-routine h2{font-size:24px;margin:6px 0;color:#fff}
+.member-page .member-empty-card p,.member-page .gym-assigned-routine p{color:#b5c3c4;line-height:1.6;font-size:14px}
+.member-page .training-profile-guide-head,.member-page .gym-assigned-routine-head{display:flex;justify-content:space-between;align-items:center;gap:15px}
+.member-page .training-profile-cards,.member-page .training-exercise-preview-list,.member-page .gym-assigned-exercises{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:17px}
+.member-page .training-profile-cards>*,.member-page .training-reference-exercise,.member-page .gym-assigned-exercises>*{min-width:0;background:#233035;border:1px solid #45555b;border-radius:11px;padding:16px}
+.member-page .training-reference-photo{width:100%;max-height:170px;object-fit:cover;border-radius:9px}
+.member-page .training-profile-actions,.member-page .gym-assigned-actions,.member-page .complete-actions,.member-page .gym-workout-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+.member-page .training-profile-actions button,.member-page .gym-assigned-actions button,.member-page .complete-actions button,.member-page .gym-workout-actions button{padding:11px 18px;border:1px solid #8ea65c;background:#b7e75e;color:#16230e;border-radius:10px;font-size:14px;font-weight:800;min-height:44px}
+.member-page .gym-workout-exercise{display:grid;grid-template-columns:minmax(160px,.4fr) 1fr;gap:20px}
+.member-page .gym-workout-photo img{width:100%;max-height:290px;object-fit:cover;border-radius:12px}
+.member-page .gym-set-list,.member-page .gym-workout-table{display:grid;gap:9px}
+.member-page .gym-set-control,.member-page .gym-workout-table>*{display:flex;flex-wrap:wrap;gap:12px;background:#233036;padding:13px;border-radius:9px}
+.member-page .gym-set-control input{min-width:0;max-width:135px;padding:8px;background:#101a1d;color:#fff;border:1px solid #516265;border-radius:7px}
+.member-page .module-portal-hero{display:flex;align-items:center;justify-content:space-between;min-height:250px}
+.member-page .module-portal-copy{max-width:730px}
+.member-page .module-portal-copy h1{margin:12px 0}
+.member-page .module-portal-badge{display:grid;place-items:center;background:#2b4231;border-radius:22px;padding:20px;color:var(--mq-lime)}
+.member-page .module-portal-badge svg{width:55px;height:55px;stroke:currentColor;stroke-width:1.6;fill:none}
+.member-page .module-portal-side{background:#172125;border:1px solid #344449;border-radius:18px;padding:27px;color:#fff}
+.member-page .portal-side-head span{display:block;color:var(--mq-lime);font-size:10px;letter-spacing:1.2px;font-weight:800}
+.member-page .portal-side-head b{display:block;font-size:23px;margin:8px 0 20px}
+.member-page .portal-mini-stats{display:grid;gap:12px}
+.member-page .portal-mini-stats article{display:flex;gap:15px;align-items:center;border:1px solid #39494d;border-radius:11px;padding:14px;background:#222e32}
+.member-page .portal-mini-stats article i{font-style:normal;font-size:25px;color:var(--mq-lime);width:30px;text-align:center}
+.member-page .portal-mini-stats article div{display:flex;flex-direction:column;gap:5px}
+.member-page .portal-mini-stats article strong{font-size:23px}
+.member-page .portal-mini-stats article small{font-size:12px;color:#b0bebc}
+.member-page .portal-side-link{display:flex;justify-content:space-between;align-items:center;width:100%;padding:14px 16px;border:1px solid #506b41;background:#2b4027;border-radius:10px;color:#e1f7d4;font-weight:850;margin-top:20px}
+.member-page .module-window-title{margin-top:28px;padding:0 5px 14px}
+.member-page .module-window-title h2{font-size:27px;color:#fff;margin:6px 0}
+.member-page .module-window-title p{color:#b1bebe;font-size:13px;margin:0}
+.member-page .module-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.member-page .routine-card-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.member-page .routine-card-head span{font-size:10px;color:var(--mq-lime)}
+.member-page .routine-card h2{font-size:21px;margin:5px 0}
+.member-page .routine-card p{color:#c6d0ce;font-size:14px}
+.member-page .routine-exercises{display:grid;gap:8px;margin-top:16px}
+.member-page .routine-exercises>div{display:flex;gap:10px;padding:9px 12px;border:1px solid #445354;border-radius:8px;background:#233136}
+.member-page .focus-selected-notice{display:flex;align-items:center;justify-content:space-between;gap:15px;border:1px solid #60794b;border-radius:14px;background:#283a25;padding:15px 20px;margin-top:20px}
+.member-page .focus-selected-notice>div{display:grid;gap:4px}
+.member-page .focus-selected-notice small{font-size:9px;color:#b7e75e;letter-spacing:1px}
+.member-page .focus-selected-notice button{background:var(--mq-lime);padding:12px 15px;border:0;border-radius:9px;color:#172610;font-weight:800}
+/* Mensualidades */
+.member-page .membership-real-module{padding-top:30px}
+.member-page .membership-real-module .member-module-hero,.member-page .member-module-hero.hero-photo-perfil{min-height:220px!important;padding:30px 36px!important;display:flex;justify-content:space-between;gap:22px;align-items:center;border:1px solid #37494c;border-radius:17px;background:linear-gradient(135deg,#1c2c2b,#172126);overflow:hidden}
+.member-page .member-module-hero>div:first-child{max-width:880px}
+.member-page .member-module-hero>div:first-child>span{display:block;font-size:11px;color:var(--mq-lime);font-weight:850;letter-spacing:1.4px}
+.member-page .member-module-hero h1{font-size:clamp(30px,3.6vw,52px)!important;max-width:790px;line-height:1.1}
+.member-page .member-module-hero p{font-size:14px;line-height:1.6;color:#cad6d2}
+.member-page .module-refresh-btn{position:relative;z-index:2;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:#253b28;color:#ddf5cf;border:1px solid #557c43;border-radius:10px;min-height:46px;min-width:140px;font-size:13px;font-weight:850;padding:10px 17px}
+.member-page .module-refresh-btn:disabled{opacity:.65;cursor:wait}
+.member-page .module-hero-icon{display:none}
+.member-page .membership-current-status{display:grid;gap:12px;margin:20px 0 29px}
+.member-page .membership-current-card{display:flex;align-items:center;gap:18px;padding:22px;border:1px solid #34474a;border-radius:15px;background:#1b282a;min-width:0}
+.member-page .membership-current-icon{display:grid;place-items:center;flex:0 0 auto;width:48px;height:48px;border-radius:12px;font-size:23px;background:#314c36;color:#bcf093}
+.member-page .membership-current-card.inactive .membership-current-icon{color:#ffd1a1;background:#51402d}
+.member-page .membership-current-copy{min-width:0;flex:1}
+.member-page .membership-current-copy small{display:block;font-size:10px;color:var(--mq-lime);letter-spacing:1.4px;font-weight:900}
+.member-page .membership-current-copy h2{margin:8px 0;color:#fff;font-size:23px}
+.member-page .membership-current-copy p{margin:0;font-size:13px;line-height:1.5;color:#b7c5c5}
+.member-page .membership-current-state{display:grid;gap:8px;justify-items:end}
+.member-page .membership-current-state span{font-size:12px;padding:7px 11px;background:#35402c;border-radius:20px;color:#d2e9c3}
+.member-page .membership-current-state span i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--mq-lime);margin-right:7px}
+.member-page .membership-section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:18px}
+.member-page .membership-section-head span{color:var(--mq-lime);font-size:10px;font-weight:900;letter-spacing:1px}
+.member-page .membership-section-head h2{font-size:29px;margin:8px 0;color:#fff}
+.member-page .membership-section-head p{font-size:13px;color:#bbcbca;line-height:1.5;margin:0}
+.member-page .membership-data-live{white-space:nowrap}
+.member-page .membership-real-plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.member-page .membership-real-plan{display:flex;flex-direction:column;gap:11px;text-align:left;color:#f4f7f7;padding:22px;min-height:220px;background:#1b282d;border:1px solid #435052;border-radius:15px;transition:transform .2s,border-color .2s,box-shadow .2s}
+.member-page .membership-real-plan:hover{transform:translateY(-3px);border-color:#b7e75e}
+.member-page .membership-real-plan.membership-plan-selected{border:2px solid var(--mq-lime);background:#243829}
+.member-page .membership-plan-name{font-weight:850;font-size:19px;color:#fff}
+.member-page .membership-plan-price{font-size:27px;font-weight:950;color:var(--mq-lime)}
+.member-page .membership-plan-description{font-size:13px;color:#bed0cc;line-height:1.5}
+.member-page .membership-plan-footer{margin-top:auto;font-size:12px;color:#d0ebc3}
+.member-page .membership-checkout-layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(270px,.75fr);gap:17px;align-items:start;margin-top:22px}
+.member-page .membership-checkout-card{margin:0!important}
+.member-page .membership-checkout-card .member-form{display:grid;gap:15px;margin-top:16px}
+.member-page .member-form label{display:grid;gap:7px;color:#dbe6e5;font-size:13px;font-weight:700}
+.member-page .member-form input,.member-page .member-form select,.member-page .member-form textarea{color-scheme:dark;min-height:45px;font-size:14px}
+.member-page .member-form-submit{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;background:var(--mq-lime);color:#14270b;font-weight:900;font-size:14px;min-height:46px;padding:12px 22px}
+.member-page .member-form-submit:disabled{opacity:.5;cursor:not-allowed}
+.member-page .membership-payment-instruction,.member-page .membership-payment-review,.member-page .membership-selected-summary{margin-top:16px;padding:15px 18px;background:#243033;border:1px solid #435155;border-radius:11px}
+.member-page .membership-checkout-layout h3,.member-page .card-title-block h2{color:#fff;font-size:22px;margin:6px 0}
+.member-page .card-title-block span{color:var(--mq-lime);font-size:11px;letter-spacing:1px}
+.member-page .membership-checkout-layout p{font-size:13px;line-height:1.6;color:#bbcac8}
+.member-page .membership-validation-note{font-size:12px;color:#ecdda7}
+/* Perfil */
+.member-page .profile-layout{display:grid;grid-template-columns:minmax(280px,350px) minmax(0,1fr)!important;gap:18px;align-items:start;margin-top:24px}
+.member-page .profile-summary-card,.member-page .profile-edit-card{background:#1a2428;border:1px solid #36484d;border-radius:16px;padding:26px;color:#fff;min-width:0}
+.member-page .profile-summary-card h2{font-size:23px;margin:18px 0 6px}
+.member-page .profile-summary-card p{color:#b7c3c3;font-size:13px;overflow-wrap:anywhere}
+.member-page .profile-summary-card ul{padding:0;list-style:none;display:grid;gap:12px;margin:24px 0 0}
+.member-page .profile-summary-card li{font-size:12px;line-height:1.5;color:#d7e2df}
+.member-page .profile-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.member-page .profile-form-grid .full{grid-column:1/-1}
+.member-page .profile-security-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:20px}
+.member-page .session-security-card{padding:19px;border:1px solid #405055;border-radius:12px;background:#233036}
+.member-page .member-danger-action{padding:11px 15px;border:1px solid #b45c62;background:#3d272a;color:#ffd5d5;border-radius:9px;font-weight:800}
+/* Avisos y paneles del hijo app-cliente-experiencia */
+.member-page .client-extra-shell{display:block;width:100%;min-width:0;max-width:1680px;margin:auto;padding:26px clamp(18px,3vw,55px) 44px;color:#f5f8f8}
+.member-page .client-extra-hero{position:relative;display:flex;align-items:center;justify-content:space-between;gap:22px;min-height:190px;padding:29px 36px;border:1px solid #38484c;border-radius:17px;background:linear-gradient(115deg,#1b292b,#172126);overflow:hidden}
+.member-page .client-extra-hero>div{position:relative;z-index:1;max-width:850px}
+.member-page .client-extra-hero span{display:block;color:var(--mq-lime);font-weight:850;letter-spacing:1.2px;font-size:11px}
+.member-page .client-extra-hero h1{font-size:clamp(29px,3vw,46px);line-height:1.12;color:#fff;margin:12px 0}
+.member-page .client-extra-hero p{font-size:14px;color:#bdcbc7;line-height:1.6;margin:0}
+.member-page .client-extra-hero button{z-index:1;flex:0 0 auto;border:1px solid #91b764;background:var(--mq-lime);color:#18320f;font-size:13px;font-weight:850;min-height:44px;border-radius:10px;padding:10px 16px}
+.member-page .client-extra-hero button:disabled{opacity:.5;cursor:not-allowed}
+.member-page .client-notice-list{display:grid;gap:12px;margin:19px 0}
+.member-page .client-notice-list article{display:flex;align-items:flex-start;gap:14px;min-width:0;padding:18px 22px;background:#1b292c;border:1px solid #37494c;border-radius:13px}
+.member-page .client-notice-list article.unread{border-left:4px solid var(--mq-lime)}
+.member-page .client-notice-list article>div{flex:1;min-width:0}
+.member-page .client-notice-icon{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border-radius:12px;background:#304532;color:var(--mq-lime)}
+.member-page .client-notice-list article h3{font-size:17px;color:#fff;margin:5px 0}
+.member-page .client-notice-list article p{font-size:13px;color:#bed0ca;line-height:1.55;margin:5px 0}
+.member-page .client-notice-list article small{font-size:11px;color:#94a99f}
+.member-page .client-notice-list article button{border:1px solid #6f9b51;background:#263e29;color:#e1f6d8;padding:10px 13px;border-radius:9px;font-weight:800}
+.member-page .client-empty-block{display:grid;place-content:center;justify-items:center;gap:12px;min-height:200px;padding:32px;text-align:center;border:1px dashed #465855;border-radius:14px;background:#1a2528}
+.member-page .client-empty-block b{font-size:20px;color:#fff}
+.member-page .client-empty-block p{margin:0;font-size:14px;color:#b7c4c2}
+/* Información del gimnasio */
+.member-page .gym-real-info-panel{background:#10181b}
+.member-page .gym-real-info-head{margin-bottom:22px}
+.member-page .gym-real-info-head span{display:block;color:var(--mq-lime);font-size:10px;letter-spacing:1.3px;font-weight:850}
+.member-page .gym-real-info-head h2{color:#fff;font-size:clamp(25px,2.6vw,37px);margin:8px 0}
+.member-page .gym-real-info-head p{color:#bac7c5;font-size:13px;margin:0}
+.member-page .gym-real-info-head>b{padding:10px 14px;border-radius:10px;background:#24362a;border:1px solid #4d6c3d;color:#d1f4b3}
+.member-page .gym-real-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.member-page .gym-real-info-grid article{display:flex;gap:15px;min-width:0;align-items:flex-start;background:#1b282c;border:1px solid #35464b;border-radius:15px;padding:20px}
+.member-page .gym-real-info-grid article.wide{grid-column:span 2}
+.member-page .gym-real-info-grid article>i{font-style:normal;display:grid;place-items:center;flex:0 0 43px;width:43px;height:43px;background:#30452c;border-radius:12px;color:var(--mq-lime);font-size:20px}
+.member-page .gym-real-info-grid article>div{min-width:0;display:flex;flex-direction:column;gap:7px}
+.member-page .gym-real-info-grid article small{display:block;color:#a9c0aa;font-size:10px;font-weight:900;letter-spacing:.9px}
+.member-page .gym-real-info-grid article b{display:block;color:#fff;font-size:16px;line-height:1.4;overflow-wrap:anywhere}
+.member-page .gym-real-info-grid article p{color:#b4c4c4;line-height:1.55;font-size:13px;margin:0}
+/* Pantallas vacías y controles responsivos */
+.member-page .member-loading-card{max-width:480px;margin:15vh auto;background:#1d292a;border:1px solid #42534a;border-radius:15px;text-align:center;padding:35px}
+.member-page .member-toast-error{line-height:1.5}
+@media(max-width:1190px){
+ .member-page .train-ux-shell,.member-page .module-portal-head{grid-template-columns:1fr}
+ .member-page .train-ux-visual-card{min-height:260px}
+ .member-page .membership-real-plans{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .member-page .training-profile-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:850px){
+ .member-page .membership-checkout-layout,.member-page .profile-layout{grid-template-columns:1fr!important}
+ .member-page .gym-real-info-grid,.member-page .train-ux-summary,.member-page .train-gym-statusbar{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .member-page .gym-real-info-grid article.wide{grid-column:span 2}
+ .member-page .profile-security-grid{grid-template-columns:1fr}
+ .member-page .member-mobile-bottom-nav{display:grid!important;position:fixed;left:0;right:0;bottom:0;grid-template-columns:repeat(5,1fr);gap:2px;z-index:57;background:#101b1e;border-top:1px solid #405148;padding:7px 5px calc(7px + env(safe-area-inset-bottom))}
+ .member-page .member-mobile-bottom-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:51px;font-size:10px;color:#c6d5d0;background:transparent;border:0;border-radius:7px}
+ .member-page .member-mobile-bottom-nav button.active{background:#263f29;color:var(--mq-lime)}
+ .member-page .member-mobile-bottom-nav button i{font-size:20px;font-style:normal}
+ .member-page{padding-bottom:75px}
+}
+@media(max-width:600px){
+ .member-page .train-ux-copy-card,.member-page .module-portal-hero{padding:21px}
+ .member-page .train-gym-statusbar,.member-page .train-ux-summary,.member-page .gym-real-info-grid,.member-page .module-grid,.member-page .membership-real-plans,.member-page .training-profile-cards,.member-page .training-exercise-preview-list,.member-page .gym-assigned-exercises,.member-page .profile-form-grid{grid-template-columns:1fr}
+ .member-page .train-gym-statusbar>div{border-right:0;border-bottom:1px solid #324148}
+ .member-page .gym-real-info-grid article.wide,.member-page .profile-form-grid .full{grid-column:auto}
+ .member-page .train-ux-actions,.member-page .module-portal-actions,.member-page .empty-actions{flex-direction:column}
+ .member-page .train-ux-actions button,.member-page .module-portal-actions button{flex:auto;width:100%}
+ .member-page .membership-current-card{align-items:flex-start;flex-wrap:wrap}
+ .member-page .membership-current-state{justify-items:start}
+ .member-page .member-module-hero.hero-photo-perfil,.member-page .membership-real-module .member-module-hero,.member-page .client-extra-hero{align-items:flex-start;flex-direction:column;min-height:0!important;padding:24px!important}
+ .member-page .module-refresh-btn{width:100%;min-height:45px}
+ .member-page .module-portal-badge{display:none}
+ .member-page .client-extra-shell{padding:18px 15px}
+ .member-page .member-module-hero h1{font-size:31px!important}
+ .member-page .gym-workout-exercise{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){.member-page .member-enter-up,.member-page .train-ux-carousel img{animation:none!important}.member-page .train-ux-slide-1{opacity:1!important}}
