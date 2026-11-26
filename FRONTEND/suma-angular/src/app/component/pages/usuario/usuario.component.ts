@@ -454,12 +454,12 @@ import {
             <div>
               <span>INFORMACIÓN DE MALLQUI GYM</span>
               <h2>Todo lo que necesitas antes de venir</h2>
-              <p>Datos proporcionados por el gimnasio y cargados desde el sistema.</p>
+              <p>{{modulosConError.includes('Configuración') ? 'No se pudo verificar la información del gimnasio en este momento.' : 'Datos proporcionados por el gimnasio y cargados desde el sistema.'}}</p>
             </div>
             <b>{{gymInfo?.nombre_gimnasio || 'Mallqui Gym'}}</b>
           </div>
 
-          <div class="gym-real-info-grid">
+          <div class="gym-real-info-grid" *ngIf="!modulosConError.includes('Configuración') || gymInfo?.direccion || gymInfo?.nombre_gimnasio; else informacionGymPendiente">
             <article>
               <i>⌖</i>
               <div><small>UBICACIÓN</small><b>{{gymInfo?.direccion || 'Jr. Los Laureles Mz 17 Lt 18'}}</b><p>{{gymInfo?.referencia || 'Referencia: Plaza de Laura Bosso'}}</p></div>
@@ -485,6 +485,15 @@ import {
               <div><small>PRODUCTOS EN RECEPCIÓN</small><b>Productos para consumo</b><p>{{gymInfo?.mensaje_productos || 'Energizantes, bebidas y productos para consumo disponibles en recepción.'}}</p></div>
             </article>
           </div>
+          <ng-template #informacionGymPendiente>
+            <div class="member-empty-state" role="status">
+              <h3>Información del gimnasio pendiente</h3>
+              <p>No se pudo comprobar la configuración en Laravel/MySQL. Los datos no se reemplazarán por información de ejemplo.</p>
+              <button type="button" class="member-form-submit" (click)="sincronizarDatosCliente()" [disabled]="actualizandoModulo">
+                {{actualizandoModulo ? 'Consultando...' : 'Volver a consultar'}}
+              </button>
+            </div>
+          </ng-template>
         </section>
 
         <section *ngIf="moduloActivo==='casa'" class="member-module home-training-module module-training-v34 member-enter-up">
@@ -1040,8 +1049,8 @@ import {
                   <button type="button" class="portal-action-primary" (click)="abrirModulo('casa')">
                     <i>⚡</i><span><b>Entrenar ahora</b><small>Sesión guiada en el gimnasio</small></span><em>→</em>
                   </button>
-                  <button type="button" class="portal-action-secondary" (click)="actualizarSeccion('rutinas')">
-                    <i>↻</i><b>Actualizar</b>
+                  <button type="button" class="portal-action-secondary" (click)="actualizarSeccion('rutinas')" [disabled]="actualizandoModulo">
+                    <i>↻</i><b>{{actualizandoModulo ? 'Consultando...' : 'Actualizar'}}</b>
                   </button>
                 </div>
               </div>
@@ -1454,8 +1463,8 @@ import {
             <ng-template #sinPlanesGym>
               <div class="member-empty-state">
                 <span>!</span>
-                <h3>No se pudieron cargar las mensualidades</h3>
-                <p>Verifica que Laravel y la base de datos estén conectados.</p>
+                <h3>{{modulosConError.includes('Planes') ? 'No se pudieron consultar las mensualidades' : 'Aún no hay mensualidades disponibles'}}</h3>
+                <p>{{modulosConError.includes('Planes') ? 'No se pudo confirmar la información del sistema. Vuelve a consultar.' : 'Consulta con Mallqui Gym para conocer cuándo estarán disponibles los planes.'}}</p>
               </div>
             </ng-template>
           </section>
@@ -2712,7 +2721,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
         this.preseleccionarPlanActual();
         this.actualizandoModulo=false;
         if(mostrarAviso && !this.modulosConError.length)this.ok('Información actualizada');
-        else if(mostrarAviso)this.toast='Se actualizaron los módulos disponibles. Revisa los pendientes.';
+        else if(mostrarAviso)this.ok('Se actualizaron los módulos disponibles. Revisa los pendientes.');
       },
       error:e=>{
         this.actualizandoModulo=false;
@@ -2729,7 +2738,7 @@ export class UsuarioComponent implements OnInit, OnDestroy {
 
   actualizarSeccion(modulo:'rutinas'|'clases'):void{
     if(this.actualizandoModulo)return;
-    this.sincronizarDatosCliente(false);
+    this.sincronizarDatosCliente(true);
     this.moduloActivo=modulo;
   }
 
