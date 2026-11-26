@@ -223,3 +223,10 @@
   width:100%!important;height:100%!important;display:block!important;object-fit:cover!important;
   object-position:54% 76%!important;filter:saturate(1.08) contrast(1.08) brightness(.96)!important;
 }
+
+
+/* Evitar el espacio blanco que imponía la regla de escala para escritorio */
+@media (min-width:1200px){
+ .member-page .member-topbar.mallqui-apex-header{min-height:92px!important}
+ .member-page .mallqui-apex-brand{min-width:0!important}
+}
