@@ -475,3 +475,65 @@
 .member-page .classes-live-chip.offline{color:#ffd1bb;border-color:#986b56;background:rgba(160,76,42,.16)}
 .member-page .classes-live-chip.offline i{background:#ee9875;box-shadow:0 0 0 5px rgba(240,146,91,.12)}
 @media(max-width:650px){.member-page .member-sync-banner{align-items:flex-start;flex-wrap:wrap}.member-page .member-sync-retry{width:100%}.member-page .member-sync-copy{flex:1 1 calc(100% - 60px)}}
+
+/* Estados y detalles de compra / entrenamiento activo */
+.member-page .membership-real-plan.selected{border:2px solid var(--mq-lime)!important;background:#263a2a;box-shadow:0 0 0 3px rgba(183,231,94,.08)}
+.member-page .membership-real-plan.featured:not(.selected){border-color:#789451}
+.member-page .membership-plan-selected,.member-page .membership-plan-recommended{display:inline-block;align-self:flex-start;color:#16260e;background:var(--mq-lime);border-radius:20px;padding:6px 10px;font-size:10px;line-height:1.3;font-weight:900;letter-spacing:.5px}
+.member-page .membership-plan-name small{display:block;font-size:11px;color:#bfcac4;line-height:1.5}
+.member-page .membership-plan-name h3{color:#fff;font-size:22px;line-height:1.2;margin:5px 0}
+.member-page .membership-plan-price{display:flex;align-items:baseline;gap:5px}
+.member-page .membership-plan-price small{font-size:15px;color:var(--mq-lime)}
+.member-page .membership-plan-price strong{font-size:34px;color:var(--mq-lime)}
+.member-page .membership-plan-price>span{font-size:12px;font-weight:500;color:#b9c8c4}
+.member-page .membership-real-plan ul{padding:0;list-style:none;display:grid;gap:7px;margin:0 0 12px}
+.member-page .membership-real-plan li{display:flex;gap:9px;font-size:12px;line-height:1.5;color:#d5e2dc}
+.member-page .membership-real-plan li span{color:var(--mq-lime)}
+.member-page .membership-plan-footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #47574b;padding-top:13px}
+.member-page .member-empty-state{border:1px dashed #6b795e;background:#213024;border-radius:14px;padding:24px;margin:16px 0;color:#e5f2df;display:grid;gap:8px}
+.member-page .member-empty-state>span{font-size:21px;color:#ffd48d}
+.member-page .member-empty-state h3{margin:0;font-size:19px;color:#fff}
+.member-page .member-empty-state p{font-size:13px;line-height:1.6;color:#c6d7c5;margin:0}
+.member-page .membership-selected-main,.member-page .membership-select-first{display:flex;align-items:center;gap:14px}
+.member-page .membership-selected-main>span,.member-page .membership-select-first>span{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;background:#36522b;border-radius:11px;color:var(--mq-lime);font-size:22px}
+.member-page .membership-selected-main h3{margin:4px 0;color:#fff}
+.member-page .membership-selected-main p{margin:0}
+.member-page .membership-selected-numbers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:17px}
+.member-page .membership-selected-numbers article{border-radius:10px;padding:12px;background:#172124;border:1px solid #42534a}
+.member-page .membership-selected-numbers small{display:block;font-size:10px;color:#a6baa6;margin-bottom:6px}
+.member-page .membership-selected-numbers b{font-size:14px;color:#fff}
+.member-page .membership-payment-history-card,.member-page .receipt-preview{background:#1b272b;border:1px solid #394d4e;border-radius:15px;padding:21px;margin-top:20px;color:#fff}
+.member-page .member-payment-list{display:grid;gap:10px;margin:15px 0}
+.member-page .member-payment-item{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:15px;border:1px solid #3d4c4b;border-radius:10px;padding:13px;background:#233032}
+.member-page .member-payment-item button,.member-page .receipt-actions button,.member-page .receipt-access-button{border:1px solid #88ae63;border-radius:9px;padding:11px 14px;background:#34522d;color:#efffe4;font-size:13px;font-weight:800;min-height:43px}
+.member-page .gym-assigned-icon{display:grid;place-items:center;background:#31502e;color:var(--mq-lime);border-radius:13px;flex:0 0 50px;width:50px;height:50px;font-size:24px}
+.member-page .gym-assigned-routine-head>div:nth-child(2){flex:1;min-width:0}
+.member-page .gym-assigned-routine-head small{color:var(--mq-lime);font-size:10px;letter-spacing:1px}
+.member-page .gym-assigned-routine-head h3{font-size:21px;margin:6px 0;color:#fff}
+.member-page .gym-assigned-view{min-height:42px;padding:10px 14px;border:1px solid #89ab69;border-radius:9px;background:#294329;color:#e3f8d7;font-weight:800}
+.member-page .gym-assigned-exercises article{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.member-page .gym-assigned-exercises article>span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#35482f;color:var(--mq-lime);font-weight:850}
+.member-page .gym-assigned-exercises article>div{flex:1 0 110px}
+.member-page .gym-assigned-exercises article>div b{display:block;color:white;font-size:14px}
+.member-page .gym-assigned-exercises article>div small,.member-page .gym-assigned-exercises article p small{display:block;color:#9fb2aa;font-size:11px}
+.member-page .gym-assigned-exercises article p{margin:0;min-width:62px}
+.member-page .gym-assigned-actions{justify-content:space-between;align-items:center}
+.member-page .gym-workout-progress{margin:20px 0;display:grid;gap:10px}
+.member-page .gym-workout-progress>div:first-child{display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.member-page .gym-workout-progress-track{height:9px;border-radius:12px;background:#324441;overflow:hidden}
+.member-page .gym-workout-progress-track i{display:block;height:100%;background:var(--mq-lime)}
+.member-page .gym-workout-table{overflow-x:auto}
+.member-page .gym-workout-table-head,.member-page .gym-workout-table>article{display:grid;grid-template-columns:35px minmax(160px,1.7fr) repeat(5,minmax(75px,1fr));gap:12px;align-items:center;min-width:750px;padding:12px 15px;border:1px solid #3a4a4a;border-radius:8px}
+.member-page .gym-workout-table-head{background:#27372e;color:#c9ecaa;font-size:11px;font-weight:850}
+.member-page .gym-workout-table>article{background:#1b292a;color:#deeae7;font-size:12px}
+.member-page .gym-workout-table>article.done{border-color:#78a85a;background:#213629}
+.member-page .gym-workout-table>article.current{outline:2px solid var(--mq-lime)}
+.member-page .gym-workout-table>article small{display:block;color:#a8b8b4;font-size:11px}
+.member-page .gym-workout-actions .control-secondary{background:#2a4a30;color:#e1f8d4}
+.member-page .gym-workout-actions .control-danger{background:#4b242a;color:#ffe0e0;border-color:#b97077}
+.member-page .home-history-list{display:grid;gap:8px}
+.member-page .home-history-list>div{display:flex;align-items:center;gap:15px;padding:10px 12px;background:#223235;border-radius:9px}
+.member-page .home-history-list>div>div{flex:1}
+.member-page .home-history-list small{display:block;color:#aebbb4;font-size:11px}
+.member-page .home-history-list em{font-style:normal;color:var(--mq-lime)}
+@media(max-width:650px){.member-page .membership-selected-numbers{grid-template-columns:1fr}.member-page .gym-assigned-routine-head{flex-wrap:wrap}.member-page .gym-assigned-view{width:100%}.member-page .gym-workout-table{overflow-x:auto}}
